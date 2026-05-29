@@ -1,6 +1,7 @@
 # Approval Commit Contract
 
-Status: approval status implemented; commit execution planned after MVP.
+Status: approval status and commit preflight implemented; commit execution
+planned after MVP.
 
 The approval-commit path is the core reason this plugin exists. The MVP can
 approve or reject proposals, but it does not execute commits yet; this document
@@ -18,15 +19,26 @@ A final write or destructive operation may execute only when all are true:
 - idempotency checks pass;
 - audit logging is available.
 
-## MVP Approval Status
+## MVP Approval Status And Preflight
 
 The current implementation supports:
 
 - `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/approve`
 - `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/reject`
+- `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/commit-preflight`
 
-These routes update proposal status and write audit events. They do not execute
-the target ability.
+Approval and rejection routes update proposal status and write audit events.
+Commit preflight verifies that an approved proposal can produce Core-generated
+approval context. None of these routes execute the target ability.
+
+Preflight must:
+
+- fail unless the proposal exists and is approved;
+- fail when the target ability is no longer discoverable;
+- fail when the request includes legacy confirmation parameters;
+- return Core-generated approval context;
+- return `commit_execution=false`;
+- record `commit.preflighted` on success.
 
 ## Approved Context
 

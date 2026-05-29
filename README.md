@@ -37,14 +37,17 @@ All MVP routes require `manage_options`.
 
 - `GET /wp-json/magick-ai-core/v1/capabilities`
 - `GET /wp-json/magick-ai-core/v1/proposals`
+- `GET /wp-json/magick-ai-core/v1/proposals/{proposal_id}`
 - `POST /wp-json/magick-ai-core/v1/proposals`
 - `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/approve`
 - `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/reject`
+- `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/commit-preflight`
 - `GET /wp-json/magick-ai-core/v1/audit`
 
 The first implementation records proposals, approval/rejection decisions, and
-audit events. Final commit execution is intentionally not implemented until the
-approval-commit contract is locked and covered by tests.
+audit events, and provides commit preflight without executing writes. Final
+commit execution is intentionally not implemented until idempotency and failure
+contracts are locked and covered by tests.
 
 ## Development
 

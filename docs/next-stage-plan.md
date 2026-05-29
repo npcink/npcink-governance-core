@@ -21,13 +21,9 @@ Implemented:
 
 Not implemented:
 
-- proposal detail endpoint;
-- audit filtering;
-- commit preflight;
 - final commit execution;
 - app key authentication;
 - scope/rate-limit policy;
-- admin approval UI beyond a read-only overview.
 
 ## Strategic Product Boundary
 
@@ -49,6 +45,8 @@ into Core while executing this plan.
 
 ### 1. Proposal Detail Endpoint
 
+Status: implemented.
+
 Goal: fetch one proposal by id.
 
 Routes:
@@ -62,6 +60,8 @@ Acceptance:
 - covered by static contract and WordPress smoke.
 
 ### 2. Audit Filters
+
+Status: implemented.
 
 Goal: make audit useful for proposal review.
 
@@ -79,6 +79,8 @@ Acceptance:
 
 ### 3. Commit Preflight Contract
 
+Status: implemented.
+
 Goal: prepare for final commit without executing writes yet.
 
 Route:
@@ -94,6 +96,8 @@ Acceptance:
 - never accepts `confirm_token` or `write_confirmed`.
 
 ### 4. Minimal Admin Approval UI
+
+Status: implemented.
 
 Goal: let humans review pending proposals inside WordPress.
 

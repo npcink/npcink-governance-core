@@ -40,6 +40,8 @@ Use it for behavior that requires real WordPress:
 - REST dispatch;
 - current user permissions;
 - integration with `magick-ai-abilities`;
+- shared replay fixture consumption from
+  `magick-ai-abilities/tests/fixtures/agent-workflow-replay.json`;
 - real proposal and audit persistence.
 
 The smoke test should stay small. It is a confidence gate, not a full end-to-end
@@ -96,4 +98,3 @@ Tests should keep these out of Core runtime:
 - Content Assistant product workflow ownership;
 - provider credential storage;
 - batch/queue/operator console logic.
-

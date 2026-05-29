@@ -57,6 +57,16 @@ final class Audit_Controller {
 							'default'           => 50,
 							'sanitize_callback' => 'absint',
 						),
+						'proposal_id' => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'event_name'  => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
 					),
 				),
 			)
@@ -70,12 +80,20 @@ final class Audit_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function list_events( WP_REST_Request $request ): WP_REST_Response {
-		$items = $this->audit->list_recent( (int) $request->get_param( 'limit' ) );
+		$items = $this->audit->list_filtered(
+			array(
+				'limit'       => (int) $request->get_param( 'limit' ),
+				'proposal_id' => (string) $request->get_param( 'proposal_id' ),
+				'event_name'  => (string) $request->get_param( 'event_name' ),
+			)
+		);
 
 		$this->audit->record(
 			'audit.listed',
 			array(
-				'count' => count( $items ),
+				'count'       => count( $items ),
+				'proposal_id' => (string) $request->get_param( 'proposal_id' ),
+				'event_name'  => (string) $request->get_param( 'event_name' ),
 			)
 		);
 
@@ -87,4 +105,3 @@ final class Audit_Controller {
 		);
 	}
 }
-

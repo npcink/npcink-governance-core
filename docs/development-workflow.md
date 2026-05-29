@@ -57,6 +57,25 @@ Real WordPress smoke:
 composer smoke:wp
 ```
 
+If the site is not using the default LocalWP paths, pass the WordPress root and
+shared ability provider explicitly:
+
+```bash
+WP_PATH="/path/to/site/app/public" \
+MAGICK_AI_ABILITIES_PATH="/Users/muze/gitee/magick-ai-abilities" \
+composer smoke:wp
+```
+
+For LocalWP environments where `wp` is not on `PATH`, the script can run through
+`/tmp/wp-cli.phar` and Local's PHP runtime. Override these only when needed:
+
+```bash
+WP_CLI=/tmp/wp-cli.phar \
+WP_CLI_PHP="/path/to/local/php" \
+WP_CLI_MYSQL_SOCKET="/path/to/mysql/mysqld.sock" \
+composer smoke:wp
+```
+
 Composer metadata:
 
 ```bash
@@ -77,16 +96,11 @@ composer validate --no-check-publish
 
 The smoke test creates local proposal and audit records. That is expected.
 
-## Wrapper
+## Smoke Wrapper
 
-The smoke script currently uses the existing LocalWP wrapper from
-`/Users/muze/gitee/magick-ai-root/scripts/local-wp.sh` and passes this site's
-WordPress root explicitly. This keeps the new plugin small while reusing the
-known-good LocalWP runtime wrapper.
-
-If this project later becomes fully independent, copy or replace only the
-minimal LocalWP wrapper behavior needed for this plugin. Do not import old
-Magick AI runtime scripts.
+The smoke script is self-contained in this repository. It uses WP-CLI against
+the LocalWP site and does not depend on the abandoned legacy Magick AI
+repository.
 
 ## Git Rules
 
@@ -99,4 +113,3 @@ core: <verb> <short description>
 docs: <verb> <short description>
 test: <verb> <short description>
 ```
-

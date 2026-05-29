@@ -100,19 +100,26 @@ final class Proposal_Repository {
 	 * Lists recent proposals.
 	 *
 	 * @param int $limit Maximum rows.
+	 * @param string $status Optional status filter.
 	 * @return array<int,array<string,mixed>>
 	 */
-	public function list_recent( int $limit = 50 ): array {
+	public function list_recent( int $limit = 50, string $status = '' ): array {
 		global $wpdb;
 
 		$limit = max( 1, min( 200, $limit ) );
-		$rows  = $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name() . ' ORDER BY id DESC LIMIT %d',
-				$limit
-			),
-			ARRAY_A
-		);
+		$status = sanitize_key( $status );
+		$sql    = 'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name();
+		$args   = array();
+
+		if ( '' !== $status ) {
+			$sql   .= ' WHERE status = %s';
+			$args[] = $status;
+		}
+
+		$sql   .= ' ORDER BY id DESC LIMIT %d';
+		$args[] = $limit;
+
+		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $args ), ARRAY_A );
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
 	}

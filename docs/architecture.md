@@ -10,8 +10,10 @@ Status: MVP architecture.
 | `Ability_Registry_Adapter` | Read-only intake from `magick-ai-abilities` or WordPress Abilities API. |
 | `Proposal_Repository` | Persistence for proposal records. |
 | `Proposal_Service` | Proposal creation and audit coordination. |
+| `Commit_Preflight_Service` | Approval-commit readiness checks without executing abilities. |
 | `Audit_Log_Repository` | Append-only event records. |
 | REST controllers | Minimal admin-facing REST API. |
+| `Admin_Page` | Minimal WordPress Tools screen for pending proposal review and decisions. |
 
 ## Data Tables
 
@@ -39,4 +41,3 @@ Disallowed:
 - Core requiring provider plugin internal files.
 - Provider plugins writing directly into Core tables.
 - Core owning product workflow definitions.
-

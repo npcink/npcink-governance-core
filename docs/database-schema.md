@@ -74,7 +74,10 @@ MVP event names:
 - `proposal.created`
 - `proposal.approved`
 - `proposal.rejected`
+- `proposal.viewed`
+- `proposal.listed`
 - `audit.listed`
+- `commit.preflighted`
 
 ## Migration Rules
 
@@ -92,4 +95,3 @@ MVP event names:
 `composer smoke:wp` creates local proposal and audit records. That is expected.
 Cleanup can be done manually in local development if needed, but no automated
 cleanup is part of the MVP.
-

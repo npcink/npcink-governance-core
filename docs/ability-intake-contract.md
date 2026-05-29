@@ -37,6 +37,23 @@ Ability intake is read-only. It must not:
 - infer workflow ownership;
 - approve or commit writes.
 
+## Shared Replay Truth
+
+Consumer-side workflow checks should read the shared replay fixture from
+`magick-ai-abilities/tests/fixtures/agent-workflow-replay.json`.
+
+Core uses that fixture to verify its current responsibility:
+
+- preferred workflow bundle abilities are discoverable through `/capabilities`;
+- preferred bundle rows remain read-risk and do not require approval;
+- write/destructive abilities listed as disallowed defaults remain available
+  only as proposal/approval handoff targets;
+- Core does not copy the fixture into a workflow runtime or route natural
+  language tasks by itself.
+
+Set `MAGICK_AI_ABILITIES_PATH=/path/to/magick-ai-abilities` when the sibling
+repository is not located next to `magick-ai-core`.
+
 ## Missing Dependencies
 
 When no ability source exists, Core should report:
@@ -47,4 +64,3 @@ When no ability source exists, Core should report:
 
 This is not a fatal plugin condition. Core can still record proposals and audit
 events while ability providers are installed later.
-

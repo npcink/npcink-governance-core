@@ -105,6 +105,51 @@ final class Proposal_Service {
 	}
 
 	/**
+	 * Records proposal list access.
+	 *
+	 * @param int $count Returned row count.
+	 * @return void
+	 */
+	public function record_listed( int $count ): void {
+		$this->audit->record(
+			'proposal.listed',
+			array(
+				'count' => max( 0, $count ),
+			)
+		);
+	}
+
+	/**
+	 * Records proposal detail access.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return void
+	 */
+	public function record_viewed( array $proposal ): void {
+		$this->audit->record(
+			'proposal.viewed',
+			array(
+				'ability_id' => (string) ( $proposal['ability_id'] ?? '' ),
+				'status'     => (string) ( $proposal['status'] ?? '' ),
+			),
+			(string) ( $proposal['proposal_id'] ?? '' )
+		);
+	}
+
+	/**
+	 * Returns the shared not-found error.
+	 *
+	 * @return WP_Error
+	 */
+	public function not_found_error(): WP_Error {
+		return new WP_Error(
+			'magick_ai_core_proposal_not_found',
+			__( 'Proposal was not found.', 'magick-ai-core' ),
+			array( 'status' => 404 )
+		);
+	}
+
+	/**
 	 * Transitions a proposal status and records audit.
 	 *
 	 * @param string              $proposal_id Proposal id.
@@ -118,11 +163,7 @@ final class Proposal_Service {
 		$existing    = $this->proposals->find( $proposal_id );
 
 		if ( null === $existing ) {
-			return new WP_Error(
-				'magick_ai_core_proposal_not_found',
-				__( 'Proposal was not found.', 'magick-ai-core' ),
-				array( 'status' => 404 )
-			);
+			return $this->not_found_error();
 		}
 
 		if ( 'pending' !== (string) ( $existing['status'] ?? '' ) ) {

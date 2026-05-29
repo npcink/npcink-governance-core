@@ -1,5 +1,27 @@
 # Session Breadcrumb
 
+## 2026-05-29 — Core governance loop implementation
+
+- **Module**: core governance REST/admin
+- **Status**: Proposal detail, audit filters, commit preflight, and minimal
+  admin approval UI are implemented.
+- **Completed**:
+  - Added proposal detail REST route with 404 behavior and viewed/listed audit.
+  - Added audit filters for `proposal_id`, `event_name`, and `limit`.
+  - Added commit preflight service and REST route that returns approval context
+    without executing abilities and rejects legacy confirmation parameters.
+  - Expanded Tools -> Magick AI Core with pending proposal review and
+    nonce/capability-checked approve/reject forms.
+  - Updated REST, governance, approval-commit, security, schema, architecture,
+    README, static contracts, and WordPress smoke coverage.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed against the LocalWP `magick-ai` site.
+- **Next recommended step**:
+  - Design app identity, scope, and rate-limit policy before implementing any
+    app-key access. Do not add final commit execution until idempotency and
+    failure contracts are documented and tested.
+
 ## 2026-05-29 — Strategy and product split documented
 
 - **Module**: product strategy / governance boundary

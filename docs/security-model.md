@@ -66,13 +66,15 @@ The MVP supports:
 - proposal creation;
 - approval;
 - rejection;
+- commit preflight;
 - audit records.
 
 The MVP does not execute final writes.
 
-Final write or destructive execution must require Core-generated
-approval-commit context and must fail closed if the proposal is missing, not
-approved, stale, unauthorized, or not auditable.
+Commit preflight returns Core-generated approval-commit context without running
+the target ability. Final write or destructive execution must require that
+context and must fail closed if the proposal is missing, not approved, stale,
+unauthorized, or not auditable.
 
 ## Legacy Confirmation Ban
 
@@ -111,4 +113,3 @@ Core must not:
 Local WordPress smoke credentials are local-only and must not be committed.
 Repository docs may mention the local username when useful, but the password
 must remain redacted in memory notes and outside repository files.
-

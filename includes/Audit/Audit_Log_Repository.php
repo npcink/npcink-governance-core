@@ -71,7 +71,7 @@ final class Audit_Log_Repository {
 		$event_id = function_exists( 'wp_generate_uuid4' ) ? wp_generate_uuid4() : uniqid( 'mai_', true );
 		$now      = current_time( 'mysql', true );
 
-		$wpdb->insert(
+		$inserted = $wpdb->insert(
 			$this->table_name(),
 			array(
 				'event_id'      => $event_id,
@@ -84,7 +84,7 @@ final class Audit_Log_Repository {
 			array( '%s', '%s', '%s', '%d', '%s', '%s' )
 		);
 
-		return $event_id;
+		return false === $inserted ? '' : $event_id;
 	}
 
 	/**
@@ -94,16 +94,44 @@ final class Audit_Log_Repository {
 	 * @return array<int,array<string,mixed>>
 	 */
 	public function list_recent( int $limit = 50 ): array {
+		return $this->list_filtered( array( 'limit' => $limit ) );
+	}
+
+	/**
+	 * Lists filtered events.
+	 *
+	 * @param array<string,mixed> $filters Filters.
+	 * @return array<int,array<string,mixed>>
+	 */
+	public function list_filtered( array $filters = array() ): array {
 		global $wpdb;
 
-		$limit = max( 1, min( 200, $limit ) );
-		$rows  = $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT event_id, event_name, proposal_id, actor_id, metadata_json, created_at FROM ' . $this->table_name() . ' ORDER BY id DESC LIMIT %d',
-				$limit
-			),
-			ARRAY_A
-		);
+		$limit       = max( 1, min( 200, absint( $filters['limit'] ?? 50 ) ) );
+		$proposal_id = sanitize_text_field( (string) ( $filters['proposal_id'] ?? '' ) );
+		$event_name  = sanitize_text_field( (string) ( $filters['event_name'] ?? '' ) );
+		$where       = array();
+		$args        = array();
+
+		if ( '' !== $proposal_id ) {
+			$where[] = 'proposal_id = %s';
+			$args[]  = $proposal_id;
+		}
+
+		if ( '' !== $event_name ) {
+			$where[] = 'event_name = %s';
+			$args[]  = $event_name;
+		}
+
+		$sql = 'SELECT event_id, event_name, proposal_id, actor_id, metadata_json, created_at FROM ' . $this->table_name();
+
+		if ( ! empty( $where ) ) {
+			$sql .= ' WHERE ' . implode( ' AND ', $where );
+		}
+
+		$sql   .= ' ORDER BY id DESC LIMIT %d';
+		$args[] = $limit;
+
+		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $args ), ARRAY_A );
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
 	}

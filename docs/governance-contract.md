@@ -15,7 +15,8 @@ This document defines the first Magick AI Core governance boundary.
 6. `audit`: Core records every lifecycle event.
 
 The MVP implements discovery, proposal records, approval/rejection status, and
-audit records. Commit execution is intentionally contract-first follow-up work.
+audit records. Commit preflight verifies approval readiness without executing
+writes. Commit execution is intentionally contract-first follow-up work.
 
 ## Proposal Shape
 
@@ -59,9 +60,11 @@ MVP event names:
 - `proposal.created`
 - `proposal.approved`
 - `proposal.rejected`
+- `proposal.viewed`
 - `proposal.listed`
 - `capabilities.listed`
 - `audit.listed`
+- `commit.preflighted`
 
 Future event names:
 

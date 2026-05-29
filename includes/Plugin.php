@@ -10,6 +10,7 @@ namespace MagickAI\Core;
 use MagickAI\Core\Admin\Admin_Page;
 use MagickAI\Core\Audit\Audit_Log_Repository;
 use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
+use MagickAI\Core\Governance\Commit_Preflight_Service;
 use MagickAI\Core\Governance\Proposal_Repository;
 use MagickAI\Core\Governance\Proposal_Service;
 use MagickAI\Core\Rest\Audit_Controller;
@@ -60,6 +61,13 @@ final class Plugin {
 	private $proposal_service = null;
 
 	/**
+	 * Commit preflight service.
+	 *
+	 * @var Commit_Preflight_Service|null
+	 */
+	private $commit_preflight_service = null;
+
+	/**
 	 * Returns the singleton.
 	 *
 	 * @return self
@@ -91,7 +99,7 @@ final class Plugin {
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 
 		if ( is_admin() ) {
-			( new Admin_Page( $this->ability_adapter(), $this->proposal_repository(), $this->audit_repository() ) )->register();
+			( new Admin_Page( $this->ability_adapter(), $this->proposal_repository(), $this->audit_repository(), $this->proposal_service() ) )->register();
 		}
 	}
 
@@ -102,7 +110,7 @@ final class Plugin {
 	 */
 	public function register_rest_routes(): void {
 		( new Capabilities_Controller( $this->ability_adapter(), $this->audit_repository() ) )->register_routes();
-		( new Proposals_Controller( $this->proposal_service(), $this->proposal_repository() ) )->register_routes();
+		( new Proposals_Controller( $this->proposal_service(), $this->proposal_repository(), $this->commit_preflight_service() ) )->register_routes();
 		( new Audit_Controller( $this->audit_repository() ) )->register_routes();
 	}
 
@@ -157,5 +165,17 @@ final class Plugin {
 
 		return $this->proposal_service;
 	}
-}
 
+	/**
+	 * Returns commit preflight service.
+	 *
+	 * @return Commit_Preflight_Service
+	 */
+	public function commit_preflight_service(): Commit_Preflight_Service {
+		if ( null === $this->commit_preflight_service ) {
+			$this->commit_preflight_service = new Commit_Preflight_Service( $this->proposal_repository(), $this->ability_adapter(), $this->audit_repository() );
+		}
+
+		return $this->commit_preflight_service;
+	}
+}

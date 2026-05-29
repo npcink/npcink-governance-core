@@ -13,8 +13,8 @@ a new contract update before implementation.
 - All write-like routes record audit events.
 - Routes must not accept legacy `confirm_token` or `write_confirmed`
   parameters.
-- Routes must not execute final WordPress writes until the approval-commit
-  preflight and commit contracts are implemented.
+- Routes must not execute final WordPress writes until the final commit contract
+  is documented and tested.
 
 ## `GET /capabilities`
 
@@ -83,6 +83,34 @@ Response `200`:
   ]
 }
 ```
+
+Audit event:
+
+- `proposal.listed`
+
+## `GET /proposals/{proposal_id}`
+
+Purpose: fetch one proposal record by id.
+
+Permission: `manage_options`.
+
+Path parameters:
+
+| Name | Type | Required |
+| --- | --- | --- |
+| `proposal_id` | string | yes |
+
+Response `200`: proposal row.
+
+Errors:
+
+| Code | HTTP | Meaning |
+| --- | --- | --- |
+| `magick_ai_core_proposal_not_found` | `404` | Proposal id does not exist. |
+
+Audit event:
+
+- `proposal.viewed`
 
 ## `POST /proposals`
 
@@ -178,6 +206,8 @@ Query parameters:
 | Name | Type | Default | Notes |
 | --- | --- | --- | --- |
 | `limit` | integer | `50` | Clamped by repository to `1..200`. |
+| `proposal_id` | string | empty | Optional proposal id filter. |
+| `event_name` | string | empty | Optional dotted event name filter. |
 
 Response `200`:
 
@@ -200,14 +230,55 @@ Audit event:
 
 - `audit.listed`
 
+## `POST /proposals/{proposal_id}/commit-preflight`
+
+Purpose: verify that a proposal is ready for a future commit without executing
+the target ability.
+
+Permission: `manage_options`.
+
+Path parameters:
+
+| Name | Type | Required |
+| --- | --- | --- |
+| `proposal_id` | string | yes |
+
+Response `200`:
+
+```json
+{
+  "proposal": {},
+  "capability": {},
+  "approval_context": {
+    "approval_commit_authorized": true,
+    "confirmation_state": "approved_commit",
+    "proposal_id": "uuid"
+  },
+  "commit_execution": false,
+  "idempotency_required": true
+}
+```
+
+Errors:
+
+| Code | HTTP | Meaning |
+| --- | --- | --- |
+| `magick_ai_core_legacy_confirmation_rejected` | `400` | Request attempted to use `confirm_token` or `write_confirmed`. |
+| `magick_ai_core_proposal_not_found` | `404` | Proposal id does not exist. |
+| `magick_ai_core_proposal_not_approved` | `409` | Proposal is not approved. |
+| `magick_ai_core_ability_unavailable` | `409` | Target ability is no longer discoverable. |
+| `magick_ai_core_preflight_forbidden` | `403` | Current user lacks permission. |
+| `magick_ai_core_preflight_audit_failed` | `500` | Preflight could not be audited. |
+
+Audit event:
+
+- `commit.preflighted`
+
 ## Planned Routes
 
 These are not implemented yet:
 
-- `GET /proposals/{proposal_id}`
-- `POST /proposals/{proposal_id}/commit-preflight`
 - final commit route
 
-Commit execution must not be added until preflight, idempotency, and failure
-contracts are documented and tested.
-
+Commit execution must not be added until idempotency and failure contracts are
+documented and tested.
