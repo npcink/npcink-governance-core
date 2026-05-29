@@ -1,10 +1,10 @@
 # Approval Commit Contract
 
-Status: planned after MVP proposal records.
+Status: approval status implemented; commit execution planned after MVP.
 
-The approval-commit path is the core reason this plugin exists. The MVP does
-not execute commits yet; this document freezes the direction before runtime is
-added.
+The approval-commit path is the core reason this plugin exists. The MVP can
+approve or reject proposals, but it does not execute commits yet; this document
+freezes the direction before commit runtime is added.
 
 ## Commit Preconditions
 
@@ -17,6 +17,16 @@ A final write or destructive operation may execute only when all are true:
 - the request includes Core-generated approval context;
 - idempotency checks pass;
 - audit logging is available.
+
+## MVP Approval Status
+
+The current implementation supports:
+
+- `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/approve`
+- `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/reject`
+
+These routes update proposal status and write audit events. They do not execute
+the target ability.
 
 ## Approved Context
 
@@ -43,4 +53,3 @@ Commit must fail when:
 - approval context is absent, stale, or mismatched;
 - the provider tries to bypass dry-run/proposal semantics;
 - audit persistence fails.
-

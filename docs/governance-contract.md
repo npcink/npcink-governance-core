@@ -14,8 +14,8 @@ This document defines the first Magick AI Core governance boundary.
 5. `commit`: a future Core service executes only after approval.
 6. `audit`: Core records every lifecycle event.
 
-The MVP implements discovery, proposal records, and audit records. Approval and
-commit execution are intentionally contract-first follow-up work.
+The MVP implements discovery, proposal records, approval/rejection status, and
+audit records. Commit execution is intentionally contract-first follow-up work.
 
 ## Proposal Shape
 
@@ -38,6 +38,12 @@ Core-generated fields:
 - `created_at`
 - `updated_at`
 
+Allowed MVP statuses:
+
+- `pending`
+- `approved`
+- `rejected`
+
 ## Approval Boundary
 
 Write and destructive commits must fail closed unless the commit request carries
@@ -51,14 +57,14 @@ The new Core uses approval-commit terminology. It must not reintroduce
 MVP event names:
 
 - `proposal.created`
+- `proposal.approved`
+- `proposal.rejected`
 - `proposal.listed`
 - `capabilities.listed`
 - `audit.listed`
 
 Future event names:
 
-- `proposal.approved`
-- `proposal.rejected`
 - `commit.requested`
 - `commit.succeeded`
 - `commit.failed`
@@ -71,4 +77,3 @@ Future event names:
 - SQL writes must use `$wpdb->insert()` or prepared queries.
 - Secrets, provider keys, raw cookies, and passwords must not be stored in
   proposals or audit metadata.
-

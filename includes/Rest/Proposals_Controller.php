@@ -105,6 +105,54 @@ final class Proposals_Controller {
 				),
 			)
 		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/proposals/(?P<proposal_id>[A-Za-z0-9_-]+)/approve',
+			array(
+				array(
+					'methods'             => 'POST',
+					'callback'            => array( $this, 'approve_proposal' ),
+					'permission_callback' => array( Rest_Permissions::class, 'can_manage' ),
+					'args'                => array(
+						'proposal_id' => array(
+							'type'              => 'string',
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'note'        => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_textarea_field',
+						),
+					),
+				),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/proposals/(?P<proposal_id>[A-Za-z0-9_-]+)/reject',
+			array(
+				array(
+					'methods'             => 'POST',
+					'callback'            => array( $this, 'reject_proposal' ),
+					'permission_callback' => array( Rest_Permissions::class, 'can_manage' ),
+					'args'                => array(
+						'proposal_id' => array(
+							'type'              => 'string',
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'note'        => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_textarea_field',
+						),
+					),
+				),
+			)
+		);
 	}
 
 	/**
@@ -146,5 +194,46 @@ final class Proposals_Controller {
 
 		return new WP_REST_Response( $result, 201 );
 	}
-}
 
+	/**
+	 * Approves proposal.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return WP_REST_Response|\WP_Error
+	 */
+	public function approve_proposal( WP_REST_Request $request ) {
+		$result = $this->service->approve(
+			(string) $request->get_param( 'proposal_id' ),
+			array(
+				'note' => (string) $request->get_param( 'note' ),
+			)
+		);
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return new WP_REST_Response( $result, 200 );
+	}
+
+	/**
+	 * Rejects proposal.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return WP_REST_Response|\WP_Error
+	 */
+	public function reject_proposal( WP_REST_Request $request ) {
+		$result = $this->service->reject(
+			(string) $request->get_param( 'proposal_id' ),
+			array(
+				'note' => (string) $request->get_param( 'note' ),
+			)
+		);
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return new WP_REST_Response( $result, 200 );
+	}
+}

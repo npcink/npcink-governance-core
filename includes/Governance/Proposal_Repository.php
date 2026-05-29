@@ -118,6 +118,58 @@ final class Proposal_Repository {
 	}
 
 	/**
+	 * Finds a proposal by id.
+	 *
+	 * @param string $proposal_id Proposal id.
+	 * @return array<string,mixed>|null
+	 */
+	public function find( string $proposal_id ): ?array {
+		global $wpdb;
+
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name() . ' WHERE proposal_id = %s LIMIT 1',
+				sanitize_text_field( $proposal_id )
+			),
+			ARRAY_A
+		);
+
+		return is_array( $row ) ? $this->normalize_row( $row ) : null;
+	}
+
+	/**
+	 * Updates proposal status.
+	 *
+	 * @param string $proposal_id Proposal id.
+	 * @param string $status New status.
+	 * @return array<string,mixed>|null
+	 */
+	public function update_status( string $proposal_id, string $status ): ?array {
+		global $wpdb;
+
+		$proposal_id = sanitize_text_field( $proposal_id );
+		$status      = sanitize_key( $status );
+		$allowed     = array( 'pending', 'approved', 'rejected' );
+
+		if ( ! in_array( $status, $allowed, true ) ) {
+			return null;
+		}
+
+		$wpdb->update(
+			$this->table_name(),
+			array(
+				'status'     => $status,
+				'updated_at' => current_time( 'mysql', true ),
+			),
+			array( 'proposal_id' => $proposal_id ),
+			array( '%s', '%s' ),
+			array( '%s' )
+		);
+
+		return $this->find( $proposal_id );
+	}
+
+	/**
 	 * Counts proposals.
 	 *
 	 * @return int
@@ -188,4 +240,3 @@ final class Proposal_Repository {
 		return sanitize_text_field( (string) $value );
 	}
 }
-
