@@ -39,7 +39,10 @@ Ability intake is read-only. It must not:
 
 ## Shared Replay Truth
 
-Consumer-side workflow checks should read the shared replay fixture from
+Consumer-side workflow checks should prefer
+`magick_ai_abilities_get_workflow_definitions()` when the installed
+`magick-ai-abilities` package exposes it. Older local development profiles may
+fall back to the shared replay fixture at
 `magick-ai-abilities/tests/fixtures/agent-workflow-replay.json`.
 
 Core uses that fixture to verify its current responsibility:

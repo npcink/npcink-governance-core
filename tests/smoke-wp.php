@@ -96,6 +96,27 @@ function magick_ai_core_smoke_replay_fixture_path(): string {
 	return '';
 }
 
+/**
+ * Returns shared workflow replay cases from the installed provider or fixture.
+ *
+ * @return array<string,array<string,mixed>>
+ */
+function magick_ai_core_smoke_workflow_cases(): array {
+	if ( function_exists( 'magick_ai_abilities_get_workflow_definitions' ) ) {
+		$manifest = magick_ai_abilities_get_workflow_definitions();
+		if ( is_array( $manifest ) && is_array( $manifest['cases'] ?? null ) ) {
+			return $manifest['cases'];
+		}
+	}
+
+	$replay_fixture_path = magick_ai_core_smoke_replay_fixture_path();
+	magick_ai_core_smoke_assert( '' !== $replay_fixture_path, 'shared magick-ai-abilities replay fixture is available' );
+	$replay_fixture = json_decode( (string) file_get_contents( $replay_fixture_path ), true );
+	magick_ai_core_smoke_assert( is_array( $replay_fixture ) && is_array( $replay_fixture['cases'] ?? null ), 'shared replay fixture decodes with cases' );
+
+	return $replay_fixture['cases'];
+}
+
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 $core_plugin      = 'magick-ai-core/magick-ai-core.php';
@@ -138,12 +159,10 @@ foreach ( $items as $item ) {
 	}
 }
 
-$replay_fixture_path = magick_ai_core_smoke_replay_fixture_path();
-magick_ai_core_smoke_assert( '' !== $replay_fixture_path, 'shared magick-ai-abilities replay fixture is available' );
-$replay_fixture = json_decode( (string) file_get_contents( $replay_fixture_path ), true );
-magick_ai_core_smoke_assert( is_array( $replay_fixture ) && is_array( $replay_fixture['cases'] ?? null ), 'shared replay fixture decodes with cases' );
+$workflow_cases = magick_ai_core_smoke_workflow_cases();
+magick_ai_core_smoke_assert( count( $workflow_cases ) > 0, 'shared workflow definitions are available to Core' );
 
-foreach ( $replay_fixture['cases'] as $case_id => $case ) {
+foreach ( $workflow_cases as $case_id => $case ) {
 	$preferred_id = (string) ( is_array( $case ) ? ( $case['preferred_ability_id'] ?? '' ) : '' );
 	magick_ai_core_smoke_assert( isset( $items_by_id[ $preferred_id ] ), 'replay case ' . $case_id . ' preferred bundle is discoverable by Core' );
 	magick_ai_core_smoke_assert( 'read' === (string) ( $items_by_id[ $preferred_id ]['risk_level'] ?? '' ), 'replay case ' . $case_id . ' preferred bundle remains read risk' );

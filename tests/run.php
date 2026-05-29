@@ -155,6 +155,7 @@ magick_ai_core_assert( false !== strpos( $ability_adapter, 'wp_get_abilities' ),
 magick_ai_core_assert( false !== strpos( $ability_adapter, "'none'" ), 'Ability intake has missing-provider diagnostic state.' );
 
 $ability_intake = magick_ai_core_read( $root . '/docs/ability-intake-contract.md' );
+magick_ai_core_assert( false !== strpos( $ability_intake, 'magick_ai_abilities_get_workflow_definitions()' ), 'Ability intake contract prefers runtime workflow definition discovery.' );
 magick_ai_core_assert( false !== strpos( $ability_intake, 'agent-workflow-replay.json' ), 'Ability intake contract points to the shared replay fixture.' );
 magick_ai_core_assert( false !== strpos( $ability_intake, 'does not copy the fixture into a workflow runtime' ), 'Ability intake contract keeps replay consumption out of runtime ownership.' );
 

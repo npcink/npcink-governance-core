@@ -40,7 +40,8 @@ Use it for behavior that requires real WordPress:
 - REST dispatch;
 - current user permissions;
 - integration with `magick-ai-abilities`;
-- shared replay fixture consumption from
+- runtime workflow definition discovery through
+  `magick_ai_abilities_get_workflow_definitions()`, with fixture fallback from
   `magick-ai-abilities/tests/fixtures/agent-workflow-replay.json`;
 - real proposal and audit persistence.
 
