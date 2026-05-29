@@ -13,6 +13,7 @@
   },
   "scripts": {
     "lint:php": "@php tests/lint.php",
+    "smoke:wp": "bash tests/smoke-wp.sh",
     "test": "@php tests/run.php",
     "test:all": [
       "@lint:php",
