@@ -132,6 +132,12 @@ The raw secret is returned once by `POST /wp-json/magick-ai-core/v1/apps` and
 stored only as `secret_hash`. `GET /apps`, proposals, and audit rows must not
 return raw app secrets or secret hashes.
 
+Administrators can also create the same scoped app token from
+`Tools -> Magick AI Core -> External App Access`. The screen shows the site base
+URL, REST URL, and OpenClaw-style environment variables. It displays the raw
+token only on the creation result screen and lists existing app keys without
+secret material.
+
 App-authenticated requests must have the route's required scope and pass the
 fixed-window rate limit. Missing auth returns `401`, missing scope returns
 `403`, and rate limit failures return `429`.

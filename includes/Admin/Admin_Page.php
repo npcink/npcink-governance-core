@@ -11,6 +11,7 @@ use MagickAI\Core\Audit\Audit_Log_Repository;
 use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
 use MagickAI\Core\Governance\Proposal_Repository;
 use MagickAI\Core\Governance\Proposal_Service;
+use MagickAI\Core\Security\App_Key_Repository;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -49,18 +50,27 @@ final class Admin_Page {
 	private $service;
 
 	/**
+	 * App key repository.
+	 *
+	 * @var App_Key_Repository
+	 */
+	private $apps;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Ability_Registry_Adapter $abilities Ability adapter.
 	 * @param Proposal_Repository      $proposals Proposal repository.
 	 * @param Audit_Log_Repository     $audit Audit repository.
 	 * @param Proposal_Service         $service Proposal service.
+	 * @param App_Key_Repository       $apps App key repository.
 	 */
-	public function __construct( Ability_Registry_Adapter $abilities, Proposal_Repository $proposals, Audit_Log_Repository $audit, Proposal_Service $service ) {
+	public function __construct( Ability_Registry_Adapter $abilities, Proposal_Repository $proposals, Audit_Log_Repository $audit, Proposal_Service $service, App_Key_Repository $apps ) {
 		$this->abilities = $abilities;
 		$this->proposals = $proposals;
 		$this->audit     = $audit;
 		$this->service   = $service;
+		$this->apps      = $apps;
 	}
 
 	/**
@@ -70,6 +80,7 @@ final class Admin_Page {
 	 */
 	public function register(): void {
 		add_action( 'admin_menu', array( $this, 'add_menu' ) );
+		add_action( 'admin_post_magick_ai_core_create_app_key', array( $this, 'handle_create_app_key' ) );
 		add_action( 'admin_post_magick_ai_core_approve_proposal', array( $this, 'handle_approve' ) );
 		add_action( 'admin_post_magick_ai_core_reject_proposal', array( $this, 'handle_reject' ) );
 	}
@@ -143,6 +154,8 @@ final class Admin_Page {
 				</tbody>
 			</table>
 
+			<?php $this->render_external_access(); ?>
+
 			<h2><?php echo esc_html__( 'Pending Proposals', 'magick-ai-core' ); ?></h2>
 			<table class="widefat striped" style="max-width: 1100px;">
 				<thead>
@@ -201,6 +214,213 @@ final class Admin_Page {
 	 */
 	public function handle_reject(): void {
 		$this->handle_decision( 'reject' );
+	}
+
+	/**
+	 * Handles app key creation form submission.
+	 *
+	 * @return void
+	 */
+	public function handle_create_app_key(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to create app keys.', 'magick-ai-core' ) );
+		}
+
+		check_admin_referer( 'magick_ai_core_create_app_key' );
+
+		$raw_scopes = isset( $_POST['scopes'] ) && is_array( $_POST['scopes'] ) ? wp_unslash( $_POST['scopes'] ) : array();
+		$app        = $this->apps->create(
+			array(
+				'app_label'           => isset( $_POST['app_label'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['app_label'] ) ) : 'External app',
+				'caller_type'         => isset( $_POST['caller_type'] ) ? sanitize_key( wp_unslash( (string) $_POST['caller_type'] ) ) : 'mcp_adapter',
+				'scopes'              => is_array( $raw_scopes ) ? $raw_scopes : array(),
+				'rate_limit'          => isset( $_POST['rate_limit'] ) ? absint( wp_unslash( (string) $_POST['rate_limit'] ) ) : App_Key_Repository::DEFAULT_RATE_LIMIT,
+				'rate_window_seconds' => isset( $_POST['rate_window_seconds'] ) ? absint( wp_unslash( (string) $_POST['rate_window_seconds'] ) ) : App_Key_Repository::DEFAULT_RATE_WINDOW,
+			)
+		);
+
+		$this->audit->record(
+			'app.created',
+			array(
+				'app_id'      => (string) $app['app_id'],
+				'key_id'      => (string) $app['key_id'],
+				'caller_type' => (string) $app['caller_type'],
+				'scopes'      => (array) $app['scopes'],
+			)
+		);
+
+		global $title;
+		$title = __( 'App Key Created', 'magick-ai-core' );
+
+		require_once ABSPATH . 'wp-admin/admin-header.php';
+		$this->render_created_app_key( $app );
+		require_once ABSPATH . 'wp-admin/admin-footer.php';
+		exit;
+	}
+
+	/**
+	 * Renders external app access section.
+	 *
+	 * @return void
+	 */
+	private function render_external_access(): void {
+		$base_url = home_url();
+		$rest_url = rest_url( 'magick-ai-core/v1' );
+		$apps     = $this->apps->list_recent( 10 );
+		?>
+		<h2><?php echo esc_html__( 'External App Access', 'magick-ai-core' ); ?></h2>
+		<p><?php echo esc_html__( 'Issue scoped app keys for external governance clients. Human approval remains in Core.', 'magick-ai-core' ); ?></p>
+		<table class="widefat striped" style="max-width: 1100px;">
+			<tbody>
+				<tr>
+					<th scope="row"><?php echo esc_html__( 'Base URL', 'magick-ai-core' ); ?></th>
+					<td><code><?php echo esc_html( $base_url ); ?></code></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php echo esc_html__( 'Core REST URL', 'magick-ai-core' ); ?></th>
+					<td><code><?php echo esc_html( $rest_url ); ?></code></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php echo esc_html__( 'OpenClaw env', 'magick-ai-core' ); ?></th>
+					<td>
+						<pre style="margin: 0;">MAGICK_AI_CORE_BASE_URL=<?php echo esc_html( $base_url ); ?>
+MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h3><?php echo esc_html__( 'Create App Key', 'magick-ai-core' ); ?></h3>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="max-width: 1100px;">
+			<input type="hidden" name="action" value="magick_ai_core_create_app_key" />
+			<?php wp_nonce_field( 'magick_ai_core_create_app_key' ); ?>
+			<table class="form-table" role="presentation">
+				<tbody>
+					<tr>
+						<th scope="row"><label for="magick-ai-core-app-label"><?php echo esc_html__( 'App label', 'magick-ai-core' ); ?></label></th>
+						<td><input id="magick-ai-core-app-label" class="regular-text" type="text" name="app_label" value="OpenClaw Adapter" /></td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="magick-ai-core-caller-type"><?php echo esc_html__( 'Caller type', 'magick-ai-core' ); ?></label></th>
+						<td><input id="magick-ai-core-caller-type" class="regular-text" type="text" name="caller_type" value="mcp_adapter" /></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'Scopes', 'magick-ai-core' ); ?></th>
+						<td><?php $this->render_scope_checkboxes(); ?></td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="magick-ai-core-rate-limit"><?php echo esc_html__( 'Rate limit', 'magick-ai-core' ); ?></label></th>
+						<td>
+							<label>
+								<?php echo esc_html__( 'Requests', 'magick-ai-core' ); ?>
+								<input id="magick-ai-core-rate-limit" type="number" min="1" max="10000" name="rate_limit" value="<?php echo esc_attr( (string) App_Key_Repository::DEFAULT_RATE_LIMIT ); ?>" />
+							</label>
+							<label style="margin-left: 12px;">
+								<?php echo esc_html__( 'Window seconds', 'magick-ai-core' ); ?>
+								<input type="number" min="60" max="86400" name="rate_window_seconds" value="<?php echo esc_attr( (string) App_Key_Repository::DEFAULT_RATE_WINDOW ); ?>" />
+							</label>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<p><button type="submit" class="button button-primary"><?php echo esc_html__( 'Create App Key', 'magick-ai-core' ); ?></button></p>
+		</form>
+
+		<h3><?php echo esc_html__( 'Recent App Keys', 'magick-ai-core' ); ?></h3>
+		<table class="widefat striped" style="max-width: 1100px;">
+			<thead>
+				<tr>
+					<th scope="col"><?php echo esc_html__( 'Label', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'App ID', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Key ID', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Scopes', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Last used', 'magick-ai-core' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php if ( empty( $apps ) ) : ?>
+					<tr><td colspan="5"><?php echo esc_html__( 'No app keys yet.', 'magick-ai-core' ); ?></td></tr>
+				<?php endif; ?>
+				<?php foreach ( $apps as $app ) : ?>
+					<tr>
+						<td><?php echo esc_html( (string) $app['app_label'] ); ?></td>
+						<td><code><?php echo esc_html( (string) $app['app_id'] ); ?></code></td>
+						<td><code><?php echo esc_html( (string) $app['key_id'] ); ?></code></td>
+						<td><?php echo esc_html( implode( ', ', (array) $app['scopes'] ) ); ?></td>
+						<td><?php echo esc_html( (string) ( $app['last_used_at'] ?: '-' ) ); ?></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<?php
+	}
+
+	/**
+	 * Renders scope checkboxes.
+	 *
+	 * @return void
+	 */
+	private function render_scope_checkboxes(): void {
+		$defaults = $this->apps->default_scopes();
+		$labels   = array(
+			'capabilities:read' => __( 'Read capabilities', 'magick-ai-core' ),
+			'proposals:create'  => __( 'Create proposals', 'magick-ai-core' ),
+			'proposals:read'    => __( 'Read proposals', 'magick-ai-core' ),
+			'commit:preflight'  => __( 'Commit preflight', 'magick-ai-core' ),
+			'proposals:approve' => __( 'Approve proposals', 'magick-ai-core' ),
+			'proposals:reject'  => __( 'Reject proposals', 'magick-ai-core' ),
+			'audit:read'        => __( 'Read audit log', 'magick-ai-core' ),
+		);
+
+		foreach ( $this->apps->allowed_scopes() as $scope ) {
+			?>
+			<label style="display: block; margin: 0 0 4px;">
+				<input type="checkbox" name="scopes[]" value="<?php echo esc_attr( $scope ); ?>" <?php checked( in_array( $scope, $defaults, true ) ); ?> />
+				<?php echo esc_html( (string) ( $labels[ $scope ] ?? $scope ) ); ?>
+				<code><?php echo esc_html( $scope ); ?></code>
+			</label>
+			<?php
+		}
+	}
+
+	/**
+	 * Renders one-time app key result.
+	 *
+	 * @param array<string,mixed> $app App row with one-time token.
+	 * @return void
+	 */
+	private function render_created_app_key( array $app ): void {
+		$base_url = home_url();
+		$token    = (string) ( $app['token'] ?? '' );
+		?>
+		<div class="wrap">
+			<h1><?php echo esc_html__( 'App Key Created', 'magick-ai-core' ); ?></h1>
+			<div class="notice notice-warning">
+				<p><?php echo esc_html__( 'Copy this token now. It is shown only once and is not stored in raw form.', 'magick-ai-core' ); ?></p>
+			</div>
+			<table class="widefat striped" style="max-width: 1100px;">
+				<tbody>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'App ID', 'magick-ai-core' ); ?></th>
+						<td><code><?php echo esc_html( (string) $app['app_id'] ); ?></code></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'Key ID', 'magick-ai-core' ); ?></th>
+						<td><code><?php echo esc_html( (string) $app['key_id'] ); ?></code></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'App token', 'magick-ai-core' ); ?></th>
+						<td><textarea class="large-text code" rows="3" readonly><?php echo esc_textarea( $token ); ?></textarea></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'OpenClaw env', 'magick-ai-core' ); ?></th>
+						<td><textarea class="large-text code" rows="4" readonly><?php echo esc_textarea( 'MAGICK_AI_CORE_BASE_URL=' . $base_url . "\n" . 'MAGICK_AI_CORE_APP_TOKEN=' . $token ); ?></textarea></td>
+					</tr>
+				</tbody>
+			</table>
+			<p><a class="button button-primary" href="<?php echo esc_url( $this->admin_url() ); ?>"><?php echo esc_html__( 'Back to Magick AI Core', 'magick-ai-core' ); ?></a></p>
+		</div>
+		<?php
 	}
 
 	/**

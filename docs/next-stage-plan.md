@@ -20,11 +20,12 @@ Implemented:
 - real WordPress smoke;
 - minimal app-key authentication, scopes, rate limiting, and app audit
   attribution.
+- admin UI for external clients to copy the Core URL and create scoped one-time
+  app tokens.
 
 Not implemented:
 
 - final commit execution;
-- production app-key lifecycle UI;
 - app-key rotation, revocation UI, and expiry automation;
 
 Documented but not implemented:
@@ -134,6 +135,7 @@ Acceptance:
 Current implementation:
 
 - app keys are created by admin-only `POST /apps`;
+- app keys can also be created from `Tools -> Magick AI Core`;
 - raw secrets are returned once as bearer tokens;
 - default external adapter scopes exclude approval and audit read;
 - app-authenticated proposal and preflight events include app attribution.

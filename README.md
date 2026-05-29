@@ -79,6 +79,11 @@ External agent clients can start from the
 That example calls Core REST governance routes only; it is not an MCP runtime
 or final write executor.
 
+For local adapter setup, WordPress administrators can open
+`Tools -> Magick AI Core -> External App Access` to copy the Core base URL and
+create a scoped one-time app token. The token is shown once and should be stored
+only in the external client's secret store or environment.
+
 Run the local static test suite:
 
 ```bash

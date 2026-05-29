@@ -1,5 +1,23 @@
 # Session Breadcrumb
 
+## 2026-05-29 — External app access admin UI added
+
+- **Module**: external app governance authorization
+- **Status**: WordPress administrators can now copy Core connection values and
+  issue scoped one-time app tokens from `Tools -> Magick AI Core`.
+- **Completed**:
+  - Added an `External App Access` section to the existing Core admin page.
+  - Added a nonce/capability-checked admin-post handler for app-key creation.
+  - Reused the Core app identity store, default scopes, and rate-limit policy.
+  - Displayed the raw token only on the creation result screen and kept recent
+    app-key listings free of secret material.
+  - Updated security/app-auth docs and static contracts.
+- **Next recommended step**:
+  - Use this panel for OpenClaw or similar adapter PoCs. Keep lifecycle features
+    narrow until real use requires them: rotation, revoke UI, expiry, and export
+    formats can follow later. Do not add OAuth, MCP runtime, or final write
+    execution inside Core.
+
 ## 2026-05-29 — Minimal app-key governance entry implemented
 
 - **Module**: external app governance authorization

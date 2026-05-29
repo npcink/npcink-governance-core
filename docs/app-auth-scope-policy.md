@@ -122,6 +122,11 @@ Authorization: Bearer mai_core.<key_id>.<secret>
 The same token may be sent as `X-Magick-AI-Core-App-Token` for clients that
 cannot set the `Authorization` header.
 
+WordPress administrators can issue tokens from either admin-only
+`POST /wp-json/magick-ai-core/v1/apps` or the `Tools -> Magick AI Core`
+`External App Access` panel. Both paths use the same app identity store, default
+scope policy, and one-time raw-token display rule.
+
 Minimum requirements:
 
 - raw secret is shown once at creation and stored only as a hash;
@@ -153,6 +158,7 @@ Current implementation gates:
 1. Database schema for app identities and rate counters is documented.
 2. REST authentication and error semantics are documented.
 3. Security storage and redaction behavior is documented.
-4. Static contract tests cover scopes and forbidden secret storage.
-5. WordPress smoke covers app-authenticated proposal creation, commit preflight,
+4. Admin UI can show the Core URL and issue one-time scoped app tokens.
+5. Static contract tests cover scopes, UI entry, and forbidden secret storage.
+6. WordPress smoke covers app-authenticated proposal creation, commit preflight,
    denied approval, denied audit access, and rate limiting.
