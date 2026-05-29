@@ -48,6 +48,17 @@ approval-commit contract is locked and covered by tests.
 
 ## Development
 
+Read the project handoff docs before starting a new implementation session:
+
+- [Product Positioning](docs/product-positioning.md)
+- [Architecture](docs/architecture.md)
+- [Governance Contract](docs/governance-contract.md)
+- [Ability Intake Contract](docs/ability-intake-contract.md)
+- [Approval Commit Contract](docs/approval-commit-contract.md)
+- [Development Workflow](docs/development-workflow.md)
+- [Testing Strategy](docs/testing-strategy.md)
+- [Next Stage Plan](docs/next-stage-plan.md)
+
 Run the local static test suite:
 
 ```bash
