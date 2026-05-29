@@ -1,5 +1,23 @@
 # Session Breadcrumb
 
+## 2026-05-29 — App-key admin-post result page fixed
+
+- **Module**: external app governance authorization
+- **Status**: Fixed the app-key creation result page so it no longer loads the
+  full WordPress admin header from `admin-post.php`.
+- **Completed**:
+  - Confirmed the reported failure was caused by `admin-header.php` firing
+    `admin_enqueue_scripts` with a null hook suffix in the `admin-post` context.
+  - Replaced the full admin chrome include with a standalone no-cache result
+    page that shows the one-time token and OpenClaw env snippet.
+  - Added static coverage to prevent reintroducing `admin-header.php` in this
+    handler.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+  - Local WP-CLI handler simulation returned `App Key Created` and a redacted
+    `MAGICK_AI_CORE_APP_TOKEN` without the previous fatal error.
+
 ## 2026-05-29 — External app access admin UI added
 
 - **Module**: external app governance authorization

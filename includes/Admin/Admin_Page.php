@@ -249,12 +249,9 @@ final class Admin_Page {
 			)
 		);
 
-		global $title;
-		$title = __( 'App Key Created', 'magick-ai-core' );
-
-		require_once ABSPATH . 'wp-admin/admin-header.php';
+		status_header( 200 );
+		nocache_headers();
 		$this->render_created_app_key( $app );
-		require_once ABSPATH . 'wp-admin/admin-footer.php';
 		exit;
 	}
 
@@ -393,33 +390,56 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 		$base_url = home_url();
 		$token    = (string) ( $app['token'] ?? '' );
 		?>
-		<div class="wrap">
-			<h1><?php echo esc_html__( 'App Key Created', 'magick-ai-core' ); ?></h1>
-			<div class="notice notice-warning">
-				<p><?php echo esc_html__( 'Copy this token now. It is shown only once and is not stored in raw form.', 'magick-ai-core' ); ?></p>
-			</div>
-			<table class="widefat striped" style="max-width: 1100px;">
-				<tbody>
-					<tr>
-						<th scope="row"><?php echo esc_html__( 'App ID', 'magick-ai-core' ); ?></th>
-						<td><code><?php echo esc_html( (string) $app['app_id'] ); ?></code></td>
-					</tr>
-					<tr>
-						<th scope="row"><?php echo esc_html__( 'Key ID', 'magick-ai-core' ); ?></th>
-						<td><code><?php echo esc_html( (string) $app['key_id'] ); ?></code></td>
-					</tr>
-					<tr>
-						<th scope="row"><?php echo esc_html__( 'App token', 'magick-ai-core' ); ?></th>
-						<td><textarea class="large-text code" rows="3" readonly><?php echo esc_textarea( $token ); ?></textarea></td>
-					</tr>
-					<tr>
-						<th scope="row"><?php echo esc_html__( 'OpenClaw env', 'magick-ai-core' ); ?></th>
-						<td><textarea class="large-text code" rows="4" readonly><?php echo esc_textarea( 'MAGICK_AI_CORE_BASE_URL=' . $base_url . "\n" . 'MAGICK_AI_CORE_APP_TOKEN=' . $token ); ?></textarea></td>
-					</tr>
-				</tbody>
-			</table>
-			<p><a class="button button-primary" href="<?php echo esc_url( $this->admin_url() ); ?>"><?php echo esc_html__( 'Back to Magick AI Core', 'magick-ai-core' ); ?></a></p>
-		</div>
+		<!doctype html>
+		<html <?php language_attributes(); ?>>
+		<head>
+			<meta charset="<?php echo esc_attr( get_bloginfo( 'charset' ) ); ?>" />
+			<meta name="viewport" content="width=device-width, initial-scale=1" />
+			<title><?php echo esc_html__( 'App Key Created', 'magick-ai-core' ); ?></title>
+			<style>
+				body { margin: 0; background: #f0f0f1; color: #1d2327; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+				main { max-width: 960px; margin: 32px auto; padding: 0 24px; }
+				h1 { font-size: 24px; margin: 0 0 16px; }
+				.notice { background: #fff8e5; border-left: 4px solid #dba617; margin: 0 0 20px; padding: 12px 16px; }
+				table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #c3c4c7; }
+				th, td { border-bottom: 1px solid #dcdcde; padding: 12px; text-align: left; vertical-align: top; }
+				th { width: 160px; font-weight: 600; }
+				code, textarea { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+				textarea { box-sizing: border-box; width: 100%; min-height: 96px; padding: 10px; border: 1px solid #8c8f94; background: #fff; color: #1d2327; }
+				.actions { margin-top: 20px; }
+				.button { display: inline-block; background: #2271b1; border: 1px solid #2271b1; border-radius: 3px; color: #fff; padding: 8px 14px; text-decoration: none; }
+			</style>
+		</head>
+		<body>
+			<main>
+				<h1><?php echo esc_html__( 'App Key Created', 'magick-ai-core' ); ?></h1>
+				<div class="notice">
+					<p><?php echo esc_html__( 'Copy this token now. It is shown only once and is not stored in raw form.', 'magick-ai-core' ); ?></p>
+				</div>
+				<table>
+					<tbody>
+						<tr>
+							<th scope="row"><?php echo esc_html__( 'App ID', 'magick-ai-core' ); ?></th>
+							<td><code><?php echo esc_html( (string) $app['app_id'] ); ?></code></td>
+						</tr>
+						<tr>
+							<th scope="row"><?php echo esc_html__( 'Key ID', 'magick-ai-core' ); ?></th>
+							<td><code><?php echo esc_html( (string) $app['key_id'] ); ?></code></td>
+						</tr>
+						<tr>
+							<th scope="row"><?php echo esc_html__( 'App token', 'magick-ai-core' ); ?></th>
+							<td><textarea rows="3" readonly><?php echo esc_textarea( $token ); ?></textarea></td>
+						</tr>
+						<tr>
+							<th scope="row"><?php echo esc_html__( 'OpenClaw env', 'magick-ai-core' ); ?></th>
+							<td><textarea rows="4" readonly><?php echo esc_textarea( 'MAGICK_AI_CORE_BASE_URL=' . $base_url . "\n" . 'MAGICK_AI_CORE_APP_TOKEN=' . $token ); ?></textarea></td>
+						</tr>
+					</tbody>
+				</table>
+				<p class="actions"><a class="button" href="<?php echo esc_url( $this->admin_url() ); ?>"><?php echo esc_html__( 'Back to Magick AI Core', 'magick-ai-core' ); ?></a></p>
+			</main>
+		</body>
+		</html>
 		<?php
 	}
 

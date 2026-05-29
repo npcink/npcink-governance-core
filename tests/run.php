@@ -377,7 +377,8 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'External App Access' ), '
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_BASE_URL' ), 'Admin page shows base URL env value.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_APP_TOKEN' ), 'Admin page shows app token env value.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'render_created_app_key' ), 'Admin page renders one-time app key result.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'wp-admin/admin-header.php' ), 'Admin app-key result renders inside WordPress admin chrome.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'nocache_headers' ), 'Admin app-key result prevents caching the one-time token.' );
+magick_ai_core_assert( false === strpos( $admin_page, 'wp-admin/admin-header.php' ), 'Admin app-key result avoids admin header inside admin-post context.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'shown only once and is not stored in raw form' ), 'Admin page warns that app token is one-time only.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'default_scopes' ), 'Admin page defaults to scoped external adapter access.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'App_Key_Repository::DEFAULT_RATE_LIMIT' ), 'Admin page exposes bounded rate policy inputs.' );
