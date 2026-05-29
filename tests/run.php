@@ -94,6 +94,7 @@ magick_ai_core_assert( false !== strpos( $governance, 'proposal.rejected' ), 'Go
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.viewed' ), 'Governance contract records proposal.viewed event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.listed' ), 'Governance contract records proposal.listed event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'commit.preflighted' ), 'Governance contract records commit.preflighted event.' );
+magick_ai_core_assert( false !== strpos( $governance, 'currently discoverable ability id' ), 'Governance contract requires real discoverable proposal ability ids.' );
 magick_ai_core_assert( false !== strpos( $governance, 'must not reintroduce' ), 'Governance contract rejects legacy confirmation parameters.' );
 
 $rest_contract = magick_ai_core_read( $root . '/docs/rest-api-contract.md' );
@@ -107,11 +108,27 @@ foreach (
 		'POST /proposals/{proposal_id}/commit-preflight',
 		'GET /audit',
 		'magick_ai_core_invalid_ability_id',
+		'magick_ai_core_ability_not_available',
 		'magick_ai_core_legacy_confirmation_rejected',
 		'event_name',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $rest_contract, $required ), 'REST API contract contains required text: ' . $required );
+}
+
+$handoff_validation = magick_ai_core_read( $root . '/docs/core-governance-handoff-validation.md' );
+foreach (
+	array(
+		'Core proposal records must store real ability ids',
+		'content/draft-preview',
+		'magick-ai/create-draft',
+		'magick-ai/set-post-seo-meta',
+		'magick-ai/approve-comment',
+		'No proposal is required for read-only intake.',
+		'does not add workflow runtime ownership',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $handoff_validation, $required ), 'Handoff validation doc contains required text: ' . $required );
 }
 
 $database_schema = magick_ai_core_read( $root . '/docs/database-schema.md' );
@@ -196,6 +213,7 @@ $ability_intake = magick_ai_core_read( $root . '/docs/ability-intake-contract.md
 magick_ai_core_assert( false !== strpos( $ability_intake, 'magick_ai_abilities_get_workflow_definitions()' ), 'Ability intake contract prefers runtime workflow definition discovery.' );
 magick_ai_core_assert( false !== strpos( $ability_intake, 'agent-workflow-replay.json' ), 'Ability intake contract points to the shared replay fixture.' );
 magick_ai_core_assert( false !== strpos( $ability_intake, 'does not copy the fixture into a workflow runtime' ), 'Ability intake contract keeps replay consumption out of runtime ownership.' );
+magick_ai_core_assert( false !== strpos( $ability_intake, 'currently discoverable' ), 'Ability intake contract rejects unavailable proposal ability ids.' );
 
 $testing_strategy = magick_ai_core_read( $root . '/docs/testing-strategy.md' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'agent-workflow-replay.json' ), 'Testing strategy records shared replay fixture smoke coverage.' );
@@ -213,6 +231,10 @@ magick_ai_core_assert( false !== strpos( $smoke_wp, 'MAGICK_AI_ABILITIES_PATH' )
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'agent-workflow-replay.json' ), 'WordPress smoke consumes the shared replay fixture.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'preferred bundle is discoverable by Core' ), 'WordPress smoke validates preferred bundle discovery.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'disallowed default ability requires approval in Core' ), 'WordPress smoke validates write-like defaults stay approval-gated.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'content/draft-preview' ), 'WordPress smoke rejects planning labels as proposal targets.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/create-draft' ), 'WordPress smoke validates draft proposal governance.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/set-post-seo-meta' ), 'WordPress smoke validates SEO proposal governance.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/approve-comment' ), 'WordPress smoke validates comment moderation proposal governance.' );
 
 $capabilities_controller = magick_ai_core_read( $root . '/includes/Rest/Capabilities_Controller.php' );
 magick_ai_core_assert( false !== strpos( $capabilities_controller, "'/capabilities'" ), 'Capabilities REST route is registered.' );
@@ -228,11 +250,15 @@ magick_ai_core_assert( false !== strpos( $proposals_controller, "'ability_id'" )
 
 $proposal_service = magick_ai_core_read( $root . '/includes/Governance/Proposal_Service.php' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.created' ), 'Proposal service records proposal.created audit event.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'Ability_Registry_Adapter' ), 'Proposal service validates target abilities against ability intake.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'magick_ai_core_ability_not_available' ), 'Proposal service rejects unavailable target abilities.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.approved' ), 'Proposal service records proposal.approved audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.rejected' ), 'Proposal service records proposal.rejected audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.listed' ), 'Proposal service records proposal.listed audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.viewed' ), 'Proposal service records proposal.viewed audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, "'pending'" ), 'Proposal service only transitions pending proposals.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'magick_ai_core_ability_not_available' ), 'Proposal service rejects unavailable target abilities.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, '$this->abilities->find' ), 'Proposal service validates against ability intake.' );
 magick_ai_core_assert( false === strpos( $proposal_service, 'confirm_token' ), 'Proposal service does not use confirm_token.' );
 magick_ai_core_assert( false === strpos( $proposal_service, 'write_confirmed' ), 'Proposal service does not use write_confirmed.' );
 

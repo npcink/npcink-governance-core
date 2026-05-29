@@ -47,11 +47,15 @@ final class Proposals_Controller {
 	/**
 	 * Constructor.
 	 *
-	 * @param Proposal_Service    $service Proposal service.
-	 * @param Proposal_Repository $repository Proposal repository.
+	 * @param Proposal_Service          $service Proposal service.
+	 * @param Proposal_Repository       $repository Proposal repository.
 	 * @param Commit_Preflight_Service $preflight Commit preflight service.
 	 */
-	public function __construct( Proposal_Service $service, Proposal_Repository $repository, Commit_Preflight_Service $preflight ) {
+	public function __construct(
+		Proposal_Service $service,
+		Proposal_Repository $repository,
+		Commit_Preflight_Service $preflight
+	) {
 		$this->service    = $service;
 		$this->repository = $repository;
 		$this->preflight  = $preflight;

@@ -63,6 +63,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Approval Commit Contract](docs/approval-commit-contract.md)
 - [Agent MCP Entry Contract](docs/agent-mcp-entry-contract.md)
 - [App Auth Scope Policy](docs/app-auth-scope-policy.md)
+- [Core Governance Handoff Validation](docs/core-governance-handoff-validation.md)
 - [Development Workflow](docs/development-workflow.md)
 - [Testing Strategy](docs/testing-strategy.md)
 - [Next Stage Plan](docs/next-stage-plan.md)

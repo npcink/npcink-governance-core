@@ -8,6 +8,7 @@
 namespace MagickAI\Core\Governance;
 
 use MagickAI\Core\Audit\Audit_Log_Repository;
+use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
 use WP_Error;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,6 +27,13 @@ final class Proposal_Service {
 	private $proposals;
 
 	/**
+	 * Ability adapter.
+	 *
+	 * @var Ability_Registry_Adapter
+	 */
+	private $abilities;
+
+	/**
 	 * Audit repository.
 	 *
 	 * @var Audit_Log_Repository
@@ -35,11 +43,17 @@ final class Proposal_Service {
 	/**
 	 * Constructor.
 	 *
-	 * @param Proposal_Repository  $proposals Proposal repository.
-	 * @param Audit_Log_Repository $audit Audit repository.
+	 * @param Proposal_Repository      $proposals Proposal repository.
+	 * @param Ability_Registry_Adapter $abilities Ability adapter.
+	 * @param Audit_Log_Repository     $audit Audit repository.
 	 */
-	public function __construct( Proposal_Repository $proposals, Audit_Log_Repository $audit ) {
+	public function __construct(
+		Proposal_Repository $proposals,
+		Ability_Registry_Adapter $abilities,
+		Audit_Log_Repository $audit
+	) {
 		$this->proposals = $proposals;
+		$this->abilities = $abilities;
 		$this->audit     = $audit;
 	}
 
@@ -56,6 +70,14 @@ final class Proposal_Service {
 				'magick_ai_core_invalid_ability_id',
 				__( 'A namespaced ability_id is required.', 'magick-ai-core' ),
 				array( 'status' => 400 )
+			);
+		}
+
+		if ( null === $this->abilities->find( $ability_id ) ) {
+			return new WP_Error(
+				'magick_ai_core_ability_not_available',
+				__( 'Proposal target ability is not available.', 'magick-ai-core' ),
+				array( 'status' => 404 )
 			);
 		}
 

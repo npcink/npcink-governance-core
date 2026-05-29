@@ -117,6 +117,66 @@ function magick_ai_core_smoke_workflow_cases(): array {
 	return $replay_fixture['cases'];
 }
 
+/**
+ * Runs the proposal, approval, preflight, and audit smoke loop for one write-like ability.
+ *
+ * @param string              $ability_id Ability id.
+ * @param array<string,mixed> $items_by_id Capability rows keyed by ability id.
+ * @param string              $title Proposal title.
+ * @param array<string,mixed> $input Proposal input.
+ * @param array<string,mixed> $preview Proposal preview.
+ * @return string
+ */
+function magick_ai_core_smoke_run_governance_proposal( string $ability_id, array $items_by_id, string $title, array $input, array $preview ): string {
+	magick_ai_core_smoke_assert( isset( $items_by_id[ $ability_id ] ), $ability_id . ' is discoverable for proposal governance' );
+	magick_ai_core_smoke_assert( 'read' !== (string) ( $items_by_id[ $ability_id ]['risk_level'] ?? 'read' ), $ability_id . ' is write-like for proposal governance' );
+	magick_ai_core_smoke_assert( true === (bool) ( $items_by_id[ $ability_id ]['requires_approval'] ?? false ), $ability_id . ' requires approval for proposal governance' );
+
+	$created = magick_ai_core_smoke_rest(
+		'POST',
+		'/magick-ai-core/v1/proposals',
+		array(
+			'ability_id' => $ability_id,
+			'title'      => $title,
+			'summary'    => 'Created by real WordPress smoke test.',
+			'input'      => $input,
+			'preview'    => $preview,
+			'caller'     => array(
+				'source' => 'tests/smoke-wp.php',
+			),
+		)
+	);
+
+	$proposal_id = (string) ( $created['proposal_id'] ?? '' );
+	magick_ai_core_smoke_assert( '' !== $proposal_id && 'pending' === (string) ( $created['status'] ?? '' ), $ability_id . ' proposal created in pending status' );
+	magick_ai_core_smoke_assert( $ability_id === (string) ( $created['ability_id'] ?? '' ), $ability_id . ' proposal stores the real ability id' );
+
+	$detail = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) );
+	magick_ai_core_smoke_assert( $proposal_id === (string) ( $detail['proposal_id'] ?? '' ), $ability_id . ' proposal detail endpoint returns created proposal' );
+
+	$pending_preflight = magick_ai_core_smoke_rest_result( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/commit-preflight' );
+	magick_ai_core_smoke_assert( 409 === (int) $pending_preflight['status'], $ability_id . ' commit preflight fails for pending proposal' );
+
+	$approved = magick_ai_core_smoke_rest(
+		'POST',
+		'/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/approve',
+		array(
+			'note' => 'Smoke approval.',
+		)
+	);
+
+	magick_ai_core_smoke_assert( 'approved' === (string) ( $approved['status'] ?? '' ), $ability_id . ' proposal approved through REST' );
+
+	$preflight = magick_ai_core_smoke_rest( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/commit-preflight' );
+	magick_ai_core_smoke_assert( false === (bool) ( $preflight['commit_execution'] ?? true ), $ability_id . ' commit preflight does not execute ability' );
+	magick_ai_core_smoke_assert( true === (bool) ( $preflight['approval_context']['approval_commit_authorized'] ?? false ), $ability_id . ' commit preflight returns approval authorization context' );
+	magick_ai_core_smoke_assert( 'approved_commit' === (string) ( $preflight['approval_context']['confirmation_state'] ?? '' ), $ability_id . ' commit preflight returns approved_commit state' );
+	magick_ai_core_smoke_assert( $ability_id === (string) ( $preflight['proposal']['ability_id'] ?? '' ), $ability_id . ' preflight proposal keeps the real ability id' );
+	magick_ai_core_smoke_assert( $ability_id === (string) ( $preflight['capability']['ability_id'] ?? '' ), $ability_id . ' preflight capability is rediscovered from ability intake' );
+
+	return $proposal_id;
+}
+
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 $core_plugin      = 'magick-ai-core/magick-ai-core.php';
@@ -176,68 +236,71 @@ foreach ( $workflow_cases as $case_id => $case ) {
 	}
 }
 
-$ability_id = '';
-foreach ( $items as $item ) {
-	if ( is_array( $item ) && 'magick-ai/site-info' === (string) ( $item['ability_id'] ?? '' ) ) {
-		$ability_id = 'magick-ai/site-info';
-		break;
-	}
-}
-
-if ( '' === $ability_id && is_array( $items[0] ?? null ) ) {
-	$ability_id = (string) ( $items[0]['ability_id'] ?? '' );
-}
-
-magick_ai_core_smoke_assert( '' !== $ability_id, 'selected ability for proposal smoke' );
-
-$created = magick_ai_core_smoke_rest(
+$planning_label = magick_ai_core_smoke_rest_result(
 	'POST',
 	'/magick-ai-core/v1/proposals',
 	array(
-		'ability_id' => $ability_id,
-		'title'      => 'Smoke proposal',
-		'summary'    => 'Created by real WordPress smoke test.',
-		'input'      => array(
-			'smoke' => true,
-		),
-		'preview'    => array(
-			'dry_run' => true,
-		),
-		'caller'     => array(
-			'source' => 'tests/smoke-wp.php',
-		),
+		'ability_id' => 'content/draft-preview',
+		'title'      => 'Planning label should not be accepted',
+	)
+);
+magick_ai_core_smoke_assert( 404 === (int) $planning_label['status'], 'proposal creation rejects planning labels that are not real ability ids' );
+
+$proposal_id = magick_ai_core_smoke_run_governance_proposal(
+	'magick-ai/create-draft',
+	$items_by_id,
+	'Smoke draft proposal',
+	array(
+		'title'   => 'Core Governance Smoke Draft',
+		'content' => '<p>Smoke draft content.</p>',
+		'status'  => 'draft',
+		'dry_run' => true,
+	),
+	array(
+		'dry_run'       => true,
+		'host_governed' => true,
 	)
 );
 
-$proposal_id = (string) ( $created['proposal_id'] ?? '' );
-magick_ai_core_smoke_assert( '' !== $proposal_id && 'pending' === (string) ( $created['status'] ?? '' ), 'proposal created in pending status' );
+$seo_proposal_id = magick_ai_core_smoke_run_governance_proposal(
+	'magick-ai/set-post-seo-meta',
+	$items_by_id,
+	'Smoke SEO metadata proposal',
+	array(
+		'post_id'     => 1,
+		'title'       => 'Smoke SEO Title',
+		'description' => 'Smoke SEO description.',
+		'dry_run'     => true,
+	),
+	array(
+		'dry_run'       => true,
+		'host_governed' => true,
+	)
+);
+
+magick_ai_core_smoke_assert( '' !== $seo_proposal_id, 'SEO metadata proposal completed governance loop' );
+
+$comment_proposal_id = magick_ai_core_smoke_run_governance_proposal(
+	'magick-ai/approve-comment',
+	$items_by_id,
+	'Smoke comment moderation proposal',
+	array(
+		'comment_id' => 1,
+		'dry_run'    => true,
+	),
+	array(
+		'dry_run'       => true,
+		'host_governed' => true,
+	)
+);
+
+magick_ai_core_smoke_assert( '' !== $comment_proposal_id, 'comment moderation proposal completed governance loop' );
 
 $listed = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/proposals', array( 'limit' => 10 ) );
 magick_ai_core_smoke_assert( count( (array) ( $listed['items'] ?? array() ) ) > 0, 'proposal list endpoint returns proposals' );
 
-$detail = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) );
-magick_ai_core_smoke_assert( $proposal_id === (string) ( $detail['proposal_id'] ?? '' ), 'proposal detail endpoint returns created proposal' );
-
 $missing_detail = magick_ai_core_smoke_rest_result( 'GET', '/magick-ai-core/v1/proposals/missing-smoke-proposal' );
 magick_ai_core_smoke_assert( 404 === (int) $missing_detail['status'], 'proposal detail endpoint returns 404 for missing proposal' );
-
-$pending_preflight = magick_ai_core_smoke_rest_result( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/commit-preflight' );
-magick_ai_core_smoke_assert( 409 === (int) $pending_preflight['status'], 'commit preflight fails for pending proposal' );
-
-$approved = magick_ai_core_smoke_rest(
-	'POST',
-	'/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/approve',
-	array(
-		'note' => 'Smoke approval.',
-	)
-);
-
-magick_ai_core_smoke_assert( 'approved' === (string) ( $approved['status'] ?? '' ), 'proposal approved through REST' );
-
-$preflight = magick_ai_core_smoke_rest( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/commit-preflight' );
-magick_ai_core_smoke_assert( false === (bool) ( $preflight['commit_execution'] ?? true ), 'commit preflight does not execute ability' );
-magick_ai_core_smoke_assert( true === (bool) ( $preflight['approval_context']['approval_commit_authorized'] ?? false ), 'commit preflight returns approval authorization context' );
-magick_ai_core_smoke_assert( 'approved_commit' === (string) ( $preflight['approval_context']['confirmation_state'] ?? '' ), 'commit preflight returns approved_commit state' );
 
 $legacy_preflight = magick_ai_core_smoke_rest_result(
 	'POST',
@@ -252,7 +315,7 @@ $second = magick_ai_core_smoke_rest(
 	'POST',
 	'/magick-ai-core/v1/proposals',
 	array(
-		'ability_id' => $ability_id,
+		'ability_id' => 'magick-ai/create-draft',
 		'title'      => 'Smoke rejection proposal',
 		'summary'    => 'Created by real WordPress smoke test.',
 	)

@@ -98,7 +98,7 @@ Response `200`:
   "items": [
     {
       "proposal_id": "uuid",
-      "ability_id": "magick-ai/site-info",
+      "ability_id": "magick-ai/create-draft",
       "status": "pending",
       "title": "Smoke proposal",
       "summary": "Reviewable operation summary.",
@@ -152,7 +152,7 @@ Request fields:
 
 | Name | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `ability_id` | string | yes | Must be a namespaced ability id containing `/`. |
+| `ability_id` | string | yes | Must be a namespaced, currently discoverable ability id. Planning labels such as `content/draft-preview` are rejected because they are not runtime ability ids. |
 | `title` | string | no | Human-readable title. |
 | `summary` | string | no | Human-readable summary. |
 | `input` | object | no | Target ability input or caller intent. |
@@ -166,6 +166,7 @@ Errors:
 | Code | HTTP | Meaning |
 | --- | --- | --- |
 | `magick_ai_core_invalid_ability_id` | `400` | Missing or invalid namespaced `ability_id`. |
+| `magick_ai_core_ability_not_available` | `404` | Target ability id is not currently discoverable. |
 
 Audit event:
 

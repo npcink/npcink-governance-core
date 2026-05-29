@@ -110,7 +110,11 @@ final class Plugin {
 	 */
 	public function register_rest_routes(): void {
 		( new Capabilities_Controller( $this->ability_adapter(), $this->audit_repository() ) )->register_routes();
-		( new Proposals_Controller( $this->proposal_service(), $this->proposal_repository(), $this->commit_preflight_service() ) )->register_routes();
+		( new Proposals_Controller(
+			$this->proposal_service(),
+			$this->proposal_repository(),
+			$this->commit_preflight_service()
+		) )->register_routes();
 		( new Audit_Controller( $this->audit_repository() ) )->register_routes();
 	}
 
@@ -160,7 +164,11 @@ final class Plugin {
 	 */
 	public function proposal_service(): Proposal_Service {
 		if ( null === $this->proposal_service ) {
-			$this->proposal_service = new Proposal_Service( $this->proposal_repository(), $this->audit_repository() );
+			$this->proposal_service = new Proposal_Service(
+				$this->proposal_repository(),
+				$this->ability_adapter(),
+				$this->audit_repository()
+			);
 		}
 
 		return $this->proposal_service;

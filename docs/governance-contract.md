@@ -22,7 +22,9 @@ writes. Commit execution is intentionally contract-first follow-up work.
 
 Required fields:
 
-- `ability_id`: the target WordPress ability id.
+- `ability_id`: the target WordPress ability id. It must be a real,
+  currently discoverable ability id from ability intake, not a planning label
+  such as `content/draft-preview`.
 - `input`: caller-supplied structured input.
 
 Optional fields:
@@ -49,6 +51,10 @@ Allowed MVP statuses:
 
 Write and destructive commits must fail closed unless the commit request carries
 host approval context created by Core.
+
+Proposal creation validates that the target ability is currently discoverable.
+Commit preflight repeats discovery against the stored real `ability_id` and
+fails closed if that ability disappeared after approval.
 
 The new Core uses approval-commit terminology. It must not reintroduce
 `confirm_token`, `write_confirmed`, or other legacy confirmation parameters.

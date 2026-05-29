@@ -83,5 +83,11 @@ When no ability source exists, Core should report:
 - `available`: `false`
 - `message`: human-readable missing dependency text
 
-This is not a fatal plugin condition. Core can still record proposals and audit
-events while ability providers are installed later.
+This is not a fatal plugin activation condition. Core can still list governance
+state and audit missing-provider diagnostics while ability providers are
+installed later.
+
+Proposal creation is stricter: it must use a real, currently discoverable
+`ability_id`. Core must reject proposal creation when the target ability is not
+available, because Agent/MCP entry must not let planning labels or stale channel
+tool names become governance records.
