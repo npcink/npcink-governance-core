@@ -11,11 +11,16 @@ Every new AI development session should start with:
    - `docs/product-positioning.md`
    - `docs/architecture.md`
    - `docs/governance-contract.md`
+   - `docs/rest-api-contract.md`
+   - `docs/database-schema.md`
+   - `docs/security-model.md`
    - `docs/ability-intake-contract.md`
    - `docs/approval-commit-contract.md`
    - `docs/development-workflow.md`
    - `docs/testing-strategy.md`
    - `docs/next-stage-plan.md`
+   - `docs/decisions/ADR-001-rebuild-core-as-governance-layer.md`
+   - `docs/decisions/ADR-002-no-workflow-runtime-in-core.md`
 5. Briefly report the current module, relevant boundary, and intended focused
    gate before editing.
 
@@ -107,4 +112,3 @@ Before final response:
 - update `.sisyphus/session-breadcrumb.md` when the session changes project
   direction or leaves important next steps;
 - report changed files, commit hash, and verification results.
-

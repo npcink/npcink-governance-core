@@ -91,6 +91,52 @@ magick_ai_core_assert( false !== strpos( $governance, 'proposal.approved' ), 'Go
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.rejected' ), 'Governance contract records proposal.rejected event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'must not reintroduce' ), 'Governance contract rejects legacy confirmation parameters.' );
 
+$rest_contract = magick_ai_core_read( $root . '/docs/rest-api-contract.md' );
+foreach (
+	array(
+		'GET /capabilities',
+		'POST /proposals',
+		'POST /proposals/{proposal_id}/approve',
+		'POST /proposals/{proposal_id}/reject',
+		'GET /audit',
+		'magick_ai_core_invalid_ability_id',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $rest_contract, $required ), 'REST API contract contains required text: ' . $required );
+}
+
+$database_schema = magick_ai_core_read( $root . '/docs/database-schema.md' );
+foreach (
+	array(
+		'{prefix}magick_ai_core_proposals',
+		'{prefix}magick_ai_core_audit_log',
+		'pending',
+		'approved',
+		'rejected',
+		'proposal.created',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $database_schema, $required ), 'Database schema contains required text: ' . $required );
+}
+
+$security_model = magick_ai_core_read( $root . '/docs/security-model.md' );
+foreach (
+	array(
+		"current_user_can( 'manage_options' )",
+		'Final write or destructive execution',
+		'confirm_token',
+		'write_confirmed',
+		'magick_ai_abilities_get_registered()',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $security_model, $required ), 'Security model contains required text: ' . $required );
+}
+
+$adr_001 = magick_ai_core_read( $root . '/docs/decisions/ADR-001-rebuild-core-as-governance-layer.md' );
+$adr_002 = magick_ai_core_read( $root . '/docs/decisions/ADR-002-no-workflow-runtime-in-core.md' );
+magick_ai_core_assert( false !== strpos( $adr_001, 'Create a new standalone `magick-ai-core` plugin' ), 'ADR-001 records rebuild decision.' );
+magick_ai_core_assert( false !== strpos( $adr_002, '`magick-ai-core` must not implement a workflow runtime' ), 'ADR-002 bans workflow runtime ownership.' );
+
 $ability_adapter = magick_ai_core_read( $root . '/includes/Capabilities/Ability_Registry_Adapter.php' );
 magick_ai_core_assert( false !== strpos( $ability_adapter, 'magick_ai_abilities_get_registered' ), 'Ability intake prefers magick-ai-abilities public API.' );
 magick_ai_core_assert( false !== strpos( $ability_adapter, 'wp_get_abilities' ), 'Ability intake falls back to WordPress Abilities API.' );

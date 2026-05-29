@@ -53,11 +53,16 @@ Read the project handoff docs before starting a new implementation session:
 - [Product Positioning](docs/product-positioning.md)
 - [Architecture](docs/architecture.md)
 - [Governance Contract](docs/governance-contract.md)
+- [REST API Contract](docs/rest-api-contract.md)
+- [Database Schema](docs/database-schema.md)
+- [Security Model](docs/security-model.md)
 - [Ability Intake Contract](docs/ability-intake-contract.md)
 - [Approval Commit Contract](docs/approval-commit-contract.md)
 - [Development Workflow](docs/development-workflow.md)
 - [Testing Strategy](docs/testing-strategy.md)
 - [Next Stage Plan](docs/next-stage-plan.md)
+- [ADR-001: Rebuild Core As A Governance Layer](docs/decisions/ADR-001-rebuild-core-as-governance-layer.md)
+- [ADR-002: No Workflow Runtime In Core](docs/decisions/ADR-002-no-workflow-runtime-in-core.md)
 
 Run the local static test suite:
 
