@@ -71,6 +71,11 @@ Read the project handoff docs before starting a new implementation session:
 - [ADR-001: Rebuild Core As A Governance Layer](docs/decisions/ADR-001-rebuild-core-as-governance-layer.md)
 - [ADR-002: No Workflow Runtime In Core](docs/decisions/ADR-002-no-workflow-runtime-in-core.md)
 
+External agent clients can start from the
+[OpenClaw governance adapter example](examples/openclaw-governance-adapter/README.md).
+That example calls Core REST governance routes only; it is not an MCP runtime
+or final write executor.
+
 Run the local static test suite:
 
 ```bash

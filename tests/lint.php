@@ -16,7 +16,7 @@ $root = dirname( __DIR__ );
 function magick_ai_core_lint_files( string $root ): array {
 	$files = array( $root . '/magick-ai-core.php' );
 
-	foreach ( array( 'includes', 'tests' ) as $directory ) {
+	foreach ( array( 'includes', 'tests', 'examples' ) as $directory ) {
 		$path = $root . '/' . $directory;
 		if ( ! is_dir( $path ) ) {
 			continue;
@@ -59,4 +59,3 @@ if ( ! empty( $failures ) ) {
 }
 
 echo "PHP lint: ok\n";
-

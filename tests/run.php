@@ -198,6 +198,38 @@ magick_ai_core_assert( false !== strpos( $next_stage_plan, 'contract documented;
 $readme = magick_ai_core_read( $root . '/README.md' );
 magick_ai_core_assert( false !== strpos( $readme, 'Agent MCP Entry Contract' ), 'README links Agent MCP Entry Contract.' );
 magick_ai_core_assert( false !== strpos( $readme, 'App Auth Scope Policy' ), 'README links App Auth Scope Policy.' );
+magick_ai_core_assert( false !== strpos( $readme, 'OpenClaw governance adapter example' ), 'README links OpenClaw governance adapter example.' );
+
+$openclaw_adapter_readme = magick_ai_core_read( $root . '/examples/openclaw-governance-adapter/README.md' );
+foreach (
+	array(
+		'not an MCP server',
+		'GET /wp-json/magick-ai-core/v1/capabilities',
+		'POST /wp-json/magick-ai-core/v1/proposals',
+		'MAGICK_AI_CORE_APPLICATION_PASSWORD',
+		'Generic adapters should not approve proposals by default',
+		'commit_execution=false',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $openclaw_adapter_readme, $required ), 'OpenClaw adapter README contains required text: ' . $required );
+}
+
+$openclaw_adapter = magick_ai_core_read( $root . '/examples/openclaw-governance-adapter/openclaw-governance-adapter.php' );
+foreach (
+	array(
+		'capabilities',
+		'create-proposal',
+		'commit-preflight',
+		'MAGICK_AI_CORE_BASE_URL',
+		'MAGICK_AI_CORE_APPLICATION_PASSWORD',
+		'wp-json/magick-ai-core/v1',
+		'openclaw-governance-adapter-example',
+		'This adapter intentionally does not approve proposals.',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $openclaw_adapter, $required ), 'OpenClaw adapter script contains required text: ' . $required );
+}
+magick_ai_core_assert( false === strpos( $openclaw_adapter, 'proposals/{proposal_id}/approve' ), 'OpenClaw adapter script does not implement approval.' );
 
 $adr_001 = magick_ai_core_read( $root . '/docs/decisions/ADR-001-rebuild-core-as-governance-layer.md' );
 $adr_002 = magick_ai_core_read( $root . '/docs/decisions/ADR-002-no-workflow-runtime-in-core.md' );

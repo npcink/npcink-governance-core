@@ -1,5 +1,23 @@
 # Session Breadcrumb
 
+## 2026-05-29 — OpenClaw governance adapter example added
+
+- **Module**: external agent governance adapter example
+- **Status**: Added a minimal CLI example for OpenClaw-like clients to call
+  Core governance REST routes without making Core an MCP runtime.
+- **Completed**:
+  - Added `examples/openclaw-governance-adapter/` with commands for capability
+    discovery, proposal creation, and commit preflight.
+  - Kept approval, MCP tools, natural-language routing, workflow runtime, and
+    final WordPress ability execution out of the example.
+  - Documented WordPress Application Password use through environment variables
+    only.
+  - Extended static contracts and lint coverage to include the example.
+- **Next recommended step**:
+  - Use this adapter only for PoC work while Core still requires
+    `manage_options`. Production adapter access should wait for app-key scope
+    and rate-limit implementation.
+
 ## 2026-05-29 — Agent/MCP entry contracts documented
 
 - **Module**: agent and MCP governance entry contracts

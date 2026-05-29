@@ -129,7 +129,7 @@ Adapters must not:
 
 ## Minimum First Integration
 
-The first useful integration should be documentation and auth-policy first:
+The first useful integration is a thin external governance adapter:
 
 1. Keep WordPress/MCP Adapter outside Core.
 2. Use existing Core REST routes for governance.
@@ -138,3 +138,8 @@ The first useful integration should be documentation and auth-policy first:
 4. Do not add a final commit execution route until idempotency and failure
    handling are specified.
 
+The reference CLI example lives at
+`examples/openclaw-governance-adapter/`. It demonstrates capabilities
+discovery, proposal creation, and commit preflight over HTTP. It intentionally
+does not expose MCP tools, approve proposals, execute abilities, or route
+natural language tasks.

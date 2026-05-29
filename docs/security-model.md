@@ -122,3 +122,10 @@ Core must not:
 Local WordPress smoke credentials are local-only and must not be committed.
 Repository docs may mention the local username when useful, but the password
 must remain redacted in memory notes and outside repository files.
+
+## External Adapter PoC Credentials
+
+The OpenClaw governance adapter example uses WordPress Application Password
+authentication through environment variables. Those values are local operator
+secrets and must not be committed, written into proposal payloads, or copied
+into audit metadata.
