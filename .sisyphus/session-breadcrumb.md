@@ -1,5 +1,22 @@
 # Session Breadcrumb
 
+## 2026-05-29 — Strategy and product split documented
+
+- **Module**: product strategy / governance boundary
+- **Status**: Documented the planning conclusion from the WordPress 7.0
+  research review and the current Core positioning.
+- **Completed**:
+  - Added `docs/strategy-and-product-split.md`.
+  - Linked the strategy guide from `README.md`, product positioning, and the
+    next-stage plan.
+  - Clarified that Core remains the governance kernel while abilities and
+    product plugins own reusable capabilities and market-specific workflows.
+- **Next recommended step**:
+  - Continue implementation in this order: proposal detail endpoint, audit
+    filters, commit preflight, minimal admin approval UI, then app auth/scope
+    policy. Keep China-toolbox and content workflows outside Core as product
+    plugins that consume Core governance.
+
 ## 2026-05-29 — Magick AI Core MVP smoke baseline
 
 - **Module**: core scaffold / governance MVP / WordPress smoke
@@ -28,4 +45,3 @@
     commit preflight contract, minimal admin approval UI, then app auth/scope
     policy. Do not add final commit execution until preflight and idempotency
     contracts are written and tested.
-

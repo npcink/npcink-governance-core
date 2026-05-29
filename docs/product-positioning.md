@@ -37,7 +37,11 @@ Magick AI Core does not own:
 | `magick-ai-core` | Governance, proposal records, approval boundaries, audit logs, and host policy. |
 | `magick-ai-abilities` | Reusable WordPress Abilities API definitions, schemas, callbacks, and dry-run previews. |
 | `magick-ai-content-assistant` | Article, media, and comment product UX that consumes Core governance. |
+| Toolbox or market-specific product plugins | Domestic environment fixes, search/index operations, WeChat integrations, CDN/storage workflows, compliance helpers, and other product UX that consumes Core governance. |
 | Connector plugins | Provider credentials and WordPress AI Client provider registration. |
+
+See [Strategy And Product Split](strategy-and-product-split.md) for the
+current planning conclusion from the WordPress 7.0 and China-market research.
 
 ## Design Rule
 
@@ -46,4 +50,3 @@ it may belong in Core.
 
 If a feature creates content, chooses a model, schedules batch work, or owns a
 domain workflow, it belongs outside Core.
-

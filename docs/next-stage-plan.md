@@ -29,6 +29,22 @@ Not implemented:
 - scope/rate-limit policy;
 - admin approval UI beyond a read-only overview.
 
+## Strategic Product Boundary
+
+The next stage should keep Core focused on the governance kernel. WordPress 7.0
+research and the current product split both point to the same plan:
+
+- `magick-ai-core` governs AI-assisted WordPress operations through proposals,
+  approval boundaries, commit preflight, and audit.
+- `magick-ai-abilities` and provider plugins define reusable abilities and
+  previews.
+- product plugins own commercial workflows, including Content Assistant and a
+  possible China-market toolbox product.
+
+See [Strategy And Product Split](strategy-and-product-split.md). Do not move
+toolbox modules, content generation, provider configuration, or workflow runtime
+into Core while executing this plan.
+
 ## Recommended Order
 
 ### 1. Proposal Detail Endpoint
@@ -113,4 +129,3 @@ Stop and write a boundary note if a task tries to add:
 - Agent Gateway or MCP surfaces;
 - direct provider credential storage;
 - final commit execution before preflight and idempotency contracts exist.
-
