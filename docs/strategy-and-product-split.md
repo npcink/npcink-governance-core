@@ -22,6 +22,10 @@ The planning input included:
   and approval-commit contracts;
 - ADR-001 and ADR-002, which define Core as a governance layer and prohibit
   workflow runtime ownership;
+- the Core governance handoff guide in
+  `/Users/muze/gitee/magick-ai-abilities/docs/core-governance-handoff-guide.md`,
+  which maps ready first-party abilities to Core proposal use without creating
+  runtime aliases;
 - WordPress 7.0 research under `/Users/muze/gitee/pdf/原始资料/7.0/`, especially
   the reports on AI Client, Connectors API, Abilities API, MCP, agentic
   WordPress operations, and China-market WordPress site needs.
@@ -156,6 +160,9 @@ Use these tests before adding anything to Core:
 5. Does this improve a product workflow such as China toolbox operations,
    Content Assistant, SEO, commerce, or media?
    If yes, build it as a product plugin that consumes Core governance.
+6. Does this add a short-name ability alias or planning-label router?
+   If yes, keep it out of runtime code and document the real `ability_id`
+   handoff instead.
 
 ## Stop Conditions
 
@@ -166,6 +173,7 @@ Stop and document a boundary issue if a task tries to add any of these to Core:
 - provider credential storage;
 - model router, prompt library, or preset manager;
 - workflow runtime, queues, retries, leases, or batch UI;
+- short-name ability alias mapping or natural-language task routing;
 - Agent Gateway or MCP runtime;
 - direct WordPress write execution before commit preflight and idempotency are
   specified and tested.

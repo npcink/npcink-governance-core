@@ -37,6 +37,24 @@ Ability intake is read-only. It must not:
 - infer workflow ownership;
 - approve or commit writes.
 
+## Core Governance Handoff
+
+Core treats
+`/Users/muze/gitee/magick-ai-abilities/docs/core-governance-handoff-guide.md`
+as the documentation-only handoff guide for first-party abilities that are
+ready for governance proposals.
+
+Proposal, approval, preflight, and audit records must use real WordPress
+Abilities API ids, such as `magick-ai/site-info` or `magick-ai/create-draft`.
+Planning labels such as `site/read`, `content/draft-preview`, and
+`comment/moderation-preview` are documentation labels only. Core must not add a
+runtime short-name mapping layer for them.
+
+The handoff guide may identify deferred operation surfaces, such as CDN purge
+preview or site-level backup restore preflight. Deferred surfaces are not Core
+features; they require a provider or product plugin ability contract before Core
+can govern them.
+
 ## Shared Replay Truth
 
 Consumer-side workflow checks should prefer

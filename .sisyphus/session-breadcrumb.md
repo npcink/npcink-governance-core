@@ -1,5 +1,24 @@
 # Session Breadcrumb
 
+## 2026-05-29 — Core and Abilities handoff documented
+
+- **Module**: ability governance handoff documentation
+- **Status**: The cross-repository handoff rules between
+  `magick-ai-abilities` and Core are documented.
+- **Completed**:
+  - Added the Abilities-side Core Governance Handoff Guide.
+  - Linked Core ability intake to the handoff guide.
+  - Clarified that Core proposal, approval, preflight, and audit records use
+    real WordPress Abilities API ids, not planning-label aliases such as
+    `site/read`.
+  - Marked CDN purge preview and site-level backup restore preflight as deferred
+    operations/toolbox candidates, not current Core features.
+- **Next recommended step**:
+  - Keep Core focused on governance hardening. Use the handoff guide when
+    selecting first ability-backed proposal scenarios, and do not add runtime
+    short-name mapping, workflow routing, CDN execution, or backup execution to
+    Core.
+
 ## 2026-05-29 — Core governance loop implementation
 
 - **Module**: core governance REST/admin
