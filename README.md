@@ -15,6 +15,7 @@ This plugin owns:
 - proposal records for AI-assisted operations;
 - approval and commit governance boundaries;
 - audit logs for requested, approved, rejected, and committed operations;
+- scoped app-key access for external governance clients;
 - minimal admin and REST surfaces for governance.
 
 This plugin does not own:
@@ -33,9 +34,11 @@ This plugin does not own:
 
 ## MVP REST Surface
 
-All MVP routes require `manage_options`.
+MVP routes require `manage_options` or a scoped app key where documented.
 
 - `GET /wp-json/magick-ai-core/v1/capabilities`
+- `GET /wp-json/magick-ai-core/v1/apps`
+- `POST /wp-json/magick-ai-core/v1/apps`
 - `GET /wp-json/magick-ai-core/v1/proposals`
 - `GET /wp-json/magick-ai-core/v1/proposals/{proposal_id}`
 - `POST /wp-json/magick-ai-core/v1/proposals`

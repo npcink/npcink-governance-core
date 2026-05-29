@@ -12,6 +12,10 @@ Status: MVP architecture.
 | `Proposal_Service` | Proposal creation and audit coordination. |
 | `Commit_Preflight_Service` | Approval-commit readiness checks without executing abilities. |
 | `Audit_Log_Repository` | Append-only event records. |
+| `App_Key_Repository` | Scoped app identity and hashed secret storage. |
+| `App_Rate_Limiter` | Fixed-window app rate counters by route family. |
+| `App_Authenticator` | WordPress admin or scoped app-key REST authorization. |
+| `Request_Context` | Request-scoped app attribution for proposals and audit events. |
 | REST controllers | Minimal admin-facing REST API. |
 | `Admin_Page` | Minimal WordPress Tools screen for pending proposal review and decisions. |
 
@@ -21,6 +25,8 @@ MVP custom tables:
 
 - `{prefix}magick_ai_core_proposals`
 - `{prefix}magick_ai_core_audit_log`
+- `{prefix}magick_ai_core_app_keys`
+- `{prefix}magick_ai_core_app_rate_limits`
 
 The schema is intentionally small. The first version favors clear lifecycle
 records over generalized workflow state.

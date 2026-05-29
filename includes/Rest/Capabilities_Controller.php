@@ -9,6 +9,7 @@ namespace MagickAI\Core\Rest;
 
 use MagickAI\Core\Audit\Audit_Log_Repository;
 use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
+use MagickAI\Core\Security\App_Authenticator;
 use WP_REST_Response;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -36,14 +37,23 @@ final class Capabilities_Controller {
 	private $audit;
 
 	/**
+	 * Authenticator.
+	 *
+	 * @var App_Authenticator
+	 */
+	private $auth;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Ability_Registry_Adapter $abilities Ability adapter.
 	 * @param Audit_Log_Repository     $audit Audit repository.
+	 * @param App_Authenticator        $auth Authenticator.
 	 */
-	public function __construct( Ability_Registry_Adapter $abilities, Audit_Log_Repository $audit ) {
+	public function __construct( Ability_Registry_Adapter $abilities, Audit_Log_Repository $audit, App_Authenticator $auth ) {
 		$this->abilities = $abilities;
 		$this->audit     = $audit;
+		$this->auth      = $auth;
 	}
 
 	/**
@@ -59,7 +69,7 @@ final class Capabilities_Controller {
 				array(
 					'methods'             => 'GET',
 					'callback'            => array( $this, 'list_capabilities' ),
-					'permission_callback' => array( Rest_Permissions::class, 'can_manage' ),
+					'permission_callback' => array( $this->auth, 'can_read_capabilities' ),
 				),
 			)
 		);
@@ -84,4 +94,3 @@ final class Capabilities_Controller {
 		return new WP_REST_Response( $result, 200 );
 	}
 }
-

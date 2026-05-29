@@ -9,6 +9,7 @@ namespace MagickAI\Core\Governance;
 
 use MagickAI\Core\Audit\Audit_Log_Repository;
 use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
+use MagickAI\Core\Security\Request_Context;
 use WP_Error;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -69,7 +70,7 @@ final class Commit_Preflight_Service {
 			);
 		}
 
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! current_user_can( 'manage_options' ) && ! Request_Context::has_scope( 'commit:preflight' ) ) {
 			return new WP_Error(
 				'magick_ai_core_preflight_forbidden',
 				__( 'You do not have permission to preflight this proposal.', 'magick-ai-core' ),

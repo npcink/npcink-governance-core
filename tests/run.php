@@ -73,6 +73,7 @@ foreach (
 		'WordPress AI operation governance layer',
 		'It does not generate content',
 		'GET /wp-json/magick-ai-core/v1/capabilities',
+		'POST /wp-json/magick-ai-core/v1/apps',
 		'POST /wp-json/magick-ai-core/v1/proposals',
 		'GET /wp-json/magick-ai-core/v1/proposals/{proposal_id}',
 		'POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/approve',
@@ -107,6 +108,10 @@ foreach (
 		'POST /proposals/{proposal_id}/reject',
 		'POST /proposals/{proposal_id}/commit-preflight',
 		'GET /audit',
+		'POST /apps',
+		'Authorization: Bearer mai_core.<key_id>.<secret>',
+		'magick_ai_core_app_scope_forbidden',
+		'magick_ai_core_app_rate_limited',
 		'magick_ai_core_invalid_ability_id',
 		'magick_ai_core_ability_not_available',
 		'magick_ai_core_legacy_confirmation_rejected',
@@ -136,9 +141,13 @@ foreach (
 	array(
 		'{prefix}magick_ai_core_proposals',
 		'{prefix}magick_ai_core_audit_log',
+		'{prefix}magick_ai_core_app_keys',
+		'{prefix}magick_ai_core_app_rate_limits',
 		'pending',
 		'approved',
 		'rejected',
+		'app.created',
+		'app.rate_limited',
 		'proposal.created',
 		'proposal.listed',
 		'proposal.viewed',
@@ -157,6 +166,8 @@ foreach (
 		'write_confirmed',
 		'magick_ai_abilities_get_registered()',
 		'App Auth Scope Policy',
+		'Authorization: Bearer mai_core.<key_id>.<secret>',
+		'raw app secrets',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $security_model, $required ), 'Security model contains required text: ' . $required );
@@ -180,8 +191,11 @@ $app_auth_scope = magick_ai_core_read( $root . '/docs/app-auth-scope-policy.md' 
 foreach (
 	array(
 		'current_user_can( \'manage_options\' )',
+		'minimal implementation active',
 		'app_id',
 		'secret_hash',
+		'Authorization: Bearer mai_core.<key_id>.<secret>',
+		'app.rate_limited',
 		'capabilities:read',
 		'proposals:create',
 		'commit:preflight',
@@ -193,7 +207,8 @@ foreach (
 
 $next_stage_plan = magick_ai_core_read( $root . '/docs/next-stage-plan.md' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Agent/MCP Governance Entry' ), 'Next stage plan includes Agent/MCP governance entry phase.' );
-magick_ai_core_assert( false !== strpos( $next_stage_plan, 'contract documented; implementation not started' ), 'Next stage plan marks app and agent contracts as documented but not implemented.' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'minimal implementation active' ), 'Next stage plan marks app auth as implemented minimally.' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'contract documented; adapter example available' ), 'Next stage plan marks agent contract and adapter example status.' );
 
 $readme = magick_ai_core_read( $root . '/README.md' );
 magick_ai_core_assert( false !== strpos( $readme, 'Agent MCP Entry Contract' ), 'README links Agent MCP Entry Contract.' );
@@ -221,6 +236,7 @@ foreach (
 		'create-proposal',
 		'commit-preflight',
 		'MAGICK_AI_CORE_BASE_URL',
+		'MAGICK_AI_CORE_APP_TOKEN',
 		'MAGICK_AI_CORE_APPLICATION_PASSWORD',
 		'wp-json/magick-ai-core/v1',
 		'openclaw-governance-adapter-example',
@@ -230,6 +246,47 @@ foreach (
 	magick_ai_core_assert( false !== strpos( $openclaw_adapter, $required ), 'OpenClaw adapter script contains required text: ' . $required );
 }
 magick_ai_core_assert( false === strpos( $openclaw_adapter, 'proposals/{proposal_id}/approve' ), 'OpenClaw adapter script does not implement approval.' );
+
+$app_key_repository = magick_ai_core_read( $root . '/includes/Security/App_Key_Repository.php' );
+foreach (
+	array(
+		'magick_ai_core_app_keys',
+		'secret_hash',
+		'password_hash',
+		'password_verify',
+		'capabilities:read',
+		'proposals:create',
+		'commit:preflight',
+		'mai_core.',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $app_key_repository, $required ), 'App key repository contains required text: ' . $required );
+}
+magick_ai_core_assert( false === strpos( $app_key_repository, "'secret' => " . '$secret' ), 'App key repository does not persist raw app secret in DB record.' );
+
+$app_rate_limiter = magick_ai_core_read( $root . '/includes/Security/App_Rate_Limiter.php' );
+magick_ai_core_assert( false !== strpos( $app_rate_limiter, 'magick_ai_core_app_rate_limits' ), 'App rate limiter stores fixed-window counters.' );
+magick_ai_core_assert( false !== strpos( $app_rate_limiter, 'app_route_window' ), 'App rate limiter has unique app route window key.' );
+
+$app_authenticator = magick_ai_core_read( $root . '/includes/Security/App_Authenticator.php' );
+foreach (
+	array(
+		'magick_ai_core_app_auth_missing',
+		'magick_ai_core_app_scope_forbidden',
+		'magick_ai_core_app_rate_limited',
+		'can_create_proposals',
+		'can_commit_preflight',
+		'app.scope_denied',
+		'app.rate_limited',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $app_authenticator, $required ), 'App authenticator contains required text: ' . $required );
+}
+
+$apps_controller = magick_ai_core_read( $root . '/includes/Rest/Apps_Controller.php' );
+magick_ai_core_assert( false !== strpos( $apps_controller, "'/apps'" ), 'Apps REST route is registered.' );
+magick_ai_core_assert( false !== strpos( $apps_controller, 'app.created' ), 'Apps REST route audits app creation.' );
+magick_ai_core_assert( false !== strpos( $apps_controller, 'can_manage' ), 'Apps REST route remains admin-only.' );
 
 $adr_001 = magick_ai_core_read( $root . '/docs/decisions/ADR-001-rebuild-core-as-governance-layer.md' );
 $adr_002 = magick_ai_core_read( $root . '/docs/decisions/ADR-002-no-workflow-runtime-in-core.md' );
@@ -267,6 +324,9 @@ magick_ai_core_assert( false !== strpos( $smoke_wp, 'content/draft-preview' ), '
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/create-draft' ), 'WordPress smoke validates draft proposal governance.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/set-post-seo-meta' ), 'WordPress smoke validates SEO proposal governance.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/approve-comment' ), 'WordPress smoke validates comment moderation proposal governance.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'app-authenticated proposal stores app attribution' ), 'WordPress smoke validates app proposal attribution.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'app-authenticated audit read is denied without audit scope' ), 'WordPress smoke validates denied app audit scope.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'app rate limit returns 429 after fixed window is exhausted' ), 'WordPress smoke validates app rate limiting.' );
 
 $capabilities_controller = magick_ai_core_read( $root . '/includes/Rest/Capabilities_Controller.php' );
 magick_ai_core_assert( false !== strpos( $capabilities_controller, "'/capabilities'" ), 'Capabilities REST route is registered.' );

@@ -10,6 +10,7 @@ namespace MagickAI\Core\Rest;
 use MagickAI\Core\Governance\Commit_Preflight_Service;
 use MagickAI\Core\Governance\Proposal_Repository;
 use MagickAI\Core\Governance\Proposal_Service;
+use MagickAI\Core\Security\App_Authenticator;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -45,20 +46,30 @@ final class Proposals_Controller {
 	private $preflight;
 
 	/**
+	 * Authenticator.
+	 *
+	 * @var App_Authenticator
+	 */
+	private $auth;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Proposal_Service          $service Proposal service.
 	 * @param Proposal_Repository       $repository Proposal repository.
 	 * @param Commit_Preflight_Service $preflight Commit preflight service.
+	 * @param App_Authenticator        $auth Authenticator.
 	 */
 	public function __construct(
 		Proposal_Service $service,
 		Proposal_Repository $repository,
-		Commit_Preflight_Service $preflight
+		Commit_Preflight_Service $preflight,
+		App_Authenticator $auth
 	) {
 		$this->service    = $service;
 		$this->repository = $repository;
 		$this->preflight  = $preflight;
+		$this->auth       = $auth;
 	}
 
 	/**
@@ -74,7 +85,7 @@ final class Proposals_Controller {
 				array(
 					'methods'             => 'GET',
 					'callback'            => array( $this, 'list_proposals' ),
-					'permission_callback' => array( Rest_Permissions::class, 'can_manage' ),
+					'permission_callback' => array( $this->auth, 'can_read_proposals' ),
 					'args'                => array(
 						'limit' => array(
 							'type'              => 'integer',
@@ -86,7 +97,7 @@ final class Proposals_Controller {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'create_proposal' ),
-					'permission_callback' => array( Rest_Permissions::class, 'can_manage' ),
+					'permission_callback' => array( $this->auth, 'can_create_proposals' ),
 					'args'                => array(
 						'ability_id' => array(
 							'type'              => 'string',
@@ -127,7 +138,7 @@ final class Proposals_Controller {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'approve_proposal' ),
-					'permission_callback' => array( Rest_Permissions::class, 'can_manage' ),
+					'permission_callback' => array( $this->auth, 'can_approve_proposals' ),
 					'args'                => array(
 						'proposal_id' => array(
 							'type'              => 'string',
@@ -151,7 +162,7 @@ final class Proposals_Controller {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'reject_proposal' ),
-					'permission_callback' => array( Rest_Permissions::class, 'can_manage' ),
+					'permission_callback' => array( $this->auth, 'can_reject_proposals' ),
 					'args'                => array(
 						'proposal_id' => array(
 							'type'              => 'string',
@@ -175,7 +186,7 @@ final class Proposals_Controller {
 				array(
 					'methods'             => 'GET',
 					'callback'            => array( $this, 'get_proposal' ),
-					'permission_callback' => array( Rest_Permissions::class, 'can_manage' ),
+					'permission_callback' => array( $this->auth, 'can_read_proposals' ),
 					'args'                => array(
 						'proposal_id' => array(
 							'type'              => 'string',
@@ -194,7 +205,7 @@ final class Proposals_Controller {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'commit_preflight' ),
-					'permission_callback' => array( Rest_Permissions::class, 'can_manage' ),
+					'permission_callback' => array( $this->auth, 'can_commit_preflight' ),
 					'args'                => array(
 						'proposal_id' => array(
 							'type'              => 'string',

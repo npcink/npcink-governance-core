@@ -17,18 +17,19 @@ Implemented:
 - proposal approve/reject;
 - audit list;
 - static contracts;
-- real WordPress smoke.
+- real WordPress smoke;
+- minimal app-key authentication, scopes, rate limiting, and app audit
+  attribution.
 
 Not implemented:
 
 - final commit execution;
-- app key authentication;
-- scope/rate-limit policy;
+- production app-key lifecycle UI;
+- app-key rotation, revocation UI, and expiry automation;
 
 Documented but not implemented:
 
 - Agent/MCP governance entry contract;
-- app auth, scope, and rate policy.
 
 ## Strategic Product Boundary
 
@@ -119,7 +120,7 @@ Acceptance:
 
 ### 5. App Auth, Scope, And Rate Policy
 
-Status: contract documented; implementation not started.
+Status: minimal implementation active.
 
 Goal: move beyond `manage_options`-only MVP.
 
@@ -130,11 +131,18 @@ Acceptance:
 - rate limits are stored in Core policy, not provider plugins;
 - all decisions emit audit events.
 
+Current implementation:
+
+- app keys are created by admin-only `POST /apps`;
+- raw secrets are returned once as bearer tokens;
+- default external adapter scopes exclude approval and audit read;
+- app-authenticated proposal and preflight events include app attribution.
+
 See [App Auth Scope Policy](app-auth-scope-policy.md).
 
 ### 6. Agent/MCP Governance Entry
 
-Status: contract documented; implementation not started.
+Status: contract documented; adapter example available.
 
 Goal: let WordPress, MCP adapters, Agent Gateway bridges, and product plugins
 consume Core governance without moving MCP runtime or channel projection into

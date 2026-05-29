@@ -1,14 +1,14 @@
 # App Auth Scope Policy
 
-Status: planning contract; not implemented.
+Status: minimal implementation active.
 
-Magick AI Core currently protects all REST routes with
-`current_user_can( 'manage_options' )`. Agent, MCP, product-plugin, and hosted
-adapter entry requires a scoped app identity model before Core accepts
-non-admin-user callers.
+Magick AI Core supports the original `current_user_can( 'manage_options' )`
+admin path and a minimal scoped app-key path for external governance clients.
+Agent, MCP, product-plugin, and hosted adapter entry must use scoped app
+identity when they are not operating as a WordPress administrator.
 
-This document defines the target policy. It does not add app keys, database
-tables, or route behavior yet.
+This is not an OAuth portal, MCP session system, provider credential store, or
+workflow runtime.
 
 ## Goals
 
@@ -32,7 +32,7 @@ Core app auth must not become:
 
 ## App Identity Model
 
-Future Core app identity should include:
+Core app identity includes:
 
 | Field | Purpose |
 | --- | --- |
@@ -40,9 +40,10 @@ Future Core app identity should include:
 | `app_label` | Human-readable admin label. |
 | `key_id` | Public key identifier for rotation and audit. |
 | `secret_hash` | Hash of the app secret. Never store raw app secrets. |
-| `status` | `active`, `revoked`, or `expired`. |
+| `status` | Currently `active`; `revoked` and `expired` are reserved states. |
 | `scopes` | Explicit allowed actions. |
-| `rate_policy` | Requests allowed per time window. |
+| `rate_limit` | Requests allowed per route-family window. |
+| `rate_window_seconds` | Fixed-window duration. |
 | `created_by` | WordPress user id that created the app identity. |
 | `created_at` | UTC creation time. |
 | `last_used_at` | Last successful authentication time. |
@@ -85,40 +86,46 @@ host policy that is explicitly documented.
 
 ## Rate Policy
 
-The first app-key implementation should support a simple fixed-window limit:
+The first app-key implementation supports a simple fixed-window limit:
 
 - per `app_id`;
 - per route family;
-- with a bounded default;
-- fail closed when the rate backend is unavailable.
+- bounded to a minimum one-minute window;
+- default `60` requests per `3600` seconds.
 
 Rate events should be auditable without storing secrets or raw request bodies.
+Rate limit denials emit `app.rate_limited`.
 
 ## Audit Attribution
 
-Every app-authenticated governance event should include:
+Every app-authenticated governance event includes `metadata.auth` with:
 
 - `app_id`;
 - `key_id` when available;
-- `actor_id` when a WordPress user is mapped;
 - `caller_type`, such as `mcp_adapter`, `agent_host`, `product_plugin`, or
   `internal`;
-- sanitized caller metadata;
-- scope decision result.
+- required `scope`;
+- `route_family`.
 
-The existing `actor_id` column can continue to hold WordPress user identity.
-If app attribution becomes durable first-class data, update
-`docs/database-schema.md` and `tests/run.php` before implementation.
+The existing `actor_id` column continues to hold WordPress user identity. Pure
+app-key requests normally record `actor_id=0` and app attribution in metadata.
+Proposal rows also copy the sanitized app auth context into `caller.auth`.
 
 ## Authentication Shape
 
-The first implementation may choose either signed requests or bearer-style app
-keys, but it must document the exact shape before code changes.
+The current implementation uses a bearer app token:
+
+```text
+Authorization: Bearer mai_core.<key_id>.<secret>
+```
+
+The same token may be sent as `X-Magick-AI-Core-App-Token` for clients that
+cannot set the `Authorization` header.
 
 Minimum requirements:
 
 - raw secret is shown once at creation and stored only as a hash;
-- inactive, expired, or revoked keys return `401`;
+- inactive, expired, revoked, or invalid keys return `401`;
 - missing scope returns `403`;
 - malformed requests return `400`;
 - rate-limit failures return `429`;
@@ -141,12 +148,11 @@ adapters.
 
 ## Implementation Gates
 
-Before app auth code is added:
+Current implementation gates:
 
-1. Freeze the database schema for app identities and rate counters.
-2. Update `docs/rest-api-contract.md` with authentication and error semantics.
-3. Update `docs/security-model.md` with storage, redaction, and capability
-   behavior.
-4. Add static contract tests for scopes and forbidden secret storage.
-5. Add WordPress smoke coverage for one app-authenticated proposal request.
-
+1. Database schema for app identities and rate counters is documented.
+2. REST authentication and error semantics are documented.
+3. Security storage and redaction behavior is documented.
+4. Static contract tests cover scopes and forbidden secret storage.
+5. WordPress smoke covers app-authenticated proposal creation, commit preflight,
+   denied approval, denied audit access, and rate limiting.

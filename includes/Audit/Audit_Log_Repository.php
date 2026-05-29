@@ -7,6 +7,8 @@
 
 namespace MagickAI\Core\Audit;
 
+use MagickAI\Core\Security\Request_Context;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -70,6 +72,10 @@ final class Audit_Log_Repository {
 
 		$event_id = function_exists( 'wp_generate_uuid4' ) ? wp_generate_uuid4() : uniqid( 'mai_', true );
 		$now      = current_time( 'mysql', true );
+		$auth     = Request_Context::audit_metadata();
+		if ( ! empty( $auth ) ) {
+			$metadata['auth'] = $auth;
+		}
 
 		$inserted = $wpdb->insert(
 			$this->table_name(),

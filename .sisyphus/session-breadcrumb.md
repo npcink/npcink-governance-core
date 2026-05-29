@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-05-29 — Minimal app-key governance entry implemented
+
+- **Module**: external app governance authorization
+- **Status**: Minimal app key, scope, fixed-window rate limit, and audit
+  attribution are implemented for Core REST governance routes.
+- **Completed**:
+  - Added app identity and rate-limit tables.
+  - Added admin-only `/apps` REST management for creating one-time bearer
+    tokens and listing app identities without secret material.
+  - Added scoped app authorization for capabilities, proposals, commit
+    preflight, and audit routes.
+  - Added default external adapter scopes that exclude approval and audit read.
+  - Added request-context attribution in proposal caller payloads and audit
+    metadata, plus scope-denied and rate-limited audit events.
+  - Updated docs, static contracts, and WordPress smoke coverage.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed against the LocalWP `magick-ai` site.
+- **Next recommended step**:
+  - Keep app-key lifecycle minimal unless needed by a real adapter: rotation,
+    revocation UI, expiry automation, and app-specific admin screens can wait.
+    Do not add OAuth, MCP session management, or final write execution here.
+
 ## 2026-05-29 — OpenClaw governance adapter example added
 
 - **Module**: external agent governance adapter example

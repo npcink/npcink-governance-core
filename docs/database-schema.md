@@ -2,7 +2,7 @@
 
 Status: active for MVP.
 
-Magick AI Core currently owns two custom tables. They are created during plugin
+Magick AI Core currently owns four custom tables. They are created during plugin
 activation with `dbDelta()`.
 
 ## Table: `{prefix}magick_ai_core_proposals`
@@ -70,6 +70,10 @@ Indexes:
 
 MVP event names:
 
+- `app.created`
+- `app.listed`
+- `app.rate_limited`
+- `app.scope_denied`
 - `capabilities.listed`
 - `proposal.created`
 - `proposal.approved`
@@ -79,6 +83,58 @@ MVP event names:
 - `audit.listed`
 - `commit.preflighted`
 
+## Table: `{prefix}magick_ai_core_app_keys`
+
+Purpose: stores scoped app identities for external governance clients.
+
+| Column | Type | Null | Notes |
+| --- | --- | --- | --- |
+| `id` | `bigint(20) unsigned` | no | Internal auto-increment primary key. |
+| `app_id` | `varchar(64)` | no | Stable public app id. |
+| `app_label` | `varchar(190)` | no | Human-readable label. |
+| `key_id` | `varchar(64)` | no | Public key id used in bearer tokens. |
+| `secret_hash` | `varchar(255)` | no | Password hash of the raw secret. Raw secrets are returned once and never stored. |
+| `status` | `varchar(40)` | no | Current MVP stores `active`; `revoked` and `expired` are reserved. |
+| `scopes_json` | `longtext` | yes | JSON array of allowed scopes. |
+| `rate_limit` | `int unsigned` | no | Requests allowed per route-family window. |
+| `rate_window_seconds` | `int unsigned` | no | Fixed-window duration. |
+| `caller_type` | `varchar(80)` | no | Sanitized caller type such as `mcp_adapter`. |
+| `created_by` | `bigint(20) unsigned` | no | WordPress user id that created the app. |
+| `created_at` | `datetime` | no | UTC creation time. |
+| `updated_at` | `datetime` | no | UTC update time. |
+| `last_used_at` | `datetime` | yes | Last successful app-authenticated request. |
+
+Indexes:
+
+- primary key: `id`
+- unique key: `app_id`
+- unique key: `key_id`
+- key: `status`
+- key: `created_at`
+
+## Table: `{prefix}magick_ai_core_app_rate_limits`
+
+Purpose: fixed-window rate counters for app-authenticated requests.
+
+| Column | Type | Null | Notes |
+| --- | --- | --- | --- |
+| `id` | `bigint(20) unsigned` | no | Internal auto-increment primary key. |
+| `app_id` | `varchar(64)` | no | App id. |
+| `key_id` | `varchar(64)` | no | Key id used for the request. |
+| `route_family` | `varchar(80)` | no | Scope route family, such as `proposals_create`. |
+| `window_start` | `datetime` | no | UTC fixed-window start. |
+| `window_end` | `datetime` | no | UTC fixed-window end. |
+| `request_count` | `int unsigned` | no | Requests used in the window. |
+| `created_at` | `datetime` | no | UTC creation time. |
+| `updated_at` | `datetime` | no | UTC update time. |
+
+Indexes:
+
+- primary key: `id`
+- unique key: `app_route_window` on `app_id`, `route_family`, `window_start`
+- key: `key_id`
+- key: `window_end`
+
 ## Migration Rules
 
 - Schema changes must update this document, `docs/architecture.md`, and
@@ -87,6 +143,7 @@ MVP event names:
 - Do not remove existing columns without an ADR.
 - Do not store secrets, provider keys, cookies, passwords, raw request headers,
   or unsanitized user input.
+- App key raw secrets must never be stored; only `secret_hash` is persisted.
 - Do not add workflow runtime, queue, retry, lease, or batch execution state to
   these tables.
 

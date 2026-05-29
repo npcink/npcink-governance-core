@@ -29,6 +29,9 @@ Usage:
 
 Required environment:
   MAGICK_AI_CORE_BASE_URL
+  MAGICK_AI_CORE_APP_TOKEN
+
+Fallback PoC environment for manage_options user auth:
   MAGICK_AI_CORE_USER
   MAGICK_AI_CORE_APPLICATION_PASSWORD
 
@@ -151,8 +154,7 @@ function magick_ai_core_adapter_request( string $method, string $path, array $bo
 	}
 
 	$base_url = rtrim( magick_ai_core_adapter_env( 'MAGICK_AI_CORE_BASE_URL' ), '/' );
-	$user     = magick_ai_core_adapter_env( 'MAGICK_AI_CORE_USER' );
-	$password = magick_ai_core_adapter_env( 'MAGICK_AI_CORE_APPLICATION_PASSWORD' );
+	$app_token = getenv( 'MAGICK_AI_CORE_APP_TOKEN' );
 	$timeout  = getenv( 'MAGICK_AI_CORE_TIMEOUT' );
 	$timeout  = is_string( $timeout ) && '' !== trim( $timeout ) ? max( 1, (int) $timeout ) : 30;
 
@@ -160,8 +162,15 @@ function magick_ai_core_adapter_request( string $method, string $path, array $bo
 
 	$headers = array(
 		'Accept: application/json',
-		'Authorization: Basic ' . base64_encode( $user . ':' . $password ),
 	);
+
+	if ( is_string( $app_token ) && '' !== trim( $app_token ) ) {
+		$headers[] = 'Authorization: Bearer ' . trim( $app_token );
+	} else {
+		$user     = magick_ai_core_adapter_env( 'MAGICK_AI_CORE_USER' );
+		$password = magick_ai_core_adapter_env( 'MAGICK_AI_CORE_APPLICATION_PASSWORD' );
+		$headers[] = 'Authorization: Basic ' . base64_encode( $user . ':' . $password );
+	}
 
 	$curl = curl_init( $url );
 	if ( false === $curl ) {
@@ -282,4 +291,3 @@ if ( 'commit-preflight' === $command ) {
 
 magick_ai_core_adapter_usage();
 magick_ai_core_adapter_fail( 'Unknown command: ' . $command, 2 );
-

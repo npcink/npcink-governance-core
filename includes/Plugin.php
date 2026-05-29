@@ -13,9 +13,13 @@ use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
 use MagickAI\Core\Governance\Commit_Preflight_Service;
 use MagickAI\Core\Governance\Proposal_Repository;
 use MagickAI\Core\Governance\Proposal_Service;
+use MagickAI\Core\Rest\Apps_Controller;
 use MagickAI\Core\Rest\Audit_Controller;
 use MagickAI\Core\Rest\Capabilities_Controller;
 use MagickAI\Core\Rest\Proposals_Controller;
+use MagickAI\Core\Security\App_Authenticator;
+use MagickAI\Core\Security\App_Key_Repository;
+use MagickAI\Core\Security\App_Rate_Limiter;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -68,6 +72,27 @@ final class Plugin {
 	private $commit_preflight_service = null;
 
 	/**
+	 * App key repository.
+	 *
+	 * @var App_Key_Repository|null
+	 */
+	private $app_key_repository = null;
+
+	/**
+	 * App rate limiter.
+	 *
+	 * @var App_Rate_Limiter|null
+	 */
+	private $app_rate_limiter = null;
+
+	/**
+	 * App authenticator.
+	 *
+	 * @var App_Authenticator|null
+	 */
+	private $app_authenticator = null;
+
+	/**
 	 * Returns the singleton.
 	 *
 	 * @return self
@@ -88,6 +113,8 @@ final class Plugin {
 	public static function activate(): void {
 		self::instance()->proposal_repository()->install();
 		self::instance()->audit_repository()->install();
+		self::instance()->app_key_repository()->install();
+		self::instance()->app_rate_limiter()->install();
 	}
 
 	/**
@@ -109,13 +136,15 @@ final class Plugin {
 	 * @return void
 	 */
 	public function register_rest_routes(): void {
-		( new Capabilities_Controller( $this->ability_adapter(), $this->audit_repository() ) )->register_routes();
+		( new Capabilities_Controller( $this->ability_adapter(), $this->audit_repository(), $this->app_authenticator() ) )->register_routes();
 		( new Proposals_Controller(
 			$this->proposal_service(),
 			$this->proposal_repository(),
-			$this->commit_preflight_service()
+			$this->commit_preflight_service(),
+			$this->app_authenticator()
 		) )->register_routes();
-		( new Audit_Controller( $this->audit_repository() ) )->register_routes();
+		( new Audit_Controller( $this->audit_repository(), $this->app_authenticator() ) )->register_routes();
+		( new Apps_Controller( $this->app_key_repository(), $this->audit_repository(), $this->app_authenticator() ) )->register_routes();
 	}
 
 	/**
@@ -185,5 +214,44 @@ final class Plugin {
 		}
 
 		return $this->commit_preflight_service;
+	}
+
+	/**
+	 * Returns app key repository.
+	 *
+	 * @return App_Key_Repository
+	 */
+	public function app_key_repository(): App_Key_Repository {
+		if ( null === $this->app_key_repository ) {
+			$this->app_key_repository = new App_Key_Repository();
+		}
+
+		return $this->app_key_repository;
+	}
+
+	/**
+	 * Returns app rate limiter.
+	 *
+	 * @return App_Rate_Limiter
+	 */
+	public function app_rate_limiter(): App_Rate_Limiter {
+		if ( null === $this->app_rate_limiter ) {
+			$this->app_rate_limiter = new App_Rate_Limiter();
+		}
+
+		return $this->app_rate_limiter;
+	}
+
+	/**
+	 * Returns app authenticator.
+	 *
+	 * @return App_Authenticator
+	 */
+	public function app_authenticator(): App_Authenticator {
+		if ( null === $this->app_authenticator ) {
+			$this->app_authenticator = new App_Authenticator( $this->app_key_repository(), $this->app_rate_limiter(), $this->audit_repository() );
+		}
+
+		return $this->app_authenticator;
 	}
 }

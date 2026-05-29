@@ -2,9 +2,9 @@
 
 Status: active for MVP.
 
-All MVP routes use the namespace `magick-ai-core/v1` and require the current
-user to have `manage_options`. Future app-key or scoped access must be added as
-a new contract update before implementation.
+All MVP routes use the namespace `magick-ai-core/v1`. Routes accept either a
+WordPress administrator with `manage_options` or a scoped Magick AI Core app key
+when the route has an app scope listed below.
 
 Agent and MCP adapter entry is governed by
 [Agent MCP Entry Contract](agent-mcp-entry-contract.md). Scoped app
@@ -24,12 +24,10 @@ executor.
 - Routes must store real `ability_id` values only; planning labels and channel
   tool names are not runtime identifiers.
 
-## Future App-Authenticated Access
+## App-Authenticated Access
 
-Not implemented.
-
-Future app-authenticated access must be additive to the current REST surface.
-The initial scope map is:
+App-authenticated access is additive to the current REST surface. The current
+scope map is:
 
 | Route family | Required future scope |
 | --- | --- |
@@ -40,10 +38,63 @@ The initial scope map is:
 | `POST /proposals/{proposal_id}/reject` | `proposals:reject` |
 | `POST /proposals/{proposal_id}/commit-preflight` | `commit:preflight` |
 | `GET /audit` | `audit:read` |
+| `GET /apps`, `POST /apps` | admin-only `manage_options` |
 
 Generic MCP adapters should not receive `proposals:approve` or `audit:read` by
 default. Missing or revoked app identity must return `401`; missing scope must
 return `403`; rate-limited requests must return `429`.
+
+App auth error codes:
+
+| Code | HTTP | Meaning |
+| --- | --- | --- |
+| `magick_ai_core_app_auth_missing` | `401` | No WordPress admin session and no app token. |
+| `magick_ai_core_app_auth_malformed` | `400` | Bearer app token does not match the Core token shape. |
+| `magick_ai_core_app_auth_invalid` | `401` | App token is unknown, inactive, or has an invalid secret. |
+| `magick_ai_core_app_scope_forbidden` | `403` | App key does not include the route's required scope. |
+| `magick_ai_core_app_rate_limited` | `429` | App key exceeded its fixed-window route-family limit. |
+
+App tokens use:
+
+```text
+Authorization: Bearer mai_core.<key_id>.<secret>
+```
+
+The raw secret is returned only by `POST /apps`.
+
+## `GET /apps`
+
+Purpose: list Core app identities without raw secrets or secret hashes.
+
+Permission: `manage_options`.
+
+Response `200`: app identity rows without secret material.
+
+Audit event:
+
+- `app.listed`
+
+## `POST /apps`
+
+Purpose: create one app key and return the raw secret once.
+
+Permission: `manage_options`.
+
+Request fields:
+
+| Name | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `app_label` | string | no | Human-readable app label. |
+| `caller_type` | string | no | `mcp_adapter`, `agent_host`, `product_plugin`, or another sanitized key. |
+| `scopes` | array | no | Defaults to `capabilities:read`, `proposals:create`, `proposals:read`, and `commit:preflight`. |
+| `rate_limit` | integer | no | Defaults to `60`. |
+| `rate_window_seconds` | integer | no | Defaults to `3600`. |
+
+Response `201`: app row plus `secret`, `token`, and `shown_once=true`.
+
+Audit event:
+
+- `app.created`
 
 ## `GET /capabilities`
 
@@ -78,6 +129,12 @@ Response `200`:
 Audit event:
 
 - `capabilities.listed`
+
+App audit attribution:
+
+- `metadata.auth.app_id`
+- `metadata.auth.key_id`
+- `metadata.auth.scope=capabilities:read`
 
 ## `GET /proposals`
 
@@ -171,6 +228,11 @@ Errors:
 Audit event:
 
 - `proposal.created`
+
+App audit attribution:
+
+- stored in event `metadata.auth`;
+- copied into proposal `caller.auth`.
 
 ## `POST /proposals/{proposal_id}/approve`
 
@@ -303,6 +365,10 @@ Errors:
 Audit event:
 
 - `commit.preflighted`
+
+App audit attribution:
+
+- `metadata.auth.scope=commit:preflight`
 
 ## Planned Routes
 

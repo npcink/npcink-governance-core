@@ -15,14 +15,20 @@ with the WordPress admin UI or a separately contracted trusted host policy.
 
 ## Authentication
 
-Core MVP routes currently require a WordPress user with `manage_options`.
-For an external CLI PoC, use a WordPress Application Password for such a user.
-Do not commit credentials.
+Use a scoped Magick AI Core app token when available. The token is returned once
+from `POST /wp-json/magick-ai-core/v1/apps` and should not be committed.
 
 Required environment variables:
 
 ```bash
 export MAGICK_AI_CORE_BASE_URL="https://example.test"
+export MAGICK_AI_CORE_APP_TOKEN="mai_core.key_xxx.secret_xxx"
+```
+
+During early local PoC work, the script can still fall back to a WordPress
+Application Password for a `manage_options` user:
+
+```bash
 export MAGICK_AI_CORE_USER="admin-user"
 export MAGICK_AI_CORE_APPLICATION_PASSWORD="xxxx xxxx xxxx xxxx xxxx xxxx"
 ```
@@ -56,4 +62,3 @@ php examples/openclaw-governance-adapter/openclaw-governance-adapter.php commit-
 `commit-preflight` returns Core approval context and `commit_execution=false`.
 The external adapter must not execute a write unless the target WordPress
 ability contract accepts that approval context and idempotency protection.
-

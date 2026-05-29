@@ -12,24 +12,26 @@ All MVP REST routes require:
 current_user_can( 'manage_options' )
 ```
 
-This keeps the first implementation explicit while app-key, scope, and
-rate-limit policy are designed.
+Scoped app keys are also supported for external governance clients. App keys do
+not replace human admin approval.
 
 ## Future Authorization Layers
 
-Future releases may add the app identity model described in
-[App Auth Scope Policy](app-auth-scope-policy.md). That policy must be frozen
-before non-`manage_options` callers are accepted.
+The app identity model is described in
+[App Auth Scope Policy](app-auth-scope-policy.md).
+
+Implemented layers include:
+
+- app identity;
+- bearer app token authentication;
+- ability scopes;
+- rate limits;
+- per-app audit attribution.
 
 Planned layers include:
 
-- app identity;
-- signed request authentication;
-- ability scopes;
 - write-mode policy;
-- rate limits;
 - idempotency keys;
-- per-app audit attribution.
 
 These must be documented before implementation. They must not be inferred from
 provider plugins or moved into `magick-ai-abilities`.
@@ -52,6 +54,7 @@ Core may store:
 Core must not store:
 
 - provider API keys;
+- raw app secrets;
 - passwords;
 - raw cookies;
 - authorization headers;
@@ -116,6 +119,26 @@ Core must not:
 - copy ability definitions from `magick-ai-abilities`;
 - store provider credentials;
 - own product workflow runtime.
+
+## App Key Authentication
+
+App tokens use:
+
+```text
+Authorization: Bearer mai_core.<key_id>.<secret>
+```
+
+The raw secret is returned once by `POST /wp-json/magick-ai-core/v1/apps` and
+stored only as `secret_hash`. `GET /apps`, proposals, and audit rows must not
+return raw app secrets or secret hashes.
+
+App-authenticated requests must have the route's required scope and pass the
+fixed-window rate limit. Missing auth returns `401`, missing scope returns
+`403`, and rate limit failures return `429`.
+
+Successful app-authenticated governance events include sanitized app attribution
+in `metadata.auth`. App-created proposals also copy that attribution into
+`caller.auth`.
 
 ## Local Development Credentials
 

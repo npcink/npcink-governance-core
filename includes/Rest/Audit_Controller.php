@@ -8,6 +8,7 @@
 namespace MagickAI\Core\Rest;
 
 use MagickAI\Core\Audit\Audit_Log_Repository;
+use MagickAI\Core\Security\App_Authenticator;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -29,12 +30,21 @@ final class Audit_Controller {
 	private $audit;
 
 	/**
+	 * Authenticator.
+	 *
+	 * @var App_Authenticator
+	 */
+	private $auth;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Audit_Log_Repository $audit Audit repository.
+	 * @param App_Authenticator    $auth Authenticator.
 	 */
-	public function __construct( Audit_Log_Repository $audit ) {
+	public function __construct( Audit_Log_Repository $audit, App_Authenticator $auth ) {
 		$this->audit = $audit;
+		$this->auth  = $auth;
 	}
 
 	/**
@@ -50,7 +60,7 @@ final class Audit_Controller {
 				array(
 					'methods'             => 'GET',
 					'callback'            => array( $this, 'list_events' ),
-					'permission_callback' => array( Rest_Permissions::class, 'can_manage' ),
+					'permission_callback' => array( $this->auth, 'can_read_audit' ),
 					'args'                => array(
 						'limit' => array(
 							'type'              => 'integer',

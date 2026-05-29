@@ -9,6 +9,7 @@ namespace MagickAI\Core\Governance;
 
 use MagickAI\Core\Audit\Audit_Log_Repository;
 use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
+use MagickAI\Core\Security\Request_Context;
 use WP_Error;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -81,6 +82,11 @@ final class Proposal_Service {
 			);
 		}
 
+		$caller = is_array( $payload['caller'] ?? null ) ? $payload['caller'] : array();
+		if ( Request_Context::is_app() ) {
+			$caller['auth'] = Request_Context::audit_metadata();
+		}
+
 		$proposal = $this->proposals->create(
 			array(
 				'ability_id' => $ability_id,
@@ -88,7 +94,7 @@ final class Proposal_Service {
 				'summary'    => $payload['summary'] ?? '',
 				'input'      => is_array( $payload['input'] ?? null ) ? $payload['input'] : array(),
 				'preview'    => is_array( $payload['preview'] ?? null ) ? $payload['preview'] : array(),
-				'caller'     => is_array( $payload['caller'] ?? null ) ? $payload['caller'] : array(),
+				'caller'     => $caller,
 			)
 		);
 

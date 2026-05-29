@@ -71,6 +71,51 @@ function magick_ai_core_smoke_rest_result( string $method, string $route, array 
 }
 
 /**
+ * Dispatches a REST request with app bearer token.
+ *
+ * @param string              $method HTTP method.
+ * @param string              $route REST route.
+ * @param string              $token App token.
+ * @param array<string,mixed> $params Request params.
+ * @return array<string,mixed>
+ */
+function magick_ai_core_smoke_rest_as_app( string $method, string $route, string $token, array $params = array() ): array {
+	$result = magick_ai_core_smoke_rest_result_as_app( $method, $route, $token, $params );
+
+	magick_ai_core_smoke_assert( $result['status'] >= 200 && $result['status'] < 300, $method . ' ' . $route . ' returned HTTP ' . $result['status'] . ' for app token' );
+
+	return is_array( $result['data'] ) ? $result['data'] : array();
+}
+
+/**
+ * Dispatches a REST request with app bearer token and returns status/data.
+ *
+ * @param string              $method HTTP method.
+ * @param string              $route REST route.
+ * @param string              $token App token.
+ * @param array<string,mixed> $params Request params.
+ * @return array{status:int,data:mixed}
+ */
+function magick_ai_core_smoke_rest_result_as_app( string $method, string $route, string $token, array $params = array() ): array {
+	wp_set_current_user( 0 );
+
+	$request = new WP_REST_Request( $method, $route );
+	$request->set_header( 'authorization', 'Bearer ' . $token );
+	foreach ( $params as $key => $value ) {
+		$request->set_param( $key, $value );
+	}
+
+	$response = rest_do_request( $request );
+	$status   = (int) $response->get_status();
+	$data     = $response->get_data();
+
+	return array(
+		'status' => $status,
+		'data'   => $data,
+	);
+}
+
+/**
  * Locates the shared magick-ai-abilities replay fixture.
  *
  * @return string
@@ -198,12 +243,18 @@ global $wpdb;
 
 $proposal_table = $wpdb->prefix . 'magick_ai_core_proposals';
 $audit_table    = $wpdb->prefix . 'magick_ai_core_audit_log';
+$app_table      = $wpdb->prefix . 'magick_ai_core_app_keys';
+$rate_table     = $wpdb->prefix . 'magick_ai_core_app_rate_limits';
 
 $proposal_exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $proposal_table ) );
 $audit_exists    = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $audit_table ) );
+$app_exists      = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $app_table ) );
+$rate_exists     = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $rate_table ) );
 
 magick_ai_core_smoke_assert( $proposal_table === $proposal_exists, 'proposal table exists' );
 magick_ai_core_smoke_assert( $audit_table === $audit_exists, 'audit table exists' );
+magick_ai_core_smoke_assert( $app_table === $app_exists, 'app key table exists' );
+magick_ai_core_smoke_assert( $rate_table === $rate_exists, 'app rate limit table exists' );
 
 $capabilities = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/capabilities' );
 $items        = is_array( $capabilities['items'] ?? null ) ? $capabilities['items'] : array();
@@ -211,6 +262,32 @@ $items        = is_array( $capabilities['items'] ?? null ) ? $capabilities['item
 magick_ai_core_smoke_assert( true === (bool) ( $capabilities['available'] ?? false ), 'capability source is available' );
 magick_ai_core_smoke_assert( 'magick_ai_abilities' === (string) ( $capabilities['source'] ?? '' ), 'capabilities are discovered from magick-ai-abilities' );
 magick_ai_core_smoke_assert( count( $items ) > 0, 'capabilities endpoint returns abilities' );
+
+$app = magick_ai_core_smoke_rest(
+	'POST',
+	'/magick-ai-core/v1/apps',
+	array(
+		'app_label'           => 'OpenClaw smoke adapter',
+		'caller_type'         => 'mcp_adapter',
+		'rate_limit'          => 20,
+		'rate_window_seconds' => 3600,
+	)
+);
+$app_token = (string) ( $app['token'] ?? '' );
+$app_id    = (string) ( $app['app_id'] ?? '' );
+$key_id    = (string) ( $app['key_id'] ?? '' );
+magick_ai_core_smoke_assert( '' !== $app_token && false === strpos( $app_token, ' ' ), 'app key creation returns one-time bearer token' );
+magick_ai_core_smoke_assert( '' !== $app_id && '' !== $key_id, 'app key creation returns app and key ids' );
+magick_ai_core_smoke_assert( in_array( 'proposals:create', (array) ( $app['scopes'] ?? array() ), true ), 'app key defaults include proposal creation scope' );
+magick_ai_core_smoke_assert( ! array_key_exists( 'secret_hash', $app ), 'app key creation response does not expose secret hash' );
+
+$apps_list = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/apps', array( 'limit' => 5 ) );
+$apps_json = wp_json_encode( $apps_list );
+magick_ai_core_smoke_assert( is_string( $apps_json ) && false === strpos( $apps_json, (string) ( $app['secret'] ?? 'unreachable-secret' ) ), 'app list does not expose raw app secret' );
+magick_ai_core_smoke_assert( is_string( $apps_json ) && false === strpos( $apps_json, 'secret_hash' ), 'app list does not expose secret hash' );
+
+$app_capabilities = magick_ai_core_smoke_rest_as_app( 'GET', '/magick-ai-core/v1/capabilities', $app_token );
+magick_ai_core_smoke_assert( count( (array) ( $app_capabilities['items'] ?? array() ) ) > 0, 'app-authenticated capabilities read succeeds' );
 
 $items_by_id = array();
 foreach ( $items as $item ) {
@@ -296,6 +373,66 @@ $comment_proposal_id = magick_ai_core_smoke_run_governance_proposal(
 
 magick_ai_core_smoke_assert( '' !== $comment_proposal_id, 'comment moderation proposal completed governance loop' );
 
+$app_created = magick_ai_core_smoke_rest_as_app(
+	'POST',
+	'/magick-ai-core/v1/proposals',
+	$app_token,
+	array(
+		'ability_id' => 'magick-ai/create-draft',
+		'title'      => 'App authenticated proposal',
+		'summary'    => 'Created by app key smoke test.',
+		'input'      => array(
+			'title'   => 'App Auth Draft',
+			'content' => '<p>App auth content.</p>',
+			'dry_run' => true,
+		),
+		'preview'    => array(
+			'dry_run' => true,
+		),
+		'caller'     => array(
+			'source' => 'app-auth-smoke',
+		),
+	)
+);
+$app_proposal_id = (string) ( $app_created['proposal_id'] ?? '' );
+magick_ai_core_smoke_assert( '' !== $app_proposal_id, 'app-authenticated proposal is created' );
+magick_ai_core_smoke_assert( $app_id === (string) ( $app_created['caller']['auth']['app_id'] ?? '' ), 'app-authenticated proposal stores app attribution' );
+magick_ai_core_smoke_assert( 'proposals:create' === (string) ( $app_created['caller']['auth']['scope'] ?? '' ), 'app-authenticated proposal stores scope attribution' );
+
+$app_approve = magick_ai_core_smoke_rest_result_as_app( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $app_proposal_id ) . '/approve', $app_token );
+magick_ai_core_smoke_assert( 403 === (int) $app_approve['status'], 'app-authenticated approval is denied without approval scope' );
+
+magick_ai_core_smoke_rest(
+	'POST',
+	'/magick-ai-core/v1/proposals/' . rawurlencode( $app_proposal_id ) . '/approve',
+	array(
+		'note' => 'Admin approval for app-authenticated proposal.',
+	)
+);
+
+$app_preflight = magick_ai_core_smoke_rest_as_app( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $app_proposal_id ) . '/commit-preflight', $app_token );
+magick_ai_core_smoke_assert( false === (bool) ( $app_preflight['commit_execution'] ?? true ), 'app-authenticated commit preflight does not execute ability' );
+magick_ai_core_smoke_assert( true === (bool) ( $app_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'app-authenticated commit preflight returns approval context' );
+
+$app_audit_denied = magick_ai_core_smoke_rest_result_as_app( 'GET', '/magick-ai-core/v1/audit', $app_token, array( 'limit' => 5 ) );
+magick_ai_core_smoke_assert( 403 === (int) $app_audit_denied['status'], 'app-authenticated audit read is denied without audit scope' );
+
+$rate_app = magick_ai_core_smoke_rest(
+	'POST',
+	'/magick-ai-core/v1/apps',
+	array(
+		'app_label'           => 'OpenClaw rate smoke',
+		'caller_type'         => 'mcp_adapter',
+		'scopes'              => array( 'capabilities:read' ),
+		'rate_limit'          => 1,
+		'rate_window_seconds' => 3600,
+	)
+);
+$rate_token = (string) ( $rate_app['token'] ?? '' );
+magick_ai_core_smoke_rest_as_app( 'GET', '/magick-ai-core/v1/capabilities', $rate_token );
+$rate_limited = magick_ai_core_smoke_rest_result_as_app( 'GET', '/magick-ai-core/v1/capabilities', $rate_token );
+magick_ai_core_smoke_assert( 429 === (int) $rate_limited['status'], 'app rate limit returns 429 after fixed window is exhausted' );
+
 $listed = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/proposals', array( 'limit' => 10 ) );
 magick_ai_core_smoke_assert( count( (array) ( $listed['items'] ?? array() ) ) > 0, 'proposal list endpoint returns proposals' );
 
@@ -350,6 +487,23 @@ magick_ai_core_smoke_assert( count( $proposal_audit_items ) >= 3, 'audit endpoin
 foreach ( $proposal_audit_items as $item ) {
 	magick_ai_core_smoke_assert( $proposal_id === (string) ( is_array( $item ) ? ( $item['proposal_id'] ?? '' ) : '' ), 'proposal audit filter returns only matching proposal events' );
 }
+
+$app_proposal_audit = magick_ai_core_smoke_rest(
+	'GET',
+	'/magick-ai-core/v1/audit',
+	array(
+		'proposal_id' => $app_proposal_id,
+		'limit'       => 20,
+	)
+);
+$app_proposal_audit_items = (array) ( $app_proposal_audit['items'] ?? array() );
+$found_app_attribution    = false;
+foreach ( $app_proposal_audit_items as $item ) {
+	if ( is_array( $item ) && 'proposal.created' === (string) ( $item['event_name'] ?? '' ) ) {
+		$found_app_attribution = $app_id === (string) ( $item['metadata']['auth']['app_id'] ?? '' );
+	}
+}
+magick_ai_core_smoke_assert( $found_app_attribution, 'app-authenticated audit event stores app attribution' );
 
 $preflight_audit = magick_ai_core_smoke_rest(
 	'GET',
