@@ -1,5 +1,25 @@
 # Session Breadcrumb
 
+## 2026-05-29 — Agent/MCP entry contracts documented
+
+- **Module**: agent and MCP governance entry contracts
+- **Status**: The adapter entry and app authorization policies are documented;
+  no MCP runtime or app-key implementation was added.
+- **Completed**:
+  - Added `docs/agent-mcp-entry-contract.md` to define how WordPress/MCP
+    adapters consume Core governance without making Core an MCP server,
+    channel projection registry, natural-language router, or workflow runtime.
+  - Added `docs/app-auth-scope-policy.md` to freeze the future app identity,
+    scope, rate-limit, and audit-attribution target before implementation.
+  - Updated REST, security, strategy, next-stage, README, and static contract
+    coverage to point at the new contracts.
+  - Used the root Magick AI channel/cloud contracts as reference material while
+    keeping Core independent from the legacy open-platform implementation.
+- **Next recommended step**:
+  - Implement the smallest app-key/scoped-auth skeleton only after database,
+    REST error, and smoke-test contracts are finalized. Keep MCP Adapter outside
+    Core.
+
 ## 2026-05-29 — Core and Abilities handoff documented
 
 - **Module**: ability governance handoff documentation

@@ -139,10 +139,48 @@ foreach (
 		'confirm_token',
 		'write_confirmed',
 		'magick_ai_abilities_get_registered()',
+		'App Auth Scope Policy',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $security_model, $required ), 'Security model contains required text: ' . $required );
 }
+
+$agent_mcp_entry = magick_ai_core_read( $root . '/docs/agent-mcp-entry-contract.md' );
+foreach (
+	array(
+		'Core is MCP-aware, but it is not an MCP runtime',
+		'Agent and MCP adapters expose abilities. Core governs risky operations.',
+		'WordPress Abilities API',
+		'commit_execution=false',
+		'channel-private schema, scope, approval, workflow, or write truth',
+		'MCP server',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $agent_mcp_entry, $required ), 'Agent MCP entry contract contains required text: ' . $required );
+}
+
+$app_auth_scope = magick_ai_core_read( $root . '/docs/app-auth-scope-policy.md' );
+foreach (
+	array(
+		'current_user_can( \'manage_options\' )',
+		'app_id',
+		'secret_hash',
+		'capabilities:read',
+		'proposals:create',
+		'commit:preflight',
+		'Do not grant `proposals:approve` or `audit:read` by default to generic MCP',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $app_auth_scope, $required ), 'App auth scope policy contains required text: ' . $required );
+}
+
+$next_stage_plan = magick_ai_core_read( $root . '/docs/next-stage-plan.md' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Agent/MCP Governance Entry' ), 'Next stage plan includes Agent/MCP governance entry phase.' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'contract documented; implementation not started' ), 'Next stage plan marks app and agent contracts as documented but not implemented.' );
+
+$readme = magick_ai_core_read( $root . '/README.md' );
+magick_ai_core_assert( false !== strpos( $readme, 'Agent MCP Entry Contract' ), 'README links Agent MCP Entry Contract.' );
+magick_ai_core_assert( false !== strpos( $readme, 'App Auth Scope Policy' ), 'README links App Auth Scope Policy.' );
 
 $adr_001 = magick_ai_core_read( $root . '/docs/decisions/ADR-001-rebuild-core-as-governance-layer.md' );
 $adr_002 = magick_ai_core_read( $root . '/docs/decisions/ADR-002-no-workflow-runtime-in-core.md' );

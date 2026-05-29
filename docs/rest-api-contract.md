@@ -6,6 +6,12 @@ All MVP routes use the namespace `magick-ai-core/v1` and require the current
 user to have `manage_options`. Future app-key or scoped access must be added as
 a new contract update before implementation.
 
+Agent and MCP adapter entry is governed by
+[Agent MCP Entry Contract](agent-mcp-entry-contract.md). Scoped app
+authentication is governed by [App Auth Scope Policy](app-auth-scope-policy.md).
+Neither contract turns Core into an MCP runtime or final WordPress write
+executor.
+
 ## Common Rules
 
 - Request and response bodies are JSON.
@@ -15,6 +21,29 @@ a new contract update before implementation.
   parameters.
 - Routes must not execute final WordPress writes until the final commit contract
   is documented and tested.
+- Routes must store real `ability_id` values only; planning labels and channel
+  tool names are not runtime identifiers.
+
+## Future App-Authenticated Access
+
+Not implemented.
+
+Future app-authenticated access must be additive to the current REST surface.
+The initial scope map is:
+
+| Route family | Required future scope |
+| --- | --- |
+| `GET /capabilities` | `capabilities:read` |
+| `POST /proposals` | `proposals:create` |
+| `GET /proposals`, `GET /proposals/{proposal_id}` | `proposals:read` |
+| `POST /proposals/{proposal_id}/approve` | `proposals:approve` |
+| `POST /proposals/{proposal_id}/reject` | `proposals:reject` |
+| `POST /proposals/{proposal_id}/commit-preflight` | `commit:preflight` |
+| `GET /audit` | `audit:read` |
+
+Generic MCP adapters should not receive `proposals:approve` or `audit:read` by
+default. Missing or revoked app identity must return `401`; missing scope must
+return `403`; rate-limited requests must return `429`.
 
 ## `GET /capabilities`
 

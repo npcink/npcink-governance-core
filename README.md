@@ -61,6 +61,8 @@ Read the project handoff docs before starting a new implementation session:
 - [Security Model](docs/security-model.md)
 - [Ability Intake Contract](docs/ability-intake-contract.md)
 - [Approval Commit Contract](docs/approval-commit-contract.md)
+- [Agent MCP Entry Contract](docs/agent-mcp-entry-contract.md)
+- [App Auth Scope Policy](docs/app-auth-scope-policy.md)
 - [Development Workflow](docs/development-workflow.md)
 - [Testing Strategy](docs/testing-strategy.md)
 - [Next Stage Plan](docs/next-stage-plan.md)

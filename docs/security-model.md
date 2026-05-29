@@ -17,7 +17,11 @@ rate-limit policy are designed.
 
 ## Future Authorization Layers
 
-Future releases may add:
+Future releases may add the app identity model described in
+[App Auth Scope Policy](app-auth-scope-policy.md). That policy must be frozen
+before non-`manage_options` callers are accepted.
+
+Planned layers include:
 
 - app identity;
 - signed request authentication;
@@ -29,6 +33,11 @@ Future releases may add:
 
 These must be documented before implementation. They must not be inferred from
 provider plugins or moved into `magick-ai-abilities`.
+
+MCP adapters, Agent Gateway bridges, hosted runtimes, and product plugins are
+callers of Core governance routes. They are not allowed to move MCP sessions,
+tool catalogs, provider credentials, workflow runtime, or final WordPress write
+authority into Core.
 
 ## Data Handling
 

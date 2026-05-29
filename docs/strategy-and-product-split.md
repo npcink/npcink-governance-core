@@ -139,6 +139,13 @@ entry points for agents. The recommended split is:
 - Core governs risky operation handoffs through proposal, approval, preflight,
   commit authorization, and audit.
 
+The Core-side adapter contract is documented in
+[Agent MCP Entry Contract](agent-mcp-entry-contract.md). Scoped non-admin
+callers are documented in [App Auth Scope Policy](app-auth-scope-policy.md).
+Both contracts preserve the same rule: channel adapters may consume Core
+governance, but Core does not become a channel runtime or a second projection
+truth.
+
 If a future task asks Core to expose MCP tools directly, add Agent Gateway
 catalogs, or route natural language tasks, stop and write a boundary note
 instead of implementing it.

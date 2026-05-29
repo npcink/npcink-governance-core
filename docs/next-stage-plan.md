@@ -25,6 +25,11 @@ Not implemented:
 - app key authentication;
 - scope/rate-limit policy;
 
+Documented but not implemented:
+
+- Agent/MCP governance entry contract;
+- app auth, scope, and rate policy.
+
 ## Strategic Product Boundary
 
 The next stage should keep Core focused on the governance kernel. WordPress 7.0
@@ -114,6 +119,8 @@ Acceptance:
 
 ### 5. App Auth, Scope, And Rate Policy
 
+Status: contract documented; implementation not started.
+
 Goal: move beyond `manage_options`-only MVP.
 
 Acceptance:
@@ -122,6 +129,27 @@ Acceptance:
 - scope rules are derived from ability metadata and Core policy;
 - rate limits are stored in Core policy, not provider plugins;
 - all decisions emit audit events.
+
+See [App Auth Scope Policy](app-auth-scope-policy.md).
+
+### 6. Agent/MCP Governance Entry
+
+Status: contract documented; implementation not started.
+
+Goal: let WordPress, MCP adapters, Agent Gateway bridges, and product plugins
+consume Core governance without moving MCP runtime or channel projection into
+Core.
+
+Acceptance:
+
+- adapters expose abilities from WordPress Abilities API or provider plugins;
+- Core stores proposals against real `ability_id` values only;
+- Core decides approval and commit preflight;
+- adapters execute target abilities only after Core approval context is valid;
+- no MCP server, Agent Gateway catalog, natural-language router, or workflow
+  runtime is added to Core.
+
+See [Agent MCP Entry Contract](agent-mcp-entry-contract.md).
 
 ## Stop Conditions
 
