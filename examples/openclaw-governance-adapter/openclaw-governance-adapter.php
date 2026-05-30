@@ -26,6 +26,7 @@ Usage:
   php openclaw-governance-adapter.php capabilities
   php openclaw-governance-adapter.php create-draft-proposal --title="Title" [--content="<p>Body</p>"] [--input='{}'] [--preview='{}'] [--caller='{}']
   php openclaw-governance-adapter.php create-seo-meta-proposal --post-id=123 [--seo-title="SEO title"] [--seo-description="SEO description"] [--input='{}'] [--preview='{}'] [--caller='{}']
+  php openclaw-governance-adapter.php create-comment-approval-proposal --comment-id=123 [--current-status=hold] [--post-id=456] [--input='{}'] [--preview='{}'] [--caller='{}']
   php openclaw-governance-adapter.php create-proposal --ability=magick-ai/create-draft --title="Title" [--summary="Summary"] [--input='{}'] [--preview='{}'] [--caller='{}']
   php openclaw-governance-adapter.php commit-preflight --proposal=<proposal_id>
 
@@ -366,6 +367,32 @@ function magick_ai_core_adapter_assert_seo_meta_contract( array $ability ): void
 }
 
 /**
+ * Verifies the discovered comment approval ability is still host-governed.
+ *
+ * @param array<string,mixed> $ability Ability row.
+ * @return void
+ */
+function magick_ai_core_adapter_assert_comment_approval_contract( array $ability ): void {
+	if ( 'write' !== (string) ( $ability['risk_level'] ?? '' ) || true !== (bool) ( $ability['requires_approval'] ?? false ) ) {
+		magick_ai_core_adapter_fail( 'magick-ai/approve-comment is not exposed as a host-governed write ability.', 1 );
+	}
+
+	$input_schema = is_array( $ability['input_schema'] ?? null ) ? $ability['input_schema'] : array();
+	$required     = (array) ( $input_schema['required'] ?? array() );
+	$properties   = is_array( $input_schema['properties'] ?? null ) ? $input_schema['properties'] : array();
+
+	if ( ! in_array( 'comment_id', $required, true ) ) {
+		magick_ai_core_adapter_fail( 'magick-ai/approve-comment input schema does not require comment_id.', 1 );
+	}
+
+	foreach ( array( 'dry_run', 'commit', 'idempotency_key' ) as $control ) {
+		if ( ! array_key_exists( $control, $properties ) ) {
+			magick_ai_core_adapter_fail( 'magick-ai/approve-comment input schema is missing governance control: ' . $control, 1 );
+		}
+	}
+}
+
+/**
  * Returns non-empty SEO metadata fields from input.
  *
  * @param array<string,mixed> $input Proposal input.
@@ -500,6 +527,54 @@ if ( 'create-seo-meta-proposal' === $command ) {
 		'ability_id' => 'magick-ai/set-post-seo-meta',
 		'title'      => (string) ( $options['proposal-title'] ?? 'OpenClaw SEO metadata proposal' ),
 		'summary'    => (string) ( $options['summary'] ?? 'Review SEO metadata field updates before changing an existing post. Core will not execute the write.' ),
+		'input'      => $input,
+		'preview'    => $preview,
+		'caller'     => magick_ai_core_adapter_caller( magick_ai_core_adapter_json_option( $options['caller'] ?? null ) ),
+	);
+
+	magick_ai_core_adapter_print_json( magick_ai_core_adapter_request( 'POST', 'proposals', $payload ) );
+	exit( 0 );
+}
+
+if ( 'create-comment-approval-proposal' === $command ) {
+	$capabilities = magick_ai_core_adapter_request( 'GET', 'capabilities' );
+	$ability      = magick_ai_core_adapter_find_capability( $capabilities, 'magick-ai/approve-comment' );
+	magick_ai_core_adapter_assert_comment_approval_contract( $ability );
+
+	$input = magick_ai_core_adapter_json_option( $options['input'] ?? null );
+	if ( empty( $input['comment_id'] ) && isset( $options['comment-id'] ) ) {
+		$input['comment_id'] = (int) $options['comment-id'];
+	}
+	$input['dry_run'] = true;
+	$input['commit']  = false;
+
+	if ( empty( $input['comment_id'] ) || (int) $input['comment_id'] < 1 ) {
+		magick_ai_core_adapter_fail( 'create-comment-approval-proposal requires --comment-id or input.comment_id.', 2 );
+	}
+
+	$current_status = (string) ( $options['current-status'] ?? $options['status'] ?? 'hold' );
+	$post_id        = isset( $options['post-id'] ) ? max( 0, (int) $options['post-id'] ) : 0;
+
+	$preview = array_merge(
+		magick_ai_core_adapter_json_option( $options['preview'] ?? null ),
+		array(
+			'ability_risk_level'    => (string) ( $ability['risk_level'] ?? '' ),
+			'requires_approval'     => (bool) ( $ability['requires_approval'] ?? false ),
+			'input_required_fields' => (array) ( $ability['input_schema']['required'] ?? array() ),
+			'comment_id'            => (int) $input['comment_id'],
+			'post_id'               => $post_id,
+			'current_status'        => $current_status,
+			'target_action'         => 'approve',
+			'dry_run'               => true,
+			'host_governed'         => true,
+			'commit_execution'      => false,
+		)
+	);
+
+	$payload = array(
+		'ability_id' => 'magick-ai/approve-comment',
+		'title'      => (string) ( $options['proposal-title'] ?? 'OpenClaw comment approval proposal' ),
+		'summary'    => (string) ( $options['summary'] ?? 'Review comment approval before changing moderation status. Core will not execute the write.' ),
 		'input'      => $input,
 		'preview'    => $preview,
 		'caller'     => magick_ai_core_adapter_caller( magick_ai_core_adapter_json_option( $options['caller'] ?? null ) ),

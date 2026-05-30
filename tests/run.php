@@ -133,6 +133,8 @@ foreach (
 		'Set Post SEO Meta Governance Scenario',
 		'create-seo-meta-proposal',
 		'magick-ai/approve-comment',
+		'Approve Comment Governance Scenario',
+		'create-comment-approval-proposal',
 		'No proposal is required for read-only intake.',
 		'does not add workflow runtime ownership',
 	) as $required
@@ -213,9 +215,10 @@ foreach (
 $next_stage_plan = magick_ai_core_read( $root . '/docs/next-stage-plan.md' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Agent/MCP Governance Entry' ), 'Next stage plan includes Agent/MCP governance entry phase.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'minimal implementation active' ), 'Next stage plan marks app auth as implemented minimally.' );
-magick_ai_core_assert( false !== strpos( $next_stage_plan, 'create-draft and SEO metadata governance scenarios active' ), 'Next stage plan marks create-draft and SEO metadata governance scenario status.' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'draft, SEO metadata, and comment approval governance scenarios active' ), 'Next stage plan marks draft, SEO metadata, and comment approval governance scenario status.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Create Draft Governance Scenario' ), 'Next stage plan links create-draft scenario.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Set Post SEO Meta Governance Scenario' ), 'Next stage plan links set-post-seo-meta scenario.' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Approve Comment Governance Scenario' ), 'Next stage plan links approve-comment scenario.' );
 
 $readme = magick_ai_core_read( $root . '/README.md' );
 magick_ai_core_assert( false !== strpos( $readme, 'Agent MCP Entry Contract' ), 'README links Agent MCP Entry Contract.' );
@@ -223,6 +226,7 @@ magick_ai_core_assert( false !== strpos( $readme, 'App Auth Scope Policy' ), 'RE
 magick_ai_core_assert( false !== strpos( $readme, 'OpenClaw governance adapter example' ), 'README links OpenClaw governance adapter example.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Create Draft Governance Scenario' ), 'README links Create Draft Governance Scenario.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Set Post SEO Meta Governance Scenario' ), 'README links Set Post SEO Meta Governance Scenario.' );
+magick_ai_core_assert( false !== strpos( $readme, 'Approve Comment Governance Scenario' ), 'README links Approve Comment Governance Scenario.' );
 
 $openclaw_adapter_readme = magick_ai_core_read( $root . '/examples/openclaw-governance-adapter/README.md' );
 foreach (
@@ -237,6 +241,7 @@ foreach (
 		'Generic adapters should not approve proposals by default',
 		'create-draft-proposal',
 		'create-seo-meta-proposal',
+		'create-comment-approval-proposal',
 		'This command discovers',
 		'commit_execution=false',
 	) as $required
@@ -275,22 +280,42 @@ foreach (
 	magick_ai_core_assert( false !== strpos( $seo_meta_scenario, $required ), 'SEO metadata scenario doc contains required text: ' . $required );
 }
 
+$approve_comment_scenario = magick_ai_core_read( $root . '/docs/approve-comment-governance-scenario.md' );
+foreach (
+	array(
+		'`magick-ai/approve-comment`',
+		'comment moderation writes for a non-post',
+		'`comment_id` is required',
+		'current status',
+		'`dry_run`, `commit`, and `idempotency_key` are governance controls',
+		'`target_action=approve`',
+		'`commit_execution=false`',
+		'comment remains pending after the Core governance loop',
+		'do not patch Core with aliases or fallback definitions',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $approve_comment_scenario, $required ), 'Approve comment scenario doc contains required text: ' . $required );
+}
+
 $openclaw_adapter = magick_ai_core_read( $root . '/examples/openclaw-governance-adapter/openclaw-governance-adapter.php' );
 foreach (
 	array(
 		'capabilities',
 		'create-draft-proposal',
 		'create-seo-meta-proposal',
+		'create-comment-approval-proposal',
 		'create-proposal',
 		'commit-preflight',
 		'magick_ai_core_adapter_assert_create_draft_contract',
 		'magick_ai_core_adapter_assert_seo_meta_contract',
+		'magick_ai_core_adapter_assert_comment_approval_contract',
 		'magick_ai_core_adapter_seo_field_patch',
 		'Required ability is not discoverable through Core',
 		'input schema is missing governance control',
 		'input schema is missing field/control',
 		'$input[\'commit\']  = false',
 		'field_patch',
+		'target_action',
 		'commit_execution',
 		'MAGICK_AI_CORE_BASE_URL',
 		'MAGICK_AI_CORE_APP_TOKEN',
@@ -370,11 +395,13 @@ magick_ai_core_assert( false !== strpos( $ability_intake, 'does not copy the fix
 magick_ai_core_assert( false !== strpos( $ability_intake, 'currently discoverable' ), 'Ability intake contract rejects unavailable proposal ability ids.' );
 magick_ai_core_assert( false !== strpos( $ability_intake, 'Create Draft Governance Scenario' ), 'Ability intake contract points to the create-draft scenario.' );
 magick_ai_core_assert( false !== strpos( $ability_intake, 'Set Post SEO Meta Governance Scenario' ), 'Ability intake contract points to the set-post-seo-meta scenario.' );
+magick_ai_core_assert( false !== strpos( $ability_intake, 'Approve Comment Governance Scenario' ), 'Ability intake contract points to the approve-comment scenario.' );
 
 $testing_strategy = magick_ai_core_read( $root . '/docs/testing-strategy.md' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'agent-workflow-replay.json' ), 'Testing strategy records shared replay fixture smoke coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'primary `magick-ai/create-draft` governance scenario' ), 'Testing strategy records primary create-draft scenario coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'second `magick-ai/set-post-seo-meta` governance scenario' ), 'Testing strategy records second set-post-seo-meta scenario coverage.' );
+magick_ai_core_assert( false !== strpos( $testing_strategy, 'third `magick-ai/approve-comment` governance scenario' ), 'Testing strategy records third approve-comment scenario coverage.' );
 
 $development_workflow = magick_ai_core_read( $root . '/docs/development-workflow.md' );
 magick_ai_core_assert( false !== strpos( $development_workflow, 'does not depend on the abandoned legacy Magick AI' ), 'Development workflow rejects the abandoned legacy Magick AI dependency.' );
@@ -399,6 +426,11 @@ magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick_ai_core_smoke_assert
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'set-post-seo-meta input schema exposes field/control' ), 'WordPress smoke validates set-post-seo-meta field controls.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'field_patch' ), 'WordPress smoke validates set-post-seo-meta field patch preview.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/approve-comment' ), 'WordPress smoke validates comment moderation proposal governance.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick_ai_core_smoke_assert_comment_approval_contract' ), 'WordPress smoke has a dedicated approve-comment contract check.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick_ai_core_smoke_create_pending_comment' ), 'WordPress smoke creates a pending comment for approve-comment governance.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'approve-comment input schema exposes governance control' ), 'WordPress smoke validates approve-comment governance controls.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'target_action' ), 'WordPress smoke validates approve-comment target action preview.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'does not mutate comment status' ), 'WordPress smoke validates approve-comment preflight does not mutate comments.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'app-authenticated proposal stores app attribution' ), 'WordPress smoke validates app proposal attribution.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'app-authenticated audit read is denied without audit scope' ), 'WordPress smoke validates denied app audit scope.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'app rate limit returns 429 after fixed window is exhausted' ), 'WordPress smoke validates app rate limiting.' );
@@ -456,6 +488,7 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'Agent rules' ), 'Admin pa
 magick_ai_core_assert( false !== strpos( $admin_page, 'Do not store or print MAGICK_AI_CORE_APP_TOKEN' ), 'Admin page warns external agents not to leak app tokens.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'create-draft-proposal' ), 'Admin page handoff points to the primary create-draft adapter path.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'create-seo-meta-proposal' ), 'Admin page handoff points to the set-post-seo-meta adapter path.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'create-comment-approval-proposal' ), 'Admin page handoff points to the approve-comment adapter path.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_INSECURE_SSL=true' ), 'Admin page includes local TLS handoff setting.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_CA_BUNDLE' ), 'Admin page prefers local CA bundle when available.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'include_local_tls' ), 'Admin page exposes local TLS export checkbox.' );

@@ -148,7 +148,7 @@ See [App Auth Scope Policy](app-auth-scope-policy.md).
 
 ### 6. Agent/MCP Governance Entry
 
-Status: create-draft and SEO metadata governance scenarios active.
+Status: draft, SEO metadata, and comment approval governance scenarios active.
 
 Goal: let WordPress, MCP adapters, Agent Gateway bridges, and product plugins
 consume Core governance without moving MCP runtime or channel projection into
@@ -171,14 +171,18 @@ Current implementation:
   scenario;
 - `magick-ai/set-post-seo-meta` is the second solidified host-governed write
   scenario, covering field-level updates to an existing post;
+- `magick-ai/approve-comment` is the third solidified host-governed write
+  scenario, covering comment moderation and a non-post resource;
 - `composer smoke:wp` verifies discovery, schema controls, proposal creation,
-  admin approval, and commit preflight for both real ability ids;
+  admin approval, and commit preflight for all three real ability ids;
 - the OpenClaw example adapter includes `create-draft-proposal` and
-  `create-seo-meta-proposal`, which discover capabilities before creating
-  proposals and still do not approve or execute writes.
+  `create-seo-meta-proposal`, and `create-comment-approval-proposal`, which
+  discover capabilities before creating proposals and still do not approve or
+  execute writes.
 
 See [Create Draft Governance Scenario](create-draft-governance-scenario.md).
 See [Set Post SEO Meta Governance Scenario](set-post-seo-meta-governance-scenario.md).
+See [Approve Comment Governance Scenario](approve-comment-governance-scenario.md).
 
 ## Stop Conditions
 

@@ -84,6 +84,18 @@ php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-
   --seo-description="SEO description"
 ```
 
+Create the third host-governed comment moderation scenario. This command
+discovers capabilities first, verifies `magick-ai/approve-comment` is still a
+write-risk ability requiring approval, checks the moderation schema, and then
+creates a proposal:
+
+```bash
+php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-comment-approval-proposal \
+  --comment-id=123 \
+  --current-status=hold \
+  --post-id=456
+```
+
 Create a proposal with a real, discoverable `ability_id`:
 
 ```bash

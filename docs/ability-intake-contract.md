@@ -101,3 +101,8 @@ The second solidified consumer scenario is `magick-ai/set-post-seo-meta`; see
 [Set Post SEO Meta Governance Scenario](set-post-seo-meta-governance-scenario.md).
 Core must treat it as an existing-resource field update proposal and still
 discover the schema through intake.
+
+The third solidified consumer scenario is `magick-ai/approve-comment`; see
+[Approve Comment Governance Scenario](approve-comment-governance-scenario.md).
+Core must treat it as a non-post comment moderation proposal and still discover
+the schema through intake.

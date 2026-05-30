@@ -211,6 +211,68 @@ function magick_ai_core_smoke_assert_seo_meta_contract( array $items_by_id ): vo
 }
 
 /**
+ * Verifies the preferred comment approval proposal target schema is discoverable.
+ *
+ * @param array<string,mixed> $items_by_id Capability rows keyed by ability id.
+ * @return void
+ */
+function magick_ai_core_smoke_assert_comment_approval_contract( array $items_by_id ): void {
+	$ability_id = 'magick-ai/approve-comment';
+	magick_ai_core_smoke_assert( isset( $items_by_id[ $ability_id ] ), 'approve-comment ability is discoverable for the third governance scenario' );
+
+	$ability      = $items_by_id[ $ability_id ];
+	$input_schema = is_array( $ability['input_schema'] ?? null ) ? $ability['input_schema'] : array();
+	$required     = (array) ( $input_schema['required'] ?? array() );
+	$properties   = is_array( $input_schema['properties'] ?? null ) ? $input_schema['properties'] : array();
+
+	magick_ai_core_smoke_assert( 'write' === (string) ( $ability['risk_level'] ?? '' ), 'approve-comment is discovered as a write-risk ability' );
+	magick_ai_core_smoke_assert( true === (bool) ( $ability['requires_approval'] ?? false ), 'approve-comment is discovered as requiring approval' );
+	magick_ai_core_smoke_assert( in_array( 'comment_id', $required, true ), 'approve-comment input schema requires comment_id' );
+
+	foreach ( array( 'dry_run', 'commit', 'idempotency_key' ) as $control ) {
+		magick_ai_core_smoke_assert( array_key_exists( $control, $properties ), 'approve-comment input schema exposes governance control ' . $control );
+	}
+}
+
+/**
+ * Creates a local pending comment for comment moderation smoke coverage.
+ *
+ * @return array{comment_id:int,post_id:int,current_status:string}
+ */
+function magick_ai_core_smoke_create_pending_comment(): array {
+	$post_id = wp_insert_post(
+		array(
+			'post_title'   => 'Core Governance Comment Smoke',
+			'post_content' => 'Comment moderation smoke parent post.',
+			'post_status'  => 'publish',
+			'post_type'    => 'post',
+		),
+		true
+	);
+	magick_ai_core_smoke_assert( ! is_wp_error( $post_id ) && (int) $post_id > 0, 'comment smoke parent post is created' );
+
+	$comment_id = wp_insert_comment(
+		array(
+			'comment_post_ID'      => (int) $post_id,
+			'comment_author'       => 'Core Smoke Reviewer',
+			'comment_author_email' => 'core-smoke@example.test',
+			'comment_content'      => 'Pending comment for Core governance smoke.',
+			'comment_approved'     => '0',
+		)
+	);
+	magick_ai_core_smoke_assert( (int) $comment_id > 0, 'pending comment is created for comment approval governance' );
+
+	$comment = get_comment( (int) $comment_id );
+	magick_ai_core_smoke_assert( $comment instanceof WP_Comment, 'pending comment can be loaded for preview' );
+
+	return array(
+		'comment_id'     => (int) $comment_id,
+		'post_id'        => (int) $post_id,
+		'current_status' => (string) $comment->comment_approved,
+	);
+}
+
+/**
  * Runs the proposal, approval, preflight, and audit smoke loop for one write-like ability.
  *
  * @param string              $ability_id Ability id.
@@ -366,6 +428,7 @@ foreach ( $items as $item ) {
 
 magick_ai_core_smoke_assert_create_draft_contract( $items_by_id );
 magick_ai_core_smoke_assert_seo_meta_contract( $items_by_id );
+magick_ai_core_smoke_assert_comment_approval_contract( $items_by_id );
 
 $workflow_cases = magick_ai_core_smoke_workflow_cases();
 magick_ai_core_smoke_assert( count( $workflow_cases ) > 0, 'shared workflow definitions are available to Core' );
@@ -435,21 +498,31 @@ $seo_proposal_id = magick_ai_core_smoke_run_governance_proposal(
 
 magick_ai_core_smoke_assert( '' !== $seo_proposal_id, 'SEO metadata proposal completed governance loop' );
 
+$pending_comment = magick_ai_core_smoke_create_pending_comment();
+
 $comment_proposal_id = magick_ai_core_smoke_run_governance_proposal(
 	'magick-ai/approve-comment',
 	$items_by_id,
 	'Smoke comment moderation proposal',
 	array(
-		'comment_id' => 1,
+		'comment_id' => $pending_comment['comment_id'],
 		'dry_run'    => true,
+		'commit'     => false,
 	),
 	array(
-		'dry_run'       => true,
-		'host_governed' => true,
+		'comment_id'       => $pending_comment['comment_id'],
+		'post_id'          => $pending_comment['post_id'],
+		'current_status'   => $pending_comment['current_status'],
+		'target_action'    => 'approve',
+		'dry_run'          => true,
+		'host_governed'    => true,
+		'commit_execution' => false,
 	)
 );
 
 magick_ai_core_smoke_assert( '' !== $comment_proposal_id, 'comment moderation proposal completed governance loop' );
+$comment_after_preflight = get_comment( $pending_comment['comment_id'] );
+magick_ai_core_smoke_assert( $comment_after_preflight instanceof WP_Comment && $pending_comment['current_status'] === (string) $comment_after_preflight->comment_approved, 'comment approval governance loop does not mutate comment status' );
 
 $app_created = magick_ai_core_smoke_rest_as_app(
 	'POST',

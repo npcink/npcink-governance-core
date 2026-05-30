@@ -93,6 +93,8 @@ composer validate --no-check-publish
   controls and commit preflight without final execution;
 - the second `magick-ai/set-post-seo-meta` scenario, including field-level
   update input and commit preflight without final execution;
+- the third `magick-ai/approve-comment` scenario, including pending comment
+  setup, moderation preview input, and commit preflight without final execution;
 - proposal creation;
 - proposal approval;
 - proposal rejection;

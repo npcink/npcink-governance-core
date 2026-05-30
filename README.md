@@ -69,6 +69,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Core Governance Handoff Validation](docs/core-governance-handoff-validation.md)
 - [Create Draft Governance Scenario](docs/create-draft-governance-scenario.md)
 - [Set Post SEO Meta Governance Scenario](docs/set-post-seo-meta-governance-scenario.md)
+- [Approve Comment Governance Scenario](docs/approve-comment-governance-scenario.md)
 - [Development Workflow](docs/development-workflow.md)
 - [Testing Strategy](docs/testing-strategy.md)
 - [Next Stage Plan](docs/next-stage-plan.md)

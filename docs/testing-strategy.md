@@ -47,6 +47,9 @@ Use it for behavior that requires real WordPress:
   controls, proposal creation, approval, and commit preflight;
 - the second `magick-ai/set-post-seo-meta` governance scenario, including
   field-level update input and commit preflight without final execution;
+- the third `magick-ai/approve-comment` governance scenario, including pending
+  comment setup, moderation preview input, and commit preflight without final
+  execution;
 - real proposal and audit persistence.
 
 The smoke test should stay small. It is a confidence gate, not a full end-to-end

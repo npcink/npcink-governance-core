@@ -53,6 +53,18 @@ The dedicated scenario is documented in
 The OpenClaw example adapter exposes `create-seo-meta-proposal` for this path,
 but it still does not approve proposals or execute the final write.
 
+The third practical consumer-side loop is `magick-ai/approve-comment`. Core
+must discover the real ability id and schema from `magick-ai-abilities`, create
+a moderation proposal for `comment_id`, current status, and target action,
+let an administrator approve or reject it, and return approval context from
+commit preflight with `commit_execution=false`.
+
+The dedicated scenario is documented in
+[Approve Comment Governance Scenario](approve-comment-governance-scenario.md).
+The OpenClaw example adapter exposes `create-comment-approval-proposal` for
+this path, but it still does not approve proposals or execute the final comment
+mutation.
+
 ## Non-Goals
 
 This validation does not add workflow runtime ownership, natural language

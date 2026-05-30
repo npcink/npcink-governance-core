@@ -1,5 +1,33 @@
 # Session Breadcrumb
 
+## 2026-05-30 — Approve-comment governance scenario solidified
+
+- **Module**: consumer-side governance loop / comment moderation proposal
+- **Status**: `magick-ai/approve-comment` is now the third solidified Core
+  host-governed write scenario.
+- **Completed**:
+  - Added a dedicated approve-comment scenario document for future humans and AI
+    agents.
+  - Added `create-comment-approval-proposal` to the OpenClaw example adapter.
+    It discovers capabilities first, validates the real
+    `magick-ai/approve-comment` contract, requires `comment_id`, includes
+    current status and `target_action=approve` in preview, and forces
+    `dry_run=true` and `commit=false`.
+  - Updated the admin OpenClaw handoff to point at the dedicated comment
+    approval adapter path.
+  - Hardened WordPress smoke coverage by creating a real pending comment,
+    creating the proposal, approving it in Core, running commit preflight, and
+    verifying Core did not mutate the comment status.
+  - Updated README, intake, handoff validation, workflow, next-stage, testing,
+    adapter docs, and static contracts.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+- **Boundary**:
+  - Core still only performs discovery, proposal, approve/reject, preflight,
+    and audit. It does not execute `magick-ai/approve-comment`, change comment
+    status, own comment product UX, or own workflow runtime.
+
 ## 2026-05-30 — Set-post-seo-meta governance scenario solidified
 
 - **Module**: consumer-side governance loop / field-level proposal handoff
