@@ -230,6 +230,7 @@ magick_ai_core_assert( false !== strpos( $next_stage_plan, 'OpenClaw Execution G
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Create Draft Governance Scenario' ), 'Next stage plan links create-draft scenario.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Set Post SEO Meta Governance Scenario' ), 'Next stage plan links set-post-seo-meta scenario.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Approve Comment Governance Scenario' ), 'Next stage plan links approve-comment scenario.' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Taxonomy Terms Preview Governance Scenario' ), 'Next stage plan links taxonomy terms preview scenario.' );
 
 $readme = magick_ai_core_read( $root . '/README.md' );
 magick_ai_core_assert( false !== strpos( $readme, 'Agent MCP Entry Contract' ), 'README links Agent MCP Entry Contract.' );
@@ -240,6 +241,7 @@ magick_ai_core_assert( false !== strpos( $readme, 'OpenClaw Execution Guidance' 
 magick_ai_core_assert( false !== strpos( $readme, 'Create Draft Governance Scenario' ), 'README links Create Draft Governance Scenario.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Set Post SEO Meta Governance Scenario' ), 'README links Set Post SEO Meta Governance Scenario.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Approve Comment Governance Scenario' ), 'README links Approve Comment Governance Scenario.' );
+magick_ai_core_assert( false !== strpos( $readme, 'Taxonomy Terms Preview Governance Scenario' ), 'README links Taxonomy Terms Preview Governance Scenario.' );
 
 $openclaw_execution_guidance = magick_ai_core_read( $root . '/docs/openclaw-execution-guidance.md' );
 foreach (
@@ -277,6 +279,7 @@ foreach (
 		'3d94af7',
 		'2c28a27',
 		'0f44ee0',
+		'`magick-ai/propose-post-taxonomy-terms` -> `magick-ai/set-post-terms`',
 		'capabilities discovery -> proposal -> approve/reject -> commit-preflight -> audit',
 		'`commit_execution=false`',
 		'Core does not execute final WordPress mutation',
@@ -309,6 +312,7 @@ foreach (
 		'create-draft-proposal',
 		'create-seo-meta-proposal',
 		'create-comment-approval-proposal',
+		'create-taxonomy-terms-proposal',
 		'This command discovers',
 		'commit_execution=false',
 	) as $required
@@ -364,6 +368,24 @@ foreach (
 	magick_ai_core_assert( false !== strpos( $approve_comment_scenario, $required ), 'Approve comment scenario doc contains required text: ' . $required );
 }
 
+$taxonomy_terms_scenario = magick_ai_core_read( $root . '/docs/taxonomy-terms-preview-governance-scenario.md' );
+foreach (
+	array(
+		'`magick-ai/propose-post-taxonomy-terms`',
+		'`magick-ai/set-post-terms`',
+		'read-risk helper',
+		'`governance_mode=direct_read`',
+		'WordPress Abilities API',
+		'`dry_run=true`, `commit=false`, `create_missing=false`',
+		'`commit_execution=false`',
+		'post terms remain unchanged after the Core governance loop',
+		'audit filters correlate the taxonomy proposal lifecycle',
+		'do not patch Core with aliases or fallback definitions',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $taxonomy_terms_scenario, $required ), 'Taxonomy terms scenario doc contains required text: ' . $required );
+}
+
 $openclaw_adapter = magick_ai_core_read( $root . '/examples/openclaw-governance-adapter/openclaw-governance-adapter.php' );
 foreach (
 	array(
@@ -371,11 +393,14 @@ foreach (
 		'create-draft-proposal',
 		'create-seo-meta-proposal',
 		'create-comment-approval-proposal',
+		'create-taxonomy-terms-proposal',
 		'create-proposal',
 		'commit-preflight',
 		'magick_ai_core_adapter_assert_create_draft_contract',
 		'magick_ai_core_adapter_assert_seo_meta_contract',
 		'magick_ai_core_adapter_assert_comment_approval_contract',
+		'magick_ai_core_adapter_assert_taxonomy_terms_contract',
+		'magick_ai_core_adapter_taxonomy_terms_payload',
 		'magick_ai_core_adapter_seo_field_patch',
 		'Required ability is not discoverable through Core',
 		'input schema is missing governance control',
@@ -383,6 +408,9 @@ foreach (
 		'$input[\'commit\']  = false',
 		'field_patch',
 		'target_action',
+		'proposal_helper_ability_id',
+		'magick-ai/propose-post-taxonomy-terms',
+		'magick-ai/set-post-terms',
 		'commit_execution',
 		'MAGICK_AI_CORE_BASE_URL',
 		'MAGICK_AI_CORE_APP_TOKEN',
@@ -469,12 +497,14 @@ magick_ai_core_assert( false !== strpos( $ability_intake, 'currently discoverabl
 magick_ai_core_assert( false !== strpos( $ability_intake, 'Create Draft Governance Scenario' ), 'Ability intake contract points to the create-draft scenario.' );
 magick_ai_core_assert( false !== strpos( $ability_intake, 'Set Post SEO Meta Governance Scenario' ), 'Ability intake contract points to the set-post-seo-meta scenario.' );
 magick_ai_core_assert( false !== strpos( $ability_intake, 'Approve Comment Governance Scenario' ), 'Ability intake contract points to the approve-comment scenario.' );
+magick_ai_core_assert( false !== strpos( $ability_intake, 'Taxonomy Terms Preview Governance Scenario' ), 'Ability intake contract points to the taxonomy terms preview scenario.' );
 
 $testing_strategy = magick_ai_core_read( $root . '/docs/testing-strategy.md' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'agent-workflow-replay.json' ), 'Testing strategy records shared replay fixture smoke coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'primary `magick-ai/create-draft` governance scenario' ), 'Testing strategy records primary create-draft scenario coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'second `magick-ai/set-post-seo-meta` governance scenario' ), 'Testing strategy records second set-post-seo-meta scenario coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'third `magick-ai/approve-comment` governance scenario' ), 'Testing strategy records third approve-comment scenario coverage.' );
+magick_ai_core_assert( false !== strpos( $testing_strategy, 'taxonomy terms preview governance scenario' ), 'Testing strategy records taxonomy terms preview scenario coverage.' );
 
 $development_workflow = magick_ai_core_read( $root . '/docs/development-workflow.md' );
 magick_ai_core_assert( false !== strpos( $development_workflow, 'does not depend on the abandoned legacy Magick AI' ), 'Development workflow rejects the abandoned legacy Magick AI dependency.' );
@@ -504,6 +534,12 @@ magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick_ai_core_smoke_create
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'approve-comment input schema exposes governance control' ), 'WordPress smoke validates approve-comment governance controls.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'target_action' ), 'WordPress smoke validates approve-comment target action preview.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'does not mutate comment status' ), 'WordPress smoke validates approve-comment preflight does not mutate comments.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/propose-post-taxonomy-terms' ), 'WordPress smoke validates taxonomy proposal helper discovery.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/set-post-terms' ), 'WordPress smoke validates taxonomy set-post-terms governance.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick_ai_core_smoke_assert_taxonomy_terms_contract' ), 'WordPress smoke has a dedicated taxonomy terms contract check.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick_ai_core_smoke_run_taxonomy_terms_preview' ), 'WordPress smoke runs taxonomy terms preview helper through WordPress Abilities API.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'taxonomy terms governance loop does not mutate post terms' ), 'WordPress smoke validates taxonomy terms preflight does not mutate post terms.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'taxonomy terms audit correlates commit preflight with set-post-terms' ), 'WordPress smoke validates taxonomy terms audit correlation.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'app-authenticated proposal stores app attribution' ), 'WordPress smoke validates app proposal attribution.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'app-authenticated audit read is denied without audit scope' ), 'WordPress smoke validates denied app audit scope.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'app rate limit returns 429 after fixed window is exhausted' ), 'WordPress smoke validates app rate limiting.' );
@@ -572,6 +608,7 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'core_proxy_execute=false'
 magick_ai_core_assert( false !== strpos( $admin_page, 'create-draft-proposal' ), 'Admin page handoff points to the primary create-draft adapter path.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'create-seo-meta-proposal' ), 'Admin page handoff points to the set-post-seo-meta adapter path.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'create-comment-approval-proposal' ), 'Admin page handoff points to the approve-comment adapter path.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'create-taxonomy-terms-proposal' ), 'Admin page handoff points to the taxonomy terms adapter path.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_INSECURE_SSL=true' ), 'Admin page includes local TLS handoff setting.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_CA_BUNDLE' ), 'Admin page prefers local CA bundle when available.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'include_local_tls' ), 'Admin page exposes local TLS export checkbox.' );

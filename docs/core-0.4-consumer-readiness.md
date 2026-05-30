@@ -63,3 +63,12 @@ semantics, audit attribution, adapter responsibility, and rollback boundaries.
 
 Until such an ADR is accepted, Core remains the governance layer: discovery,
 proposal, approve/reject, commit preflight, and audit.
+
+## Post-0.4 Extension
+
+Core also has a taxonomy terms preview consumer proof for
+`magick-ai/propose-post-taxonomy-terms` -> `magick-ai/set-post-terms`. This
+validates a read-helper-to-write-proposal handoff for existing taxonomy terms:
+the helper is executed through WordPress Abilities API, Core governs the
+generated `set-post-terms` dry-run proposal, and commit preflight still returns
+`commit_execution=false`.

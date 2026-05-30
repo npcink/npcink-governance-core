@@ -107,6 +107,28 @@ php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-
   --post-id=456
 ```
 
+Create the taxonomy terms preview handoff scenario. Product adapters should
+first run `magick-ai/propose-post-taxonomy-terms` through WordPress Abilities
+API, then pass that helper output to this command. The command discovers
+capabilities first, verifies the helper is direct-read, verifies
+`magick-ai/set-post-terms` is still a write-risk ability requiring approval,
+and then creates a dry-run proposal:
+
+```bash
+php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-taxonomy-terms-proposal \
+  --helper-output=@taxonomy-preview.json
+```
+
+For local hand-authored smoke input, pass existing resolved term ids directly:
+
+```bash
+php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-taxonomy-terms-proposal \
+  --post-id=123 \
+  --taxonomy=post_tag \
+  --mode=append \
+  --term-ids=12,13
+```
+
 Create a proposal with a real, discoverable `ability_id`:
 
 ```bash

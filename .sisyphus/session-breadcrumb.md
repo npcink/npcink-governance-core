@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-05-30 — Taxonomy terms preview governance proof added
+
+- **Module**: consumer-side governance loop / taxonomy terms preview handoff
+- **Status**: Core now proves consumption of
+  `magick-ai/propose-post-taxonomy-terms` as a direct-read helper that feeds a
+  governed `magick-ai/set-post-terms` proposal.
+- **Completed**:
+  - Added a dedicated taxonomy terms preview scenario document.
+  - Added `create-taxonomy-terms-proposal` to the OpenClaw governance adapter
+    example. It validates both capability rows, consumes helper output or
+    resolved existing terms, and creates a dry-run `set-post-terms` proposal.
+  - Extended WordPress smoke to run the preview helper through WordPress
+    Abilities API, create and approve the Core proposal, run commit preflight,
+    verify post terms are not mutated, and correlate audit events by proposal.
+  - Updated README, intake, readiness, next-stage, testing, admin handoff, and
+    static contracts.
+- **Verified**:
+  - `git diff --check` passed.
+  - `composer test:all` passed.
+  - `php examples/openclaw-governance-adapter/openclaw-governance-adapter.php --help`
+    passed.
+  - `composer smoke:wp` passed.
+- **Boundary**:
+  - Core still does not execute the preview helper, assign taxonomy terms,
+    create missing terms, implement MCP runtime, or execute final commits.
+
 ## 2026-05-30 — Direct Core access wording clarified
 
 - **Module**: admin direct app access / OpenClaw Adapter positioning

@@ -106,3 +106,10 @@ The third solidified consumer scenario is `magick-ai/approve-comment`; see
 [Approve Comment Governance Scenario](approve-comment-governance-scenario.md).
 Core must treat it as a non-post comment moderation proposal and still discover
 the schema through intake.
+
+The taxonomy terms preview scenario consumes
+`magick-ai/propose-post-taxonomy-terms` as a direct-read helper and
+`magick-ai/set-post-terms` as the governed write target; see
+[Taxonomy Terms Preview Governance Scenario](taxonomy-terms-preview-governance-scenario.md).
+Core must not execute the helper or assign terms. It only governs the generated
+dry-run `set-post-terms` proposal, approval, preflight, and audit lifecycle.

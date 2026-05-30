@@ -238,6 +238,45 @@ function magick_ai_core_smoke_assert_comment_approval_contract( array $items_by_
 }
 
 /**
+ * Verifies the taxonomy terms preview-to-proposal abilities are discoverable.
+ *
+ * @param array<string,mixed> $items_by_id Capability rows keyed by ability id.
+ * @return void
+ */
+function magick_ai_core_smoke_assert_taxonomy_terms_contract( array $items_by_id ): void {
+	$preview_id = 'magick-ai/propose-post-taxonomy-terms';
+	$target_id  = 'magick-ai/set-post-terms';
+	magick_ai_core_smoke_assert( isset( $items_by_id[ $preview_id ] ), 'propose-post-taxonomy-terms ability is discoverable for taxonomy preview consumption' );
+	magick_ai_core_smoke_assert( isset( $items_by_id[ $target_id ] ), 'set-post-terms ability is discoverable for taxonomy proposal governance' );
+
+	$preview            = $items_by_id[ $preview_id ];
+	$preview_schema     = is_array( $preview['input_schema'] ?? null ) ? $preview['input_schema'] : array();
+	$preview_required   = (array) ( $preview_schema['required'] ?? array() );
+	$preview_properties = is_array( $preview_schema['properties'] ?? null ) ? $preview_schema['properties'] : array();
+
+	magick_ai_core_smoke_assert( 'read' === (string) ( $preview['risk_level'] ?? '' ), 'propose-post-taxonomy-terms is discovered as read risk' );
+	magick_ai_core_smoke_assert( false === (bool) ( $preview['requires_approval'] ?? true ), 'propose-post-taxonomy-terms does not require approval before read execution' );
+	magick_ai_core_smoke_assert_capability_guidance( $preview, 'direct_read', 'wp_abilities_rest', 'propose-post-taxonomy-terms uses direct read guidance' );
+	magick_ai_core_smoke_assert( in_array( 'post_id', $preview_required, true ), 'propose-post-taxonomy-terms input schema requires post_id' );
+	foreach ( array( 'taxonomy', 'mode', 'candidate_term_ids', 'candidate_terms' ) as $field ) {
+		magick_ai_core_smoke_assert( array_key_exists( $field, $preview_properties ), 'propose-post-taxonomy-terms input schema exposes field ' . $field );
+	}
+
+	$target            = $items_by_id[ $target_id ];
+	$target_schema     = is_array( $target['input_schema'] ?? null ) ? $target['input_schema'] : array();
+	$target_required   = (array) ( $target_schema['required'] ?? array() );
+	$target_properties = is_array( $target_schema['properties'] ?? null ) ? $target_schema['properties'] : array();
+
+	magick_ai_core_smoke_assert( 'write' === (string) ( $target['risk_level'] ?? '' ), 'set-post-terms is discovered as a write-risk ability' );
+	magick_ai_core_smoke_assert( true === (bool) ( $target['requires_approval'] ?? false ), 'set-post-terms is discovered as requiring approval' );
+	magick_ai_core_smoke_assert_capability_guidance( $target, 'proposal_required', 'adapter_after_core_preflight', 'set-post-terms uses proposal-required execution guidance' );
+	magick_ai_core_smoke_assert( in_array( 'post_id', $target_required, true ), 'set-post-terms input schema requires post_id' );
+	foreach ( array( 'taxonomy', 'mode', 'term_ids', 'terms', 'create_missing', 'dry_run', 'commit', 'idempotency_key' ) as $control ) {
+		magick_ai_core_smoke_assert( array_key_exists( $control, $target_properties ), 'set-post-terms input schema exposes field/control ' . $control );
+	}
+}
+
+/**
  * Verifies adapter execution guidance on a capability row.
  *
  * @param array<string,mixed> $ability Capability row.
@@ -289,6 +328,116 @@ function magick_ai_core_smoke_create_pending_comment(): array {
 		'post_id'        => (int) $post_id,
 		'current_status' => (string) $comment->comment_approved,
 	);
+}
+
+/**
+ * Returns an existing or newly created term id.
+ *
+ * @param string $name Term name.
+ * @param string $taxonomy Taxonomy id.
+ * @return int
+ */
+function magick_ai_core_smoke_term_id( string $name, string $taxonomy ): int {
+	$existing = term_exists( $name, $taxonomy );
+	if ( is_array( $existing ) ) {
+		return (int) ( $existing['term_id'] ?? 0 );
+	}
+	if ( is_int( $existing ) ) {
+		return $existing;
+	}
+	if ( is_string( $existing ) && is_numeric( $existing ) ) {
+		return (int) $existing;
+	}
+
+	$created = wp_insert_term( $name, $taxonomy );
+	if ( is_wp_error( $created ) ) {
+		return 0;
+	}
+
+	return (int) ( is_array( $created ) ? ( $created['term_id'] ?? 0 ) : 0 );
+}
+
+/**
+ * Creates a local post and existing terms for taxonomy governance smoke coverage.
+ *
+ * @return array{post_id:int,taxonomy:string,current_term_id:int,candidate_term_id:int,current_terms:array<int,int>}
+ */
+function magick_ai_core_smoke_create_taxonomy_terms_fixture(): array {
+	$taxonomy = 'post_tag';
+	$post_id  = wp_insert_post(
+		array(
+			'post_title'   => 'Taxonomy terms smoke parent post',
+			'post_content' => 'Taxonomy terms governance smoke content.',
+			'post_status'  => 'draft',
+			'post_type'    => 'post',
+		),
+		true
+	);
+	magick_ai_core_smoke_assert( ! is_wp_error( $post_id ) && (int) $post_id > 0, 'taxonomy smoke parent post is created' );
+
+	$current_term_id   = magick_ai_core_smoke_term_id( 'Core Smoke Current Topic', $taxonomy );
+	$candidate_term_id = magick_ai_core_smoke_term_id( 'Core Smoke Candidate Topic', $taxonomy );
+	magick_ai_core_smoke_assert( $current_term_id > 0 && $candidate_term_id > 0, 'taxonomy smoke existing terms are available' );
+
+	$set_terms = wp_set_post_terms( (int) $post_id, array( $current_term_id ), $taxonomy, false );
+	magick_ai_core_smoke_assert( ! is_wp_error( $set_terms ), 'taxonomy smoke current term is assigned before Core governance' );
+
+	return array(
+		'post_id'           => (int) $post_id,
+		'taxonomy'          => $taxonomy,
+		'current_term_id'   => $current_term_id,
+		'candidate_term_id' => $candidate_term_id,
+		'current_terms'     => array( $current_term_id ),
+	);
+}
+
+/**
+ * Returns sorted post term ids.
+ *
+ * @param int    $post_id Post id.
+ * @param string $taxonomy Taxonomy id.
+ * @return array<int,int>
+ */
+function magick_ai_core_smoke_post_term_ids( int $post_id, string $taxonomy ): array {
+	$ids = wp_get_post_terms( $post_id, $taxonomy, array( 'fields' => 'ids' ) );
+	if ( is_wp_error( $ids ) ) {
+		return array();
+	}
+	$ids = array_values( array_map( 'intval', (array) $ids ) );
+	sort( $ids );
+	return $ids;
+}
+
+/**
+ * Runs the taxonomy proposal helper through WordPress Abilities API.
+ *
+ * @param array<string,mixed> $fixture Taxonomy smoke fixture.
+ * @return array<string,mixed>
+ */
+function magick_ai_core_smoke_run_taxonomy_terms_preview( array $fixture ): array {
+	wp_set_current_user( 1 );
+
+	$request = new WP_REST_Request( 'GET', '/wp-abilities/v1/abilities/magick-ai/propose-post-taxonomy-terms/run' );
+	$request->set_query_params(
+		array(
+			'input' => array(
+				'post_id'            => (int) $fixture['post_id'],
+				'taxonomy'           => (string) $fixture['taxonomy'],
+				'mode'               => 'append',
+				'candidate_term_ids' => array( (int) $fixture['candidate_term_id'] ),
+				'candidate_terms'    => array( 'Unmatched Core Smoke Topic' ),
+			),
+		)
+	);
+
+	$response = rest_do_request( $request );
+	magick_ai_core_smoke_assert( 200 === (int) $response->get_status(), 'taxonomy terms preview helper runs through WordPress Abilities API' );
+	$data = $response->get_data();
+	magick_ai_core_smoke_assert( is_array( $data ) && true === (bool) ( $data['success'] ?? false ), 'taxonomy terms preview helper returns a success envelope' );
+	magick_ai_core_smoke_assert( 'magick-ai/set-post-terms' === (string) ( $data['data']['proposal']['target_ability_id'] ?? '' ), 'taxonomy terms preview helper targets set-post-terms' );
+	magick_ai_core_smoke_assert( false === ( $data['data']['proposal']['commit_execution'] ?? null ), 'taxonomy terms preview helper does not execute commits' );
+
+	return $data;
 }
 
 /**
@@ -463,6 +612,7 @@ magick_ai_core_smoke_assert_capability_guidance( $items_by_id['magick-ai/site-in
 magick_ai_core_smoke_assert_create_draft_contract( $items_by_id );
 magick_ai_core_smoke_assert_seo_meta_contract( $items_by_id );
 magick_ai_core_smoke_assert_comment_approval_contract( $items_by_id );
+magick_ai_core_smoke_assert_taxonomy_terms_contract( $items_by_id );
 
 $workflow_cases = magick_ai_core_smoke_workflow_cases();
 magick_ai_core_smoke_assert( count( $workflow_cases ) > 0, 'shared workflow definitions are available to Core' );
@@ -559,6 +709,41 @@ $comment_proposal_id = magick_ai_core_smoke_run_governance_proposal(
 magick_ai_core_smoke_assert( '' !== $comment_proposal_id, 'comment moderation proposal completed governance loop' );
 $comment_after_preflight = get_comment( $pending_comment['comment_id'] );
 magick_ai_core_smoke_assert( $comment_after_preflight instanceof WP_Comment && $pending_comment['current_status'] === (string) $comment_after_preflight->comment_approved, 'comment approval governance loop does not mutate comment status' );
+
+$taxonomy_fixture = magick_ai_core_smoke_create_taxonomy_terms_fixture();
+$taxonomy_before  = magick_ai_core_smoke_post_term_ids( $taxonomy_fixture['post_id'], $taxonomy_fixture['taxonomy'] );
+$taxonomy_preview = magick_ai_core_smoke_run_taxonomy_terms_preview( $taxonomy_fixture );
+$taxonomy_data    = is_array( $taxonomy_preview['data'] ?? null ) ? $taxonomy_preview['data'] : array();
+$taxonomy_input   = is_array( $taxonomy_data['proposal']['input'] ?? null ) ? $taxonomy_data['proposal']['input'] : array();
+magick_ai_core_smoke_assert( true === (bool) ( $taxonomy_input['dry_run'] ?? false ), 'taxonomy terms preview produces dry-run set-post-terms input' );
+magick_ai_core_smoke_assert( false === (bool) ( $taxonomy_input['commit'] ?? false ), 'taxonomy terms preview keeps set-post-terms commit disabled' );
+magick_ai_core_smoke_assert( false === (bool) ( $taxonomy_input['create_missing'] ?? true ), 'taxonomy terms preview does not request term creation' );
+
+$taxonomy_proposal_id = magick_ai_core_smoke_run_governance_proposal(
+	'magick-ai/set-post-terms',
+	$items_by_id,
+	'Smoke taxonomy terms proposal',
+	$taxonomy_input,
+	array(
+		'proposal_helper_ability_id' => 'magick-ai/propose-post-taxonomy-terms',
+		'target_ability_id'          => 'magick-ai/set-post-terms',
+		'taxonomy'                   => (string) ( $taxonomy_data['taxonomy'] ?? 'post_tag' ),
+		'mode'                       => (string) ( $taxonomy_data['mode'] ?? 'append' ),
+		'current_terms'              => (array) ( $taxonomy_data['current_terms'] ?? array() ),
+		'matched_terms'              => (array) ( $taxonomy_data['matched_terms'] ?? array() ),
+		'unmatched_terms'            => (array) ( $taxonomy_data['unmatched_terms'] ?? array() ),
+		'proposed_term_ids'          => (array) ( $taxonomy_data['proposed_term_ids'] ?? array() ),
+		'added_term_ids'             => (array) ( $taxonomy_data['added_term_ids'] ?? array() ),
+		'removed_term_ids'           => (array) ( $taxonomy_data['removed_term_ids'] ?? array() ),
+		'dry_run'                    => true,
+		'host_governed'              => true,
+		'commit_execution'           => false,
+	)
+);
+
+magick_ai_core_smoke_assert( '' !== $taxonomy_proposal_id, 'taxonomy terms proposal completed governance loop' );
+$taxonomy_after = magick_ai_core_smoke_post_term_ids( $taxonomy_fixture['post_id'], $taxonomy_fixture['taxonomy'] );
+magick_ai_core_smoke_assert( $taxonomy_before === $taxonomy_after, 'taxonomy terms governance loop does not mutate post terms' );
 
 $app_created = magick_ai_core_smoke_rest_as_app(
 	'POST',
@@ -674,6 +859,25 @@ magick_ai_core_smoke_assert( count( $proposal_audit_items ) >= 3, 'audit endpoin
 foreach ( $proposal_audit_items as $item ) {
 	magick_ai_core_smoke_assert( $proposal_id === (string) ( is_array( $item ) ? ( $item['proposal_id'] ?? '' ) : '' ), 'proposal audit filter returns only matching proposal events' );
 }
+
+$taxonomy_proposal_audit = magick_ai_core_smoke_rest(
+	'GET',
+	'/magick-ai-core/v1/audit',
+	array(
+		'proposal_id' => $taxonomy_proposal_id,
+		'limit'       => 20,
+	)
+);
+$taxonomy_audit_items = (array) ( $taxonomy_proposal_audit['items'] ?? array() );
+magick_ai_core_smoke_assert( count( $taxonomy_audit_items ) >= 3, 'taxonomy terms audit filter returns the proposal lifecycle events' );
+$found_taxonomy_preflight = false;
+foreach ( $taxonomy_audit_items as $item ) {
+	magick_ai_core_smoke_assert( $taxonomy_proposal_id === (string) ( is_array( $item ) ? ( $item['proposal_id'] ?? '' ) : '' ), 'taxonomy audit filter returns only matching proposal events' );
+	if ( is_array( $item ) && 'commit.preflighted' === (string) ( $item['event_name'] ?? '' ) ) {
+		$found_taxonomy_preflight = 'magick-ai/set-post-terms' === (string) ( $item['metadata']['ability_id'] ?? '' );
+	}
+}
+magick_ai_core_smoke_assert( $found_taxonomy_preflight, 'taxonomy terms audit correlates commit preflight with set-post-terms' );
 
 $app_proposal_audit = magick_ai_core_smoke_rest(
 	'GET',

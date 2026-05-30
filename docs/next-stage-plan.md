@@ -179,12 +179,18 @@ Current implementation:
   scenario, covering field-level updates to an existing post;
 - `magick-ai/approve-comment` is the third solidified host-governed write
   scenario, covering comment moderation and a non-post resource;
+- `magick-ai/propose-post-taxonomy-terms` -> `magick-ai/set-post-terms` is the
+  taxonomy terms preview scenario, covering read-helper-to-write-proposal
+  handoff for existing taxonomy terms;
 - `composer smoke:wp` verifies discovery, schema controls, proposal creation,
-  admin approval, and commit preflight for all three real ability ids;
+  admin approval, and commit preflight for the representative real ability ids;
 - the OpenClaw example adapter includes `create-draft-proposal` and
   `create-seo-meta-proposal`, and `create-comment-approval-proposal`, which
   discover capabilities before creating proposals and still do not approve or
   execute writes.
+- the OpenClaw example adapter also includes `create-taxonomy-terms-proposal`,
+  which consumes taxonomy helper output or already resolved existing terms
+  before creating the governed `magick-ai/set-post-terms` proposal.
 - capability rows now tell adapters whether to use direct read execution through
   WordPress Abilities API or proposal-required governance through Core.
 
@@ -193,6 +199,7 @@ See [OpenClaw Execution Guidance](openclaw-execution-guidance.md).
 See [Create Draft Governance Scenario](create-draft-governance-scenario.md).
 See [Set Post SEO Meta Governance Scenario](set-post-seo-meta-governance-scenario.md).
 See [Approve Comment Governance Scenario](approve-comment-governance-scenario.md).
+See [Taxonomy Terms Preview Governance Scenario](taxonomy-terms-preview-governance-scenario.md).
 
 ### 7. Final Commit Execution ADR Decision
 

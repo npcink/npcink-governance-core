@@ -50,6 +50,10 @@ Use it for behavior that requires real WordPress:
 - the third `magick-ai/approve-comment` governance scenario, including pending
   comment setup, moderation preview input, and commit preflight without final
   execution;
+- the taxonomy terms preview governance scenario, including
+  `magick-ai/propose-post-taxonomy-terms` helper execution through WordPress
+  Abilities API, `magick-ai/set-post-terms` proposal creation, approval,
+  commit preflight, audit correlation, and no post term mutation;
 - real proposal and audit persistence.
 
 The smoke test should stay small. It is a confidence gate, not a full end-to-end

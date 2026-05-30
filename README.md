@@ -72,6 +72,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Create Draft Governance Scenario](docs/create-draft-governance-scenario.md)
 - [Set Post SEO Meta Governance Scenario](docs/set-post-seo-meta-governance-scenario.md)
 - [Approve Comment Governance Scenario](docs/approve-comment-governance-scenario.md)
+- [Taxonomy Terms Preview Governance Scenario](docs/taxonomy-terms-preview-governance-scenario.md)
 - [Development Workflow](docs/development-workflow.md)
 - [Testing Strategy](docs/testing-strategy.md)
 - [Next Stage Plan](docs/next-stage-plan.md)
@@ -90,6 +91,11 @@ the `magick-ai/create-draft`, `magick-ai/set-post-seo-meta`, and
 [Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md). The next
 stage is a decision point: only design final commit execution through a
 separate ADR; otherwise Core remains the governance layer.
+
+The taxonomy terms preview extension proves the same boundary for
+`magick-ai/propose-post-taxonomy-terms` -> `magick-ai/set-post-terms`: adapters
+run the read helper through WordPress Abilities API, then submit the generated
+dry-run write proposal to Core for approval and commit preflight.
 
 For direct Core governance setup, WordPress administrators can open
 `Tools -> Magick AI Core -> Direct Core Governance Access` to copy the Core base
