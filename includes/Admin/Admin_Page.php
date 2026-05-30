@@ -643,7 +643,9 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 
 		return "Magick AI Core connection\n"
 			. "MAGICK_AI_CORE_BASE_URL={$base_url}\n"
-			. "MAGICK_AI_CORE_APP_TOKEN={$token}\n\n"
+			. "MAGICK_AI_CORE_APP_TOKEN={$token}\n"
+			. "MAGICK_AI_CORE_INSECURE_SSL=true # local .local/localhost PoC only\n\n"
+			. "Prefer MAGICK_AI_CORE_CA_BUNDLE=/path/to/local-ca.pem when a local CA bundle is available.\n\n"
 			. "Agent rules\n"
 			. "1. Treat Magick AI Core as the WordPress governance layer, not as a protocol runtime or content generator.\n"
 			. "2. Call capabilities first and use only real ability_id values returned by Core.\n"

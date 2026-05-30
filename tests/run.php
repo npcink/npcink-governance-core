@@ -222,6 +222,9 @@ foreach (
 		'not an MCP server',
 		'GET /wp-json/magick-ai-core/v1/capabilities',
 		'POST /wp-json/magick-ai-core/v1/proposals',
+		'MAGICK_AI_CORE_CA_BUNDLE',
+		'MAGICK_AI_CORE_INSECURE_SSL',
+		'Do not use `MAGICK_AI_CORE_INSECURE_SSL=true` for production',
 		'MAGICK_AI_CORE_APPLICATION_PASSWORD',
 		'Generic adapters should not approve proposals by default',
 		'commit_execution=false',
@@ -238,6 +241,12 @@ foreach (
 		'commit-preflight',
 		'MAGICK_AI_CORE_BASE_URL',
 		'MAGICK_AI_CORE_APP_TOKEN',
+		'MAGICK_AI_CORE_CA_BUNDLE',
+		'MAGICK_AI_CORE_INSECURE_SSL',
+		'CURLOPT_CAINFO',
+		'CURLOPT_SSL_VERIFYPEER',
+		'CURLOPT_SSL_VERIFYHOST',
+		'magick_ai_core_adapter_is_local_url',
 		'MAGICK_AI_CORE_APPLICATION_PASSWORD',
 		'wp-json/magick-ai-core/v1',
 		'openclaw-governance-adapter-example',
@@ -382,6 +391,8 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'External App Access' ), '
 magick_ai_core_assert( false !== strpos( $admin_page, 'OpenClaw Handoff' ), 'Admin page exposes OpenClaw handoff guidance.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Agent rules' ), 'Admin page includes external agent rules.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Do not store or print MAGICK_AI_CORE_APP_TOKEN' ), 'Admin page warns external agents not to leak app tokens.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_INSECURE_SSL=true' ), 'Admin page includes local TLS handoff setting.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_CA_BUNDLE' ), 'Admin page prefers local CA bundle when available.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_BASE_URL' ), 'Admin page shows base URL env value.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_APP_TOKEN' ), 'Admin page shows app token env value.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'render_created_app_key' ), 'Admin page renders one-time app key result.' );

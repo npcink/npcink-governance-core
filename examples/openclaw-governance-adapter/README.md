@@ -25,6 +25,26 @@ export MAGICK_AI_CORE_BASE_URL="https://example.test"
 export MAGICK_AI_CORE_APP_TOKEN="mai_core.key_xxx.secret_xxx"
 ```
 
+## Local TLS
+
+Local by Flywheel and similar macOS development stacks often use local
+self-signed certificates for `.local` domains. Prefer passing a trusted CA
+bundle when available:
+
+```bash
+export MAGICK_AI_CORE_CA_BUNDLE="/path/to/local-ca.pem"
+```
+
+For throwaway local PoC work against `localhost`, `127.0.0.1`, `::1`, or
+`.local` hosts, the example adapter can disable PHP cURL certificate validation:
+
+```bash
+export MAGICK_AI_CORE_INSECURE_SSL="true"
+```
+
+Do not use `MAGICK_AI_CORE_INSECURE_SSL=true` for production or public hosts.
+The script refuses that mode outside local-only hostnames.
+
 During early local PoC work, the script can still fall back to a WordPress
 Application Password for a `manage_options` user:
 

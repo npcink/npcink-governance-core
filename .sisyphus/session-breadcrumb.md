@@ -1,5 +1,23 @@
 # Session Breadcrumb
 
+## 2026-05-30 — OpenClaw adapter local TLS switches added
+
+- **Module**: external agent governance adapter example
+- **Status**: The OpenClaw example adapter now supports LocalWP `.local`
+  self-signed certificate workflows without weakening production defaults.
+- **Completed**:
+  - Added `MAGICK_AI_CORE_CA_BUNDLE` for a preferred trusted local CA bundle.
+  - Added `MAGICK_AI_CORE_INSECURE_SSL=true` for local-only hosts:
+    `localhost`, `127.0.0.1`, `::1`, and `.local`.
+  - Refused insecure SSL mode for non-local/public hosts.
+  - Updated the OpenClaw README, admin handoff text, and static contracts.
+- **Verified**:
+  - `composer test:all` passed.
+  - Local adapter capabilities call passed against `https://magick-ai.local`
+    with `MAGICK_AI_CORE_INSECURE_SSL=true`.
+  - Non-local insecure SSL mode was rejected for `https://example.com`.
+  - `composer smoke:wp` passed.
+
 ## 2026-05-30 — OpenClaw handoff and key disable UI added
 
 - **Module**: external app governance authorization

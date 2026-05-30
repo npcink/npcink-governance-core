@@ -31,6 +31,10 @@ Required environment:
   MAGICK_AI_CORE_BASE_URL
   MAGICK_AI_CORE_APP_TOKEN
 
+Optional local TLS environment:
+  MAGICK_AI_CORE_CA_BUNDLE=/path/to/local-ca.pem
+  MAGICK_AI_CORE_INSECURE_SSL=true
+
 Fallback PoC environment for manage_options user auth:
   MAGICK_AI_CORE_USER
   MAGICK_AI_CORE_APPLICATION_PASSWORD
@@ -141,6 +145,58 @@ function magick_ai_core_adapter_json_option( ?string $value, array $fallback = a
 }
 
 /**
+ * Returns whether the URL host is local-only.
+ *
+ * @param string $url Base URL.
+ * @return bool
+ */
+function magick_ai_core_adapter_is_local_url( string $url ): bool {
+	$host = parse_url( $url, PHP_URL_HOST );
+	if ( ! is_string( $host ) ) {
+		return false;
+	}
+
+	$host = strtolower( trim( $host, '[]' ) );
+	if ( in_array( $host, array( 'localhost', '127.0.0.1', '::1' ), true ) ) {
+		return true;
+	}
+
+	return strlen( $host ) >= 6 && '.local' === substr( $host, -6 );
+}
+
+/**
+ * Configures TLS behavior for local development.
+ *
+ * @param mixed  $curl cURL handle.
+ * @param string $base_url Base URL.
+ * @return void
+ */
+function magick_ai_core_adapter_configure_tls( $curl, string $base_url ): void {
+	$ca_bundle = getenv( 'MAGICK_AI_CORE_CA_BUNDLE' );
+	if ( is_string( $ca_bundle ) && '' !== trim( $ca_bundle ) ) {
+		$ca_bundle = trim( $ca_bundle );
+		if ( ! is_readable( $ca_bundle ) ) {
+			magick_ai_core_adapter_fail( 'MAGICK_AI_CORE_CA_BUNDLE is not readable: ' . $ca_bundle, 2 );
+		}
+
+		curl_setopt( $curl, CURLOPT_CAINFO, $ca_bundle );
+		return;
+	}
+
+	$insecure = getenv( 'MAGICK_AI_CORE_INSECURE_SSL' );
+	if ( 'true' !== strtolower( trim( is_string( $insecure ) ? $insecure : '' ) ) ) {
+		return;
+	}
+
+	if ( ! magick_ai_core_adapter_is_local_url( $base_url ) ) {
+		magick_ai_core_adapter_fail( 'MAGICK_AI_CORE_INSECURE_SSL=true is only allowed for localhost, 127.0.0.1, ::1, or .local hosts.', 2 );
+	}
+
+	curl_setopt( $curl, CURLOPT_SSL_VERIFYPEER, false );
+	curl_setopt( $curl, CURLOPT_SSL_VERIFYHOST, 0 );
+}
+
+/**
  * Calls Core REST.
  *
  * @param string              $method HTTP method.
@@ -181,6 +237,7 @@ function magick_ai_core_adapter_request( string $method, string $path, array $bo
 	curl_setopt( $curl, CURLOPT_CUSTOMREQUEST, strtoupper( $method ) );
 	curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers );
 	curl_setopt( $curl, CURLOPT_TIMEOUT, $timeout );
+	magick_ai_core_adapter_configure_tls( $curl, $base_url );
 
 	if ( ! empty( $body ) ) {
 		$encoded = json_encode( $body );
