@@ -133,21 +133,15 @@ stored only as `secret_hash`. `GET /apps`, proposals, and audit rows must not
 return raw app secrets or secret hashes.
 
 Administrators can also create the same scoped app token from
-`Tools -> Magick AI Core -> Direct Core Governance Access`. The screen shows the
-site base URL, REST URL, direct Core environment variables, and a copyable
-direct Core handoff guide. It also tells operators that productized OpenClaw
-setup should use Magick AI Adapter as the primary entry point. It displays the
-raw token only on the creation result screen and lists existing app keys without
-secret material.
+`Tools -> Magick AI Core -> Core App Keys`. The screen shows the Core REST URL,
+minimal Core environment variables, and existing app keys without secret
+material. It displays the raw token only on the creation result screen.
+Productized OpenClaw setup, agent rules, handoff text, and local TLS client
+configuration belong in Magick AI Adapter, not Core.
 
 If a token is exposed, administrators should disable that app key from the same
 screen and create a replacement. Disabled keys are stored as `revoked` and must
 fail future app authentication with `401`.
-
-The local TLS handoff checkbox only controls whether copied direct Core client
-configuration includes `MAGICK_AI_CORE_INSECURE_SSL=true`. It must be treated as
-a local client convenience for `.local` or `localhost` testing, not a Core
-security mode.
 
 App-authenticated requests must have the route's required scope and pass the
 fixed-window rate limit. Missing auth returns `401`, missing scope returns
@@ -170,13 +164,10 @@ Local WordPress smoke credentials are local-only and must not be committed.
 Repository docs may mention the local username when useful, but the password
 must remain redacted in memory notes and outside repository files.
 
-## External Adapter PoC Credentials
+## Adapter Credential Boundary
 
-The OpenClaw governance adapter example uses WordPress Application Password
-authentication through environment variables. Those values are local operator
-secrets and must not be committed, written into proposal payloads, or copied
-into audit metadata.
-
-For LocalWP self-signed certificates, prefer `MAGICK_AI_CORE_CA_BUNDLE` when a
-local CA bundle is available. `MAGICK_AI_CORE_INSECURE_SSL=true` is only for
-local-only hosts and is rejected by the example adapter for public hosts.
+Adapters may hold Core app tokens, WordPress Application Passwords, local CA
+bundle paths, or local TLS test switches in their own secret stores and runtime
+configuration. Core must not copy those adapter-side onboarding values into
+proposal payloads or audit metadata, and Core admin screens must not become the
+OpenClaw setup UI.

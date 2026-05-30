@@ -105,17 +105,14 @@ attribution, and commit-preflight correlation ids. See
 the Core loop easier to review and debug without adding ability execution or a
 workflow runtime.
 
-For direct Core governance setup, WordPress administrators can open
-`Tools -> Magick AI Core -> Direct Core Governance Access` to copy the Core base
-URL and create a scoped one-time app token. This screen is for clients that call
-Core governance routes directly. Productized OpenClaw setup should use
-Magick AI Adapter as the entry point; Adapter calls Core for governance and
-WordPress Abilities API for direct reads. The Core screen still provides direct
-Core environment values, a direct Core handoff guide, an optional LocalWP TLS
-test export line for `.local` testing, and a key disable action for leaked or
-obsolete tokens. The TLS option only changes copied client configuration; it is
-not a Core server setting. The token is shown once and should be stored only in
-the external client's secret store or environment.
+For Core governance credentials, WordPress administrators can open
+`Tools -> Magick AI Core -> Core App Keys` to create a scoped one-time app
+token and disable leaked or obsolete keys. This screen is not an OpenClaw
+onboarding surface. Productized OpenClaw setup, local TLS client configuration,
+agent rules, and handoff instructions belong in Magick AI Adapter. Core only
+issues governance app keys and records approvals, preflight, rate limits, and
+audit attribution. The token is shown once and should be stored only in a
+trusted Adapter or internal governance client secret store.
 
 Run the local static test suite:
 

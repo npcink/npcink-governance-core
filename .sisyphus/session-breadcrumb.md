@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-05-30 — Core app-key screen trimmed for Adapter ownership
+
+- **Module**: admin app-key surface / Adapter boundary
+- **Status**: Core app-key UI is now a credential management surface, not an
+  OpenClaw onboarding or handoff surface.
+- **Completed**:
+  - Renamed the direct access area to Core App Keys.
+  - Removed Direct Core Handoff textarea, Agent rules, OpenClaw example
+    commands, Adapter REST URL export, and LocalWP TLS export checkbox from
+    Core admin.
+  - Kept scoped app-key creation, one-time token display, minimal Core env,
+    rate policy, scope selection, and key disable action.
+  - Updated README, security, app-auth, development workflow, next-stage plan,
+    and static contracts to state that OpenClaw setup, local TLS switches, and
+    handoff instructions belong in Magick AI Adapter.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+  - `git diff --check` passed.
+- **Boundary**:
+  - Core still owns app identity, scopes, rate policy, and audit attribution.
+    Adapter owns productized OpenClaw onboarding and client-side runtime
+    configuration.
+
 ## 2026-05-30 — Governance operability baseline added
 
 - **Module**: Core governance operability / audit traceability

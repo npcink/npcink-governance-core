@@ -104,26 +104,12 @@ composer validate --no-check-publish
 
 The smoke test creates local proposal and audit records. That is expected.
 
-## Direct Core Local TLS
+## Adapter Local TLS
 
-The admin `Direct Core Governance Access` screen includes a local testing
-checkbox when creating an app key. When enabled, the generated direct Core
-env/handoff text includes:
-
-```bash
-MAGICK_AI_CORE_INSECURE_SSL=true
-```
-
-This is a client-side setting for LocalWP `.local` or `localhost` self-signed
-certificate testing. It is not stored as Core policy and does not change Core
-server security. Productized OpenClaw setup should use Magick AI Adapter; Core's
-local TLS export is only for direct Core governance clients.
-
-Prefer a trusted local CA bundle when available:
-
-```bash
-MAGICK_AI_CORE_CA_BUNDLE=/path/to/local-ca.pem
-```
+Core no longer exports LocalWP TLS switches or OpenClaw handoff text from the
+app-key screen. Productized OpenClaw setup, LocalWP `.local` certificate
+workarounds, local CA bundle paths, and agent usage instructions belong in
+Magick AI Adapter. Core only issues scoped governance app keys.
 
 ## Smoke Wrapper
 

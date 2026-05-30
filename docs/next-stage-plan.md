@@ -20,8 +20,8 @@ Implemented:
 - real WordPress smoke;
 - minimal app-key authentication, scopes, rate limiting, and app audit
   attribution.
-- admin UI for external clients to copy the Core URL and create scoped one-time
-  app tokens.
+- admin UI for Core app-key creation, scoped one-time token display, and key
+  disable actions.
 - Core 0.4 consumer readiness for the `magick-ai-abilities` 0.4.0
   representative scenarios.
 - capability execution guidance for OpenClaw and adapter clients, without
@@ -143,12 +143,11 @@ Current implementation:
 
 - app keys are created by admin-only `POST /apps`;
 - app keys can also be created from `Tools -> Magick AI Core`;
-- the admin UI includes a Direct Core Governance Access surface with a copyable
-  direct Core handoff guide and key disable action;
-- the direct Core handoff can include an explicit local TLS test setting for
-  `.local`/`localhost` PoC work without changing Core server policy;
-- the admin UI points productized OpenClaw setup to Magick AI Adapter instead
-  of presenting Core as the OpenClaw product entry point;
+- the admin UI includes a Core App Keys surface with Core REST URL, minimal env
+  template, one-time token display, and key disable action;
+- the admin UI points productized OpenClaw setup to Magick AI Adapter and does
+  not export OpenClaw handoff text, Adapter URLs, agent rules, or LocalWP TLS
+  switches;
 - raw secrets are returned once as bearer tokens;
 - default external adapter scopes exclude approval and audit read;
 - app-authenticated proposal and preflight events include app attribution.

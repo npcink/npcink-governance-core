@@ -229,9 +229,8 @@ final class Admin_Page {
 
 		check_admin_referer( 'magick_ai_core_create_app_key' );
 
-		$raw_scopes        = isset( $_POST['scopes'] ) && is_array( $_POST['scopes'] ) ? wp_unslash( $_POST['scopes'] ) : array();
-		$include_local_tls = ! empty( $_POST['include_local_tls'] );
-		$app               = $this->apps->create(
+		$raw_scopes = isset( $_POST['scopes'] ) && is_array( $_POST['scopes'] ) ? wp_unslash( $_POST['scopes'] ) : array();
+		$app        = $this->apps->create(
 			array(
 				'app_label'           => isset( $_POST['app_label'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['app_label'] ) ) : 'External app',
 				'caller_type'         => isset( $_POST['caller_type'] ) ? sanitize_key( wp_unslash( (string) $_POST['caller_type'] ) ) : 'mcp_adapter',
@@ -253,7 +252,7 @@ final class Admin_Page {
 
 		status_header( 200 );
 		nocache_headers();
-		$this->render_created_app_key( $app, $include_local_tls );
+		$this->render_created_app_key( $app );
 		exit;
 	}
 
@@ -295,49 +294,37 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Renders direct Core governance access section.
+	 * Renders Core app key access section.
 	 *
 	 * @return void
 	 */
 	private function render_external_access(): void {
-		$base_url          = home_url();
-		$rest_url          = rest_url( 'magick-ai-core/v1' );
-		$adapter_rest_url  = rest_url( 'magick-ai-adapter/v1' );
-		$apps              = $this->apps->list_recent( 10 );
-		$default_local_tls = $this->is_local_base_url( $base_url );
+		$rest_url = rest_url( 'magick-ai-core/v1' );
+		$apps     = $this->apps->list_recent( 10 );
 		?>
-		<h2><?php echo esc_html__( 'Direct Core Governance Access', 'magick-ai-core' ); ?></h2>
-		<p><?php echo esc_html__( 'Issue scoped app keys for clients that call Core governance routes directly. Human approval remains in Core.', 'magick-ai-core' ); ?></p>
+		<h2><?php echo esc_html__( 'Core App Keys', 'magick-ai-core' ); ?></h2>
+		<p><?php echo esc_html__( 'Issue scoped app keys for clients that call Core governance routes. Human approval remains in Core.', 'magick-ai-core' ); ?></p>
 		<div class="notice notice-info inline" style="max-width: 1100px;">
-			<p><strong><?php echo esc_html__( 'OpenClaw product setup', 'magick-ai-core' ); ?></strong></p>
-			<p><?php echo esc_html__( 'Use Magick AI Adapter as the primary OpenClaw entry point. Adapter calls Core for governance and WordPress Abilities API for direct reads.', 'magick-ai-core' ); ?></p>
-			<p><?php echo esc_html__( 'Adapter REST URL:', 'magick-ai-core' ); ?> <code><?php echo esc_html( $adapter_rest_url ); ?></code></p>
+			<p><strong><?php echo esc_html__( 'Adapter setup', 'magick-ai-core' ); ?></strong></p>
+			<p><?php echo esc_html__( 'Configure OpenClaw and other productized clients in Magick AI Adapter. Core only issues governance app keys and records approvals, preflight, rate limits, and audit attribution.', 'magick-ai-core' ); ?></p>
 		</div>
 		<table class="widefat striped" style="max-width: 1100px;">
 			<tbody>
-				<tr>
-					<th scope="row"><?php echo esc_html__( 'Base URL', 'magick-ai-core' ); ?></th>
-					<td><code><?php echo esc_html( $base_url ); ?></code></td>
-				</tr>
 				<tr>
 					<th scope="row"><?php echo esc_html__( 'Core REST URL', 'magick-ai-core' ); ?></th>
 					<td><code><?php echo esc_html( $rest_url ); ?></code></td>
 				</tr>
 				<tr>
-					<th scope="row"><?php echo esc_html__( 'Direct Core env', 'magick-ai-core' ); ?></th>
+					<th scope="row"><?php echo esc_html__( 'Environment template', 'magick-ai-core' ); ?></th>
 					<td>
-						<pre style="margin: 0;">MAGICK_AI_CORE_BASE_URL=<?php echo esc_html( $base_url ); ?>
+						<pre style="margin: 0;">MAGICK_AI_CORE_BASE_URL=<?php echo esc_html( home_url() ); ?>
 MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 
-		<h3><?php echo esc_html__( 'Direct Core Handoff', 'magick-ai-core' ); ?></h3>
-		<p><?php echo esc_html__( 'Use this only for direct Core governance clients. For productized OpenClaw setup, use Magick AI Adapter.', 'magick-ai-core' ); ?></p>
-		<textarea class="large-text code" rows="18" readonly><?php echo esc_textarea( $this->openclaw_handoff_text( 'mai_core.key_xxx.secret_xxx', false ) ); ?></textarea>
-
-		<h3><?php echo esc_html__( 'Create Direct Core App Key', 'magick-ai-core' ); ?></h3>
+		<h3><?php echo esc_html__( 'Create Core App Key', 'magick-ai-core' ); ?></h3>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="max-width: 1100px;">
 			<input type="hidden" name="action" value="magick_ai_core_create_app_key" />
 			<?php wp_nonce_field( 'magick_ai_core_create_app_key' ); ?>
@@ -345,11 +332,11 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 				<tbody>
 					<tr>
 						<th scope="row"><label for="magick-ai-core-app-label"><?php echo esc_html__( 'App label', 'magick-ai-core' ); ?></label></th>
-						<td><input id="magick-ai-core-app-label" class="regular-text" type="text" name="app_label" value="Direct Core Client" /></td>
+						<td><input id="magick-ai-core-app-label" class="regular-text" type="text" name="app_label" value="Adapter Client" /></td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="magick-ai-core-caller-type"><?php echo esc_html__( 'Caller type', 'magick-ai-core' ); ?></label></th>
-						<td><input id="magick-ai-core-caller-type" class="regular-text" type="text" name="caller_type" value="mcp_adapter" /></td>
+						<td><input id="magick-ai-core-caller-type" class="regular-text" type="text" name="caller_type" value="product_adapter" /></td>
 					</tr>
 					<tr>
 						<th scope="row"><?php echo esc_html__( 'Scopes', 'magick-ai-core' ); ?></th>
@@ -368,19 +355,9 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 							</label>
 						</td>
 					</tr>
-					<tr>
-						<th scope="row"><?php echo esc_html__( 'Local testing', 'magick-ai-core' ); ?></th>
-						<td>
-							<label>
-								<input type="checkbox" name="include_local_tls" value="1" <?php checked( $default_local_tls ); ?> />
-								<?php echo esc_html__( 'Include LocalWP TLS test setting in Direct Core env and handoff.', 'magick-ai-core' ); ?>
-							</label>
-							<p class="description"><?php echo esc_html__( 'Use only for localhost or .local testing. This only changes copied client configuration; it does not change Core server security.', 'magick-ai-core' ); ?></p>
-						</td>
-					</tr>
 				</tbody>
 			</table>
-			<p><button type="submit" class="button button-primary"><?php echo esc_html__( 'Create Direct Core App Key', 'magick-ai-core' ); ?></button></p>
+			<p><button type="submit" class="button button-primary"><?php echo esc_html__( 'Create Core App Key', 'magick-ai-core' ); ?></button></p>
 		</form>
 
 		<h3><?php echo esc_html__( 'Recent App Keys', 'magick-ai-core' ); ?></h3>
@@ -461,16 +438,15 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 	 * @param array<string,mixed> $app App row with one-time token.
 	 * @return void
 	 */
-	private function render_created_app_key( array $app, bool $include_local_tls ): void {
-		$base_url = home_url();
-		$token    = (string) ( $app['token'] ?? '' );
+	private function render_created_app_key( array $app ): void {
+		$token = (string) ( $app['token'] ?? '' );
 		?>
 		<!doctype html>
 		<html <?php language_attributes(); ?>>
 		<head>
 			<meta charset="<?php echo esc_attr( get_bloginfo( 'charset' ) ); ?>" />
 			<meta name="viewport" content="width=device-width, initial-scale=1" />
-			<title><?php echo esc_html__( 'Direct Core App Key Created', 'magick-ai-core' ); ?></title>
+			<title><?php echo esc_html__( 'Core App Key Created', 'magick-ai-core' ); ?></title>
 			<style>
 				body { margin: 0; background: #f0f0f1; color: #1d2327; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
 				main { max-width: 960px; margin: 32px auto; padding: 0 24px; }
@@ -487,10 +463,10 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 		</head>
 		<body>
 			<main>
-				<h1><?php echo esc_html__( 'Direct Core App Key Created', 'magick-ai-core' ); ?></h1>
+				<h1><?php echo esc_html__( 'Core App Key Created', 'magick-ai-core' ); ?></h1>
 				<div class="notice">
 					<p><?php echo esc_html__( 'Copy this token now. It is shown only once and is not stored in raw form.', 'magick-ai-core' ); ?></p>
-					<p><?php echo esc_html__( 'For productized OpenClaw setup, use Magick AI Adapter. This token is only for direct Core governance clients.', 'magick-ai-core' ); ?></p>
+					<p><?php echo esc_html__( 'Use this token only in a trusted Adapter or internal governance client secret store. Configure productized OpenClaw setup in Magick AI Adapter.', 'magick-ai-core' ); ?></p>
 				</div>
 				<table>
 					<tbody>
@@ -507,12 +483,8 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 							<td><textarea rows="3" readonly><?php echo esc_textarea( $token ); ?></textarea></td>
 						</tr>
 						<tr>
-							<th scope="row"><?php echo esc_html__( 'Direct Core env', 'magick-ai-core' ); ?></th>
-							<td><textarea rows="5" readonly><?php echo esc_textarea( $this->openclaw_env_text( $token, $include_local_tls ) ); ?></textarea></td>
-						</tr>
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Direct Core handoff', 'magick-ai-core' ); ?></th>
-							<td><textarea rows="18" readonly><?php echo esc_textarea( $this->openclaw_handoff_text( $token, $include_local_tls ) ); ?></textarea></td>
+							<th scope="row"><?php echo esc_html__( 'Core env', 'magick-ai-core' ); ?></th>
+							<td><textarea rows="4" readonly><?php echo esc_textarea( $this->core_env_text( $token ) ); ?></textarea></td>
 						</tr>
 					</tbody>
 				</table>
@@ -758,81 +730,17 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 	}
 
 	/**
-	 * Returns copyable direct Core setup guidance.
+	 * Returns minimal Core environment text.
 	 *
 	 * @param string $token App token or placeholder.
-	 * @param bool   $include_local_tls Whether to include local TLS env.
 	 * @return string
 	 */
-	private function openclaw_handoff_text( string $token, bool $include_local_tls ): string {
-		return "Magick AI Core direct governance connection\n"
-			. $this->openclaw_env_text( $token, $include_local_tls ) . "\n\n"
-			. "# Productized OpenClaw setup should use Magick AI Adapter.\n"
-			. "# MAGICK_AI_ADAPTER_BASE_URL=" . rest_url( 'magick-ai-adapter/v1' ) . "\n\n"
-			. "# LocalWP only: set MAGICK_AI_CORE_INSECURE_SSL=true when a .local/localhost self-signed certificate blocks local testing.\n"
-			. "# Prefer MAGICK_AI_CORE_CA_BUNDLE=/path/to/local-ca.pem when a local CA bundle is available.\n\n"
-			. "Agent rules\n"
-			. "1. Use this handoff only for direct Core governance clients. Productized OpenClaw clients should connect to Magick AI Adapter.\n"
-			. "2. Treat Magick AI Core as the WordPress governance layer, not as a protocol runtime or content generator.\n"
-			. "3. Call capabilities first and use only real ability_id values returned by Core.\n"
-			. "4. For governance_mode=direct_read, execute the read ability through WordPress Abilities API, not through Core.\n"
-			. "5. For governance_mode=proposal_required, create a Core proposal; do not approve proposals by default.\n"
-			. "6. Human approval remains in WordPress unless a trusted host policy is separately contracted.\n"
-			. "7. After approval, call commit-preflight to get approval context; Core still returns commit_execution=false and core_proxy_execute=false.\n"
-			. "8. Do not store or print MAGICK_AI_CORE_APP_TOKEN in logs, proposal payloads, prompts, or files.\n"
-			. "9. Stop and report the reason on 401, 403, or 429 responses.\n\n"
-			. "Example commands\n"
-			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php capabilities\n\n"
-			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-draft-proposal \\\n"
-			. "  --title=\"Draft title\" \\\n"
-			. "  --content=\"<p>Draft body.</p>\"\n\n"
-			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-seo-meta-proposal \\\n"
-			. "  --post-id=123 \\\n"
-			. "  --seo-title=\"SEO title\" \\\n"
-			. "  --seo-description=\"SEO description\"\n\n"
-			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-comment-approval-proposal \\\n"
-			. "  --comment-id=123 \\\n"
-			. "  --current-status=hold \\\n"
-			. "  --post-id=456\n\n"
-			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-taxonomy-terms-proposal \\\n"
-			. "  --helper-output=@taxonomy-preview.json\n\n"
-			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php commit-preflight \\\n"
-			. "  --proposal=<proposal_id>";
-	}
-
-	/**
-	 * Returns direct Core environment text.
-	 *
-	 * @param string $token App token or placeholder.
-	 * @param bool   $include_local_tls Whether to include local TLS env.
-	 * @return string
-	 */
-	private function openclaw_env_text( string $token, bool $include_local_tls ): string {
+	private function core_env_text( string $token ): string {
 		$lines = array(
 			'MAGICK_AI_CORE_BASE_URL=' . home_url(),
 			'MAGICK_AI_CORE_APP_TOKEN=' . $token,
 		);
 
-		if ( $include_local_tls ) {
-			$lines[] = 'MAGICK_AI_CORE_INSECURE_SSL=true';
-		}
-
 		return implode( "\n", $lines );
-	}
-
-	/**
-	 * Returns whether a base URL is a local testing host.
-	 *
-	 * @param string $url URL.
-	 * @return bool
-	 */
-	private function is_local_base_url( string $url ): bool {
-		$host = wp_parse_url( $url, PHP_URL_HOST );
-		if ( ! is_string( $host ) ) {
-			return false;
-		}
-
-		$host = strtolower( trim( $host, '[]' ) );
-		return in_array( $host, array( 'localhost', '127.0.0.1', '::1' ), true ) || ( strlen( $host ) >= 6 && '.local' === substr( $host, -6 ) );
 	}
 }
