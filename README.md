@@ -67,6 +67,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Agent MCP Entry Contract](docs/agent-mcp-entry-contract.md)
 - [App Auth Scope Policy](docs/app-auth-scope-policy.md)
 - [Core Governance Handoff Validation](docs/core-governance-handoff-validation.md)
+- [Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md)
 - [Create Draft Governance Scenario](docs/create-draft-governance-scenario.md)
 - [Set Post SEO Meta Governance Scenario](docs/set-post-seo-meta-governance-scenario.md)
 - [Approve Comment Governance Scenario](docs/approve-comment-governance-scenario.md)
@@ -81,6 +82,13 @@ External agent clients can start from the
 [OpenClaw governance adapter example](examples/openclaw-governance-adapter/README.md).
 That example calls Core REST governance routes only; it is not an MCP runtime
 or final write executor.
+
+Core 0.4 consumer readiness is complete for `magick-ai-abilities` 0.4.0 across
+the `magick-ai/create-draft`, `magick-ai/set-post-seo-meta`, and
+`magick-ai/approve-comment` representative scenarios. See
+[Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md). The next
+stage is a decision point: only design final commit execution through a
+separate ADR; otherwise Core remains the governance layer.
 
 For local adapter setup, WordPress administrators can open
 `Tools -> Magick AI Core -> External App Access` to copy the Core base URL and

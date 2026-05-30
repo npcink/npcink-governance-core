@@ -1,5 +1,25 @@
 # Session Breadcrumb
 
+## 2026-05-30 — Core 0.4 consumer readiness documented
+
+- **Module**: consumer readiness documentation / next-stage planning
+- **Status**: Core 0.4 consumer readiness is documented as complete for the
+  `magick-ai-abilities` 0.4.0 representative scenarios.
+- **Completed**:
+  - Added a roll-up readiness document covering create-draft,
+    set-post-seo-meta, and approve-comment with their commits.
+  - Updated README and next-stage planning so future work starts from the
+    readiness conclusion instead of redoing the three representative scenarios.
+  - Shifted the next decision point to whether final commit execution deserves
+    a separate ADR.
+- **Verified**:
+  - `composer test:all` passed.
+  - `php examples/openclaw-governance-adapter/openclaw-governance-adapter.php --help`
+    passed.
+- **Boundary**:
+  - Core remains discovery, proposal, approve/reject, commit preflight, and
+    audit. It still does not execute final WordPress mutation.
+
 ## 2026-05-30 — Approve-comment governance scenario solidified
 
 - **Module**: consumer-side governance loop / comment moderation proposal

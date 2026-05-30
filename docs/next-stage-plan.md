@@ -22,6 +22,8 @@ Implemented:
   attribution.
 - admin UI for external clients to copy the Core URL and create scoped one-time
   app tokens.
+- Core 0.4 consumer readiness for the `magick-ai-abilities` 0.4.0
+  representative scenarios.
 
 Not implemented:
 
@@ -148,7 +150,7 @@ See [App Auth Scope Policy](app-auth-scope-policy.md).
 
 ### 6. Agent/MCP Governance Entry
 
-Status: draft, SEO metadata, and comment approval governance scenarios active.
+Status: consumer readiness complete.
 
 Goal: let WordPress, MCP adapters, Agent Gateway bridges, and product plugins
 consume Core governance without moving MCP runtime or channel projection into
@@ -180,9 +182,25 @@ Current implementation:
   discover capabilities before creating proposals and still do not approve or
   execute writes.
 
+See [Core 0.4 Consumer Readiness](core-0.4-consumer-readiness.md).
 See [Create Draft Governance Scenario](create-draft-governance-scenario.md).
 See [Set Post SEO Meta Governance Scenario](set-post-seo-meta-governance-scenario.md).
 See [Approve Comment Governance Scenario](approve-comment-governance-scenario.md).
+
+### 7. Final Commit Execution ADR Decision
+
+Status: decision required.
+
+Goal: decide whether Core should design final commit execution at all.
+
+Acceptance before implementation:
+
+- write a separate ADR for final commit execution;
+- define authorization, idempotency, failure semantics, retry behavior, audit
+  attribution, and adapter responsibility;
+- preserve `commit_execution=false` until the ADR is accepted and implemented;
+- avoid adding final WordPress mutation routes as an incidental extension of
+  commit preflight.
 
 ## Stop Conditions
 
