@@ -32,6 +32,8 @@ Implemented:
 - documented AI provider log correlation contract that keeps provider request
   logs in the WordPress `ai` plugin and assigns productized context injection
   to Magick AI Adapter.
+- plan-to-proposal governance bridge for content inventory fix, test content
+  cleanup, and media inventory fix plans.
 
 Not implemented:
 
@@ -41,6 +43,17 @@ Not implemented:
 Documented but not implemented:
 
 - Agent/MCP governance entry contract;
+
+## Current Next Decision
+
+Core can now govern both single dry-run write proposals and supported
+read-only plans that produce multiple `write_actions`. The next decision should
+not be another Core runtime feature by default. Either:
+
+- keep Core as the governance layer and let Adapter/product plugins execute
+  approved writes after commit preflight; or
+- write a separate ADR for final commit execution, including idempotency,
+  retry, partial failure, and destructive action rules.
 
 ## Strategic Product Boundary
 

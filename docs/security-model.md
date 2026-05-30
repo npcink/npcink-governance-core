@@ -76,6 +76,7 @@ Approving a proposal is not the same as committing a write.
 The MVP supports:
 
 - proposal creation;
+- proposal creation from supported read-only planning ability output;
 - approval;
 - rejection;
 - commit preflight;
@@ -87,6 +88,17 @@ Commit preflight returns Core-generated approval-commit context without running
 the target ability. Final write or destructive execution must require that
 context and must fail closed if the proposal is missing, not approved, stale,
 unauthorized, or not auditable.
+
+Plan-to-proposal intake must keep plan and action execution disabled. Core
+requires `dry_run=true`, rejects `commit=true` or `commit_execution=true`, and
+forces stored proposal inputs back to `dry_run=true` and `commit=false`.
+`manual_review` and `skipped_destructive_candidates` are preserved in preview
+context for human review.
+
+Permanent media deletion is excluded from generated proposals unless the host
+explicitly submits `include_delete_candidates=true` with the plan input. Even
+then, the generated proposal remains high risk, pending approval, and subject
+to commit preflight.
 
 ## Legacy Confirmation Ban
 

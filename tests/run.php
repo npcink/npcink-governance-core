@@ -75,6 +75,7 @@ foreach (
 		'GET /wp-json/magick-ai-core/v1/capabilities',
 		'POST /wp-json/magick-ai-core/v1/apps',
 		'POST /wp-json/magick-ai-core/v1/proposals',
+		'POST /wp-json/magick-ai-core/v1/proposals/from-plan',
 		'GET /wp-json/magick-ai-core/v1/proposals/{proposal_id}',
 		'POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/approve',
 		'POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/commit-preflight',
@@ -103,6 +104,7 @@ foreach (
 	array(
 		'GET /capabilities',
 		'POST /proposals',
+		'POST /proposals/from-plan',
 		'GET /proposals/{proposal_id}',
 		'POST /proposals/{proposal_id}/approve',
 		'POST /proposals/{proposal_id}/reject',
@@ -167,6 +169,7 @@ foreach (
 		'app.revoked',
 		'app.rate_limited',
 		'proposal.created',
+		'proposal.plan_ingested',
 		'proposal.listed',
 		'proposal.viewed',
 		'commit.preflighted',
@@ -619,6 +622,11 @@ magick_ai_core_assert( false !== strpos( $smoke_wp, 'app-authenticated proposal 
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'app-authenticated audit read is denied without audit scope' ), 'WordPress smoke validates denied app audit scope.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'app rate limit returns 429 after fixed window is exhausted' ), 'WordPress smoke validates app rate limiting.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'revoked app key returns 401' ), 'WordPress smoke validates revoked app key denial.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/build-content-inventory-fix-plan' ), 'WordPress smoke validates content plan-to-proposal intake.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/build-test-content-cleanup-plan' ), 'WordPress smoke validates cleanup plan-to-proposal intake.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/build-media-inventory-fix-plan' ), 'WordPress smoke validates media plan-to-proposal intake.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'media delete candidates do not enter executable proposals by default' ), 'WordPress smoke validates default destructive media delete guard.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'requires-input proposal cannot enter committable state' ), 'WordPress smoke validates requires_input preflight blocking.' );
 
 $capabilities_controller = magick_ai_core_read( $root . '/includes/Rest/Capabilities_Controller.php' );
 magick_ai_core_assert( false !== strpos( $capabilities_controller, "'/capabilities'" ), 'Capabilities REST route is registered.' );
@@ -626,6 +634,8 @@ magick_ai_core_assert( false !== strpos( $capabilities_controller, 'capabilities
 
 $proposals_controller = magick_ai_core_read( $root . '/includes/Rest/Proposals_Controller.php' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, "'/proposals'" ), 'Proposals REST route is registered.' );
+magick_ai_core_assert( false !== strpos( $proposals_controller, "'/proposals/from-plan'" ), 'Plan-to-proposal REST route is registered.' );
+magick_ai_core_assert( false !== strpos( $proposals_controller, 'create_proposals_from_plan' ), 'Plan-to-proposal REST callback is registered.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, 'get_proposal' ), 'Proposal detail REST callback is registered.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, "/approve'" ), 'Proposal approve REST route is registered.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, "/reject'" ), 'Proposal reject REST route is registered.' );
@@ -654,8 +664,32 @@ magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'approval_co
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'commit_execution' ), 'Commit preflight explicitly reports no commit execution.' );
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'correlation_id' ), 'Commit preflight returns and audits correlation id.' );
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'new_correlation_id' ), 'Commit preflight generates a correlation id.' );
+magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'proposal_item_preflight' ), 'Commit preflight evaluates proposal item readiness.' );
+magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'magick_ai_core_proposal_items_blocked' ), 'Commit preflight blocks incomplete proposal items.' );
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'confirm_token' ), 'Commit preflight rejects confirm_token input.' );
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'write_confirmed' ), 'Commit preflight rejects write_confirmed input.' );
+
+$plan_proposal_service = magick_ai_core_read( $root . '/includes/Governance/Plan_Proposal_Service.php' );
+foreach (
+	array(
+		'Plan_Proposal_Service',
+		'magick-ai/build-content-inventory-fix-plan',
+		'magick-ai/build-test-content-cleanup-plan',
+		'magick-ai/build-media-inventory-fix-plan',
+		'proposal.plan_ingested',
+		'magick-ai/delete-media-permanently',
+		'destructive_media_delete_not_explicitly_included',
+		'proposal_ready',
+		'needs_input',
+		'preflight_blockers',
+		'skipped_destructive_candidates',
+		'manual_review',
+		'commit_execution',
+		'dry_run',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $plan_proposal_service, $required ), 'Plan-to-proposal service contains required text: ' . $required );
+}
 
 $audit_repository = magick_ai_core_read( $root . '/includes/Audit/Audit_Log_Repository.php' );
 magick_ai_core_assert( false !== strpos( $audit_repository, 'sanitize_text_field( $event_name )' ), 'Audit repository preserves dotted event names.' );

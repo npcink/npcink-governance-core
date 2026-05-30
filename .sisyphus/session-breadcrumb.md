@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-05-30 — Plan-to-proposal governance bridge added
+
+- **Module**: Core governance intake / planning ability bridge
+- **Status**: Core now accepts supported read-only plan outputs and converts
+  `write_actions` into pending Core proposals without executing abilities or
+  final WordPress mutations.
+- **Completed**:
+  - Added `POST /wp-json/magick-ai-core/v1/proposals/from-plan`.
+  - Added `Plan_Proposal_Service` for content inventory fix, test content
+    cleanup, and media inventory fix plan outputs.
+  - Preserved `before`, `after_suggestion`, `reason`, `risk`,
+    `required_scopes`, `manual_review`, `skipped_destructive_candidates`,
+    `dry_run=true`, `commit=false`, and `commit_execution=false` in proposal
+    previews.
+  - Added commit-preflight item readiness checks so unresolved
+    `requires_input` actions remain reviewable but not committable.
+  - Added the destructive media delete guard requiring explicit
+    `include_delete_candidates=true` before a permanent delete proposal can be
+    generated.
+- **Boundary**:
+  - Core still does not run planning abilities, execute target write abilities,
+    add workflow runtime, add MCP runtime, proxy execution, or perform final
+    commit execution.
+
 ## 2026-05-30 — AI provider log correlation contract documented
 
 - **Module**: Core / Adapter observability handoff

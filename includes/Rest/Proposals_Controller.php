@@ -8,6 +8,7 @@
 namespace MagickAI\Core\Rest;
 
 use MagickAI\Core\Governance\Commit_Preflight_Service;
+use MagickAI\Core\Governance\Plan_Proposal_Service;
 use MagickAI\Core\Governance\Proposal_Repository;
 use MagickAI\Core\Governance\Proposal_Service;
 use MagickAI\Core\Security\App_Authenticator;
@@ -46,6 +47,13 @@ final class Proposals_Controller {
 	private $preflight;
 
 	/**
+	 * Plan-to-proposal service.
+	 *
+	 * @var Plan_Proposal_Service
+	 */
+	private $plan_proposals;
+
+	/**
 	 * Authenticator.
 	 *
 	 * @var App_Authenticator
@@ -58,18 +66,21 @@ final class Proposals_Controller {
 	 * @param Proposal_Service          $service Proposal service.
 	 * @param Proposal_Repository       $repository Proposal repository.
 	 * @param Commit_Preflight_Service $preflight Commit preflight service.
+	 * @param Plan_Proposal_Service    $plan_proposals Plan-to-proposal service.
 	 * @param App_Authenticator        $auth Authenticator.
 	 */
 	public function __construct(
 		Proposal_Service $service,
 		Proposal_Repository $repository,
 		Commit_Preflight_Service $preflight,
+		Plan_Proposal_Service $plan_proposals,
 		App_Authenticator $auth
 	) {
-		$this->service    = $service;
-		$this->repository = $repository;
-		$this->preflight  = $preflight;
-		$this->auth       = $auth;
+		$this->service        = $service;
+		$this->repository     = $repository;
+		$this->preflight      = $preflight;
+		$this->plan_proposals = $plan_proposals;
+		$this->auth           = $auth;
 	}
 
 	/**
@@ -123,6 +134,37 @@ final class Proposals_Controller {
 							'default' => array(),
 						),
 						'caller'     => array(
+							'type'    => 'object',
+							'default' => array(),
+						),
+					),
+				),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/proposals/from-plan',
+			array(
+				array(
+					'methods'             => 'POST',
+					'callback'            => array( $this, 'create_proposals_from_plan' ),
+					'permission_callback' => array( $this->auth, 'can_create_proposals' ),
+					'args'                => array(
+						'plan_ability_id' => array(
+							'type'              => 'string',
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'plan'            => array(
+							'type'     => 'object',
+							'required' => true,
+						),
+						'plan_input'      => array(
+							'type'    => 'object',
+							'default' => array(),
+						),
+						'caller'          => array(
 							'type'    => 'object',
 							'default' => array(),
 						),
@@ -272,6 +314,27 @@ final class Proposals_Controller {
 				'preview'    => $request->get_param( 'preview' ),
 				'caller'     => $request->get_param( 'caller' ),
 			)
+		);
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return new WP_REST_Response( $result, 201 );
+	}
+
+	/**
+	 * Creates proposals from a read-only plan output.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return WP_REST_Response|\WP_Error
+	 */
+	public function create_proposals_from_plan( WP_REST_Request $request ) {
+		$result = $this->plan_proposals->create_from_plan(
+			(string) $request->get_param( 'plan_ability_id' ),
+			is_array( $request->get_param( 'plan' ) ) ? $request->get_param( 'plan' ) : array(),
+			is_array( $request->get_param( 'plan_input' ) ) ? $request->get_param( 'plan_input' ) : array(),
+			is_array( $request->get_param( 'caller' ) ) ? $request->get_param( 'caller' ) : array()
 		);
 
 		if ( is_wp_error( $result ) ) {

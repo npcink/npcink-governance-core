@@ -42,6 +42,7 @@ MVP routes require `manage_options` or a scoped app key where documented.
 - `GET /wp-json/magick-ai-core/v1/proposals`
 - `GET /wp-json/magick-ai-core/v1/proposals/{proposal_id}`
 - `POST /wp-json/magick-ai-core/v1/proposals`
+- `POST /wp-json/magick-ai-core/v1/proposals/from-plan`
 - `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/approve`
 - `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/reject`
 - `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/commit-preflight`
@@ -71,6 +72,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Core Governance Handoff Validation](docs/core-governance-handoff-validation.md)
 - [Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md)
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
+- [Plan To Proposal Governance](docs/plan-to-proposal-governance.md)
 - [Create Draft Governance Scenario](docs/create-draft-governance-scenario.md)
 - [Set Post SEO Meta Governance Scenario](docs/set-post-seo-meta-governance-scenario.md)
 - [Approve Comment Governance Scenario](docs/approve-comment-governance-scenario.md)
@@ -98,6 +100,15 @@ The taxonomy terms preview extension proves the same boundary for
 `magick-ai/propose-post-taxonomy-terms` -> `magick-ai/set-post-terms`: adapters
 run the read helper through WordPress Abilities API, then submit the generated
 dry-run write proposal to Core for approval and commit preflight.
+
+The plan-to-proposal bridge extends that pattern to read-only planning
+abilities such as `magick-ai/build-content-inventory-fix-plan`,
+`magick-ai/build-test-content-cleanup-plan`, and
+`magick-ai/build-media-inventory-fix-plan`. Core accepts the plan output,
+validates each target ability, stores one pending proposal per `write_action`,
+preserves `preview.before`, `preview.after_suggestion`, `dry_run=true`, and
+`commit=false`, and keeps final mutation execution outside Core. See
+[Plan To Proposal Governance](docs/plan-to-proposal-governance.md).
 
 The current governance operability baseline adds proposal audit timelines,
 audit filters for ability/app/key/caller/correlation, app scope-decision

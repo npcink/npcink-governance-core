@@ -35,8 +35,12 @@ Preflight must:
 
 - fail unless the proposal exists and is approved;
 - fail when the target ability is no longer discoverable;
+- fail when the proposal preview marks the item as not ready, lists
+  `needs_input`, or carries `preflight_blockers`;
 - fail when the request includes legacy confirmation parameters;
 - return Core-generated approval context;
+- return `proposal_item_preflight` describing executable, blocked, warning, and
+  needs-input state;
 - return a `correlation_id` in the response and
   `approval_context.correlation_id`;
 - return `commit_execution=false`;
@@ -71,4 +75,15 @@ Commit must fail when:
 - required permission is missing;
 - approval context is absent, stale, or mismatched;
 - the provider tries to bypass dry-run/proposal semantics;
+- a plan-generated proposal still has unresolved `needs_input` or
+  `preflight_blockers`;
 - audit persistence fails.
+
+## Plan-Generated Proposals
+
+Plan-to-proposal intake can create reviewable proposals that are not yet
+committable. For example, a missing title action may target
+`magick-ai/update-post` but require a human-provided `title`. Core stores that
+proposal as pending review, but commit preflight returns
+`magick_ai_core_proposal_items_blocked` until the host creates a later complete
+proposal with the missing input resolved.

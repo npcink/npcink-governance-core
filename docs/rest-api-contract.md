@@ -32,7 +32,7 @@ scope map is:
 | Route family | Required future scope |
 | --- | --- |
 | `GET /capabilities` | `capabilities:read` |
-| `POST /proposals` | `proposals:create` |
+| `POST /proposals`, `POST /proposals/from-plan` | `proposals:create` |
 | `GET /proposals`, `GET /proposals/{proposal_id}` | `proposals:read` |
 | `POST /proposals/{proposal_id}/approve` | `proposals:approve` |
 | `POST /proposals/{proposal_id}/reject` | `proposals:reject` |
@@ -100,7 +100,7 @@ Audit event:
 
 Purpose: list normalized abilities available to Core.
 
-Permission: `manage_options`.
+Permission: `manage_options` or app scope `capabilities:read`.
 
 Response `200`:
 
@@ -160,7 +160,7 @@ Capability execution guidance:
 
 Purpose: list recent proposal records.
 
-Permission: `manage_options`.
+Permission: `manage_options` or app scope `proposals:read`.
 
 Query parameters:
 
@@ -246,7 +246,7 @@ Audit event:
 Purpose: create a proposal. This route records reviewable intent only. It does
 not execute the target ability.
 
-Permission: `manage_options`.
+Permission: `manage_options` or app scope `proposals:create`.
 
 Request fields:
 
@@ -277,6 +277,108 @@ App audit attribution:
 - stored in event `metadata.auth`;
 - copied into proposal `caller.auth`.
 - includes `scope_decision=allowed` for successful app-authenticated creates.
+
+## `POST /proposals/from-plan`
+
+Purpose: convert a read-only planning ability output into one or more Core
+proposal records. This route does not run the planning ability and does not
+execute any target write ability. It only accepts the current plan bridge
+abilities:
+
+- `magick-ai/build-content-inventory-fix-plan`
+- `magick-ai/build-test-content-cleanup-plan`
+- `magick-ai/build-media-inventory-fix-plan`
+
+Permission: `manage_options` or app scope `proposals:create`.
+
+Request fields:
+
+| Name | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `plan_ability_id` | string | yes | Must be one of the supported read-only planning ability ids and currently discoverable as `governance_mode=direct_read`. |
+| `plan` | object | yes | Ability success envelope or its `data` object. Must include `requires_approval=true`, `dry_run=true`, `commit_execution=false`, and `write_actions`. |
+| `plan_input` | object | no | Input originally used to build the plan. Used for safety gates such as `include_delete_candidates=true`. |
+| `caller` | object | no | Caller metadata copied into generated proposals. |
+
+Each accepted `write_action` becomes a separate pending proposal. The generated
+proposal stores the action `target_ability_id` as the proposal `ability_id` and
+preserves:
+
+- target ability input with `dry_run=true` and `commit=false`;
+- `preview.before`;
+- `preview.after_suggestion`;
+- `reason`;
+- `risk`;
+- `required_scopes`;
+- `requires_approval=true`;
+- `proposal_ready`;
+- `manual_review`;
+- `skipped_destructive_candidates`.
+
+Response `201`:
+
+```json
+{
+  "plan_ability_id": "magick-ai/build-content-inventory-fix-plan",
+  "batch_id": "content_inventory_fix_...",
+  "issue_types": ["seo_title"],
+  "requires_approval": true,
+  "dry_run": true,
+  "commit_execution": false,
+  "action_count": 1,
+  "proposal_count": 1,
+  "proposal_ready_count": 1,
+  "proposals": [
+    {
+      "proposal_id": "uuid",
+      "ability_id": "magick-ai/set-post-seo-meta",
+      "status": "pending",
+      "input": {
+        "post_id": 123,
+        "seo_title": "Suggested title",
+        "dry_run": true,
+        "commit": false
+      },
+      "preview": {
+        "target_ability_id": "magick-ai/set-post-seo-meta",
+        "before": {},
+        "after_suggestion": {},
+        "risk": { "level": "medium" },
+        "requires_approval": true,
+        "proposal_ready": true,
+        "dry_run": true,
+        "commit": false,
+        "commit_execution": false
+      }
+    }
+  ],
+  "warnings": {},
+  "blocked_items": [],
+  "needs_input": []
+}
+```
+
+Destructive media deletion is excluded unless `include_delete_candidates=true`
+is present in the plan input supplied to this route. Actions with
+`requires_input` still become reviewable proposals, but their preview carries
+`proposal_ready=false`, `needs_input`, and `preflight_blockers`; commit
+preflight must return `409` until the missing input is resolved by the host.
+
+Errors:
+
+| Code | HTTP | Meaning |
+| --- | --- | --- |
+| `magick_ai_core_plan_ability_not_allowed` | `400` | Unsupported planning ability id. |
+| `magick_ai_core_plan_ability_unavailable` | `404` | Planning ability is not discoverable. |
+| `magick_ai_core_plan_ability_not_read_only` | `409` | Planning ability is not a direct-read ability. |
+| `magick_ai_core_plan_requires_approval_missing` | `422` | Plan does not require approval. |
+| `magick_ai_core_plan_commit_execution_rejected` | `422` | Plan requested commit execution. |
+| `magick_ai_core_plan_dry_run_required` | `422` | Plan is not dry-run. |
+| `magick_ai_core_plan_write_actions_missing` | `422` | Plan has no `write_actions` array. |
+
+Audit event:
+
+- `proposal.plan_ingested`
 
 ## `POST /proposals/{proposal_id}/approve`
 
@@ -376,7 +478,7 @@ Audit event:
 Purpose: verify that a proposal is ready for a future commit without executing
 the target ability.
 
-Permission: `manage_options`.
+Permission: `manage_options` or app scope `commit:preflight`.
 
 Path parameters:
 
@@ -390,6 +492,14 @@ Response `200`:
 {
   "proposal": {},
   "capability": {},
+  "proposal_item_preflight": {
+    "executable": true,
+    "proposal_ready": true,
+    "needs_input": [],
+    "blocked_items": [],
+    "warnings": [],
+    "commit_execution": false
+  },
   "approval_context": {
     "approval_commit_authorized": true,
     "confirmation_state": "approved_commit",
@@ -409,6 +519,7 @@ Errors:
 | `magick_ai_core_legacy_confirmation_rejected` | `400` | Request attempted to use `confirm_token` or `write_confirmed`. |
 | `magick_ai_core_proposal_not_found` | `404` | Proposal id does not exist. |
 | `magick_ai_core_proposal_not_approved` | `409` | Proposal is not approved. |
+| `magick_ai_core_proposal_items_blocked` | `409` | Proposal preview has `proposal_ready=false`, `needs_input`, or `preflight_blockers`. |
 | `magick_ai_core_ability_unavailable` | `409` | Target ability is no longer discoverable. |
 | `magick_ai_core_preflight_forbidden` | `403` | Current user lacks permission. |
 | `magick_ai_core_preflight_audit_failed` | `500` | Preflight could not be audited. |

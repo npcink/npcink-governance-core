@@ -10,6 +10,7 @@ Status: MVP architecture.
 | `Ability_Registry_Adapter` | Read-only intake from `magick-ai-abilities` or WordPress Abilities API. |
 | `Proposal_Repository` | Persistence for proposal records. |
 | `Proposal_Service` | Proposal creation and audit coordination. |
+| `Plan_Proposal_Service` | Converts supported read-only planning ability outputs into pending Core proposals without running abilities or writes. |
 | `Commit_Preflight_Service` | Approval-commit readiness checks without executing abilities. |
 | `Audit_Log_Repository` | Append-only event records and narrow governance filters. |
 | `App_Key_Repository` | Scoped app identity and hashed secret storage. |
@@ -36,6 +37,11 @@ proposal `audit_timeline` reads, app scope-decision attribution, and
 commit-preflight `correlation_id` metadata without adding workflow state,
 execution queues, or a separate logging subsystem.
 
+The plan-to-proposal bridge also reuses these lifecycle records. It stores one
+proposal row per accepted plan `write_action` and records a
+`proposal.plan_ingested` audit event; it does not add batch tables, queues, or
+workflow runtime state.
+
 ## Dependency Direction
 
 Core may depend on WordPress and public provider APIs. Provider plugins must not
@@ -45,6 +51,8 @@ Allowed:
 
 - Core discovers public abilities.
 - Product plugins submit proposals to Core.
+- Product plugins or adapters submit supported read-only plan outputs to Core
+  for proposal creation.
 - Product plugins later ask Core to approve and commit.
 
 Disallowed:

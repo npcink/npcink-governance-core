@@ -106,6 +106,20 @@ final class Commit_Preflight_Service {
 			);
 		}
 
+		$item_preflight = $this->proposal_item_preflight( $proposal );
+		if ( false === (bool) ( $item_preflight['executable'] ?? false ) ) {
+			return new WP_Error(
+				'magick_ai_core_proposal_items_blocked',
+				__( 'Proposal contains blocked items or missing required input.', 'magick-ai-core' ),
+				array(
+					'status'                  => 409,
+					'proposal'                => $proposal,
+					'proposal_item_preflight' => $item_preflight,
+					'commit_execution'        => false,
+				)
+			);
+		}
+
 		$correlation_id = $this->new_correlation_id();
 		$approval_context = array(
 			'approval_commit_authorized' => true,
@@ -137,10 +151,40 @@ final class Commit_Preflight_Service {
 		return array(
 			'proposal'             => $proposal,
 			'capability'           => $capability,
+			'proposal_item_preflight' => $item_preflight,
 			'approval_context'     => $approval_context,
 			'correlation_id'       => $correlation_id,
 			'commit_execution'     => false,
 			'idempotency_required' => true,
+		);
+	}
+
+	/**
+	 * Returns proposal item readiness for commit preflight.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return array<string,mixed>
+	 */
+	private function proposal_item_preflight( array $proposal ): array {
+		$preview         = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
+		$needs_input     = array_values( array_map( 'sanitize_key', (array) ( $preview['needs_input'] ?? array() ) ) );
+		$blocking_items  = is_array( $preview['preflight_blockers'] ?? null ) ? array_values( $preview['preflight_blockers'] ) : array();
+		$proposal_ready  = array_key_exists( 'proposal_ready', $preview ) ? (bool) $preview['proposal_ready'] : true;
+
+		if ( ! $proposal_ready && empty( $blocking_items ) ) {
+			$blocking_items[] = array(
+				'code'   => 'proposal_not_ready',
+				'reason' => 'Proposal preview marks this item as not ready for commit preflight.',
+			);
+		}
+
+		return array(
+			'executable'     => $proposal_ready && empty( $needs_input ) && empty( $blocking_items ),
+			'proposal_ready' => $proposal_ready,
+			'needs_input'    => $needs_input,
+			'blocked_items'  => $blocking_items,
+			'warnings'       => is_array( $preview['warnings'] ?? null ) ? $preview['warnings'] : array(),
+			'commit_execution' => false,
 		);
 	}
 

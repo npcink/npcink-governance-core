@@ -11,6 +11,7 @@ use MagickAI\Core\Admin\Admin_Page;
 use MagickAI\Core\Audit\Audit_Log_Repository;
 use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
 use MagickAI\Core\Governance\Commit_Preflight_Service;
+use MagickAI\Core\Governance\Plan_Proposal_Service;
 use MagickAI\Core\Governance\Proposal_Repository;
 use MagickAI\Core\Governance\Proposal_Service;
 use MagickAI\Core\Rest\Apps_Controller;
@@ -70,6 +71,13 @@ final class Plugin {
 	 * @var Commit_Preflight_Service|null
 	 */
 	private $commit_preflight_service = null;
+
+	/**
+	 * Plan-to-proposal service.
+	 *
+	 * @var Plan_Proposal_Service|null
+	 */
+	private $plan_proposal_service = null;
 
 	/**
 	 * App key repository.
@@ -141,6 +149,7 @@ final class Plugin {
 			$this->proposal_service(),
 			$this->proposal_repository(),
 			$this->commit_preflight_service(),
+			$this->plan_proposal_service(),
 			$this->app_authenticator()
 		) )->register_routes();
 		( new Audit_Controller( $this->audit_repository(), $this->app_authenticator() ) )->register_routes();
@@ -214,6 +223,19 @@ final class Plugin {
 		}
 
 		return $this->commit_preflight_service;
+	}
+
+	/**
+	 * Returns plan-to-proposal service.
+	 *
+	 * @return Plan_Proposal_Service
+	 */
+	public function plan_proposal_service(): Plan_Proposal_Service {
+		if ( null === $this->plan_proposal_service ) {
+			$this->plan_proposal_service = new Plan_Proposal_Service( $this->ability_adapter(), $this->proposal_service(), $this->audit_repository() );
+		}
+
+		return $this->plan_proposal_service;
 	}
 
 	/**

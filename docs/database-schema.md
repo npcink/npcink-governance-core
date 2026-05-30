@@ -77,6 +77,7 @@ MVP event names:
 - `app.scope_denied`
 - `capabilities.listed`
 - `proposal.created`
+- `proposal.plan_ingested`
 - `proposal.approved`
 - `proposal.rejected`
 - `proposal.viewed`
@@ -87,6 +88,9 @@ MVP event names:
 Governance operability metadata:
 
 - proposal lifecycle events include `ability_id` when available;
+- plan intake events include `plan_ability_id`, `batch_id`,
+  `action_count`, `proposal_count`, `blocked_count`,
+  `needs_input_count`, and `commit_execution=false`;
 - app-authenticated events include `metadata.auth.app_id`,
   `metadata.auth.key_id`, `metadata.auth.caller_type`,
   `metadata.auth.scope`, `metadata.auth.scope_decision`, and

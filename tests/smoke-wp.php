@@ -277,6 +277,27 @@ function magick_ai_core_smoke_assert_taxonomy_terms_contract( array $items_by_id
 }
 
 /**
+ * Verifies planning abilities used by plan-to-proposal intake are discoverable.
+ *
+ * @param array<string,mixed> $items_by_id Capability rows keyed by ability id.
+ * @return void
+ */
+function magick_ai_core_smoke_assert_plan_bridge_contract( array $items_by_id ): void {
+	foreach (
+		array(
+			'magick-ai/build-content-inventory-fix-plan',
+			'magick-ai/build-test-content-cleanup-plan',
+			'magick-ai/build-media-inventory-fix-plan',
+		) as $ability_id
+	) {
+		magick_ai_core_smoke_assert( isset( $items_by_id[ $ability_id ] ), $ability_id . ' is discoverable for plan-to-proposal intake' );
+		magick_ai_core_smoke_assert( 'read' === (string) ( $items_by_id[ $ability_id ]['risk_level'] ?? '' ), $ability_id . ' is a read-risk planning ability' );
+		magick_ai_core_smoke_assert( false === (bool) ( $items_by_id[ $ability_id ]['requires_approval'] ?? true ), $ability_id . ' does not require approval before read execution' );
+		magick_ai_core_smoke_assert_capability_guidance( $items_by_id[ $ability_id ], 'direct_read', 'wp_abilities_rest', $ability_id . ' uses direct read guidance' );
+	}
+}
+
+/**
  * Verifies adapter execution guidance on a capability row.
  *
  * @param array<string,mixed> $ability Capability row.
@@ -438,6 +459,105 @@ function magick_ai_core_smoke_run_taxonomy_terms_preview( array $fixture ): arra
 	magick_ai_core_smoke_assert( false === ( $data['data']['proposal']['commit_execution'] ?? null ), 'taxonomy terms preview helper does not execute commits' );
 
 	return $data;
+}
+
+/**
+ * Runs a read-only planning ability through WordPress Abilities API.
+ *
+ * @param string              $ability_id Planning ability id.
+ * @param array<string,mixed> $input Ability input.
+ * @return array<string,mixed>
+ */
+function magick_ai_core_smoke_run_plan_ability( string $ability_id, array $input ): array {
+	wp_set_current_user( 1 );
+
+	$request = new WP_REST_Request( 'GET', '/wp-abilities/v1/abilities/' . $ability_id . '/run' );
+	$request->set_query_params(
+		array(
+			'input' => $input,
+		)
+	);
+
+	$response = rest_do_request( $request );
+	magick_ai_core_smoke_assert( 200 === (int) $response->get_status(), $ability_id . ' planning ability run returns 200' );
+	$data = $response->get_data();
+	magick_ai_core_smoke_assert( is_array( $data ) && true === (bool) ( $data['success'] ?? false ), $ability_id . ' returns a success envelope' );
+	magick_ai_core_smoke_assert( true === (bool) ( $data['data']['requires_approval'] ?? false ), $ability_id . ' plan requires approval' );
+	magick_ai_core_smoke_assert( false === (bool) ( $data['data']['commit_execution'] ?? true ), $ability_id . ' plan does not execute commits' );
+	magick_ai_core_smoke_assert( true === (bool) ( $data['data']['dry_run'] ?? false ), $ability_id . ' plan remains dry-run only' );
+
+	return $data;
+}
+
+/**
+ * Creates Core proposals from a planning ability output.
+ *
+ * @param string              $ability_id Planning ability id.
+ * @param array<string,mixed> $plan Planning ability response envelope.
+ * @param array<string,mixed> $plan_input Input used to build the plan.
+ * @return array<string,mixed>
+ */
+function magick_ai_core_smoke_create_proposals_from_plan( string $ability_id, array $plan, array $plan_input ): array {
+	return magick_ai_core_smoke_rest(
+		'POST',
+		'/magick-ai-core/v1/proposals/from-plan',
+		array(
+			'plan_ability_id' => $ability_id,
+			'plan'            => $plan,
+			'plan_input'      => $plan_input,
+			'caller'          => array(
+				'source' => 'tests/smoke-wp.php',
+			),
+		)
+	);
+}
+
+/**
+ * Verifies a proposal produced by the plan-to-proposal bridge.
+ *
+ * @param array<string,mixed> $proposal Proposal row.
+ * @param string              $target_ability_id Expected target ability id.
+ * @param bool                $proposal_ready Expected proposal readiness.
+ * @return void
+ */
+function magick_ai_core_smoke_assert_plan_proposal_shape( array $proposal, string $target_ability_id, bool $proposal_ready ): void {
+	$preview = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
+	$input   = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
+
+	magick_ai_core_smoke_assert( 'pending' === (string) ( $proposal['status'] ?? '' ), $target_ability_id . ' plan proposal starts pending approval' );
+	magick_ai_core_smoke_assert( $target_ability_id === (string) ( $proposal['ability_id'] ?? '' ), $target_ability_id . ' plan proposal stores target ability' );
+	magick_ai_core_smoke_assert( $target_ability_id === (string) ( $preview['target_ability_id'] ?? '' ), $target_ability_id . ' preview stores target ability' );
+	magick_ai_core_smoke_assert( true === (bool) ( $input['dry_run'] ?? false ), $target_ability_id . ' proposal input keeps dry_run=true' );
+	magick_ai_core_smoke_assert( false === (bool) ( $input['commit'] ?? true ), $target_ability_id . ' proposal input keeps commit=false' );
+	magick_ai_core_smoke_assert( true === (bool) ( $preview['requires_approval'] ?? false ), $target_ability_id . ' preview records approval requirement' );
+	magick_ai_core_smoke_assert( false === (bool) ( $preview['commit_execution'] ?? true ), $target_ability_id . ' preview keeps commit_execution=false' );
+	magick_ai_core_smoke_assert( $proposal_ready === (bool) ( $preview['proposal_ready'] ?? false ), $target_ability_id . ' preview records proposal readiness' );
+	magick_ai_core_smoke_assert( is_array( $preview['risk'] ?? null ) && '' !== (string) ( $preview['risk']['level'] ?? '' ), $target_ability_id . ' preview records risk' );
+	magick_ai_core_smoke_assert( array_key_exists( 'required_scopes', $preview ), $target_ability_id . ' preview records required scopes' );
+}
+
+/**
+ * Approves and preflights a plan-generated proposal.
+ *
+ * @param string $proposal_id Proposal id.
+ * @return array<string,mixed>
+ */
+function magick_ai_core_smoke_approve_and_preflight_plan_proposal( string $proposal_id ): array {
+	$approved = magick_ai_core_smoke_rest(
+		'POST',
+		'/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/approve',
+		array(
+			'note' => 'Plan bridge smoke approval.',
+		)
+	);
+	magick_ai_core_smoke_assert( 'approved' === (string) ( $approved['status'] ?? '' ), 'plan-generated proposal is approved through Core REST' );
+
+	$preflight = magick_ai_core_smoke_rest( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/commit-preflight' );
+	magick_ai_core_smoke_assert( false === (bool) ( $preflight['commit_execution'] ?? true ), 'plan-generated proposal preflight keeps Core execution disabled' );
+	magick_ai_core_smoke_assert( true === (bool) ( $preflight['proposal_item_preflight']['executable'] ?? false ), 'plan-generated proposal preflight marks ready item executable' );
+	magick_ai_core_smoke_assert( '' !== (string) ( $preflight['correlation_id'] ?? '' ), 'plan-generated proposal preflight returns correlation id' );
+
+	return $preflight;
 }
 
 /**
@@ -619,6 +739,7 @@ magick_ai_core_smoke_assert_create_draft_contract( $items_by_id );
 magick_ai_core_smoke_assert_seo_meta_contract( $items_by_id );
 magick_ai_core_smoke_assert_comment_approval_contract( $items_by_id );
 magick_ai_core_smoke_assert_taxonomy_terms_contract( $items_by_id );
+magick_ai_core_smoke_assert_plan_bridge_contract( $items_by_id );
 
 $workflow_cases = magick_ai_core_smoke_workflow_cases();
 magick_ai_core_smoke_assert( count( $workflow_cases ) > 0, 'shared workflow definitions are available to Core' );
@@ -750,6 +871,162 @@ $taxonomy_proposal_id = magick_ai_core_smoke_run_governance_proposal(
 magick_ai_core_smoke_assert( '' !== $taxonomy_proposal_id, 'taxonomy terms proposal completed governance loop' );
 $taxonomy_after = magick_ai_core_smoke_post_term_ids( $taxonomy_fixture['post_id'], $taxonomy_fixture['taxonomy'] );
 magick_ai_core_smoke_assert( $taxonomy_before === $taxonomy_after, 'taxonomy terms governance loop does not mutate post terms' );
+
+$plan_content_post_id = wp_insert_post(
+	array(
+		'post_title'   => 'Core Plan Bridge Content Candidate',
+		'post_content' => 'Core plan bridge content candidate with enough words for deterministic SEO and excerpt planning smoke coverage.',
+		'post_excerpt' => '',
+		'post_status'  => 'draft',
+		'post_type'    => 'post',
+	),
+	true
+);
+magick_ai_core_smoke_assert( ! is_wp_error( $plan_content_post_id ) && (int) $plan_content_post_id > 0, 'plan bridge content fixture post is created' );
+
+$content_plan_input = array(
+	'post_ids'    => array( (int) $plan_content_post_id ),
+	'issue_types' => array( 'seo_title', 'seo_description' ),
+	'max_actions' => 5,
+);
+$content_plan       = magick_ai_core_smoke_run_plan_ability( 'magick-ai/build-content-inventory-fix-plan', $content_plan_input );
+$content_plan_result = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-content-inventory-fix-plan', $content_plan, $content_plan_input );
+magick_ai_core_smoke_assert( (int) ( $content_plan_result['proposal_count'] ?? 0 ) >= 1, 'content fix plan generates Core proposals' );
+$content_plan_proposal = is_array( $content_plan_result['proposals'][0] ?? null ) ? $content_plan_result['proposals'][0] : array();
+magick_ai_core_smoke_assert_plan_proposal_shape( $content_plan_proposal, 'magick-ai/set-post-seo-meta', true );
+magick_ai_core_smoke_assert( isset( $content_plan_proposal['preview']['before'] ), 'content fix plan proposal preview includes before' );
+magick_ai_core_smoke_assert( isset( $content_plan_proposal['preview']['after_suggestion'] ), 'content fix plan proposal preview includes after_suggestion' );
+magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $content_plan_proposal['proposal_id'] ?? '' ) );
+
+$cleanup_post_id = wp_insert_post(
+	array(
+		'post_title'   => 'Core Plan Bridge Test Cleanup Candidate',
+		'post_content' => 'This Core Plan Bridge Test Cleanup Candidate should be detected as test content for cleanup planning.',
+		'post_status'  => 'draft',
+		'post_type'    => 'post',
+	),
+	true
+);
+magick_ai_core_smoke_assert( ! is_wp_error( $cleanup_post_id ) && (int) $cleanup_post_id > 0, 'plan bridge cleanup fixture post is created' );
+
+$cleanup_plan_input = array(
+	'patterns'    => array( 'Core Plan Bridge Test Cleanup Candidate' ),
+	'max_actions' => 5,
+);
+$cleanup_plan       = magick_ai_core_smoke_run_plan_ability( 'magick-ai/build-test-content-cleanup-plan', $cleanup_plan_input );
+$cleanup_plan_result = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-test-content-cleanup-plan', $cleanup_plan, $cleanup_plan_input );
+magick_ai_core_smoke_assert( (int) ( $cleanup_plan_result['proposal_count'] ?? 0 ) >= 1, 'test content cleanup plan generates Core proposals' );
+$cleanup_plan_proposal = is_array( $cleanup_plan_result['proposals'][0] ?? null ) ? $cleanup_plan_result['proposals'][0] : array();
+magick_ai_core_smoke_assert_plan_proposal_shape( $cleanup_plan_proposal, 'magick-ai/trash-post', true );
+magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $cleanup_plan_proposal['proposal_id'] ?? '' ) );
+
+$plan_attachment_id = wp_insert_post(
+	array(
+		'post_type'      => 'attachment',
+		'post_status'    => 'inherit',
+		'post_title'     => 'Core Plan Bridge Media Candidate',
+		'post_mime_type' => 'image/jpeg',
+		'post_excerpt'   => '',
+		'post_content'   => '',
+	),
+	true
+);
+magick_ai_core_smoke_assert( ! is_wp_error( $plan_attachment_id ) && (int) $plan_attachment_id > 0, 'plan bridge media fixture attachment is created' );
+
+$media_plan_input = array(
+	'attachment_ids'  => array( (int) $plan_attachment_id ),
+	'issue_types'     => array( 'missing_alt', 'missing_caption', 'missing_description', 'possibly_unattached' ),
+	'article_title'   => 'Core Plan Bridge Content Candidate',
+	'article_excerpt' => 'Smoke media metadata context.',
+	'focus_keyword'   => 'plan bridge',
+	'max_actions'     => 5,
+);
+$media_plan       = magick_ai_core_smoke_run_plan_ability( 'magick-ai/build-media-inventory-fix-plan', $media_plan_input );
+$media_plan_result = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-media-inventory-fix-plan', $media_plan, $media_plan_input );
+magick_ai_core_smoke_assert( (int) ( $media_plan_result['proposal_count'] ?? 0 ) >= 1, 'media inventory fix plan generates Core proposals' );
+$media_targets = array_map(
+	static function ( $proposal ) {
+		return is_array( $proposal ) ? (string) ( $proposal['ability_id'] ?? '' ) : '';
+	},
+	(array) ( $media_plan_result['proposals'] ?? array() )
+);
+magick_ai_core_smoke_assert( ! in_array( 'magick-ai/delete-media-permanently', $media_targets, true ), 'media delete candidates do not enter executable proposals by default' );
+$media_plan_proposal = is_array( $media_plan_result['proposals'][0] ?? null ) ? $media_plan_result['proposals'][0] : array();
+magick_ai_core_smoke_assert_plan_proposal_shape( $media_plan_proposal, 'magick-ai/update-media-details', true );
+magick_ai_core_smoke_assert( (int) ( $media_plan_proposal['preview']['warnings']['skipped_destructive_candidate_count'] ?? 0 ) >= 1, 'media plan proposal preserves skipped destructive candidates' );
+magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $media_plan_proposal['proposal_id'] ?? '' ) );
+
+$media_delete_plan_input = array(
+	'attachment_ids'            => array( (int) $plan_attachment_id ),
+	'issue_types'               => array( 'possibly_unattached' ),
+	'include_delete_candidates' => true,
+	'max_actions'               => 5,
+);
+$media_delete_plan       = magick_ai_core_smoke_run_plan_ability( 'magick-ai/build-media-inventory-fix-plan', $media_delete_plan_input );
+$media_delete_blocked    = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-media-inventory-fix-plan', $media_delete_plan, array( 'include_delete_candidates' => false ) );
+magick_ai_core_smoke_assert( 0 === (int) ( $media_delete_blocked['proposal_count'] ?? -1 ), 'explicit media delete plan is blocked without matching include_delete_candidates input' );
+magick_ai_core_smoke_assert( 'destructive_media_delete_not_explicitly_included' === (string) ( $media_delete_blocked['blocked_items'][0]['block_code'] ?? '' ), 'blocked media delete records destructive guard reason' );
+$media_delete_allowed = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-media-inventory-fix-plan', $media_delete_plan, $media_delete_plan_input );
+magick_ai_core_smoke_assert( (int) ( $media_delete_allowed['proposal_count'] ?? 0 ) >= 1, 'explicit media delete plan can generate a high-risk Core proposal' );
+$media_delete_proposal = is_array( $media_delete_allowed['proposals'][0] ?? null ) ? $media_delete_allowed['proposals'][0] : array();
+magick_ai_core_smoke_assert_plan_proposal_shape( $media_delete_proposal, 'magick-ai/delete-media-permanently', true );
+magick_ai_core_smoke_assert( 'high' === (string) ( $media_delete_proposal['preview']['risk']['level'] ?? '' ), 'explicit media delete proposal is marked high risk' );
+
+$requires_input_plan = array(
+	'success' => true,
+	'data'    => array(
+		'batch_id'         => 'core_plan_bridge_requires_input_smoke',
+		'issue_types'      => array( 'title' ),
+		'write_actions'    => array(
+			array(
+				'action_id'          => 'set_title_requires_input_smoke',
+				'target_ability_id'  => 'magick-ai/update-post',
+				'input'              => array(
+					'post_id' => (int) $plan_content_post_id,
+					'dry_run' => true,
+					'commit'  => false,
+				),
+				'requires_approval'  => true,
+				'commit_execution'   => false,
+				'required_scopes'    => array( 'post.write' ),
+				'risk'               => 'medium',
+				'reason'             => 'Title requires human input before execution.',
+				'requires_input'     => array( 'title' ),
+				'proposal_ready'     => false,
+			),
+		),
+		'preview'          => array(
+			array(
+				'post_id'          => (int) $plan_content_post_id,
+				'before'           => array( 'title' => '' ),
+				'after_suggestion' => array(),
+			),
+		),
+		'risk'             => array(
+			'level'  => 'medium',
+			'reason' => 'Requires human input.',
+		),
+		'requires_approval' => true,
+		'commit_execution' => false,
+		'dry_run'          => true,
+	),
+);
+$requires_input_result = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-content-inventory-fix-plan', $requires_input_plan, array() );
+magick_ai_core_smoke_assert( 1 === (int) ( $requires_input_result['proposal_count'] ?? 0 ), 'requires-input plan action still creates a reviewable proposal' );
+$requires_input_proposal = is_array( $requires_input_result['proposals'][0] ?? null ) ? $requires_input_result['proposals'][0] : array();
+magick_ai_core_smoke_assert_plan_proposal_shape( $requires_input_proposal, 'magick-ai/update-post', false );
+magick_ai_core_smoke_assert( array( 'title' ) === (array) ( $requires_input_proposal['preview']['needs_input'] ?? array() ), 'requires-input proposal preserves missing field list' );
+magick_ai_core_smoke_rest(
+	'POST',
+	'/magick-ai-core/v1/proposals/' . rawurlencode( (string) ( $requires_input_proposal['proposal_id'] ?? '' ) ) . '/approve',
+	array(
+		'note' => 'Approve blocked proposal for preflight smoke.',
+	)
+);
+$requires_input_preflight = magick_ai_core_smoke_rest_result( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( (string) ( $requires_input_proposal['proposal_id'] ?? '' ) ) . '/commit-preflight' );
+magick_ai_core_smoke_assert( 409 === (int) $requires_input_preflight['status'], 'requires-input proposal cannot enter committable state' );
+magick_ai_core_smoke_assert( false === (bool) ( $requires_input_preflight['data']['data']['proposal_item_preflight']['executable'] ?? true ), 'requires-input preflight marks proposal item blocked' );
+magick_ai_core_smoke_assert( array( 'title' ) === (array) ( $requires_input_preflight['data']['data']['proposal_item_preflight']['needs_input'] ?? array() ), 'requires-input preflight reports fields needing human input' );
 
 $app_created = magick_ai_core_smoke_rest_as_app(
 	'POST',

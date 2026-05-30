@@ -8,11 +8,14 @@ This document defines the first Magick AI Core governance boundary.
 
 1. `discover`: Core lists available abilities from WordPress Abilities API and
    known provider APIs.
-2. `request`: a caller submits an intended operation.
-3. `proposal`: Core records a reviewable proposal and normalizes metadata.
-4. `review`: a human or trusted host policy approves or rejects the proposal.
-5. `commit`: a future Core service executes only after approval.
-6. `audit`: Core records every lifecycle event.
+2. `plan`: for supported read-only planning abilities, Core can accept the
+   plan output and convert `write_actions` into proposals without executing
+   the plan or target writes.
+3. `request`: a caller submits an intended operation.
+4. `proposal`: Core records a reviewable proposal and normalizes metadata.
+5. `review`: a human or trusted host policy approves or rejects the proposal.
+6. `commit`: a future Core service executes only after approval.
+7. `audit`: Core records every lifecycle event.
 
 The MVP implements discovery, proposal records, approval/rejection status, and
 audit records. Commit preflight verifies approval readiness without executing
@@ -47,6 +50,45 @@ Allowed MVP statuses:
 - `approved`
 - `rejected`
 
+## Plan-To-Proposal Intake
+
+Core may consume these read-only planning ability outputs:
+
+- `magick-ai/build-content-inventory-fix-plan`
+- `magick-ai/build-test-content-cleanup-plan`
+- `magick-ai/build-media-inventory-fix-plan`
+
+Plan intake does not execute the plan ability and does not execute target write
+abilities. It accepts a successful plan payload, validates that the planning
+ability is direct-read, validates each `write_action.target_ability_id` against
+current ability intake, then creates one pending proposal per accepted action.
+
+Generated proposal previews must preserve:
+
+- `target_ability_id`;
+- target `input`;
+- `before`;
+- `after_suggestion`;
+- `reason`;
+- `risk`;
+- `required_scopes`;
+- `requires_approval=true`;
+- `dry_run=true`;
+- `commit=false`;
+- `commit_execution=false`;
+- `proposal_ready`;
+- `manual_review`;
+- `skipped_destructive_candidates`.
+
+Actions with `requires_input` are reviewable but not committable. Their preview
+must carry `proposal_ready=false`, `needs_input`, and `preflight_blockers`, and
+commit preflight must return `magick_ai_core_proposal_items_blocked`.
+
+Permanent media deletion is blocked by default. A plan action targeting
+`magick-ai/delete-media-permanently` may become a proposal only when
+`include_delete_candidates=true` is explicitly supplied with the plan input,
+and it must remain high risk.
+
 ## Approval Boundary
 
 Write and destructive commits must fail closed unless the commit request carries
@@ -64,6 +106,7 @@ The new Core uses approval-commit terminology. It must not reintroduce
 MVP event names:
 
 - `proposal.created`
+- `proposal.plan_ingested`
 - `proposal.approved`
 - `proposal.rejected`
 - `proposal.viewed`

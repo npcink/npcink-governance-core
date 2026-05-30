@@ -54,6 +54,12 @@ Use it for behavior that requires real WordPress:
   `magick-ai/propose-post-taxonomy-terms` helper execution through WordPress
   Abilities API, `magick-ai/set-post-terms` proposal creation, approval,
   commit preflight, audit correlation, and no post term mutation;
+- the plan-to-proposal bridge for
+  `magick-ai/build-content-inventory-fix-plan`,
+  `magick-ai/build-test-content-cleanup-plan`, and
+  `magick-ai/build-media-inventory-fix-plan`, including generated proposals,
+  destructive media delete exclusion by default, and `requires_input`
+  preflight blocking;
 - governance operability coverage, including proposal `audit_timeline`,
   commit-preflight `correlation_id`, app `scope_decision`, and audit filters
   for ability, app, key, caller type, and correlation id;

@@ -37,6 +37,24 @@ Ability intake is read-only. It must not:
 - infer workflow ownership;
 - approve or commit writes.
 
+## Plan-To-Proposal Bridge Inputs
+
+Core may accept output from these read-only planning abilities:
+
+- `magick-ai/build-content-inventory-fix-plan`
+- `magick-ai/build-test-content-cleanup-plan`
+- `magick-ai/build-media-inventory-fix-plan`
+
+They must remain discoverable as `governance_mode=direct_read` with
+`execution_surface=wp_abilities_rest`. Core does not execute them. A host or
+adapter runs the plan through WordPress Abilities API and submits the resulting
+plan payload to Core.
+
+Each plan `write_action.target_ability_id` must resolve through normal ability
+intake as a proposal-governed write or destructive ability. Core must not
+accept short labels, stale tool names, or adapter-local aliases as proposal
+targets.
+
 ## Core Governance Handoff
 
 Core treats
@@ -113,3 +131,6 @@ The taxonomy terms preview scenario consumes
 [Taxonomy Terms Preview Governance Scenario](taxonomy-terms-preview-governance-scenario.md).
 Core must not execute the helper or assign terms. It only governs the generated
 dry-run `set-post-terms` proposal, approval, preflight, and audit lifecycle.
+
+The plan-to-proposal scenario follows the same consumer rule at larger plan
+granularity. See [Plan To Proposal Governance](plan-to-proposal-governance.md).
