@@ -1,5 +1,34 @@
 # Session Breadcrumb
 
+## 2026-05-30 — Set-post-seo-meta governance scenario solidified
+
+- **Module**: consumer-side governance loop / field-level proposal handoff
+- **Status**: `magick-ai/set-post-seo-meta` is now the second solidified Core
+  host-governed write scenario.
+- **Completed**:
+  - Pushed the previous six local `master` commits to `origin/master` before
+    starting new work.
+  - Added a dedicated SEO metadata scenario document for future humans and AI
+    agents.
+  - Added `create-seo-meta-proposal` to the OpenClaw example adapter. It
+    discovers capabilities first, validates the real
+    `magick-ai/set-post-seo-meta` contract, requires `post_id` plus at least one
+    SEO field, emits a field-level preview patch, and forces `dry_run=true` and
+    `commit=false`.
+  - Updated the admin OpenClaw handoff to point at the dedicated SEO metadata
+    adapter path.
+  - Hardened WordPress smoke coverage for SEO schema fields, proposal creation,
+    admin approval, and commit preflight without final execution.
+  - Updated README, intake, handoff validation, workflow, next-stage, testing,
+    adapter docs, and static contracts.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+- **Boundary**:
+  - Core still only performs discovery, proposal, approve/reject, preflight,
+    and audit. It does not execute `magick-ai/set-post-seo-meta`, choose SEO
+    strategy/providers, or own workflow runtime.
+
 ## 2026-05-30 — Create-draft governance scenario solidified
 
 - **Module**: consumer-side governance loop / OpenClaw adapter handoff

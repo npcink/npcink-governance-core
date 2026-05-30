@@ -187,6 +187,30 @@ function magick_ai_core_smoke_assert_create_draft_contract( array $items_by_id )
 }
 
 /**
+ * Verifies the preferred SEO metadata proposal target schema is discoverable.
+ *
+ * @param array<string,mixed> $items_by_id Capability rows keyed by ability id.
+ * @return void
+ */
+function magick_ai_core_smoke_assert_seo_meta_contract( array $items_by_id ): void {
+	$ability_id = 'magick-ai/set-post-seo-meta';
+	magick_ai_core_smoke_assert( isset( $items_by_id[ $ability_id ] ), 'set-post-seo-meta ability is discoverable for the second governance scenario' );
+
+	$ability      = $items_by_id[ $ability_id ];
+	$input_schema = is_array( $ability['input_schema'] ?? null ) ? $ability['input_schema'] : array();
+	$required     = (array) ( $input_schema['required'] ?? array() );
+	$properties   = is_array( $input_schema['properties'] ?? null ) ? $input_schema['properties'] : array();
+
+	magick_ai_core_smoke_assert( 'write' === (string) ( $ability['risk_level'] ?? '' ), 'set-post-seo-meta is discovered as a write-risk ability' );
+	magick_ai_core_smoke_assert( true === (bool) ( $ability['requires_approval'] ?? false ), 'set-post-seo-meta is discovered as requiring approval' );
+	magick_ai_core_smoke_assert( in_array( 'post_id', $required, true ), 'set-post-seo-meta input schema requires post_id' );
+
+	foreach ( array( 'seo_title', 'seo_description', 'dry_run', 'commit', 'idempotency_key' ) as $control ) {
+		magick_ai_core_smoke_assert( array_key_exists( $control, $properties ), 'set-post-seo-meta input schema exposes field/control ' . $control );
+	}
+}
+
+/**
  * Runs the proposal, approval, preflight, and audit smoke loop for one write-like ability.
  *
  * @param string              $ability_id Ability id.
@@ -341,6 +365,7 @@ foreach ( $items as $item ) {
 }
 
 magick_ai_core_smoke_assert_create_draft_contract( $items_by_id );
+magick_ai_core_smoke_assert_seo_meta_contract( $items_by_id );
 
 $workflow_cases = magick_ai_core_smoke_workflow_cases();
 magick_ai_core_smoke_assert( count( $workflow_cases ) > 0, 'shared workflow definitions are available to Core' );
@@ -391,14 +416,20 @@ $seo_proposal_id = magick_ai_core_smoke_run_governance_proposal(
 	$items_by_id,
 	'Smoke SEO metadata proposal',
 	array(
-		'post_id'     => 1,
-		'title'       => 'Smoke SEO Title',
-		'description' => 'Smoke SEO description.',
-		'dry_run'     => true,
+		'post_id'         => 1,
+		'seo_title'       => 'Smoke SEO Title',
+		'seo_description' => 'Smoke SEO description.',
+		'dry_run'         => true,
+		'commit'          => false,
 	),
 	array(
-		'dry_run'       => true,
-		'host_governed' => true,
+		'field_patch'      => array(
+			'seo_title'       => 'Smoke SEO Title',
+			'seo_description' => 'Smoke SEO description.',
+		),
+		'dry_run'          => true,
+		'host_governed'    => true,
+		'commit_execution' => false,
 	)
 );
 

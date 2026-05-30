@@ -42,6 +42,17 @@ The dedicated scenario is documented in
 OpenClaw example adapter exposes `create-draft-proposal` for this path, but it
 still does not approve proposals or execute the final write.
 
+The second practical consumer-side loop is `magick-ai/set-post-seo-meta`. Core
+must discover the real ability id and schema from `magick-ai-abilities`, create
+a field-level proposal for `post_id`, `seo_title`, and/or `seo_description`,
+let an administrator approve or reject it, and return approval context from
+commit preflight with `commit_execution=false`.
+
+The dedicated scenario is documented in
+[Set Post SEO Meta Governance Scenario](set-post-seo-meta-governance-scenario.md).
+The OpenClaw example adapter exposes `create-seo-meta-proposal` for this path,
+but it still does not approve proposals or execute the final write.
+
 ## Non-Goals
 
 This validation does not add workflow runtime ownership, natural language

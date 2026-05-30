@@ -669,6 +669,10 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-draft-proposal \\\n"
 			. "  --title=\"Draft title\" \\\n"
 			. "  --content=\"<p>Draft body.</p>\"\n\n"
+			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-seo-meta-proposal \\\n"
+			. "  --post-id=123 \\\n"
+			. "  --seo-title=\"SEO title\" \\\n"
+			. "  --seo-description=\"SEO description\"\n\n"
 			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php commit-preflight \\\n"
 			. "  --proposal=<proposal_id>";
 	}

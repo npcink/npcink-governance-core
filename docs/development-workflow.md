@@ -91,6 +91,8 @@ composer validate --no-check-publish
 - ability listing from `magick-ai-abilities`;
 - the primary `magick-ai/create-draft` scenario, including discovered schema
   controls and commit preflight without final execution;
+- the second `magick-ai/set-post-seo-meta` scenario, including field-level
+  update input and commit preflight without final execution;
 - proposal creation;
 - proposal approval;
 - proposal rejection;

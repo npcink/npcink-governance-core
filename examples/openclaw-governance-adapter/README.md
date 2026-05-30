@@ -72,6 +72,18 @@ php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-
   --content="<p>Draft body.</p>"
 ```
 
+Create the second host-governed field update scenario. This command discovers
+capabilities first, verifies `magick-ai/set-post-seo-meta` is still a
+write-risk ability requiring approval, checks the field-level schema, and then
+creates a proposal:
+
+```bash
+php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-seo-meta-proposal \
+  --post-id=123 \
+  --seo-title="SEO title" \
+  --seo-description="SEO description"
+```
+
 Create a proposal with a real, discoverable `ability_id`:
 
 ```bash

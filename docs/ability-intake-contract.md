@@ -96,3 +96,8 @@ The first solidified consumer scenario is `magick-ai/create-draft`; see
 [Create Draft Governance Scenario](create-draft-governance-scenario.md). Core
 must continue to discover that ability and its schema through intake instead of
 copying definitions from `magick-ai-abilities`.
+
+The second solidified consumer scenario is `magick-ai/set-post-seo-meta`; see
+[Set Post SEO Meta Governance Scenario](set-post-seo-meta-governance-scenario.md).
+Core must treat it as an existing-resource field update proposal and still
+discover the schema through intake.
