@@ -66,6 +66,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Approval Commit Contract](docs/approval-commit-contract.md)
 - [Agent MCP Entry Contract](docs/agent-mcp-entry-contract.md)
 - [App Auth Scope Policy](docs/app-auth-scope-policy.md)
+- [Core Governance Operability](docs/core-governance-operability.md)
 - [Core Governance Handoff Validation](docs/core-governance-handoff-validation.md)
 - [Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md)
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
@@ -96,6 +97,13 @@ The taxonomy terms preview extension proves the same boundary for
 `magick-ai/propose-post-taxonomy-terms` -> `magick-ai/set-post-terms`: adapters
 run the read helper through WordPress Abilities API, then submit the generated
 dry-run write proposal to Core for approval and commit preflight.
+
+The current governance operability baseline adds proposal audit timelines,
+audit filters for ability/app/key/caller/correlation, app scope-decision
+attribution, and commit-preflight correlation ids. See
+[Core Governance Operability](docs/core-governance-operability.md). This makes
+the Core loop easier to review and debug without adding ability execution or a
+workflow runtime.
 
 For direct Core governance setup, WordPress administrators can open
 `Tools -> Magick AI Core -> Direct Core Governance Access` to copy the Core base

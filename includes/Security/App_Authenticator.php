@@ -169,6 +169,7 @@ final class App_Authenticator {
 
 		if ( ! in_array( $scope, (array) ( $app['scopes'] ?? array() ), true ) ) {
 			$this->set_context( $app, $scope, $route_family );
+			Request_Context::mark_scope_decision( 'denied' );
 			$this->audit->record(
 				'app.scope_denied',
 				array(
@@ -182,6 +183,7 @@ final class App_Authenticator {
 		$this->set_context( $app, $scope, $route_family );
 		$rate = $this->rate_limiter->consume( $app, $route_family );
 		if ( empty( $rate['allowed'] ) ) {
+			Request_Context::mark_scope_decision( 'rate_limited' );
 			$this->audit->record(
 				'app.rate_limited',
 				array(

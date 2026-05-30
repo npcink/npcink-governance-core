@@ -26,6 +26,9 @@ Implemented:
   representative scenarios.
 - capability execution guidance for OpenClaw and adapter clients, without
   adding Core proxy execution.
+- governance operability baseline with proposal audit timelines,
+  ability/app/key/caller/correlation audit filters, app scope-decision
+  attribution, and commit-preflight correlation ids.
 
 Not implemented:
 
@@ -201,7 +204,27 @@ See [Set Post SEO Meta Governance Scenario](set-post-seo-meta-governance-scenari
 See [Approve Comment Governance Scenario](approve-comment-governance-scenario.md).
 See [Taxonomy Terms Preview Governance Scenario](taxonomy-terms-preview-governance-scenario.md).
 
-### 7. Final Commit Execution ADR Decision
+### 7. Core Governance Operability
+
+Status: minimal implementation active.
+
+Goal: make the existing governance loop reviewable and diagnosable before
+adding product features or execution runtime.
+
+Acceptance:
+
+- proposal detail includes an `audit_timeline`;
+- admin proposal detail shows live capability summary and audit timeline;
+- audit filters cover `ability_id`, `app_id`, `key_id`, `caller_type`, and
+  `correlation_id`;
+- app-authenticated audit metadata includes `scope_decision`;
+- commit preflight returns and audits a `correlation_id`;
+- no final WordPress mutation, proxy execution, MCP runtime, workflow runtime,
+  or product UX is added.
+
+See [Core Governance Operability](core-governance-operability.md).
+
+### 8. Final Commit Execution ADR Decision
 
 Status: decision required.
 
@@ -216,7 +239,7 @@ Acceptance before implementation:
 - avoid adding final WordPress mutation routes as an incidental extension of
   commit preflight.
 
-### 8. OpenClaw Adapter / Agent Gateway Planning
+### 9. OpenClaw Adapter / Agent Gateway Planning
 
 Status: outside Core, planning candidate.
 

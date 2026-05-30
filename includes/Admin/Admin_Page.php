@@ -557,6 +557,14 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 	 */
 	private function render_proposal_detail( array $proposal ): void {
 		$proposal_id = (string) $proposal['proposal_id'];
+		$capability  = $this->abilities->find( (string) $proposal['ability_id'] );
+		$timeline    = $this->audit->list_filtered(
+			array(
+				'proposal_id' => $proposal_id,
+				'limit'       => 50,
+				'order'       => 'asc',
+			)
+		);
 		?>
 		<h2><?php echo esc_html__( 'Proposal Detail', 'magick-ai-core' ); ?></h2>
 		<table class="widefat striped" style="max-width: 1100px;">
@@ -574,6 +582,10 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 					<td><code><?php echo esc_html( (string) $proposal['ability_id'] ); ?></code></td>
 				</tr>
 				<tr>
+					<th scope="row"><?php echo esc_html__( 'Caller', 'magick-ai-core' ); ?></th>
+					<td><pre><?php echo esc_html( (string) wp_json_encode( $proposal['caller'], JSON_PRETTY_PRINT ) ); ?></pre></td>
+				</tr>
+				<tr>
 					<th scope="row"><?php echo esc_html__( 'Summary', 'magick-ai-core' ); ?></th>
 					<td><?php echo esc_html( (string) $proposal['summary'] ); ?></td>
 				</tr>
@@ -587,6 +599,9 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 				</tr>
 			</tbody>
 		</table>
+
+		<?php $this->render_capability_summary( $capability ); ?>
+		<?php $this->render_audit_timeline( $timeline ); ?>
 
 		<?php if ( 'pending' === (string) $proposal['status'] ) : ?>
 			<h3><?php echo esc_html__( 'Decision', 'magick-ai-core' ); ?></h3>
@@ -607,6 +622,97 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 				</p>
 			</form>
 		<?php endif; ?>
+		<?php
+	}
+
+	/**
+	 * Renders capability summary for the selected proposal.
+	 *
+	 * @param array<string,mixed>|null $capability Capability row.
+	 * @return void
+	 */
+	private function render_capability_summary( ?array $capability ): void {
+		?>
+		<h3><?php echo esc_html__( 'Capability Summary', 'magick-ai-core' ); ?></h3>
+		<table class="widefat striped" style="max-width: 1100px;">
+			<tbody>
+				<?php if ( null === $capability ) : ?>
+					<tr>
+						<td><?php echo esc_html__( 'The target ability is not currently discoverable. Commit preflight will fail closed until the provider exposes it again.', 'magick-ai-core' ); ?></td>
+					</tr>
+				<?php else : ?>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'Label', 'magick-ai-core' ); ?></th>
+						<td><?php echo esc_html( (string) $capability['label'] ); ?></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'Risk level', 'magick-ai-core' ); ?></th>
+						<td><code><?php echo esc_html( (string) $capability['risk_level'] ); ?></code></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'Requires approval', 'magick-ai-core' ); ?></th>
+						<td><?php echo esc_html( ! empty( $capability['requires_approval'] ) ? __( 'yes', 'magick-ai-core' ) : __( 'no', 'magick-ai-core' ) ); ?></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'Governance mode', 'magick-ai-core' ); ?></th>
+						<td><code><?php echo esc_html( (string) $capability['governance_mode'] ); ?></code></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'Execution surface', 'magick-ai-core' ); ?></th>
+						<td><code><?php echo esc_html( (string) $capability['execution_surface'] ); ?></code></td>
+					</tr>
+				<?php endif; ?>
+			</tbody>
+		</table>
+		<?php
+	}
+
+	/**
+	 * Renders proposal audit timeline.
+	 *
+	 * @param array<int,array<string,mixed>> $events Audit events.
+	 * @return void
+	 */
+	private function render_audit_timeline( array $events ): void {
+		?>
+		<h3><?php echo esc_html__( 'Audit Timeline', 'magick-ai-core' ); ?></h3>
+		<table class="widefat striped" style="max-width: 1100px;">
+			<thead>
+				<tr>
+					<th scope="col"><?php echo esc_html__( 'Time', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Event', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Actor', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'App', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Scope decision', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Correlation', 'magick-ai-core' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php if ( empty( $events ) ) : ?>
+					<tr>
+						<td colspan="6"><?php echo esc_html__( 'No audit events recorded for this proposal yet.', 'magick-ai-core' ); ?></td>
+					</tr>
+				<?php endif; ?>
+				<?php foreach ( $events as $event ) : ?>
+					<?php
+					$metadata       = is_array( $event['metadata'] ?? null ) ? $event['metadata'] : array();
+					$auth           = is_array( $metadata['auth'] ?? null ) ? $metadata['auth'] : array();
+					$app_label      = (string) ( $auth['app_id'] ?? '-' );
+					$scope          = (string) ( $auth['scope'] ?? '-' );
+					$scope_decision = (string) ( $auth['scope_decision'] ?? '-' );
+					$correlation_id = (string) ( $metadata['correlation_id'] ?? '-' );
+					?>
+					<tr>
+						<td><?php echo esc_html( (string) $event['created_at'] ); ?></td>
+						<td><code><?php echo esc_html( (string) $event['event_name'] ); ?></code></td>
+						<td><?php echo esc_html( (string) $event['actor_id'] ); ?></td>
+						<td><code><?php echo esc_html( $app_label ); ?></code></td>
+						<td><code><?php echo esc_html( $scope . ' / ' . $scope_decision ); ?></code></td>
+						<td><code><?php echo esc_html( $correlation_id ); ?></code></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
 		<?php
 	}
 

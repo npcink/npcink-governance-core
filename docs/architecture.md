@@ -11,13 +11,13 @@ Status: MVP architecture.
 | `Proposal_Repository` | Persistence for proposal records. |
 | `Proposal_Service` | Proposal creation and audit coordination. |
 | `Commit_Preflight_Service` | Approval-commit readiness checks without executing abilities. |
-| `Audit_Log_Repository` | Append-only event records. |
+| `Audit_Log_Repository` | Append-only event records and narrow governance filters. |
 | `App_Key_Repository` | Scoped app identity and hashed secret storage. |
 | `App_Rate_Limiter` | Fixed-window app rate counters by route family. |
 | `App_Authenticator` | WordPress admin or scoped app-key REST authorization. |
 | `Request_Context` | Request-scoped app attribution for proposals and audit events. |
 | REST controllers | Minimal admin-facing REST API. |
-| `Admin_Page` | Minimal WordPress Tools screen for pending proposal review and decisions. |
+| `Admin_Page` | Minimal WordPress Tools screen for pending proposal review, capability summary, audit timeline, and decisions. |
 
 ## Data Tables
 
@@ -30,6 +30,11 @@ MVP custom tables:
 
 The schema is intentionally small. The first version favors clear lifecycle
 records over generalized workflow state.
+
+The governance operability layer reuses these lifecycle records. It adds
+proposal `audit_timeline` reads, app scope-decision attribution, and
+commit-preflight `correlation_id` metadata without adding workflow state,
+execution queues, or a separate logging subsystem.
 
 ## Dependency Direction
 

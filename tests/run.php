@@ -120,6 +120,12 @@ foreach (
 		'magick_ai_core_invalid_ability_id',
 		'magick_ai_core_ability_not_available',
 		'magick_ai_core_legacy_confirmation_rejected',
+		'audit_timeline',
+		'correlation_id',
+		'scope_decision',
+		'app_id',
+		'key_id',
+		'caller_type',
 		'event_name',
 	) as $required
 ) {
@@ -214,9 +220,29 @@ foreach (
 		'proposals:create',
 		'commit:preflight',
 		'Do not grant `proposals:approve` or `audit:read` by default to generic MCP',
+		'scope_decision',
+		'correlation_id',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $app_auth_scope, $required ), 'App auth scope policy contains required text: ' . $required );
+}
+
+$core_operability = magick_ai_core_read( $root . '/docs/core-governance-operability.md' );
+foreach (
+	array(
+		'minimal implementation active',
+		'Core remains the WordPress AI operation governance layer',
+		'proposal audit timelines',
+		'audit filters',
+		'scope_decision',
+		'correlation_id',
+		'commit_execution=false',
+		'core_proxy_execute=false',
+		'Do not add these as part of Core governance operability',
+		'final commit execution',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $core_operability, $required ), 'Core governance operability doc contains required text: ' . $required );
 }
 
 $next_stage_plan = magick_ai_core_read( $root . '/docs/next-stage-plan.md' );
@@ -224,6 +250,7 @@ magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Agent/MCP Governance
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'minimal implementation active' ), 'Next stage plan marks app auth as implemented minimally.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'consumer readiness complete' ), 'Next stage plan marks consumer readiness complete.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Core 0.4 Consumer Readiness' ), 'Next stage plan links Core 0.4 consumer readiness.' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Core Governance Operability' ), 'Next stage plan links Core Governance Operability.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Final Commit Execution ADR Decision' ), 'Next stage plan includes final commit execution ADR decision phase.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'OpenClaw Adapter / Agent Gateway Planning' ), 'Next stage plan keeps OpenClaw adapter planning outside Core.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'OpenClaw Execution Guidance' ), 'Next stage plan links OpenClaw execution guidance.' );
@@ -237,6 +264,7 @@ magick_ai_core_assert( false !== strpos( $readme, 'Agent MCP Entry Contract' ), 
 magick_ai_core_assert( false !== strpos( $readme, 'App Auth Scope Policy' ), 'README links App Auth Scope Policy.' );
 magick_ai_core_assert( false !== strpos( $readme, 'OpenClaw governance adapter example' ), 'README links OpenClaw governance adapter example.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Core 0.4 Consumer Readiness' ), 'README links Core 0.4 Consumer Readiness.' );
+magick_ai_core_assert( false !== strpos( $readme, 'Core Governance Operability' ), 'README links Core Governance Operability.' );
 magick_ai_core_assert( false !== strpos( $readme, 'OpenClaw Execution Guidance' ), 'README links OpenClaw Execution Guidance.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Create Draft Governance Scenario' ), 'README links Create Draft Governance Scenario.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Set Post SEO Meta Governance Scenario' ), 'README links Set Post SEO Meta Governance Scenario.' );
@@ -463,6 +491,8 @@ foreach (
 		'can_commit_preflight',
 		'app.scope_denied',
 		'app.rate_limited',
+		"mark_scope_decision( 'denied' )",
+		"mark_scope_decision( 'rate_limited' )",
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $app_authenticator, $required ), 'App authenticator contains required text: ' . $required );
@@ -505,6 +535,8 @@ magick_ai_core_assert( false !== strpos( $testing_strategy, 'primary `magick-ai/
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'second `magick-ai/set-post-seo-meta` governance scenario' ), 'Testing strategy records second set-post-seo-meta scenario coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'third `magick-ai/approve-comment` governance scenario' ), 'Testing strategy records third approve-comment scenario coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'taxonomy terms preview governance scenario' ), 'Testing strategy records taxonomy terms preview scenario coverage.' );
+magick_ai_core_assert( false !== strpos( $testing_strategy, 'proposal `audit_timeline`' ), 'Testing strategy records governance operability coverage.' );
+magick_ai_core_assert( false !== strpos( $testing_strategy, 'commit-preflight `correlation_id`' ), 'Testing strategy records preflight correlation smoke coverage.' );
 
 $development_workflow = magick_ai_core_read( $root . '/docs/development-workflow.md' );
 magick_ai_core_assert( false !== strpos( $development_workflow, 'does not depend on the abandoned legacy Magick AI' ), 'Development workflow rejects the abandoned legacy Magick AI dependency.' );
@@ -540,6 +572,12 @@ magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick_ai_core_smoke_assert
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick_ai_core_smoke_run_taxonomy_terms_preview' ), 'WordPress smoke runs taxonomy terms preview helper through WordPress Abilities API.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'taxonomy terms governance loop does not mutate post terms' ), 'WordPress smoke validates taxonomy terms preflight does not mutate post terms.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'taxonomy terms audit correlates commit preflight with set-post-terms' ), 'WordPress smoke validates taxonomy terms audit correlation.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'proposal detail includes audit timeline' ), 'WordPress smoke validates proposal audit timeline.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'commit preflight returns correlation id' ), 'WordPress smoke validates preflight correlation id.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'audit endpoint filters by ability id' ), 'WordPress smoke validates ability audit filtering.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'audit endpoint filters by app id' ), 'WordPress smoke validates app audit filtering.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'scope decision denied' ), 'WordPress smoke validates denied scope decision attribution.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'scope decision rate_limited' ), 'WordPress smoke validates rate-limit scope decision attribution.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'app-authenticated proposal stores app attribution' ), 'WordPress smoke validates app proposal attribution.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'app-authenticated audit read is denied without audit scope' ), 'WordPress smoke validates denied app audit scope.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'app rate limit returns 429 after fixed window is exhausted' ), 'WordPress smoke validates app rate limiting.' );
@@ -556,6 +594,7 @@ magick_ai_core_assert( false !== strpos( $proposals_controller, "/approve'" ), '
 magick_ai_core_assert( false !== strpos( $proposals_controller, "/reject'" ), 'Proposal reject REST route is registered.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, "/commit-preflight'" ), 'Proposal commit preflight REST route is registered.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, "'ability_id'" ), 'Proposals route requires ability_id.' );
+magick_ai_core_assert( false !== strpos( $proposals_controller, 'audit_timeline' ), 'Proposal detail REST route returns audit timeline.' );
 
 $proposal_service = magick_ai_core_read( $root . '/includes/Governance/Proposal_Service.php' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.created' ), 'Proposal service records proposal.created audit event.' );
@@ -565,6 +604,7 @@ magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.approved' 
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.rejected' ), 'Proposal service records proposal.rejected audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.listed' ), 'Proposal service records proposal.listed audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.viewed' ), 'Proposal service records proposal.viewed audit event.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'audit_timeline' ), 'Proposal service exposes proposal audit timeline.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, "'pending'" ), 'Proposal service only transitions pending proposals.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'magick_ai_core_ability_not_available' ), 'Proposal service rejects unavailable target abilities.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, '$this->abilities->find' ), 'Proposal service validates against ability intake.' );
@@ -575,6 +615,8 @@ $commit_preflight_service = magick_ai_core_read( $root . '/includes/Governance/C
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'commit.preflighted' ), 'Commit preflight records commit.preflighted audit event.' );
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'approval_commit_authorized' ), 'Commit preflight returns approval context.' );
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'commit_execution' ), 'Commit preflight explicitly reports no commit execution.' );
+magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'correlation_id' ), 'Commit preflight returns and audits correlation id.' );
+magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'new_correlation_id' ), 'Commit preflight generates a correlation id.' );
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'confirm_token' ), 'Commit preflight rejects confirm_token input.' );
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'write_confirmed' ), 'Commit preflight rejects write_confirmed input.' );
 
@@ -583,6 +625,24 @@ magick_ai_core_assert( false !== strpos( $audit_repository, 'sanitize_text_field
 magick_ai_core_assert( false !== strpos( $audit_repository, 'list_filtered' ), 'Audit repository supports filtered event lists.' );
 magick_ai_core_assert( false !== strpos( $audit_repository, 'proposal_id = %s' ), 'Audit repository filters by proposal id safely.' );
 magick_ai_core_assert( false !== strpos( $audit_repository, 'event_name = %s' ), 'Audit repository filters by event name safely.' );
+magick_ai_core_assert( false !== strpos( $audit_repository, 'ability_id' ), 'Audit repository filters by ability id metadata.' );
+magick_ai_core_assert( false !== strpos( $audit_repository, 'app_id' ), 'Audit repository filters by app id metadata.' );
+magick_ai_core_assert( false !== strpos( $audit_repository, 'key_id' ), 'Audit repository filters by key id metadata.' );
+magick_ai_core_assert( false !== strpos( $audit_repository, 'caller_type' ), 'Audit repository filters by caller type metadata.' );
+magick_ai_core_assert( false !== strpos( $audit_repository, 'correlation_id' ), 'Audit repository filters by correlation id metadata.' );
+magick_ai_core_assert( false !== strpos( $audit_repository, 'metadata_filter_needle' ), 'Audit repository uses JSON-safe metadata filter needles.' );
+
+$audit_controller = magick_ai_core_read( $root . '/includes/Rest/Audit_Controller.php' );
+magick_ai_core_assert( false !== strpos( $audit_controller, "'/audit'" ), 'Audit REST route is registered.' );
+magick_ai_core_assert( false !== strpos( $audit_controller, 'ability_id' ), 'Audit REST route accepts ability id filter.' );
+magick_ai_core_assert( false !== strpos( $audit_controller, 'app_id' ), 'Audit REST route accepts app id filter.' );
+magick_ai_core_assert( false !== strpos( $audit_controller, 'key_id' ), 'Audit REST route accepts key id filter.' );
+magick_ai_core_assert( false !== strpos( $audit_controller, 'caller_type' ), 'Audit REST route accepts caller type filter.' );
+magick_ai_core_assert( false !== strpos( $audit_controller, 'correlation_id' ), 'Audit REST route accepts correlation id filter.' );
+
+$request_context = magick_ai_core_read( $root . '/includes/Security/Request_Context.php' );
+magick_ai_core_assert( false !== strpos( $request_context, 'scope_decision' ), 'Request context stores scope decision.' );
+magick_ai_core_assert( false !== strpos( $request_context, 'mark_scope_decision' ), 'Request context can update scope decision for denials.' );
 
 $admin_page = magick_ai_core_read( $root . '/includes/Admin/Admin_Page.php' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_approve_proposal' ), 'Admin page registers approve handler.' );
@@ -625,6 +685,10 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'default_scopes' ), 'Admin
 magick_ai_core_assert( false !== strpos( $admin_page, 'App_Key_Repository::DEFAULT_RATE_LIMIT' ), 'Admin page exposes bounded rate policy inputs.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'app.revoked' ), 'Admin page audits app-key revocation.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'button-link-delete' ), 'Admin page exposes a key disable action.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Capability Summary' ), 'Admin proposal detail renders capability summary.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Audit Timeline' ), 'Admin proposal detail renders audit timeline.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'scope_decision' ), 'Admin proposal detail shows scope decision attribution.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'correlation_id' ), 'Admin proposal detail shows correlation id attribution.' );
 
 $forbidden_runtime_terms = array(
 	'Agent Gateway',

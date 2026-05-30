@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-05-30 — Governance operability baseline added
+
+- **Module**: Core governance operability / audit traceability
+- **Status**: Core now has a minimal operational review layer around the
+  existing proposal, approval, and commit-preflight loop.
+- **Completed**:
+  - Added proposal `audit_timeline` to proposal detail REST responses.
+  - Added admin proposal detail capability summary and audit timeline.
+  - Added audit filters for `ability_id`, `app_id`, `key_id`, `caller_type`,
+    and `correlation_id`.
+  - Added app `scope_decision` attribution for allowed, denied, and
+    rate-limited app-authenticated requests.
+  - Added commit-preflight `correlation_id` in the response, approval context,
+    and `commit.preflighted` audit metadata.
+  - Added the Core Governance Operability handoff document and synchronized
+    REST, governance, security, app auth, schema, workflow, and testing docs.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+  - `git diff --check` passed.
+- **Boundary**:
+  - Core still does not execute abilities, add proxy execution, implement MCP
+    runtime, add workflow runtime, or perform final WordPress mutation.
+
 ## 2026-05-30 — Taxonomy terms preview governance proof added
 
 - **Module**: consumer-side governance loop / taxonomy terms preview handoff

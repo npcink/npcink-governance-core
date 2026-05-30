@@ -165,6 +165,22 @@ final class Proposal_Service {
 	}
 
 	/**
+	 * Returns proposal audit timeline.
+	 *
+	 * @param string $proposal_id Proposal id.
+	 * @return array<int,array<string,mixed>>
+	 */
+	public function audit_timeline( string $proposal_id ): array {
+		return $this->audit->list_filtered(
+			array(
+				'proposal_id' => sanitize_text_field( $proposal_id ),
+				'limit'       => 50,
+				'order'       => 'asc',
+			)
+		);
+	}
+
+	/**
 	 * Returns the shared not-found error.
 	 *
 	 * @return WP_Error

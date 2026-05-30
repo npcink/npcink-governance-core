@@ -39,13 +39,28 @@ final class Request_Context {
 	 */
 	public static function set_app( array $context ): void {
 		self::$app = array(
-			'auth_type'    => 'app_key',
-			'app_id'       => sanitize_text_field( (string) ( $context['app_id'] ?? '' ) ),
-			'key_id'       => sanitize_text_field( (string) ( $context['key_id'] ?? '' ) ),
-			'caller_type'  => sanitize_key( (string) ( $context['caller_type'] ?? 'external_app' ) ),
-			'scope'        => sanitize_text_field( (string) ( $context['scope'] ?? '' ) ),
-			'route_family' => sanitize_key( (string) ( $context['route_family'] ?? '' ) ),
+			'auth_type'      => 'app_key',
+			'app_id'         => sanitize_text_field( (string) ( $context['app_id'] ?? '' ) ),
+			'key_id'         => sanitize_text_field( (string) ( $context['key_id'] ?? '' ) ),
+			'caller_type'    => sanitize_key( (string) ( $context['caller_type'] ?? 'external_app' ) ),
+			'scope'          => sanitize_text_field( (string) ( $context['scope'] ?? '' ) ),
+			'scope_decision' => sanitize_key( (string) ( $context['scope_decision'] ?? 'allowed' ) ),
+			'route_family'   => sanitize_key( (string) ( $context['route_family'] ?? '' ) ),
 		);
+	}
+
+	/**
+	 * Updates the current scope decision.
+	 *
+	 * @param string $decision Decision label.
+	 * @return void
+	 */
+	public static function mark_scope_decision( string $decision ): void {
+		if ( ! self::is_app() ) {
+			return;
+		}
+
+		self::$app['scope_decision'] = sanitize_key( $decision );
 	}
 
 	/**
@@ -80,4 +95,3 @@ final class Request_Context {
 		return self::$app;
 	}
 }
-

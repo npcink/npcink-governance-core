@@ -98,7 +98,9 @@ composer validate --no-check-publish
 - proposal creation;
 - proposal approval;
 - proposal rejection;
-- audit REST listing.
+- audit REST listing;
+- proposal audit timeline, audit filters, app scope-decision attribution, and
+  commit-preflight correlation id.
 
 The smoke test creates local proposal and audit records. That is expected.
 

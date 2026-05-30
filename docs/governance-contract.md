@@ -82,6 +82,33 @@ Future event names:
 - `commit.succeeded`
 - `commit.failed`
 
+## Governance Operability
+
+Core keeps enough operational evidence for proposal review and adapter
+debugging without becoming an execution runtime or analytics system.
+
+Proposal detail responses include an `audit_timeline` for the selected
+proposal. The admin proposal detail uses the same evidence to show the proposal
+payload, live capability summary, lifecycle events, app attribution, scope
+decision, and commit-preflight correlation id.
+
+Audit list filters include:
+
+- `proposal_id`
+- `event_name`
+- `ability_id`
+- `app_id`
+- `key_id`
+- `caller_type`
+- `correlation_id`
+
+Successful commit preflight returns a `correlation_id` in the response,
+includes it in `approval_context.correlation_id`, and records the same value in
+the `commit.preflighted` audit event metadata.
+
+App-authenticated audit metadata includes `scope_decision`, currently
+`allowed`, `denied`, or `rate_limited`.
+
 ## Security Defaults
 
 - REST routes require `manage_options` in the MVP.

@@ -106,10 +106,12 @@ final class Commit_Preflight_Service {
 			);
 		}
 
+		$correlation_id = $this->new_correlation_id();
 		$approval_context = array(
 			'approval_commit_authorized' => true,
 			'confirmation_state'        => 'approved_commit',
 			'proposal_id'               => $proposal_id,
+			'correlation_id'            => $correlation_id,
 		);
 
 		$event_id = $this->audit->record(
@@ -119,6 +121,7 @@ final class Commit_Preflight_Service {
 				'status'                => (string) $proposal['status'],
 				'commit_execution'      => false,
 				'idempotency_required' => true,
+				'correlation_id'        => $correlation_id,
 			),
 			$proposal_id
 		);
@@ -135,8 +138,18 @@ final class Commit_Preflight_Service {
 			'proposal'             => $proposal,
 			'capability'           => $capability,
 			'approval_context'     => $approval_context,
+			'correlation_id'       => $correlation_id,
 			'commit_execution'     => false,
 			'idempotency_required' => true,
 		);
+	}
+
+	/**
+	 * Returns a new preflight correlation id.
+	 *
+	 * @return string
+	 */
+	private function new_correlation_id(): string {
+		return function_exists( 'wp_generate_uuid4' ) ? wp_generate_uuid4() : uniqid( 'mai_corr_', true );
 	}
 }

@@ -251,6 +251,7 @@ final class Proposals_Controller {
 		}
 
 		$this->service->record_viewed( $proposal );
+		$proposal['audit_timeline'] = $this->service->audit_timeline( $proposal_id );
 
 		return new WP_REST_Response( $proposal, 200 );
 	}

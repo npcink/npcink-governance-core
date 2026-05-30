@@ -84,6 +84,17 @@ MVP event names:
 - `audit.listed`
 - `commit.preflighted`
 
+Governance operability metadata:
+
+- proposal lifecycle events include `ability_id` when available;
+- app-authenticated events include `metadata.auth.app_id`,
+  `metadata.auth.key_id`, `metadata.auth.caller_type`,
+  `metadata.auth.scope`, `metadata.auth.scope_decision`, and
+  `metadata.auth.route_family`;
+- commit preflight events include `metadata.correlation_id`;
+- audit reads support metadata filters for `ability_id`, `app_id`, `key_id`,
+  `caller_type`, and `correlation_id` without adding extra audit columns.
+
 ## Table: `{prefix}magick_ai_core_app_keys`
 
 Purpose: stores scoped app identities for external governance clients.

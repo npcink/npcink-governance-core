@@ -77,6 +77,31 @@ final class Audit_Controller {
 							'default'           => '',
 							'sanitize_callback' => 'sanitize_text_field',
 						),
+						'ability_id'  => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'app_id'      => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'key_id'      => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'caller_type' => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_key',
+						),
+						'correlation_id' => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
 					),
 				),
 			)
@@ -95,6 +120,11 @@ final class Audit_Controller {
 				'limit'       => (int) $request->get_param( 'limit' ),
 				'proposal_id' => (string) $request->get_param( 'proposal_id' ),
 				'event_name'  => (string) $request->get_param( 'event_name' ),
+				'ability_id'  => (string) $request->get_param( 'ability_id' ),
+				'app_id'      => (string) $request->get_param( 'app_id' ),
+				'key_id'      => (string) $request->get_param( 'key_id' ),
+				'caller_type' => (string) $request->get_param( 'caller_type' ),
+				'correlation_id' => (string) $request->get_param( 'correlation_id' ),
 			)
 		);
 
@@ -104,6 +134,11 @@ final class Audit_Controller {
 				'count'       => count( $items ),
 				'proposal_id' => (string) $request->get_param( 'proposal_id' ),
 				'event_name'  => (string) $request->get_param( 'event_name' ),
+				'ability_id'  => (string) $request->get_param( 'ability_id' ),
+				'app_id'      => (string) $request->get_param( 'app_id' ),
+				'key_id'      => (string) $request->get_param( 'key_id' ),
+				'caller_type' => (string) $request->get_param( 'caller_type' ),
+				'correlation_id' => (string) $request->get_param( 'correlation_id' ),
 			)
 		);
 

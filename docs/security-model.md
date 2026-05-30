@@ -154,8 +154,15 @@ fixed-window rate limit. Missing auth returns `401`, missing scope returns
 `403`, and rate limit failures return `429`.
 
 Successful app-authenticated governance events include sanitized app attribution
-in `metadata.auth`. App-created proposals also copy that attribution into
-`caller.auth`.
+in `metadata.auth`, including `scope_decision=allowed`. Scope denials record
+`scope_decision=denied`; rate-limit denials record
+`scope_decision=rate_limited`. App-created proposals also copy that attribution
+into `caller.auth`.
+
+Commit preflight returns and audits a `correlation_id` so an adapter can connect
+the approval context it received to the `commit.preflighted` audit event. The
+correlation id is not an execution token and does not authorize final WordPress
+mutation by itself.
 
 ## Local Development Credentials
 

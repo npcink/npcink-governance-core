@@ -37,6 +37,8 @@ Preflight must:
 - fail when the target ability is no longer discoverable;
 - fail when the request includes legacy confirmation parameters;
 - return Core-generated approval context;
+- return a `correlation_id` in the response and
+  `approval_context.correlation_id`;
 - return `commit_execution=false`;
 - record `commit.preflighted` on success.
 
@@ -49,8 +51,13 @@ array(
 	'approval_commit_authorized' => true,
 	'confirmation_state'        => 'approved_commit',
 	'proposal_id'               => '<core proposal id>',
+	'correlation_id'            => '<preflight correlation id>',
 )
 ```
+
+The `correlation_id` must also be stored in the `commit.preflighted` audit
+event. It connects the returned approval context to the audit trail; it is not
+a final execution token.
 
 Do not accept legacy `confirm_token`, `write_confirmed`, or compatibility
 confirmation parameters in the rebuilt Core.

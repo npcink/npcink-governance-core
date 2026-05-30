@@ -54,6 +54,9 @@ Use it for behavior that requires real WordPress:
   `magick-ai/propose-post-taxonomy-terms` helper execution through WordPress
   Abilities API, `magick-ai/set-post-terms` proposal creation, approval,
   commit preflight, audit correlation, and no post term mutation;
+- governance operability coverage, including proposal `audit_timeline`,
+  commit-preflight `correlation_id`, app `scope_decision`, and audit filters
+  for ability, app, key, caller type, and correlation id;
 - real proposal and audit persistence.
 
 The smoke test should stay small. It is a confidence gate, not a full end-to-end

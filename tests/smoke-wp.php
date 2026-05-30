@@ -476,6 +476,8 @@ function magick_ai_core_smoke_run_governance_proposal( string $ability_id, array
 
 	$detail = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) );
 	magick_ai_core_smoke_assert( $proposal_id === (string) ( $detail['proposal_id'] ?? '' ), $ability_id . ' proposal detail endpoint returns created proposal' );
+	$detail_timeline = (array) ( $detail['audit_timeline'] ?? array() );
+	magick_ai_core_smoke_assert( count( $detail_timeline ) >= 1, $ability_id . ' proposal detail includes audit timeline' );
 
 	$pending_preflight = magick_ai_core_smoke_rest_result( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/commit-preflight' );
 	magick_ai_core_smoke_assert( 409 === (int) $pending_preflight['status'], $ability_id . ' commit preflight fails for pending proposal' );
@@ -498,6 +500,10 @@ function magick_ai_core_smoke_run_governance_proposal( string $ability_id, array
 	magick_ai_core_smoke_assert( true === (bool) ( $preflight['proposal']['input']['dry_run'] ?? false ), $ability_id . ' preflight returns the dry-run proposal input without committing' );
 	magick_ai_core_smoke_assert( false === (bool) ( $preflight['proposal']['input']['commit'] ?? false ), $ability_id . ' preflight does not turn proposal input into a commit request' );
 	magick_ai_core_smoke_assert( $ability_id === (string) ( $preflight['capability']['ability_id'] ?? '' ), $ability_id . ' preflight capability is rediscovered from ability intake' );
+	$correlation_id = (string) ( $preflight['correlation_id'] ?? '' );
+	magick_ai_core_smoke_assert( '' !== $correlation_id, $ability_id . ' commit preflight returns correlation id' );
+	magick_ai_core_smoke_assert( $correlation_id === (string) ( $preflight['approval_context']['correlation_id'] ?? '' ), $ability_id . ' approval context includes matching correlation id' );
+	$GLOBALS['magick_ai_core_smoke_preflight_correlations'][ $proposal_id ] = $correlation_id;
 
 	return $proposal_id;
 }
@@ -770,6 +776,7 @@ $app_proposal_id = (string) ( $app_created['proposal_id'] ?? '' );
 magick_ai_core_smoke_assert( '' !== $app_proposal_id, 'app-authenticated proposal is created' );
 magick_ai_core_smoke_assert( $app_id === (string) ( $app_created['caller']['auth']['app_id'] ?? '' ), 'app-authenticated proposal stores app attribution' );
 magick_ai_core_smoke_assert( 'proposals:create' === (string) ( $app_created['caller']['auth']['scope'] ?? '' ), 'app-authenticated proposal stores scope attribution' );
+magick_ai_core_smoke_assert( 'allowed' === (string) ( $app_created['caller']['auth']['scope_decision'] ?? '' ), 'app-authenticated proposal stores allowed scope decision' );
 
 $app_approve = magick_ai_core_smoke_rest_result_as_app( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $app_proposal_id ) . '/approve', $app_token );
 magick_ai_core_smoke_assert( 403 === (int) $app_approve['status'], 'app-authenticated approval is denied without approval scope' );
@@ -785,6 +792,7 @@ magick_ai_core_smoke_rest(
 $app_preflight = magick_ai_core_smoke_rest_as_app( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $app_proposal_id ) . '/commit-preflight', $app_token );
 magick_ai_core_smoke_assert( false === (bool) ( $app_preflight['commit_execution'] ?? true ), 'app-authenticated commit preflight does not execute ability' );
 magick_ai_core_smoke_assert( true === (bool) ( $app_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'app-authenticated commit preflight returns approval context' );
+magick_ai_core_smoke_assert( '' !== (string) ( $app_preflight['correlation_id'] ?? '' ), 'app-authenticated commit preflight returns correlation id' );
 
 $app_audit_denied = magick_ai_core_smoke_rest_result_as_app( 'GET', '/magick-ai-core/v1/audit', $app_token, array( 'limit' => 5 ) );
 magick_ai_core_smoke_assert( 403 === (int) $app_audit_denied['status'], 'app-authenticated audit read is denied without audit scope' );
@@ -879,6 +887,41 @@ foreach ( $taxonomy_audit_items as $item ) {
 }
 magick_ai_core_smoke_assert( $found_taxonomy_preflight, 'taxonomy terms audit correlates commit preflight with set-post-terms' );
 
+$taxonomy_timeline_detail = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/proposals/' . rawurlencode( $taxonomy_proposal_id ) );
+$taxonomy_timeline_items  = (array) ( $taxonomy_timeline_detail['audit_timeline'] ?? array() );
+magick_ai_core_smoke_assert( count( $taxonomy_timeline_items ) >= 4, 'taxonomy proposal detail includes audit timeline through preflight' );
+
+$taxonomy_correlation_id = (string) ( $GLOBALS['magick_ai_core_smoke_preflight_correlations'][ $taxonomy_proposal_id ] ?? '' );
+magick_ai_core_smoke_assert( '' !== $taxonomy_correlation_id, 'taxonomy terms preflight correlation id is available for audit filtering' );
+
+$ability_audit = magick_ai_core_smoke_rest(
+	'GET',
+	'/magick-ai-core/v1/audit',
+	array(
+		'ability_id' => 'magick-ai/set-post-terms',
+		'limit'      => 20,
+	)
+);
+$ability_audit_items = (array) ( $ability_audit['items'] ?? array() );
+magick_ai_core_smoke_assert( count( $ability_audit_items ) >= 1, 'audit endpoint filters by ability id' );
+foreach ( $ability_audit_items as $item ) {
+	magick_ai_core_smoke_assert( 'magick-ai/set-post-terms' === (string) ( is_array( $item ) ? ( $item['metadata']['ability_id'] ?? '' ) : '' ), 'ability audit filter returns only matching ability metadata' );
+}
+
+$correlation_audit = magick_ai_core_smoke_rest(
+	'GET',
+	'/magick-ai-core/v1/audit',
+	array(
+		'correlation_id' => $taxonomy_correlation_id,
+		'limit'          => 20,
+	)
+);
+$correlation_audit_items = (array) ( $correlation_audit['items'] ?? array() );
+magick_ai_core_smoke_assert( count( $correlation_audit_items ) >= 1, 'audit endpoint filters by correlation id' );
+foreach ( $correlation_audit_items as $item ) {
+	magick_ai_core_smoke_assert( $taxonomy_correlation_id === (string) ( is_array( $item ) ? ( $item['metadata']['correlation_id'] ?? '' ) : '' ), 'correlation audit filter returns only matching correlation metadata' );
+}
+
 $app_proposal_audit = magick_ai_core_smoke_rest(
 	'GET',
 	'/magick-ai-core/v1/audit',
@@ -895,6 +938,88 @@ foreach ( $app_proposal_audit_items as $item ) {
 	}
 }
 magick_ai_core_smoke_assert( $found_app_attribution, 'app-authenticated audit event stores app attribution' );
+
+$app_id_audit = magick_ai_core_smoke_rest(
+	'GET',
+	'/magick-ai-core/v1/audit',
+	array(
+		'app_id' => $app_id,
+		'limit'  => 20,
+	)
+);
+$app_id_audit_items = (array) ( $app_id_audit['items'] ?? array() );
+magick_ai_core_smoke_assert( count( $app_id_audit_items ) >= 1, 'audit endpoint filters by app id' );
+foreach ( $app_id_audit_items as $item ) {
+	$metadata = is_array( $item ) && is_array( $item['metadata'] ?? null ) ? $item['metadata'] : array();
+	$auth     = is_array( $metadata['auth'] ?? null ) ? $metadata['auth'] : $metadata;
+	magick_ai_core_smoke_assert( $app_id === (string) ( $auth['app_id'] ?? '' ), 'app audit filter returns only matching app metadata' );
+}
+
+$key_id_audit = magick_ai_core_smoke_rest(
+	'GET',
+	'/magick-ai-core/v1/audit',
+	array(
+		'key_id' => $key_id,
+		'limit'  => 20,
+	)
+);
+$key_id_audit_items = (array) ( $key_id_audit['items'] ?? array() );
+magick_ai_core_smoke_assert( count( $key_id_audit_items ) >= 1, 'audit endpoint filters by key id' );
+foreach ( $key_id_audit_items as $item ) {
+	$metadata = is_array( $item ) && is_array( $item['metadata'] ?? null ) ? $item['metadata'] : array();
+	$auth     = is_array( $metadata['auth'] ?? null ) ? $metadata['auth'] : $metadata;
+	magick_ai_core_smoke_assert( $key_id === (string) ( $auth['key_id'] ?? '' ), 'key audit filter returns only matching key metadata' );
+}
+
+$caller_type_audit = magick_ai_core_smoke_rest(
+	'GET',
+	'/magick-ai-core/v1/audit',
+	array(
+		'caller_type' => 'mcp_adapter',
+		'limit'       => 20,
+	)
+);
+$caller_type_audit_items = (array) ( $caller_type_audit['items'] ?? array() );
+magick_ai_core_smoke_assert( count( $caller_type_audit_items ) >= 1, 'audit endpoint filters by caller type' );
+foreach ( $caller_type_audit_items as $item ) {
+	$metadata = is_array( $item ) && is_array( $item['metadata'] ?? null ) ? $item['metadata'] : array();
+	$auth     = is_array( $metadata['auth'] ?? null ) ? $metadata['auth'] : $metadata;
+	magick_ai_core_smoke_assert( 'mcp_adapter' === (string) ( $auth['caller_type'] ?? '' ), 'caller type audit filter returns only matching caller metadata' );
+}
+
+$scope_denied_audit = magick_ai_core_smoke_rest(
+	'GET',
+	'/magick-ai-core/v1/audit',
+	array(
+		'event_name' => 'app.scope_denied',
+		'limit'      => 20,
+	)
+);
+$scope_denied_items        = (array) ( $scope_denied_audit['items'] ?? array() );
+$found_denied_app_decision = false;
+foreach ( $scope_denied_items as $item ) {
+	if ( is_array( $item ) && $app_id === (string) ( $item['metadata']['auth']['app_id'] ?? '' ) ) {
+		$found_denied_app_decision = 'denied' === (string) ( $item['metadata']['auth']['scope_decision'] ?? '' );
+	}
+}
+magick_ai_core_smoke_assert( $found_denied_app_decision, 'app scope denial audit stores scope decision denied' );
+
+$rate_limited_audit = magick_ai_core_smoke_rest(
+	'GET',
+	'/magick-ai-core/v1/audit',
+	array(
+		'event_name' => 'app.rate_limited',
+		'limit'      => 20,
+	)
+);
+$rate_limited_items         = (array) ( $rate_limited_audit['items'] ?? array() );
+$found_rate_limited_decision = false;
+foreach ( $rate_limited_items as $item ) {
+	if ( is_array( $item ) && (string) ( $rate_app['app_id'] ?? '' ) === (string) ( $item['metadata']['auth']['app_id'] ?? '' ) ) {
+		$found_rate_limited_decision = 'rate_limited' === (string) ( $item['metadata']['auth']['scope_decision'] ?? '' );
+	}
+}
+magick_ai_core_smoke_assert( $found_rate_limited_decision, 'app rate-limit audit stores scope decision rate_limited' );
 
 $preflight_audit = magick_ai_core_smoke_rest(
 	'GET',

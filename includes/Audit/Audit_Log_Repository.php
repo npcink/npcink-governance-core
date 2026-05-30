@@ -112,11 +112,17 @@ final class Audit_Log_Repository {
 	public function list_filtered( array $filters = array() ): array {
 		global $wpdb;
 
-		$limit       = max( 1, min( 200, absint( $filters['limit'] ?? 50 ) ) );
-		$proposal_id = sanitize_text_field( (string) ( $filters['proposal_id'] ?? '' ) );
-		$event_name  = sanitize_text_field( (string) ( $filters['event_name'] ?? '' ) );
-		$where       = array();
-		$args        = array();
+		$limit          = max( 1, min( 200, absint( $filters['limit'] ?? 50 ) ) );
+		$proposal_id    = sanitize_text_field( (string) ( $filters['proposal_id'] ?? '' ) );
+		$event_name     = sanitize_text_field( (string) ( $filters['event_name'] ?? '' ) );
+		$ability_id     = sanitize_text_field( (string) ( $filters['ability_id'] ?? '' ) );
+		$app_id         = sanitize_text_field( (string) ( $filters['app_id'] ?? '' ) );
+		$key_id         = sanitize_text_field( (string) ( $filters['key_id'] ?? '' ) );
+		$caller_type    = sanitize_key( (string) ( $filters['caller_type'] ?? '' ) );
+		$correlation_id = sanitize_text_field( (string) ( $filters['correlation_id'] ?? '' ) );
+		$order          = 'asc' === sanitize_key( (string) ( $filters['order'] ?? 'desc' ) ) ? 'ASC' : 'DESC';
+		$where          = array();
+		$args           = array();
 
 		if ( '' !== $proposal_id ) {
 			$where[] = 'proposal_id = %s';
@@ -128,13 +134,30 @@ final class Audit_Log_Repository {
 			$args[]  = $event_name;
 		}
 
+		$metadata_filters = array(
+			'ability_id'     => $ability_id,
+			'app_id'         => $app_id,
+			'key_id'         => $key_id,
+			'caller_type'    => $caller_type,
+			'correlation_id' => $correlation_id,
+		);
+
+		foreach ( $metadata_filters as $key => $value ) {
+			if ( '' === $value ) {
+				continue;
+			}
+
+			$where[] = 'metadata_json LIKE %s';
+			$args[]  = '%' . $wpdb->esc_like( $this->metadata_filter_needle( (string) $key, (string) $value ) ) . '%';
+		}
+
 		$sql = 'SELECT event_id, event_name, proposal_id, actor_id, metadata_json, created_at FROM ' . $this->table_name();
 
 		if ( ! empty( $where ) ) {
 			$sql .= ' WHERE ' . implode( ' AND ', $where );
 		}
 
-		$sql   .= ' ORDER BY id DESC LIMIT %d';
+		$sql   .= ' ORDER BY id ' . $order . ' LIMIT %d';
 		$args[] = $limit;
 
 		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $args ), ARRAY_A );
@@ -170,6 +193,18 @@ final class Audit_Log_Repository {
 			'metadata'    => is_array( $metadata ) ? $metadata : array(),
 			'created_at'  => sanitize_text_field( (string) ( $row['created_at'] ?? '' ) ),
 		);
+	}
+
+	/**
+	 * Returns a JSON-safe metadata key/value search needle.
+	 *
+	 * @param string $key Metadata key.
+	 * @param string $value Metadata value.
+	 * @return string
+	 */
+	private function metadata_filter_needle( string $key, string $value ): string {
+		$encoded = wp_json_encode( $value );
+		return '"' . sanitize_key( $key ) . '":' . ( is_string( $encoded ) ? $encoded : '""' );
 	}
 
 	/**

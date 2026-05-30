@@ -105,11 +105,16 @@ Every app-authenticated governance event includes `metadata.auth` with:
 - `caller_type`, such as `mcp_adapter`, `agent_host`, `product_plugin`, or
   `internal`;
 - required `scope`;
+- `scope_decision`, currently `allowed`, `denied`, or `rate_limited`;
 - `route_family`.
 
 The existing `actor_id` column continues to hold WordPress user identity. Pure
 app-key requests normally record `actor_id=0` and app attribution in metadata.
 Proposal rows also copy the sanitized app auth context into `caller.auth`.
+
+Audit reads can filter by `app_id`, `key_id`, `caller_type`, and
+`correlation_id` so operators can trace a specific external app or
+commit-preflight response without exposing raw app secrets.
 
 ## Authentication Shape
 
@@ -178,4 +183,5 @@ Current implementation gates:
 5. Static contract tests cover scopes, UI entry, revocation, and forbidden
    secret storage.
 6. WordPress smoke covers app-authenticated proposal creation, commit preflight,
-   denied approval, denied audit access, and rate limiting.
+   denied approval, denied audit access, rate limiting, scope-decision
+   attribution, and app audit filters.

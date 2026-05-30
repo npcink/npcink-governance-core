@@ -139,6 +139,7 @@ App audit attribution:
 - `metadata.auth.app_id`
 - `metadata.auth.key_id`
 - `metadata.auth.scope=capabilities:read`
+- `metadata.auth.scope_decision=allowed`
 
 Capability execution guidance:
 
@@ -205,7 +206,30 @@ Path parameters:
 | --- | --- | --- |
 | `proposal_id` | string | yes |
 
-Response `200`: proposal row.
+Response `200`: proposal row plus `audit_timeline`, ordered oldest to newest
+for that proposal.
+
+Example shape:
+
+```json
+{
+  "proposal_id": "uuid",
+  "ability_id": "magick-ai/create-draft",
+  "status": "approved",
+  "audit_timeline": [
+    {
+      "event_id": "uuid",
+      "event_name": "proposal.created",
+      "proposal_id": "uuid",
+      "actor_id": 1,
+      "metadata": {
+        "ability_id": "magick-ai/create-draft"
+      },
+      "created_at": "2026-05-29 00:00:00"
+    }
+  ]
+}
+```
 
 Errors:
 
@@ -252,6 +276,7 @@ App audit attribution:
 
 - stored in event `metadata.auth`;
 - copied into proposal `caller.auth`.
+- includes `scope_decision=allowed` for successful app-authenticated creates.
 
 ## `POST /proposals/{proposal_id}/approve`
 
@@ -319,6 +344,11 @@ Query parameters:
 | `limit` | integer | `50` | Clamped by repository to `1..200`. |
 | `proposal_id` | string | empty | Optional proposal id filter. |
 | `event_name` | string | empty | Optional dotted event name filter. |
+| `ability_id` | string | empty | Optional metadata filter for target ability id. |
+| `app_id` | string | empty | Optional metadata filter for app-authenticated events. |
+| `key_id` | string | empty | Optional metadata filter for the app key id. |
+| `caller_type` | string | empty | Optional metadata filter such as `mcp_adapter`. |
+| `correlation_id` | string | empty | Optional metadata filter for commit-preflight correlation. |
 
 Response `200`:
 
@@ -363,8 +393,10 @@ Response `200`:
   "approval_context": {
     "approval_commit_authorized": true,
     "confirmation_state": "approved_commit",
-    "proposal_id": "uuid"
+    "proposal_id": "uuid",
+    "correlation_id": "uuid"
   },
+  "correlation_id": "uuid",
   "commit_execution": false,
   "idempotency_required": true
 }
@@ -388,6 +420,13 @@ Audit event:
 App audit attribution:
 
 - `metadata.auth.scope=commit:preflight`
+- `metadata.auth.scope_decision=allowed`
+
+Preflight audit correlation:
+
+- response `correlation_id`;
+- `approval_context.correlation_id`;
+- `commit.preflighted` event `metadata.correlation_id`.
 
 ## Planned Routes
 
