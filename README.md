@@ -114,6 +114,11 @@ issues governance app keys and records approvals, preflight, rate limits, and
 audit attribution. The token is shown once and should be stored only in a
 trusted Adapter or internal governance client secret store.
 
+Productized OpenClaw acceptance should be run from Magick AI Adapter's
+`docs/openclaw-consumer-acceptance.md`. Core participates as the governance
+authority behind Adapter; OpenClaw should not use Core as its primary product
+connection.
+
 Run the local static test suite:
 
 ```bash

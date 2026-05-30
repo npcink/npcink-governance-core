@@ -240,7 +240,7 @@ Acceptance before implementation:
 
 ### 9. OpenClaw Adapter / Agent Gateway Planning
 
-Status: outside Core, planning candidate.
+Status: outside Core, productized acceptance in Magick AI Adapter.
 
 Goal: design a dedicated adapter or gateway layer that presents WordPress
 abilities to OpenClaw while preserving Core as the governance layer.
@@ -257,6 +257,21 @@ Acceptance before implementation:
   separate trusted host policy and explicit approval scopes;
 - OpenClaw tool presentation, MCP transport, workflow routing, queues, and
   long-running task handling stay outside Core.
+
+Current handoff:
+
+- productized OpenClaw clients should connect to Magick AI Adapter, not Core;
+- Adapter owns the OpenClaw connection UI, Application Password handoff, route
+  discovery, direct-read shortcuts, proposal status bridge, and acceptance
+  checklist;
+- Core remains the backing governance service for capability guidance,
+  proposal records, approval/rejection, commit preflight, app-key policy, and
+  audit;
+- Core documentation only cross-references Adapter acceptance so future agents
+  do not recreate OpenClaw onboarding inside Core.
+
+See `/Users/muze/gitee/magick-ai-adapter/docs/openclaw-consumer-acceptance.md`
+for the productized OpenClaw acceptance checklist.
 
 ## Stop Conditions
 

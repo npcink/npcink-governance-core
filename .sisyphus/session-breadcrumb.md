@@ -1,5 +1,24 @@
 # Session Breadcrumb
 
+## 2026-05-30 — OpenClaw acceptance moved to Adapter
+
+- **Module**: Core / Adapter handoff documentation
+- **Status**: Productized OpenClaw acceptance now belongs to Magick AI Adapter,
+  with Core only cross-referencing the acceptance checklist.
+- **Completed**:
+  - Pushed `magick-ai-abilities` 0.5 readiness commit so Core/Adapter
+    acceptance does not depend on an unpublished local ability contract.
+  - Added an Adapter-side OpenClaw consumer acceptance checklist covering
+    health, help, capabilities, direct reads, diagnostics reads, proposal
+    status polling, Core admin approval/rejection, commit preflight, and
+    log correlation.
+  - Updated Core planning docs to point productized OpenClaw clients to
+    Adapter instead of recreating onboarding in Core.
+- **Boundary**:
+  - Core remains the governance authority behind Adapter. This session does
+    not add final commit execution, Core proxy execution, Adapter approval
+    proxying, MCP runtime, workflow runtime, or product workflow ownership.
+
 ## 2026-05-30 — Governance audit admin view added
 
 - **Module**: Core governance audit / operator review
