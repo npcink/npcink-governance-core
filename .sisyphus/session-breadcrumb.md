@@ -1,5 +1,20 @@
 # Session Breadcrumb
 
+## 2026-05-30 — Direct Core access wording clarified
+
+- **Module**: admin direct app access / OpenClaw Adapter positioning
+- **Status**: Core admin copy now frames app-key export as Direct Core
+  Governance Access instead of an OpenClaw product setup surface.
+- **Completed**:
+  - Renamed the visible access section, handoff labels, generated result page,
+    and default app label to direct Core governance wording.
+  - Added an explicit Magick AI Adapter pointer for productized OpenClaw setup.
+  - Updated README, app-auth, security, development workflow, next-stage plan,
+    and static contracts to match the revised positioning.
+- **Boundary**:
+  - Core still issues scoped app keys only for governance routes. OpenClaw
+    product entry, channel execution, and adapter UX remain outside Core.
+
 ## 2026-05-30 — Governance versus execution boundary explained
 
 - **Module**: OpenClaw execution guidance documentation

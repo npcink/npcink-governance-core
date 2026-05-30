@@ -91,14 +91,17 @@ the `magick-ai/create-draft`, `magick-ai/set-post-seo-meta`, and
 stage is a decision point: only design final commit execution through a
 separate ADR; otherwise Core remains the governance layer.
 
-For local adapter setup, WordPress administrators can open
-`Tools -> Magick AI Core -> External App Access` to copy the Core base URL and
-create a scoped one-time app token. The same screen provides an OpenClaw
-handoff guide, an optional LocalWP TLS test export line for `.local` testing,
-and a key disable action for leaked or obsolete tokens. The TLS option only
-changes copied client configuration; it is not a Core server setting. The token
-is shown once and should be stored only in the external client's secret store or
-environment.
+For direct Core governance setup, WordPress administrators can open
+`Tools -> Magick AI Core -> Direct Core Governance Access` to copy the Core base
+URL and create a scoped one-time app token. This screen is for clients that call
+Core governance routes directly. Productized OpenClaw setup should use
+Magick AI Adapter as the entry point; Adapter calls Core for governance and
+WordPress Abilities API for direct reads. The Core screen still provides direct
+Core environment values, a direct Core handoff guide, an optional LocalWP TLS
+test export line for `.local` testing, and a key disable action for leaked or
+obsolete tokens. The TLS option only changes copied client configuration; it is
+not a Core server setting. The token is shown once and should be stored only in
+the external client's secret store or environment.
 
 Run the local static test suite:
 

@@ -555,8 +555,14 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_revoke_app_key' ), 'Admin page registers app-key revocation handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'check_admin_referer' ), 'Admin proposal actions enforce nonce.' );
 magick_ai_core_assert( false !== strpos( $admin_page, "current_user_can( 'manage_options' )" ), 'Admin proposal actions enforce capability.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'External App Access' ), 'Admin page exposes external app access section.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'OpenClaw Handoff' ), 'Admin page exposes OpenClaw handoff guidance.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Direct Core Governance Access' ), 'Admin page exposes direct Core governance access section.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Direct Core Handoff' ), 'Admin page exposes direct Core handoff guidance.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'OpenClaw product setup' ), 'Admin page points OpenClaw product setup to Adapter.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Productized OpenClaw setup should use Magick AI Adapter' ), 'Admin page avoids presenting Core as the OpenClaw product entry point.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_ADAPTER_BASE_URL' ), 'Admin page includes Adapter base URL guidance.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Direct Core env' ), 'Admin page labels Core env as direct Core access.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Create Direct Core App Key' ), 'Admin page labels key creation as direct Core access.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Direct Core Client' ), 'Admin page defaults app label to a generic direct Core client.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Agent rules' ), 'Admin page includes external agent rules.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Do not store or print MAGICK_AI_CORE_APP_TOKEN' ), 'Admin page warns external agents not to leak app tokens.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'governance_mode=direct_read' ), 'Admin page handoff describes direct read guidance.' );
@@ -570,7 +576,7 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_INSECURE_S
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_CA_BUNDLE' ), 'Admin page prefers local CA bundle when available.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'include_local_tls' ), 'Admin page exposes local TLS export checkbox.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'is_local_base_url' ), 'Admin page defaults local TLS export only for local hosts.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'openclaw_env_text' ), 'Admin page centralizes OpenClaw env generation.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'openclaw_env_text' ), 'Admin page centralizes direct Core env generation.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'does not change Core server security' ), 'Admin page clarifies local TLS is client-side only.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_BASE_URL' ), 'Admin page shows base URL env value.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_APP_TOKEN' ), 'Admin page shows app token env value.' );

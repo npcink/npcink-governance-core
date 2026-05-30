@@ -133,18 +133,20 @@ stored only as `secret_hash`. `GET /apps`, proposals, and audit rows must not
 return raw app secrets or secret hashes.
 
 Administrators can also create the same scoped app token from
-`Tools -> Magick AI Core -> External App Access`. The screen shows the site base
-URL, REST URL, OpenClaw-style environment variables, and a copyable external
-agent handoff guide. It displays the raw token only on the creation result
-screen and lists existing app keys without secret material.
+`Tools -> Magick AI Core -> Direct Core Governance Access`. The screen shows the
+site base URL, REST URL, direct Core environment variables, and a copyable
+direct Core handoff guide. It also tells operators that productized OpenClaw
+setup should use Magick AI Adapter as the primary entry point. It displays the
+raw token only on the creation result screen and lists existing app keys without
+secret material.
 
 If a token is exposed, administrators should disable that app key from the same
 screen and create a replacement. Disabled keys are stored as `revoked` and must
 fail future app authentication with `401`.
 
-The local TLS handoff checkbox only controls whether copied OpenClaw client
+The local TLS handoff checkbox only controls whether copied direct Core client
 configuration includes `MAGICK_AI_CORE_INSECURE_SSL=true`. It must be treated as
-a local adapter convenience for `.local` or `localhost` testing, not a Core
+a local client convenience for `.local` or `localhost` testing, not a Core
 security mode.
 
 App-authenticated requests must have the route's required scope and pass the
