@@ -153,6 +153,30 @@ The adapter must:
 
 Core still does not execute the final WordPress mutation.
 
+## Proposal Status Bridge
+
+Productized OpenClaw clients should connect to Magick AI Adapter rather than
+directly to Core. The adapter may expose a thin read-only bridge for Core
+proposal status so an agent can poll or display the lifecycle after it creates
+a proposal:
+
+- `GET /proposals`;
+- `GET /proposals/{proposal_id}`.
+
+Those adapter routes should forward to the matching Core governance routes and
+use a Core app key with `proposals:read`. This is a usability bridge, not an
+approval bridge. It lets OpenClaw see whether a proposal is `pending`,
+`approved`, or `rejected`, and it may surface Core proposal detail fields such
+as preview data and `audit_timeline` when available.
+
+The adapter should not expose `POST /proposals/{proposal_id}/approve` or
+`POST /proposals/{proposal_id}/reject` by default. Approval and rejection are
+governance decisions owned by Core and the WordPress admin surface unless a
+separate trusted host policy is explicitly documented. If a future adapter adds
+an approval proxy, it must be disabled by default, require
+`proposals:approve` or `proposals:reject`, use a separate trusted key where
+possible, and preserve app/key/caller audit attribution.
+
 ## Non-Goals
 
 Do not add these to Core as part of execution guidance:
@@ -170,7 +194,11 @@ The next OpenClaw-side work should happen in a dedicated adapter or gateway
 module:
 
 - read `governance_mode` before choosing a call path;
+- proxy Core proposal list/detail reads for productized clients that need
+  proposal status polling;
 - call read abilities through WordPress Abilities API;
 - call Core proposal/preflight for write and destructive abilities;
+- keep approve/reject out of the adapter default surface unless a separate
+  trusted host approval policy is accepted;
 - keep adapter transport, tool presentation, and OpenClaw-specific behavior out
   of Core.

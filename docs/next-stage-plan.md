@@ -248,9 +248,13 @@ abilities to OpenClaw while preserving Core as the governance layer.
 Acceptance before implementation:
 
 - adapter reads Core capability execution guidance;
+- adapter may proxy Core proposal list/detail reads for OpenClaw status polling
+  with `proposals:read`;
 - read abilities execute through WordPress Abilities API;
 - write and destructive abilities go through Core proposal and commit
   preflight first;
+- adapter does not expose approve/reject by default; any approval proxy needs a
+  separate trusted host policy and explicit approval scopes;
 - OpenClaw tool presentation, MCP transport, workflow routing, queues, and
   long-running task handling stay outside Core.
 

@@ -295,6 +295,9 @@ foreach (
 		'Do not add these to Core',
 		'/proxy-execute',
 		'OpenClaw Adapter, MCP Adapter, or Agent Gateway plugin',
+		'Proposal Status Bridge',
+		'proxy Core proposal list/detail reads',
+		'not expose `POST /proposals/{proposal_id}/approve`',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $openclaw_execution_guidance, $required ), 'OpenClaw execution guidance doc contains required text: ' . $required );

@@ -1,5 +1,24 @@
 # Session Breadcrumb
 
+## 2026-05-30 — Adapter proposal status bridge boundary documented
+
+- **Module**: OpenClaw Adapter governance handoff / proposal status bridge
+- **Status**: Core guidance now distinguishes adapter proposal status reads
+  from approval proxying.
+- **Completed**:
+  - Documented that productized OpenClaw should use Magick AI Adapter for
+    proposal status polling through adapter-owned `GET /proposals` and
+    `GET /proposals/{proposal_id}` routes that forward to Core with
+    `proposals:read`.
+  - Reaffirmed that Adapter should not expose approve/reject by default;
+    approval remains in Core/WordPress admin unless a separate trusted host
+    approval policy is accepted.
+  - Updated Agent/MCP call flow and next-stage planning to reflect the status
+    bridge.
+- **Boundary**:
+  - Core routes already exist; this session did not add execution, MCP runtime,
+    final write mutation, or Adapter implementation code.
+
 ## 2026-05-30 — Core app-key screen trimmed for Adapter ownership
 
 - **Module**: admin app-key surface / Adapter boundary

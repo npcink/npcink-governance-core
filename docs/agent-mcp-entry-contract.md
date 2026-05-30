@@ -84,13 +84,17 @@ For write or destructive abilities:
 2. Adapter or product plugin prepares a preview, diff, dry-run payload, or
    human-readable handoff.
 3. Adapter calls `POST /wp-json/magick-ai-core/v1/proposals`.
-4. A human or trusted host policy approves or rejects the proposal.
-5. Adapter calls
+4. Adapter may poll proposal status through Core `GET /proposals/{proposal_id}`
+   or through a dedicated adapter read proxy that forwards to Core with
+   `proposals:read`.
+5. A human or separately documented trusted host policy approves or rejects the
+   proposal.
+6. Adapter calls
    `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/commit-preflight`.
-6. Core returns approval context with `commit_execution=false`.
-7. Adapter calls the target WordPress ability only if the ability contract
+7. Core returns approval context with `commit_execution=false`.
+8. Adapter calls the target WordPress ability only if the ability contract
    accepts Core approval context and idempotency protection.
-8. Adapter or provider records commit result through future Core audit/commit
+9. Adapter or provider records commit result through future Core audit/commit
    contracts when those exist.
 
 ## Commit Preflight Handoff
@@ -128,6 +132,8 @@ Adapters must not:
 - remap workflow or ability ids for channel convenience;
 - override Core approval requirements;
 - treat channel-local confirmation as Core approval;
+- expose Core approve/reject proxy routes by default for generic OpenClaw or
+  MCP clients;
 - execute write/destructive abilities when Core preflight fails closed.
 
 ## Minimum First Integration
