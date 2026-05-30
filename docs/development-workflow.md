@@ -89,6 +89,8 @@ composer validate --no-check-publish
 - plugin activation;
 - proposal and audit table creation;
 - ability listing from `magick-ai-abilities`;
+- the primary `magick-ai/create-draft` scenario, including discovered schema
+  controls and commit preflight without final execution;
 - proposal creation;
 - proposal approval;
 - proposal rejection;

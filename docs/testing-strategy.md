@@ -43,6 +43,8 @@ Use it for behavior that requires real WordPress:
 - runtime workflow definition discovery through
   `magick_ai_abilities_get_workflow_definitions()`, with fixture fallback from
   `magick-ai-abilities/tests/fixtures/agent-workflow-replay.json`;
+- the primary `magick-ai/create-draft` governance scenario, including schema
+  controls, proposal creation, approval, and commit preflight;
 - real proposal and audit persistence.
 
 The smoke test should stay small. It is a confidence gate, not a full end-to-end

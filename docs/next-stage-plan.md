@@ -148,7 +148,7 @@ See [App Auth Scope Policy](app-auth-scope-policy.md).
 
 ### 6. Agent/MCP Governance Entry
 
-Status: contract documented; adapter example available.
+Status: create-draft governance scenario active.
 
 Goal: let WordPress, MCP adapters, Agent Gateway bridges, and product plugins
 consume Core governance without moving MCP runtime or channel projection into
@@ -164,6 +164,18 @@ Acceptance:
   runtime is added to Core.
 
 See [Agent MCP Entry Contract](agent-mcp-entry-contract.md).
+
+Current implementation:
+
+- `magick-ai/create-draft` is the first solidified host-governed write
+  scenario;
+- `composer smoke:wp` verifies discovery, schema controls, proposal creation,
+  admin approval, and commit preflight for that real ability id;
+- the OpenClaw example adapter includes `create-draft-proposal`, which discovers
+  capabilities before creating the proposal and still does not approve or
+  execute writes.
+
+See [Create Draft Governance Scenario](create-draft-governance-scenario.md).
 
 ## Stop Conditions
 

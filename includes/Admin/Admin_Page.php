@@ -666,12 +666,9 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 			. "7. Stop and report the reason on 401, 403, or 429 responses.\n\n"
 			. "Example commands\n"
 			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php capabilities\n\n"
-			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-proposal \\\n"
-			. "  --ability=magick-ai/create-draft \\\n"
-			. "  --title=\"OpenClaw draft proposal\" \\\n"
-			. "  --summary=\"Review before creating a draft.\" \\\n"
-			. "  --input='{\"title\":\"Draft title\",\"content\":\"<p>Draft body.</p>\",\"dry_run\":true}' \\\n"
-			. "  --preview='{\"dry_run\":true,\"source\":\"openclaw\"}'\n\n"
+			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-draft-proposal \\\n"
+			. "  --title=\"Draft title\" \\\n"
+			. "  --content=\"<p>Draft body.</p>\"\n\n"
 			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php commit-preflight \\\n"
 			. "  --proposal=<proposal_id>";
 	}

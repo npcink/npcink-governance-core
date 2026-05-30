@@ -163,6 +163,30 @@ function magick_ai_core_smoke_workflow_cases(): array {
 }
 
 /**
+ * Verifies the preferred create-draft proposal target schema is discoverable.
+ *
+ * @param array<string,mixed> $items_by_id Capability rows keyed by ability id.
+ * @return void
+ */
+function magick_ai_core_smoke_assert_create_draft_contract( array $items_by_id ): void {
+	$ability_id = 'magick-ai/create-draft';
+	magick_ai_core_smoke_assert( isset( $items_by_id[ $ability_id ] ), 'create-draft ability is discoverable for the primary governance scenario' );
+
+	$ability      = $items_by_id[ $ability_id ];
+	$input_schema = is_array( $ability['input_schema'] ?? null ) ? $ability['input_schema'] : array();
+	$required     = (array) ( $input_schema['required'] ?? array() );
+	$properties   = is_array( $input_schema['properties'] ?? null ) ? $input_schema['properties'] : array();
+
+	magick_ai_core_smoke_assert( 'write' === (string) ( $ability['risk_level'] ?? '' ), 'create-draft is discovered as a write-risk ability' );
+	magick_ai_core_smoke_assert( true === (bool) ( $ability['requires_approval'] ?? false ), 'create-draft is discovered as requiring approval' );
+	magick_ai_core_smoke_assert( in_array( 'title', $required, true ), 'create-draft input schema requires title' );
+
+	foreach ( array( 'dry_run', 'commit', 'idempotency_key' ) as $control ) {
+		magick_ai_core_smoke_assert( array_key_exists( $control, $properties ), 'create-draft input schema exposes governance control ' . $control );
+	}
+}
+
+/**
  * Runs the proposal, approval, preflight, and audit smoke loop for one write-like ability.
  *
  * @param string              $ability_id Ability id.
@@ -217,6 +241,8 @@ function magick_ai_core_smoke_run_governance_proposal( string $ability_id, array
 	magick_ai_core_smoke_assert( true === (bool) ( $preflight['approval_context']['approval_commit_authorized'] ?? false ), $ability_id . ' commit preflight returns approval authorization context' );
 	magick_ai_core_smoke_assert( 'approved_commit' === (string) ( $preflight['approval_context']['confirmation_state'] ?? '' ), $ability_id . ' commit preflight returns approved_commit state' );
 	magick_ai_core_smoke_assert( $ability_id === (string) ( $preflight['proposal']['ability_id'] ?? '' ), $ability_id . ' preflight proposal keeps the real ability id' );
+	magick_ai_core_smoke_assert( true === (bool) ( $preflight['proposal']['input']['dry_run'] ?? false ), $ability_id . ' preflight returns the dry-run proposal input without committing' );
+	magick_ai_core_smoke_assert( false === (bool) ( $preflight['proposal']['input']['commit'] ?? false ), $ability_id . ' preflight does not turn proposal input into a commit request' );
 	magick_ai_core_smoke_assert( $ability_id === (string) ( $preflight['capability']['ability_id'] ?? '' ), $ability_id . ' preflight capability is rediscovered from ability intake' );
 
 	return $proposal_id;
@@ -314,6 +340,8 @@ foreach ( $items as $item ) {
 	}
 }
 
+magick_ai_core_smoke_assert_create_draft_contract( $items_by_id );
+
 $workflow_cases = magick_ai_core_smoke_workflow_cases();
 magick_ai_core_smoke_assert( count( $workflow_cases ) > 0, 'shared workflow definitions are available to Core' );
 
@@ -350,6 +378,7 @@ $proposal_id = magick_ai_core_smoke_run_governance_proposal(
 		'content' => '<p>Smoke draft content.</p>',
 		'status'  => 'draft',
 		'dry_run' => true,
+		'commit'  => false,
 	),
 	array(
 		'dry_run'       => true,

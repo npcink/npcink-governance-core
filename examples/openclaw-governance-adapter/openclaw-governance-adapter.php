@@ -24,6 +24,7 @@ function magick_ai_core_adapter_usage(): void {
 	$usage = <<<'TEXT'
 Usage:
   php openclaw-governance-adapter.php capabilities
+  php openclaw-governance-adapter.php create-draft-proposal --title="Title" [--content="<p>Body</p>"] [--input='{}'] [--preview='{}'] [--caller='{}']
   php openclaw-governance-adapter.php create-proposal --ability=magick-ai/create-draft --title="Title" [--summary="Summary"] [--input='{}'] [--preview='{}'] [--caller='{}']
   php openclaw-governance-adapter.php commit-preflight --proposal=<proposal_id>
 
@@ -294,6 +295,65 @@ function magick_ai_core_adapter_print_json( array $data ): void {
 	echo $output . "\n";
 }
 
+/**
+ * Finds a capability row by ability id.
+ *
+ * @param array<string,mixed> $capabilities Capabilities response.
+ * @param string              $ability_id Ability id.
+ * @return array<string,mixed>
+ */
+function magick_ai_core_adapter_find_capability( array $capabilities, string $ability_id ): array {
+	foreach ( (array) ( $capabilities['items'] ?? array() ) as $item ) {
+		if ( is_array( $item ) && $ability_id === (string) ( $item['ability_id'] ?? '' ) ) {
+			return $item;
+		}
+	}
+
+	magick_ai_core_adapter_fail( 'Required ability is not discoverable through Core: ' . $ability_id, 1 );
+}
+
+/**
+ * Verifies the discovered create-draft ability is still host-governed.
+ *
+ * @param array<string,mixed> $ability Ability row.
+ * @return void
+ */
+function magick_ai_core_adapter_assert_create_draft_contract( array $ability ): void {
+	if ( 'write' !== (string) ( $ability['risk_level'] ?? '' ) || true !== (bool) ( $ability['requires_approval'] ?? false ) ) {
+		magick_ai_core_adapter_fail( 'magick-ai/create-draft is not exposed as a host-governed write ability.', 1 );
+	}
+
+	$input_schema = is_array( $ability['input_schema'] ?? null ) ? $ability['input_schema'] : array();
+	$required     = (array) ( $input_schema['required'] ?? array() );
+	$properties   = is_array( $input_schema['properties'] ?? null ) ? $input_schema['properties'] : array();
+
+	if ( ! in_array( 'title', $required, true ) ) {
+		magick_ai_core_adapter_fail( 'magick-ai/create-draft input schema does not require title.', 1 );
+	}
+
+	foreach ( array( 'dry_run', 'commit', 'idempotency_key' ) as $control ) {
+		if ( ! array_key_exists( $control, $properties ) ) {
+			magick_ai_core_adapter_fail( 'magick-ai/create-draft input schema is missing governance control: ' . $control, 1 );
+		}
+	}
+}
+
+/**
+ * Builds standard caller metadata.
+ *
+ * @param array<string,mixed> $caller Caller overrides.
+ * @return array<string,mixed>
+ */
+function magick_ai_core_adapter_caller( array $caller = array() ): array {
+	return array_merge(
+		array(
+			'source'       => 'openclaw-governance-adapter-example',
+			'adapter_kind' => 'external_governance_client',
+		),
+		$caller
+	);
+}
+
 $parsed  = magick_ai_core_adapter_parse_args( $argv );
 $command = $parsed['command'];
 $options = $parsed['options'];
@@ -308,20 +368,55 @@ if ( 'capabilities' === $command ) {
 	exit( 0 );
 }
 
+if ( 'create-draft-proposal' === $command ) {
+	$capabilities = magick_ai_core_adapter_request( 'GET', 'capabilities' );
+	$ability      = magick_ai_core_adapter_find_capability( $capabilities, 'magick-ai/create-draft' );
+	magick_ai_core_adapter_assert_create_draft_contract( $ability );
+
+	$input = magick_ai_core_adapter_json_option( $options['input'] ?? null );
+	if ( empty( $input['title'] ) ) {
+		$input['title'] = (string) ( $options['title'] ?? '' );
+	}
+	if ( empty( $input['content'] ) && isset( $options['content'] ) ) {
+		$input['content'] = (string) $options['content'];
+	}
+	$input['dry_run'] = true;
+	$input['commit']  = false;
+
+	if ( '' === trim( (string) ( $input['title'] ?? '' ) ) ) {
+		magick_ai_core_adapter_fail( 'create-draft-proposal requires --title or input.title.', 2 );
+	}
+
+	$preview = array_merge(
+		magick_ai_core_adapter_json_option( $options['preview'] ?? null ),
+		array(
+			'ability_risk_level'    => (string) ( $ability['risk_level'] ?? '' ),
+			'requires_approval'     => (bool) ( $ability['requires_approval'] ?? false ),
+			'input_required_fields' => (array) ( $ability['input_schema']['required'] ?? array() ),
+			'dry_run'               => true,
+			'host_governed'         => true,
+			'commit_execution'      => false,
+		)
+	);
+
+	$payload = array(
+		'ability_id' => 'magick-ai/create-draft',
+		'title'      => (string) ( $options['proposal-title'] ?? $options['title'] ?? 'OpenClaw draft proposal' ),
+		'summary'    => (string) ( $options['summary'] ?? 'Review before creating a draft. Core will not execute the write.' ),
+		'input'      => $input,
+		'preview'    => $preview,
+		'caller'     => magick_ai_core_adapter_caller( magick_ai_core_adapter_json_option( $options['caller'] ?? null ) ),
+	);
+
+	magick_ai_core_adapter_print_json( magick_ai_core_adapter_request( 'POST', 'proposals', $payload ) );
+	exit( 0 );
+}
+
 if ( 'create-proposal' === $command ) {
 	$ability_id = trim( (string) ( $options['ability'] ?? $options['ability_id'] ?? '' ) );
 	if ( '' === $ability_id ) {
 		magick_ai_core_adapter_fail( 'create-proposal requires --ability=<real ability_id>.', 2 );
 	}
-
-	$caller = magick_ai_core_adapter_json_option( $options['caller'] ?? null );
-	$caller = array_merge(
-		array(
-			'source'       => 'openclaw-governance-adapter-example',
-			'adapter_kind' => 'external_governance_client',
-		),
-		$caller
-	);
 
 	$payload = array(
 		'ability_id' => $ability_id,
@@ -329,7 +424,7 @@ if ( 'create-proposal' === $command ) {
 		'summary'    => (string) ( $options['summary'] ?? 'Created by external governance adapter.' ),
 		'input'      => magick_ai_core_adapter_json_option( $options['input'] ?? null ),
 		'preview'    => magick_ai_core_adapter_json_option( $options['preview'] ?? null ),
-		'caller'     => $caller,
+		'caller'     => magick_ai_core_adapter_caller( magick_ai_core_adapter_json_option( $options['caller'] ?? null ) ),
 	);
 
 	magick_ai_core_adapter_print_json( magick_ai_core_adapter_request( 'POST', 'proposals', $payload ) );

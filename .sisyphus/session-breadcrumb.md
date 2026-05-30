@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-05-30 — Create-draft governance scenario solidified
+
+- **Module**: consumer-side governance loop / OpenClaw adapter handoff
+- **Status**: `magick-ai/create-draft` is now the first solidified Core
+  host-governed write scenario.
+- **Completed**:
+  - Added a dedicated create-draft scenario document for future humans and AI
+    agents.
+  - Added `create-draft-proposal` to the OpenClaw example adapter. It discovers
+    capabilities first, validates the real `magick-ai/create-draft` contract,
+    forces `dry_run=true` and `commit=false`, and creates a Core proposal.
+  - Updated the admin OpenClaw handoff to point at the dedicated create-draft
+    adapter path.
+  - Hardened WordPress smoke coverage for create-draft schema controls,
+    proposal creation, admin approval, and commit preflight without final
+    execution.
+  - Updated README, intake, handoff validation, workflow, next-stage, testing,
+    adapter docs, and static contracts.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+- **Boundary**:
+  - Core still only performs discovery, proposal, approve/reject, preflight,
+    and audit. It does not execute `magick-ai/create-draft` or own content
+    generation/workflow runtime.
+
 ## 2026-05-30 — OpenClaw local TLS handoff option added
 
 - **Module**: external app governance authorization / OpenClaw handoff

@@ -30,6 +30,18 @@ The WordPress smoke test validates these ready handoff surfaces:
 Each proposal target must be write-like, require approval, support approval and
 rejection, and pass commit preflight without executing the ability.
 
+## Primary Scenario
+
+The first practical consumer-side loop is `magick-ai/create-draft`. Core must
+discover the real ability id and schema from `magick-ai-abilities`, create a
+proposal with dry-run input, let an administrator approve or reject it, and
+return approval context from commit preflight with `commit_execution=false`.
+
+The dedicated scenario is documented in
+[Create Draft Governance Scenario](create-draft-governance-scenario.md). The
+OpenClaw example adapter exposes `create-draft-proposal` for this path, but it
+still does not approve proposals or execute the final write.
+
 ## Non-Goals
 
 This validation does not add workflow runtime ownership, natural language

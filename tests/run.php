@@ -127,6 +127,8 @@ foreach (
 		'Core proposal records must store real ability ids',
 		'content/draft-preview',
 		'magick-ai/create-draft',
+		'Create Draft Governance Scenario',
+		'create-draft-proposal',
 		'magick-ai/set-post-seo-meta',
 		'magick-ai/approve-comment',
 		'No proposal is required for read-only intake.',
@@ -209,12 +211,14 @@ foreach (
 $next_stage_plan = magick_ai_core_read( $root . '/docs/next-stage-plan.md' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Agent/MCP Governance Entry' ), 'Next stage plan includes Agent/MCP governance entry phase.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'minimal implementation active' ), 'Next stage plan marks app auth as implemented minimally.' );
-magick_ai_core_assert( false !== strpos( $next_stage_plan, 'contract documented; adapter example available' ), 'Next stage plan marks agent contract and adapter example status.' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'create-draft governance scenario active' ), 'Next stage plan marks create-draft governance scenario status.' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Create Draft Governance Scenario' ), 'Next stage plan links create-draft scenario.' );
 
 $readme = magick_ai_core_read( $root . '/README.md' );
 magick_ai_core_assert( false !== strpos( $readme, 'Agent MCP Entry Contract' ), 'README links Agent MCP Entry Contract.' );
 magick_ai_core_assert( false !== strpos( $readme, 'App Auth Scope Policy' ), 'README links App Auth Scope Policy.' );
 magick_ai_core_assert( false !== strpos( $readme, 'OpenClaw governance adapter example' ), 'README links OpenClaw governance adapter example.' );
+magick_ai_core_assert( false !== strpos( $readme, 'Create Draft Governance Scenario' ), 'README links Create Draft Governance Scenario.' );
 
 $openclaw_adapter_readme = magick_ai_core_read( $root . '/examples/openclaw-governance-adapter/README.md' );
 foreach (
@@ -227,18 +231,40 @@ foreach (
 		'Do not use `MAGICK_AI_CORE_INSECURE_SSL=true` for production',
 		'MAGICK_AI_CORE_APPLICATION_PASSWORD',
 		'Generic adapters should not approve proposals by default',
+		'create-draft-proposal',
+		'This command discovers',
 		'commit_execution=false',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $openclaw_adapter_readme, $required ), 'OpenClaw adapter README contains required text: ' . $required );
 }
 
+$create_draft_scenario = magick_ai_core_read( $root . '/docs/create-draft-governance-scenario.md' );
+foreach (
+	array(
+		'`magick-ai/create-draft`',
+		'write-risk ability with `requires_approval=true`',
+		'`dry_run`, `commit`, and `idempotency_key` are governance controls',
+		'`commit_execution=false`',
+		'approve the proposal or execute the write.',
+		'do not patch Core with aliases or fallback definitions',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $create_draft_scenario, $required ), 'Create draft scenario doc contains required text: ' . $required );
+}
+
 $openclaw_adapter = magick_ai_core_read( $root . '/examples/openclaw-governance-adapter/openclaw-governance-adapter.php' );
 foreach (
 	array(
 		'capabilities',
+		'create-draft-proposal',
 		'create-proposal',
 		'commit-preflight',
+		'magick_ai_core_adapter_assert_create_draft_contract',
+		'Required ability is not discoverable through Core',
+		'input schema is missing governance control',
+		'$input[\'commit\']  = false',
+		'commit_execution',
 		'MAGICK_AI_CORE_BASE_URL',
 		'MAGICK_AI_CORE_APP_TOKEN',
 		'MAGICK_AI_CORE_CA_BUNDLE',
@@ -315,9 +341,11 @@ magick_ai_core_assert( false !== strpos( $ability_intake, 'magick_ai_abilities_g
 magick_ai_core_assert( false !== strpos( $ability_intake, 'agent-workflow-replay.json' ), 'Ability intake contract points to the shared replay fixture.' );
 magick_ai_core_assert( false !== strpos( $ability_intake, 'does not copy the fixture into a workflow runtime' ), 'Ability intake contract keeps replay consumption out of runtime ownership.' );
 magick_ai_core_assert( false !== strpos( $ability_intake, 'currently discoverable' ), 'Ability intake contract rejects unavailable proposal ability ids.' );
+magick_ai_core_assert( false !== strpos( $ability_intake, 'Create Draft Governance Scenario' ), 'Ability intake contract points to the create-draft scenario.' );
 
 $testing_strategy = magick_ai_core_read( $root . '/docs/testing-strategy.md' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'agent-workflow-replay.json' ), 'Testing strategy records shared replay fixture smoke coverage.' );
+magick_ai_core_assert( false !== strpos( $testing_strategy, 'primary `magick-ai/create-draft` governance scenario' ), 'Testing strategy records primary create-draft scenario coverage.' );
 
 $development_workflow = magick_ai_core_read( $root . '/docs/development-workflow.md' );
 magick_ai_core_assert( false !== strpos( $development_workflow, 'does not depend on the abandoned legacy Magick AI' ), 'Development workflow rejects the abandoned legacy Magick AI dependency.' );
@@ -334,6 +362,9 @@ magick_ai_core_assert( false !== strpos( $smoke_wp, 'preferred bundle is discove
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'disallowed default ability requires approval in Core' ), 'WordPress smoke validates write-like defaults stay approval-gated.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'content/draft-preview' ), 'WordPress smoke rejects planning labels as proposal targets.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/create-draft' ), 'WordPress smoke validates draft proposal governance.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick_ai_core_smoke_assert_create_draft_contract' ), 'WordPress smoke has a dedicated create-draft contract check.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'create-draft input schema exposes governance control' ), 'WordPress smoke validates create-draft schema controls.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'preflight returns the dry-run proposal input without committing' ), 'WordPress smoke validates preflight keeps dry-run input without commit execution.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/set-post-seo-meta' ), 'WordPress smoke validates SEO proposal governance.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/approve-comment' ), 'WordPress smoke validates comment moderation proposal governance.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'app-authenticated proposal stores app attribution' ), 'WordPress smoke validates app proposal attribution.' );
@@ -391,6 +422,7 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'External App Access' ), '
 magick_ai_core_assert( false !== strpos( $admin_page, 'OpenClaw Handoff' ), 'Admin page exposes OpenClaw handoff guidance.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Agent rules' ), 'Admin page includes external agent rules.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Do not store or print MAGICK_AI_CORE_APP_TOKEN' ), 'Admin page warns external agents not to leak app tokens.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'create-draft-proposal' ), 'Admin page handoff points to the primary create-draft adapter path.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_INSECURE_SSL=true' ), 'Admin page includes local TLS handoff setting.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_CA_BUNDLE' ), 'Admin page prefers local CA bundle when available.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'include_local_tls' ), 'Admin page exposes local TLS export checkbox.' );

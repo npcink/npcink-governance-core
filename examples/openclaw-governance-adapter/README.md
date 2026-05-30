@@ -61,6 +61,17 @@ List capabilities:
 php examples/openclaw-governance-adapter/openclaw-governance-adapter.php capabilities
 ```
 
+Create the primary host-governed draft scenario. This command discovers
+capabilities first, verifies `magick-ai/create-draft` is still a write-risk
+ability requiring approval, checks the schema governance controls, and then
+creates a proposal:
+
+```bash
+php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-draft-proposal \
+  --title="Draft title" \
+  --content="<p>Draft body.</p>"
+```
+
 Create a proposal with a real, discoverable `ability_id`:
 
 ```bash

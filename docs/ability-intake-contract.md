@@ -91,3 +91,8 @@ Proposal creation is stricter: it must use a real, currently discoverable
 `ability_id`. Core must reject proposal creation when the target ability is not
 available, because Agent/MCP entry must not let planning labels or stale channel
 tool names become governance records.
+
+The first solidified consumer scenario is `magick-ai/create-draft`; see
+[Create Draft Governance Scenario](create-draft-governance-scenario.md). Core
+must continue to discover that ability and its schema through intake instead of
+copying definitions from `magick-ai-abilities`.
