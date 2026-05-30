@@ -189,6 +189,7 @@ final class Ability_Registry_Adapter {
 			),
 			in_array( $risk_level, array( 'write', 'destructive' ), true )
 		);
+		$guidance          = $this->execution_guidance( sanitize_key( $risk_level ), $requires_approval );
 
 		return array(
 			'ability_id'        => $ability_id,
@@ -196,10 +197,35 @@ final class Ability_Registry_Adapter {
 			'description'       => $this->first_string( array( $definition['description'] ?? null ), '' ),
 			'risk_level'        => sanitize_key( $risk_level ),
 			'requires_approval' => $requires_approval,
+			'governance_mode'   => $guidance['governance_mode'],
+			'execution_surface' => $guidance['execution_surface'],
+			'core_proxy_execute' => false,
+			'commit_execution'  => false,
 			'input_schema'      => is_array( $definition['input_schema'] ?? null ) ? $definition['input_schema'] : array( 'type' => 'object' ),
 			'output_schema'     => is_array( $definition['output_schema'] ?? null ) ? $definition['output_schema'] : array( 'type' => 'object' ),
 			'source'            => $this->first_string( array( $definition['source'] ?? null ), $source ),
 			'raw'               => $this->redact_raw_definition( $definition ),
+		);
+	}
+
+	/**
+	 * Returns machine-readable adapter guidance without executing abilities.
+	 *
+	 * @param string $risk_level Risk level.
+	 * @param bool   $requires_approval Whether Core approval is required.
+	 * @return array{governance_mode:string,execution_surface:string}
+	 */
+	private function execution_guidance( string $risk_level, bool $requires_approval ): array {
+		if ( ! $requires_approval && 'read' === $risk_level ) {
+			return array(
+				'governance_mode'   => 'direct_read',
+				'execution_surface' => 'wp_abilities_rest',
+			);
+		}
+
+		return array(
+			'governance_mode'   => 'proposal_required',
+			'execution_surface' => 'adapter_after_core_preflight',
 		);
 	}
 
@@ -257,4 +283,3 @@ final class Ability_Registry_Adapter {
 		return $definition;
 	}
 }
-

@@ -13,6 +13,17 @@ executor. It only calls Core REST governance routes:
 Generic adapters should not approve proposals by default. Approval should stay
 with the WordPress admin UI or a separately contracted trusted host policy.
 
+Capability rows include execution guidance for OpenClaw-like clients:
+
+- `governance_mode=direct_read` and `execution_surface=wp_abilities_rest` mean
+  a read-only ability should be executed by the adapter through WordPress
+  Abilities API.
+- `governance_mode=proposal_required` and
+  `execution_surface=adapter_after_core_preflight` mean a write or destructive
+  ability must go through Core proposal approval and commit preflight first.
+- `core_proxy_execute=false` means Core is not an ability proxy and this example
+  intentionally does not call ability callbacks.
+
 ## Authentication
 
 Use a scoped Magick AI Core app token when available. The token is returned once

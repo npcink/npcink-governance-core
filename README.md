@@ -68,6 +68,7 @@ Read the project handoff docs before starting a new implementation session:
 - [App Auth Scope Policy](docs/app-auth-scope-policy.md)
 - [Core Governance Handoff Validation](docs/core-governance-handoff-validation.md)
 - [Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md)
+- [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
 - [Create Draft Governance Scenario](docs/create-draft-governance-scenario.md)
 - [Set Post SEO Meta Governance Scenario](docs/set-post-seo-meta-governance-scenario.md)
 - [Approve Comment Governance Scenario](docs/approve-comment-governance-scenario.md)

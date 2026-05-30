@@ -110,6 +110,11 @@ foreach (
 		'GET /audit',
 		'POST /apps',
 		'Authorization: Bearer mai_core.<key_id>.<secret>',
+		'governance_mode',
+		'execution_surface',
+		'core_proxy_execute=false',
+		'core_proxy_execute',
+		'commit_execution=false',
 		'magick_ai_core_app_scope_forbidden',
 		'magick_ai_core_app_rate_limited',
 		'magick_ai_core_invalid_ability_id',
@@ -186,6 +191,8 @@ foreach (
 		'Core is MCP-aware, but it is not an MCP runtime',
 		'Agent and MCP adapters expose abilities. Core governs risky operations.',
 		'WordPress Abilities API',
+		'OpenClaw Execution Guidance',
+		'core_proxy_execute=false',
 		'commit_execution=false',
 		'channel-private schema, scope, approval, workflow, or write truth',
 		'MCP server',
@@ -218,6 +225,8 @@ magick_ai_core_assert( false !== strpos( $next_stage_plan, 'minimal implementati
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'consumer readiness complete' ), 'Next stage plan marks consumer readiness complete.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Core 0.4 Consumer Readiness' ), 'Next stage plan links Core 0.4 consumer readiness.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Final Commit Execution ADR Decision' ), 'Next stage plan includes final commit execution ADR decision phase.' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'OpenClaw Adapter / Agent Gateway Planning' ), 'Next stage plan keeps OpenClaw adapter planning outside Core.' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'OpenClaw Execution Guidance' ), 'Next stage plan links OpenClaw execution guidance.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Create Draft Governance Scenario' ), 'Next stage plan links create-draft scenario.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Set Post SEO Meta Governance Scenario' ), 'Next stage plan links set-post-seo-meta scenario.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Approve Comment Governance Scenario' ), 'Next stage plan links approve-comment scenario.' );
@@ -227,9 +236,32 @@ magick_ai_core_assert( false !== strpos( $readme, 'Agent MCP Entry Contract' ), 
 magick_ai_core_assert( false !== strpos( $readme, 'App Auth Scope Policy' ), 'README links App Auth Scope Policy.' );
 magick_ai_core_assert( false !== strpos( $readme, 'OpenClaw governance adapter example' ), 'README links OpenClaw governance adapter example.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Core 0.4 Consumer Readiness' ), 'README links Core 0.4 Consumer Readiness.' );
+magick_ai_core_assert( false !== strpos( $readme, 'OpenClaw Execution Guidance' ), 'README links OpenClaw Execution Guidance.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Create Draft Governance Scenario' ), 'README links Create Draft Governance Scenario.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Set Post SEO Meta Governance Scenario' ), 'README links Set Post SEO Meta Governance Scenario.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Approve Comment Governance Scenario' ), 'README links Approve Comment Governance Scenario.' );
+
+$openclaw_execution_guidance = magick_ai_core_read( $root . '/docs/openclaw-execution-guidance.md' );
+foreach (
+	array(
+		'Core is the OpenClaw governance bridge, not the OpenClaw execution gateway.',
+		'Agent_Gateway_Openclaw_开发建议.md',
+		'governance_mode',
+		'execution_surface',
+		'core_proxy_execute',
+		'commit_execution',
+		'direct_read',
+		'proposal_required',
+		'wp_abilities_rest',
+		'adapter_after_core_preflight',
+		'WordPress Abilities API',
+		'Do not add these to Core',
+		'/proxy-execute',
+		'OpenClaw Adapter, MCP Adapter, or Agent Gateway plugin',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $openclaw_execution_guidance, $required ), 'OpenClaw execution guidance doc contains required text: ' . $required );
+}
 
 $consumer_readiness = magick_ai_core_read( $root . '/docs/core-0.4-consumer-readiness.md' );
 foreach (
@@ -262,6 +294,11 @@ foreach (
 		'Do not use `MAGICK_AI_CORE_INSECURE_SSL=true` for production',
 		'MAGICK_AI_CORE_APPLICATION_PASSWORD',
 		'Generic adapters should not approve proposals by default',
+		'governance_mode=direct_read',
+		'execution_surface=wp_abilities_rest',
+		'governance_mode=proposal_required',
+		'execution_surface=adapter_after_core_preflight',
+		'core_proxy_execute=false',
 		'create-draft-proposal',
 		'create-seo-meta-proposal',
 		'create-comment-approval-proposal',
@@ -410,6 +447,12 @@ $ability_adapter = magick_ai_core_read( $root . '/includes/Capabilities/Ability_
 magick_ai_core_assert( false !== strpos( $ability_adapter, 'magick_ai_abilities_get_registered' ), 'Ability intake prefers magick-ai-abilities public API.' );
 magick_ai_core_assert( false !== strpos( $ability_adapter, 'wp_get_abilities' ), 'Ability intake falls back to WordPress Abilities API.' );
 magick_ai_core_assert( false !== strpos( $ability_adapter, "'none'" ), 'Ability intake has missing-provider diagnostic state.' );
+magick_ai_core_assert( false !== strpos( $ability_adapter, 'execution_guidance' ), 'Ability intake adds capability execution guidance.' );
+magick_ai_core_assert( false !== strpos( $ability_adapter, "'governance_mode'" ), 'Ability intake exposes governance mode.' );
+magick_ai_core_assert( false !== strpos( $ability_adapter, "'execution_surface'" ), 'Ability intake exposes execution surface.' );
+magick_ai_core_assert( false !== strpos( $ability_adapter, "'core_proxy_execute'" ), 'Ability intake reports no Core proxy execution.' );
+magick_ai_core_assert( false !== strpos( $ability_adapter, "'direct_read'" ), 'Ability intake guides direct read abilities.' );
+magick_ai_core_assert( false !== strpos( $ability_adapter, "'proposal_required'" ), 'Ability intake guides proposal-required abilities.' );
 
 $ability_intake = magick_ai_core_read( $root . '/docs/ability-intake-contract.md' );
 magick_ai_core_assert( false !== strpos( $ability_intake, 'magick_ai_abilities_get_workflow_definitions()' ), 'Ability intake contract prefers runtime workflow definition discovery.' );
@@ -509,6 +552,10 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'External App Access' ), '
 magick_ai_core_assert( false !== strpos( $admin_page, 'OpenClaw Handoff' ), 'Admin page exposes OpenClaw handoff guidance.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Agent rules' ), 'Admin page includes external agent rules.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Do not store or print MAGICK_AI_CORE_APP_TOKEN' ), 'Admin page warns external agents not to leak app tokens.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'governance_mode=direct_read' ), 'Admin page handoff describes direct read guidance.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'WordPress Abilities API' ), 'Admin page handoff points read ability execution to WordPress Abilities API.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'governance_mode=proposal_required' ), 'Admin page handoff describes proposal-required guidance.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'core_proxy_execute=false' ), 'Admin page handoff reports Core proxy execution stays disabled.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'create-draft-proposal' ), 'Admin page handoff points to the primary create-draft adapter path.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'create-seo-meta-proposal' ), 'Admin page handoff points to the set-post-seo-meta adapter path.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'create-comment-approval-proposal' ), 'Admin page handoff points to the approve-comment adapter path.' );

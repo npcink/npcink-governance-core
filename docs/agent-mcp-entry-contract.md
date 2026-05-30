@@ -41,6 +41,9 @@ WordPress stores final state.
 Core may expose governance REST routes consumed by adapters:
 
 - list normalized capabilities;
+- return capability execution guidance such as `governance_mode`,
+  `execution_surface`, `core_proxy_execute=false`, and
+  `commit_execution=false`;
 - create a proposal for a target `ability_id`;
 - approve or reject proposals;
 - return commit preflight authorization context;
@@ -70,7 +73,7 @@ Core must not implement:
 For read-only abilities:
 
 1. Adapter discovers abilities through WordPress Abilities API or through Core
-   capability intake when it needs Core risk metadata.
+   capability intake when it needs Core risk metadata and execution guidance.
 2. Adapter calls the read ability through WordPress Abilities API.
 3. Core is not required unless the host chooses to list or audit governance
    context.
@@ -143,3 +146,7 @@ The reference CLI example lives at
 discovery, proposal creation, and commit preflight over HTTP. It intentionally
 does not expose MCP tools, approve proposals, execute abilities, or route
 natural language tasks.
+
+See [OpenClaw Execution Guidance](openclaw-execution-guidance.md) for the
+machine-readable fields that let adapters choose between direct read execution
+through WordPress Abilities API and proposal-required governance through Core.

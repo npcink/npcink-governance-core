@@ -24,6 +24,8 @@ Implemented:
   app tokens.
 - Core 0.4 consumer readiness for the `magick-ai-abilities` 0.4.0
   representative scenarios.
+- capability execution guidance for OpenClaw and adapter clients, without
+  adding Core proxy execution.
 
 Not implemented:
 
@@ -181,8 +183,11 @@ Current implementation:
   `create-seo-meta-proposal`, and `create-comment-approval-proposal`, which
   discover capabilities before creating proposals and still do not approve or
   execute writes.
+- capability rows now tell adapters whether to use direct read execution through
+  WordPress Abilities API or proposal-required governance through Core.
 
 See [Core 0.4 Consumer Readiness](core-0.4-consumer-readiness.md).
+See [OpenClaw Execution Guidance](openclaw-execution-guidance.md).
 See [Create Draft Governance Scenario](create-draft-governance-scenario.md).
 See [Set Post SEO Meta Governance Scenario](set-post-seo-meta-governance-scenario.md).
 See [Approve Comment Governance Scenario](approve-comment-governance-scenario.md).
@@ -201,6 +206,22 @@ Acceptance before implementation:
 - preserve `commit_execution=false` until the ADR is accepted and implemented;
 - avoid adding final WordPress mutation routes as an incidental extension of
   commit preflight.
+
+### 8. OpenClaw Adapter / Agent Gateway Planning
+
+Status: outside Core, planning candidate.
+
+Goal: design a dedicated adapter or gateway layer that presents WordPress
+abilities to OpenClaw while preserving Core as the governance layer.
+
+Acceptance before implementation:
+
+- adapter reads Core capability execution guidance;
+- read abilities execute through WordPress Abilities API;
+- write and destructive abilities go through Core proposal and commit
+  preflight first;
+- OpenClaw tool presentation, MCP transport, workflow routing, queues, and
+  long-running task handling stay outside Core.
 
 ## Stop Conditions
 

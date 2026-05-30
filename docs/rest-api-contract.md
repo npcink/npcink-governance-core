@@ -117,6 +117,10 @@ Response `200`:
       "description": "Returns site information.",
       "risk_level": "read",
       "requires_approval": false,
+      "governance_mode": "direct_read",
+      "execution_surface": "wp_abilities_rest",
+      "core_proxy_execute": false,
+      "commit_execution": false,
       "input_schema": { "type": "object" },
       "output_schema": { "type": "object" },
       "source": "magick_ai_abilities",
@@ -135,6 +139,21 @@ App audit attribution:
 - `metadata.auth.app_id`
 - `metadata.auth.key_id`
 - `metadata.auth.scope=capabilities:read`
+
+Capability execution guidance:
+
+- `governance_mode=direct_read` means an adapter may call the canonical
+  WordPress Abilities API execution surface for a read-only ability.
+- `governance_mode=proposal_required` means an adapter must create a Core
+  proposal before any write or destructive execution.
+- `execution_surface=wp_abilities_rest` means execution belongs to WordPress
+  Abilities API, not Core.
+- `execution_surface=adapter_after_core_preflight` means execution belongs to
+  the adapter or host only after Core approval and commit preflight.
+- `core_proxy_execute=false` is fixed in the current contract. Core does not
+  provide `/execute` or `/proxy-execute`.
+- `commit_execution=false` remains fixed until a separate final commit
+  execution ADR is accepted.
 
 ## `GET /proposals`
 

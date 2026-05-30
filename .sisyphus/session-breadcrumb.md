@@ -1,5 +1,26 @@
 # Session Breadcrumb
 
+## 2026-05-30 — OpenClaw execution guidance added
+
+- **Module**: capability intake / OpenClaw governance bridge
+- **Status**: Core capability rows now include machine-readable execution
+  guidance for OpenClaw and adapter clients without adding proxy execution.
+- **Completed**:
+  - Added an OpenClaw execution guidance contract document that positions Core
+    as the governance bridge, not the execution gateway.
+  - Added `governance_mode`, `execution_surface`, `core_proxy_execute=false`,
+    and `commit_execution=false` to normalized capability rows.
+  - Updated REST, Agent/MCP, next-stage, README, OpenClaw adapter docs, and
+    admin handoff text so read abilities route through WordPress Abilities API
+    while write/destructive abilities route through Core proposal and preflight.
+  - Kept OpenClaw Adapter / Agent Gateway planning outside Core.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+- **Boundary**:
+  - Core still does not add `/execute`, `/proxy-execute`, MCP runtime, workflow
+    runtime, or final WordPress mutation.
+
 ## 2026-05-30 — Core 0.4 consumer readiness documented
 
 - **Module**: consumer readiness documentation / next-stage planning

@@ -179,6 +179,7 @@ function magick_ai_core_smoke_assert_create_draft_contract( array $items_by_id )
 
 	magick_ai_core_smoke_assert( 'write' === (string) ( $ability['risk_level'] ?? '' ), 'create-draft is discovered as a write-risk ability' );
 	magick_ai_core_smoke_assert( true === (bool) ( $ability['requires_approval'] ?? false ), 'create-draft is discovered as requiring approval' );
+	magick_ai_core_smoke_assert_capability_guidance( $ability, 'proposal_required', 'adapter_after_core_preflight', 'create-draft uses proposal-required execution guidance' );
 	magick_ai_core_smoke_assert( in_array( 'title', $required, true ), 'create-draft input schema requires title' );
 
 	foreach ( array( 'dry_run', 'commit', 'idempotency_key' ) as $control ) {
@@ -203,6 +204,7 @@ function magick_ai_core_smoke_assert_seo_meta_contract( array $items_by_id ): vo
 
 	magick_ai_core_smoke_assert( 'write' === (string) ( $ability['risk_level'] ?? '' ), 'set-post-seo-meta is discovered as a write-risk ability' );
 	magick_ai_core_smoke_assert( true === (bool) ( $ability['requires_approval'] ?? false ), 'set-post-seo-meta is discovered as requiring approval' );
+	magick_ai_core_smoke_assert_capability_guidance( $ability, 'proposal_required', 'adapter_after_core_preflight', 'set-post-seo-meta uses proposal-required execution guidance' );
 	magick_ai_core_smoke_assert( in_array( 'post_id', $required, true ), 'set-post-seo-meta input schema requires post_id' );
 
 	foreach ( array( 'seo_title', 'seo_description', 'dry_run', 'commit', 'idempotency_key' ) as $control ) {
@@ -227,11 +229,28 @@ function magick_ai_core_smoke_assert_comment_approval_contract( array $items_by_
 
 	magick_ai_core_smoke_assert( 'write' === (string) ( $ability['risk_level'] ?? '' ), 'approve-comment is discovered as a write-risk ability' );
 	magick_ai_core_smoke_assert( true === (bool) ( $ability['requires_approval'] ?? false ), 'approve-comment is discovered as requiring approval' );
+	magick_ai_core_smoke_assert_capability_guidance( $ability, 'proposal_required', 'adapter_after_core_preflight', 'approve-comment uses proposal-required execution guidance' );
 	magick_ai_core_smoke_assert( in_array( 'comment_id', $required, true ), 'approve-comment input schema requires comment_id' );
 
 	foreach ( array( 'dry_run', 'commit', 'idempotency_key' ) as $control ) {
 		magick_ai_core_smoke_assert( array_key_exists( $control, $properties ), 'approve-comment input schema exposes governance control ' . $control );
 	}
+}
+
+/**
+ * Verifies adapter execution guidance on a capability row.
+ *
+ * @param array<string,mixed> $ability Capability row.
+ * @param string              $governance_mode Expected governance mode.
+ * @param string              $execution_surface Expected execution surface.
+ * @param string              $message Assertion message.
+ * @return void
+ */
+function magick_ai_core_smoke_assert_capability_guidance( array $ability, string $governance_mode, string $execution_surface, string $message ): void {
+	magick_ai_core_smoke_assert( $governance_mode === (string) ( $ability['governance_mode'] ?? '' ), $message . ' governance_mode' );
+	magick_ai_core_smoke_assert( $execution_surface === (string) ( $ability['execution_surface'] ?? '' ), $message . ' execution_surface' );
+	magick_ai_core_smoke_assert( false === (bool) ( $ability['core_proxy_execute'] ?? true ), $message . ' keeps Core proxy execution disabled' );
+	magick_ai_core_smoke_assert( false === (bool) ( $ability['commit_execution'] ?? true ), $message . ' keeps Core commit execution disabled' );
 }
 
 /**
@@ -419,12 +438,27 @@ magick_ai_core_smoke_assert( $app_keys->revoke_by_key_id( $revoked_key ), 'app k
 $revoked_result = magick_ai_core_smoke_rest_result_as_app( 'GET', '/magick-ai-core/v1/capabilities', $revoked_token );
 magick_ai_core_smoke_assert( 401 === (int) $revoked_result['status'], 'revoked app key returns 401' );
 
-$items_by_id = array();
+$items_by_id                     = array();
+$all_have_governance_mode        = true;
+$all_have_execution_surface      = true;
+$all_disable_core_proxy_execute  = true;
+$all_disable_core_commit_execute = true;
 foreach ( $items as $item ) {
 	if ( is_array( $item ) && '' !== (string) ( $item['ability_id'] ?? '' ) ) {
+		$all_have_governance_mode        = $all_have_governance_mode && array_key_exists( 'governance_mode', $item );
+		$all_have_execution_surface      = $all_have_execution_surface && array_key_exists( 'execution_surface', $item );
+		$all_disable_core_proxy_execute  = $all_disable_core_proxy_execute && false === (bool) ( $item['core_proxy_execute'] ?? true );
+		$all_disable_core_commit_execute = $all_disable_core_commit_execute && false === (bool) ( $item['commit_execution'] ?? true );
 		$items_by_id[ (string) $item['ability_id'] ] = $item;
 	}
 }
+magick_ai_core_smoke_assert( $all_have_governance_mode, 'all capability rows expose governance mode guidance' );
+magick_ai_core_smoke_assert( $all_have_execution_surface, 'all capability rows expose execution surface guidance' );
+magick_ai_core_smoke_assert( $all_disable_core_proxy_execute, 'all capability rows keep Core proxy execution disabled' );
+magick_ai_core_smoke_assert( $all_disable_core_commit_execute, 'all capability rows keep Core commit execution disabled' );
+
+magick_ai_core_smoke_assert( isset( $items_by_id['magick-ai/site-info'] ), 'site-info read ability is discoverable for direct read guidance' );
+magick_ai_core_smoke_assert_capability_guidance( $items_by_id['magick-ai/site-info'], 'direct_read', 'wp_abilities_rest', 'site-info uses direct read execution guidance' );
 
 magick_ai_core_smoke_assert_create_draft_contract( $items_by_id );
 magick_ai_core_smoke_assert_seo_meta_contract( $items_by_id );
@@ -438,12 +472,14 @@ foreach ( $workflow_cases as $case_id => $case ) {
 	magick_ai_core_smoke_assert( isset( $items_by_id[ $preferred_id ] ), 'replay case ' . $case_id . ' preferred bundle is discoverable by Core' );
 	magick_ai_core_smoke_assert( 'read' === (string) ( $items_by_id[ $preferred_id ]['risk_level'] ?? '' ), 'replay case ' . $case_id . ' preferred bundle remains read risk' );
 	magick_ai_core_smoke_assert( false === (bool) ( $items_by_id[ $preferred_id ]['requires_approval'] ?? true ), 'replay case ' . $case_id . ' preferred bundle does not require approval' );
+	magick_ai_core_smoke_assert_capability_guidance( $items_by_id[ $preferred_id ], 'direct_read', 'wp_abilities_rest', 'replay case ' . $case_id . ' preferred bundle uses direct read guidance' );
 
 	foreach ( (array) ( $case['disallowed_default_ability_ids'] ?? array() ) as $disallowed_id ) {
 		$disallowed_id = (string) $disallowed_id;
 		magick_ai_core_smoke_assert( isset( $items_by_id[ $disallowed_id ] ), 'replay case ' . $case_id . ' disallowed default ability is discoverable for proposal handoff' );
 		magick_ai_core_smoke_assert( 'read' !== (string) ( $items_by_id[ $disallowed_id ]['risk_level'] ?? 'read' ), 'replay case ' . $case_id . ' disallowed default ability is write-like' );
 		magick_ai_core_smoke_assert( true === (bool) ( $items_by_id[ $disallowed_id ]['requires_approval'] ?? false ), 'replay case ' . $case_id . ' disallowed default ability requires approval in Core' );
+		magick_ai_core_smoke_assert_capability_guidance( $items_by_id[ $disallowed_id ], 'proposal_required', 'adapter_after_core_preflight', 'replay case ' . $case_id . ' disallowed default ability uses proposal guidance' );
 	}
 }
 
