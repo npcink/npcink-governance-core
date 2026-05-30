@@ -82,6 +82,12 @@ For documentation-only changes:
 git diff --check
 ```
 
+For Core documentation or static contract updates:
+
+```bash
+composer test:all
+```
+
 For code changes:
 
 ```bash
@@ -113,3 +119,13 @@ Tests should keep these out of Core runtime:
 - Content Assistant product workflow ownership;
 - provider credential storage;
 - batch/queue/operator console logic.
+
+## Adapter-Owned Acceptance
+
+Real AI provider request log correlation should be validated in Magick AI
+Adapter, not Core. The Adapter smoke should prove that a real provider call,
+for example a local Ollama request, writes AI Request Logs context containing
+Core `proposal_id` and `correlation_id`.
+
+Core static contracts only document this boundary. Core does not run provider
+requests, store model credentials, or merge AI Request Logs into Core audit.

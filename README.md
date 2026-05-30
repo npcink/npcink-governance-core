@@ -67,6 +67,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Agent MCP Entry Contract](docs/agent-mcp-entry-contract.md)
 - [App Auth Scope Policy](docs/app-auth-scope-policy.md)
 - [Core Governance Operability](docs/core-governance-operability.md)
+- [AI Provider Log Correlation](docs/ai-provider-log-correlation.md)
 - [Core Governance Handoff Validation](docs/core-governance-handoff-validation.md)
 - [Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md)
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
@@ -104,6 +105,14 @@ attribution, and commit-preflight correlation ids. See
 [Core Governance Operability](docs/core-governance-operability.md). This makes
 the Core loop easier to review and debug without adding ability execution or a
 workflow runtime.
+
+Real AI provider request logs remain owned by the WordPress `ai` plugin.
+Magick AI Adapter should carry Core `proposal_id` and commit-preflight
+`correlation_id` into provider request log context so operators can correlate
+Core Governance Audit with AI Request Logs. See
+[AI Provider Log Correlation](docs/ai-provider-log-correlation.md). Core does
+not store prompts, responses, token metrics, provider credentials, or provider
+request logs.
 
 For Core governance credentials, WordPress administrators can open
 `Tools -> Magick AI Core -> Core App Keys` to create a scoped one-time app

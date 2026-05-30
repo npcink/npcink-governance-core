@@ -1,5 +1,26 @@
 # Session Breadcrumb
 
+## 2026-05-30 — AI provider log correlation contract documented
+
+- **Module**: Core / Adapter observability handoff
+- **Status**: Core now documents how provider request logs should correlate
+  with Core governance audit without moving provider execution or AI Request
+  Logs into Core.
+- **Completed**:
+  - Added an AI provider log correlation contract based on the local Ollama
+    `qwen3.5:0.8b` proof.
+  - Documented the required Adapter-injected context fields:
+    `proposal_id`, `correlation_id`, `ability_id`, `adapter_request_id`,
+    `adapter_route`, `ai_provider`, `ai_model`, and
+    `governance_source=magick-ai-core`.
+  - Updated README, governance operability, next-stage planning, testing
+    strategy, and static contracts to keep productized validation in Magick AI
+    Adapter.
+- **Boundary**:
+  - Core still does not execute AI provider calls, store provider credentials,
+    log prompts/responses/tokens, merge AI Request Logs, add proxy execution,
+    or perform final WordPress mutation.
+
 ## 2026-05-30 — OpenClaw acceptance moved to Adapter
 
 - **Module**: Core / Adapter handoff documentation

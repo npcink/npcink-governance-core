@@ -243,9 +243,34 @@ foreach (
 		'core_proxy_execute=false',
 		'Do not add these as part of Core governance operability',
 		'final commit execution',
+		'AI Provider Log Correlation',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $core_operability, $required ), 'Core governance operability doc contains required text: ' . $required );
+}
+
+$ai_provider_log_correlation = magick_ai_core_read( $root . '/docs/ai-provider-log-correlation.md' );
+foreach (
+	array(
+		'AI Provider Log Correlation',
+		'adapter-owned productization contract',
+		'Provider request logs remain owned by the WordPress `ai` plugin',
+		'proposal_id',
+		'correlation_id',
+		'ability_id',
+		'adapter_request_id',
+		'adapter_route',
+		'ai_provider',
+		'ai_model',
+		'governance_source=magick-ai-core',
+		'commit_execution=false',
+		'core_proxy_execute=false',
+		'Core should not add a provider request endpoint',
+		'Ollama',
+		'qwen3.5:0.8b',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $ai_provider_log_correlation, $required ), 'AI provider log correlation doc contains required text: ' . $required );
 }
 
 $next_stage_plan = magick_ai_core_read( $root . '/docs/next-stage-plan.md' );
@@ -259,6 +284,8 @@ magick_ai_core_assert( false !== strpos( $next_stage_plan, 'OpenClaw Adapter / A
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'OpenClaw Execution Guidance' ), 'Next stage plan links OpenClaw execution guidance.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'productized acceptance in Magick AI Adapter' ), 'Next stage plan points productized OpenClaw acceptance to Adapter.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, '/Users/muze/gitee/magick-ai-adapter/docs/openclaw-consumer-acceptance.md' ), 'Next stage plan links Adapter acceptance checklist.' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'AI Provider Log Correlation Acceptance' ), 'Next stage plan includes AI provider log correlation acceptance.' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'real AI provider request log correlation is implemented and tested in' ), 'Next stage plan keeps provider log correlation implementation in Adapter.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Create Draft Governance Scenario' ), 'Next stage plan links create-draft scenario.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Set Post SEO Meta Governance Scenario' ), 'Next stage plan links set-post-seo-meta scenario.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Approve Comment Governance Scenario' ), 'Next stage plan links approve-comment scenario.' );
@@ -270,6 +297,7 @@ magick_ai_core_assert( false !== strpos( $readme, 'App Auth Scope Policy' ), 'RE
 magick_ai_core_assert( false !== strpos( $readme, 'OpenClaw governance adapter example' ), 'README links OpenClaw governance adapter example.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Core 0.4 Consumer Readiness' ), 'README links Core 0.4 Consumer Readiness.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Core Governance Operability' ), 'README links Core Governance Operability.' );
+magick_ai_core_assert( false !== strpos( $readme, 'AI Provider Log Correlation' ), 'README links AI Provider Log Correlation.' );
 magick_ai_core_assert( false !== strpos( $readme, 'OpenClaw Execution Guidance' ), 'README links OpenClaw Execution Guidance.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Productized OpenClaw acceptance should be run from Magick AI Adapter' ), 'README points OpenClaw productized acceptance to Adapter.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Create Draft Governance Scenario' ), 'README links Create Draft Governance Scenario.' );

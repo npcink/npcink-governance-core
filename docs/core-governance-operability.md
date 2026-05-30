@@ -67,6 +67,11 @@ scope decision, and correlation id. AI Request Logs remain owned by the
 WordPress `ai` plugin; operators should correlate the two systems with
 `proposal_id` or `correlation_id` rather than merging their storage.
 
+For real AI provider requests, Adapter should inject Core `proposal_id` and
+commit-preflight `correlation_id` into the `ai` plugin request log context.
+Core audit remains the governance record; AI Request Logs remain the provider
+request record. See [AI Provider Log Correlation](ai-provider-log-correlation.md).
+
 ### Audit Filters
 
 `GET /wp-json/magick-ai-core/v1/audit` supports these filters:
@@ -139,7 +144,9 @@ The next useful Core decisions are:
 1. Whether proposal detail needs richer decision annotations before expanding
    approval policy.
 2. Whether app-key rotation and expiry are needed before external product use.
-3. Whether final commit execution deserves a separate ADR.
+3. Whether Adapter's real AI provider log correlation smoke should become a
+   productized OpenClaw acceptance gate.
+4. Whether final commit execution deserves a separate ADR.
 
 Until a final commit execution ADR is accepted, Core remains a governance layer:
 ability intake, proposal records, approval/rejection, commit preflight, and

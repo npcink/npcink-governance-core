@@ -29,6 +29,9 @@ Implemented:
 - governance operability baseline with proposal audit timelines,
   ability/app/key/caller/correlation audit filters, app scope-decision
   attribution, and commit-preflight correlation ids.
+- documented AI provider log correlation contract that keeps provider request
+  logs in the WordPress `ai` plugin and assigns productized context injection
+  to Magick AI Adapter.
 
 Not implemented:
 
@@ -238,7 +241,29 @@ Acceptance before implementation:
 - avoid adding final WordPress mutation routes as an incidental extension of
   commit preflight.
 
-### 9. OpenClaw Adapter / Agent Gateway Planning
+### 9. AI Provider Log Correlation Acceptance
+
+Status: Core contract documented; Adapter implementation required.
+
+Goal: turn the manual local Ollama proof into a repeatable productized Adapter
+acceptance path without moving provider execution into Core.
+
+Acceptance:
+
+- Adapter creates or receives a Core-governed proposal context;
+- Core approval and commit preflight produce a `correlation_id`;
+- Adapter performs a real AI provider request through the WordPress `ai` plugin
+  or provider connector;
+- Adapter injects `proposal_id`, `correlation_id`, `ability_id`,
+  `adapter_request_id`, `adapter_route`, `ai_provider`, `ai_model`, and
+  `governance_source=magick-ai-core` into the AI request log context;
+- AI Request Logs can be queried by `proposal_id` and `correlation_id`;
+- Core does not add provider execution, provider credentials, prompt/response
+  storage, or token accounting.
+
+See [AI Provider Log Correlation](ai-provider-log-correlation.md).
+
+### 10. OpenClaw Adapter / Agent Gateway Planning
 
 Status: outside Core, productized acceptance in Magick AI Adapter.
 
@@ -257,6 +282,8 @@ Acceptance before implementation:
   separate trusted host policy and explicit approval scopes;
 - OpenClaw tool presentation, MCP transport, workflow routing, queues, and
   long-running task handling stay outside Core.
+- real AI provider request log correlation is implemented and tested in
+  Adapter, not Core.
 
 Current handoff:
 
