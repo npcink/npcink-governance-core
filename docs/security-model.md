@@ -142,6 +142,11 @@ If a token is exposed, administrators should disable that app key from the same
 screen and create a replacement. Disabled keys are stored as `revoked` and must
 fail future app authentication with `401`.
 
+The local TLS handoff checkbox only controls whether copied OpenClaw client
+configuration includes `MAGICK_AI_CORE_INSECURE_SSL=true`. It must be treated as
+a local adapter convenience for `.local` or `localhost` testing, not a Core
+security mode.
+
 App-authenticated requests must have the route's required scope and pass the
 fixed-window rate limit. Missing auth returns `401`, missing scope returns
 `403`, and rate limit failures return `429`.
@@ -162,3 +167,7 @@ The OpenClaw governance adapter example uses WordPress Application Password
 authentication through environment variables. Those values are local operator
 secrets and must not be committed, written into proposal payloads, or copied
 into audit metadata.
+
+For LocalWP self-signed certificates, prefer `MAGICK_AI_CORE_CA_BUNDLE` when a
+local CA bundle is available. `MAGICK_AI_CORE_INSECURE_SSL=true` is only for
+local-only hosts and is rejected by the example adapter for public hosts.

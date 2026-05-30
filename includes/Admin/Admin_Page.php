@@ -229,8 +229,9 @@ final class Admin_Page {
 
 		check_admin_referer( 'magick_ai_core_create_app_key' );
 
-		$raw_scopes = isset( $_POST['scopes'] ) && is_array( $_POST['scopes'] ) ? wp_unslash( $_POST['scopes'] ) : array();
-		$app        = $this->apps->create(
+		$raw_scopes        = isset( $_POST['scopes'] ) && is_array( $_POST['scopes'] ) ? wp_unslash( $_POST['scopes'] ) : array();
+		$include_local_tls = ! empty( $_POST['include_local_tls'] );
+		$app               = $this->apps->create(
 			array(
 				'app_label'           => isset( $_POST['app_label'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['app_label'] ) ) : 'External app',
 				'caller_type'         => isset( $_POST['caller_type'] ) ? sanitize_key( wp_unslash( (string) $_POST['caller_type'] ) ) : 'mcp_adapter',
@@ -252,7 +253,7 @@ final class Admin_Page {
 
 		status_header( 200 );
 		nocache_headers();
-		$this->render_created_app_key( $app );
+		$this->render_created_app_key( $app, $include_local_tls );
 		exit;
 	}
 
@@ -299,9 +300,10 @@ final class Admin_Page {
 	 * @return void
 	 */
 	private function render_external_access(): void {
-		$base_url = home_url();
-		$rest_url = rest_url( 'magick-ai-core/v1' );
-		$apps     = $this->apps->list_recent( 10 );
+		$base_url          = home_url();
+		$rest_url          = rest_url( 'magick-ai-core/v1' );
+		$apps              = $this->apps->list_recent( 10 );
+		$default_local_tls = $this->is_local_base_url( $base_url );
 		?>
 		<h2><?php echo esc_html__( 'External App Access', 'magick-ai-core' ); ?></h2>
 		<p><?php echo esc_html__( 'Issue scoped app keys for external governance clients. Human approval remains in Core.', 'magick-ai-core' ); ?></p>
@@ -327,7 +329,7 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 
 		<h3><?php echo esc_html__( 'OpenClaw Handoff', 'magick-ai-core' ); ?></h3>
 		<p><?php echo esc_html__( 'Copy this guide with the environment values when configuring an external agent client.', 'magick-ai-core' ); ?></p>
-		<textarea class="large-text code" rows="18" readonly><?php echo esc_textarea( $this->openclaw_handoff_text( 'mai_core.key_xxx.secret_xxx' ) ); ?></textarea>
+		<textarea class="large-text code" rows="18" readonly><?php echo esc_textarea( $this->openclaw_handoff_text( 'mai_core.key_xxx.secret_xxx', false ) ); ?></textarea>
 
 		<h3><?php echo esc_html__( 'Create App Key', 'magick-ai-core' ); ?></h3>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="max-width: 1100px;">
@@ -358,6 +360,16 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 								<?php echo esc_html__( 'Window seconds', 'magick-ai-core' ); ?>
 								<input type="number" min="60" max="86400" name="rate_window_seconds" value="<?php echo esc_attr( (string) App_Key_Repository::DEFAULT_RATE_WINDOW ); ?>" />
 							</label>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'Local testing', 'magick-ai-core' ); ?></th>
+						<td>
+							<label>
+								<input type="checkbox" name="include_local_tls" value="1" <?php checked( $default_local_tls ); ?> />
+								<?php echo esc_html__( 'Include LocalWP TLS test setting in OpenClaw env and handoff.', 'magick-ai-core' ); ?>
+							</label>
+							<p class="description"><?php echo esc_html__( 'Use only for localhost or .local testing. This only changes copied client configuration; it does not change Core server security.', 'magick-ai-core' ); ?></p>
 						</td>
 					</tr>
 				</tbody>
@@ -443,7 +455,7 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 	 * @param array<string,mixed> $app App row with one-time token.
 	 * @return void
 	 */
-	private function render_created_app_key( array $app ): void {
+	private function render_created_app_key( array $app, bool $include_local_tls ): void {
 		$base_url = home_url();
 		$token    = (string) ( $app['token'] ?? '' );
 		?>
@@ -489,11 +501,11 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 						</tr>
 						<tr>
 							<th scope="row"><?php echo esc_html__( 'OpenClaw env', 'magick-ai-core' ); ?></th>
-							<td><textarea rows="4" readonly><?php echo esc_textarea( 'MAGICK_AI_CORE_BASE_URL=' . $base_url . "\n" . 'MAGICK_AI_CORE_APP_TOKEN=' . $token ); ?></textarea></td>
+							<td><textarea rows="5" readonly><?php echo esc_textarea( $this->openclaw_env_text( $token, $include_local_tls ) ); ?></textarea></td>
 						</tr>
 						<tr>
 							<th scope="row"><?php echo esc_html__( 'OpenClaw handoff', 'magick-ai-core' ); ?></th>
-							<td><textarea rows="18" readonly><?php echo esc_textarea( $this->openclaw_handoff_text( $token ) ); ?></textarea></td>
+							<td><textarea rows="18" readonly><?php echo esc_textarea( $this->openclaw_handoff_text( $token, $include_local_tls ) ); ?></textarea></td>
 						</tr>
 					</tbody>
 				</table>
@@ -636,16 +648,14 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 	 * Returns copyable OpenClaw setup guidance.
 	 *
 	 * @param string $token App token or placeholder.
+	 * @param bool   $include_local_tls Whether to include local TLS env.
 	 * @return string
 	 */
-	private function openclaw_handoff_text( string $token ): string {
-		$base_url = home_url();
-
+	private function openclaw_handoff_text( string $token, bool $include_local_tls ): string {
 		return "Magick AI Core connection\n"
-			. "MAGICK_AI_CORE_BASE_URL={$base_url}\n"
-			. "MAGICK_AI_CORE_APP_TOKEN={$token}\n"
-			. "MAGICK_AI_CORE_INSECURE_SSL=true # local .local/localhost PoC only\n\n"
-			. "Prefer MAGICK_AI_CORE_CA_BUNDLE=/path/to/local-ca.pem when a local CA bundle is available.\n\n"
+			. $this->openclaw_env_text( $token, $include_local_tls ) . "\n\n"
+			. "# LocalWP only: set MAGICK_AI_CORE_INSECURE_SSL=true when a .local/localhost self-signed certificate blocks local testing.\n"
+			. "# Prefer MAGICK_AI_CORE_CA_BUNDLE=/path/to/local-ca.pem when a local CA bundle is available.\n\n"
 			. "Agent rules\n"
 			. "1. Treat Magick AI Core as the WordPress governance layer, not as a protocol runtime or content generator.\n"
 			. "2. Call capabilities first and use only real ability_id values returned by Core.\n"
@@ -664,5 +674,41 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 			. "  --preview='{\"dry_run\":true,\"source\":\"openclaw\"}'\n\n"
 			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php commit-preflight \\\n"
 			. "  --proposal=<proposal_id>";
+	}
+
+	/**
+	 * Returns OpenClaw environment text.
+	 *
+	 * @param string $token App token or placeholder.
+	 * @param bool   $include_local_tls Whether to include local TLS env.
+	 * @return string
+	 */
+	private function openclaw_env_text( string $token, bool $include_local_tls ): string {
+		$lines = array(
+			'MAGICK_AI_CORE_BASE_URL=' . home_url(),
+			'MAGICK_AI_CORE_APP_TOKEN=' . $token,
+		);
+
+		if ( $include_local_tls ) {
+			$lines[] = 'MAGICK_AI_CORE_INSECURE_SSL=true';
+		}
+
+		return implode( "\n", $lines );
+	}
+
+	/**
+	 * Returns whether a base URL is a local testing host.
+	 *
+	 * @param string $url URL.
+	 * @return bool
+	 */
+	private function is_local_base_url( string $url ): bool {
+		$host = wp_parse_url( $url, PHP_URL_HOST );
+		if ( ! is_string( $host ) ) {
+			return false;
+		}
+
+		$host = strtolower( trim( $host, '[]' ) );
+		return in_array( $host, array( 'localhost', '127.0.0.1', '::1' ), true ) || ( strlen( $host ) >= 6 && '.local' === substr( $host, -6 ) );
 	}
 }

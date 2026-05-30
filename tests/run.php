@@ -393,6 +393,10 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'Agent rules' ), 'Admin pa
 magick_ai_core_assert( false !== strpos( $admin_page, 'Do not store or print MAGICK_AI_CORE_APP_TOKEN' ), 'Admin page warns external agents not to leak app tokens.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_INSECURE_SSL=true' ), 'Admin page includes local TLS handoff setting.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_CA_BUNDLE' ), 'Admin page prefers local CA bundle when available.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'include_local_tls' ), 'Admin page exposes local TLS export checkbox.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'is_local_base_url' ), 'Admin page defaults local TLS export only for local hosts.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'openclaw_env_text' ), 'Admin page centralizes OpenClaw env generation.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'does not change Core server security' ), 'Admin page clarifies local TLS is client-side only.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_BASE_URL' ), 'Admin page shows base URL env value.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_APP_TOKEN' ), 'Admin page shows app token env value.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'render_created_app_key' ), 'Admin page renders one-time app key result.' );

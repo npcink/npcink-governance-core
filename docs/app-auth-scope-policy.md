@@ -131,6 +131,11 @@ The admin panel also exposes a minimal key-disable action. Disabling a key marks
 its status as `revoked`; future requests with that token return `401`, while
 historical proposal and audit attribution remains intact.
 
+For LocalWP or `.local` PoC setup, the admin panel may include
+`MAGICK_AI_CORE_INSECURE_SSL=true` in generated OpenClaw env/handoff text. This
+is only a copied client-side adapter setting for local TLS troubleshooting; it
+does not change Core authentication, REST behavior, or server-side TLS policy.
+
 Minimum requirements:
 
 - raw secret is shown once at creation and stored only as a hash;
@@ -163,7 +168,8 @@ Current implementation gates:
 2. REST authentication and error semantics are documented.
 3. Security storage and redaction behavior is documented.
 4. Admin UI can show the Core URL, issue one-time scoped app tokens, provide an
-   OpenClaw handoff guide, and disable leaked or obsolete keys.
+   OpenClaw handoff guide with explicit local TLS export control, and disable
+   leaked or obsolete keys.
 5. Static contract tests cover scopes, UI entry, revocation, and forbidden
    secret storage.
 6. WordPress smoke covers app-authenticated proposal creation, commit preflight,

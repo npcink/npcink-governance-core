@@ -1,5 +1,24 @@
 # Session Breadcrumb
 
+## 2026-05-30 — OpenClaw local TLS handoff option added
+
+- **Module**: external app governance authorization / OpenClaw handoff
+- **Status**: App key creation now has an explicit local testing export option
+  for OpenClaw TLS config.
+- **Completed**:
+  - Added an `include_local_tls` checkbox to app-key creation UI, defaulting on
+    only for local hosts.
+  - Generated `MAGICK_AI_CORE_INSECURE_SSL=true` only when the operator
+    explicitly includes local TLS in result env/handoff.
+  - Kept placeholder handoff as guidance only and documented that this is a
+    client-side adapter setting, not Core server policy.
+  - Updated README, app auth policy, security model, development workflow,
+    next-stage plan, and static contracts.
+- **Verified**:
+  - `composer test:all` passed.
+  - WP-CLI result-page checks passed for checked and unchecked local TLS export.
+  - `composer smoke:wp` passed.
+
 ## 2026-05-30 — OpenClaw adapter local TLS switches added
 
 - **Module**: external agent governance adapter example

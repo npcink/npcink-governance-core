@@ -96,6 +96,26 @@ composer validate --no-check-publish
 
 The smoke test creates local proposal and audit records. That is expected.
 
+## OpenClaw Local TLS
+
+The admin `External App Access` screen includes a local testing checkbox when
+creating an app key. When enabled, the generated OpenClaw env/handoff text
+includes:
+
+```bash
+MAGICK_AI_CORE_INSECURE_SSL=true
+```
+
+This is a client-side adapter setting for LocalWP `.local` or `localhost`
+self-signed certificate testing. It is not stored as Core policy and does not
+change Core server security.
+
+Prefer a trusted local CA bundle when available:
+
+```bash
+MAGICK_AI_CORE_CA_BUNDLE=/path/to/local-ca.pem
+```
+
 ## Smoke Wrapper
 
 The smoke script is self-contained in this repository. It uses WP-CLI against

@@ -82,7 +82,9 @@ or final write executor.
 For local adapter setup, WordPress administrators can open
 `Tools -> Magick AI Core -> External App Access` to copy the Core base URL and
 create a scoped one-time app token. The same screen provides an OpenClaw
-handoff guide and a key disable action for leaked or obsolete tokens. The token
+handoff guide, an optional LocalWP TLS test export line for `.local` testing,
+and a key disable action for leaked or obsolete tokens. The TLS option only
+changes copied client configuration; it is not a Core server setting. The token
 is shown once and should be stored only in the external client's secret store or
 environment.
 
