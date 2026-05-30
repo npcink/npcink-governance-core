@@ -81,6 +81,7 @@ final class Admin_Page {
 	public function register(): void {
 		add_action( 'admin_menu', array( $this, 'add_menu' ) );
 		add_action( 'admin_post_magick_ai_core_create_app_key', array( $this, 'handle_create_app_key' ) );
+		add_action( 'admin_post_magick_ai_core_revoke_app_key', array( $this, 'handle_revoke_app_key' ) );
 		add_action( 'admin_post_magick_ai_core_approve_proposal', array( $this, 'handle_approve' ) );
 		add_action( 'admin_post_magick_ai_core_reject_proposal', array( $this, 'handle_reject' ) );
 	}
@@ -256,6 +257,43 @@ final class Admin_Page {
 	}
 
 	/**
+	 * Handles app key revocation form submission.
+	 *
+	 * @return void
+	 */
+	public function handle_revoke_app_key(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to revoke app keys.', 'magick-ai-core' ) );
+		}
+
+		$key_id = isset( $_POST['key_id'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['key_id'] ) ) : '';
+		check_admin_referer( 'magick_ai_core_revoke_app_key_' . $key_id );
+
+		$app = '' !== $key_id ? $this->apps->find_by_key_id( $key_id ) : null;
+		if ( null === $app || 'active' !== (string) ( $app['status'] ?? '' ) ) {
+			wp_safe_redirect( $this->admin_url( array( 'magick_ai_core_error' => 'magick_ai_core_app_key_not_active' ) ) );
+			exit;
+		}
+
+		if ( ! $this->apps->revoke_by_key_id( $key_id ) ) {
+			wp_safe_redirect( $this->admin_url( array( 'magick_ai_core_error' => 'magick_ai_core_app_key_revoke_failed' ) ) );
+			exit;
+		}
+
+		$this->audit->record(
+			'app.revoked',
+			array(
+				'app_id'      => (string) $app['app_id'],
+				'key_id'      => (string) $app['key_id'],
+				'caller_type' => (string) $app['caller_type'],
+			)
+		);
+
+		wp_safe_redirect( $this->admin_url( array( 'magick_ai_core_message' => 'app_key_revoked' ) ) );
+		exit;
+	}
+
+	/**
 	 * Renders external app access section.
 	 *
 	 * @return void
@@ -286,6 +324,10 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 				</tr>
 			</tbody>
 		</table>
+
+		<h3><?php echo esc_html__( 'OpenClaw Handoff', 'magick-ai-core' ); ?></h3>
+		<p><?php echo esc_html__( 'Copy this guide with the environment values when configuring an external agent client.', 'magick-ai-core' ); ?></p>
+		<textarea class="large-text code" rows="18" readonly><?php echo esc_textarea( $this->openclaw_handoff_text( 'mai_core.key_xxx.secret_xxx' ) ); ?></textarea>
 
 		<h3><?php echo esc_html__( 'Create App Key', 'magick-ai-core' ); ?></h3>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="max-width: 1100px;">
@@ -330,21 +372,36 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 					<th scope="col"><?php echo esc_html__( 'Label', 'magick-ai-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'App ID', 'magick-ai-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'Key ID', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Status', 'magick-ai-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'Scopes', 'magick-ai-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'Last used', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Action', 'magick-ai-core' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php if ( empty( $apps ) ) : ?>
-					<tr><td colspan="5"><?php echo esc_html__( 'No app keys yet.', 'magick-ai-core' ); ?></td></tr>
+					<tr><td colspan="7"><?php echo esc_html__( 'No app keys yet.', 'magick-ai-core' ); ?></td></tr>
 				<?php endif; ?>
 				<?php foreach ( $apps as $app ) : ?>
 					<tr>
 						<td><?php echo esc_html( (string) $app['app_label'] ); ?></td>
 						<td><code><?php echo esc_html( (string) $app['app_id'] ); ?></code></td>
 						<td><code><?php echo esc_html( (string) $app['key_id'] ); ?></code></td>
+						<td><?php echo esc_html( (string) $app['status'] ); ?></td>
 						<td><?php echo esc_html( implode( ', ', (array) $app['scopes'] ) ); ?></td>
 						<td><?php echo esc_html( (string) ( $app['last_used_at'] ?: '-' ) ); ?></td>
+						<td>
+							<?php if ( 'active' === (string) $app['status'] ) : ?>
+								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+									<input type="hidden" name="action" value="magick_ai_core_revoke_app_key" />
+									<input type="hidden" name="key_id" value="<?php echo esc_attr( (string) $app['key_id'] ); ?>" />
+									<?php wp_nonce_field( 'magick_ai_core_revoke_app_key_' . (string) $app['key_id'] ); ?>
+									<button type="submit" class="button button-link-delete" onclick="return confirm('<?php echo esc_js( __( 'Disable this app key? Existing clients using this token will receive 401.', 'magick-ai-core' ) ); ?>');"><?php echo esc_html__( 'Disable', 'magick-ai-core' ); ?></button>
+								</form>
+							<?php else : ?>
+								<span aria-hidden="true">-</span>
+							<?php endif; ?>
+						</td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
@@ -433,6 +490,10 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 						<tr>
 							<th scope="row"><?php echo esc_html__( 'OpenClaw env', 'magick-ai-core' ); ?></th>
 							<td><textarea rows="4" readonly><?php echo esc_textarea( 'MAGICK_AI_CORE_BASE_URL=' . $base_url . "\n" . 'MAGICK_AI_CORE_APP_TOKEN=' . $token ); ?></textarea></td>
+						</tr>
+						<tr>
+							<th scope="row"><?php echo esc_html__( 'OpenClaw handoff', 'magick-ai-core' ); ?></th>
+							<td><textarea rows="18" readonly><?php echo esc_textarea( $this->openclaw_handoff_text( $token ) ); ?></textarea></td>
 						</tr>
 					</tbody>
 				</table>
@@ -560,11 +621,46 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 		$messages = array(
 			'approved'                                      => __( 'Proposal approved.', 'magick-ai-core' ),
 			'rejected'                                      => __( 'Proposal rejected.', 'magick-ai-core' ),
+			'app_key_revoked'                               => __( 'App key disabled.', 'magick-ai-core' ),
+			'magick_ai_core_app_key_not_active'             => __( 'App key is missing or already disabled.', 'magick-ai-core' ),
+			'magick_ai_core_app_key_revoke_failed'          => __( 'App key could not be disabled.', 'magick-ai-core' ),
 			'magick_ai_core_proposal_not_found'             => __( 'Proposal was not found.', 'magick-ai-core' ),
 			'magick_ai_core_proposal_already_decided'       => __( 'Only pending proposals can be approved or rejected.', 'magick-ai-core' ),
 			'magick_ai_core_proposal_transition_failed'     => __( 'Proposal status could not be updated.', 'magick-ai-core' ),
 		);
 
 		return (string) ( $messages[ $code ] ?? __( 'Proposal action could not be completed.', 'magick-ai-core' ) );
+	}
+
+	/**
+	 * Returns copyable OpenClaw setup guidance.
+	 *
+	 * @param string $token App token or placeholder.
+	 * @return string
+	 */
+	private function openclaw_handoff_text( string $token ): string {
+		$base_url = home_url();
+
+		return "Magick AI Core connection\n"
+			. "MAGICK_AI_CORE_BASE_URL={$base_url}\n"
+			. "MAGICK_AI_CORE_APP_TOKEN={$token}\n\n"
+			. "Agent rules\n"
+			. "1. Treat Magick AI Core as the WordPress governance layer, not as a protocol runtime or content generator.\n"
+			. "2. Call capabilities first and use only real ability_id values returned by Core.\n"
+			. "3. Create proposals for risky WordPress operations; do not approve proposals by default.\n"
+			. "4. Human approval remains in WordPress unless a trusted host policy is separately contracted.\n"
+			. "5. After approval, call commit-preflight to get approval context; Core still returns commit_execution=false.\n"
+			. "6. Do not store or print MAGICK_AI_CORE_APP_TOKEN in logs, proposal payloads, prompts, or files.\n"
+			. "7. Stop and report the reason on 401, 403, or 429 responses.\n\n"
+			. "Example commands\n"
+			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php capabilities\n\n"
+			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-proposal \\\n"
+			. "  --ability=magick-ai/create-draft \\\n"
+			. "  --title=\"OpenClaw draft proposal\" \\\n"
+			. "  --summary=\"Review before creating a draft.\" \\\n"
+			. "  --input='{\"title\":\"Draft title\",\"content\":\"<p>Draft body.</p>\",\"dry_run\":true}' \\\n"
+			. "  --preview='{\"dry_run\":true,\"source\":\"openclaw\"}'\n\n"
+			. "php examples/openclaw-governance-adapter/openclaw-governance-adapter.php commit-preflight \\\n"
+			. "  --proposal=<proposal_id>";
 	}
 }

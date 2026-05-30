@@ -136,6 +136,8 @@ Current implementation:
 
 - app keys are created by admin-only `POST /apps`;
 - app keys can also be created from `Tools -> Magick AI Core`;
+- the admin UI includes a copyable OpenClaw handoff guide and key disable
+  action;
 - raw secrets are returned once as bearer tokens;
 - default external adapter scopes exclude approval and audit read;
 - app-authenticated proposal and preflight events include app attribution.

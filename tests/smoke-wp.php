@@ -289,6 +289,24 @@ magick_ai_core_smoke_assert( is_string( $apps_json ) && false === strpos( $apps_
 $app_capabilities = magick_ai_core_smoke_rest_as_app( 'GET', '/magick-ai-core/v1/capabilities', $app_token );
 magick_ai_core_smoke_assert( count( (array) ( $app_capabilities['items'] ?? array() ) ) > 0, 'app-authenticated capabilities read succeeds' );
 
+$revoked_app = magick_ai_core_smoke_rest(
+	'POST',
+	'/magick-ai-core/v1/apps',
+	array(
+		'app_label'           => 'OpenClaw revoked smoke',
+		'caller_type'         => 'mcp_adapter',
+		'scopes'              => array( 'capabilities:read' ),
+		'rate_limit'          => 20,
+		'rate_window_seconds' => 3600,
+	)
+);
+$revoked_token = (string) ( $revoked_app['token'] ?? '' );
+$revoked_key   = (string) ( $revoked_app['key_id'] ?? '' );
+$app_keys      = new \MagickAI\Core\Security\App_Key_Repository();
+magick_ai_core_smoke_assert( $app_keys->revoke_by_key_id( $revoked_key ), 'app key repository revokes active key' );
+$revoked_result = magick_ai_core_smoke_rest_result_as_app( 'GET', '/magick-ai-core/v1/capabilities', $revoked_token );
+magick_ai_core_smoke_assert( 401 === (int) $revoked_result['status'], 'revoked app key returns 401' );
+
 $items_by_id = array();
 foreach ( $items as $item ) {
 	if ( is_array( $item ) && '' !== (string) ( $item['ability_id'] ?? '' ) ) {

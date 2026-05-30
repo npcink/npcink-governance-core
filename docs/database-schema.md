@@ -72,6 +72,7 @@ MVP event names:
 
 - `app.created`
 - `app.listed`
+- `app.revoked`
 - `app.rate_limited`
 - `app.scope_denied`
 - `capabilities.listed`
@@ -94,7 +95,7 @@ Purpose: stores scoped app identities for external governance clients.
 | `app_label` | `varchar(190)` | no | Human-readable label. |
 | `key_id` | `varchar(64)` | no | Public key id used in bearer tokens. |
 | `secret_hash` | `varchar(255)` | no | Password hash of the raw secret. Raw secrets are returned once and never stored. |
-| `status` | `varchar(40)` | no | Current MVP stores `active`; `revoked` and `expired` are reserved. |
+| `status` | `varchar(40)` | no | `active` or `revoked`; `expired` is reserved. |
 | `scopes_json` | `longtext` | yes | JSON array of allowed scopes. |
 | `rate_limit` | `int unsigned` | no | Requests allowed per route-family window. |
 | `rate_window_seconds` | `int unsigned` | no | Fixed-window duration. |

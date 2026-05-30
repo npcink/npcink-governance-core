@@ -225,6 +225,32 @@ final class App_Key_Repository {
 	}
 
 	/**
+	 * Revokes one app key.
+	 *
+	 * @param string $key_id Key id.
+	 * @return bool Whether a row was updated.
+	 */
+	public function revoke_by_key_id( string $key_id ): bool {
+		global $wpdb;
+
+		$updated = $wpdb->update(
+			$this->table_name(),
+			array(
+				'status'     => 'revoked',
+				'updated_at' => current_time( 'mysql', true ),
+			),
+			array(
+				'key_id' => sanitize_text_field( $key_id ),
+				'status' => 'active',
+			),
+			array( '%s', '%s' ),
+			array( '%s', '%s' )
+		);
+
+		return false !== $updated && $updated > 0;
+	}
+
+	/**
 	 * Sanitizes scopes.
 	 *
 	 * @param array<mixed> $scopes Scopes.

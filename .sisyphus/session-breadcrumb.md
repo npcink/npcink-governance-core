@@ -1,5 +1,22 @@
 # Session Breadcrumb
 
+## 2026-05-30 — OpenClaw handoff and key disable UI added
+
+- **Module**: external app governance authorization
+- **Status**: The Core admin external access section now supports practical
+  OpenClaw handoff and minimal leaked-token response.
+- **Completed**:
+  - Added a copyable OpenClaw handoff guide with environment variables, agent
+    rules, and example governance commands.
+  - Added admin-only app-key disable action backed by `revoked` status.
+  - Added `app.revoked` audit event recording for admin disables.
+  - Kept approval, final write execution, protocol runtime, and product
+    workflow ownership outside Core.
+  - Updated docs, static contracts, and WordPress smoke coverage.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed, including revoked-token `401` coverage.
+
 ## 2026-05-29 — App-key admin-post result page fixed
 
 - **Module**: external app governance authorization

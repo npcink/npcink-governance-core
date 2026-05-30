@@ -134,9 +134,13 @@ return raw app secrets or secret hashes.
 
 Administrators can also create the same scoped app token from
 `Tools -> Magick AI Core -> External App Access`. The screen shows the site base
-URL, REST URL, and OpenClaw-style environment variables. It displays the raw
-token only on the creation result screen and lists existing app keys without
-secret material.
+URL, REST URL, OpenClaw-style environment variables, and a copyable external
+agent handoff guide. It displays the raw token only on the creation result
+screen and lists existing app keys without secret material.
+
+If a token is exposed, administrators should disable that app key from the same
+screen and create a replacement. Disabled keys are stored as `revoked` and must
+fail future app authentication with `401`.
 
 App-authenticated requests must have the route's required scope and pass the
 fixed-window rate limit. Missing auth returns `401`, missing scope returns

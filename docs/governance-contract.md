@@ -71,6 +71,10 @@ MVP event names:
 - `capabilities.listed`
 - `audit.listed`
 - `commit.preflighted`
+- `app.created`
+- `app.revoked`
+- `app.rate_limited`
+- `app.scope_denied`
 
 Future event names:
 

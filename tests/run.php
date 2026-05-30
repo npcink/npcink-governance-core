@@ -147,6 +147,7 @@ foreach (
 		'approved',
 		'rejected',
 		'app.created',
+		'app.revoked',
 		'app.rate_limited',
 		'proposal.created',
 		'proposal.listed',
@@ -252,6 +253,8 @@ foreach (
 	array(
 		'magick_ai_core_app_keys',
 		'secret_hash',
+		'revoke_by_key_id',
+		'revoked',
 		'password_hash',
 		'password_verify',
 		'capabilities:read',
@@ -327,6 +330,7 @@ magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/approve-comment' 
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'app-authenticated proposal stores app attribution' ), 'WordPress smoke validates app proposal attribution.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'app-authenticated audit read is denied without audit scope' ), 'WordPress smoke validates denied app audit scope.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'app rate limit returns 429 after fixed window is exhausted' ), 'WordPress smoke validates app rate limiting.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'revoked app key returns 401' ), 'WordPress smoke validates revoked app key denial.' );
 
 $capabilities_controller = magick_ai_core_read( $root . '/includes/Rest/Capabilities_Controller.php' );
 magick_ai_core_assert( false !== strpos( $capabilities_controller, "'/capabilities'" ), 'Capabilities REST route is registered.' );
@@ -371,9 +375,13 @@ $admin_page = magick_ai_core_read( $root . '/includes/Admin/Admin_Page.php' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_approve_proposal' ), 'Admin page registers approve handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_reject_proposal' ), 'Admin page registers reject handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_create_app_key' ), 'Admin page registers app-key creation handler.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_revoke_app_key' ), 'Admin page registers app-key revocation handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'check_admin_referer' ), 'Admin proposal actions enforce nonce.' );
 magick_ai_core_assert( false !== strpos( $admin_page, "current_user_can( 'manage_options' )" ), 'Admin proposal actions enforce capability.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'External App Access' ), 'Admin page exposes external app access section.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'OpenClaw Handoff' ), 'Admin page exposes OpenClaw handoff guidance.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Agent rules' ), 'Admin page includes external agent rules.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Do not store or print MAGICK_AI_CORE_APP_TOKEN' ), 'Admin page warns external agents not to leak app tokens.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_BASE_URL' ), 'Admin page shows base URL env value.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_APP_TOKEN' ), 'Admin page shows app token env value.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'render_created_app_key' ), 'Admin page renders one-time app key result.' );
@@ -382,6 +390,8 @@ magick_ai_core_assert( false === strpos( $admin_page, 'wp-admin/admin-header.php
 magick_ai_core_assert( false !== strpos( $admin_page, 'shown only once and is not stored in raw form' ), 'Admin page warns that app token is one-time only.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'default_scopes' ), 'Admin page defaults to scoped external adapter access.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'App_Key_Repository::DEFAULT_RATE_LIMIT' ), 'Admin page exposes bounded rate policy inputs.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'app.revoked' ), 'Admin page audits app-key revocation.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'button-link-delete' ), 'Admin page exposes a key disable action.' );
 
 $forbidden_runtime_terms = array(
 	'Agent Gateway',
