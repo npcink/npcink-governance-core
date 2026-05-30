@@ -24,6 +24,77 @@ Layer ownership:
 | Governance layer | `magick-ai-core` | Discover abilities, classify risk, create proposals, record approval/rejection, run commit preflight, provide audit, and return execution guidance. |
 | Channel layer | OpenClaw Adapter, MCP Adapter, or Agent Gateway plugin | Present tools to OpenClaw, call read abilities, and execute approved write abilities only after Core preflight. |
 
+## Why Governance And Execution Stay Separate
+
+The split is a sequencing and safety decision, not a permanent ban on future
+execution work.
+
+Governance answers these questions:
+
+- is the operation known and currently available;
+- what is its risk level;
+- does it need human approval;
+- who approved or rejected it;
+- is commit preflight authorized;
+- how can the decision be audited later.
+
+Execution answers different questions:
+
+- how to invoke the target ability callback;
+- how to authenticate to the execution surface;
+- how to validate and sanitize the ability result;
+- how to handle timeout, retry, partial failure, rollback, and idempotency;
+- how to redact sensitive read results;
+- how to record final execution results without creating a second source of
+  truth.
+
+Combining both roles in Core now would make Core both the governance authority
+and the generic ability runtime. That would force Core to own execution
+semantics for every discovered ability, duplicate WordPress Abilities API as an
+execution surface, and enter final commit execution before the authorization,
+idempotency, failure, audit, and rollback contracts are accepted.
+
+Keeping execution in the adapter and WordPress Abilities API lets Core remain
+the trust center: it decides whether risky operations may proceed, while the
+canonical ability layer performs the actual WordPress reads and writes.
+
+## Tradeoff
+
+Keeping Core as governance-only has costs:
+
+- OpenClaw needs an adapter that can call both Core and WordPress Abilities API;
+- read ability execution depends on the site exposing the WordPress Abilities
+  API run surface;
+- execution result auditing is not yet end-to-end inside Core;
+- a future product may still want one simpler external URL.
+
+The benefit is a smaller and safer contract:
+
+- Core does not become a second ability runtime;
+- read and write permissions stay with ability permission callbacks;
+- write and destructive operations keep the proposal and approval boundary;
+- OpenClaw can still receive machine-readable routing guidance from Core;
+- final execution can be designed deliberately in a separate ADR instead of
+  leaking into `/capabilities` as an accidental runtime promise.
+
+## When To Reconsider Core Execution
+
+Core execution can be reconsidered only through a separate ADR. That ADR should
+define, at minimum:
+
+- which ability classes Core may execute;
+- whether the first step is read-only proxy execution or final write execution;
+- required scopes for read, write, destructive, and diagnostics execution;
+- approval context binding to ability id, input hash, caller, and proposal id;
+- idempotency key requirements;
+- timeout, retry, rollback, and partial failure behavior;
+- execution result audit schema;
+- sensitive read-result redaction;
+- compatibility with WordPress Abilities API and adapter execution.
+
+Until that ADR is accepted, Core must keep returning
+`core_proxy_execute=false` and `commit_execution=false`.
+
 ## Capability Guidance Fields
 
 `GET /wp-json/magick-ai-core/v1/capabilities` includes machine-readable

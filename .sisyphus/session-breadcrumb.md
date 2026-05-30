@@ -1,5 +1,19 @@
 # Session Breadcrumb
 
+## 2026-05-30 — Governance versus execution boundary explained
+
+- **Module**: OpenClaw execution guidance documentation
+- **Status**: The OpenClaw guidance now explains why Core remains a governance
+  middle layer instead of combining governance and execution in the same
+  runtime.
+- **Completed**:
+  - Documented the distinct questions answered by governance and execution.
+  - Captured the cost and benefit of keeping Core governance-only for now.
+  - Added the ADR conditions required before Core execution can be reconsidered.
+- **Boundary**:
+  - Core still returns `core_proxy_execute=false` and
+    `commit_execution=false`; no execution route was added.
+
 ## 2026-05-30 — OpenClaw execution guidance added
 
 - **Module**: capability intake / OpenClaw governance bridge
