@@ -115,6 +115,8 @@ final class Admin_Page {
 		$pending       = $this->proposals->list_recent( 20, 'pending' );
 		$selected_id   = isset( $_GET['proposal_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['proposal_id'] ) ) : '';
 		$selected      = '' !== $selected_id ? $this->proposals->find( $selected_id ) : null;
+		$audit_filters = $this->audit_filters_from_request();
+		$audit_events  = $this->audit->list_filtered( $audit_filters );
 		$message       = isset( $_GET['magick_ai_core_message'] ) ? sanitize_key( wp_unslash( (string) $_GET['magick_ai_core_message'] ) ) : '';
 		$error         = isset( $_GET['magick_ai_core_error'] ) ? sanitize_key( wp_unslash( (string) $_GET['magick_ai_core_error'] ) ) : '';
 		?>
@@ -195,6 +197,8 @@ final class Admin_Page {
 					<p><?php echo esc_html__( 'Selected proposal was not found.', 'magick-ai-core' ); ?></p>
 				</div>
 			<?php endif; ?>
+
+			<?php $this->render_governance_audit( $audit_events, $audit_filters ); ?>
 		</div>
 		<?php
 	}
@@ -686,6 +690,126 @@ MAGICK_AI_CORE_APP_TOKEN=mai_core.key_xxx.secret_xxx</pre>
 			</tbody>
 		</table>
 		<?php
+	}
+
+	/**
+	 * Renders filtered governance audit events.
+	 *
+	 * @param array<int,array<string,mixed>> $events Audit events.
+	 * @param array<string,mixed>            $filters Active filters.
+	 * @return void
+	 */
+	private function render_governance_audit( array $events, array $filters ): void {
+		?>
+		<h2><?php echo esc_html__( 'Core Governance Audit', 'magick-ai-core' ); ?></h2>
+		<p><?php echo esc_html__( 'Governance audit records proposal, approval, preflight, scope, rate, and app attribution events. AI Request Logs remain separate; correlate them with proposal_id or correlation_id.', 'magick-ai-core' ); ?></p>
+		<form method="get" style="max-width: 1100px; margin: 0 0 12px;">
+			<input type="hidden" name="page" value="magick-ai-core" />
+			<table class="form-table" role="presentation">
+				<tbody>
+					<tr>
+						<th scope="row"><label for="magick-ai-core-audit-proposal"><?php echo esc_html__( 'Proposal ID', 'magick-ai-core' ); ?></label></th>
+						<td><input id="magick-ai-core-audit-proposal" class="regular-text" type="text" name="audit_proposal_id" value="<?php echo esc_attr( (string) $filters['proposal_id'] ); ?>" /></td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="magick-ai-core-audit-event"><?php echo esc_html__( 'Event', 'magick-ai-core' ); ?></label></th>
+						<td><input id="magick-ai-core-audit-event" class="regular-text" type="text" name="audit_event_name" value="<?php echo esc_attr( (string) $filters['event_name'] ); ?>" placeholder="proposal.created" /></td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="magick-ai-core-audit-ability"><?php echo esc_html__( 'Ability ID', 'magick-ai-core' ); ?></label></th>
+						<td><input id="magick-ai-core-audit-ability" class="regular-text" type="text" name="audit_ability_id" value="<?php echo esc_attr( (string) $filters['ability_id'] ); ?>" placeholder="magick-ai/create-draft" /></td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="magick-ai-core-audit-app"><?php echo esc_html__( 'App ID', 'magick-ai-core' ); ?></label></th>
+						<td><input id="magick-ai-core-audit-app" class="regular-text" type="text" name="audit_app_id" value="<?php echo esc_attr( (string) $filters['app_id'] ); ?>" /></td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="magick-ai-core-audit-caller"><?php echo esc_html__( 'Caller type', 'magick-ai-core' ); ?></label></th>
+						<td><input id="magick-ai-core-audit-caller" class="regular-text" type="text" name="audit_caller_type" value="<?php echo esc_attr( (string) $filters['caller_type'] ); ?>" placeholder="product_adapter" /></td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="magick-ai-core-audit-correlation"><?php echo esc_html__( 'Correlation ID', 'magick-ai-core' ); ?></label></th>
+						<td><input id="magick-ai-core-audit-correlation" class="regular-text" type="text" name="audit_correlation_id" value="<?php echo esc_attr( (string) $filters['correlation_id'] ); ?>" /></td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="magick-ai-core-audit-limit"><?php echo esc_html__( 'Limit', 'magick-ai-core' ); ?></label></th>
+						<td><input id="magick-ai-core-audit-limit" type="number" min="1" max="200" name="audit_limit" value="<?php echo esc_attr( (string) $filters['limit'] ); ?>" /></td>
+					</tr>
+				</tbody>
+			</table>
+			<p>
+				<button type="submit" class="button"><?php echo esc_html__( 'Filter Audit', 'magick-ai-core' ); ?></button>
+				<a class="button button-link" href="<?php echo esc_url( $this->admin_url() ); ?>"><?php echo esc_html__( 'Clear', 'magick-ai-core' ); ?></a>
+			</p>
+		</form>
+		<table class="widefat striped" style="max-width: 1100px;">
+			<thead>
+				<tr>
+					<th scope="col"><?php echo esc_html__( 'Time', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Event', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Proposal', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Actor', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Ability', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'App / caller', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Scope decision', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Correlation', 'magick-ai-core' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php if ( empty( $events ) ) : ?>
+					<tr>
+						<td colspan="8"><?php echo esc_html__( 'No governance audit events match the current filters.', 'magick-ai-core' ); ?></td>
+					</tr>
+				<?php endif; ?>
+				<?php foreach ( $events as $event ) : ?>
+					<?php
+					$metadata       = is_array( $event['metadata'] ?? null ) ? $event['metadata'] : array();
+					$auth           = is_array( $metadata['auth'] ?? null ) ? $metadata['auth'] : array();
+					$proposal_id    = (string) ( $event['proposal_id'] ?? '' );
+					$ability_id     = (string) ( $metadata['ability_id'] ?? '-' );
+					$app_id         = (string) ( $auth['app_id'] ?? '-' );
+					$caller_type    = (string) ( $auth['caller_type'] ?? '-' );
+					$scope          = (string) ( $auth['scope'] ?? '-' );
+					$scope_decision = (string) ( $auth['scope_decision'] ?? '-' );
+					$correlation_id = (string) ( $metadata['correlation_id'] ?? '-' );
+					?>
+					<tr>
+						<td><?php echo esc_html( (string) $event['created_at'] ); ?></td>
+						<td><code><?php echo esc_html( (string) $event['event_name'] ); ?></code></td>
+						<td>
+							<?php if ( '' !== $proposal_id ) : ?>
+								<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
+							<?php else : ?>
+								<span aria-hidden="true">-</span>
+							<?php endif; ?>
+						</td>
+						<td><?php echo esc_html( (string) $event['actor_id'] ); ?></td>
+						<td><code><?php echo esc_html( $ability_id ); ?></code></td>
+						<td><code><?php echo esc_html( $app_id . ' / ' . $caller_type ); ?></code></td>
+						<td><code><?php echo esc_html( $scope . ' / ' . $scope_decision ); ?></code></td>
+						<td><code><?php echo esc_html( $correlation_id ); ?></code></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<?php
+	}
+
+	/**
+	 * Returns governance audit filters from query args.
+	 *
+	 * @return array<string,mixed>
+	 */
+	private function audit_filters_from_request(): array {
+		return array(
+			'proposal_id'    => isset( $_GET['audit_proposal_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_proposal_id'] ) ) : '',
+			'event_name'     => isset( $_GET['audit_event_name'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_event_name'] ) ) : '',
+			'ability_id'     => isset( $_GET['audit_ability_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_ability_id'] ) ) : '',
+			'app_id'         => isset( $_GET['audit_app_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_app_id'] ) ) : '',
+			'caller_type'    => isset( $_GET['audit_caller_type'] ) ? sanitize_key( wp_unslash( (string) $_GET['audit_caller_type'] ) ) : '',
+			'correlation_id' => isset( $_GET['audit_correlation_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_correlation_id'] ) ) : '',
+			'limit'          => isset( $_GET['audit_limit'] ) ? max( 1, min( 200, absint( wp_unslash( (string) $_GET['audit_limit'] ) ) ) ) : 50,
+		);
 	}
 
 	/**

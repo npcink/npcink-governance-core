@@ -1,5 +1,21 @@
 # Session Breadcrumb
 
+## 2026-05-30 — Governance audit admin view added
+
+- **Module**: Core governance audit / operator review
+- **Status**: Core now has a clearer admin-side governance audit view without
+  merging with AI Request Logs.
+- **Completed**:
+  - Added a `Core Governance Audit` section to `Tools -> Magick AI Core`.
+  - Added admin filters for proposal id, event name, ability id, app id,
+    caller type, correlation id, and limit.
+  - Documented that AI Request Logs remain owned by the WordPress `ai` plugin
+    and should be correlated with Core audit through `proposal_id` or
+    `correlation_id`.
+- **Boundary**:
+  - Core still stores governance audit only. It does not log provider/model
+    requests, tokens, prompts, responses, final execution, or workflow runtime.
+
 ## 2026-05-30 — Adapter proposal status bridge boundary documented
 
 - **Module**: OpenClaw Adapter governance handoff / proposal status bridge

@@ -235,6 +235,9 @@ foreach (
 		'proposal audit timelines',
 		'audit filters',
 		'scope_decision',
+		'Core Governance Audit',
+		'AI Request Logs remain owned by the',
+		'`proposal_id` or `correlation_id`',
 		'correlation_id',
 		'commit_execution=false',
 		'core_proxy_execute=false',
@@ -655,6 +658,11 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core
 magick_ai_core_assert( false !== strpos( $admin_page, 'check_admin_referer' ), 'Admin proposal actions enforce nonce.' );
 magick_ai_core_assert( false !== strpos( $admin_page, "current_user_can( 'manage_options' )" ), 'Admin proposal actions enforce capability.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Core App Keys' ), 'Admin page exposes Core app-key management section.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Core Governance Audit' ), 'Admin page exposes governance audit section.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'audit_filters_from_request' ), 'Admin page reads governance audit filters.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'audit_proposal_id' ), 'Admin page exposes proposal audit filter.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'audit_correlation_id' ), 'Admin page exposes correlation audit filter.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'AI Request Logs remain separate' ), 'Admin page separates Core audit from AI Request Logs.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Adapter setup' ), 'Admin page points product setup to Adapter without hosting onboarding.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Configure OpenClaw and other productized clients in Magick AI Adapter' ), 'Admin page avoids presenting Core as the OpenClaw product entry point.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Environment template' ), 'Admin page exposes only a minimal Core env template.' );

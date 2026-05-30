@@ -46,6 +46,27 @@ The WordPress admin proposal detail also shows:
 - audit timeline with event, actor, app, scope decision, and correlation id;
 - approve/reject form for pending proposals.
 
+### Core Governance Audit Admin View
+
+`Tools -> Magick AI Core` includes a `Core Governance Audit` section for recent
+governance events. It is an operator view over Core audit records, not an AI
+request log viewer.
+
+The admin filter form supports:
+
+- proposal id;
+- event name;
+- ability id;
+- app id;
+- caller type;
+- correlation id;
+- limit.
+
+The result table shows time, event, proposal link, actor, ability, app/caller,
+scope decision, and correlation id. AI Request Logs remain owned by the
+WordPress `ai` plugin; operators should correlate the two systems with
+`proposal_id` or `correlation_id` rather than merging their storage.
+
 ### Audit Filters
 
 `GET /wp-json/magick-ai-core/v1/audit` supports these filters:
