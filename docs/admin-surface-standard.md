@@ -10,12 +10,18 @@ decisions, inspect commit-preflight readiness, and trace Core audit evidence.
 
 ## Default View
 
-The default page must stay focused on the current governance queue:
+The page is split into focused admin tabs:
+
+- `Review Queue`;
+- `Governance Audit`;
+- `Core App Keys`.
+
+The default `Review Queue` tab must stay focused on the current governance
+queue:
 
 - compact status strip;
 - pending proposal review list;
-- short recent activity list;
-- explicit links to low-frequency administration views.
+- short recent activity disclosure, collapsed by default.
 
 ## Detail Views
 
@@ -28,7 +34,9 @@ Proposal detail should be a focused review surface:
 - proposal audit timeline.
 
 Full `Governance Audit` and `Core App Keys` belong in dedicated low-frequency
-views, not inline on the default workbench.
+tabs, not inline on the default workbench. Core app-key creation is a
+low-frequency fallback action and should stay behind an explicit disclosure on
+the `Core App Keys` tab.
 
 ## Do Not Add
 

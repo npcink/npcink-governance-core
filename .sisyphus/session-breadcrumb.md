@@ -1,5 +1,27 @@
 # Session Breadcrumb
 
+## 2026-05-31 — Core admin surface switched to tabbed review IA
+
+- **Module**: Core WordPress admin governance surface
+- **Status**: `Magick AI -> Core` now uses focused tabs for `Review Queue`,
+  `Governance Audit`, and `Core App Keys`; the default view emphasizes the
+  pending proposal queue with a compact status strip.
+- **Completed**:
+  - Added WordPress admin tabs for queue, audit, and app-key surfaces.
+  - Removed the default inline Administration entry table.
+  - Collapsed recent activity behind an explicit disclosure on the default
+    review queue.
+  - Collapsed Core app-key creation behind an explicit disclosure on the
+    app-key tab while keeping recent keys visible.
+  - Updated the admin surface standard and static contracts for the new
+    hierarchy.
+- **Boundary**:
+  - This is admin information architecture only. Core still owns governance
+    proposal records, approval/rejection, commit preflight, audit evidence, and
+    fallback app-key management. It still does not own Adapter/OpenClaw
+    product setup, ability execution, workflow runtime, provider credentials,
+    prompt/preset management, or final WordPress write execution.
+
 ## 2026-05-31 — Cloud Addon submenu slug and label standardized
 
 - **Module**: Cross-plugin WordPress admin navigation

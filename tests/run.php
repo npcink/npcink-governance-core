@@ -783,9 +783,11 @@ $admin_surface_standard = magick_ai_core_read( $root . '/docs/admin-surface-stan
 foreach (
 	array(
 		'local governance workbench',
+		'Review Queue',
 		'pending proposal review list',
 		'Governance Audit',
 		'Core App Keys',
+		'low-frequency fallback action',
 		'OpenClaw onboarding',
 		'ability definitions',
 		'cloud connection settings',
@@ -801,8 +803,12 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'check_admin_referer' ), '
 magick_ai_core_assert( false !== strpos( $admin_page, "current_user_can( 'manage_options' )" ), 'Admin proposal actions enforce capability.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Core App Keys' ), 'Admin page exposes Core app-key management section.' );
 magick_ai_core_assert( false !== strpos( $admin_page, "'app-keys'" ), 'Admin page moves app-key management into a dedicated view.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'render_advanced_entries' ), 'Admin default page exposes low-frequency entry links.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'render_admin_tabs' ), 'Admin page exposes tabbed Core sections.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'nav-tab-wrapper' ), 'Admin page uses WordPress admin tabs for Core sections.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Review Queue' ), 'Admin page defaults to the review queue tab.' );
+magick_ai_core_assert( false === strpos( $admin_page, 'render_advanced_entries' ), 'Admin default page no longer renders low-frequency administration links inline.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Recent Activity' ), 'Admin default page exposes a compact recent activity section.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Latest Core governance events. Full audit is in its own tab.' ), 'Admin default page folds recent activity into a disclosure.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Governance Audit' ), 'Admin page exposes a full governance audit view.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'Advanced: Core App Keys' ), 'Admin default page no longer folds app-key management inline.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Advanced audit filters' ), 'Admin page folds detailed audit filters into an advanced disclosure.' );
@@ -813,6 +819,7 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'AI Request Logs remain se
 magick_ai_core_assert( false !== strpos( $admin_page, 'Productized OpenClaw setup belongs in Magick AI Adapter' ), 'Admin page avoids presenting Core as the OpenClaw product entry point.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'Environment template' ), 'Admin default page no longer exposes an env template.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Create Core App Key' ), 'Admin page labels key creation as Core credential management.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Issue a scoped token for a trusted governance client.' ), 'Admin page folds Core app-key creation behind an explicit disclosure.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Adapter Client' ), 'Admin page defaults app label to a generic adapter client.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'product_adapter' ), 'Admin page defaults caller type to product_adapter.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'core_env_text' ), 'Admin page centralizes minimal Core env generation.' );
