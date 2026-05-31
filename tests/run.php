@@ -777,6 +777,20 @@ magick_ai_core_assert( false !== strpos( $request_context, 'scope_decision' ), '
 magick_ai_core_assert( false !== strpos( $request_context, 'mark_scope_decision' ), 'Request context can update scope decision for denials.' );
 
 $admin_page = magick_ai_core_read( $root . '/includes/Admin/Admin_Page.php' );
+$admin_surface_standard = magick_ai_core_read( $root . '/docs/admin-surface-standard.md' );
+foreach (
+	array(
+		'local governance workbench',
+		'pending proposal review list',
+		'Governance Audit',
+		'Core App Keys',
+		'OpenClaw onboarding',
+		'ability definitions',
+		'cloud connection settings',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $admin_surface_standard, $required ), 'Admin surface standard documents Core page boundary: ' . $required );
+}
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_approve_proposal' ), 'Admin page registers approve handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_reject_proposal' ), 'Admin page registers reject handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_create_app_key' ), 'Admin page registers app-key creation handler.' );

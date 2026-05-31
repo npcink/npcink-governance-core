@@ -73,6 +73,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md)
 - [Platform Baseline](docs/platform-baseline.md)
 - [Admin Menu Standard](docs/admin-menu-standard.md)
+- [Admin Surface Standard](docs/admin-surface-standard.md)
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
 - [Plan To Proposal Governance](docs/plan-to-proposal-governance.md)
 - [Create Draft Governance Scenario](docs/create-draft-governance-scenario.md)
