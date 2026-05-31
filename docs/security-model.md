@@ -145,11 +145,13 @@ stored only as `secret_hash`. `GET /apps`, proposals, and audit rows must not
 return raw app secrets or secret hashes.
 
 Administrators can also create the same scoped app token from
-`Tools -> Magick AI Core -> Core App Keys`. The screen shows the Core REST URL,
-minimal Core environment variables, and existing app keys without secret
-material. It displays the raw token only on the creation result screen.
-Productized OpenClaw setup, agent rules, handoff text, and local TLS client
-configuration belong in Magick AI Adapter, not Core.
+the advanced `Core App Keys` disclosure under `Tools -> Magick AI Core`. The
+default admin view stays focused on governance summary, pending proposals, and
+recent audit; app-key creation and revocation are low-frequency fallback
+actions. The raw token and minimal Core environment variables are displayed
+only on the creation result screen. Productized OpenClaw setup, agent rules,
+handoff text, and local TLS client configuration belong in Magick AI Adapter,
+not Core.
 
 If a token is exposed, administrators should disable that app key from the same
 screen and create a replacement. Disabled keys are stored as `revoked` and must

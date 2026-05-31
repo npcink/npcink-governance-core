@@ -1,5 +1,23 @@
 # Session Breadcrumb
 
+## 2026-05-31 — Core admin surface simplified for Adapter ownership
+
+- **Module**: Core WordPress admin governance surface
+- **Status**: The Tools page is now optimized as a governance fallback instead
+  of an OpenClaw setup or adapter onboarding screen.
+- **Completed**:
+  - Kept default view focused on governance summary, pending proposals, and
+    recent governance audit.
+  - Folded Core App Keys into an advanced disclosure and removed the default
+    env-template display from the main page.
+  - Folded detailed audit filters into an advanced disclosure.
+  - Changed proposal detail to show review context first and keep raw
+    caller/input/preview JSON behind a disclosure.
+- **Boundary**:
+  - Core still owns governance approval, app-key fallback management, and audit
+    evidence. Magick AI Adapter owns productized OpenClaw setup, client
+    handoff, and everyday approve-and-execute UX.
+
 ## 2026-05-31 — Trusted Adapter approval handoff clarified
 
 - **Module**: Core app auth / Adapter approve-and-execute support

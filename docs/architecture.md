@@ -18,7 +18,7 @@ Status: MVP architecture.
 | `App_Authenticator` | WordPress admin or scoped app-key REST authorization. |
 | `Request_Context` | Request-scoped app attribution for proposals and audit events. |
 | REST controllers | Minimal admin-facing REST API. |
-| `Admin_Page` | Minimal WordPress Tools screen for pending proposal review, capability summary, audit timeline, and decisions. |
+| `Admin_Page` | Minimal WordPress Tools screen for governance summary, pending proposal review, review context, audit timeline, recent audit, and advanced app-key management. |
 
 ## Data Tables
 

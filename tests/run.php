@@ -239,7 +239,8 @@ foreach (
 		'proposal audit timelines',
 		'audit filters',
 		'scope_decision',
-		'Core Governance Audit',
+		'Recent Governance Audit',
+		'Advanced Core App Keys',
 		'AI Request Logs remain owned by the',
 		'`proposal_id` or `correlation_id`',
 		'correlation_id',
@@ -730,14 +731,15 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core
 magick_ai_core_assert( false !== strpos( $admin_page, 'check_admin_referer' ), 'Admin proposal actions enforce nonce.' );
 magick_ai_core_assert( false !== strpos( $admin_page, "current_user_can( 'manage_options' )" ), 'Admin proposal actions enforce capability.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Core App Keys' ), 'Admin page exposes Core app-key management section.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'Core Governance Audit' ), 'Admin page exposes governance audit section.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Advanced: Core App Keys' ), 'Admin page folds app-key management into an advanced disclosure.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Recent Governance Audit' ), 'Admin page exposes recent governance audit section.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Advanced audit filters' ), 'Admin page folds detailed audit filters into an advanced disclosure.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'audit_filters_from_request' ), 'Admin page reads governance audit filters.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'audit_proposal_id' ), 'Admin page exposes proposal audit filter.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'audit_correlation_id' ), 'Admin page exposes correlation audit filter.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'AI Request Logs remain separate' ), 'Admin page separates Core audit from AI Request Logs.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'Adapter setup' ), 'Admin page points product setup to Adapter without hosting onboarding.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'Configure OpenClaw and other productized clients in Magick AI Adapter' ), 'Admin page avoids presenting Core as the OpenClaw product entry point.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'Environment template' ), 'Admin page exposes only a minimal Core env template.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Productized OpenClaw setup belongs in Magick AI Adapter' ), 'Admin page avoids presenting Core as the OpenClaw product entry point.' );
+magick_ai_core_assert( false === strpos( $admin_page, 'Environment template' ), 'Admin default page no longer exposes an env template.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Create Core App Key' ), 'Admin page labels key creation as Core credential management.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Adapter Client' ), 'Admin page defaults app label to a generic adapter client.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'product_adapter' ), 'Admin page defaults caller type to product_adapter.' );
@@ -763,7 +765,8 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'default_scopes' ), 'Admin
 magick_ai_core_assert( false !== strpos( $admin_page, 'App_Key_Repository::DEFAULT_RATE_LIMIT' ), 'Admin page exposes bounded rate policy inputs.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'app.revoked' ), 'Admin page audits app-key revocation.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'button-link-delete' ), 'Admin page exposes a key disable action.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'Capability Summary' ), 'Admin proposal detail renders capability summary.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Review Context' ), 'Admin proposal detail renders summary-first review context.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Raw proposal payload' ), 'Admin proposal detail folds raw JSON payload behind a disclosure.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Audit Timeline' ), 'Admin proposal detail renders audit timeline.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'scope_decision' ), 'Admin proposal detail shows scope decision attribution.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'correlation_id' ), 'Admin proposal detail shows correlation id attribution.' );

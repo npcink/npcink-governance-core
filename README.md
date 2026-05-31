@@ -120,19 +120,20 @@ workflow runtime.
 Real AI provider request logs remain owned by the WordPress `ai` plugin.
 Magick AI Adapter should carry Core `proposal_id` and commit-preflight
 `correlation_id` into provider request log context so operators can correlate
-Core Governance Audit with AI Request Logs. See
+Recent Governance Audit with AI Request Logs. See
 [AI Provider Log Correlation](docs/ai-provider-log-correlation.md). Core does
 not store prompts, responses, token metrics, provider credentials, or provider
 request logs.
 
-For Core governance credentials, WordPress administrators can open
-`Tools -> Magick AI Core -> Core App Keys` to create a scoped one-time app
-token and disable leaked or obsolete keys. This screen is not an OpenClaw
-onboarding surface. Productized OpenClaw setup, local TLS client configuration,
-agent rules, and handoff instructions belong in Magick AI Adapter. Core only
-issues governance app keys and records approvals, preflight, rate limits, and
-audit attribution. The token is shown once and should be stored only in a
-trusted Adapter or internal governance client secret store.
+For Core governance credentials, WordPress administrators can open the
+advanced `Core App Keys` disclosure under `Tools -> Magick AI Core` to create a
+scoped one-time app token and disable leaked or obsolete keys. This screen is a
+governance fallback, not an OpenClaw onboarding surface. Productized OpenClaw
+setup, local TLS client configuration, agent rules, and handoff instructions
+belong in Magick AI Adapter. Core only issues governance app keys and records
+approvals, preflight, rate limits, and audit attribution. The token is shown
+once and should be stored only in a trusted Adapter or internal governance
+client secret store.
 
 Productized OpenClaw acceptance should be run from Magick AI Adapter's
 `docs/openclaw-consumer-acceptance.md`. Core participates as the governance
