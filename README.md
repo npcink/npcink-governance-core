@@ -29,8 +29,8 @@ This plugin does not own:
 
 ## Requirements
 
-- WordPress 6.9+ with WordPress Abilities API available for full ability intake.
-- PHP 7.4+.
+- WordPress 7.0+ with WordPress Abilities API available for full ability intake.
+- PHP 8.0+.
 
 ## MVP REST Surface
 
@@ -71,6 +71,8 @@ Read the project handoff docs before starting a new implementation session:
 - [AI Provider Log Correlation](docs/ai-provider-log-correlation.md)
 - [Core Governance Handoff Validation](docs/core-governance-handoff-validation.md)
 - [Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md)
+- [Platform Baseline](docs/platform-baseline.md)
+- [Admin Menu Standard](docs/admin-menu-standard.md)
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
 - [Plan To Proposal Governance](docs/plan-to-proposal-governance.md)
 - [Create Draft Governance Scenario](docs/create-draft-governance-scenario.md)

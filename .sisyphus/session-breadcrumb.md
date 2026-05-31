@@ -1,5 +1,25 @@
 # Session Breadcrumb
 
+## 2026-05-31 — Shared platform baseline raised
+
+- **Module**: Cross-plugin release/runtime metadata
+- **Status**: Core, Abilities, Adapter, and Cloud Addon now share a WordPress
+  7.0 / PHP 8.0 minimum runtime baseline.
+- **Completed**:
+  - Added `docs/platform-baseline.md` as the local standard for WordPress and
+    PHP minimum requirements across the four plugins.
+  - Updated Core plugin header, Composer PHP constraint, `README.md`,
+    `readme.txt`, and static contracts.
+  - Updated Abilities plugin header, Composer PHP constraint, `README.md`,
+    `readme.txt`, demo plugin header, and static contracts.
+  - Updated Adapter plugin header, Composer PHP constraint, `readme.txt`,
+    OpenClaw contract docs, and static contracts.
+  - Updated Cloud Addon plugin header and `readme.txt`.
+- **Boundary**:
+  - This is release/runtime metadata only. It does not change Core governance,
+    Abilities definitions, Adapter channel behavior, Cloud Addon connector
+    scope, REST surfaces, approval policy, or write execution ownership.
+
 ## 2026-05-31 — Shared Magick AI admin menu standardized
 
 - **Module**: Cross-plugin WordPress admin navigation

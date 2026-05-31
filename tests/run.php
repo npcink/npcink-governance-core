@@ -90,14 +90,19 @@ foreach (
 	array(
 		'=== Magick AI Core ===',
 		'Stable tag: 0.1.0',
-		'Requires at least: 6.9',
+		'Requires at least: 7.0',
 		'Tested up to: 7.0',
-		'Requires PHP: 7.4',
+		'Requires PHP: 8.0',
 		'License: GPLv2 or later',
 		'== Description ==',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $wp_readme, $required ), 'WordPress readme contains required phrase: ' . $required );
+}
+
+$platform_baseline = magick_ai_core_read( $root . '/docs/platform-baseline.md' );
+foreach ( array( 'WordPress minimum: `7.0`', 'PHP minimum: `8.0`', '`magick-ai-cloud-addon`' ) as $required ) {
+	magick_ai_core_assert( false !== strpos( $platform_baseline, $required ), 'Platform baseline documents required phrase: ' . $required );
 }
 
 $distignore = magick_ai_core_read( $root . '/.distignore' );
