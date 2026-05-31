@@ -966,6 +966,13 @@ $media_delete_plan       = magick_ai_core_smoke_run_plan_ability( 'magick-ai/bui
 $media_delete_blocked    = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-media-inventory-fix-plan', $media_delete_plan, array( 'include_delete_candidates' => false ) );
 magick_ai_core_smoke_assert( 0 === (int) ( $media_delete_blocked['proposal_count'] ?? -1 ), 'explicit media delete plan is blocked without matching include_delete_candidates input' );
 magick_ai_core_smoke_assert( 'destructive_media_delete_not_explicitly_included' === (string) ( $media_delete_blocked['blocked_items'][0]['block_code'] ?? '' ), 'blocked media delete records destructive guard reason' );
+$media_delete_plan_tampered = $media_delete_plan;
+if ( is_array( $media_delete_plan_tampered['data'] ?? null ) ) {
+	$media_delete_plan_tampered['data']['include_delete_candidates'] = true;
+}
+$media_delete_tampered = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-media-inventory-fix-plan', $media_delete_plan_tampered, array() );
+magick_ai_core_smoke_assert( 0 === (int) ( $media_delete_tampered['proposal_count'] ?? -1 ), 'tampered media delete plan flag does not bypass plan_input destructive guard' );
+magick_ai_core_smoke_assert( 'destructive_media_delete_not_explicitly_included' === (string) ( $media_delete_tampered['blocked_items'][0]['block_code'] ?? '' ), 'tampered media delete plan is blocked by destructive guard' );
 $media_delete_allowed = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-media-inventory-fix-plan', $media_delete_plan, $media_delete_plan_input );
 magick_ai_core_smoke_assert( (int) ( $media_delete_allowed['proposal_count'] ?? 0 ) >= 1, 'explicit media delete plan can generate a high-risk Core proposal' );
 $media_delete_proposal = is_array( $media_delete_allowed['proposals'][0] ?? null ) ? $media_delete_allowed['proposals'][0] : array();
@@ -1027,6 +1034,19 @@ $requires_input_preflight = magick_ai_core_smoke_rest_result( 'POST', '/magick-a
 magick_ai_core_smoke_assert( 409 === (int) $requires_input_preflight['status'], 'requires-input proposal cannot enter committable state' );
 magick_ai_core_smoke_assert( false === (bool) ( $requires_input_preflight['data']['data']['proposal_item_preflight']['executable'] ?? true ), 'requires-input preflight marks proposal item blocked' );
 magick_ai_core_smoke_assert( array( 'title' ) === (array) ( $requires_input_preflight['data']['data']['proposal_item_preflight']['needs_input'] ?? array() ), 'requires-input preflight reports fields needing human input' );
+
+$unsafe_action_plan = $requires_input_plan;
+$unsafe_action_plan['data']['write_actions'][0]['requires_approval'] = false;
+$unsafe_action_plan['data']['write_actions'][0]['commit_execution'] = true;
+$unsafe_action_result = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-content-inventory-fix-plan', $unsafe_action_plan, array() );
+magick_ai_core_smoke_assert( 0 === (int) ( $unsafe_action_result['proposal_count'] ?? -1 ), 'unsafe write action is blocked before proposal creation' );
+magick_ai_core_smoke_assert( 'action_requires_approval_missing' === (string) ( $unsafe_action_result['blocked_items'][0]['block_code'] ?? '' ), 'unsafe write action records missing action approval guard' );
+$executed_action_plan = $requires_input_plan;
+$executed_action_plan['data']['write_actions'][0]['requires_approval'] = true;
+$executed_action_plan['data']['write_actions'][0]['commit_execution'] = true;
+$executed_action_result = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-content-inventory-fix-plan', $executed_action_plan, array() );
+magick_ai_core_smoke_assert( 0 === (int) ( $executed_action_result['proposal_count'] ?? -1 ), 'already-executed write action is blocked before proposal creation' );
+magick_ai_core_smoke_assert( 'action_commit_execution_rejected' === (string) ( $executed_action_result['blocked_items'][0]['block_code'] ?? '' ), 'already-executed write action records commit execution guard' );
 
 $app_created = magick_ai_core_smoke_rest_as_app(
 	'POST',

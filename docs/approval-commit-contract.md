@@ -87,3 +87,10 @@ committable. For example, a missing title action may target
 proposal as pending review, but commit preflight returns
 `magick_ai_core_proposal_items_blocked` until the host creates a later complete
 proposal with the missing input resolved.
+
+Each plan action must also preserve the action-level safety contract. Core
+rejects an action before proposal creation when it does not declare
+`requires_approval=true` or when it claims `commit_execution=true`.
+Permanent media deletion may only enter generated proposals when the host
+request's `plan_input.include_delete_candidates` is true; a same-named flag
+inside the plan output is not trusted for that destructive gate.

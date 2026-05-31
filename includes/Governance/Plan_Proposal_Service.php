@@ -307,6 +307,14 @@ final class Plan_Proposal_Service {
 			return $this->blocked_error( 'missing_target_ability', 'Write action target_ability_id is missing or invalid.' );
 		}
 
+		if ( true !== (bool) ( $action['requires_approval'] ?? false ) ) {
+			return $this->blocked_error( 'action_requires_approval_missing', 'Write action must require approval before proposal intake.', array( 'action_id' => $action_id ) );
+		}
+
+		if ( false !== (bool) ( $action['commit_execution'] ?? true ) ) {
+			return $this->blocked_error( 'action_commit_execution_rejected', 'Write action must not claim commit execution already happened.', array( 'action_id' => $action_id ) );
+		}
+
 		$target = $this->abilities->find( $target_ability_id );
 		if ( null === $target ) {
 			return $this->blocked_error( 'target_ability_unavailable', 'Write action target ability is not currently discoverable.', array( 'target_ability_id' => $target_ability_id ) );
@@ -450,11 +458,7 @@ final class Plan_Proposal_Service {
 	 * @return bool
 	 */
 	private function include_delete_candidates( array $plan, array $plan_input ): bool {
-		if ( true === (bool) ( $plan_input['include_delete_candidates'] ?? false ) ) {
-			return true;
-		}
-
-		return true === (bool) ( $plan['include_delete_candidates'] ?? false );
+		return true === (bool) ( $plan_input['include_delete_candidates'] ?? false );
 	}
 
 	/**

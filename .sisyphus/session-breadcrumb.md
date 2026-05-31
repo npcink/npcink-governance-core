@@ -1,5 +1,23 @@
 # Session Breadcrumb
 
+## 2026-05-31 — Plan-to-proposal destructive gate hardened
+
+- **Module**: Core governance intake / plan action safety
+- **Status**: Plan-to-proposal intake now validates action-level approval and
+  execution flags before creating proposals.
+- **Completed**:
+  - Rejects plan `write_action` rows that do not declare
+    `requires_approval=true`.
+  - Rejects plan `write_action` rows that claim `commit_execution=true`.
+  - Trusts only request `plan_input.include_delete_candidates=true` for
+    permanent media delete proposal creation; a flag embedded in the plan
+    payload does not open the destructive gate.
+  - Added smoke coverage and documentation for those safety checks.
+- **Boundary**:
+  - Core still creates governance proposals only. It does not execute plans,
+    write abilities, destructive media deletion, workflow runtime, MCP runtime,
+    or final commits.
+
 ## 2026-05-30 — Plan-to-proposal governance bridge added
 
 - **Module**: Core governance intake / planning ability bridge

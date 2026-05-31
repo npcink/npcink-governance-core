@@ -96,9 +96,9 @@ forces stored proposal inputs back to `dry_run=true` and `commit=false`.
 context for human review.
 
 Permanent media deletion is excluded from generated proposals unless the host
-explicitly submits `include_delete_candidates=true` with the plan input. Even
-then, the generated proposal remains high risk, pending approval, and subject
-to commit preflight.
+explicitly submits `include_delete_candidates=true` with the plan input. The
+plan payload itself is not trusted to open that gate. Even then, the generated
+proposal remains high risk, pending approval, and subject to commit preflight.
 
 ## Legacy Confirmation Ban
 
