@@ -73,6 +73,7 @@ foreach (
 	array(
 		'WordPress AI operation governance layer',
 		'It does not generate content',
+		'Current Stage Governance Reliability',
 		'GET /wp-json/magick-ai-core/v1/capabilities',
 		'POST /wp-json/magick-ai-core/v1/apps',
 		'POST /wp-json/magick-ai-core/v1/proposals',
@@ -657,6 +658,8 @@ magick_ai_core_assert( false !== strpos( $ability_intake, 'Taxonomy Terms Previe
 
 $testing_strategy = magick_ai_core_read( $root . '/docs/testing-strategy.md' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'agent-workflow-replay.json' ), 'Testing strategy records shared replay fixture smoke coverage.' );
+magick_ai_core_assert( false !== strpos( $testing_strategy, 'composer test:fail-closed' ), 'Testing strategy documents fail-closed fault injection command.' );
+magick_ai_core_assert( false !== strpos( $testing_strategy, 'tests/fail-closed.php' ), 'Testing strategy points to the fail-closed fault injection test.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'primary `magick-ai/create-draft` governance scenario' ), 'Testing strategy records primary create-draft scenario coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'second `magick-ai/set-post-seo-meta` governance scenario' ), 'Testing strategy records second set-post-seo-meta scenario coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'third `magick-ai/approve-comment` governance scenario' ), 'Testing strategy records third approve-comment scenario coverage.' );
@@ -665,6 +668,47 @@ magick_ai_core_assert( false !== strpos( $testing_strategy, 'proposal `audit_tim
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'commit-preflight `correlation_id`' ), 'Testing strategy records preflight correlation smoke coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'trusted Adapter approval coverage' ), 'Testing strategy records trusted Adapter approval smoke coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'Fail-closed governance paths' ), 'Testing strategy records fail-closed governance path coverage.' );
+
+$reliability_standard = magick_ai_core_read( $root . '/docs/current-stage-governance-reliability.md' );
+foreach (
+	array(
+		'Core is the WordPress AI operation governance layer',
+		'Core does not own final execution',
+		'app-key rotation and expiry automation are deferred',
+		'Adapter or another real external client',
+		'Governance must fail closed',
+		'magick_ai_core_proposal_audit_failed',
+		'magick_ai_core_proposal_decision_audit_failed',
+		'magick_ai_core_app_audit_failed',
+		'do not return the one-time token',
+		'The fault-injection gate must cover both the returned error code and the local',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $reliability_standard, $required ), 'Reliability standard contains required text: ' . $required );
+}
+
+$composer_json = magick_ai_core_read( $root . '/composer.json' );
+foreach ( array( 'test:contracts', 'test:fail-closed', 'tests/fail-closed.php' ) as $required ) {
+	magick_ai_core_assert( false !== strpos( $composer_json, $required ), 'Composer scripts include required test command: ' . $required );
+}
+
+$fail_closed_test = magick_ai_core_read( $root . '/tests/fail-closed.php' );
+foreach (
+	array(
+		'Magick_AI_Core_Fail_Closed_WPDB',
+		'fail_insert_tables',
+		'magick_ai_core_proposal_insert_failed',
+		'magick_ai_core_proposal_audit_failed',
+		'magick_ai_core_proposal_decision_audit_failed',
+		'magick_ai_core_app_insert_failed',
+		'magick_ai_core_app_audit_failed',
+		'Unaudited proposal creation is deleted.',
+		'rolls status back to pending',
+		'App creation audit failure revokes the new key.',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $fail_closed_test, $required ), 'Fail-closed fault test contains required behavior: ' . $required );
+}
 
 $development_workflow = magick_ai_core_read( $root . '/docs/development-workflow.md' );
 magick_ai_core_assert( false !== strpos( $development_workflow, 'does not depend on the abandoned legacy Magick AI' ), 'Development workflow rejects the abandoned legacy Magick AI dependency.' );

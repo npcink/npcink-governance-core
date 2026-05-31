@@ -40,7 +40,9 @@ Implemented:
 Not implemented:
 
 - final commit execution;
-- app-key rotation and expiry automation;
+- app-key rotation and expiry automation, which stays deferred until Adapter or
+  another real external client needs long-lived credential lifecycle
+  management;
 
 Documented but not implemented:
 
@@ -58,6 +60,11 @@ WordPress execution outside Core for the current stage:
 - any future Core execution route requires a new accepted ADR covering
   idempotency, retry, partial failure, rollback, audit, redaction, and
   destructive action rules.
+
+The current-stage reliability baseline is documented in
+[Current Stage Governance Reliability](current-stage-governance-reliability.md).
+The next implementation priority is fail-closed governance behavior, not
+app-key rotation or expiry automation.
 
 ## Strategic Product Boundary
 

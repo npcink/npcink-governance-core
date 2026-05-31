@@ -9,8 +9,9 @@ Magick AI Core starts with a small but strict test pyramid.
 | Layer | Command | Purpose |
 | --- | --- | --- |
 | PHP syntax lint | `composer lint:php` | Prevent parse errors in plugin PHP files. |
-| Static contracts | `composer test` | Freeze product boundary, REST routes, public lifecycle, and forbidden legacy terms. |
-| Full local suite | `composer test:all` | Run lint and static contracts together. |
+| Static contracts | `composer test:contracts` | Freeze product boundary, REST routes, public lifecycle, and forbidden legacy terms. |
+| Fail-closed fault injection | `composer test:fail-closed` | Inject database and audit persistence failures against Core classes and assert rollback or cleanup. |
+| Full local suite | `composer test:all` | Run lint, static contracts, and fault injection together. |
 | Real WordPress smoke | `composer smoke:wp` | Prove activation, schema creation, REST behavior, and `magick-ai-abilities` integration. |
 | Plugin Check release scan | `wp plugin check magick-ai-core --ignore-warnings` | Catch WordPress.org packaging and runtime security blockers before release. |
 
@@ -29,6 +30,26 @@ Use them to assert:
 
 Do not use static contracts to test implementation details that may legitimately
 change.
+
+## Fail-Closed Fault Injection Rules
+
+Fail-closed fault injection lives in `tests/fail-closed.php`.
+
+Use it for governance persistence paths where returning success without durable
+evidence would be unsafe:
+
+- proposal and app-key row insert failures return stable `WP_Error` codes;
+- proposal creation deletes the unaudited row when `proposal.created` audit
+  cannot be written;
+- approval and rejection roll back to the previous proposal status when
+  decision audit cannot be written;
+- app-key creation revokes the newly created key and withholds the one-time
+  token when `app.created` audit cannot be written.
+
+The test should inject failures through a fake `$wpdb` while still exercising
+the real repository, service, and REST controller classes. Source-code string
+checks belong in static contracts; cleanup and rollback behavior belongs in
+fault injection.
 
 ## WordPress Smoke Rules
 

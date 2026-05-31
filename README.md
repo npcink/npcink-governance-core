@@ -70,6 +70,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Core Governance Operability](docs/core-governance-operability.md)
 - [AI Provider Log Correlation](docs/ai-provider-log-correlation.md)
 - [Core Governance Handoff Validation](docs/core-governance-handoff-validation.md)
+- [Current Stage Governance Reliability](docs/current-stage-governance-reliability.md)
 - [Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md)
 - [Platform Baseline](docs/platform-baseline.md)
 - [Admin Menu Standard](docs/admin-menu-standard.md)
@@ -149,6 +150,18 @@ Run the local static test suite:
 
 ```bash
 composer test
+```
+
+Run the static contract gate only:
+
+```bash
+composer test:contracts
+```
+
+Run fail-closed fault injection:
+
+```bash
+composer test:fail-closed
 ```
 
 Run PHP syntax linting:

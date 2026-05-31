@@ -78,15 +78,15 @@ Commit preflight returns an execution handoff object for Adapter:
 
 ```php
 array(
-	'executor'           => 'adapter_after_core_preflight',
-		'execution_surface' => 'wp_abilities_rest',
-		'ability_id'        => '<target ability id>',
-		'proposal_id'       => '<core proposal id>',
-		'correlation_id'    => '<preflight correlation id>',
-		'approved_input_hash' => '<sha256>',
-		'policy_version'    => 'core-preflight-v1',
-		'core_proxy_execute' => false,
-		'commit_execution'  => false,
+	'executor'            => 'adapter_after_core_preflight',
+	'execution_surface'   => 'wp_abilities_rest',
+	'ability_id'          => '<target ability id>',
+	'proposal_id'         => '<core proposal id>',
+	'correlation_id'      => '<preflight correlation id>',
+	'approved_input_hash' => '<sha256>',
+	'policy_version'      => 'core-preflight-v1',
+	'core_proxy_execute'  => false,
+	'commit_execution'    => false,
 )
 ```
 

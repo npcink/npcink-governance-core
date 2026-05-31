@@ -1,5 +1,35 @@
 # Session Breadcrumb
 
+## 2026-06-01 — Core fail-closed fault injection documented and gated
+
+- **Module**: Core governance reliability documentation and test gates.
+- **Status**: Current-stage reliability rules are consolidated in a dedicated
+  standard, and fail-closed governance persistence now has a standalone
+  fault-injection gate wired into `composer test:all`.
+- **Completed**:
+  - Added the current-stage governance reliability standard covering Core's
+    governance-only boundary, app-key scope, deferred rotation/expiry, commit
+    preflight binding, and fail-closed rules.
+  - Added `tests/fail-closed.php` with an injectable in-memory `$wpdb` that
+    exercises real proposal, audit, app-key, and Apps REST classes.
+  - Covered proposal insert failure, unaudited proposal creation cleanup,
+    approve/reject audit rollback, app-key insert failure, and app creation
+    audit failure revocation with stable error-code assertions.
+  - Split Composer scripts into `test:contracts` and `test:fail-closed`, with
+    `test` and `test:all` running both.
+  - Updated README, testing strategy, next-stage plan, and approval handoff
+    sample formatting to match the new gate.
+- **Verification**:
+  - `composer test:all`
+  - `composer smoke:wp`
+  - `composer validate --no-check-publish`
+  - `git diff --check`
+- **Boundary**:
+  - This adds documentation and tests only. It does not add app-key rotation or
+    expiry automation, final execution, `/execute`, `/proxy-execute`, workflow
+    runtime, queue, MCP runtime, provider credential storage, cloud control
+    plane, or product UX to Core.
+
 ## 2026-06-01 — Core governance fail-closed contract hardened
 
 - **Module**: Core WordPress governance contract, REST/app-key/proposal
