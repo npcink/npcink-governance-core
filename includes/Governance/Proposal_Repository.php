@@ -105,14 +105,16 @@ final class Proposal_Repository {
 	/**
 	 * Lists recent proposals.
 	 *
-	 * @param int $limit Maximum rows.
+	 * @param int    $limit Maximum rows.
 	 * @param string $status Optional status filter.
+	 * @param int    $offset Rows to skip.
 	 * @return array<int,array<string,mixed>>
 	 */
-	public function list_recent( int $limit = 50, string $status = '' ): array {
+	public function list_recent( int $limit = 50, string $status = '', int $offset = 0 ): array {
 		global $wpdb;
 
-		$limit = max( 1, min( 200, $limit ) );
+		$limit  = max( 1, min( 200, $limit ) );
+		$offset = max( 0, $offset );
 		$status = sanitize_key( $status );
 		$sql    = 'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name();
 		$args   = array();
@@ -122,8 +124,9 @@ final class Proposal_Repository {
 			$args[] = $status;
 		}
 
-		$sql   .= ' ORDER BY id DESC LIMIT %d';
+		$sql   .= ' ORDER BY id DESC LIMIT %d OFFSET %d';
 		$args[] = $limit;
+		$args[] = $offset;
 
 		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL is assembled from fixed clauses and placeholder values; table name is generated from the WordPress table prefix.
 		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $args ), ARRAY_A );
@@ -137,9 +140,10 @@ final class Proposal_Repository {
 	 *
 	 * @param array<int,string> $statuses Status filters.
 	 * @param int               $limit Maximum rows.
+	 * @param int               $offset Rows to skip.
 	 * @return array<int,array<string,mixed>>
 	 */
-	public function list_by_statuses( array $statuses, int $limit = 50 ): array {
+	public function list_by_statuses( array $statuses, int $limit = 50, int $offset = 0 ): array {
 		global $wpdb;
 
 		$statuses = $this->sanitize_statuses( $statuses );
@@ -148,14 +152,16 @@ final class Proposal_Repository {
 		}
 
 		$limit        = max( 1, min( 200, $limit ) );
+		$offset       = max( 0, $offset );
 		$placeholders = implode( ', ', array_fill( 0, count( $statuses ), '%s' ) );
 		$args         = $statuses;
 		$args[]       = $limit;
+		$args[]       = $offset;
 
 		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL uses fixed clauses, generated placeholders, and a table name from the WordPress prefix.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name() . ' WHERE status IN (' . $placeholders . ') ORDER BY id DESC LIMIT %d',
+				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name() . ' WHERE status IN (' . $placeholders . ') ORDER BY id DESC LIMIT %d OFFSET %d',
 				$args
 			),
 			ARRAY_A

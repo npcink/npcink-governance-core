@@ -89,11 +89,12 @@ WordPress `ai` plugin; operators should correlate the two systems with
 
 ### Core App Keys
 
-The default review workbench links to a dedicated `Core App Keys` view for
-app-key creation and key disable actions. This preserves the Core credential
-fallback without turning the default governance page into an OpenClaw onboarding
-or adapter configuration screen. Productized OpenClaw connection copy, TLS
-switches, and handoff instructions remain Adapter-owned.
+The default review workbench keeps Core app-key management behind a collapsed
+`Advanced Access` disclosure. The advanced access page handles app-key creation
+and paginated key disable actions. This preserves the Core credential fallback
+without turning Core's first-level tabs into OpenClaw onboarding or adapter
+configuration. Productized OpenClaw connection copy, TLS switches, and handoff
+instructions remain Adapter-owned.
 
 For real AI provider requests, Adapter should inject Core `proposal_id` and
 commit-preflight `correlation_id` into the `ai` plugin request log context.

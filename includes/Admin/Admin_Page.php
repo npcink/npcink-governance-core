@@ -21,9 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Renders a compact governance overview.
  */
 final class Admin_Page {
-	const PARENT_MENU_SLUG = 'magick-ai';
-	const MENU_SLUG        = 'magick-ai-core';
-	const MENU_CAPABILITY  = 'manage_options';
+	const PARENT_MENU_SLUG  = 'magick-ai';
+	const MENU_SLUG         = 'magick-ai-core';
+	const MENU_CAPABILITY   = 'manage_options';
+	const REVIEW_PAGE_SIZE  = 20;
+	const ARCHIVE_PAGE_SIZE = 20;
+	const AUDIT_PAGE_SIZE   = 25;
+	const APP_KEY_PAGE_SIZE = 10;
 
 	/**
 	 * Ability adapter.
@@ -242,8 +246,10 @@ final class Admin_Page {
 		$this->service->expire_stale_pending();
 
 		$summary        = $this->abilities->summary();
-		$pending        = $this->proposals->list_recent( 20, Proposal_Repository::STATUS_PENDING );
+		$review_page    = $this->page_from_request( 'review_page' );
 		$pending_count  = $this->proposals->count_by_status( Proposal_Repository::STATUS_PENDING );
+		$review_page    = $this->bounded_page( $pending_count, $review_page, self::REVIEW_PAGE_SIZE );
+		$pending        = $this->proposals->list_recent( self::REVIEW_PAGE_SIZE, Proposal_Repository::STATUS_PENDING, $this->offset_for_page( $review_page, self::REVIEW_PAGE_SIZE ) );
 		$expired_count  = $this->proposals->count_by_status( Proposal_Repository::STATUS_EXPIRED );
 		$archived_count = $this->proposals->count_by_status( Proposal_Repository::STATUS_ARCHIVED );
 		$selected_id    = isset( $_GET['proposal_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['proposal_id'] ) ) : '';
@@ -275,20 +281,22 @@ final class Admin_Page {
 					<p><?php echo esc_html__( 'Selected proposal was not found.', 'magick-ai-core' ); ?></p>
 				</div>
 				<?php $this->render_admin_tabs( 'review' ); ?>
-				<?php $this->render_review_workbench( $summary, $pending_count, $expired_count, $archived_count, $pending ); ?>
+				<?php $this->render_review_workbench( $summary, $pending_count, $expired_count, $archived_count, $pending, $review_page ); ?>
 			<?php elseif ( 'audit' === $view ) : ?>
 				<?php $audit_filters = $this->audit_filters_from_request(); ?>
+				<?php $audit_total = $this->audit->count_filtered( $audit_filters ); ?>
+				<?php $audit_filters = $this->bounded_audit_filters( $audit_filters, $audit_total ); ?>
 				<?php $this->render_admin_tabs( 'audit' ); ?>
-				<?php $this->render_governance_audit( $this->audit->list_filtered( $audit_filters ), $audit_filters ); ?>
+				<?php $this->render_governance_audit( $this->audit->list_filtered( $audit_filters ), $audit_filters, $audit_total ); ?>
 			<?php elseif ( 'archive' === $view ) : ?>
 				<?php $this->render_admin_tabs( 'archive' ); ?>
 				<?php $this->render_archive_view(); ?>
 			<?php elseif ( 'app-keys' === $view ) : ?>
-				<?php $this->render_admin_tabs( 'app-keys' ); ?>
+				<?php $this->render_admin_tabs( '' ); ?>
 				<?php $this->render_external_access(); ?>
 			<?php else : ?>
 				<?php $this->render_admin_tabs( 'review' ); ?>
-				<?php $this->render_review_workbench( $summary, $pending_count, $expired_count, $archived_count, $pending ); ?>
+				<?php $this->render_review_workbench( $summary, $pending_count, $expired_count, $archived_count, $pending, $review_page ); ?>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -314,10 +322,6 @@ final class Admin_Page {
 				'label' => __( 'Expired / Archived', 'magick-ai-core' ),
 				'url'   => $this->view_url( 'archive' ),
 			),
-			'app-keys' => array(
-				'label' => __( 'Core App Keys', 'magick-ai-core' ),
-				'url'   => $this->view_url( 'app-keys' ),
-			),
 		);
 		?>
 		<nav class="nav-tab-wrapper" aria-label="<?php echo esc_attr__( 'Core admin sections', 'magick-ai-core' ); ?>" style="margin-bottom: 16px;">
@@ -338,13 +342,15 @@ final class Admin_Page {
 	 * @param int                            $expired_count Expired proposal count.
 	 * @param int                            $archived_count Archived proposal count.
 	 * @param array<int,array<string,mixed>> $pending Pending proposals.
+	 * @param int                            $page Current review page.
 	 * @return void
 	 */
-	private function render_review_workbench( array $summary, int $pending_count, int $expired_count, int $archived_count, array $pending ): void {
+	private function render_review_workbench( array $summary, int $pending_count, int $expired_count, int $archived_count, array $pending, int $page ): void {
 		?>
 		<?php $this->render_summary_strip( $summary, $pending_count, $expired_count, $archived_count ); ?>
-		<?php $this->render_pending_proposals( $pending ); ?>
+		<?php $this->render_pending_proposals( $pending, $pending_count, $page ); ?>
 		<?php $this->render_recent_activity(); ?>
+		<?php $this->render_advanced_access_entry(); ?>
 		<?php
 	}
 
@@ -404,11 +410,14 @@ final class Admin_Page {
 	 * Renders the default review queue.
 	 *
 	 * @param array<int,array<string,mixed>> $pending Pending proposals.
+	 * @param int                            $total Total matching proposals.
+	 * @param int                            $page Current review page.
 	 * @return void
 	 */
-	private function render_pending_proposals( array $pending ): void {
+	private function render_pending_proposals( array $pending, int $total, int $page ): void {
 		?>
 		<h2><?php echo esc_html__( 'Needs Review', 'magick-ai-core' ); ?></h2>
+		<p><?php echo esc_html( $this->pagination_summary( $total, $page, self::REVIEW_PAGE_SIZE ) ); ?></p>
 		<table class="widefat striped" style="max-width: 1100px;">
 			<thead>
 				<tr>
@@ -439,6 +448,7 @@ final class Admin_Page {
 				<?php endforeach; ?>
 			</tbody>
 		</table>
+		<?php $this->render_pagination( $total, $page, self::REVIEW_PAGE_SIZE, 'review_page', array() ); ?>
 		<?php
 	}
 
@@ -479,7 +489,7 @@ final class Admin_Page {
 								<?php if ( '' !== $proposal_id ) : ?>
 									<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
 								<?php else : ?>
-									<span aria-hidden="true">-</span>
+									<?php echo esc_html__( 'System', 'magick-ai-core' ); ?>
 								<?php endif; ?>
 							</td>
 							<td><?php echo esc_html( (string) $event['actor_id'] ); ?></td>
@@ -488,6 +498,40 @@ final class Admin_Page {
 				</tbody>
 			</table>
 			<p><a href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Open full audit', 'magick-ai-core' ); ?></a></p>
+		</details>
+		<?php
+	}
+
+	/**
+	 * Renders the low-frequency external access entry.
+	 *
+	 * @return void
+	 */
+	private function render_advanced_access_entry(): void {
+		$active_count = $this->apps->count( 'active' );
+		$last_used    = $this->apps->latest_last_used_at();
+		?>
+		<details style="max-width: 1100px; margin-top: 16px;">
+			<summary style="cursor: pointer;">
+				<strong><?php echo esc_html__( 'Advanced Access', 'magick-ai-core' ); ?></strong>
+				<span style="color: #646970;"><?php echo esc_html__( 'Core app keys for trusted governance clients.', 'magick-ai-core' ); ?></span>
+			</summary>
+			<table class="widefat striped" style="margin-top: 8px;">
+				<tbody>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'Active app keys', 'magick-ai-core' ); ?></th>
+						<td><?php echo esc_html( (string) $active_count ); ?></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'Last used', 'magick-ai-core' ); ?></th>
+						<td><?php echo esc_html( '' !== $last_used ? $last_used : __( 'Never', 'magick-ai-core' ) ); ?></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'Action', 'magick-ai-core' ); ?></th>
+						<td><a class="button" href="<?php echo esc_url( $this->view_url( 'app-keys' ) ); ?>"><?php echo esc_html__( 'Manage Core app keys', 'magick-ai-core' ); ?></a></td>
+					</tr>
+				</tbody>
+			</table>
 		</details>
 		<?php
 	}
@@ -619,9 +663,13 @@ final class Admin_Page {
 	 * @return void
 	 */
 	private function render_external_access(): void {
-		$apps = $this->apps->list_recent( 10 );
+		$page  = $this->page_from_request( 'app_key_page' );
+		$total = $this->apps->count();
+		$page  = $this->bounded_page( $total, $page, self::APP_KEY_PAGE_SIZE );
+		$apps  = $this->apps->list_recent( self::APP_KEY_PAGE_SIZE, $this->offset_for_page( $page, self::APP_KEY_PAGE_SIZE ) );
 		?>
-		<h2><?php echo esc_html__( 'Core App Keys', 'magick-ai-core' ); ?></h2>
+		<p><a href="<?php echo esc_url( $this->admin_url() ); ?>">&larr; <?php echo esc_html__( 'Back to review queue', 'magick-ai-core' ); ?></a></p>
+		<h2><?php echo esc_html__( 'Advanced Access', 'magick-ai-core' ); ?></h2>
 		<p><?php echo esc_html__( 'Use this only for trusted Core governance clients. Productized OpenClaw setup belongs in Magick AI Adapter.', 'magick-ai-core' ); ?></p>
 
 		<details style="max-width: 1100px; margin: 0 0 16px;">
@@ -665,7 +713,8 @@ final class Admin_Page {
 			</form>
 		</details>
 
-		<h3><?php echo esc_html__( 'Recent App Keys', 'magick-ai-core' ); ?></h3>
+		<h3><?php echo esc_html__( 'Core App Keys', 'magick-ai-core' ); ?></h3>
+		<p><?php echo esc_html( $this->pagination_summary( $total, $page, self::APP_KEY_PAGE_SIZE ) ); ?></p>
 		<table class="widefat striped" style="max-width: 1100px;">
 			<thead>
 				<tr>
@@ -689,7 +738,7 @@ final class Admin_Page {
 						<td><code><?php echo esc_html( (string) $app['key_id'] ); ?></code></td>
 						<td><?php echo esc_html( (string) $app['status'] ); ?></td>
 						<td><?php echo esc_html( implode( ', ', (array) $app['scopes'] ) ); ?></td>
-						<td><?php echo esc_html( (string) ( $app['last_used_at'] ?: '-' ) ); ?></td>
+						<td><?php echo esc_html( (string) ( $app['last_used_at'] ?: __( 'Never', 'magick-ai-core' ) ) ); ?></td>
 						<td>
 							<?php if ( 'active' === (string) $app['status'] ) : ?>
 								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
@@ -699,13 +748,14 @@ final class Admin_Page {
 									<button type="submit" class="button button-link-delete" onclick="return confirm('<?php echo esc_js( __( 'Disable this app key? Existing clients using this token will receive 401.', 'magick-ai-core' ) ); ?>');"><?php echo esc_html__( 'Disable', 'magick-ai-core' ); ?></button>
 								</form>
 							<?php else : ?>
-								<span aria-hidden="true">-</span>
+								<?php echo esc_html__( 'Disabled', 'magick-ai-core' ); ?>
 							<?php endif; ?>
 						</td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
 		</table>
+		<?php $this->render_pagination( $total, $page, self::APP_KEY_PAGE_SIZE, 'app_key_page', array( 'view' => 'app-keys' ) ); ?>
 		<?php
 	}
 
@@ -715,16 +765,32 @@ final class Admin_Page {
 	 * @return void
 	 */
 	private function render_archive_view(): void {
-		$proposals = $this->proposals->list_by_statuses(
-			array(
-				Proposal_Repository::STATUS_EXPIRED,
-				Proposal_Repository::STATUS_ARCHIVED,
-			),
-			50
+		$page           = $this->page_from_request( 'archive_page' );
+		$status_filter = isset( $_GET['archive_status'] ) ? sanitize_key( wp_unslash( (string) $_GET['archive_status'] ) ) : 'all';
+		$status_filter = in_array( $status_filter, array( 'all', Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_ARCHIVED ), true ) ? $status_filter : 'all';
+		$statuses      = 'all' === $status_filter
+			? array( Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_ARCHIVED )
+			: array( $status_filter );
+		$total          = $this->proposals->count_by_statuses( $statuses );
+		$page           = $this->bounded_page( $total, $page, self::ARCHIVE_PAGE_SIZE );
+		$proposals      = $this->proposals->list_by_statuses(
+			$statuses,
+			self::ARCHIVE_PAGE_SIZE,
+			$this->offset_for_page( $page, self::ARCHIVE_PAGE_SIZE )
 		);
 		?>
 		<h2><?php echo esc_html__( 'Expired / Archived', 'magick-ai-core' ); ?></h2>
 		<p><?php echo esc_html__( 'Stale requests are kept for audit but removed from the active review queue.', 'magick-ai-core' ); ?></p>
+		<ul class="subsubsub" style="float: none; margin: 0 0 12px;">
+			<?php foreach ( $this->archive_status_filters() as $key => $label ) : ?>
+				<li>
+					<a href="<?php echo esc_url( $this->admin_url( array( 'view' => 'archive', 'archive_status' => $key ) ) ); ?>" class="<?php echo $status_filter === $key ? 'current' : ''; ?>" <?php echo $status_filter === $key ? 'aria-current="page"' : ''; ?>>
+						<?php echo esc_html( $label ); ?>
+					</a>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+		<p><?php echo esc_html( $this->pagination_summary( $total, $page, self::ARCHIVE_PAGE_SIZE ) ); ?></p>
 		<table class="widefat striped" style="max-width: 1100px;">
 			<thead>
 				<tr>
@@ -757,6 +823,7 @@ final class Admin_Page {
 				<?php endforeach; ?>
 			</tbody>
 		</table>
+		<?php $this->render_pagination( $total, $page, self::ARCHIVE_PAGE_SIZE, 'archive_page', array( 'view' => 'archive', 'archive_status' => $status_filter ) ); ?>
 		<?php
 	}
 
@@ -844,7 +911,7 @@ final class Admin_Page {
 						</tr>
 					</tbody>
 				</table>
-				<p class="actions"><a class="button" href="<?php echo esc_url( $this->view_url( 'app-keys' ) ); ?>"><?php echo esc_html__( 'Back to Core App Keys', 'magick-ai-core' ); ?></a></p>
+				<p class="actions"><a class="button" href="<?php echo esc_url( $this->view_url( 'app-keys' ) ); ?>"><?php echo esc_html__( 'Back to Advanced Access', 'magick-ai-core' ); ?></a></p>
 			</main>
 		</body>
 		</html>
@@ -1206,12 +1273,14 @@ final class Admin_Page {
 	 *
 	 * @param array<int,array<string,mixed>> $events Audit events.
 	 * @param array<string,mixed>            $filters Active filters.
+	 * @param int                            $total Total matching events.
 	 * @return void
 	 */
-	private function render_governance_audit( array $events, array $filters ): void {
+	private function render_governance_audit( array $events, array $filters, int $total ): void {
 		?>
 		<h2><?php echo esc_html__( 'Governance Audit', 'magick-ai-core' ); ?></h2>
 		<p><?php echo esc_html__( 'Recent Core governance events. AI Request Logs remain separate; correlate them with proposal_id or correlation_id.', 'magick-ai-core' ); ?></p>
+		<p><?php echo esc_html( $this->pagination_summary( $total, (int) $filters['page'], (int) $filters['limit'] ) ); ?></p>
 		<details style="max-width: 1100px; margin: 0 0 12px;" <?php echo $this->has_active_audit_filters( $filters ) ? 'open' : ''; ?>>
 			<summary style="cursor: pointer;">
 				<strong><?php echo esc_html__( 'Advanced audit filters', 'magick-ai-core' ); ?></strong>
@@ -1247,7 +1316,7 @@ final class Admin_Page {
 							<td><input id="magick-ai-core-audit-correlation" class="regular-text" type="text" name="audit_correlation_id" value="<?php echo esc_attr( (string) $filters['correlation_id'] ); ?>" /></td>
 						</tr>
 						<tr>
-							<th scope="row"><label for="magick-ai-core-audit-limit"><?php echo esc_html__( 'Limit', 'magick-ai-core' ); ?></label></th>
+							<th scope="row"><label for="magick-ai-core-audit-limit"><?php echo esc_html__( 'Per page', 'magick-ai-core' ); ?></label></th>
 							<td><input id="magick-ai-core-audit-limit" type="number" min="1" max="200" name="audit_limit" value="<?php echo esc_attr( (string) $filters['limit'] ); ?>" /></td>
 						</tr>
 						<tr>
@@ -1307,6 +1376,7 @@ final class Admin_Page {
 				<?php endforeach; ?>
 			</tbody>
 		</table>
+		<?php $this->render_pagination( $total, (int) $filters['page'], (int) $filters['limit'], 'audit_page', $this->audit_query_args( $filters ) ); ?>
 		<?php
 	}
 
@@ -1391,6 +1461,8 @@ final class Admin_Page {
 	 */
 	private function audit_filters_from_request(): array {
 		$include_read_events = ! empty( $_GET['audit_include_read_events'] );
+		$page                = $this->page_from_request( 'audit_page' );
+		$limit               = isset( $_GET['audit_limit'] ) ? max( 1, min( 200, absint( wp_unslash( (string) $_GET['audit_limit'] ) ) ) ) : self::AUDIT_PAGE_SIZE;
 		$filters             = array(
 			'proposal_id'    => isset( $_GET['audit_proposal_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_proposal_id'] ) ) : '',
 			'event_name'     => isset( $_GET['audit_event_name'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_event_name'] ) ) : '',
@@ -1398,7 +1470,9 @@ final class Admin_Page {
 			'app_id'         => isset( $_GET['audit_app_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_app_id'] ) ) : '',
 			'caller_type'    => isset( $_GET['audit_caller_type'] ) ? sanitize_key( wp_unslash( (string) $_GET['audit_caller_type'] ) ) : '',
 			'correlation_id' => isset( $_GET['audit_correlation_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_correlation_id'] ) ) : '',
-			'limit'          => isset( $_GET['audit_limit'] ) ? max( 1, min( 200, absint( wp_unslash( (string) $_GET['audit_limit'] ) ) ) ) : 50,
+			'limit'          => $limit,
+			'page'           => $page,
+			'offset'         => $this->offset_for_page( $page, $limit ),
 			'include_read_events' => $include_read_events,
 		);
 
@@ -1422,7 +1496,7 @@ final class Admin_Page {
 			}
 		}
 
-		return 50 !== (int) ( $filters['limit'] ?? 50 ) || ! empty( $filters['include_read_events'] );
+		return self::AUDIT_PAGE_SIZE !== (int) ( $filters['limit'] ?? self::AUDIT_PAGE_SIZE ) || ! empty( $filters['include_read_events'] );
 	}
 
 	/**
@@ -1438,6 +1512,170 @@ final class Admin_Page {
 			'audit.listed',
 			'app.listed',
 		);
+	}
+
+	/**
+	 * Returns archive status filter labels.
+	 *
+	 * @return array<string,string>
+	 */
+	private function archive_status_filters(): array {
+		return array(
+			'all'                                  => __( 'All', 'magick-ai-core' ),
+			Proposal_Repository::STATUS_EXPIRED  => __( 'Expired', 'magick-ai-core' ),
+			Proposal_Repository::STATUS_ARCHIVED => __( 'Archived', 'magick-ai-core' ),
+		);
+	}
+
+	/**
+	 * Returns preserved audit query args for pagination links.
+	 *
+	 * @param array<string,mixed> $filters Active filters.
+	 * @return array<string,string>
+	 */
+	private function audit_query_args( array $filters ): array {
+		$args = array(
+			'view'        => 'audit',
+			'audit_limit' => (string) (int) ( $filters['limit'] ?? self::AUDIT_PAGE_SIZE ),
+		);
+
+		$mapping = array(
+			'proposal_id'    => 'audit_proposal_id',
+			'event_name'     => 'audit_event_name',
+			'ability_id'     => 'audit_ability_id',
+			'app_id'         => 'audit_app_id',
+			'caller_type'    => 'audit_caller_type',
+			'correlation_id' => 'audit_correlation_id',
+		);
+
+		foreach ( $mapping as $filter_key => $query_key ) {
+			$value = (string) ( $filters[ $filter_key ] ?? '' );
+			if ( '' !== $value ) {
+				$args[ $query_key ] = $value;
+			}
+		}
+
+		if ( ! empty( $filters['include_read_events'] ) ) {
+			$args['audit_include_read_events'] = '1';
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Returns current admin page number from query args.
+	 *
+	 * @param string $query_key Query arg key.
+	 * @return int
+	 */
+	private function page_from_request( string $query_key ): int {
+		return isset( $_GET[ $query_key ] ) ? max( 1, absint( wp_unslash( (string) $_GET[ $query_key ] ) ) ) : 1;
+	}
+
+	/**
+	 * Returns offset for one-indexed page.
+	 *
+	 * @param int $page Current page.
+	 * @param int $per_page Rows per page.
+	 * @return int
+	 */
+	private function offset_for_page( int $page, int $per_page ): int {
+		return max( 0, ( max( 1, $page ) - 1 ) * max( 1, $per_page ) );
+	}
+
+	/**
+	 * Bounds a requested page to the available result set.
+	 *
+	 * @param int $total Total rows.
+	 * @param int $page Requested page.
+	 * @param int $per_page Rows per page.
+	 * @return int
+	 */
+	private function bounded_page( int $total, int $page, int $per_page ): int {
+		if ( $total <= 0 ) {
+			return 1;
+		}
+
+		$total_pages = (int) ceil( $total / max( 1, $per_page ) );
+		return max( 1, min( $page, $total_pages ) );
+	}
+
+	/**
+	 * Bounds audit filters to a valid page and offset.
+	 *
+	 * @param array<string,mixed> $filters Active filters.
+	 * @param int                 $total Total matching rows.
+	 * @return array<string,mixed>
+	 */
+	private function bounded_audit_filters( array $filters, int $total ): array {
+		$limit             = (int) ( $filters['limit'] ?? self::AUDIT_PAGE_SIZE );
+		$page              = $this->bounded_page( $total, (int) ( $filters['page'] ?? 1 ), $limit );
+		$filters['page']   = $page;
+		$filters['offset'] = $this->offset_for_page( $page, $limit );
+
+		return $filters;
+	}
+
+	/**
+	 * Returns a compact pagination summary.
+	 *
+	 * @param int $total Total rows.
+	 * @param int $page Current page.
+	 * @param int $per_page Rows per page.
+	 * @return string
+	 */
+	private function pagination_summary( int $total, int $page, int $per_page ): string {
+		if ( $total <= 0 ) {
+			return __( 'No matching records.', 'magick-ai-core' );
+		}
+
+		$start = $this->offset_for_page( $page, $per_page ) + 1;
+		$end   = min( $total, $start + $per_page - 1 );
+
+		return sprintf(
+			/* translators: 1: first row number, 2: last row number, 3: total row count. */
+			__( 'Showing %1$d-%2$d of %3$d.', 'magick-ai-core' ),
+			$start,
+			$end,
+			$total
+		);
+	}
+
+	/**
+	 * Renders pagination links for admin lists.
+	 *
+	 * @param int                  $total Total rows.
+	 * @param int                  $page Current page.
+	 * @param int                  $per_page Rows per page.
+	 * @param string               $page_arg Query arg storing page number.
+	 * @param array<string,string> $args Preserved query args.
+	 * @return void
+	 */
+	private function render_pagination( int $total, int $page, int $per_page, string $page_arg, array $args ): void {
+		$total_pages = (int) ceil( $total / max( 1, $per_page ) );
+		if ( $total_pages <= 1 ) {
+			return;
+		}
+
+		$base_url = remove_query_arg( $page_arg, $this->admin_url( $args ) );
+		$links    = paginate_links(
+			array(
+				'base'      => add_query_arg( $page_arg, '%#%', $base_url ),
+				'format'    => '',
+				'current'   => max( 1, $page ),
+				'total'     => $total_pages,
+				'prev_text' => __( 'Previous', 'magick-ai-core' ),
+				'next_text' => __( 'Next', 'magick-ai-core' ),
+			)
+		);
+
+		if ( is_string( $links ) && '' !== $links ) {
+			?>
+			<div class="tablenav" style="max-width: 1100px;">
+				<div class="tablenav-pages"><?php echo wp_kses_post( $links ); ?></div>
+			</div>
+			<?php
+		}
 	}
 
 	/**

@@ -154,23 +154,66 @@ final class App_Key_Repository {
 	 * Lists app keys without secrets.
 	 *
 	 * @param int $limit Max rows.
+	 * @param int $offset Rows to skip.
 	 * @return array<int,array<string,mixed>>
 	 */
-	public function list_recent( int $limit = 50 ): array {
+	public function list_recent( int $limit = 50, int $offset = 0 ): array {
 		global $wpdb;
 
-		$limit = max( 1, min( 200, $limit ) );
+		$limit  = max( 1, min( 200, $limit ) );
+		$offset = max( 0, $offset );
 		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from the WordPress table prefix; query values use placeholders.
 		$rows  = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, created_by, created_at, updated_at, last_used_at FROM ' . $this->table_name() . ' ORDER BY id DESC LIMIT %d',
-				$limit
+				'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, created_by, created_at, updated_at, last_used_at FROM ' . $this->table_name() . ' ORDER BY id DESC LIMIT %d OFFSET %d',
+				$limit,
+				$offset
 			),
 			ARRAY_A
 		);
 		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
+	}
+
+	/**
+	 * Counts app keys.
+	 *
+	 * @param string $status Optional status filter.
+	 * @return int
+	 */
+	public function count( string $status = '' ): int {
+		global $wpdb;
+
+		$status = sanitize_key( $status );
+		$sql    = 'SELECT COUNT(*) FROM ' . $this->table_name();
+		$args   = array();
+
+		if ( '' !== $status ) {
+			$sql   .= ' WHERE status = %s';
+			$args[] = $status;
+		}
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from the WordPress table prefix; query values use placeholders.
+		$count = empty( $args ) ? (int) $wpdb->get_var( $sql ) : (int) $wpdb->get_var( $wpdb->prepare( $sql, $args ) );
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+
+		return $count;
+	}
+
+	/**
+	 * Returns the latest app-key use timestamp.
+	 *
+	 * @return string
+	 */
+	public function latest_last_used_at(): string {
+		global $wpdb;
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from the WordPress table prefix and no user values are interpolated.
+		$value = $wpdb->get_var( 'SELECT MAX(last_used_at) FROM ' . $this->table_name() . ' WHERE last_used_at IS NOT NULL' );
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+
+		return sanitize_text_field( (string) $value );
 	}
 
 	/**

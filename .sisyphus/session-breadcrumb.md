@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-06-01 — Core admin long lists paginated
+
+- **Module**: Core WordPress admin governance surface.
+- **Status**: `Magick AI -> Core` now keeps long review, archive, audit, and
+  advanced app-key lists paginated, and Core app-key management no longer
+  appears as a first-level Core tab.
+- **Completed**:
+  - Added repository offset/count support for proposal, audit, and app-key
+    admin lists.
+  - Paginated the default review queue, `Expired / Archived`, full governance
+    audit, and advanced app-key management surfaces.
+  - Added status filtering to the expired/archive list.
+  - Moved Core app-key management behind the default page's collapsed
+    `Advanced Access` entry while preserving creation, one-time token display,
+    disable action, scoped app auth, REST routes, and audit attribution.
+  - Updated admin-surface, operability, app-auth, next-stage, README, and
+    static contracts for the reduced first-level admin hierarchy.
+- **Boundary**:
+  - This is admin hierarchy and list ergonomics only. Core app-auth remains a
+    governance credential fallback for trusted external clients; no Adapter,
+    OpenClaw onboarding, workflow runtime, queue, provider credential, cloud
+    control plane, or final WordPress write execution was added.
+
 ## 2026-05-31 — Core admin lifecycle cleanup shipped
 
 - **Module**: Core WordPress admin governance lifecycle and surface.

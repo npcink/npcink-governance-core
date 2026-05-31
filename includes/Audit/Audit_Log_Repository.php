@@ -113,49 +113,11 @@ final class Audit_Log_Repository {
 		global $wpdb;
 
 		$limit          = max( 1, min( 200, absint( $filters['limit'] ?? 50 ) ) );
-		$proposal_id    = sanitize_text_field( (string) ( $filters['proposal_id'] ?? '' ) );
-		$event_name     = sanitize_text_field( (string) ( $filters['event_name'] ?? '' ) );
-		$ability_id     = sanitize_text_field( (string) ( $filters['ability_id'] ?? '' ) );
-		$app_id         = sanitize_text_field( (string) ( $filters['app_id'] ?? '' ) );
-		$key_id         = sanitize_text_field( (string) ( $filters['key_id'] ?? '' ) );
-		$caller_type    = sanitize_key( (string) ( $filters['caller_type'] ?? '' ) );
-		$correlation_id = sanitize_text_field( (string) ( $filters['correlation_id'] ?? '' ) );
-		$exclude_events = is_array( $filters['exclude_event_names'] ?? null ) ? $this->sanitize_event_names( (array) $filters['exclude_event_names'] ) : array();
+		$offset         = max( 0, absint( $filters['offset'] ?? 0 ) );
 		$order          = 'asc' === sanitize_key( (string) ( $filters['order'] ?? 'desc' ) ) ? 'ASC' : 'DESC';
-		$where          = array();
-		$args           = array();
-
-		if ( '' !== $proposal_id ) {
-			$where[] = 'proposal_id = %s';
-			$args[]  = $proposal_id;
-		}
-
-		if ( '' !== $event_name ) {
-			$where[] = 'event_name = %s';
-			$args[]  = $event_name;
-		} elseif ( ! empty( $exclude_events ) ) {
-			$where[] = 'event_name NOT IN (' . implode( ', ', array_fill( 0, count( $exclude_events ), '%s' ) ) . ')';
-			foreach ( $exclude_events as $excluded ) {
-				$args[] = $excluded;
-			}
-		}
-
-		$metadata_filters = array(
-			'ability_id'     => $ability_id,
-			'app_id'         => $app_id,
-			'key_id'         => $key_id,
-			'caller_type'    => $caller_type,
-			'correlation_id' => $correlation_id,
-		);
-
-		foreach ( $metadata_filters as $key => $value ) {
-			if ( '' === $value ) {
-				continue;
-			}
-
-			$where[] = 'metadata_json LIKE %s';
-			$args[]  = '%' . $wpdb->esc_like( $this->metadata_filter_needle( (string) $key, (string) $value ) ) . '%';
-		}
+		$parts          = $this->filtered_query_parts( $filters );
+		$where          = $parts['where'];
+		$args           = $parts['args'];
 
 		$sql = 'SELECT event_id, event_name, proposal_id, actor_id, metadata_json, created_at FROM ' . $this->table_name();
 
@@ -163,14 +125,40 @@ final class Audit_Log_Repository {
 			$sql .= ' WHERE ' . implode( ' AND ', $where );
 		}
 
-		$sql   .= ' ORDER BY id ' . $order . ' LIMIT %d';
+		$sql   .= ' ORDER BY id ' . $order . ' LIMIT %d OFFSET %d';
 		$args[] = $limit;
+		$args[] = $offset;
 
 		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL is assembled from fixed clauses, whitelisted sort order, and placeholder values.
 		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $args ), ARRAY_A );
 		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
+	}
+
+	/**
+	 * Counts filtered events.
+	 *
+	 * @param array<string,mixed> $filters Filters.
+	 * @return int
+	 */
+	public function count_filtered( array $filters = array() ): int {
+		global $wpdb;
+
+		$parts = $this->filtered_query_parts( $filters );
+		$where = $parts['where'];
+		$args  = $parts['args'];
+		$sql   = 'SELECT COUNT(*) FROM ' . $this->table_name();
+
+		if ( ! empty( $where ) ) {
+			$sql .= ' WHERE ' . implode( ' AND ', $where );
+		}
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL is assembled from fixed clauses and placeholder values.
+		$count = empty( $args ) ? (int) $wpdb->get_var( $sql ) : (int) $wpdb->get_var( $wpdb->prepare( $sql, $args ) );
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+
+		return $count;
 	}
 
 	/**
@@ -217,6 +205,64 @@ final class Audit_Log_Repository {
 	private function metadata_filter_needle( string $key, string $value ): string {
 		$encoded = wp_json_encode( $value );
 		return '"' . sanitize_key( $key ) . '":' . ( is_string( $encoded ) ? $encoded : '""' );
+	}
+
+	/**
+	 * Builds filtered audit query parts.
+	 *
+	 * @param array<string,mixed> $filters Filters.
+	 * @return array{where:array<int,string>,args:array<int,mixed>}
+	 */
+	private function filtered_query_parts( array $filters ): array {
+		global $wpdb;
+
+		$proposal_id    = sanitize_text_field( (string) ( $filters['proposal_id'] ?? '' ) );
+		$event_name     = sanitize_text_field( (string) ( $filters['event_name'] ?? '' ) );
+		$ability_id     = sanitize_text_field( (string) ( $filters['ability_id'] ?? '' ) );
+		$app_id         = sanitize_text_field( (string) ( $filters['app_id'] ?? '' ) );
+		$key_id         = sanitize_text_field( (string) ( $filters['key_id'] ?? '' ) );
+		$caller_type    = sanitize_key( (string) ( $filters['caller_type'] ?? '' ) );
+		$correlation_id = sanitize_text_field( (string) ( $filters['correlation_id'] ?? '' ) );
+		$exclude_events = is_array( $filters['exclude_event_names'] ?? null ) ? $this->sanitize_event_names( (array) $filters['exclude_event_names'] ) : array();
+		$where          = array();
+		$args           = array();
+
+		if ( '' !== $proposal_id ) {
+			$where[] = 'proposal_id = %s';
+			$args[]  = $proposal_id;
+		}
+
+		if ( '' !== $event_name ) {
+			$where[] = 'event_name = %s';
+			$args[]  = $event_name;
+		} elseif ( ! empty( $exclude_events ) ) {
+			$where[] = 'event_name NOT IN (' . implode( ', ', array_fill( 0, count( $exclude_events ), '%s' ) ) . ')';
+			foreach ( $exclude_events as $excluded ) {
+				$args[] = $excluded;
+			}
+		}
+
+		$metadata_filters = array(
+			'ability_id'     => $ability_id,
+			'app_id'         => $app_id,
+			'key_id'         => $key_id,
+			'caller_type'    => $caller_type,
+			'correlation_id' => $correlation_id,
+		);
+
+		foreach ( $metadata_filters as $key => $value ) {
+			if ( '' === $value ) {
+				continue;
+			}
+
+			$where[] = 'metadata_json LIKE %s';
+			$args[]  = '%' . $wpdb->esc_like( $this->metadata_filter_needle( (string) $key, (string) $value ) ) . '%';
+		}
+
+		return array(
+			'where' => $where,
+			'args'  => $args,
+		);
 	}
 
 	/**

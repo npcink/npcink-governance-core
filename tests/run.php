@@ -575,6 +575,8 @@ foreach (
 		'revoked',
 		'password_hash',
 		'password_verify',
+		'OFFSET %d',
+		'latest_last_used_at',
 		'capabilities:read',
 		'proposals:create',
 		'commit:preflight',
@@ -725,6 +727,7 @@ magick_ai_core_assert( false !== strpos( $proposal_repository, 'STATUS_EXPIRED' 
 magick_ai_core_assert( false !== strpos( $proposal_repository, 'STATUS_ARCHIVED' ), 'Proposal repository defines archived status.' );
 magick_ai_core_assert( false !== strpos( $proposal_repository, 'list_stale_pending' ), 'Proposal repository can list stale pending proposals.' );
 magick_ai_core_assert( false !== strpos( $proposal_repository, 'count_by_status' ), 'Proposal repository can count status queues.' );
+magick_ai_core_assert( false !== strpos( $proposal_repository, 'OFFSET %d' ), 'Proposal repository supports paginated admin lists.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.created' ), 'Proposal service records proposal.created audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'Ability_Registry_Adapter' ), 'Proposal service validates target abilities against ability intake.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'magick_ai_core_ability_not_available' ), 'Proposal service rejects unavailable target abilities.' );
@@ -790,6 +793,8 @@ magick_ai_core_assert( false !== strpos( $audit_repository, 'caller_type' ), 'Au
 magick_ai_core_assert( false !== strpos( $audit_repository, 'correlation_id' ), 'Audit repository filters by correlation id metadata.' );
 magick_ai_core_assert( false !== strpos( $audit_repository, 'metadata_filter_needle' ), 'Audit repository uses JSON-safe metadata filter needles.' );
 magick_ai_core_assert( false !== strpos( $audit_repository, 'exclude_event_names' ), 'Audit repository can exclude noisy read events.' );
+magick_ai_core_assert( false !== strpos( $audit_repository, 'count_filtered' ), 'Audit repository can count filtered rows for pagination.' );
+magick_ai_core_assert( false !== strpos( $audit_repository, 'offset' ), 'Audit repository supports paginated admin lists.' );
 
 $audit_controller = magick_ai_core_read( $root . '/includes/Rest/Audit_Controller.php' );
 magick_ai_core_assert( false !== strpos( $audit_controller, "'/audit'" ), 'Audit REST route is registered.' );
@@ -812,7 +817,8 @@ foreach (
 		'pending proposal review list',
 		'Governance Audit',
 		'Expired / Archived',
-		'Core App Keys',
+		'Advanced Access',
+		'paginated',
 		'low-frequency fallback action',
 		'OpenClaw onboarding',
 		'ability definitions',
@@ -829,18 +835,26 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_revoke_app_key' ), 'Admin page registers app-key revocation handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'check_admin_referer' ), 'Admin proposal actions enforce nonce.' );
 magick_ai_core_assert( false !== strpos( $admin_page, "current_user_can( 'manage_options' )" ), 'Admin proposal actions enforce capability.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'Core App Keys' ), 'Admin page exposes Core app-key management section.' );
-magick_ai_core_assert( false !== strpos( $admin_page, "'app-keys'" ), 'Admin page moves app-key management into a dedicated view.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Advanced Access' ), 'Admin page folds Core app-key management behind advanced access.' );
+magick_ai_core_assert( false !== strpos( $admin_page, "'app-keys'" ), 'Admin page keeps app-key management available behind an advanced view.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'render_admin_tabs' ), 'Admin page exposes tabbed Core sections.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'nav-tab-wrapper' ), 'Admin page uses WordPress admin tabs for Core sections.' );
+magick_ai_core_assert( false === strpos( $admin_page, "'app-keys' => array" ), 'Admin page does not expose Core App Keys as a first-level tab.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Review Queue' ), 'Admin page defaults to the review queue tab.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Expired / Archived' ), 'Admin page exposes stale proposal archive tab.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'render_pagination' ), 'Admin page paginates long governance lists.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'review_page' ), 'Admin page paginates review queue.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'archive_page' ), 'Admin page paginates expired and archived proposals.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'audit_page' ), 'Admin page paginates governance audit.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'app_key_page' ), 'Admin page paginates advanced app-key management.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'archive_status' ), 'Admin page filters expired and archived proposal lists.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'No active proposals. Expired items are moved out of the review queue automatically.' ), 'Admin page provides a clear active queue empty state.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'render_advanced_entries' ), 'Admin default page no longer renders low-frequency administration links inline.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Recent Activity' ), 'Admin default page exposes a compact recent activity section.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Latest Core governance events. Full audit is in its own tab.' ), 'Admin default page folds recent activity into a disclosure.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Governance Audit' ), 'Admin page exposes a full governance audit view.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'Advanced: Core App Keys' ), 'Admin default page no longer folds app-key management inline.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Manage Core app keys' ), 'Admin default page exposes app-key management as a low-frequency action.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Advanced audit filters' ), 'Admin page folds detailed audit filters into an advanced disclosure.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'audit_include_read_events' ), 'Admin audit hides read noise by default with an opt-in filter.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'render_audit_detail' ), 'Admin audit combines optional app/scope/correlation metadata into a detail cell.' );

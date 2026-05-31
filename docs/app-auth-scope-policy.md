@@ -133,9 +133,9 @@ cannot set the `Authorization` header.
 
 WordPress administrators can issue tokens from either admin-only
 `POST /wp-json/magick-ai-core/v1/apps` or the `Magick AI -> Core`
-`Core App Keys` panel. Both paths use the same app identity store, default
+`Advanced Access` entry. Both paths use the same app identity store, default
 scope policy, and one-time raw-token display rule. The admin panel keeps app
-keys in a dedicated low-frequency view because it is a Core credential
+keys behind a low-frequency disclosure because it is a Core credential
 management fallback, not the primary OpenClaw product setup flow.
 Productized OpenClaw setup should use Magick AI Adapter, which calls Core for
 governance and WordPress Abilities API for direct reads.
