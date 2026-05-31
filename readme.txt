@@ -1,5 +1,5 @@
 === Magick AI Core ===
-Contributors: magick-ai
+Contributors: muze233
 Tags: ai, governance, approval, audit, abilities
 Requires at least: 7.0
 Tested up to: 7.0
