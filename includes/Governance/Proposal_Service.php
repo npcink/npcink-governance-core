@@ -20,6 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Coordinates proposal records and audit events.
  */
 final class Proposal_Service {
+	const PENDING_TTL_SECONDS = 86400;
+
 	/**
 	 * Proposal repository.
 	 *
@@ -133,6 +135,139 @@ final class Proposal_Service {
 	}
 
 	/**
+	 * Archives an expired proposal.
+	 *
+	 * @param string              $proposal_id Proposal id.
+	 * @param array<string,mixed> $metadata Archive metadata.
+	 * @return array<string,mixed>|WP_Error
+	 */
+	public function archive( string $proposal_id, array $metadata = array() ) {
+		$proposal_id = sanitize_text_field( $proposal_id );
+		$existing    = $this->proposals->find( $proposal_id );
+
+		if ( null === $existing ) {
+			return $this->not_found_error();
+		}
+
+		if ( Proposal_Repository::STATUS_EXPIRED !== (string) ( $existing['status'] ?? '' ) ) {
+			return new WP_Error(
+				'magick_ai_core_proposal_archive_not_allowed',
+				__( 'Only expired proposals can be archived.', 'magick-ai-core' ),
+				array( 'status' => 409 )
+			);
+		}
+
+		$proposal = $this->proposals->update_status( $proposal_id, Proposal_Repository::STATUS_ARCHIVED );
+		if ( null === $proposal ) {
+			return $this->transition_failed_error();
+		}
+
+		$this->audit->record(
+			'proposal.archived',
+			array_merge(
+				array(
+					'ability_id'       => $proposal['ability_id'],
+					'status'           => $proposal['status'],
+					'previous_status'  => Proposal_Repository::STATUS_EXPIRED,
+					'archive_terminal' => true,
+				),
+				$metadata
+			),
+			$proposal_id
+		);
+
+		return $proposal;
+	}
+
+	/**
+	 * Reopens an expired or archived proposal into pending review.
+	 *
+	 * @param string              $proposal_id Proposal id.
+	 * @param array<string,mixed> $metadata Reopen metadata.
+	 * @return array<string,mixed>|WP_Error
+	 */
+	public function reopen( string $proposal_id, array $metadata = array() ) {
+		$proposal_id = sanitize_text_field( $proposal_id );
+		$existing    = $this->proposals->find( $proposal_id );
+
+		if ( null === $existing ) {
+			return $this->not_found_error();
+		}
+
+		$previous_status = (string) ( $existing['status'] ?? '' );
+		if ( ! in_array( $previous_status, array( Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_ARCHIVED ), true ) ) {
+			return new WP_Error(
+				'magick_ai_core_proposal_reopen_not_allowed',
+				__( 'Only expired or archived proposals can be reopened.', 'magick-ai-core' ),
+				array( 'status' => 409 )
+			);
+		}
+
+		$proposal = $this->proposals->reopen( $proposal_id );
+		if ( null === $proposal ) {
+			return $this->transition_failed_error();
+		}
+
+		$this->audit->record(
+			'proposal.reopened',
+			array_merge(
+				array(
+					'ability_id'      => $proposal['ability_id'],
+					'status'          => $proposal['status'],
+					'previous_status' => $previous_status,
+				),
+				$metadata
+			),
+			$proposal_id
+		);
+
+		return $proposal;
+	}
+
+	/**
+	 * Expires stale pending proposals.
+	 *
+	 * @param int $limit Maximum proposals to expire.
+	 * @return int Expired proposal count.
+	 */
+	public function expire_stale_pending( int $limit = 100 ): int {
+		$stale = $this->proposals->list_stale_pending( self::PENDING_TTL_SECONDS, $limit );
+		$count = 0;
+
+		foreach ( $stale as $proposal ) {
+			if ( $this->expire_one( $proposal, 'ttl_elapsed' ) ) {
+				++$count;
+			}
+		}
+
+		return $count;
+	}
+
+	/**
+	 * Returns whether a proposal is pending and past the TTL.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return bool
+	 */
+	public function is_stale_pending( array $proposal ): bool {
+		if ( Proposal_Repository::STATUS_PENDING !== (string) ( $proposal['status'] ?? '' ) ) {
+			return false;
+		}
+
+		$created_at = strtotime( (string) ( $proposal['created_at'] ?? '' ) );
+		return false !== $created_at && $created_at < ( time() - self::PENDING_TTL_SECONDS );
+	}
+
+	/**
+	 * Returns the pending proposal TTL in seconds.
+	 *
+	 * @return int
+	 */
+	public function pending_ttl_seconds(): int {
+		return self::PENDING_TTL_SECONDS;
+	}
+
+	/**
 	 * Records proposal list access.
 	 *
 	 * @param int $count Returned row count.
@@ -210,6 +345,15 @@ final class Proposal_Service {
 			return $this->not_found_error();
 		}
 
+		if ( $this->is_stale_pending( $existing ) ) {
+			$this->expire_one( $existing, 'decision_attempt_after_ttl' );
+			return new WP_Error(
+				'magick_ai_core_proposal_expired',
+				__( 'Proposal expired before a decision was made.', 'magick-ai-core' ),
+				array( 'status' => 409 )
+			);
+		}
+
 		if ( 'pending' !== (string) ( $existing['status'] ?? '' ) ) {
 			return new WP_Error(
 				'magick_ai_core_proposal_already_decided',
@@ -220,11 +364,7 @@ final class Proposal_Service {
 
 		$proposal = $this->proposals->update_status( $proposal_id, $status );
 		if ( null === $proposal ) {
-			return new WP_Error(
-				'magick_ai_core_proposal_transition_failed',
-				__( 'Proposal status could not be updated.', 'magick-ai-core' ),
-				array( 'status' => 500 )
-			);
+			return $this->transition_failed_error();
 		}
 
 		$this->audit->record(
@@ -240,5 +380,51 @@ final class Proposal_Service {
 		);
 
 		return $proposal;
+	}
+
+	/**
+	 * Expires one pending proposal and records audit.
+	 *
+	 * @param array<string,mixed> $proposal Existing proposal row.
+	 * @param string              $reason Expiration reason.
+	 * @return bool Whether expiration succeeded.
+	 */
+	private function expire_one( array $proposal, string $reason ): bool {
+		$proposal_id = sanitize_text_field( (string) ( $proposal['proposal_id'] ?? '' ) );
+		if ( '' === $proposal_id || Proposal_Repository::STATUS_PENDING !== (string) ( $proposal['status'] ?? '' ) ) {
+			return false;
+		}
+
+		$expired = $this->proposals->update_status( $proposal_id, Proposal_Repository::STATUS_EXPIRED );
+		if ( null === $expired ) {
+			return false;
+		}
+
+		$this->audit->record(
+			'proposal.expired',
+			array(
+				'ability_id'             => (string) $expired['ability_id'],
+				'status'                 => (string) $expired['status'],
+				'previous_status'        => Proposal_Repository::STATUS_PENDING,
+				'expired_after_seconds'  => self::PENDING_TTL_SECONDS,
+				'expiration_reason'      => sanitize_key( $reason ),
+			),
+			$proposal_id
+		);
+
+		return true;
+	}
+
+	/**
+	 * Returns transition failed error.
+	 *
+	 * @return WP_Error
+	 */
+	private function transition_failed_error(): WP_Error {
+		return new WP_Error(
+			'magick_ai_core_proposal_transition_failed',
+			__( 'Proposal status could not be updated.', 'magick-ai-core' ),
+			array( 'status' => 500 )
+		);
 	}
 }

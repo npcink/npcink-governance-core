@@ -15,7 +15,7 @@ records; they are not workflow runtime state.
 | `id` | `bigint(20) unsigned` | no | Internal auto-increment primary key. |
 | `proposal_id` | `varchar(64)` | no | Public stable id, generated with `wp_generate_uuid4()` when available. |
 | `ability_id` | `varchar(190)` | no | Target WordPress ability id. |
-| `status` | `varchar(40)` | no | `pending`, `approved`, or `rejected`. |
+| `status` | `varchar(40)` | no | `pending`, `approved`, `rejected`, `expired`, or `archived`. |
 | `title` | `text` | yes | Human-readable title. |
 | `summary` | `longtext` | yes | Human-readable summary. |
 | `input_json` | `longtext` | yes | Sanitized structured input. |
@@ -38,12 +38,17 @@ Allowed statuses:
 - `pending`
 - `approved`
 - `rejected`
+- `expired`
+- `archived`
 
 Status transition rules:
 
 - proposals start as `pending`;
 - only `pending` proposals may transition to `approved`;
 - only `pending` proposals may transition to `rejected`;
+- stale `pending` proposals transition to `expired` after the Core pending TTL;
+- only `expired` proposals may transition to `archived`;
+- `expired` or `archived` proposals may be reopened to `pending` for review;
 - MVP status transitions do not execute the target ability.
 
 ## Table: `{prefix}magick_ai_core_audit_log`
@@ -80,6 +85,9 @@ MVP event names:
 - `proposal.plan_ingested`
 - `proposal.approved`
 - `proposal.rejected`
+- `proposal.expired`
+- `proposal.archived`
+- `proposal.reopened`
 - `proposal.viewed`
 - `proposal.listed`
 - `audit.listed`

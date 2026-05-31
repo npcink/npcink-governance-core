@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-05-31 — Core admin lifecycle cleanup shipped
+
+- **Module**: Core WordPress admin governance lifecycle and surface.
+- **Status**: `Magick AI -> Core` now keeps stale proposals out of the active
+  review queue, gives expired/archived records a dedicated tab, and removes
+  placeholder-heavy audit columns from the default operator path.
+- **Completed**:
+  - Added a pending proposal TTL that lazily expires stale review items before
+    admin and REST reads.
+  - Added expired/archive counts, an `Expired / Archived` tab, archive action
+    for expired proposals, and reopen action for expired or archived proposals.
+  - Tightened proposal detail hierarchy with status, age, expiry, lifecycle
+    controls, and pending-only approve/reject controls.
+  - Hid low-value read/list audit events by default and collapsed optional
+    app, scope, and correlation metadata into a compact detail cell.
+  - Updated lifecycle, REST, schema, operability, admin-surface, static, and
+    WordPress smoke contracts.
+- **Boundary**:
+  - This remains Core governance lifecycle and admin display work only. It
+    records and curates proposal state; it does not execute abilities, run a
+    workflow/queue runtime, own Adapter/OpenClaw setup, store provider
+    credentials, manage prompt/preset policy, or perform final WordPress write
+    execution.
+
 ## 2026-05-31 — WordPress.org release preparation tightened
 
 - **Module**: Cross-plugin WordPress.org listing and release packaging.

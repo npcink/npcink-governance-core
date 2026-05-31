@@ -88,6 +88,8 @@ final class Admin_Page {
 		add_action( 'admin_post_magick_ai_core_revoke_app_key', array( $this, 'handle_revoke_app_key' ) );
 		add_action( 'admin_post_magick_ai_core_approve_proposal', array( $this, 'handle_approve' ) );
 		add_action( 'admin_post_magick_ai_core_reject_proposal', array( $this, 'handle_reject' ) );
+		add_action( 'admin_post_magick_ai_core_archive_proposal', array( $this, 'handle_archive' ) );
+		add_action( 'admin_post_magick_ai_core_reopen_proposal', array( $this, 'handle_reopen' ) );
 	}
 
 	/**
@@ -237,14 +239,18 @@ final class Admin_Page {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'magick-ai-core' ) );
 		}
 
-		$summary     = $this->abilities->summary();
-		$pending     = $this->proposals->list_recent( 20, 'pending' );
-		$pending_all = $this->proposals->list_recent( 200, 'pending' );
-		$selected_id = isset( $_GET['proposal_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['proposal_id'] ) ) : '';
-		$selected    = '' !== $selected_id ? $this->proposals->find( $selected_id ) : null;
-		$view        = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( (string) $_GET['view'] ) ) : '';
-		$message     = isset( $_GET['magick_ai_core_message'] ) ? sanitize_key( wp_unslash( (string) $_GET['magick_ai_core_message'] ) ) : '';
-		$error       = isset( $_GET['magick_ai_core_error'] ) ? sanitize_key( wp_unslash( (string) $_GET['magick_ai_core_error'] ) ) : '';
+		$this->service->expire_stale_pending();
+
+		$summary        = $this->abilities->summary();
+		$pending        = $this->proposals->list_recent( 20, Proposal_Repository::STATUS_PENDING );
+		$pending_count  = $this->proposals->count_by_status( Proposal_Repository::STATUS_PENDING );
+		$expired_count  = $this->proposals->count_by_status( Proposal_Repository::STATUS_EXPIRED );
+		$archived_count = $this->proposals->count_by_status( Proposal_Repository::STATUS_ARCHIVED );
+		$selected_id    = isset( $_GET['proposal_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['proposal_id'] ) ) : '';
+		$selected       = '' !== $selected_id ? $this->proposals->find( $selected_id ) : null;
+		$view           = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( (string) $_GET['view'] ) ) : '';
+		$message        = isset( $_GET['magick_ai_core_message'] ) ? sanitize_key( wp_unslash( (string) $_GET['magick_ai_core_message'] ) ) : '';
+		$error          = isset( $_GET['magick_ai_core_error'] ) ? sanitize_key( wp_unslash( (string) $_GET['magick_ai_core_error'] ) ) : '';
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html__( 'Magick AI Core', 'magick-ai-core' ); ?></h1>
@@ -269,17 +275,20 @@ final class Admin_Page {
 					<p><?php echo esc_html__( 'Selected proposal was not found.', 'magick-ai-core' ); ?></p>
 				</div>
 				<?php $this->render_admin_tabs( 'review' ); ?>
-				<?php $this->render_review_workbench( $summary, count( $pending_all ), $pending ); ?>
+				<?php $this->render_review_workbench( $summary, $pending_count, $expired_count, $archived_count, $pending ); ?>
 			<?php elseif ( 'audit' === $view ) : ?>
 				<?php $audit_filters = $this->audit_filters_from_request(); ?>
 				<?php $this->render_admin_tabs( 'audit' ); ?>
 				<?php $this->render_governance_audit( $this->audit->list_filtered( $audit_filters ), $audit_filters ); ?>
+			<?php elseif ( 'archive' === $view ) : ?>
+				<?php $this->render_admin_tabs( 'archive' ); ?>
+				<?php $this->render_archive_view(); ?>
 			<?php elseif ( 'app-keys' === $view ) : ?>
 				<?php $this->render_admin_tabs( 'app-keys' ); ?>
 				<?php $this->render_external_access(); ?>
 			<?php else : ?>
 				<?php $this->render_admin_tabs( 'review' ); ?>
-				<?php $this->render_review_workbench( $summary, count( $pending_all ), $pending ); ?>
+				<?php $this->render_review_workbench( $summary, $pending_count, $expired_count, $archived_count, $pending ); ?>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -300,6 +309,10 @@ final class Admin_Page {
 			'audit'    => array(
 				'label' => __( 'Governance Audit', 'magick-ai-core' ),
 				'url'   => $this->view_url( 'audit' ),
+			),
+			'archive'  => array(
+				'label' => __( 'Expired / Archived', 'magick-ai-core' ),
+				'url'   => $this->view_url( 'archive' ),
 			),
 			'app-keys' => array(
 				'label' => __( 'Core App Keys', 'magick-ai-core' ),
@@ -322,12 +335,14 @@ final class Admin_Page {
 	 *
 	 * @param array<string,mixed>            $summary Ability summary.
 	 * @param int                            $pending_count Pending proposal count.
+	 * @param int                            $expired_count Expired proposal count.
+	 * @param int                            $archived_count Archived proposal count.
 	 * @param array<int,array<string,mixed>> $pending Pending proposals.
 	 * @return void
 	 */
-	private function render_review_workbench( array $summary, int $pending_count, array $pending ): void {
+	private function render_review_workbench( array $summary, int $pending_count, int $expired_count, int $archived_count, array $pending ): void {
 		?>
-		<?php $this->render_summary_strip( $summary, $pending_count ); ?>
+		<?php $this->render_summary_strip( $summary, $pending_count, $expired_count, $archived_count ); ?>
 		<?php $this->render_pending_proposals( $pending ); ?>
 		<?php $this->render_recent_activity(); ?>
 		<?php
@@ -338,16 +353,18 @@ final class Admin_Page {
 	 *
 	 * @param array<string,mixed> $summary Ability summary.
 	 * @param int                 $pending_count Pending proposal count.
+	 * @param int                 $expired_count Expired proposal count.
+	 * @param int                 $archived_count Archived proposal count.
 	 * @return void
 	 */
-	private function render_summary_strip( array $summary, int $pending_count ): void {
+	private function render_summary_strip( array $summary, int $pending_count, int $expired_count, int $archived_count ): void {
 		?>
 		<h2><?php echo esc_html__( 'Review Queue', 'magick-ai-core' ); ?></h2>
 		<div class="magick-ai-core-status-strip" style="display: flex; flex-wrap: wrap; gap: 10px; max-width: 1100px; margin: 0 0 16px;">
-			<?php $this->render_status_metric( __( 'Pending proposals', 'magick-ai-core' ), (string) $pending_count, true ); ?>
+			<?php $this->render_status_metric( __( 'Needs review', 'magick-ai-core' ), (string) $pending_count, true ); ?>
+			<?php $this->render_status_metric( __( 'Expired', 'magick-ai-core' ), (string) $expired_count, false, false, $this->view_url( 'archive' ) ); ?>
+			<?php $this->render_status_metric( __( 'Archived', 'magick-ai-core' ), (string) $archived_count, false, false, $this->view_url( 'archive' ) ); ?>
 			<?php $this->render_status_metric( __( 'Available abilities', 'magick-ai-core' ), (string) $summary['count'] ); ?>
-			<?php $this->render_status_metric( __( 'Ability source', 'magick-ai-core' ), (string) $summary['source'], false, true ); ?>
-			<?php $this->render_status_metric( __( 'Audit events', 'magick-ai-core' ), (string) $this->audit->count() ); ?>
 		</div>
 		<?php
 	}
@@ -359,17 +376,24 @@ final class Admin_Page {
 	 * @param string $value Metric value.
 	 * @param bool   $primary Whether this is the main metric.
 	 * @param bool   $code Whether to render the value as code.
+	 * @param string $url Optional metric link.
 	 * @return void
 	 */
-	private function render_status_metric( string $label, string $value, bool $primary = false, bool $code = false ): void {
+	private function render_status_metric( string $label, string $value, bool $primary = false, bool $code = false, string $url = '' ): void {
 		?>
 		<div style="box-sizing: border-box; min-width: <?php echo $primary ? '190px' : '150px'; ?>; padding: 10px 12px; background: #fff; border: 1px solid #c3c4c7; border-left: 4px solid <?php echo $primary ? '#2271b1' : '#dcdcde'; ?>;">
 			<div style="color: #646970; font-size: 12px; line-height: 1.4;"><?php echo esc_html( $label ); ?></div>
 			<div style="font-size: <?php echo $primary ? '22px' : '16px'; ?>; font-weight: 600; line-height: 1.4;">
+				<?php if ( '' !== $url ) : ?>
+					<a href="<?php echo esc_url( $url ); ?>" style="text-decoration: none;">
+				<?php endif; ?>
 				<?php if ( $code ) : ?>
 					<code><?php echo esc_html( $value ); ?></code>
 				<?php else : ?>
 					<?php echo esc_html( $value ); ?>
+				<?php endif; ?>
+				<?php if ( '' !== $url ) : ?>
+					</a>
 				<?php endif; ?>
 			</div>
 		</div>
@@ -384,7 +408,7 @@ final class Admin_Page {
 	 */
 	private function render_pending_proposals( array $pending ): void {
 		?>
-		<h2><?php echo esc_html__( 'Pending Proposals', 'magick-ai-core' ); ?></h2>
+		<h2><?php echo esc_html__( 'Needs Review', 'magick-ai-core' ); ?></h2>
 		<table class="widefat striped" style="max-width: 1100px;">
 			<thead>
 				<tr>
@@ -396,7 +420,7 @@ final class Admin_Page {
 			<tbody>
 				<?php if ( empty( $pending ) ) : ?>
 					<tr>
-						<td colspan="3"><?php echo esc_html__( 'No pending proposals.', 'magick-ai-core' ); ?></td>
+						<td colspan="3"><?php echo esc_html__( 'No active proposals. Expired items are moved out of the review queue automatically.', 'magick-ai-core' ); ?></td>
 					</tr>
 				<?php endif; ?>
 				<?php foreach ( $pending as $proposal ) : ?>
@@ -484,6 +508,24 @@ final class Admin_Page {
 	 */
 	public function handle_reject(): void {
 		$this->handle_decision( 'reject' );
+	}
+
+	/**
+	 * Handles archive form submission.
+	 *
+	 * @return void
+	 */
+	public function handle_archive(): void {
+		$this->handle_lifecycle_action( 'archive' );
+	}
+
+	/**
+	 * Handles reopen form submission.
+	 *
+	 * @return void
+	 */
+	public function handle_reopen(): void {
+		$this->handle_lifecycle_action( 'reopen' );
 	}
 
 	/**
@@ -668,6 +710,57 @@ final class Admin_Page {
 	}
 
 	/**
+	 * Renders expired and archived proposals.
+	 *
+	 * @return void
+	 */
+	private function render_archive_view(): void {
+		$proposals = $this->proposals->list_by_statuses(
+			array(
+				Proposal_Repository::STATUS_EXPIRED,
+				Proposal_Repository::STATUS_ARCHIVED,
+			),
+			50
+		);
+		?>
+		<h2><?php echo esc_html__( 'Expired / Archived', 'magick-ai-core' ); ?></h2>
+		<p><?php echo esc_html__( 'Stale requests are kept for audit but removed from the active review queue.', 'magick-ai-core' ); ?></p>
+		<table class="widefat striped" style="max-width: 1100px;">
+			<thead>
+				<tr>
+					<th scope="col"><?php echo esc_html__( 'Proposal', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Status', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Age', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Updated', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Action', 'magick-ai-core' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php if ( empty( $proposals ) ) : ?>
+					<tr>
+						<td colspan="5"><?php echo esc_html__( 'No expired or archived proposals.', 'magick-ai-core' ); ?></td>
+					</tr>
+				<?php endif; ?>
+				<?php foreach ( $proposals as $proposal ) : ?>
+					<tr>
+						<td>
+							<a href="<?php echo esc_url( $this->detail_url( (string) $proposal['proposal_id'] ) ); ?>">
+								<strong><?php echo esc_html( (string) ( $proposal['title'] ?: $proposal['proposal_id'] ) ); ?></strong>
+							</a><br />
+							<code><?php echo esc_html( (string) $proposal['ability_id'] ); ?></code>
+						</td>
+						<td><?php echo esc_html( $this->status_label( (string) $proposal['status'] ) ); ?></td>
+						<td><?php echo esc_html( $this->proposal_age_label( $proposal ) ); ?></td>
+						<td><?php echo esc_html( (string) $proposal['updated_at'] ); ?></td>
+						<td><?php $this->render_lifecycle_actions( $proposal, true ); ?></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<?php
+	}
+
+	/**
 	 * Renders scope checkboxes.
 	 *
 	 * @return void
@@ -785,6 +878,40 @@ final class Admin_Page {
 	}
 
 	/**
+	 * Handles proposal archive or reopen actions.
+	 *
+	 * @param string $action Lifecycle action.
+	 * @return void
+	 */
+	private function handle_lifecycle_action( string $action ): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to update proposals.', 'magick-ai-core' ) );
+		}
+
+		$proposal_id = isset( $_POST['proposal_id'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['proposal_id'] ) ) : '';
+		check_admin_referer( 'magick_ai_core_' . $action . '_proposal_' . $proposal_id );
+
+		$result = 'archive' === $action
+			? $this->service->archive( $proposal_id, array( 'source' => 'admin' ) )
+			: $this->service->reopen( $proposal_id, array( 'source' => 'admin' ) );
+
+		if ( is_wp_error( $result ) ) {
+			wp_safe_redirect( $this->admin_url( array( 'view' => 'archive', 'magick_ai_core_error' => $result->get_error_code() ) ) );
+			exit;
+		}
+
+		wp_safe_redirect(
+			$this->admin_url(
+				array(
+					'view'                   => 'archive',
+					'magick_ai_core_message' => 'archive' === $action ? 'archived' : 'reopened',
+				)
+			)
+		);
+		exit;
+	}
+
+	/**
 	 * Renders proposal detail.
 	 *
 	 * @param array<string,mixed> $proposal Proposal.
@@ -811,7 +938,15 @@ final class Admin_Page {
 				</tr>
 				<tr>
 					<th scope="row"><?php echo esc_html__( 'Status', 'magick-ai-core' ); ?></th>
-					<td><?php echo esc_html( (string) $proposal['status'] ); ?></td>
+					<td><?php echo esc_html( $this->status_label( (string) $proposal['status'] ) ); ?></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php echo esc_html__( 'Age', 'magick-ai-core' ); ?></th>
+					<td><?php echo esc_html( $this->proposal_age_label( $proposal ) ); ?></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php echo esc_html__( 'Expiry', 'magick-ai-core' ); ?></th>
+					<td><?php echo esc_html( $this->proposal_expiry_label( $proposal ) ); ?></td>
 				</tr>
 				<tr>
 					<th scope="row"><?php echo esc_html__( 'Ability', 'magick-ai-core' ); ?></th>
@@ -824,9 +959,10 @@ final class Admin_Page {
 			</tbody>
 		</table>
 
+		<?php $this->render_lifecycle_actions( $proposal ); ?>
 		<?php $this->render_review_context( $proposal, $capability ); ?>
 
-		<?php if ( 'pending' === (string) $proposal['status'] ) : ?>
+		<?php if ( Proposal_Repository::STATUS_PENDING === (string) $proposal['status'] ) : ?>
 			<h3><?php echo esc_html__( 'Decision', 'magick-ai-core' ); ?></h3>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="max-width: 760px;">
 				<input type="hidden" name="proposal_id" value="<?php echo esc_attr( $proposal_id ); ?>" />
@@ -848,6 +984,57 @@ final class Admin_Page {
 
 		<?php $this->render_raw_proposal_payload( $proposal ); ?>
 		<?php $this->render_audit_timeline( $timeline ); ?>
+		<?php
+	}
+
+	/**
+	 * Renders proposal lifecycle actions.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @param bool                $compact Whether to render compact actions.
+	 * @return void
+	 */
+	private function render_lifecycle_actions( array $proposal, bool $compact = false ): void {
+		$status      = (string) ( $proposal['status'] ?? '' );
+		$proposal_id = (string) ( $proposal['proposal_id'] ?? '' );
+
+		if ( '' === $proposal_id || ! in_array( $status, array( Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_ARCHIVED ), true ) ) {
+			return;
+		}
+
+		if ( ! $compact ) {
+			?>
+			<h3><?php echo esc_html__( 'Lifecycle', 'magick-ai-core' ); ?></h3>
+			<p><?php echo esc_html__( 'Expired and archived proposals are not eligible for approval until reopened.', 'magick-ai-core' ); ?></p>
+			<?php
+		}
+		?>
+		<div style="display: flex; flex-wrap: wrap; gap: 8px;">
+			<?php if ( Proposal_Repository::STATUS_EXPIRED === $status ) : ?>
+				<?php $this->render_lifecycle_form( $proposal_id, 'archive', __( 'Archive', 'magick-ai-core' ), 'button' ); ?>
+			<?php endif; ?>
+			<?php $this->render_lifecycle_form( $proposal_id, 'reopen', __( 'Reopen for review', 'magick-ai-core' ), 'button button-secondary' ); ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Renders one lifecycle action form.
+	 *
+	 * @param string $proposal_id Proposal id.
+	 * @param string $action Action key.
+	 * @param string $label Button label.
+	 * @param string $class Button class.
+	 * @return void
+	 */
+	private function render_lifecycle_form( string $proposal_id, string $action, string $label, string $class ): void {
+		?>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin: 0;">
+			<input type="hidden" name="action" value="<?php echo esc_attr( 'magick_ai_core_' . $action . '_proposal' ); ?>" />
+			<input type="hidden" name="proposal_id" value="<?php echo esc_attr( $proposal_id ); ?>" />
+			<?php wp_nonce_field( 'magick_ai_core_' . $action . '_proposal_' . $proposal_id ); ?>
+			<button type="submit" class="<?php echo esc_attr( $class ); ?>"><?php echo esc_html( $label ); ?></button>
+		</form>
 		<?php
 	}
 
@@ -992,33 +1179,21 @@ final class Admin_Page {
 					<th scope="col"><?php echo esc_html__( 'Time', 'magick-ai-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'Event', 'magick-ai-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'Actor', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'App', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Scope decision', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Correlation', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Detail', 'magick-ai-core' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php if ( empty( $events ) ) : ?>
 					<tr>
-						<td colspan="6"><?php echo esc_html__( 'No audit events recorded for this proposal yet.', 'magick-ai-core' ); ?></td>
+						<td colspan="4"><?php echo esc_html__( 'No audit events recorded for this proposal yet.', 'magick-ai-core' ); ?></td>
 					</tr>
 				<?php endif; ?>
 				<?php foreach ( $events as $event ) : ?>
-					<?php
-					$metadata       = is_array( $event['metadata'] ?? null ) ? $event['metadata'] : array();
-					$auth           = is_array( $metadata['auth'] ?? null ) ? $metadata['auth'] : array();
-					$app_label      = (string) ( $auth['app_id'] ?? '-' );
-					$scope          = (string) ( $auth['scope'] ?? '-' );
-					$scope_decision = (string) ( $auth['scope_decision'] ?? '-' );
-					$correlation_id = (string) ( $metadata['correlation_id'] ?? '-' );
-					?>
 					<tr>
 						<td><?php echo esc_html( (string) $event['created_at'] ); ?></td>
 						<td><code><?php echo esc_html( (string) $event['event_name'] ); ?></code></td>
 						<td><?php echo esc_html( (string) $event['actor_id'] ); ?></td>
-						<td><code><?php echo esc_html( $app_label ); ?></code></td>
-						<td><code><?php echo esc_html( $scope . ' / ' . $scope_decision ); ?></code></td>
-						<td><code><?php echo esc_html( $correlation_id ); ?></code></td>
+						<td><?php $this->render_audit_detail( $event ); ?></td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
@@ -1075,6 +1250,15 @@ final class Admin_Page {
 							<th scope="row"><label for="magick-ai-core-audit-limit"><?php echo esc_html__( 'Limit', 'magick-ai-core' ); ?></label></th>
 							<td><input id="magick-ai-core-audit-limit" type="number" min="1" max="200" name="audit_limit" value="<?php echo esc_attr( (string) $filters['limit'] ); ?>" /></td>
 						</tr>
+						<tr>
+							<th scope="row"><?php echo esc_html__( 'Read events', 'magick-ai-core' ); ?></th>
+							<td>
+								<label>
+									<input type="checkbox" name="audit_include_read_events" value="1" <?php checked( ! empty( $filters['include_read_events'] ) ); ?> />
+									<?php echo esc_html__( 'Include list/view noise events', 'magick-ai-core' ); ?>
+								</label>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 				<p>
@@ -1091,28 +1275,20 @@ final class Admin_Page {
 					<th scope="col"><?php echo esc_html__( 'Proposal', 'magick-ai-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'Actor', 'magick-ai-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'Ability', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'App / caller', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Scope decision', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Correlation', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Detail', 'magick-ai-core' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php if ( empty( $events ) ) : ?>
 					<tr>
-						<td colspan="8"><?php echo esc_html__( 'No governance audit events match the current filters.', 'magick-ai-core' ); ?></td>
+						<td colspan="6"><?php echo esc_html__( 'No governance audit events match the current filters.', 'magick-ai-core' ); ?></td>
 					</tr>
 				<?php endif; ?>
 				<?php foreach ( $events as $event ) : ?>
 					<?php
 					$metadata       = is_array( $event['metadata'] ?? null ) ? $event['metadata'] : array();
-					$auth           = is_array( $metadata['auth'] ?? null ) ? $metadata['auth'] : array();
 					$proposal_id    = (string) ( $event['proposal_id'] ?? '' );
-					$ability_id     = (string) ( $metadata['ability_id'] ?? '-' );
-					$app_id         = (string) ( $auth['app_id'] ?? '-' );
-					$caller_type    = (string) ( $auth['caller_type'] ?? '-' );
-					$scope          = (string) ( $auth['scope'] ?? '-' );
-					$scope_decision = (string) ( $auth['scope_decision'] ?? '-' );
-					$correlation_id = (string) ( $metadata['correlation_id'] ?? '-' );
+					$ability_id     = (string) ( $metadata['ability_id'] ?? '' );
 					?>
 					<tr>
 						<td><?php echo esc_html( (string) $event['created_at'] ); ?></td>
@@ -1121,18 +1297,90 @@ final class Admin_Page {
 							<?php if ( '' !== $proposal_id ) : ?>
 								<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
 							<?php else : ?>
-								<span aria-hidden="true">-</span>
+								<?php echo esc_html__( 'System', 'magick-ai-core' ); ?>
 							<?php endif; ?>
 						</td>
 						<td><?php echo esc_html( (string) $event['actor_id'] ); ?></td>
-						<td><code><?php echo esc_html( $ability_id ); ?></code></td>
-						<td><code><?php echo esc_html( $app_id . ' / ' . $caller_type ); ?></code></td>
-						<td><code><?php echo esc_html( $scope . ' / ' . $scope_decision ); ?></code></td>
-						<td><code><?php echo esc_html( $correlation_id ); ?></code></td>
+						<td><?php echo '' !== $ability_id ? '<code>' . esc_html( $ability_id ) . '</code>' : esc_html__( 'Core event', 'magick-ai-core' ); ?></td>
+						<td><?php $this->render_audit_detail( $event ); ?></td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
 		</table>
+		<?php
+	}
+
+	/**
+	 * Renders compact optional audit metadata.
+	 *
+	 * @param array<string,mixed> $event Audit event.
+	 * @return void
+	 */
+	private function render_audit_detail( array $event ): void {
+		$metadata       = is_array( $event['metadata'] ?? null ) ? $event['metadata'] : array();
+		$auth           = is_array( $metadata['auth'] ?? null ) ? $metadata['auth'] : array();
+		$proposal_id    = (string) ( $event['proposal_id'] ?? '' );
+		$app_id         = (string) ( $auth['app_id'] ?? '' );
+		$caller_type    = (string) ( $auth['caller_type'] ?? '' );
+		$scope          = (string) ( $auth['scope'] ?? '' );
+		$scope_decision = (string) ( $auth['scope_decision'] ?? '' );
+		$correlation_id = (string) ( $metadata['correlation_id'] ?? '' );
+		$has_detail     = false;
+
+		if ( '' === $proposal_id ) {
+			$this->render_audit_badge( __( 'System event', 'magick-ai-core' ) );
+			$has_detail = true;
+		}
+
+		if ( '' !== $app_id || '' !== $caller_type ) {
+			$this->render_audit_badge(
+				sprintf(
+					/* translators: 1: app id, 2: caller type. */
+					__( 'App: %1$s / %2$s', 'magick-ai-core' ),
+					'' !== $app_id ? $app_id : __( 'unknown', 'magick-ai-core' ),
+					'' !== $caller_type ? $caller_type : __( 'unknown', 'magick-ai-core' )
+				)
+			);
+			$has_detail = true;
+		}
+
+		if ( '' !== $scope || '' !== $scope_decision ) {
+			$this->render_audit_badge(
+				sprintf(
+					/* translators: 1: scope, 2: scope decision. */
+					__( 'Scope: %1$s / %2$s', 'magick-ai-core' ),
+					'' !== $scope ? $scope : __( 'unknown', 'magick-ai-core' ),
+					'' !== $scope_decision ? $scope_decision : __( 'unknown', 'magick-ai-core' )
+				)
+			);
+			$has_detail = true;
+		}
+
+		if ( '' !== $correlation_id ) {
+			$this->render_audit_badge(
+				sprintf(
+					/* translators: %s: correlation id. */
+					__( 'Correlation: %s', 'magick-ai-core' ),
+					$correlation_id
+				)
+			);
+			$has_detail = true;
+		}
+
+		if ( ! $has_detail ) {
+			echo esc_html__( 'No extra context', 'magick-ai-core' );
+		}
+	}
+
+	/**
+	 * Renders one audit detail badge.
+	 *
+	 * @param string $label Badge label.
+	 * @return void
+	 */
+	private function render_audit_badge( string $label ): void {
+		?>
+		<code style="display: inline-block; margin: 0 4px 4px 0;"><?php echo esc_html( $label ); ?></code>
 		<?php
 	}
 
@@ -1142,7 +1390,8 @@ final class Admin_Page {
 	 * @return array<string,mixed>
 	 */
 	private function audit_filters_from_request(): array {
-		return array(
+		$include_read_events = ! empty( $_GET['audit_include_read_events'] );
+		$filters             = array(
 			'proposal_id'    => isset( $_GET['audit_proposal_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_proposal_id'] ) ) : '',
 			'event_name'     => isset( $_GET['audit_event_name'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_event_name'] ) ) : '',
 			'ability_id'     => isset( $_GET['audit_ability_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_ability_id'] ) ) : '',
@@ -1150,7 +1399,14 @@ final class Admin_Page {
 			'caller_type'    => isset( $_GET['audit_caller_type'] ) ? sanitize_key( wp_unslash( (string) $_GET['audit_caller_type'] ) ) : '',
 			'correlation_id' => isset( $_GET['audit_correlation_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_correlation_id'] ) ) : '',
 			'limit'          => isset( $_GET['audit_limit'] ) ? max( 1, min( 200, absint( wp_unslash( (string) $_GET['audit_limit'] ) ) ) ) : 50,
+			'include_read_events' => $include_read_events,
 		);
+
+		if ( ! $include_read_events ) {
+			$filters['exclude_event_names'] = $this->low_value_audit_events();
+		}
+
+		return $filters;
 	}
 
 	/**
@@ -1166,7 +1422,121 @@ final class Admin_Page {
 			}
 		}
 
-		return 50 !== (int) ( $filters['limit'] ?? 50 );
+		return 50 !== (int) ( $filters['limit'] ?? 50 ) || ! empty( $filters['include_read_events'] );
+	}
+
+	/**
+	 * Returns low-value read events hidden by default from the admin audit.
+	 *
+	 * @return array<int,string>
+	 */
+	private function low_value_audit_events(): array {
+		return array(
+			'proposal.viewed',
+			'proposal.listed',
+			'capabilities.listed',
+			'audit.listed',
+			'app.listed',
+		);
+	}
+
+	/**
+	 * Returns a display label for proposal status.
+	 *
+	 * @param string $status Raw status.
+	 * @return string
+	 */
+	private function status_label( string $status ): string {
+		$labels = array(
+			Proposal_Repository::STATUS_PENDING  => __( 'Needs review', 'magick-ai-core' ),
+			Proposal_Repository::STATUS_APPROVED => __( 'Approved', 'magick-ai-core' ),
+			Proposal_Repository::STATUS_REJECTED => __( 'Rejected', 'magick-ai-core' ),
+			Proposal_Repository::STATUS_EXPIRED  => __( 'Expired', 'magick-ai-core' ),
+			Proposal_Repository::STATUS_ARCHIVED => __( 'Archived', 'magick-ai-core' ),
+		);
+
+		return (string) ( $labels[ $status ] ?? $status );
+	}
+
+	/**
+	 * Returns a proposal age label.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return string
+	 */
+	private function proposal_age_label( array $proposal ): string {
+		$created = strtotime( (string) ( $proposal['created_at'] ?? '' ) );
+		if ( false === $created ) {
+			return __( 'Unknown', 'magick-ai-core' );
+		}
+
+		$seconds = max( 0, time() - $created );
+		return $this->duration_label( $seconds );
+	}
+
+	/**
+	 * Returns a proposal expiry label.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return string
+	 */
+	private function proposal_expiry_label( array $proposal ): string {
+		$status  = (string) ( $proposal['status'] ?? '' );
+		$created = strtotime( (string) ( $proposal['created_at'] ?? '' ) );
+		if ( false === $created ) {
+			return __( 'Unknown', 'magick-ai-core' );
+		}
+
+		if ( Proposal_Repository::STATUS_PENDING !== $status ) {
+			if ( Proposal_Repository::STATUS_EXPIRED === $status || Proposal_Repository::STATUS_ARCHIVED === $status ) {
+				return __( 'Expired', 'magick-ai-core' );
+			}
+
+			return __( 'Not applicable', 'magick-ai-core' );
+		}
+
+		$expires_at = $created + $this->service->pending_ttl_seconds();
+		$remaining  = $expires_at - time();
+
+		if ( $remaining <= 0 ) {
+			return __( 'Expired', 'magick-ai-core' );
+		}
+
+		return sprintf(
+			/* translators: %s: remaining duration. */
+			__( 'Expires in %s', 'magick-ai-core' ),
+			$this->duration_label( $remaining )
+		);
+	}
+
+	/**
+	 * Returns a compact duration label.
+	 *
+	 * @param int $seconds Duration in seconds.
+	 * @return string
+	 */
+	private function duration_label( int $seconds ): string {
+		if ( $seconds < HOUR_IN_SECONDS ) {
+			return sprintf(
+				/* translators: %d: minutes. */
+				__( '%d min', 'magick-ai-core' ),
+				max( 1, (int) ceil( $seconds / MINUTE_IN_SECONDS ) )
+			);
+		}
+
+		if ( $seconds < DAY_IN_SECONDS ) {
+			return sprintf(
+				/* translators: %d: hours. */
+				__( '%d hr', 'magick-ai-core' ),
+				max( 1, (int) ceil( $seconds / HOUR_IN_SECONDS ) )
+			);
+		}
+
+		return sprintf(
+			/* translators: %d: days. */
+			__( '%d days', 'magick-ai-core' ),
+			max( 1, (int) ceil( $seconds / DAY_IN_SECONDS ) )
+		);
 	}
 
 	/**
@@ -1209,10 +1579,15 @@ final class Admin_Page {
 		$messages = array(
 			'approved'                                      => __( 'Proposal approved.', 'magick-ai-core' ),
 			'rejected'                                      => __( 'Proposal rejected.', 'magick-ai-core' ),
+			'archived'                                      => __( 'Proposal archived.', 'magick-ai-core' ),
+			'reopened'                                      => __( 'Proposal reopened for review.', 'magick-ai-core' ),
 			'app_key_revoked'                               => __( 'App key disabled.', 'magick-ai-core' ),
 			'magick_ai_core_app_key_not_active'             => __( 'App key is missing or already disabled.', 'magick-ai-core' ),
 			'magick_ai_core_app_key_revoke_failed'          => __( 'App key could not be disabled.', 'magick-ai-core' ),
 			'magick_ai_core_proposal_not_found'             => __( 'Proposal was not found.', 'magick-ai-core' ),
+			'magick_ai_core_proposal_expired'               => __( 'Proposal expired before a decision was made.', 'magick-ai-core' ),
+			'magick_ai_core_proposal_archive_not_allowed'   => __( 'Only expired proposals can be archived.', 'magick-ai-core' ),
+			'magick_ai_core_proposal_reopen_not_allowed'    => __( 'Only expired or archived proposals can be reopened.', 'magick-ai-core' ),
 			'magick_ai_core_proposal_already_decided'       => __( 'Only pending proposals can be approved or rejected.', 'magick-ai-core' ),
 			'magick_ai_core_proposal_transition_failed'     => __( 'Proposal status could not be updated.', 'magick-ai-core' ),
 		);

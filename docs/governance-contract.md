@@ -49,6 +49,15 @@ Allowed MVP statuses:
 - `pending`
 - `approved`
 - `rejected`
+- `expired`
+- `archived`
+
+Pending proposals have a bounded review lifetime. Core may automatically move
+stale `pending` proposals to `expired` before listing, viewing, or deciding
+them. Expired proposals are not eligible for approval until they are reopened.
+Expired proposals may be archived as low-frequency audit records, and expired
+or archived proposals may be reopened to `pending` when an administrator needs
+to review them again.
 
 ## Plan-To-Proposal Intake
 
@@ -109,6 +118,9 @@ MVP event names:
 - `proposal.plan_ingested`
 - `proposal.approved`
 - `proposal.rejected`
+- `proposal.expired`
+- `proposal.archived`
+- `proposal.reopened`
 - `proposal.viewed`
 - `proposal.listed`
 - `capabilities.listed`

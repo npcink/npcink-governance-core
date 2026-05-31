@@ -267,6 +267,7 @@ final class Proposals_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function list_proposals( WP_REST_Request $request ): WP_REST_Response {
+		$this->service->expire_stale_pending();
 		$items = $this->repository->list_recent( (int) $request->get_param( 'limit' ) );
 		$this->service->record_listed( count( $items ) );
 
@@ -285,6 +286,7 @@ final class Proposals_Controller {
 	 * @return WP_REST_Response|\WP_Error
 	 */
 	public function get_proposal( WP_REST_Request $request ) {
+		$this->service->expire_stale_pending();
 		$proposal_id = (string) $request->get_param( 'proposal_id' );
 		$proposal    = $this->repository->find( $proposal_id );
 

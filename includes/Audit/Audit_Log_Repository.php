@@ -120,6 +120,7 @@ final class Audit_Log_Repository {
 		$key_id         = sanitize_text_field( (string) ( $filters['key_id'] ?? '' ) );
 		$caller_type    = sanitize_key( (string) ( $filters['caller_type'] ?? '' ) );
 		$correlation_id = sanitize_text_field( (string) ( $filters['correlation_id'] ?? '' ) );
+		$exclude_events = is_array( $filters['exclude_event_names'] ?? null ) ? $this->sanitize_event_names( (array) $filters['exclude_event_names'] ) : array();
 		$order          = 'asc' === sanitize_key( (string) ( $filters['order'] ?? 'desc' ) ) ? 'ASC' : 'DESC';
 		$where          = array();
 		$args           = array();
@@ -132,6 +133,11 @@ final class Audit_Log_Repository {
 		if ( '' !== $event_name ) {
 			$where[] = 'event_name = %s';
 			$args[]  = $event_name;
+		} elseif ( ! empty( $exclude_events ) ) {
+			$where[] = 'event_name NOT IN (' . implode( ', ', array_fill( 0, count( $exclude_events ), '%s' ) ) . ')';
+			foreach ( $exclude_events as $excluded ) {
+				$args[] = $excluded;
+			}
 		}
 
 		$metadata_filters = array(
@@ -211,6 +217,25 @@ final class Audit_Log_Repository {
 	private function metadata_filter_needle( string $key, string $value ): string {
 		$encoded = wp_json_encode( $value );
 		return '"' . sanitize_key( $key ) . '":' . ( is_string( $encoded ) ? $encoded : '""' );
+	}
+
+	/**
+	 * Sanitizes audit event names.
+	 *
+	 * @param array<int,string> $event_names Event names.
+	 * @return array<int,string>
+	 */
+	private function sanitize_event_names( array $event_names ): array {
+		$clean = array();
+
+		foreach ( $event_names as $event_name ) {
+			$event_name = sanitize_text_field( (string) $event_name );
+			if ( '' !== $event_name ) {
+				$clean[] = $event_name;
+			}
+		}
+
+		return array_values( array_unique( $clean ) );
 	}
 
 	/**

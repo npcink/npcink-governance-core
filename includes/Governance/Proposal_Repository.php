@@ -15,6 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Persists AI operation proposals.
  */
 final class Proposal_Repository {
+	const STATUS_PENDING  = 'pending';
+	const STATUS_APPROVED = 'approved';
+	const STATUS_REJECTED = 'rejected';
+	const STATUS_EXPIRED  = 'expired';
+	const STATUS_ARCHIVED = 'archived';
+
 	/**
 	 * Returns table name.
 	 *
@@ -76,7 +82,7 @@ final class Proposal_Repository {
 		$record      = array(
 			'proposal_id'  => $proposal_id,
 			'ability_id'   => sanitize_text_field( (string) ( $data['ability_id'] ?? '' ) ),
-			'status'       => 'pending',
+			'status'       => self::STATUS_PENDING,
 			'title'        => sanitize_text_field( (string) ( $data['title'] ?? '' ) ),
 			'summary'      => sanitize_textarea_field( (string) ( $data['summary'] ?? '' ) ),
 			'input_json'   => wp_json_encode( $this->sanitize_payload( $data['input'] ?? array() ) ),
@@ -127,6 +133,68 @@ final class Proposal_Repository {
 	}
 
 	/**
+	 * Lists recent proposals by status set.
+	 *
+	 * @param array<int,string> $statuses Status filters.
+	 * @param int               $limit Maximum rows.
+	 * @return array<int,array<string,mixed>>
+	 */
+	public function list_by_statuses( array $statuses, int $limit = 50 ): array {
+		global $wpdb;
+
+		$statuses = $this->sanitize_statuses( $statuses );
+		if ( empty( $statuses ) ) {
+			return array();
+		}
+
+		$limit        = max( 1, min( 200, $limit ) );
+		$placeholders = implode( ', ', array_fill( 0, count( $statuses ), '%s' ) );
+		$args         = $statuses;
+		$args[]       = $limit;
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL uses fixed clauses, generated placeholders, and a table name from the WordPress prefix.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name() . ' WHERE status IN (' . $placeholders . ') ORDER BY id DESC LIMIT %d',
+				$args
+			),
+			ARRAY_A
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+
+		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
+	}
+
+	/**
+	 * Lists stale pending proposals older than a TTL.
+	 *
+	 * @param int $ttl_seconds Pending TTL in seconds.
+	 * @param int $limit Maximum rows.
+	 * @return array<int,array<string,mixed>>
+	 */
+	public function list_stale_pending( int $ttl_seconds, int $limit = 100 ): array {
+		global $wpdb;
+
+		$ttl_seconds = max( 60, $ttl_seconds );
+		$limit       = max( 1, min( 200, $limit ) );
+		$cutoff      = gmdate( 'Y-m-d H:i:s', time() - $ttl_seconds );
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name is generated from the WordPress table prefix; query values use placeholders.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name() . ' WHERE status = %s AND created_at < %s ORDER BY id ASC LIMIT %d',
+				self::STATUS_PENDING,
+				$cutoff,
+				$limit
+			),
+			ARRAY_A
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+
+		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
+	}
+
+	/**
 	 * Finds a proposal by id.
 	 *
 	 * @param string $proposal_id Proposal id.
@@ -160,7 +228,7 @@ final class Proposal_Repository {
 
 		$proposal_id = sanitize_text_field( $proposal_id );
 		$status      = sanitize_key( $status );
-		$allowed     = array( 'pending', 'approved', 'rejected' );
+		$allowed     = $this->allowed_statuses();
 
 		if ( ! in_array( $status, $allowed, true ) ) {
 			return null;
@@ -181,6 +249,34 @@ final class Proposal_Repository {
 	}
 
 	/**
+	 * Reopens a proposal and resets the review clock.
+	 *
+	 * @param string $proposal_id Proposal id.
+	 * @return array<string,mixed>|null
+	 */
+	public function reopen( string $proposal_id ): ?array {
+		global $wpdb;
+
+		$proposal_id = sanitize_text_field( $proposal_id );
+		$now         = current_time( 'mysql', true );
+
+		$wpdb->update(
+			$this->table_name(),
+			array(
+				'status'     => self::STATUS_PENDING,
+				'created_at' => $now,
+				'updated_at' => $now,
+			),
+			array( 'proposal_id' => $proposal_id ),
+			array( '%s', '%s', '%s' ),
+			array( '%s' )
+		);
+
+		return $this->find( $proposal_id );
+	}
+
+
+	/**
 	 * Counts proposals.
 	 *
 	 * @return int
@@ -193,6 +289,57 @@ final class Proposal_Repository {
 		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 		return $count;
+	}
+
+	/**
+	 * Counts proposals by status.
+	 *
+	 * @param string $status Status filter.
+	 * @return int
+	 */
+	public function count_by_status( string $status ): int {
+		return $this->count_by_statuses( array( $status ) );
+	}
+
+	/**
+	 * Counts proposals by status set.
+	 *
+	 * @param array<int,string> $statuses Status filters.
+	 * @return int
+	 */
+	public function count_by_statuses( array $statuses ): int {
+		global $wpdb;
+
+		$statuses = $this->sanitize_statuses( $statuses );
+		if ( empty( $statuses ) ) {
+			return 0;
+		}
+
+		$placeholders = implode( ', ', array_fill( 0, count( $statuses ), '%s' ) );
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL uses fixed clauses, generated placeholders, and a table name from the WordPress prefix.
+		return (int) $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM ' . $this->table_name() . ' WHERE status IN (' . $placeholders . ')',
+				$statuses
+			)
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+	}
+
+	/**
+	 * Returns allowed proposal statuses.
+	 *
+	 * @return array<int,string>
+	 */
+	public function allowed_statuses(): array {
+		return array(
+			self::STATUS_PENDING,
+			self::STATUS_APPROVED,
+			self::STATUS_REJECTED,
+			self::STATUS_EXPIRED,
+			self::STATUS_ARCHIVED,
+		);
 	}
 
 	/**
@@ -227,6 +374,26 @@ final class Proposal_Repository {
 		$decoded = json_decode( (string) $json, true );
 
 		return null === $decoded ? array() : $decoded;
+	}
+
+	/**
+	 * Sanitizes and validates proposal statuses.
+	 *
+	 * @param array<int,string> $statuses Raw statuses.
+	 * @return array<int,string>
+	 */
+	private function sanitize_statuses( array $statuses ): array {
+		$allowed = $this->allowed_statuses();
+		$clean   = array();
+
+		foreach ( $statuses as $status ) {
+			$status = sanitize_key( (string) $status );
+			if ( in_array( $status, $allowed, true ) ) {
+				$clean[] = $status;
+			}
+		}
+
+		return array_values( array_unique( $clean ) );
 	}
 
 	/**

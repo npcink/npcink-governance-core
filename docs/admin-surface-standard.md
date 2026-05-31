@@ -14,6 +14,7 @@ The page is split into focused admin tabs:
 
 - `Review Queue`;
 - `Governance Audit`;
+- `Expired / Archived`;
 - `Core App Keys`.
 
 The default `Review Queue` tab must stay focused on the current governance
@@ -21,6 +22,7 @@ queue:
 
 - compact status strip;
 - pending proposal review list;
+- stale proposal counts that link operators to the expired/archive tab;
 - short recent activity disclosure, collapsed by default.
 
 ## Detail Views
@@ -32,11 +34,17 @@ Proposal detail should be a focused review surface:
 - approve/reject decision controls for pending proposals;
 - raw proposal payload behind a disclosure;
 - proposal audit timeline.
+- lifecycle controls for expired or archived proposals.
 
-Full `Governance Audit` and `Core App Keys` belong in dedicated low-frequency
-tabs, not inline on the default workbench. Core app-key creation is a
-low-frequency fallback action and should stay behind an explicit disclosure on
-the `Core App Keys` tab.
+Full `Governance Audit`, `Expired / Archived`, and `Core App Keys` belong in
+dedicated low-frequency tabs, not inline on the default workbench. Core app-key
+creation is a low-frequency fallback action and should stay behind an explicit
+disclosure on the `Core App Keys` tab.
+
+The full audit table should suppress low-value read/list events by default and
+must not render placeholder-only columns such as `- / -`. Optional app, scope,
+and correlation metadata belongs in a compact detail cell and should appear
+only when it exists.
 
 ## Do Not Add
 

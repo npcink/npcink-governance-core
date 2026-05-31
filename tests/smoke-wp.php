@@ -1173,6 +1173,42 @@ magick_ai_core_smoke_assert( 429 === (int) $rate_limited['status'], 'app rate li
 $listed = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/proposals', array( 'limit' => 10 ) );
 magick_ai_core_smoke_assert( count( (array) ( $listed['items'] ?? array() ) ) > 0, 'proposal list endpoint returns proposals' );
 
+$stale = magick_ai_core_smoke_rest(
+	'POST',
+	'/magick-ai-core/v1/proposals',
+	array(
+		'ability_id' => 'magick-ai/create-draft',
+		'title'      => 'Smoke stale proposal',
+		'summary'    => 'Created to verify automatic expiration.',
+	)
+);
+$stale_id = (string) ( $stale['proposal_id'] ?? '' );
+magick_ai_core_smoke_assert( '' !== $stale_id && 'pending' === (string) ( $stale['status'] ?? '' ), 'stale smoke proposal starts pending' );
+
+$proposal_repository = \MagickAI\Core\Plugin::instance()->proposal_repository();
+$proposal_service    = \MagickAI\Core\Plugin::instance()->proposal_service();
+$stale_time          = gmdate( 'Y-m-d H:i:s', time() - \MagickAI\Core\Governance\Proposal_Service::PENDING_TTL_SECONDS - HOUR_IN_SECONDS );
+global $wpdb;
+$wpdb->update(
+	$proposal_repository->table_name(),
+	array(
+		'created_at' => $stale_time,
+		'updated_at' => $stale_time,
+	),
+	array( 'proposal_id' => $stale_id ),
+	array( '%s', '%s' ),
+	array( '%s' )
+);
+
+$expired_detail = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/proposals/' . rawurlencode( $stale_id ) );
+magick_ai_core_smoke_assert( 'expired' === (string) ( $expired_detail['status'] ?? '' ), 'stale pending proposal expires before detail response' );
+
+$archived = $proposal_service->archive( $stale_id, array( 'source' => 'smoke' ) );
+magick_ai_core_smoke_assert( is_array( $archived ) && 'archived' === (string) ( $archived['status'] ?? '' ), 'expired proposal can be archived' );
+
+$reopened = $proposal_service->reopen( $stale_id, array( 'source' => 'smoke' ) );
+magick_ai_core_smoke_assert( is_array( $reopened ) && 'pending' === (string) ( $reopened['status'] ?? '' ), 'archived proposal can be reopened for review' );
+
 $missing_detail = magick_ai_core_smoke_rest_result( 'GET', '/magick-ai-core/v1/proposals/missing-smoke-proposal' );
 magick_ai_core_smoke_assert( 404 === (int) $missing_detail['status'], 'proposal detail endpoint returns 404 for missing proposal' );
 

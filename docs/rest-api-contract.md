@@ -162,6 +162,10 @@ Purpose: list recent proposal records.
 
 Permission: `manage_options` or app scope `proposals:read`.
 
+Before listing, Core expires stale `pending` proposals whose review TTL has
+elapsed. Expired rows remain available as proposal records but no longer count
+as active review work.
+
 Query parameters:
 
 | Name | Type | Default | Notes |
@@ -190,6 +194,9 @@ Response `200`:
 }
 ```
 
+Known proposal status values are `pending`, `approved`, `rejected`, `expired`,
+and `archived`.
+
 Audit event:
 
 - `proposal.listed`
@@ -208,6 +215,9 @@ Path parameters:
 
 Response `200`: proposal row plus `audit_timeline`, ordered oldest to newest
 for that proposal.
+
+Fetching a proposal may also trigger stale pending expiration before the row is
+returned.
 
 Example shape:
 
@@ -406,12 +416,14 @@ Errors:
 | Code | HTTP | Meaning |
 | --- | --- | --- |
 | `magick_ai_core_proposal_not_found` | `404` | Proposal id does not exist. |
+| `magick_ai_core_proposal_expired` | `409` | Proposal expired before a decision was made. |
 | `magick_ai_core_proposal_already_decided` | `409` | Proposal is not pending. |
 | `magick_ai_core_proposal_transition_failed` | `500` | Status update failed. |
 
 Audit event:
 
 - `proposal.approved`
+- `proposal.expired` when a stale pending proposal expires before approval
 
 App audit attribution:
 
@@ -439,6 +451,7 @@ Errors: same as approve route.
 Audit event:
 
 - `proposal.rejected`
+- `proposal.expired` when a stale pending proposal expires before rejection
 
 ## `GET /audit`
 

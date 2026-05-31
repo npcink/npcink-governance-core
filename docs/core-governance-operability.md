@@ -41,12 +41,26 @@ row plus `audit_timeline`, ordered oldest to newest for the selected proposal.
 
 The WordPress admin proposal detail also shows:
 
-- proposal status and summary;
+- proposal status, age, expiry, and summary;
 - review context from live ability intake and preview metadata, including
   before/after suggestions when present;
 - raw caller, input, and preview JSON behind an explicit disclosure;
-- audit timeline with event, actor, app, scope decision, and correlation id;
+- audit timeline with event, actor, and compact detail metadata;
 - approve/reject form for pending proposals.
+- archive/reopen controls for expired or archived proposals.
+
+### Expired And Archived Proposals
+
+Pending proposals expire automatically after the Core pending review TTL. Core
+marks stale rows as `expired`, records `proposal.expired`, and removes them
+from the default review queue. The `Expired / Archived` admin tab keeps stale
+records visible without letting them crowd active review work.
+
+Administrators may archive expired proposals as low-frequency audit records.
+Archived and expired proposals may be reopened to `pending` review when a stale
+request still needs a decision. Reopening records `proposal.reopened`; archiving
+records `proposal.archived`. None of these lifecycle transitions execute an
+ability or final WordPress mutation.
 
 ### Governance Audit Admin View
 
@@ -54,8 +68,9 @@ The WordPress admin proposal detail also shows:
 links to a dedicated `Governance Audit` view for full inspection. It is an
 operator view over Core audit records, not an AI request log viewer.
 
-The default view shows a short recent activity table. The full audit view keeps
-the advanced audit filter disclosure for:
+The default view shows a short recent activity disclosure. The full audit view
+keeps low-value read/list events hidden by default and keeps the advanced audit
+filter disclosure for:
 
 - proposal id;
 - event name;
@@ -64,9 +79,11 @@ the advanced audit filter disclosure for:
 - caller type;
 - correlation id;
 - limit.
+- include read events.
 
-The result table shows time, event, proposal link, actor, ability, app/caller,
-scope decision, and correlation id. AI Request Logs remain owned by the
+The result table shows time, event, proposal link, actor, ability, and compact
+detail metadata. Empty app, scope, and correlation fields are omitted instead
+of rendered as placeholder-only columns. AI Request Logs remain owned by the
 WordPress `ai` plugin; operators should correlate the two systems with
 `proposal_id` or `correlation_id` rather than merging their storage.
 

@@ -148,6 +148,9 @@ $governance = magick_ai_core_read( $root . '/docs/governance-contract.md' );
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.created' ), 'Governance contract records proposal.created event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.approved' ), 'Governance contract records proposal.approved event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.rejected' ), 'Governance contract records proposal.rejected event.' );
+magick_ai_core_assert( false !== strpos( $governance, 'proposal.expired' ), 'Governance contract records proposal.expired event.' );
+magick_ai_core_assert( false !== strpos( $governance, 'proposal.archived' ), 'Governance contract records proposal.archived event.' );
+magick_ai_core_assert( false !== strpos( $governance, 'proposal.reopened' ), 'Governance contract records proposal.reopened event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.viewed' ), 'Governance contract records proposal.viewed event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.listed' ), 'Governance contract records proposal.listed event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'commit.preflighted' ), 'Governance contract records commit.preflighted event.' );
@@ -177,6 +180,9 @@ foreach (
 		'magick_ai_core_invalid_ability_id',
 		'magick_ai_core_ability_not_available',
 		'magick_ai_core_legacy_confirmation_rejected',
+		'magick_ai_core_proposal_expired',
+		'expired',
+		'archived',
 		'audit_timeline',
 		'correlation_id',
 		'scope_decision',
@@ -220,11 +226,16 @@ foreach (
 		'pending',
 		'approved',
 		'rejected',
+		'expired',
+		'archived',
 		'app.created',
 		'app.revoked',
 		'app.rate_limited',
 		'proposal.created',
 		'proposal.plan_ingested',
+		'proposal.expired',
+		'proposal.archived',
+		'proposal.reopened',
 		'proposal.listed',
 		'proposal.viewed',
 		'commit.preflighted',
@@ -688,6 +699,9 @@ magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/build-test-conten
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/build-media-inventory-fix-plan' ), 'WordPress smoke validates media plan-to-proposal intake.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'media delete candidates do not enter executable proposals by default' ), 'WordPress smoke validates default destructive media delete guard.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'requires-input proposal cannot enter committable state' ), 'WordPress smoke validates requires_input preflight blocking.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'stale pending proposal expires before detail response' ), 'WordPress smoke validates stale proposal expiration.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'expired proposal can be archived' ), 'WordPress smoke validates proposal archiving.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'archived proposal can be reopened for review' ), 'WordPress smoke validates proposal reopening.' );
 
 $capabilities_controller = magick_ai_core_read( $root . '/includes/Rest/Capabilities_Controller.php' );
 magick_ai_core_assert( false !== strpos( $capabilities_controller, "'/capabilities'" ), 'Capabilities REST route is registered.' );
@@ -703,13 +717,23 @@ magick_ai_core_assert( false !== strpos( $proposals_controller, "/reject'" ), 'P
 magick_ai_core_assert( false !== strpos( $proposals_controller, "/commit-preflight'" ), 'Proposal commit preflight REST route is registered.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, "'ability_id'" ), 'Proposals route requires ability_id.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, 'audit_timeline' ), 'Proposal detail REST route returns audit timeline.' );
+magick_ai_core_assert( false !== strpos( $proposals_controller, 'expire_stale_pending' ), 'Proposal REST routes expire stale pending proposals before reads.' );
 
 $proposal_service = magick_ai_core_read( $root . '/includes/Governance/Proposal_Service.php' );
+$proposal_repository = magick_ai_core_read( $root . '/includes/Governance/Proposal_Repository.php' );
+magick_ai_core_assert( false !== strpos( $proposal_repository, 'STATUS_EXPIRED' ), 'Proposal repository defines expired status.' );
+magick_ai_core_assert( false !== strpos( $proposal_repository, 'STATUS_ARCHIVED' ), 'Proposal repository defines archived status.' );
+magick_ai_core_assert( false !== strpos( $proposal_repository, 'list_stale_pending' ), 'Proposal repository can list stale pending proposals.' );
+magick_ai_core_assert( false !== strpos( $proposal_repository, 'count_by_status' ), 'Proposal repository can count status queues.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.created' ), 'Proposal service records proposal.created audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'Ability_Registry_Adapter' ), 'Proposal service validates target abilities against ability intake.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'magick_ai_core_ability_not_available' ), 'Proposal service rejects unavailable target abilities.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.approved' ), 'Proposal service records proposal.approved audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.rejected' ), 'Proposal service records proposal.rejected audit event.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.expired' ), 'Proposal service records proposal.expired audit event.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.archived' ), 'Proposal service records proposal.archived audit event.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.reopened' ), 'Proposal service records proposal.reopened audit event.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'PENDING_TTL_SECONDS' ), 'Proposal service defines a pending review TTL.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.listed' ), 'Proposal service records proposal.listed audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.viewed' ), 'Proposal service records proposal.viewed audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'audit_timeline' ), 'Proposal service exposes proposal audit timeline.' );
@@ -765,6 +789,7 @@ magick_ai_core_assert( false !== strpos( $audit_repository, 'key_id' ), 'Audit r
 magick_ai_core_assert( false !== strpos( $audit_repository, 'caller_type' ), 'Audit repository filters by caller type metadata.' );
 magick_ai_core_assert( false !== strpos( $audit_repository, 'correlation_id' ), 'Audit repository filters by correlation id metadata.' );
 magick_ai_core_assert( false !== strpos( $audit_repository, 'metadata_filter_needle' ), 'Audit repository uses JSON-safe metadata filter needles.' );
+magick_ai_core_assert( false !== strpos( $audit_repository, 'exclude_event_names' ), 'Audit repository can exclude noisy read events.' );
 
 $audit_controller = magick_ai_core_read( $root . '/includes/Rest/Audit_Controller.php' );
 magick_ai_core_assert( false !== strpos( $audit_controller, "'/audit'" ), 'Audit REST route is registered.' );
@@ -786,6 +811,7 @@ foreach (
 		'Review Queue',
 		'pending proposal review list',
 		'Governance Audit',
+		'Expired / Archived',
 		'Core App Keys',
 		'low-frequency fallback action',
 		'OpenClaw onboarding',
@@ -797,6 +823,8 @@ foreach (
 }
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_approve_proposal' ), 'Admin page registers approve handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_reject_proposal' ), 'Admin page registers reject handler.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_archive_proposal' ), 'Admin page registers archive handler.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_reopen_proposal' ), 'Admin page registers reopen handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_create_app_key' ), 'Admin page registers app-key creation handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_revoke_app_key' ), 'Admin page registers app-key revocation handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'check_admin_referer' ), 'Admin proposal actions enforce nonce.' );
@@ -806,12 +834,16 @@ magick_ai_core_assert( false !== strpos( $admin_page, "'app-keys'" ), 'Admin pag
 magick_ai_core_assert( false !== strpos( $admin_page, 'render_admin_tabs' ), 'Admin page exposes tabbed Core sections.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'nav-tab-wrapper' ), 'Admin page uses WordPress admin tabs for Core sections.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Review Queue' ), 'Admin page defaults to the review queue tab.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Expired / Archived' ), 'Admin page exposes stale proposal archive tab.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'No active proposals. Expired items are moved out of the review queue automatically.' ), 'Admin page provides a clear active queue empty state.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'render_advanced_entries' ), 'Admin default page no longer renders low-frequency administration links inline.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Recent Activity' ), 'Admin default page exposes a compact recent activity section.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Latest Core governance events. Full audit is in its own tab.' ), 'Admin default page folds recent activity into a disclosure.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Governance Audit' ), 'Admin page exposes a full governance audit view.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'Advanced: Core App Keys' ), 'Admin default page no longer folds app-key management inline.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Advanced audit filters' ), 'Admin page folds detailed audit filters into an advanced disclosure.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'audit_include_read_events' ), 'Admin audit hides read noise by default with an opt-in filter.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'render_audit_detail' ), 'Admin audit combines optional app/scope/correlation metadata into a detail cell.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'audit_filters_from_request' ), 'Admin page reads governance audit filters.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'audit_proposal_id' ), 'Admin page exposes proposal audit filter.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'audit_correlation_id' ), 'Admin page exposes correlation audit filter.' );
@@ -820,6 +852,8 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'Productized OpenClaw setu
 magick_ai_core_assert( false === strpos( $admin_page, 'Environment template' ), 'Admin default page no longer exposes an env template.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Create Core App Key' ), 'Admin page labels key creation as Core credential management.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Issue a scoped token for a trusted governance client.' ), 'Admin page folds Core app-key creation behind an explicit disclosure.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Reopen for review' ), 'Admin page exposes reopen action for expired or archived proposals.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Archive' ), 'Admin page exposes archive action for expired proposals.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Adapter Client' ), 'Admin page defaults app label to a generic adapter client.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'product_adapter' ), 'Admin page defaults caller type to product_adapter.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'core_env_text' ), 'Admin page centralizes minimal Core env generation.' );
