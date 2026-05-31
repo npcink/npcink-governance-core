@@ -233,12 +233,21 @@ final class Admin_Page {
 
 		check_admin_referer( 'magick_ai_core_create_app_key' );
 
-		$raw_scopes = isset( $_POST['scopes'] ) && is_array( $_POST['scopes'] ) ? wp_unslash( $_POST['scopes'] ) : array();
+		$raw_scopes = array();
+		if ( isset( $_POST['scopes'] ) && is_array( $_POST['scopes'] ) ) {
+			$raw_scopes = array_map(
+				static function ( $scope ): string {
+					return sanitize_text_field( (string) $scope );
+				},
+				(array) wp_unslash( $_POST['scopes'] ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Values are sanitized item-by-item above.
+			);
+		}
+
 		$app        = $this->apps->create(
 			array(
 				'app_label'           => isset( $_POST['app_label'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['app_label'] ) ) : 'External app',
 				'caller_type'         => isset( $_POST['caller_type'] ) ? sanitize_key( wp_unslash( (string) $_POST['caller_type'] ) ) : 'mcp_adapter',
-				'scopes'              => is_array( $raw_scopes ) ? $raw_scopes : array(),
+				'scopes'              => $raw_scopes,
 				'rate_limit'          => isset( $_POST['rate_limit'] ) ? absint( wp_unslash( (string) $_POST['rate_limit'] ) ) : App_Key_Repository::DEFAULT_RATE_LIMIT,
 				'rate_window_seconds' => isset( $_POST['rate_window_seconds'] ) ? absint( wp_unslash( (string) $_POST['rate_window_seconds'] ) ) : App_Key_Repository::DEFAULT_RATE_WINDOW,
 			)

@@ -66,6 +66,7 @@ $main_plugin = magick_ai_core_read( $root . '/magick-ai-core.php' );
 magick_ai_core_assert( false !== strpos( $main_plugin, 'Plugin Name: Magick AI Core' ), 'Main plugin file declares plugin header.' );
 magick_ai_core_assert( false !== strpos( $main_plugin, 'register_activation_hook' ), 'Main plugin file registers activation hook.' );
 magick_ai_core_assert( false !== strpos( $main_plugin, 'plugins_loaded' ), 'Main plugin file boots after plugins_loaded.' );
+magick_ai_core_assert( false === strpos( $main_plugin, 'example.com' ), 'Main plugin header does not use placeholder Plugin URI.' );
 
 $readme = magick_ai_core_read( $root . '/README.md' );
 foreach (
@@ -82,6 +83,26 @@ foreach (
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $readme, $required ), 'README contains required phrase: ' . $required );
+}
+
+$wp_readme = magick_ai_core_read( $root . '/readme.txt' );
+foreach (
+	array(
+		'=== Magick AI Core ===',
+		'Stable tag: 0.1.0',
+		'Requires at least: 6.9',
+		'Tested up to: 7.0',
+		'Requires PHP: 7.4',
+		'License: GPLv2 or later',
+		'== Description ==',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $wp_readme, $required ), 'WordPress readme contains required phrase: ' . $required );
+}
+
+$distignore = magick_ai_core_read( $root . '/.distignore' );
+foreach ( array( 'tests', 'examples', 'docs', 'AGENTS.md', '.sisyphus', '.workbuddy' ) as $required ) {
+	magick_ai_core_assert( false !== strpos( $distignore, $required ), 'Release distignore excludes development path: ' . $required );
 }
 
 $positioning = magick_ai_core_read( $root . '/docs/product-positioning.md' );
@@ -763,6 +784,7 @@ magick_ai_core_assert( false === strpos( $admin_page, 'wp-admin/admin-header.php
 magick_ai_core_assert( false !== strpos( $admin_page, 'shown only once and is not stored in raw form' ), 'Admin page warns that app token is one-time only.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'default_scopes' ), 'Admin page defaults to scoped external adapter access.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'App_Key_Repository::DEFAULT_RATE_LIMIT' ), 'Admin page exposes bounded rate policy inputs.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'array_map' ) && false !== strpos( $admin_page, 'sanitize_text_field' ), 'Admin app-key scopes are sanitized before repository validation.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'app.revoked' ), 'Admin page audits app-key revocation.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'button-link-delete' ), 'Admin page exposes a key disable action.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Review Context' ), 'Admin proposal detail renders summary-first review context.' );

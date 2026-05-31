@@ -160,6 +160,7 @@ final class App_Key_Repository {
 		global $wpdb;
 
 		$limit = max( 1, min( 200, $limit ) );
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from the WordPress table prefix; query values use placeholders.
 		$rows  = $wpdb->get_results(
 			$wpdb->prepare(
 				'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, created_by, created_at, updated_at, last_used_at FROM ' . $this->table_name() . ' ORDER BY id DESC LIMIT %d',
@@ -167,6 +168,7 @@ final class App_Key_Repository {
 			),
 			ARRAY_A
 		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
 	}
@@ -180,6 +182,7 @@ final class App_Key_Repository {
 	public function find_by_key_id( string $key_id ): ?array {
 		global $wpdb;
 
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from the WordPress table prefix; query values use placeholders.
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
 				'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, created_by, created_at, updated_at, last_used_at FROM ' . $this->table_name() . ' WHERE key_id = %s LIMIT 1',
@@ -187,6 +190,7 @@ final class App_Key_Repository {
 			),
 			ARRAY_A
 		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 		return is_array( $row ) ? $this->normalize_row( $row, true ) : null;
 	}

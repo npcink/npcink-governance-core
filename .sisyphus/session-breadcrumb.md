@@ -1,5 +1,24 @@
 # Session Breadcrumb
 
+## 2026-05-31 — Plugin Check release blockers reduced
+
+- **Module**: Core package metadata / release quality gate
+- **Status**: Plugin Check error-class blockers were reduced without
+  changing Core's governance/runtime boundary.
+- **Completed**:
+  - Removed the placeholder `example.com` Plugin URI from the plugin header.
+  - Added WordPress.org-format `readme.txt` metadata for release scans.
+  - Added `.distignore` so development docs, examples, tests, and local agent
+    files are excluded from release packaging.
+  - Marked custom-table SQL reads with narrow PHPCS explanations where table
+    names are generated from the WordPress prefix and values still use
+    placeholders.
+  - Sanitized app-key scope POST values before repository validation.
+- **Boundary**:
+  - This work is packaging, static quality, and input-hardening only. It does
+    not add ability execution, final commit execution, MCP runtime, workflow
+    runtime, provider credentials, or Adapter-owned OpenClaw onboarding.
+
 ## 2026-05-31 — Core admin surface simplified for Adapter ownership
 
 - **Module**: Core WordPress admin governance surface

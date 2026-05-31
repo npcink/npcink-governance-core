@@ -1,7 +1,6 @@
 <?php
 /**
  * Plugin Name: Magick AI Core
- * Plugin URI: https://example.com/magick-ai-core
  * Description: WordPress AI operation governance layer for ability intake, proposals, approval boundaries, and audit logs.
  * Version: 0.1.0
  * Requires at least: 6.9
@@ -33,4 +32,3 @@ add_action(
 		\MagickAI\Core\Plugin::instance()->register();
 	}
 );
-

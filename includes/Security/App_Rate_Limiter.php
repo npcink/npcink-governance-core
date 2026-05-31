@@ -80,6 +80,7 @@ final class App_Rate_Limiter {
 		$window_end     = gmdate( 'Y-m-d H:i:s', $window_end_ts );
 		$now            = current_time( 'mysql', true );
 
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from the WordPress table prefix; query values use placeholders.
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
 				'SELECT id, request_count FROM ' . $this->table_name() . ' WHERE app_id = %s AND route_family = %s AND window_start = %s LIMIT 1',
@@ -89,6 +90,7 @@ final class App_Rate_Limiter {
 			),
 			ARRAY_A
 		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 		if ( is_array( $row ) ) {
 			$count = (int) ( $row['request_count'] ?? 0 );
@@ -147,4 +149,3 @@ final class App_Rate_Limiter {
 		);
 	}
 }
-

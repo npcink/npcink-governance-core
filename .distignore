@@ -1,0 +1,10 @@
+.git
+.github
+.sisyphus
+.workbuddy
+AGENTS.md
+composer.json
+composer.lock
+docs
+examples
+tests
