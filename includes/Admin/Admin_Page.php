@@ -604,7 +604,12 @@ final class Admin_Page {
 			)
 		);
 
-		$this->audit->record(
+		if ( is_wp_error( $app ) ) {
+			wp_safe_redirect( $this->admin_url( array( 'view' => 'app-keys', 'magick_ai_core_error' => $app->get_error_code() ) ) );
+			exit;
+		}
+
+		$event_id = $this->audit->record(
 			'app.created',
 			array(
 				'app_id'      => (string) $app['app_id'],
@@ -613,6 +618,12 @@ final class Admin_Page {
 				'scopes'      => (array) $app['scopes'],
 			)
 		);
+
+		if ( '' === $event_id ) {
+			$this->apps->revoke_by_key_id( (string) $app['key_id'] );
+			wp_safe_redirect( $this->admin_url( array( 'view' => 'app-keys', 'magick_ai_core_error' => 'magick_ai_core_app_audit_failed' ) ) );
+			exit;
+		}
 
 		status_header( 200 );
 		nocache_headers();

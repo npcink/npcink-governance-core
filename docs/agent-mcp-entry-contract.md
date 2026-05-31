@@ -108,16 +108,23 @@ array(
 	'approval_commit_authorized' => true,
 	'confirmation_state'        => 'approved_commit',
 	'proposal_id'               => '<core proposal id>',
+	'ability_id'                 => '<target ability id>',
+	'correlation_id'            => '<preflight correlation id>',
+	'approved_input_hash'        => '<sha256>',
+	'approved_preview_hash'      => '<sha256>',
+	'approval_updated_at'        => '<utc timestamp>',
+	'policy_version'             => 'core-preflight-v1',
 )
 ```
 
-A future adapter must treat this context as scoped to:
+An adapter must treat this context as scoped to:
 
 - the proposal id;
 - the real `ability_id`;
 - the approved input or approved input hash;
 - the caller/app identity;
-- the approval timestamp and policy version when those are implemented.
+- the correlation id;
+- the approval timestamp and policy version.
 
 ## Channel Projection Rules
 

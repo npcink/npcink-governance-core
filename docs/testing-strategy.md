@@ -84,6 +84,15 @@ Add or update tests when changing:
 - approval-commit contract;
 - security or permission behavior.
 
+Fail-closed governance paths must be covered when changed:
+
+- proposal and app-key row insert failures return stable `WP_Error` codes;
+- write-like lifecycle events fail rather than reporting success when audit
+  persistence fails;
+- status changes that cannot be audited roll back to the previous status where
+  Core can safely do so;
+- one-time app tokens are not returned when app creation cannot be audited.
+
 ## Required Verification
 
 For documentation-only changes:

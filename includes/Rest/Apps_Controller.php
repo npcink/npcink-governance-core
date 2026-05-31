@@ -10,6 +10,7 @@ namespace MagickAI\Core\Rest;
 use MagickAI\Core\Audit\Audit_Log_Repository;
 use MagickAI\Core\Security\App_Key_Repository;
 use MagickAI\Core\Security\App_Authenticator;
+use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -136,9 +137,9 @@ final class Apps_Controller {
 	 * Creates app key.
 	 *
 	 * @param WP_REST_Request $request Request.
-	 * @return WP_REST_Response
+	 * @return WP_REST_Response|WP_Error
 	 */
-	public function create_app( WP_REST_Request $request ): WP_REST_Response {
+	public function create_app( WP_REST_Request $request ) {
 		$app = $this->apps->create(
 			array(
 				'app_label'           => $request->get_param( 'app_label' ),
@@ -149,7 +150,11 @@ final class Apps_Controller {
 			)
 		);
 
-		$this->audit->record(
+		if ( is_wp_error( $app ) ) {
+			return $app;
+		}
+
+		$event_id = $this->audit->record(
 			'app.created',
 			array(
 				'app_id'      => (string) $app['app_id'],
@@ -159,7 +164,15 @@ final class Apps_Controller {
 			)
 		);
 
+		if ( '' === $event_id ) {
+			$this->apps->revoke_by_key_id( (string) $app['key_id'] );
+			return new WP_Error(
+				'magick_ai_core_app_audit_failed',
+				__( 'App key creation could not be audited.', 'magick-ai-core' ),
+				array( 'status' => 500 )
+			);
+		}
+
 		return new WP_REST_Response( $app, 201 );
 	}
 }
-

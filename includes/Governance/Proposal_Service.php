@@ -100,7 +100,11 @@ final class Proposal_Service {
 			)
 		);
 
-		$this->audit->record(
+		if ( is_wp_error( $proposal ) ) {
+			return $proposal;
+		}
+
+		$event_id = $this->audit->record(
 			'proposal.created',
 			array(
 				'ability_id' => $ability_id,
@@ -108,6 +112,11 @@ final class Proposal_Service {
 			),
 			(string) $proposal['proposal_id']
 		);
+
+		if ( '' === $event_id ) {
+			$this->proposals->delete_by_proposal_id( (string) $proposal['proposal_id'] );
+			return $this->audit_failed_error( 'magick_ai_core_proposal_audit_failed' );
+		}
 
 		return $proposal;
 	}
@@ -162,7 +171,7 @@ final class Proposal_Service {
 			return $this->transition_failed_error();
 		}
 
-		$this->audit->record(
+		$event_id = $this->audit->record(
 			'proposal.archived',
 			array_merge(
 				array(
@@ -175,6 +184,11 @@ final class Proposal_Service {
 			),
 			$proposal_id
 		);
+
+		if ( '' === $event_id ) {
+			$this->proposals->update_status( $proposal_id, Proposal_Repository::STATUS_EXPIRED );
+			return $this->audit_failed_error( 'magick_ai_core_proposal_archive_audit_failed' );
+		}
 
 		return $proposal;
 	}
@@ -208,7 +222,7 @@ final class Proposal_Service {
 			return $this->transition_failed_error();
 		}
 
-		$this->audit->record(
+		$event_id = $this->audit->record(
 			'proposal.reopened',
 			array_merge(
 				array(
@@ -220,6 +234,11 @@ final class Proposal_Service {
 			),
 			$proposal_id
 		);
+
+		if ( '' === $event_id ) {
+			$this->proposals->update_status( $proposal_id, $previous_status );
+			return $this->audit_failed_error( 'magick_ai_core_proposal_reopen_audit_failed' );
+		}
 
 		return $proposal;
 	}
@@ -367,7 +386,7 @@ final class Proposal_Service {
 			return $this->transition_failed_error();
 		}
 
-		$this->audit->record(
+		$event_id = $this->audit->record(
 			$event_name,
 			array_merge(
 				array(
@@ -378,6 +397,11 @@ final class Proposal_Service {
 			),
 			$proposal_id
 		);
+
+		if ( '' === $event_id ) {
+			$this->proposals->update_status( $proposal_id, (string) $existing['status'] );
+			return $this->audit_failed_error( 'magick_ai_core_proposal_decision_audit_failed' );
+		}
 
 		return $proposal;
 	}
@@ -400,7 +424,7 @@ final class Proposal_Service {
 			return false;
 		}
 
-		$this->audit->record(
+		$event_id = $this->audit->record(
 			'proposal.expired',
 			array(
 				'ability_id'             => (string) $expired['ability_id'],
@@ -411,6 +435,11 @@ final class Proposal_Service {
 			),
 			$proposal_id
 		);
+
+		if ( '' === $event_id ) {
+			$this->proposals->update_status( $proposal_id, Proposal_Repository::STATUS_PENDING );
+			return false;
+		}
 
 		return true;
 	}
@@ -424,6 +453,20 @@ final class Proposal_Service {
 		return new WP_Error(
 			'magick_ai_core_proposal_transition_failed',
 			__( 'Proposal status could not be updated.', 'magick-ai-core' ),
+			array( 'status' => 500 )
+		);
+	}
+
+	/**
+	 * Returns audit persistence error.
+	 *
+	 * @param string $code Stable error code.
+	 * @return WP_Error
+	 */
+	private function audit_failed_error( string $code ): WP_Error {
+		return new WP_Error(
+			$code,
+			__( 'Proposal lifecycle could not be audited.', 'magick-ai-core' ),
 			array( 'status' => 500 )
 		);
 	}

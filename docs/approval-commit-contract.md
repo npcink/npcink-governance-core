@@ -45,6 +45,8 @@ Preflight must:
   treating Core as the executor;
 - return a `correlation_id` in the response and
   `approval_context.correlation_id`;
+- bind approval context to the real `ability_id`, approved input hash, approved
+  preview hash, approval update timestamp, and policy version;
 - return `commit_execution=false`;
 - record `commit.preflighted` on success.
 
@@ -57,7 +59,12 @@ array(
 	'approval_commit_authorized' => true,
 	'confirmation_state'        => 'approved_commit',
 	'proposal_id'               => '<core proposal id>',
+	'ability_id'                 => '<target ability id>',
 	'correlation_id'            => '<preflight correlation id>',
+	'approved_input_hash'        => '<sha256>',
+	'approved_preview_hash'      => '<sha256>',
+	'approval_updated_at'        => '<utc timestamp>',
+	'policy_version'             => 'core-preflight-v1',
 )
 ```
 
@@ -72,12 +79,14 @@ Commit preflight returns an execution handoff object for Adapter:
 ```php
 array(
 	'executor'           => 'adapter_after_core_preflight',
-	'execution_surface' => 'wp_abilities_rest',
-	'ability_id'        => '<target ability id>',
-	'proposal_id'       => '<core proposal id>',
-	'correlation_id'    => '<preflight correlation id>',
-	'core_proxy_execute' => false,
-	'commit_execution'  => false,
+		'execution_surface' => 'wp_abilities_rest',
+		'ability_id'        => '<target ability id>',
+		'proposal_id'       => '<core proposal id>',
+		'correlation_id'    => '<preflight correlation id>',
+		'approved_input_hash' => '<sha256>',
+		'policy_version'    => 'core-preflight-v1',
+		'core_proxy_execute' => false,
+		'commit_execution'  => false,
 )
 ```
 

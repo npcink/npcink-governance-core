@@ -1,5 +1,34 @@
 # Session Breadcrumb
 
+## 2026-06-01 — Core governance fail-closed contract hardened
+
+- **Module**: Core WordPress governance contract, REST/app-key/proposal
+  persistence, and commit-preflight handoff.
+- **Status**: Core now records ADR-003 to keep final WordPress execution
+  outside Core for the current stage, aligns REST permission docs with scoped
+  app-key behavior, and fails closed when app/proposal persistence or required
+  lifecycle audit writes fail.
+- **Completed**:
+  - Added ADR-003: Core remains governance-only; Adapter/product plugins own
+    final WordPress Abilities API execution after Core approval and preflight.
+  - Added approved input/preview hashes and policy version to commit-preflight
+    approval context and Adapter execution handoff.
+  - Made proposal and app-key creation return stable `WP_Error` failures when
+    database writes fail.
+  - Made proposal creation delete unaudited rows, proposal decisions roll back
+    unaudited status changes, and app-key creation revoke keys when creation
+    cannot be audited before the one-time token is shown.
+  - Updated REST, approval-commit, Agent/MCP, next-stage, README, testing, static
+    contract, and WordPress smoke coverage for the hardened boundary.
+- **Verification**:
+  - `composer test:all`
+  - `composer smoke:wp`
+- **Boundary**:
+  - This hardens governance persistence, audit guarantees, and Adapter handoff
+    only. No `/execute`, `/proxy-execute`, final commit route, workflow runtime,
+    queue, MCP runtime, provider credential storage, cloud control plane, or
+    product UX was added to Core.
+
 ## 2026-06-01 — Core admin long lists paginated
 
 - **Module**: Core WordPress admin governance surface.

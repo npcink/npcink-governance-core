@@ -7,6 +7,8 @@
 
 namespace MagickAI\Core\Governance;
 
+use WP_Error;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -72,9 +74,9 @@ final class Proposal_Repository {
 	 * Creates a proposal.
 	 *
 	 * @param array<string,mixed> $data Proposal data.
-	 * @return array<string,mixed>
+	 * @return array<string,mixed>|WP_Error
 	 */
-	public function create( array $data ): array {
+	public function create( array $data ) {
 		global $wpdb;
 
 		$proposal_id = function_exists( 'wp_generate_uuid4' ) ? wp_generate_uuid4() : uniqid( 'proposal_', true );
@@ -93,13 +95,39 @@ final class Proposal_Repository {
 			'updated_at'   => $now,
 		);
 
-		$wpdb->insert(
+		$inserted = $wpdb->insert(
 			$this->table_name(),
 			$record,
 			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s' )
 		);
 
+		if ( false === $inserted ) {
+			return new WP_Error(
+				'magick_ai_core_proposal_insert_failed',
+				__( 'Proposal could not be stored.', 'magick-ai-core' ),
+				array( 'status' => 500 )
+			);
+		}
+
 		return $this->normalize_row( $record );
+	}
+
+	/**
+	 * Deletes a proposal by public id.
+	 *
+	 * @param string $proposal_id Proposal id.
+	 * @return bool Whether a row was deleted.
+	 */
+	public function delete_by_proposal_id( string $proposal_id ): bool {
+		global $wpdb;
+
+		$deleted = $wpdb->delete(
+			$this->table_name(),
+			array( 'proposal_id' => sanitize_text_field( $proposal_id ) ),
+			array( '%s' )
+		);
+
+		return false !== $deleted && $deleted > 0;
 	}
 
 	/**

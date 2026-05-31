@@ -179,12 +179,18 @@ foreach (
 		'magick_ai_core_app_rate_limited',
 		'magick_ai_core_invalid_ability_id',
 		'magick_ai_core_ability_not_available',
+		'magick_ai_core_proposal_insert_failed',
+		'magick_ai_core_proposal_audit_failed',
+		'magick_ai_core_proposal_decision_audit_failed',
 		'magick_ai_core_legacy_confirmation_rejected',
 		'magick_ai_core_proposal_expired',
 		'expired',
 		'archived',
 		'audit_timeline',
 		'correlation_id',
+		'approved_input_hash',
+		'approved_preview_hash',
+		'policy_version',
 		'scope_decision',
 		'app_id',
 		'key_id',
@@ -350,7 +356,9 @@ magick_ai_core_assert( false !== strpos( $next_stage_plan, 'minimal implementati
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'consumer readiness complete' ), 'Next stage plan marks consumer readiness complete.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Core 0.4 Consumer Readiness' ), 'Next stage plan links Core 0.4 consumer readiness.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Core Governance Operability' ), 'Next stage plan links Core Governance Operability.' );
-magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Final Commit Execution ADR Decision' ), 'Next stage plan includes final commit execution ADR decision phase.' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'Final Commit Execution Boundary' ), 'Next stage plan includes final commit execution boundary phase.' );
+magick_ai_core_assert( false !== strpos( $next_stage_plan, 'ADR-003' ), 'Next stage plan links the current-stage final execution ADR.' );
+magick_ai_core_assert( false === strpos( $next_stage_plan, 'revocation UI, and expiry automation' ), 'Next stage plan no longer lists implemented revocation UI as missing.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'OpenClaw Adapter / Agent Gateway Planning' ), 'Next stage plan keeps OpenClaw adapter planning outside Core.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'OpenClaw Execution Guidance' ), 'Next stage plan links OpenClaw execution guidance.' );
 magick_ai_core_assert( false !== strpos( $next_stage_plan, 'productized acceptance in Magick AI Adapter' ), 'Next stage plan points productized OpenClaw acceptance to Adapter.' );
@@ -370,6 +378,7 @@ magick_ai_core_assert( false !== strpos( $readme, 'Core 0.4 Consumer Readiness' 
 magick_ai_core_assert( false !== strpos( $readme, 'Core Governance Operability' ), 'README links Core Governance Operability.' );
 magick_ai_core_assert( false !== strpos( $readme, 'AI Provider Log Correlation' ), 'README links AI Provider Log Correlation.' );
 magick_ai_core_assert( false !== strpos( $readme, 'OpenClaw Execution Guidance' ), 'README links OpenClaw Execution Guidance.' );
+magick_ai_core_assert( false !== strpos( $readme, 'ADR-003: Keep Final Execution Outside Core For The Current Stage' ), 'README links ADR-003.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Productized OpenClaw acceptance should be run from Magick AI Adapter' ), 'README points OpenClaw productized acceptance to Adapter.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Create Draft Governance Scenario' ), 'README links Create Draft Governance Scenario.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Set Post SEO Meta Governance Scenario' ), 'README links Set Post SEO Meta Governance Scenario.' );
@@ -581,6 +590,8 @@ foreach (
 		'proposals:create',
 		'commit:preflight',
 		'mai_core.',
+		'magick_ai_core_app_insert_failed',
+		'magick_ai_core_app_secret_hash_failed',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $app_key_repository, $required ), 'App key repository contains required text: ' . $required );
@@ -612,11 +623,16 @@ $apps_controller = magick_ai_core_read( $root . '/includes/Rest/Apps_Controller.
 magick_ai_core_assert( false !== strpos( $apps_controller, "'/apps'" ), 'Apps REST route is registered.' );
 magick_ai_core_assert( false !== strpos( $apps_controller, 'app.created' ), 'Apps REST route audits app creation.' );
 magick_ai_core_assert( false !== strpos( $apps_controller, 'can_manage' ), 'Apps REST route remains admin-only.' );
+magick_ai_core_assert( false !== strpos( $apps_controller, 'magick_ai_core_app_audit_failed' ), 'Apps REST route fails app creation when audit cannot be written.' );
 
 $adr_001 = magick_ai_core_read( $root . '/docs/decisions/ADR-001-rebuild-core-as-governance-layer.md' );
 $adr_002 = magick_ai_core_read( $root . '/docs/decisions/ADR-002-no-workflow-runtime-in-core.md' );
+$adr_003 = magick_ai_core_read( $root . '/docs/decisions/ADR-003-keep-final-execution-outside-core.md' );
 magick_ai_core_assert( false !== strpos( $adr_001, 'Create a new standalone `magick-ai-core` plugin' ), 'ADR-001 records rebuild decision.' );
 magick_ai_core_assert( false !== strpos( $adr_002, '`magick-ai-core` must not implement a workflow runtime' ), 'ADR-002 bans workflow runtime ownership.' );
+magick_ai_core_assert( false !== strpos( $adr_003, 'Core remains governance-only' ), 'ADR-003 keeps Core governance-only for the current stage.' );
+magick_ai_core_assert( false !== strpos( $adr_003, 'adapter_after_core_preflight' ), 'ADR-003 keeps final execution in Adapter/product plugins.' );
+magick_ai_core_assert( false !== strpos( $adr_003, 'no Core `/execute`, `/proxy-execute`' ) && false !== strpos( $adr_003, 'commit route' ), 'ADR-003 blocks accidental Core execution routes.' );
 
 $ability_adapter = magick_ai_core_read( $root . '/includes/Capabilities/Ability_Registry_Adapter.php' );
 magick_ai_core_assert( false !== strpos( $ability_adapter, 'magick_ai_abilities_get_registered' ), 'Ability intake prefers magick-ai-abilities public API.' );
@@ -648,6 +664,7 @@ magick_ai_core_assert( false !== strpos( $testing_strategy, 'taxonomy terms prev
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'proposal `audit_timeline`' ), 'Testing strategy records governance operability coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'commit-preflight `correlation_id`' ), 'Testing strategy records preflight correlation smoke coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'trusted Adapter approval coverage' ), 'Testing strategy records trusted Adapter approval smoke coverage.' );
+magick_ai_core_assert( false !== strpos( $testing_strategy, 'Fail-closed governance paths' ), 'Testing strategy records fail-closed governance path coverage.' );
 
 $development_workflow = magick_ai_core_read( $root . '/docs/development-workflow.md' );
 magick_ai_core_assert( false !== strpos( $development_workflow, 'does not depend on the abandoned legacy Magick AI' ), 'Development workflow rejects the abandoned legacy Magick AI dependency.' );
@@ -728,6 +745,8 @@ magick_ai_core_assert( false !== strpos( $proposal_repository, 'STATUS_ARCHIVED'
 magick_ai_core_assert( false !== strpos( $proposal_repository, 'list_stale_pending' ), 'Proposal repository can list stale pending proposals.' );
 magick_ai_core_assert( false !== strpos( $proposal_repository, 'count_by_status' ), 'Proposal repository can count status queues.' );
 magick_ai_core_assert( false !== strpos( $proposal_repository, 'OFFSET %d' ), 'Proposal repository supports paginated admin lists.' );
+magick_ai_core_assert( false !== strpos( $proposal_repository, 'magick_ai_core_proposal_insert_failed' ), 'Proposal repository returns a stable insert failure error.' );
+magick_ai_core_assert( false !== strpos( $proposal_repository, 'delete_by_proposal_id' ), 'Proposal repository can remove unaudited created proposals.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.created' ), 'Proposal service records proposal.created audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'Ability_Registry_Adapter' ), 'Proposal service validates target abilities against ability intake.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'magick_ai_core_ability_not_available' ), 'Proposal service rejects unavailable target abilities.' );
@@ -743,6 +762,10 @@ magick_ai_core_assert( false !== strpos( $proposal_service, 'audit_timeline' ), 
 magick_ai_core_assert( false !== strpos( $proposal_service, "'pending'" ), 'Proposal service only transitions pending proposals.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'magick_ai_core_ability_not_available' ), 'Proposal service rejects unavailable target abilities.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, '$this->abilities->find' ), 'Proposal service validates against ability intake.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'magick_ai_core_proposal_audit_failed' ), 'Proposal service fails closed when creation audit fails.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'magick_ai_core_proposal_decision_audit_failed' ), 'Proposal service fails closed when decision audit fails.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'audit_failed_error' ), 'Proposal service uses stable audit failure errors.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'update_status( $proposal_id, (string) $existing' ), 'Proposal service rolls back decision status when audit fails.' );
 magick_ai_core_assert( false === strpos( $proposal_service, 'confirm_token' ), 'Proposal service does not use confirm_token.' );
 magick_ai_core_assert( false === strpos( $proposal_service, 'write_confirmed' ), 'Proposal service does not use write_confirmed.' );
 
@@ -751,6 +774,10 @@ magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'commit.pref
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'approval_commit_authorized' ), 'Commit preflight returns approval context.' );
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'commit_execution' ), 'Commit preflight explicitly reports no commit execution.' );
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'correlation_id' ), 'Commit preflight returns and audits correlation id.' );
+magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'approved_input_hash' ), 'Commit preflight binds approval context to approved input hash.' );
+magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'approved_preview_hash' ), 'Commit preflight binds approval context to approved preview hash.' );
+magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'policy_version' ), 'Commit preflight returns a policy version for Adapter binding.' );
+magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'payload_hash' ), 'Commit preflight has stable payload hash generation.' );
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'new_correlation_id' ), 'Commit preflight generates a correlation id.' );
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'proposal_item_preflight' ), 'Commit preflight evaluates proposal item readiness.' );
 magick_ai_core_assert( false !== strpos( $commit_preflight_service, 'magick_ai_core_proposal_items_blocked' ), 'Commit preflight blocks incomplete proposal items.' );
@@ -888,6 +915,7 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'render_created_app_key' )
 magick_ai_core_assert( false !== strpos( $admin_page, 'nocache_headers' ), 'Admin app-key result prevents caching the one-time token.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'wp-admin/admin-header.php' ), 'Admin app-key result avoids admin header inside admin-post context.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'shown only once and is not stored in raw form' ), 'Admin page warns that app token is one-time only.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'magick_ai_core_app_audit_failed' ), 'Admin page does not show one-time app token when creation audit fails.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'default_scopes' ), 'Admin page defaults to scoped external adapter access.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'App_Key_Repository::DEFAULT_RATE_LIMIT' ), 'Admin page exposes bounded rate policy inputs.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'array_map' ) && false !== strpos( $admin_page, 'sanitize_text_field' ), 'Admin app-key scopes are sanitized before repository validation.' );

@@ -7,6 +7,8 @@
 
 namespace MagickAI\Core\Security;
 
+use WP_Error;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -102,9 +104,9 @@ final class App_Key_Repository {
 	 * Creates one app key and returns the raw secret once.
 	 *
 	 * @param array<string,mixed> $data Data.
-	 * @return array<string,mixed>
+	 * @return array<string,mixed>|WP_Error
 	 */
-	public function create( array $data ): array {
+	public function create( array $data ) {
 		global $wpdb;
 
 		$app_id              = $this->generate_public_id( 'app' );
@@ -117,7 +119,11 @@ final class App_Key_Repository {
 
 		$secret_hash = password_hash( $secret, PASSWORD_DEFAULT );
 		if ( ! is_string( $secret_hash ) ) {
-			$secret_hash = '';
+			return new WP_Error(
+				'magick_ai_core_app_secret_hash_failed',
+				__( 'App key secret could not be protected.', 'magick-ai-core' ),
+				array( 'status' => 500 )
+			);
 		}
 
 		$record = array(
@@ -136,11 +142,19 @@ final class App_Key_Repository {
 			'last_used_at'        => null,
 		);
 
-		$wpdb->insert(
+		$inserted = $wpdb->insert(
 			$this->table_name(),
 			$record,
 			array( '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%d', '%s', '%s', '%s' )
 		);
+
+		if ( false === $inserted ) {
+			return new WP_Error(
+				'magick_ai_core_app_insert_failed',
+				__( 'App key could not be stored.', 'magick-ai-core' ),
+				array( 'status' => 500 )
+			);
+		}
 
 		$row             = $this->normalize_row( $record );
 		$row['secret']   = $secret;

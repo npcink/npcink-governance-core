@@ -40,22 +40,24 @@ Implemented:
 Not implemented:
 
 - final commit execution;
-- app-key rotation, revocation UI, and expiry automation;
+- app-key rotation and expiry automation;
 
 Documented but not implemented:
 
 - Agent/MCP governance entry contract;
 
-## Current Next Decision
+## Current Execution Decision
 
 Core can now govern both single dry-run write proposals and supported
-read-only plans that produce multiple `write_actions`. The next decision should
-not be another Core runtime feature by default. Either:
+read-only plans that produce multiple `write_actions`. ADR-003 keeps final
+WordPress execution outside Core for the current stage:
 
-- keep Core as the governance layer and let Adapter/product plugins execute
-  approved writes after commit preflight; or
-- write a separate ADR for final commit execution, including idempotency,
-  retry, partial failure, and destructive action rules.
+- Core stays the governance layer for proposal records, approval/rejection,
+  commit preflight, app-key policy, and audit;
+- Adapter/product plugins execute approved writes after commit preflight;
+- any future Core execution route requires a new accepted ADR covering
+  idempotency, retry, partial failure, rollback, audit, redaction, and
+  destructive action rules.
 
 ## Strategic Product Boundary
 
@@ -249,18 +251,21 @@ Acceptance:
 
 See [Core Governance Operability](core-governance-operability.md).
 
-### 8. Final Commit Execution ADR Decision
+### 8. Final Commit Execution Boundary
 
-Status: decision required.
+Status: current-stage decision accepted in
+[ADR-003](decisions/ADR-003-keep-final-execution-outside-core.md).
 
-Goal: decide whether Core should design final commit execution at all.
+Goal: keep Core from gaining final execution by accident while making the
+Adapter handoff safer.
 
-Acceptance before implementation:
+Current-stage acceptance:
 
-- write a separate ADR for final commit execution;
-- define authorization, idempotency, failure semantics, retry behavior, audit
-  attribution, and adapter responsibility;
-- preserve `commit_execution=false` until the ADR is accepted and implemented;
+- return approval context bound to proposal id, real ability id, approved input
+  hash, correlation id, and policy version;
+- preserve `commit_execution=false`;
+- keep Adapter/product plugins responsible for final WordPress Abilities API
+  calls after Core preflight;
 - avoid adding final WordPress mutation routes as an incidental extension of
   commit preflight.
 

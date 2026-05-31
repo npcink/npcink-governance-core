@@ -29,7 +29,7 @@ executor.
 App-authenticated access is additive to the current REST surface. The current
 scope map is:
 
-| Route family | Required future scope |
+| Route family | Required scope |
 | --- | --- |
 | `GET /capabilities` | `capabilities:read` |
 | `POST /proposals`, `POST /proposals/from-plan` | `proposals:create` |
@@ -66,7 +66,7 @@ The raw secret is returned only by `POST /apps`.
 
 Purpose: list Core app identities without raw secrets or secret hashes.
 
-Permission: `manage_options` or app scope `proposals:approve`.
+Permission: `manage_options`.
 
 Response `200`: app identity rows without secret material.
 
@@ -205,7 +205,7 @@ Audit event:
 
 Purpose: fetch one proposal record by id.
 
-Permission: `manage_options`.
+Permission: `manage_options` or app scope `proposals:read`.
 
 Path parameters:
 
@@ -277,6 +277,8 @@ Errors:
 | --- | --- | --- |
 | `magick_ai_core_invalid_ability_id` | `400` | Missing or invalid namespaced `ability_id`. |
 | `magick_ai_core_ability_not_available` | `404` | Target ability id is not currently discoverable. |
+| `magick_ai_core_proposal_insert_failed` | `500` | Proposal row could not be stored. |
+| `magick_ai_core_proposal_audit_failed` | `500` | Proposal creation could not be audited; Core deletes the created proposal before failing. |
 
 Audit event:
 
@@ -395,7 +397,7 @@ Audit event:
 Purpose: mark a pending proposal as approved. This route does not execute the
 target ability.
 
-Permission: `manage_options`.
+Permission: `manage_options` or app scope `proposals:approve`.
 
 Path parameters:
 
@@ -419,6 +421,7 @@ Errors:
 | `magick_ai_core_proposal_expired` | `409` | Proposal expired before a decision was made. |
 | `magick_ai_core_proposal_already_decided` | `409` | Proposal is not pending. |
 | `magick_ai_core_proposal_transition_failed` | `500` | Status update failed. |
+| `magick_ai_core_proposal_decision_audit_failed` | `500` | Approval could not be audited; Core rolls the proposal back to its previous status before failing. |
 
 Audit event:
 
@@ -436,7 +439,7 @@ App audit attribution:
 
 Purpose: mark a pending proposal as rejected.
 
-Permission: `manage_options`.
+Permission: `manage_options` or app scope `proposals:reject`.
 
 Request fields:
 
@@ -457,7 +460,7 @@ Audit event:
 
 Purpose: list recent audit events.
 
-Permission: `manage_options`.
+Permission: `manage_options` or app scope `audit:read`.
 
 Query parameters:
 
@@ -524,7 +527,12 @@ Response `200`:
     "approval_commit_authorized": true,
     "confirmation_state": "approved_commit",
     "proposal_id": "uuid",
-    "correlation_id": "uuid"
+    "ability_id": "magick-ai/trash-post",
+    "correlation_id": "uuid",
+    "approved_input_hash": "sha256...",
+    "approved_preview_hash": "sha256...",
+    "approval_updated_at": "2026-05-29 00:00:00",
+    "policy_version": "core-preflight-v1"
   },
   "execution_handoff": {
     "executor": "adapter_after_core_preflight",
@@ -532,6 +540,8 @@ Response `200`:
     "ability_id": "magick-ai/trash-post",
     "proposal_id": "uuid",
     "correlation_id": "uuid",
+    "approved_input_hash": "sha256...",
+    "policy_version": "core-preflight-v1",
     "core_proxy_execute": false,
     "commit_execution": false
   },
@@ -566,6 +576,9 @@ Preflight audit correlation:
 
 - response `correlation_id`;
 - `approval_context.correlation_id`;
+- `approval_context.ability_id`;
+- `approval_context.approved_input_hash`;
+- `approval_context.policy_version`;
 - `commit.preflighted` event `metadata.correlation_id`.
 
 Execution handoff:

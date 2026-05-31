@@ -86,6 +86,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Strategy And Product Split](docs/strategy-and-product-split.md)
 - [ADR-001: Rebuild Core As A Governance Layer](docs/decisions/ADR-001-rebuild-core-as-governance-layer.md)
 - [ADR-002: No Workflow Runtime In Core](docs/decisions/ADR-002-no-workflow-runtime-in-core.md)
+- [ADR-003: Keep Final Execution Outside Core For The Current Stage](docs/decisions/ADR-003-keep-final-execution-outside-core.md)
 
 External agent clients can start from the
 [OpenClaw governance adapter example](examples/openclaw-governance-adapter/README.md).
@@ -95,9 +96,10 @@ or final write executor.
 Core 0.4 consumer readiness is complete for `magick-ai-abilities` 0.4.0 across
 the `magick-ai/create-draft`, `magick-ai/set-post-seo-meta`, and
 `magick-ai/approve-comment` representative scenarios. See
-[Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md). The next
-stage is a decision point: only design final commit execution through a
-separate ADR; otherwise Core remains the governance layer.
+[Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md). ADR-003
+keeps final WordPress execution outside Core for the current stage; Core
+hardens approval context and commit preflight while Adapter/product plugins
+execute approved abilities through WordPress Abilities API.
 
 The taxonomy terms preview extension proves the same boundary for
 `magick-ai/propose-post-taxonomy-terms` -> `magick-ai/set-post-terms`: adapters

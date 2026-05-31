@@ -623,6 +623,12 @@ function magick_ai_core_smoke_run_governance_proposal( string $ability_id, array
 	$correlation_id = (string) ( $preflight['correlation_id'] ?? '' );
 	magick_ai_core_smoke_assert( '' !== $correlation_id, $ability_id . ' commit preflight returns correlation id' );
 	magick_ai_core_smoke_assert( $correlation_id === (string) ( $preflight['approval_context']['correlation_id'] ?? '' ), $ability_id . ' approval context includes matching correlation id' );
+	$approved_input_hash = (string) ( $preflight['approval_context']['approved_input_hash'] ?? '' );
+	magick_ai_core_smoke_assert( '' !== $approved_input_hash, $ability_id . ' approval context includes approved input hash' );
+	magick_ai_core_smoke_assert( $approved_input_hash === hash( 'sha256', (string) wp_json_encode( $preflight['proposal']['input'] ?? array() ) ), $ability_id . ' approved input hash matches proposal input' );
+	magick_ai_core_smoke_assert( '' !== (string) ( $preflight['approval_context']['approved_preview_hash'] ?? '' ), $ability_id . ' approval context includes approved preview hash' );
+	magick_ai_core_smoke_assert( 'core-preflight-v1' === (string) ( $preflight['approval_context']['policy_version'] ?? '' ), $ability_id . ' approval context includes policy version' );
+	magick_ai_core_smoke_assert( $approved_input_hash === (string) ( $preflight['execution_handoff']['approved_input_hash'] ?? '' ), $ability_id . ' execution handoff carries approved input hash' );
 	$GLOBALS['magick_ai_core_smoke_preflight_correlations'][ $proposal_id ] = $correlation_id;
 
 	return $proposal_id;
@@ -1090,6 +1096,8 @@ $app_preflight = magick_ai_core_smoke_rest_as_app( 'POST', '/magick-ai-core/v1/p
 magick_ai_core_smoke_assert( false === (bool) ( $app_preflight['commit_execution'] ?? true ), 'app-authenticated commit preflight does not execute ability' );
 magick_ai_core_smoke_assert( true === (bool) ( $app_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'app-authenticated commit preflight returns approval context' );
 magick_ai_core_smoke_assert( '' !== (string) ( $app_preflight['correlation_id'] ?? '' ), 'app-authenticated commit preflight returns correlation id' );
+magick_ai_core_smoke_assert( '' !== (string) ( $app_preflight['approval_context']['approved_input_hash'] ?? '' ), 'app-authenticated commit preflight returns approved input hash' );
+magick_ai_core_smoke_assert( 'core-preflight-v1' === (string) ( $app_preflight['approval_context']['policy_version'] ?? '' ), 'app-authenticated commit preflight returns policy version' );
 magick_ai_core_smoke_assert( 'adapter_after_core_preflight' === (string) ( $app_preflight['execution_handoff']['executor'] ?? '' ), 'app-authenticated commit preflight returns adapter execution handoff' );
 magick_ai_core_smoke_assert( false === (bool) ( $app_preflight['execution_handoff']['commit_execution'] ?? true ), 'app-authenticated execution handoff keeps Core commit execution disabled' );
 
@@ -1151,6 +1159,8 @@ $trusted_preflight = magick_ai_core_smoke_rest_as_app( 'POST', '/magick-ai-core/
 magick_ai_core_smoke_assert( true === (bool) ( $trusted_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'trusted Adapter app receives approval context after approval' );
 magick_ai_core_smoke_assert( 'adapter_after_core_preflight' === (string) ( $trusted_preflight['execution_handoff']['executor'] ?? '' ), 'trusted Adapter preflight returns execution handoff' );
 magick_ai_core_smoke_assert( 'magick-ai/create-draft' === (string) ( $trusted_preflight['execution_handoff']['ability_id'] ?? '' ), 'trusted Adapter execution handoff includes target ability id' );
+magick_ai_core_smoke_assert( (string) ( $trusted_preflight['approval_context']['approved_input_hash'] ?? '' ) === (string) ( $trusted_preflight['execution_handoff']['approved_input_hash'] ?? '' ), 'trusted Adapter execution handoff carries approved input hash' );
+magick_ai_core_smoke_assert( 'core-preflight-v1' === (string) ( $trusted_preflight['execution_handoff']['policy_version'] ?? '' ), 'trusted Adapter execution handoff carries policy version' );
 magick_ai_core_smoke_assert( false === (bool) ( $trusted_preflight['execution_handoff']['core_proxy_execute'] ?? true ), 'trusted Adapter execution handoff keeps Core proxy execution disabled' );
 magick_ai_core_smoke_assert( false === (bool) ( $trusted_preflight['execution_handoff']['commit_execution'] ?? true ), 'trusted Adapter execution handoff keeps Core final execution disabled' );
 

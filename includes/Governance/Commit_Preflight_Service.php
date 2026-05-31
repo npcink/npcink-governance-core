@@ -121,11 +121,19 @@ final class Commit_Preflight_Service {
 		}
 
 		$correlation_id = $this->new_correlation_id();
+		$approved_input_hash   = $this->payload_hash( $proposal['input'] ?? array() );
+		$approved_preview_hash = $this->payload_hash( $proposal['preview'] ?? array() );
+		$policy_version        = 'core-preflight-v1';
 		$approval_context = array(
 			'approval_commit_authorized' => true,
 			'confirmation_state'        => 'approved_commit',
 			'proposal_id'               => $proposal_id,
+			'ability_id'                 => (string) $proposal['ability_id'],
 			'correlation_id'            => $correlation_id,
+			'approved_input_hash'        => $approved_input_hash,
+			'approved_preview_hash'      => $approved_preview_hash,
+			'approval_updated_at'        => (string) ( $proposal['updated_at'] ?? '' ),
+			'policy_version'             => $policy_version,
 		);
 		$execution_handoff = array(
 			'executor'           => 'adapter_after_core_preflight',
@@ -133,6 +141,8 @@ final class Commit_Preflight_Service {
 			'ability_id'        => (string) $proposal['ability_id'],
 			'proposal_id'       => $proposal_id,
 			'correlation_id'    => $correlation_id,
+			'approved_input_hash' => $approved_input_hash,
+			'policy_version'    => $policy_version,
 			'core_proxy_execute' => false,
 			'commit_execution'  => false,
 		);
@@ -145,6 +155,8 @@ final class Commit_Preflight_Service {
 				'commit_execution'      => false,
 				'idempotency_required' => true,
 				'correlation_id'        => $correlation_id,
+				'approved_input_hash'   => $approved_input_hash,
+				'policy_version'        => $policy_version,
 			),
 			$proposal_id
 		);
@@ -205,5 +217,16 @@ final class Commit_Preflight_Service {
 	 */
 	private function new_correlation_id(): string {
 		return function_exists( 'wp_generate_uuid4' ) ? wp_generate_uuid4() : uniqid( 'mai_corr_', true );
+	}
+
+	/**
+	 * Returns a stable hash for an approved structured payload.
+	 *
+	 * @param mixed $payload Payload.
+	 * @return string
+	 */
+	private function payload_hash( $payload ): string {
+		$json = wp_json_encode( $payload );
+		return hash( 'sha256', is_string( $json ) ? $json : '' );
 	}
 }
