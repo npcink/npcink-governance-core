@@ -132,7 +132,7 @@ The same token may be sent as `X-Magick-AI-Core-App-Token` for clients that
 cannot set the `Authorization` header.
 
 WordPress administrators can issue tokens from either admin-only
-`POST /wp-json/magick-ai-core/v1/apps` or the `Magick AI -> Governance`
+`POST /wp-json/magick-ai-core/v1/apps` or the `Magick AI -> Core`
 `Core App Keys` panel. Both paths use the same app identity store, default
 scope policy, and one-time raw-token display rule. The admin panel keeps app
 keys behind an advanced disclosure because it is a Core credential management

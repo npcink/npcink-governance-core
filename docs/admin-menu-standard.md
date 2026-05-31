@@ -35,7 +35,7 @@ OpenClaw handoff, Cloud configuration, or Abilities API test workflows.
 
 | Position | Menu title | Owner | Responsibility |
 | --- | --- | --- | --- |
-| 10 | `Governance` | `magick-ai-core` | Proposal review, approval/rejection, commit preflight, audit, and advanced Core app keys. |
+| 10 | `Core` | `magick-ai-core` | Proposal review, approval/rejection, commit preflight, audit, and advanced Core app keys. |
 | 20 | `OpenClaw Connection` | `magick-ai-adapter` | OpenClaw handoff, endpoint discovery, health, and client connection material. |
 | 30 | `Cloud Connection` | `magick-ai-cloud-addon` | Cloud Base URL/API key entry, signed verification, local connection state, and read-only entitlement summary. |
 | 40 | `Ability Packages` | `magick-ai-abilities` | Abilities API package test surface, route checks, and demo ability controls. |
@@ -56,7 +56,7 @@ OpenClaw handoff, Cloud configuration, or Abilities API test workflows.
 
 User-facing docs should refer to these admin paths:
 
-- `Magick AI -> Governance`
+- `Magick AI -> Core`
 - `Magick AI -> OpenClaw Connection`
 - `Magick AI -> Cloud Connection`
 - `Magick AI -> Ability Packages`

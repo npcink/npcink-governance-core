@@ -116,13 +116,30 @@ magick_ai_core_assert( false !== strpos( $positioning, '`magick-ai-abilities`' )
 magick_ai_core_assert( false !== strpos( $positioning, '`magick-ai-content-assistant`' ), 'Positioning names Content Assistant as product UX owner.' );
 
 $admin_menu_standard = magick_ai_core_read( $root . '/docs/admin-menu-standard.md' );
-foreach ( array( '`Magick AI`', '`Governance`', '`OpenClaw Connection`', '`Cloud Connection`', '`Ability Packages`' ) as $required ) {
+foreach ( array( '`Magick AI`', '`Core`', '`OpenClaw Connection`', '`Cloud Connection`', '`Ability Packages`' ) as $required ) {
 	magick_ai_core_assert( false !== strpos( $admin_menu_standard, $required ), 'Admin menu standard documents required entry: ' . $required );
 }
 
 $admin_page = magick_ai_core_read( $root . '/includes/Admin/Admin_Page.php' );
-foreach ( array( 'PARENT_MENU_SLUG', 'add_menu_page', 'add_submenu_page', 'Governance', 'admin.php' ) as $required ) {
+foreach ( array( 'PARENT_MENU_SLUG', 'add_menu_page', 'add_submenu_page', 'Core', 'admin.php' ) as $required ) {
 	magick_ai_core_assert( false !== strpos( $admin_page, $required ), 'Admin page implements shared menu contract: ' . $required );
+}
+magick_ai_core_assert( false !== strpos( $admin_page, "__( 'Core', 'magick-ai-core' ),\n\t\t\tself::MENU_CAPABILITY" ), 'Admin submenu title is Core.' );
+foreach (
+	array(
+		$root . '/README.md',
+		$root . '/readme.txt',
+		$root . '/docs/admin-menu-standard.md',
+		$root . '/docs/app-auth-scope-policy.md',
+		$root . '/docs/core-governance-operability.md',
+		$root . '/docs/next-stage-plan.md',
+		$root . '/docs/security-model.md',
+		$root . '/includes/Admin/Admin_Page.php',
+	) as $project_file
+) {
+	$project_text = magick_ai_core_read( $project_file );
+	magick_ai_core_assert( false === strpos( $project_text, 'Magick AI -> Governance' ), 'Project docs no longer use old admin path in ' . $project_file );
+	magick_ai_core_assert( false === strpos( $project_text, 'Magick AI > Governance' ), 'Project docs no longer use old admin path in ' . $project_file );
 }
 
 $governance = magick_ai_core_read( $root . '/docs/governance-contract.md' );

@@ -1,5 +1,21 @@
 # Session Breadcrumb
 
+## 2026-05-31 — Core submenu label shortened
+
+- **Module**: Core WordPress admin navigation
+- **Status**: The shared `Magick AI` admin submenu for `magick-ai-core` now
+  displays as `Core` instead of `Governance`.
+- **Completed**:
+  - Changed the Core submenu title and overview row label to `Core`.
+  - Updated current user-facing admin path documentation from
+    `Magick AI -> Governance` to `Magick AI -> Core`.
+  - Tightened the static contract so the submenu label and current admin path
+    docs do not drift back.
+- **Boundary**:
+  - This is navigation/copy only. Core remains the governance authority and no
+    REST routes, database schema, ability execution, workflow runtime, provider
+    credentials, or OpenClaw adapter ownership changed.
+
 ## 2026-05-31 — Shared platform baseline raised
 
 - **Module**: Cross-plugin release/runtime metadata

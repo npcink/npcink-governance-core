@@ -50,7 +50,7 @@ The WordPress admin proposal detail also shows:
 
 ### Recent Governance Audit Admin View
 
-`Magick AI -> Governance` includes a `Recent Governance Audit` section for
+`Magick AI -> Core` includes a `Recent Governance Audit` section for
 recent governance events. It is an operator view over Core audit records, not
 an AI request log viewer.
 
