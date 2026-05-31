@@ -23,9 +23,9 @@ menu exists, but it must first check the global admin menu and avoid registering
 a duplicate parent.
 
 Host plugins should use stable `admin_menu` priorities so submenu order does
-not depend on plugin activation order: Core at 10, Adapter at 20, Cloud Addon
-at 30, and Abilities at 40. `magick-ai-abilities` attaches last so it can see
-an existing parent menu and otherwise keep its standalone Tools fallback.
+not depend on plugin activation order: Core at 10, Adapter at 20, Abilities at
+40, and Cloud Addon at 50. `magick-ai-abilities` keeps its standalone
+`Tools -> Abilities API Packages` fallback when no shared parent menu exists.
 
 The parent page is `Overview`. It must stay shallow: show orientation and point
 operators to installed submenu entries. It must not duplicate governance,
@@ -37,8 +37,8 @@ OpenClaw handoff, Cloud configuration, or Abilities API test workflows.
 | --- | --- | --- | --- |
 | 10 | `Core` | `magick-ai-core` | Proposal review, approval/rejection, commit preflight, audit, and advanced Core app keys. |
 | 20 | `Adapter` | `magick-ai-adapter` | OpenClaw handoff, endpoint discovery, health, and client connection material. |
-| 30 | `Cloud Connection` | `magick-ai-cloud-addon` | Cloud Base URL/API key entry, signed verification, local connection state, and read-only entitlement summary. |
-| 40 | `Ability Packages` | `magick-ai-abilities` | Abilities API package test surface, route checks, and demo ability controls. |
+| 40 | `Abilities` | `magick-ai-abilities` | Abilities API package test surface, route checks, and demo ability controls. |
+| 50 | `Cloud` | `magick-ai-cloud-addon` | Cloud Base URL/API key entry, signed verification, local connection state, and read-only entitlement summary. |
 
 ## Boundary Rules
 
@@ -58,8 +58,8 @@ User-facing docs should refer to these admin paths:
 
 - `Magick AI -> Core`
 - `Magick AI -> Adapter`
-- `Magick AI -> Cloud Connection`
-- `Magick AI -> Ability Packages`
+- `Magick AI -> Abilities`
+- `Magick AI -> Cloud`
 
 Only the standalone Abilities fallback should mention
 `Tools -> Abilities API Packages`.

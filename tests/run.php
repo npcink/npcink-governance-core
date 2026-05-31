@@ -116,7 +116,7 @@ magick_ai_core_assert( false !== strpos( $positioning, '`magick-ai-abilities`' )
 magick_ai_core_assert( false !== strpos( $positioning, '`magick-ai-content-assistant`' ), 'Positioning names Content Assistant as product UX owner.' );
 
 $admin_menu_standard = magick_ai_core_read( $root . '/docs/admin-menu-standard.md' );
-foreach ( array( '`Magick AI`', '`Core`', '`Adapter`', '`Cloud Connection`', '`Ability Packages`' ) as $required ) {
+foreach ( array( '`Magick AI`', '`Core`', '`Adapter`', '`Abilities`', '`Cloud`' ) as $required ) {
 	magick_ai_core_assert( false !== strpos( $admin_menu_standard, $required ), 'Admin menu standard documents required entry: ' . $required );
 }
 

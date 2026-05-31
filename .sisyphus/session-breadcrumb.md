@@ -1,5 +1,24 @@
 # Session Breadcrumb
 
+## 2026-05-31 — Abilities and Cloud submenu labels standardized
+
+- **Module**: Cross-plugin WordPress admin navigation
+- **Status**: Abilities now uses the canonical `magick-ai-abilities` admin
+  slug and displays as `Abilities`; Cloud displays as `Cloud` and is ordered
+  below Abilities in the shared `Magick AI` menu.
+- **Completed**:
+  - Updated Core's shared admin menu standard to list `Core`, `Adapter`,
+    `Abilities`, and `Cloud` in stable priority order.
+  - Updated Core's shared overview links to point at `magick-ai-abilities` and
+    `magick-ai-cloud`.
+  - Coordinated with `magick-ai-abilities`, `magick-ai-cloud-addon`, and
+    `magick-ai-adapter` so their shared overview rows use the same labels and
+    slugs.
+- **Boundary**:
+  - This is navigation/copy only. Core remains governance truth, Abilities
+    remains the WordPress Abilities API package provider, Cloud Addon remains a
+    thin cloud connector, and Adapter remains the OpenClaw channel layer.
+
 ## 2026-05-31 — Adapter submenu slug and label standardized
 
 - **Module**: Cross-plugin WordPress admin navigation
