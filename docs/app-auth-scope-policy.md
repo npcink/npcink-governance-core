@@ -135,10 +135,10 @@ WordPress administrators can issue tokens from either admin-only
 `POST /wp-json/magick-ai-core/v1/apps` or the `Magick AI -> Core`
 `Core App Keys` panel. Both paths use the same app identity store, default
 scope policy, and one-time raw-token display rule. The admin panel keeps app
-keys behind an advanced disclosure because it is a Core credential management
-fallback, not the primary OpenClaw product setup flow. Productized OpenClaw
-setup should use Magick AI Adapter, which calls Core for governance and
-WordPress Abilities API for direct reads.
+keys in a dedicated low-frequency view because it is a Core credential
+management fallback, not the primary OpenClaw product setup flow.
+Productized OpenClaw setup should use Magick AI Adapter, which calls Core for
+governance and WordPress Abilities API for direct reads.
 
 The admin panel also exposes a minimal key-disable action. Disabling a key marks
 its status as `revoked`; future requests with that token return `401`, while
@@ -183,9 +183,9 @@ Current implementation gates:
 1. Database schema for app identities and rate counters is documented.
 2. REST authentication and error semantics are documented.
 3. Security storage and redaction behavior is documented.
-4. Admin UI can issue one-time scoped app tokens from an advanced disclosure,
-   point productized OpenClaw setup to Magick AI Adapter, and disable leaked or
-   obsolete keys without exporting Adapter onboarding content.
+4. Admin UI can issue one-time scoped app tokens from a dedicated Core App
+   Keys view, point productized OpenClaw setup to Magick AI Adapter, and
+   disable leaked or obsolete keys without exporting Adapter onboarding content.
 5. Static contract tests cover scopes, UI entry, revocation, and forbidden
    secret storage.
 6. WordPress smoke covers app-authenticated proposal creation, commit preflight,

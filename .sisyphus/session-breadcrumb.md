@@ -1,5 +1,26 @@
 # Session Breadcrumb
 
+## 2026-05-31 — Core admin workbench split into focused views
+
+- **Module**: Core WordPress admin governance surface
+- **Status**: `Magick AI -> Core` now defaults to a compact governance
+  review workbench instead of one long mixed page.
+- **Completed**:
+  - Replaced the default summary table with a compact status strip.
+  - Kept the main default task focused on pending proposal review.
+  - Reduced default audit exposure to a short recent activity table with an
+    explicit full `Governance Audit` entry.
+  - Moved Core app-key creation and revocation into a dedicated `Core App
+    Keys` view.
+  - Made proposal detail a focused detail view and moved the approve/reject
+    decision form directly after review context.
+- **Boundary**:
+  - This is admin information architecture only. Core still owns governance
+    proposal records, approval/rejection, commit preflight, audit evidence, and
+    fallback app-key management. It still does not execute abilities, run
+    workflow runtime, own productized OpenClaw setup, store provider
+    credentials, or provide Content Assistant product UX.
+
 ## 2026-05-31 — Abilities and Cloud submenu labels standardized
 
 - **Module**: Cross-plugin WordPress admin navigation

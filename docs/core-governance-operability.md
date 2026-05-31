@@ -48,14 +48,14 @@ The WordPress admin proposal detail also shows:
 - audit timeline with event, actor, app, scope decision, and correlation id;
 - approve/reject form for pending proposals.
 
-### Recent Governance Audit Admin View
+### Governance Audit Admin View
 
-`Magick AI -> Core` includes a `Recent Governance Audit` section for
-recent governance events. It is an operator view over Core audit records, not
-an AI request log viewer.
+`Magick AI -> Core` keeps recent activity on the default review workbench and
+links to a dedicated `Governance Audit` view for full inspection. It is an
+operator view over Core audit records, not an AI request log viewer.
 
-The default view shows recent events first. The advanced audit filter
-disclosure supports:
+The default view shows a short recent activity table. The full audit view keeps
+the advanced audit filter disclosure for:
 
 - proposal id;
 - event name;
@@ -70,13 +70,13 @@ scope decision, and correlation id. AI Request Logs remain owned by the
 WordPress `ai` plugin; operators should correlate the two systems with
 `proposal_id` or `correlation_id` rather than merging their storage.
 
-### Advanced Core App Keys
+### Core App Keys
 
-The same Tools page keeps app-key creation and key disable actions behind an
-advanced `Core App Keys` disclosure. This preserves the Core credential
-fallback without turning the default governance page into an OpenClaw
-onboarding or adapter configuration screen. Productized OpenClaw connection
-copy, TLS switches, and handoff instructions remain Adapter-owned.
+The default review workbench links to a dedicated `Core App Keys` view for
+app-key creation and key disable actions. This preserves the Core credential
+fallback without turning the default governance page into an OpenClaw onboarding
+or adapter configuration screen. Productized OpenClaw connection copy, TLS
+switches, and handoff instructions remain Adapter-owned.
 
 For real AI provider requests, Adapter should inject Core `proposal_id` and
 commit-preflight `correlation_id` into the `ai` plugin request log context.

@@ -97,7 +97,7 @@ The provider call happens outside Core. Core still returns
 
 When investigating an operation:
 
-1. Open Recent Governance Audit and filter by `proposal_id` or `correlation_id`.
+1. Open Governance Audit and filter by `proposal_id` or `correlation_id`.
 2. Open AI Request Logs from the WordPress `ai` plugin and search the same
    `proposal_id` or `correlation_id`.
 3. Treat Core audit as the source of governance truth.

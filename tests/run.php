@@ -292,8 +292,8 @@ foreach (
 		'proposal audit timelines',
 		'audit filters',
 		'scope_decision',
-		'Recent Governance Audit',
-		'Advanced Core App Keys',
+		'Governance Audit',
+		'Core App Keys',
 		'AI Request Logs remain owned by the',
 		'`proposal_id` or `correlation_id`',
 		'correlation_id',
@@ -784,8 +784,11 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core
 magick_ai_core_assert( false !== strpos( $admin_page, 'check_admin_referer' ), 'Admin proposal actions enforce nonce.' );
 magick_ai_core_assert( false !== strpos( $admin_page, "current_user_can( 'manage_options' )" ), 'Admin proposal actions enforce capability.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Core App Keys' ), 'Admin page exposes Core app-key management section.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'Advanced: Core App Keys' ), 'Admin page folds app-key management into an advanced disclosure.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'Recent Governance Audit' ), 'Admin page exposes recent governance audit section.' );
+magick_ai_core_assert( false !== strpos( $admin_page, "'app-keys'" ), 'Admin page moves app-key management into a dedicated view.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'render_advanced_entries' ), 'Admin default page exposes low-frequency entry links.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Recent Activity' ), 'Admin default page exposes a compact recent activity section.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Governance Audit' ), 'Admin page exposes a full governance audit view.' );
+magick_ai_core_assert( false === strpos( $admin_page, 'Advanced: Core App Keys' ), 'Admin default page no longer folds app-key management inline.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Advanced audit filters' ), 'Admin page folds detailed audit filters into an advanced disclosure.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'audit_filters_from_request' ), 'Admin page reads governance audit filters.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'audit_proposal_id' ), 'Admin page exposes proposal audit filter.' );

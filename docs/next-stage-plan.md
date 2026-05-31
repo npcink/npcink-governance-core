@@ -161,7 +161,7 @@ Current implementation:
 
 - app keys are created by admin-only `POST /apps`;
 - app keys can also be created from `Magick AI -> Core`;
-- the admin UI keeps Core App Keys behind an advanced disclosure with
+- the admin UI keeps Core App Keys in a dedicated low-frequency view with
   one-time token display on the creation result page and a key disable action;
 - the admin UI points productized OpenClaw setup to Magick AI Adapter and does
   not export OpenClaw handoff text, Adapter URLs, agent rules, or LocalWP TLS
