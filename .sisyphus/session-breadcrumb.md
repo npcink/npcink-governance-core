@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-05-31 — WordPress.org release preparation tightened
+
+- **Module**: Cross-plugin WordPress.org listing and release packaging.
+- **Status**: Core, Abilities, Adapter, and Cloud Addon listing metadata now
+  use the shared `magick-ai` contributor slug, Cloud Addon has explicit
+  external-service disclosure, and Core/Cloud Addon have repeatable release
+  package and Plugin Check scripts.
+- **Completed**:
+  - Updated Core contributor metadata and added release package / Plugin Check
+    Composer scripts.
+  - Updated Abilities listing drafts from the stale WordPress 6.9 / PHP 7.2
+    wording to the shared WordPress 7.0 / PHP 8.0 baseline.
+  - Updated Cloud Addon contributor/author metadata, external-service
+    disclosure, release packaging metadata, language folder, and Plugin Check
+    hygiene.
+  - Replaced the Cloud Addon listing assets' draft local WordPress mark with a
+    generic local-site icon.
+- **Boundary**:
+  - This is release metadata, listing copy, package hygiene, and asset work.
+    Core remains governance truth, Abilities remains the ability package
+    provider, Adapter remains the OpenClaw channel, and Cloud Addon remains a
+    thin service connector rather than a second control plane.
+
 ## 2026-05-31 — Core admin surface switched to tabbed review IA
 
 - **Module**: Core WordPress admin governance surface
