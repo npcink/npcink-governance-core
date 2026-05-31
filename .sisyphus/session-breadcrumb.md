@@ -1,5 +1,25 @@
 # Session Breadcrumb
 
+## 2026-05-31 — Cloud Addon submenu slug and label standardized
+
+- **Module**: Cross-plugin WordPress admin navigation
+- **Status**: Cloud Addon now uses the canonical admin page slug
+  `magick-ai-cloud-addon`, displays as `Cloud Addon` under `Magick AI`, and
+  keeps the page title `Magick AI Cloud Addon`.
+- **Completed**:
+  - Updated Core's shared admin menu standard and overview link for the Cloud
+    Addon surface.
+  - Updated Cloud Addon's submenu registration, direct page slug, page title,
+    overview row, and user-facing admin path docs.
+  - Updated Adapter's shared overview link so it opens the new Cloud Addon
+    slug.
+- **Boundary**:
+  - This is navigation/copy only. Cloud Addon remains a thin connector for
+    Cloud Base URL/API key entry, signed verification, local connection state,
+    and read-only entitlement summary. It does not add billing, routing,
+    prompt/preset, queue, workflow, approval, proposal, or WordPress write
+    ownership.
+
 ## 2026-05-31 — Core admin workbench split into focused views
 
 - **Module**: Core WordPress admin governance surface

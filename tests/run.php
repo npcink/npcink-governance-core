@@ -116,7 +116,7 @@ magick_ai_core_assert( false !== strpos( $positioning, '`magick-ai-abilities`' )
 magick_ai_core_assert( false !== strpos( $positioning, '`magick-ai-content-assistant`' ), 'Positioning names Content Assistant as product UX owner.' );
 
 $admin_menu_standard = magick_ai_core_read( $root . '/docs/admin-menu-standard.md' );
-foreach ( array( '`Magick AI`', '`Core`', '`Adapter`', '`Abilities`', '`Cloud`' ) as $required ) {
+foreach ( array( '`Magick AI`', '`Core`', '`Adapter`', '`Abilities`', '`Cloud Addon`' ) as $required ) {
 	magick_ai_core_assert( false !== strpos( $admin_menu_standard, $required ), 'Admin menu standard documents required entry: ' . $required );
 }
 
@@ -125,6 +125,8 @@ foreach ( array( 'PARENT_MENU_SLUG', 'add_menu_page', 'add_submenu_page', 'Core'
 	magick_ai_core_assert( false !== strpos( $admin_page, $required ), 'Admin page implements shared menu contract: ' . $required );
 }
 magick_ai_core_assert( false !== strpos( $admin_page, "__( 'Core', 'magick-ai-core' ),\n\t\t\tself::MENU_CAPABILITY" ), 'Admin submenu title is Core.' );
+magick_ai_core_assert( false !== strpos( $admin_page, "'magick-ai-cloud-addon'" ), 'Admin overview links to the canonical Cloud Addon slug.' );
+magick_ai_core_assert( false !== strpos( $admin_page, "__( 'Cloud Addon', 'magick-ai-core' )" ), 'Admin overview labels the Cloud Addon surface.' );
 foreach (
 	array(
 		$root . '/README.md',
