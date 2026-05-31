@@ -145,7 +145,7 @@ stored only as `secret_hash`. `GET /apps`, proposals, and audit rows must not
 return raw app secrets or secret hashes.
 
 Administrators can also create the same scoped app token from
-the advanced `Core App Keys` disclosure under `Tools -> Magick AI Core`. The
+the advanced `Core App Keys` disclosure under `Magick AI -> Governance`. The
 default admin view stays focused on governance summary, pending proposals, and
 recent audit; app-key creation and revocation are low-frequency fallback
 actions. The raw token and minimal Core environment variables are displayed

@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-05-31 — Shared Magick AI admin menu standardized
+
+- **Module**: Cross-plugin WordPress admin navigation
+- **Status**: Core, Adapter, Cloud Addon, and Abilities now share a single
+  `Magick AI` top-level admin menu while preserving their independent runtime
+  and product boundaries.
+- **Completed**:
+  - Added `docs/admin-menu-standard.md` as the local standard for the shared
+    parent menu, submenu names, order, and boundary rules.
+  - Moved Core governance from `Tools -> Magick AI Core` to
+    `Magick AI -> Governance`.
+  - Moved Adapter OpenClaw handoff from `Settings -> OpenClaw Connection` to
+    `Magick AI -> OpenClaw Connection`.
+  - Moved Cloud Addon settings from `Settings -> Magick AI Cloud` to
+    `Magick AI -> Cloud Connection`.
+  - Made `magick-ai-abilities` attach to `Magick AI -> Ability Packages` when
+    the shared parent exists, while retaining the standalone
+    `Tools -> Abilities API Packages` fallback.
+- **Boundary**:
+  - The menu is navigation only. Core remains governance authority, Adapter
+    remains OpenClaw channel, Cloud Addon remains a thin cloud connector, and
+    Abilities remains an independent WordPress Abilities API package plugin.
+
 ## 2026-05-31 — Plugin Check release blockers reduced
 
 - **Module**: Core package metadata / release quality gate

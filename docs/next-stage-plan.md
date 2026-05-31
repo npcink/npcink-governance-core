@@ -135,7 +135,7 @@ Goal: let humans review pending proposals inside WordPress.
 
 Screen:
 
-- Tools -> Magick AI Core
+- Magick AI -> Governance
 
 Acceptance:
 
@@ -160,7 +160,7 @@ Acceptance:
 Current implementation:
 
 - app keys are created by admin-only `POST /apps`;
-- app keys can also be created from `Tools -> Magick AI Core`;
+- app keys can also be created from `Magick AI -> Governance`;
 - the admin UI keeps Core App Keys behind an advanced disclosure with
   one-time token display on the creation result page and a key disable action;
 - the admin UI points productized OpenClaw setup to Magick AI Adapter and does

@@ -126,7 +126,7 @@ not store prompts, responses, token metrics, provider credentials, or provider
 request logs.
 
 For Core governance credentials, WordPress administrators can open the
-advanced `Core App Keys` disclosure under `Tools -> Magick AI Core` to create a
+advanced `Core App Keys` disclosure under `Magick AI -> Governance` to create a
 scoped one-time app token and disable leaked or obsolete keys. This screen is a
 governance fallback, not an OpenClaw onboarding surface. Productized OpenClaw
 setup, local TLS client configuration, agent rules, and handoff instructions

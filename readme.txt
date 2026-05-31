@@ -20,7 +20,7 @@ Core does not generate content, route models, run MCP or workflow runtimes, stor
 
 1. Upload the plugin to `wp-content/plugins/magick-ai-core`.
 2. Activate Magick AI Core in WordPress.
-3. Open Tools > Magick AI Core to review governance status, proposals, audit entries, and advanced Core app-key controls.
+3. Open Magick AI > Governance to review governance status, proposals, audit entries, and advanced Core app-key controls.
 
 == Frequently Asked Questions ==
 

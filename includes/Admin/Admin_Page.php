@@ -21,6 +21,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Renders a compact governance overview.
  */
 final class Admin_Page {
+	const PARENT_MENU_SLUG = 'magick-ai';
+	const MENU_SLUG        = 'magick-ai-core';
+	const MENU_CAPABILITY  = 'manage_options';
+
 	/**
 	 * Ability adapter.
 	 *
@@ -79,7 +83,7 @@ final class Admin_Page {
 	 * @return void
 	 */
 	public function register(): void {
-		add_action( 'admin_menu', array( $this, 'add_menu' ) );
+		add_action( 'admin_menu', array( $this, 'add_menu' ), 10 );
 		add_action( 'admin_post_magick_ai_core_create_app_key', array( $this, 'handle_create_app_key' ) );
 		add_action( 'admin_post_magick_ai_core_revoke_app_key', array( $this, 'handle_revoke_app_key' ) );
 		add_action( 'admin_post_magick_ai_core_approve_proposal', array( $this, 'handle_approve' ) );
@@ -92,13 +96,135 @@ final class Admin_Page {
 	 * @return void
 	 */
 	public function add_menu(): void {
-		add_management_page(
+		$this->ensure_parent_menu();
+
+		add_submenu_page(
+			self::PARENT_MENU_SLUG,
 			__( 'Magick AI Core', 'magick-ai-core' ),
-			__( 'Magick AI Core', 'magick-ai-core' ),
-			'manage_options',
-			'magick-ai-core',
-			array( $this, 'render' )
+			__( 'Governance', 'magick-ai-core' ),
+			self::MENU_CAPABILITY,
+			self::MENU_SLUG,
+			array( $this, 'render' ),
+			10
 		);
+	}
+
+	/**
+	 * Ensures the shared Magick AI parent menu exists.
+	 *
+	 * @return void
+	 */
+	private function ensure_parent_menu(): void {
+		if ( $this->has_parent_menu() ) {
+			return;
+		}
+
+		add_menu_page(
+			__( 'Magick AI', 'magick-ai-core' ),
+			__( 'Magick AI', 'magick-ai-core' ),
+			self::MENU_CAPABILITY,
+			self::PARENT_MENU_SLUG,
+			array( $this, 'render_overview' ),
+			'dashicons-superhero',
+			58
+		);
+
+		add_submenu_page(
+			self::PARENT_MENU_SLUG,
+			__( 'Magick AI Overview', 'magick-ai-core' ),
+			__( 'Overview', 'magick-ai-core' ),
+			self::MENU_CAPABILITY,
+			self::PARENT_MENU_SLUG,
+			array( $this, 'render_overview' ),
+			0
+		);
+	}
+
+	/**
+	 * Returns whether another Magick AI plugin already created the parent menu.
+	 *
+	 * @return bool
+	 */
+	private function has_parent_menu(): bool {
+		global $menu;
+
+		foreach ( (array) $menu as $item ) {
+			if ( isset( $item[2] ) && self::PARENT_MENU_SLUG === $item[2] ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Renders the shared Magick AI overview page.
+	 *
+	 * @return void
+	 */
+	public function render_overview(): void {
+		if ( ! current_user_can( self::MENU_CAPABILITY ) ) {
+			wp_die( esc_html__( 'You do not have permission to access this page.', 'magick-ai-core' ) );
+		}
+		?>
+		<div class="wrap">
+			<h1><?php echo esc_html__( 'Magick AI', 'magick-ai-core' ); ?></h1>
+			<p><?php echo esc_html__( 'Local WordPress entry points for Magick AI governance, connections, cloud access, and ability packages.', 'magick-ai-core' ); ?></p>
+			<h2><?php echo esc_html__( 'Installed Surfaces', 'magick-ai-core' ); ?></h2>
+			<table class="widefat striped" style="max-width: 860px;">
+				<tbody>
+					<?php
+					$this->render_overview_row( __( 'Governance', 'magick-ai-core' ), __( 'Review proposals, approval decisions, commit preflight, audit, and Core app keys.', 'magick-ai-core' ), self::MENU_SLUG );
+					$this->render_overview_row( __( 'OpenClaw Connection', 'magick-ai-core' ), __( 'Connect OpenClaw through the Adapter surface.', 'magick-ai-core' ), 'magick-ai-adapter-openclaw' );
+					$this->render_overview_row( __( 'Cloud Connection', 'magick-ai-core' ), __( 'Connect this site to Magick AI Cloud without moving local control-plane truth.', 'magick-ai-core' ), 'magick-ai-cloud' );
+					$this->render_overview_row( __( 'Ability Packages', 'magick-ai-core' ), __( 'Verify WordPress Abilities API packages and demo ability controls.', 'magick-ai-core' ), 'magick-ai-abilities-test' );
+					?>
+				</tbody>
+			</table>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Renders one overview row.
+	 *
+	 * @param string $label       Row label.
+	 * @param string $description Row description.
+	 * @param string $slug        Menu page slug.
+	 * @return void
+	 */
+	private function render_overview_row( string $label, string $description, string $slug ): void {
+		?>
+		<tr>
+			<th scope="row"><?php echo esc_html( $label ); ?></th>
+			<td><?php echo esc_html( $description ); ?></td>
+			<td>
+				<?php if ( $this->is_submenu_registered( $slug ) ) : ?>
+					<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=' . $slug ) ); ?>"><?php echo esc_html__( 'Open', 'magick-ai-core' ); ?></a>
+				<?php else : ?>
+					<span style="color: #646970;"><?php echo esc_html__( 'Not installed', 'magick-ai-core' ); ?></span>
+				<?php endif; ?>
+			</td>
+		</tr>
+		<?php
+	}
+
+	/**
+	 * Returns whether a Magick AI submenu has been registered.
+	 *
+	 * @param string $slug Menu page slug.
+	 * @return bool
+	 */
+	private function is_submenu_registered( string $slug ): bool {
+		global $submenu;
+
+		foreach ( (array) ( $submenu[ self::PARENT_MENU_SLUG ] ?? array() ) as $item ) {
+			if ( isset( $item[2] ) && $slug === $item[2] ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -918,7 +1044,7 @@ final class Admin_Page {
 	 * @return string
 	 */
 	private function admin_url( array $args = array() ): string {
-		return add_query_arg( array_merge( array( 'page' => 'magick-ai-core' ), $args ), admin_url( 'tools.php' ) );
+		return add_query_arg( array_merge( array( 'page' => self::MENU_SLUG ), $args ), admin_url( 'admin.php' ) );
 	}
 
 	/**
