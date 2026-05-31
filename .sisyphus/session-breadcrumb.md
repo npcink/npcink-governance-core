@@ -1,5 +1,24 @@
 # Session Breadcrumb
 
+## 2026-05-31 — Adapter submenu slug and label standardized
+
+- **Module**: Cross-plugin WordPress admin navigation
+- **Status**: Adapter now uses the canonical admin page slug
+  `magick-ai-adapter`, displays as `Adapter` under `Magick AI`, and keeps the
+  page title `Magick AI Adapter`.
+- **Completed**:
+  - Updated Core's shared admin menu standard from
+    `Magick AI -> OpenClaw Connection` to `Magick AI -> Adapter`.
+  - Updated Core's shared overview link to point to `magick-ai-adapter`.
+  - Coordinated with `magick-ai-adapter` and `magick-ai-cloud-addon` so shared
+    overview rows no longer point at the old `magick-ai-adapter-openclaw`
+    slug.
+- **Boundary**:
+  - This is navigation/copy only. Adapter remains the OpenClaw channel layer,
+    Core remains governance truth, and no REST route, ability definition,
+    cloud connector, workflow runtime, provider credential, or final write
+    policy changed.
+
 ## 2026-05-31 — Core submenu label shortened
 
 - **Module**: Core WordPress admin navigation

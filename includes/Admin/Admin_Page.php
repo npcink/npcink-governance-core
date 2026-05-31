@@ -175,7 +175,7 @@ final class Admin_Page {
 				<tbody>
 					<?php
 					$this->render_overview_row( __( 'Core', 'magick-ai-core' ), __( 'Review proposals, approval decisions, commit preflight, audit, and Core app keys.', 'magick-ai-core' ), self::MENU_SLUG );
-					$this->render_overview_row( __( 'OpenClaw Connection', 'magick-ai-core' ), __( 'Connect OpenClaw through the Adapter surface.', 'magick-ai-core' ), 'magick-ai-adapter-openclaw' );
+					$this->render_overview_row( __( 'Adapter', 'magick-ai-core' ), __( 'Connect OpenClaw through the Adapter surface.', 'magick-ai-core' ), 'magick-ai-adapter' );
 					$this->render_overview_row( __( 'Cloud Connection', 'magick-ai-core' ), __( 'Connect this site to Magick AI Cloud without moving local control-plane truth.', 'magick-ai-core' ), 'magick-ai-cloud' );
 					$this->render_overview_row( __( 'Ability Packages', 'magick-ai-core' ), __( 'Verify WordPress Abilities API packages and demo ability controls.', 'magick-ai-core' ), 'magick-ai-abilities-test' );
 					?>
