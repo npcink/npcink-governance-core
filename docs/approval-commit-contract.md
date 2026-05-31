@@ -41,6 +41,8 @@ Preflight must:
 - return Core-generated approval context;
 - return `proposal_item_preflight` describing executable, blocked, warning, and
   needs-input state;
+- return `execution_handoff` so Adapter can route final execution without
+  treating Core as the executor;
 - return a `correlation_id` in the response and
   `approval_context.correlation_id`;
 - return `commit_execution=false`;
@@ -62,6 +64,31 @@ array(
 The `correlation_id` must also be stored in the `commit.preflighted` audit
 event. It connects the returned approval context to the audit trail; it is not
 a final execution token.
+
+## Execution Handoff
+
+Commit preflight returns an execution handoff object for Adapter:
+
+```php
+array(
+	'executor'           => 'adapter_after_core_preflight',
+	'execution_surface' => 'wp_abilities_rest',
+	'ability_id'        => '<target ability id>',
+	'proposal_id'       => '<core proposal id>',
+	'correlation_id'    => '<preflight correlation id>',
+	'core_proxy_execute' => false,
+	'commit_execution'  => false,
+)
+```
+
+The handoff object is not a second approval and not an execution token. It
+exists so Adapter can implement a single user-facing approve-and-execute action
+while Core remains the approval, preflight, and audit authority.
+
+Generic MCP keys should not receive `proposals:approve`. Productized Magick AI
+Adapter may use a separately issued trusted key with `proposals:approve` when
+its own UI or host policy presents proposal risk and collects the user's
+approval before calling Core.
 
 Do not accept legacy `confirm_token`, `write_confirmed`, or compatibility
 confirmation parameters in the rebuilt Core.

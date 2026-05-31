@@ -63,6 +63,9 @@ Use it for behavior that requires real WordPress:
 - governance operability coverage, including proposal `audit_timeline`,
   commit-preflight `correlation_id`, app `scope_decision`, and audit filters
   for ability, app, key, caller type, and correlation id;
+- trusted Adapter approval coverage, including an app key with
+  `proposals:approve`, app-authenticated approval, app-authenticated preflight,
+  and approval audit attribution;
 - real proposal and audit persistence.
 
 The smoke test should stay small. It is a confidence gate, not a full end-to-end

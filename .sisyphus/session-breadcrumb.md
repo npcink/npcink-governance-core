@@ -1,5 +1,22 @@
 # Session Breadcrumb
 
+## 2026-05-31 — Trusted Adapter approval handoff clarified
+
+- **Module**: Core app auth / Adapter approve-and-execute support
+- **Status**: Core now documents and tests the trusted Adapter path for a
+  single user-facing approve-and-execute flow without adding Core execution.
+- **Completed**:
+  - Documented that generic MCP keys still exclude `proposals:approve`, while
+    a productized trusted Adapter may receive a separate approval-capable key.
+  - Added commit-preflight `execution_handoff` guidance so Adapter knows final
+    execution belongs after Core preflight and outside Core.
+  - Added smoke coverage for trusted app-key approval, app-key preflight, and
+    approval/preflight audit attribution.
+- **Boundary**:
+  - Core still does not expose approve-and-execute, execute target abilities,
+    proxy WordPress Abilities API, run workflow runtime, or perform final
+    commits.
+
 ## 2026-05-31 — Plan-to-proposal destructive gate hardened
 
 - **Module**: Core governance intake / plan action safety

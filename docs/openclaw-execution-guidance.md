@@ -170,12 +170,27 @@ approval bridge. It lets OpenClaw see whether a proposal is `pending`,
 as preview data and `audit_timeline` when available.
 
 The adapter should not expose `POST /proposals/{proposal_id}/approve` or
-`POST /proposals/{proposal_id}/reject` by default. Approval and rejection are
-governance decisions owned by Core and the WordPress admin surface unless a
-separate trusted host policy is explicitly documented. If a future adapter adds
-an approval proxy, it must be disabled by default, require
-`proposals:approve` or `proposals:reject`, use a separate trusted key where
-possible, and preserve app/key/caller audit attribution.
+`POST /proposals/{proposal_id}/reject` to generic MCP clients by default.
+Approval and rejection are governance decisions owned by Core and the WordPress
+admin surface unless a separate trusted host policy is explicitly documented.
+
+A productized Magick AI Adapter may provide a single user-facing
+approve-and-execute action. That action is still a governance composition, not
+a Core execution route:
+
+1. Adapter shows the Core proposal preview, risk, blocked/needs-input state,
+   and target operation to the user.
+2. Adapter uses a separately issued trusted Core app key with
+   `proposals:approve` to approve the proposal, or skips approval if it is
+   already approved.
+3. Adapter calls Core commit preflight with `commit:preflight`.
+4. Adapter executes the target WordPress ability through WordPress Abilities API
+   only when preflight returns an executable item and Core approval context.
+
+This keeps the product experience in one place while Core remains the
+governance backend. The trusted Adapter key should be separate from generic
+agent keys where practical, should not receive `audit:read` by default, and
+must preserve app/key/caller audit attribution.
 
 ## Non-Goals
 
@@ -198,7 +213,8 @@ module:
   proposal status polling;
 - call read abilities through WordPress Abilities API;
 - call Core proposal/preflight for write and destructive abilities;
-- keep approve/reject out of the adapter default surface unless a separate
-  trusted host approval policy is accepted;
+- provide approve-and-execute only from a trusted Adapter surface that uses
+  `proposals:approve` plus `commit:preflight`; generic agent keys should not
+  get approval scope;
 - keep adapter transport, tool presentation, and OpenClaw-specific behavior out
   of Core.

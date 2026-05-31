@@ -66,7 +66,7 @@ The raw secret is returned only by `POST /apps`.
 
 Purpose: list Core app identities without raw secrets or secret hashes.
 
-Permission: `manage_options`.
+Permission: `manage_options` or app scope `proposals:approve`.
 
 Response `200`: app identity rows without secret material.
 
@@ -413,6 +413,13 @@ Audit event:
 
 - `proposal.approved`
 
+App audit attribution:
+
+- `metadata.auth.scope=proposals:approve`
+- `metadata.auth.scope_decision=allowed`
+- `metadata.auth.caller_type` should identify trusted Adapter approval when
+  approval is proxied through productized Adapter UI.
+
 ## `POST /proposals/{proposal_id}/reject`
 
 Purpose: mark a pending proposal as rejected.
@@ -506,6 +513,15 @@ Response `200`:
     "proposal_id": "uuid",
     "correlation_id": "uuid"
   },
+  "execution_handoff": {
+    "executor": "adapter_after_core_preflight",
+    "execution_surface": "wp_abilities_rest",
+    "ability_id": "magick-ai/trash-post",
+    "proposal_id": "uuid",
+    "correlation_id": "uuid",
+    "core_proxy_execute": false,
+    "commit_execution": false
+  },
   "correlation_id": "uuid",
   "commit_execution": false,
   "idempotency_required": true
@@ -538,6 +554,16 @@ Preflight audit correlation:
 - response `correlation_id`;
 - `approval_context.correlation_id`;
 - `commit.preflighted` event `metadata.correlation_id`.
+
+Execution handoff:
+
+- `execution_handoff.executor=adapter_after_core_preflight`;
+- `execution_handoff.execution_surface=wp_abilities_rest`;
+- `execution_handoff.core_proxy_execute=false`;
+- `execution_handoff.commit_execution=false`.
+
+The handoff object is routing guidance for Adapter. It is not an execution
+token and does not make Core execute the target ability.
 
 ## Planned Routes
 

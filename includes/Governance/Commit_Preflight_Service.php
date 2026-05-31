@@ -127,6 +127,15 @@ final class Commit_Preflight_Service {
 			'proposal_id'               => $proposal_id,
 			'correlation_id'            => $correlation_id,
 		);
+		$execution_handoff = array(
+			'executor'           => 'adapter_after_core_preflight',
+			'execution_surface' => 'wp_abilities_rest',
+			'ability_id'        => (string) $proposal['ability_id'],
+			'proposal_id'       => $proposal_id,
+			'correlation_id'    => $correlation_id,
+			'core_proxy_execute' => false,
+			'commit_execution'  => false,
+		);
 
 		$event_id = $this->audit->record(
 			'commit.preflighted',
@@ -153,6 +162,7 @@ final class Commit_Preflight_Service {
 			'capability'           => $capability,
 			'proposal_item_preflight' => $item_preflight,
 			'approval_context'     => $approval_context,
+			'execution_handoff'    => $execution_handoff,
 			'correlation_id'       => $correlation_id,
 			'commit_execution'     => false,
 			'idempotency_required' => true,

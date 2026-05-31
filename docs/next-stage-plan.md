@@ -34,6 +34,8 @@ Implemented:
   to Magick AI Adapter.
 - plan-to-proposal governance bridge for content inventory fix, test content
   cleanup, and media inventory fix plans.
+- trusted Adapter approval support through scoped `proposals:approve`, with
+  Core still returning `commit_execution=false` and execution handoff guidance.
 
 Not implemented:
 
@@ -169,6 +171,12 @@ Current implementation:
 - app-authenticated proposal and preflight events include app attribution.
 
 See [App Auth Scope Policy](app-auth-scope-policy.md).
+
+Trusted Adapter approve-and-execute uses this same app auth layer. Core may
+grant `proposals:approve` to a separately issued trusted Adapter key, while
+generic MCP keys continue to exclude approval scope by default. Core records
+the app/key/caller attribution for the approval event; Adapter owns the single
+user-facing approve-and-execute button and final WordPress Abilities API call.
 
 ### 6. Agent/MCP Governance Entry
 

@@ -1090,9 +1090,69 @@ $app_preflight = magick_ai_core_smoke_rest_as_app( 'POST', '/magick-ai-core/v1/p
 magick_ai_core_smoke_assert( false === (bool) ( $app_preflight['commit_execution'] ?? true ), 'app-authenticated commit preflight does not execute ability' );
 magick_ai_core_smoke_assert( true === (bool) ( $app_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'app-authenticated commit preflight returns approval context' );
 magick_ai_core_smoke_assert( '' !== (string) ( $app_preflight['correlation_id'] ?? '' ), 'app-authenticated commit preflight returns correlation id' );
+magick_ai_core_smoke_assert( 'adapter_after_core_preflight' === (string) ( $app_preflight['execution_handoff']['executor'] ?? '' ), 'app-authenticated commit preflight returns adapter execution handoff' );
+magick_ai_core_smoke_assert( false === (bool) ( $app_preflight['execution_handoff']['commit_execution'] ?? true ), 'app-authenticated execution handoff keeps Core commit execution disabled' );
 
 $app_audit_denied = magick_ai_core_smoke_rest_result_as_app( 'GET', '/magick-ai-core/v1/audit', $app_token, array( 'limit' => 5 ) );
 magick_ai_core_smoke_assert( 403 === (int) $app_audit_denied['status'], 'app-authenticated audit read is denied without audit scope' );
+
+$trusted_adapter_app = magick_ai_core_smoke_rest(
+	'POST',
+	'/magick-ai-core/v1/apps',
+	array(
+		'app_label'           => 'Trusted Adapter approve smoke',
+		'caller_type'         => 'trusted_adapter',
+		'scopes'              => array( 'capabilities:read', 'proposals:create', 'proposals:read', 'proposals:approve', 'commit:preflight' ),
+		'rate_limit'          => 20,
+		'rate_window_seconds' => 3600,
+	)
+);
+$trusted_adapter_token = (string) ( $trusted_adapter_app['token'] ?? '' );
+$trusted_adapter_app_id = (string) ( $trusted_adapter_app['app_id'] ?? '' );
+magick_ai_core_smoke_assert( '' !== $trusted_adapter_token && '' !== $trusted_adapter_app_id, 'trusted Adapter app key is created for approve-and-execute smoke' );
+
+$trusted_created = magick_ai_core_smoke_rest_as_app(
+	'POST',
+	'/magick-ai-core/v1/proposals',
+	$trusted_adapter_token,
+	array(
+		'ability_id' => 'magick-ai/create-draft',
+		'title'      => 'Trusted Adapter approval proposal',
+		'summary'    => 'Created by trusted Adapter approval smoke test.',
+		'input'      => array(
+			'title'   => 'Trusted Adapter Draft',
+			'content' => '<p>Trusted Adapter content.</p>',
+			'dry_run' => true,
+			'commit'  => false,
+		),
+		'preview'    => array(
+			'dry_run'          => true,
+			'commit_execution' => false,
+		),
+		'caller'     => array(
+			'source' => 'trusted-adapter-smoke',
+		),
+	)
+);
+$trusted_proposal_id = (string) ( $trusted_created['proposal_id'] ?? '' );
+magick_ai_core_smoke_assert( '' !== $trusted_proposal_id, 'trusted Adapter app creates proposal' );
+
+$trusted_approved = magick_ai_core_smoke_rest_as_app(
+	'POST',
+	'/magick-ai-core/v1/proposals/' . rawurlencode( $trusted_proposal_id ) . '/approve',
+	$trusted_adapter_token,
+	array(
+		'note' => 'Trusted Adapter approve-and-execute smoke approval.',
+	)
+);
+magick_ai_core_smoke_assert( 'approved' === (string) ( $trusted_approved['status'] ?? '' ), 'trusted Adapter app approves proposal with approval scope' );
+
+$trusted_preflight = magick_ai_core_smoke_rest_as_app( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $trusted_proposal_id ) . '/commit-preflight', $trusted_adapter_token );
+magick_ai_core_smoke_assert( true === (bool) ( $trusted_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'trusted Adapter app receives approval context after approval' );
+magick_ai_core_smoke_assert( 'adapter_after_core_preflight' === (string) ( $trusted_preflight['execution_handoff']['executor'] ?? '' ), 'trusted Adapter preflight returns execution handoff' );
+magick_ai_core_smoke_assert( 'magick-ai/create-draft' === (string) ( $trusted_preflight['execution_handoff']['ability_id'] ?? '' ), 'trusted Adapter execution handoff includes target ability id' );
+magick_ai_core_smoke_assert( false === (bool) ( $trusted_preflight['execution_handoff']['core_proxy_execute'] ?? true ), 'trusted Adapter execution handoff keeps Core proxy execution disabled' );
+magick_ai_core_smoke_assert( false === (bool) ( $trusted_preflight['execution_handoff']['commit_execution'] ?? true ), 'trusted Adapter execution handoff keeps Core final execution disabled' );
 
 $rate_app = magick_ai_core_smoke_rest(
 	'POST',
@@ -1235,6 +1295,34 @@ foreach ( $app_proposal_audit_items as $item ) {
 	}
 }
 magick_ai_core_smoke_assert( $found_app_attribution, 'app-authenticated audit event stores app attribution' );
+
+$trusted_proposal_audit = magick_ai_core_smoke_rest(
+	'GET',
+	'/magick-ai-core/v1/audit',
+	array(
+		'proposal_id' => $trusted_proposal_id,
+		'limit'       => 20,
+	)
+);
+$trusted_proposal_audit_items = (array) ( $trusted_proposal_audit['items'] ?? array() );
+$found_trusted_approval       = false;
+$found_trusted_preflight      = false;
+foreach ( $trusted_proposal_audit_items as $item ) {
+	if ( ! is_array( $item ) ) {
+		continue;
+	}
+	if ( 'proposal.approved' === (string) ( $item['event_name'] ?? '' ) ) {
+		$found_trusted_approval = $trusted_adapter_app_id === (string) ( $item['metadata']['auth']['app_id'] ?? '' )
+			&& 'proposals:approve' === (string) ( $item['metadata']['auth']['scope'] ?? '' )
+			&& 'allowed' === (string) ( $item['metadata']['auth']['scope_decision'] ?? '' );
+	}
+	if ( 'commit.preflighted' === (string) ( $item['event_name'] ?? '' ) ) {
+		$found_trusted_preflight = $trusted_adapter_app_id === (string) ( $item['metadata']['auth']['app_id'] ?? '' )
+			&& 'commit:preflight' === (string) ( $item['metadata']['auth']['scope'] ?? '' );
+	}
+}
+magick_ai_core_smoke_assert( $found_trusted_approval, 'trusted Adapter approval audit stores app attribution and approve scope' );
+magick_ai_core_smoke_assert( $found_trusted_preflight, 'trusted Adapter preflight audit stores app attribution and preflight scope' );
 
 $app_id_audit = magick_ai_core_smoke_rest(
 	'GET',

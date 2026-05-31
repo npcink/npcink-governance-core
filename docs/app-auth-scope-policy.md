@@ -75,6 +75,10 @@ avoid wildcard write semantics.
 - Proposal creation requires `proposals:create`.
 - Proposal approval is high risk and requires `proposals:approve`; most MCP
   adapters should not receive this by default.
+- Productized Magick AI Adapter may receive `proposals:approve` only as a
+  separately issued trusted Adapter key. That key represents a host-controlled
+  UI or policy that has already presented the proposal preview and risk context
+  to the user.
 - Commit preflight requires `commit:preflight` and an approved proposal.
 - Audit listing requires `audit:read`.
 - Write/destructive WordPress execution is outside Core until final commit
@@ -162,11 +166,14 @@ Recommended defaults:
 | --- | --- |
 | MCP adapter | `capabilities:read`, `proposals:create`, `proposals:read`, `commit:preflight` |
 | Product plugin | `capabilities:read`, `proposals:create`, `proposals:read` |
+| Trusted Magick AI Adapter approve-and-execute path | `capabilities:read`, `proposals:create`, `proposals:read`, `proposals:approve`, `commit:preflight` |
 | Human admin UI | WordPress `manage_options`; no app key required. |
 | Hosted runtime callback | No default Core access until callback identity is separately contracted. |
 
 Do not grant `proposals:approve` or `audit:read` by default to generic MCP
-adapters.
+adapters. A trusted Adapter approval key should be separate from generic agent
+keys where practical, should not include `audit:read` by default, and should be
+revoked if the Adapter UI or host policy is no longer trusted.
 
 ## Implementation Gates
 
@@ -181,5 +188,5 @@ Current implementation gates:
 5. Static contract tests cover scopes, UI entry, revocation, and forbidden
    secret storage.
 6. WordPress smoke covers app-authenticated proposal creation, commit preflight,
-   denied approval, denied audit access, rate limiting, scope-decision
-   attribution, and app audit filters.
+   denied generic approval, trusted Adapter approval, denied audit access, rate
+   limiting, scope-decision attribution, and app audit filters.
