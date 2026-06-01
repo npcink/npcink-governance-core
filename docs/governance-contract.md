@@ -123,6 +123,8 @@ The new Core uses approval-commit terminology. It must not reintroduce
 MVP event names:
 
 - `proposal.created`
+- `proposal.deduplicated`
+- `proposal.quota_blocked`
 - `proposal.plan_ingested`
 - `proposal.approved`
 - `proposal.rejected`

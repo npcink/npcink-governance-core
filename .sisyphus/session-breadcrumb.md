@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-01 — Proposal flood guardrails added
+
+- **Module**: Core proposal creation governance.
+- **Status**: Core now reduces proposal queue flooding by reusing equivalent
+  pending proposals and blocking app-authenticated callers that exceed their
+  pending proposal quota.
+- **Completed**:
+  - Added non-secret `caller.core_guardrails` metadata with a stable input hash
+    and quota bucket for proposal creation.
+  - Reused an existing pending proposal when the same caller submits the same
+    `ability_id` and sanitized `input` again.
+  - Added app pending proposal quota enforcement with stable
+    `magick_ai_core_pending_proposal_quota_exceeded` HTTP 429 responses.
+  - Kept administrator quota intentionally high to avoid blocking local
+    governance/admin smoke queues, while app keys remain tightly bounded.
+  - Documented the guardrail in REST, security, app-auth, and governance docs.
+- **Verification**:
+  - `composer test:all`
+  - `composer smoke:wp`
+  - `git diff --check`
+- **Boundary**:
+  - This is proposal intake hardening only. It does not add final execution,
+    queues, workflow runtime, or proposal cancellation/bulk cancellation.
+
 ## 2026-06-01 — Cleanup plans request single batch approval
 
 - **Module**: Abilities cleanup planning output and Core plan-to-proposal

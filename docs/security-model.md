@@ -26,6 +26,7 @@ Implemented layers include:
 - bearer app token authentication;
 - ability scopes;
 - rate limits;
+- pending proposal quota and duplicate pending proposal reuse;
 - per-app audit attribution.
 
 Planned layers include:
@@ -159,6 +160,12 @@ fail future app authentication with `401`.
 App-authenticated requests must have the route's required scope and pass the
 fixed-window rate limit. Missing auth returns `401`, missing scope returns
 `403`, and rate limit failures return `429`.
+
+Proposal creation also has a pending-queue guardrail. Core reuses an existing
+pending proposal when the same caller submits the same `ability_id` and
+sanitized `input` again. If a caller already has too many pending proposals,
+Core rejects additional proposal creation with
+`magick_ai_core_pending_proposal_quota_exceeded` before storing a new row.
 
 Successful app-authenticated governance events include sanitized app attribution
 in `metadata.auth`, including `scope_decision=allowed`. Scope denials record

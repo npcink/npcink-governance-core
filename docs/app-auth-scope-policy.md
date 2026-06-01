@@ -100,6 +100,14 @@ The first app-key implementation supports a simple fixed-window limit:
 Rate events should be auditable without storing secrets or raw request bodies.
 Rate limit denials emit `app.rate_limited`.
 
+Proposal creation has an additional pending queue guardrail. App-authenticated
+callers may have at most 20 pending proposals at a time, and administrator
+callers may have at most 1000 pending proposals per user. Repeated creation of
+the same `ability_id` with the same sanitized `input` by the same caller
+returns the existing pending proposal with `deduplicated=true` instead of
+creating another row. Quota denials return
+`magick_ai_core_pending_proposal_quota_exceeded` with HTTP `429`.
+
 ## Audit Attribution
 
 Every app-authenticated governance event includes `metadata.auth` with:

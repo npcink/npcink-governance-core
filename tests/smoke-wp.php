@@ -1136,32 +1136,38 @@ $executed_action_result = magick_ai_core_smoke_create_proposals_from_plan( 'magi
 magick_ai_core_smoke_assert( 0 === (int) ( $executed_action_result['proposal_count'] ?? -1 ), 'already-executed write action is blocked before proposal creation' );
 magick_ai_core_smoke_assert( 'action_commit_execution_rejected' === (string) ( $executed_action_result['blocked_items'][0]['block_code'] ?? '' ), 'already-executed write action records commit execution guard' );
 
+$app_proposal_payload = array(
+	'ability_id' => 'magick-ai/create-draft',
+	'title'      => 'App authenticated proposal',
+	'summary'    => 'Created by app key smoke test.',
+	'input'      => array(
+		'title'   => 'App Auth Draft',
+		'content' => '<p>App auth content.</p>',
+		'dry_run' => true,
+	),
+	'preview'    => array(
+		'dry_run' => true,
+	),
+	'caller'     => array(
+		'source' => 'app-auth-smoke',
+	),
+);
 $app_created = magick_ai_core_smoke_rest_as_app(
 	'POST',
 	'/magick-ai-core/v1/proposals',
 	$app_token,
-	array(
-		'ability_id' => 'magick-ai/create-draft',
-		'title'      => 'App authenticated proposal',
-		'summary'    => 'Created by app key smoke test.',
-		'input'      => array(
-			'title'   => 'App Auth Draft',
-			'content' => '<p>App auth content.</p>',
-			'dry_run' => true,
-		),
-		'preview'    => array(
-			'dry_run' => true,
-		),
-		'caller'     => array(
-			'source' => 'app-auth-smoke',
-		),
-	)
+	$app_proposal_payload
 );
 $app_proposal_id = (string) ( $app_created['proposal_id'] ?? '' );
 magick_ai_core_smoke_assert( '' !== $app_proposal_id, 'app-authenticated proposal is created' );
 magick_ai_core_smoke_assert( $app_id === (string) ( $app_created['caller']['auth']['app_id'] ?? '' ), 'app-authenticated proposal stores app attribution' );
 magick_ai_core_smoke_assert( 'proposals:create' === (string) ( $app_created['caller']['auth']['scope'] ?? '' ), 'app-authenticated proposal stores scope attribution' );
 magick_ai_core_smoke_assert( 'allowed' === (string) ( $app_created['caller']['auth']['scope_decision'] ?? '' ), 'app-authenticated proposal stores allowed scope decision' );
+$app_duplicate = magick_ai_core_smoke_rest_result_as_app( 'POST', '/magick-ai-core/v1/proposals', $app_token, $app_proposal_payload );
+magick_ai_core_smoke_assert( 200 === (int) $app_duplicate['status'], 'duplicate app proposal returns existing pending proposal with HTTP 200' );
+$app_duplicate_data = is_array( $app_duplicate['data'] ?? null ) ? $app_duplicate['data'] : array();
+magick_ai_core_smoke_assert( $app_proposal_id === (string) ( $app_duplicate_data['proposal_id'] ?? '' ), 'duplicate app proposal reuses the existing pending proposal id' );
+magick_ai_core_smoke_assert( true === (bool) ( $app_duplicate_data['deduplicated'] ?? false ), 'duplicate app proposal response is marked deduplicated' );
 
 $app_approve = magick_ai_core_smoke_rest_result_as_app( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $app_proposal_id ) . '/approve', $app_token );
 magick_ai_core_smoke_assert( 403 === (int) $app_approve['status'], 'app-authenticated approval is denied without approval scope' );
@@ -1182,6 +1188,65 @@ magick_ai_core_smoke_assert( '' !== (string) ( $app_preflight['approval_context'
 magick_ai_core_smoke_assert( 'core-preflight-v1' === (string) ( $app_preflight['approval_context']['policy_version'] ?? '' ), 'app-authenticated commit preflight returns policy version' );
 magick_ai_core_smoke_assert( 'adapter_after_core_preflight' === (string) ( $app_preflight['execution_handoff']['executor'] ?? '' ), 'app-authenticated commit preflight returns adapter execution handoff' );
 magick_ai_core_smoke_assert( false === (bool) ( $app_preflight['execution_handoff']['commit_execution'] ?? true ), 'app-authenticated execution handoff keeps Core commit execution disabled' );
+
+$quota_app = magick_ai_core_smoke_rest(
+	'POST',
+	'/magick-ai-core/v1/apps',
+	array(
+		'app_label'           => 'OpenClaw pending quota smoke',
+		'scopes'              => array( 'proposals:create' ),
+		'rate_limit'          => 100,
+		'rate_window_seconds' => 3600,
+	)
+);
+$quota_token = (string) ( $quota_app['token'] ?? '' );
+for ( $quota_index = 1; $quota_index <= 20; ++$quota_index ) {
+	magick_ai_core_smoke_rest_as_app(
+		'POST',
+		'/magick-ai-core/v1/proposals',
+		$quota_token,
+		array(
+			'ability_id' => 'magick-ai/create-draft',
+			'title'      => 'Pending quota proposal ' . $quota_index,
+			'summary'    => 'Created to verify pending proposal quota.',
+			'input'      => array(
+				'title'   => 'Pending quota draft ' . $quota_index,
+				'content' => '<p>Pending quota smoke.</p>',
+				'dry_run' => true,
+			),
+			'preview'    => array(
+				'dry_run' => true,
+			),
+			'caller'     => array(
+				'source' => 'pending-quota-smoke',
+			),
+		)
+	);
+}
+$quota_blocked = magick_ai_core_smoke_rest_result_as_app(
+	'POST',
+	'/magick-ai-core/v1/proposals',
+	$quota_token,
+	array(
+		'ability_id' => 'magick-ai/create-draft',
+		'title'      => 'Pending quota proposal blocked',
+		'summary'    => 'This should be blocked by pending proposal quota.',
+		'input'      => array(
+			'title'   => 'Pending quota blocked draft',
+			'content' => '<p>Pending quota smoke.</p>',
+			'dry_run' => true,
+		),
+		'preview'    => array(
+			'dry_run' => true,
+		),
+		'caller'     => array(
+			'source' => 'pending-quota-smoke',
+		),
+	)
+);
+magick_ai_core_smoke_assert( 429 === (int) $quota_blocked['status'], 'app pending proposal quota blocks the twenty-first pending proposal' );
+$quota_blocked_data = is_array( $quota_blocked['data'] ?? null ) ? $quota_blocked['data'] : array();
+magick_ai_core_smoke_assert( 'magick_ai_core_pending_proposal_quota_exceeded' === (string) ( $quota_blocked_data['code'] ?? '' ), 'pending proposal quota returns stable error code' );
 
 $app_audit_denied = magick_ai_core_smoke_rest_result_as_app( 'GET', '/magick-ai-core/v1/audit', $app_token, array( 'limit' => 5 ) );
 magick_ai_core_smoke_assert( 403 === (int) $app_audit_denied['status'], 'app-authenticated audit read is denied without audit scope' );

@@ -322,7 +322,7 @@ final class Proposals_Controller {
 			return $result;
 		}
 
-		return new WP_REST_Response( $result, 201 );
+		return new WP_REST_Response( $result, ! empty( $result['deduplicated'] ) ? 200 : 201 );
 	}
 
 	/**

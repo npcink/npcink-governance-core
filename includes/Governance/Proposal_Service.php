@@ -21,6 +21,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Proposal_Service {
 	const PENDING_TTL_SECONDS = 86400;
+	const PENDING_QUOTA_PER_APP = 20;
+	const PENDING_QUOTA_PER_USER = 1000;
 
 	/**
 	 * Proposal repository.
@@ -42,6 +44,13 @@ final class Proposal_Service {
 	 * @var Audit_Log_Repository
 	 */
 	private $audit;
+
+	/**
+	 * Whether stale pending expiry has run before create in this request.
+	 *
+	 * @var bool
+	 */
+	private $stale_expired_for_create = false;
 
 	/**
 	 * Constructor.
@@ -84,9 +93,59 @@ final class Proposal_Service {
 			);
 		}
 
+		$input  = is_array( $payload['input'] ?? null ) ? $payload['input'] : array();
+		$preview = is_array( $payload['preview'] ?? null ) ? $payload['preview'] : array();
 		$caller = is_array( $payload['caller'] ?? null ) ? $payload['caller'] : array();
 		if ( Request_Context::is_app() ) {
 			$caller['auth'] = Request_Context::audit_metadata();
+		}
+
+		$guardrail = $this->proposal_create_guardrail( $ability_id, $input );
+		$caller['core_guardrails'] = $guardrail;
+		$this->expire_stale_pending_before_create();
+
+		$pending = $this->proposals->list_pending_for_guardrail( (string) $guardrail['pending_quota_key'], '', max( 500, (int) $guardrail['pending_quota_limit'] ) );
+		$duplicate = $this->find_duplicate_pending_proposal( $pending, $ability_id, (string) $guardrail['input_hash'], (string) $guardrail['pending_quota_key'] );
+		if ( null !== $duplicate ) {
+			$duplicate['deduplicated'] = true;
+			$duplicate['dedupe']       = array(
+				'reason'      => 'pending_equivalent_exists',
+				'ability_id'  => $ability_id,
+				'input_hash'  => (string) $guardrail['input_hash'],
+			);
+			$this->audit->record(
+				'proposal.deduplicated',
+				array(
+					'ability_id' => $ability_id,
+					'status'     => $duplicate['status'],
+				),
+				(string) $duplicate['proposal_id']
+			);
+			return $duplicate;
+		}
+
+		$pending_count = $this->count_pending_for_quota( $pending, (string) $guardrail['pending_quota_key'] );
+		if ( $pending_count >= (int) $guardrail['pending_quota_limit'] ) {
+			$this->audit->record(
+				'proposal.quota_blocked',
+				array(
+					'ability_id'     => $ability_id,
+					'pending_count'  => $pending_count,
+					'quota_limit'    => (int) $guardrail['pending_quota_limit'],
+					'quota_subject'  => (string) $guardrail['pending_quota_subject'],
+				)
+			);
+
+			return new WP_Error(
+				'magick_ai_core_pending_proposal_quota_exceeded',
+				__( 'Too many pending proposals exist for this caller.', 'magick-ai-core' ),
+				array(
+					'status'        => 429,
+					'pending_count' => $pending_count,
+					'quota_limit'   => (int) $guardrail['pending_quota_limit'],
+					'quota_subject' => (string) $guardrail['pending_quota_subject'],
+				)
+			);
 		}
 
 		$proposal = $this->proposals->create(
@@ -94,8 +153,8 @@ final class Proposal_Service {
 				'ability_id' => $ability_id,
 				'title'      => $payload['title'] ?? '',
 				'summary'    => $payload['summary'] ?? '',
-				'input'      => is_array( $payload['input'] ?? null ) ? $payload['input'] : array(),
-				'preview'    => is_array( $payload['preview'] ?? null ) ? $payload['preview'] : array(),
+				'input'      => $input,
+				'preview'    => $preview,
 				'caller'     => $caller,
 			)
 		);
@@ -260,6 +319,204 @@ final class Proposal_Service {
 		}
 
 		return $count;
+	}
+
+	/**
+	 * Expires stale pending proposals once before create guardrail checks.
+	 *
+	 * @return void
+	 */
+	private function expire_stale_pending_before_create(): void {
+		if ( $this->stale_expired_for_create ) {
+			return;
+		}
+
+		$this->stale_expired_for_create = true;
+		$this->expire_stale_pending( 25 );
+	}
+
+	/**
+	 * Builds proposal creation guardrail metadata.
+	 *
+	 * @param string              $ability_id Ability id.
+	 * @param array<string,mixed> $input Proposal input.
+	 * @return array<string,mixed>
+	 */
+	private function proposal_create_guardrail( string $ability_id, array $input ): array {
+		$subject = 'user';
+		$limit   = self::PENDING_QUOTA_PER_USER;
+		$key     = 'user:' . max( 0, get_current_user_id() );
+
+		if ( Request_Context::is_app() ) {
+			$auth   = Request_Context::audit_metadata();
+			$app_id = sanitize_text_field( (string) ( $auth['app_id'] ?? '' ) );
+			if ( '' !== $app_id ) {
+				$subject = 'app';
+				$limit   = self::PENDING_QUOTA_PER_APP;
+				$key     = 'app:' . $app_id;
+			}
+		}
+
+		$input_hash  = $this->stable_payload_hash( $input );
+		$dedupe_hash = $this->stable_payload_hash(
+			array(
+				'ability_id' => $ability_id,
+				'quota_key'  => $key,
+				'input_hash' => $input_hash,
+			)
+		);
+
+		return array(
+			'pending_quota_key'     => $key,
+			'pending_quota_subject' => $subject,
+			'pending_quota_limit'   => $limit,
+			'input_hash'            => $input_hash,
+			'dedupe_hash'           => $dedupe_hash,
+		);
+	}
+
+	/**
+	 * Finds an equivalent pending proposal for the same caller.
+	 *
+	 * @param array<int,array<string,mixed>> $pending Pending proposals.
+	 * @param string                         $ability_id Ability id.
+	 * @param string                         $input_hash Input hash.
+	 * @param string                         $quota_key Quota key.
+	 * @return array<string,mixed>|null
+	 */
+	private function find_duplicate_pending_proposal( array $pending, string $ability_id, string $input_hash, string $quota_key ): ?array {
+		foreach ( $pending as $proposal ) {
+			if ( ! $this->proposal_matches_quota_key( $proposal, $quota_key ) ) {
+				continue;
+			}
+			if ( $ability_id !== (string) ( $proposal['ability_id'] ?? '' ) ) {
+				continue;
+			}
+			if ( $input_hash !== $this->proposal_input_hash( $proposal ) ) {
+				continue;
+			}
+
+			return $proposal;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Counts pending proposals for a caller quota bucket.
+	 *
+	 * @param array<int,array<string,mixed>> $pending Pending proposals.
+	 * @param string                         $quota_key Quota key.
+	 * @return int
+	 */
+	private function count_pending_for_quota( array $pending, string $quota_key ): int {
+		$count = 0;
+		foreach ( $pending as $proposal ) {
+			if ( $this->proposal_matches_quota_key( $proposal, $quota_key ) ) {
+				++$count;
+			}
+		}
+
+		return $count;
+	}
+
+	/**
+	 * Returns whether a proposal belongs to a quota key.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @param string              $quota_key Quota key.
+	 * @return bool
+	 */
+	private function proposal_matches_quota_key( array $proposal, string $quota_key ): bool {
+		$caller     = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
+		$guardrails = is_array( $caller['core_guardrails'] ?? null ) ? $caller['core_guardrails'] : array();
+		if ( $quota_key === (string) ( $guardrails['pending_quota_key'] ?? '' ) ) {
+			return true;
+		}
+
+		if ( 0 === strpos( $quota_key, 'app:' ) ) {
+			$app_id = substr( $quota_key, 4 );
+			$auth   = is_array( $caller['auth'] ?? null ) ? $caller['auth'] : array();
+			return '' !== $app_id && $app_id === (string) ( $auth['app_id'] ?? '' );
+		}
+
+		if ( 0 === strpos( $quota_key, 'user:' ) ) {
+			return absint( substr( $quota_key, 5 ) ) === (int) ( $proposal['created_by'] ?? 0 );
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns the stored or computed input hash for a proposal.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return string
+	 */
+	private function proposal_input_hash( array $proposal ): string {
+		$caller     = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
+		$guardrails = is_array( $caller['core_guardrails'] ?? null ) ? $caller['core_guardrails'] : array();
+		$stored     = sanitize_text_field( (string) ( $guardrails['input_hash'] ?? '' ) );
+
+		return '' !== $stored ? $stored : $this->stable_payload_hash( $proposal['input'] ?? array() );
+	}
+
+	/**
+	 * Returns a stable hash for a structured payload.
+	 *
+	 * @param mixed $payload Payload.
+	 * @return string
+	 */
+	private function stable_payload_hash( $payload ): string {
+		$json = wp_json_encode( $this->normalize_payload_for_hash( $this->sanitize_payload_for_hash( $payload ) ) );
+
+		return hash( 'sha256', is_string( $json ) ? $json : '' );
+	}
+
+	/**
+	 * Normalizes array key order before hashing.
+	 *
+	 * @param mixed $value Value.
+	 * @return mixed
+	 */
+	private function normalize_payload_for_hash( $value ) {
+		if ( ! is_array( $value ) ) {
+			return $value;
+		}
+
+		$normalized = array();
+		foreach ( $value as $key => $item ) {
+			$normalized[ $key ] = $this->normalize_payload_for_hash( $item );
+		}
+		ksort( $normalized );
+
+		return $normalized;
+	}
+
+	/**
+	 * Sanitizes structured payloads before hashing.
+	 *
+	 * @param mixed $value Value.
+	 * @return mixed
+	 */
+	private function sanitize_payload_for_hash( $value ) {
+		if ( is_array( $value ) ) {
+			$clean = array();
+			foreach ( $value as $key => $item ) {
+				$clean[ sanitize_key( (string) $key ) ] = $this->sanitize_payload_for_hash( $item );
+			}
+			return $clean;
+		}
+
+		if ( is_string( $value ) ) {
+			return sanitize_textarea_field( $value );
+		}
+
+		if ( is_bool( $value ) || is_int( $value ) || is_float( $value ) || null === $value ) {
+			return $value;
+		}
+
+		return sanitize_text_field( (string) $value );
 	}
 
 	/**

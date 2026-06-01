@@ -53,6 +53,7 @@ App auth error codes:
 | `magick_ai_core_app_auth_invalid` | `401` | App token is unknown, inactive, or has an invalid secret. |
 | `magick_ai_core_app_scope_forbidden` | `403` | App key does not include the route's required scope. |
 | `magick_ai_core_app_rate_limited` | `429` | App key exceeded its fixed-window route-family limit. |
+| `magick_ai_core_pending_proposal_quota_exceeded` | `429` | Caller already has too many pending proposals. |
 
 App tokens use:
 
@@ -257,6 +258,12 @@ Purpose: create a proposal. This route records reviewable intent only. It does
 not execute the target ability.
 
 Permission: `manage_options` or app scope `proposals:create`.
+
+If the same caller already has a pending proposal with the same `ability_id`
+and sanitized `input`, Core returns that proposal with HTTP `200` and
+`deduplicated=true` instead of storing another row. If the caller's pending
+proposal quota is full, Core returns
+`magick_ai_core_pending_proposal_quota_exceeded` with HTTP `429`.
 
 Request fields:
 

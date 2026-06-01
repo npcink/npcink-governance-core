@@ -229,6 +229,64 @@ final class Proposal_Repository {
 	}
 
 	/**
+	 * Lists pending proposals that may belong to one create guardrail bucket.
+	 *
+	 * @param string $quota_key Guardrail quota key.
+	 * @param string $ability_id Optional ability filter.
+	 * @param int    $limit Maximum rows.
+	 * @return array<int,array<string,mixed>>
+	 */
+	public function list_pending_for_guardrail( string $quota_key, string $ability_id = '', int $limit = 500 ): array {
+		global $wpdb;
+
+		$quota_key = sanitize_text_field( $quota_key );
+		if ( '' === $quota_key ) {
+			return array();
+		}
+
+		$ability_id = sanitize_text_field( $ability_id );
+		$limit      = max( 1, min( 1000, $limit ) );
+		$where      = array( 'status = %s' );
+		$args       = array( self::STATUS_PENDING );
+
+		if ( '' !== $ability_id ) {
+			$where[] = 'ability_id = %s';
+			$args[]  = $ability_id;
+		}
+
+		$identity_where = array();
+		if ( 0 === strpos( $quota_key, 'user:' ) ) {
+			$user_id = absint( substr( $quota_key, 5 ) );
+			$identity_where[] = 'created_by = %d';
+			$args[]           = $user_id;
+		}
+
+		foreach ( $this->guardrail_like_terms( $quota_key ) as $term ) {
+			$identity_where[] = 'caller_json LIKE %s';
+			$args[]           = '%' . $wpdb->esc_like( $term ) . '%';
+		}
+
+		if ( empty( $identity_where ) ) {
+			return array();
+		}
+
+		$where[] = '(' . implode( ' OR ', $identity_where ) . ')';
+		$args[]  = $limit;
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL uses fixed clauses, generated placeholders, and a table name from the WordPress prefix.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name() . ' WHERE ' . implode( ' AND ', $where ) . ' ORDER BY id DESC LIMIT %d',
+				$args
+			),
+			ARRAY_A
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+
+		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
+	}
+
+	/**
 	 * Finds a proposal by id.
 	 *
 	 * @param string $proposal_id Proposal id.
@@ -428,6 +486,25 @@ final class Proposal_Repository {
 		}
 
 		return array_values( array_unique( $clean ) );
+	}
+
+	/**
+	 * Returns safe LIKE terms for a guardrail quota key.
+	 *
+	 * @param string $quota_key Guardrail quota key.
+	 * @return array<int,string>
+	 */
+	private function guardrail_like_terms( string $quota_key ): array {
+		$terms = array( $quota_key );
+
+		if ( 0 === strpos( $quota_key, 'app:' ) ) {
+			$app_id = substr( $quota_key, 4 );
+			if ( '' !== $app_id ) {
+				$terms[] = $app_id;
+			}
+		}
+
+		return array_values( array_unique( array_filter( array_map( 'sanitize_text_field', $terms ) ) ) );
 	}
 
 	/**
