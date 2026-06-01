@@ -1,5 +1,21 @@
 # Session Breadcrumb
 
+## 2026-06-01 — Review queue proposal trace restored
+
+- **Module**: Core admin governance review queue.
+- **Status**: Pending proposal rows now keep `Proposal ID` visible by default
+  and show compact source metadata when Adapter/OpenClaw caller context exists.
+- **Completed**:
+  - Restored a clickable `Proposal ID` in the default `Needs Review` list.
+  - Added a compact source trace for plan-to-proposal source, batch id, action
+    id, caller type, and app id.
+  - Documented that Core must preserve traceability while Adapter owns the
+    productized OpenClaw connection and approve-and-execute experience.
+- **Boundary**:
+  - This is Core admin traceability only. It does not move OpenClaw onboarding,
+    client export, adapter transport, final write execution, workflow runtime,
+    or MCP runtime into Core.
+
 ## 2026-06-01 — Admin bulk rejection for obsolete pending proposals
 
 - **Module**: Core admin governance review queue.

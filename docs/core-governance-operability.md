@@ -49,10 +49,17 @@ The WordPress admin proposal detail also shows:
 - approve/reject form for pending proposals.
 - archive/reopen controls for expired or archived proposals.
 
-The default review queue also supports bounded bulk rejection for selected
-pending proposals. Bulk rejection reuses the normal reject transition for each
-row so every proposal still records `proposal.rejected`; it is intended for
-obsolete pending proposals that have been superseded by a safer batch review.
+The default review queue keeps each pending proposal traceable while staying
+compact. Every row shows the `Proposal ID`, target ability, created time, and a
+short source trace when caller metadata exists, such as plan-to-proposal source,
+batch id, action id, caller type, or app id. This lets operators match Core
+approval items back to Adapter/OpenClaw tasks, AI Request Logs, and audit
+filters without opening every detail page.
+
+The review queue also supports bounded bulk rejection for selected pending
+proposals. Bulk rejection reuses the normal reject transition for each row so
+every proposal still records `proposal.rejected`; it is intended for obsolete
+pending proposals that have been superseded by a safer batch review.
 
 ### Expired And Archived Proposals
 

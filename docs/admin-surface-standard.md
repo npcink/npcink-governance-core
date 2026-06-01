@@ -20,7 +20,8 @@ The default `Review Queue` tab must stay focused on the current governance
 queue:
 
 - compact status strip;
-- paginated pending proposal review list;
+- paginated pending proposal review list with visible `Proposal ID` and a
+  compact source trace for Adapter/OpenClaw handoff lookup;
 - bounded bulk rejection for selected pending proposals;
 - stale proposal counts that link operators to the expired/archive tab;
 - short recent activity disclosure, collapsed by default;
@@ -46,6 +47,12 @@ Core app-key creation is a low-frequency fallback action. It should stay behind
 the default workbench's `Advanced Access` disclosure and then behind an
 explicit creation disclosure on the advanced access page. It must not appear as
 a first-level Core tab.
+
+The review queue must never hide proposal identity in the name of visual
+simplification. Operators need the `Proposal ID` to match Adapter/OpenClaw task
+status, provider request logs, audit filters, and proposal detail links. Source
+metadata can be summarized inline, but OpenClaw onboarding, client export, and
+single approve-and-execute product flow still belong in Magick AI Adapter.
 
 The full audit table should suppress low-value read/list events by default and
 must not render placeholder-only columns such as `- / -`. Optional app, scope,

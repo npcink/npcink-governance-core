@@ -445,7 +445,15 @@ final class Admin_Page {
 							</th>
 							<td>
 								<strong><?php echo esc_html( (string) ( $proposal['title'] ?: $proposal_id ) ); ?></strong><br />
-								<code><?php echo esc_html( (string) $proposal['ability_id'] ); ?></code>
+								<span style="color: #50575e;">
+									<?php echo esc_html__( 'Proposal ID:', 'magick-ai-core' ); ?>
+									<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
+								</span><br />
+								<span style="color: #50575e;">
+									<?php echo esc_html__( 'Ability:', 'magick-ai-core' ); ?>
+									<code><?php echo esc_html( (string) $proposal['ability_id'] ); ?></code>
+								</span>
+								<?php $this->render_pending_proposal_trace( $proposal ); ?>
 							</td>
 							<td><?php echo esc_html( (string) $proposal['created_at'] ); ?></td>
 							<td>
@@ -471,6 +479,91 @@ final class Admin_Page {
 		</form>
 		<?php $this->render_pagination( $total, $page, self::REVIEW_PAGE_SIZE, 'review_page', array() ); ?>
 		<?php
+	}
+
+	/**
+	 * Renders a compact source trace for one pending proposal row.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return void
+	 */
+	private function render_pending_proposal_trace( array $proposal ): void {
+		$trace = $this->pending_proposal_trace_parts( $proposal );
+
+		if ( empty( $trace ) ) {
+			return;
+		}
+		?>
+		<br />
+		<span style="color: #646970;">
+			<?php echo esc_html__( 'Source:', 'magick-ai-core' ); ?>
+			<?php echo esc_html( implode( ' · ', $trace ) ); ?>
+		</span>
+		<?php
+	}
+
+	/**
+	 * Builds compact source trace parts for a pending proposal.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return array<int,string>
+	 */
+	private function pending_proposal_trace_parts( array $proposal ): array {
+		$caller = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
+		$auth   = is_array( $caller['auth'] ?? null ) ? $caller['auth'] : array();
+		$parts  = array();
+
+		$source = (string) ( $caller['source'] ?? '' );
+		if ( '' !== $source ) {
+			$parts[] = $source;
+		}
+
+		$plan_ability_id = (string) ( $caller['plan_ability_id'] ?? '' );
+		if ( '' !== $plan_ability_id ) {
+			$parts[] = sprintf(
+				/* translators: %s: plan ability id. */
+				__( 'plan %s', 'magick-ai-core' ),
+				$plan_ability_id
+			);
+		}
+
+		$batch_id = (string) ( $caller['batch_id'] ?? '' );
+		if ( '' !== $batch_id ) {
+			$parts[] = sprintf(
+				/* translators: %s: batch id. */
+				__( 'batch %s', 'magick-ai-core' ),
+				$batch_id
+			);
+		}
+
+		$action_id = (string) ( $caller['action_id'] ?? '' );
+		if ( '' !== $action_id ) {
+			$parts[] = sprintf(
+				/* translators: %s: action id. */
+				__( 'action %s', 'magick-ai-core' ),
+				$action_id
+			);
+		}
+
+		$caller_type = (string) ( $auth['caller_type'] ?? $caller['caller_type'] ?? '' );
+		if ( '' !== $caller_type ) {
+			$parts[] = sprintf(
+				/* translators: %s: caller type. */
+				__( 'caller %s', 'magick-ai-core' ),
+				$caller_type
+			);
+		}
+
+		$app_id = (string) ( $auth['app_id'] ?? $caller['app_id'] ?? '' );
+		if ( '' !== $app_id ) {
+			$parts[] = sprintf(
+				/* translators: %s: app id. */
+				__( 'app %s', 'magick-ai-core' ),
+				$app_id
+			);
+		}
+
+		return array_slice( array_values( array_unique( $parts ) ), 0, 5 );
 	}
 
 	/**

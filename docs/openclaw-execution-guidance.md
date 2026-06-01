@@ -192,6 +192,13 @@ governance backend. The trusted Adapter key should be separate from generic
 agent keys where practical, should not receive `audit:read` by default, and
 must preserve app/key/caller audit attribution.
 
+Core's WordPress admin review queue should preserve enough trace context for
+that split experience to be operable: visible `Proposal ID`, target ability,
+created time, and compact caller/source metadata. Adapter should use those
+identifiers for status polling, user-facing task links, and any future
+approve-and-execute surface. Core should not turn that trace context into
+OpenClaw onboarding, exported client configuration, or an execution console.
+
 ## Non-Goals
 
 Do not add these to Core as part of execution guidance:
