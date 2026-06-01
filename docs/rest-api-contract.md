@@ -317,7 +317,10 @@ If the plan uses `depends_on` or `$outputs.<prior_action_id>.<field>` references
 Core keeps the dependent actions together as one ordered batch proposal. That
 batch proposal stores `input.write_actions[]` and uses the first target ability
 as its proposal `ability_id` only for Core availability and preflight checks;
-final execution still happens outside Core.
+this first ability id is not a safety endorsement for every batch action. Core
+preserves each action's `depends_on` metadata for review and audit, while final
+per-action allowlist and schema checks remain in the Adapter execution path.
+Final execution still happens outside Core.
 
 Generated proposals preserve:
 

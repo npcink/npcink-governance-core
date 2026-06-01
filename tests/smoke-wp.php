@@ -1102,6 +1102,8 @@ magick_ai_core_smoke_assert( 'plan_to_proposal_batch' === (string) ( $output_ref
 magick_ai_core_smoke_assert( 'magick-ai/create-draft' === (string) ( $output_reference_proposal['ability_id'] ?? '' ), 'output-reference batch proposal stores first target ability for Core availability checks' );
 magick_ai_core_smoke_assert( 2 === count( $output_reference_actions ), 'output-reference batch proposal stores ordered write_actions' );
 magick_ai_core_smoke_assert( '$outputs.create-draft-fixture.post_id' === (string) ( $output_reference_actions[1]['input']['post_id'] ?? '' ), 'output-reference batch proposal preserves post_id output reference' );
+magick_ai_core_smoke_assert( array( 'create-draft-fixture' ) === (array) ( $output_reference_actions[1]['depends_on'] ?? array() ), 'output-reference batch proposal preserves depends_on on write action' );
+magick_ai_core_smoke_assert( array( 'create-draft-fixture' ) === (array) ( $output_reference_proposal['preview']['actions'][1]['depends_on'] ?? array() ), 'output-reference batch proposal preserves depends_on in preview action' );
 magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $output_reference_proposal['proposal_id'] ?? '' ) );
 
 $unsafe_action_plan = $requires_input_plan;

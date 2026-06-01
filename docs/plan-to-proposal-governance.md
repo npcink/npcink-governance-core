@@ -42,7 +42,9 @@ Core does not own:
 3. Core creates one pending proposal per accepted independent `write_action`.
    If actions use `depends_on` or `$outputs.<prior_action_id>.<field>`, Core
    creates one ordered batch proposal so the Adapter can resolve outputs during
-   approved execution.
+   approved execution. Core preserves `depends_on` for review and audit; the
+   batch proposal's first `ability_id` is only a Core availability/preflight
+   anchor, not a per-action execution safety endorsement.
 4. Admin or trusted policy approves or rejects proposals through the existing
    proposal routes.
 5. Adapter calls

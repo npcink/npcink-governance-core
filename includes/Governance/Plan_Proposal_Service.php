@@ -404,6 +404,7 @@ final class Plan_Proposal_Service {
 			'before'             => is_array( $matched_preview['before'] ?? null ) ? $matched_preview['before'] : array(),
 			'after_suggestion'   => is_array( $matched_preview['after_suggestion'] ?? null ) ? $matched_preview['after_suggestion'] : array(),
 			'reason'             => sanitize_textarea_field( (string) ( $action['reason'] ?? '' ) ),
+			'depends_on'         => array_values( array_map( 'sanitize_key', (array) ( $action['depends_on'] ?? array() ) ) ),
 			'risk'               => array(
 				'level'            => $risk,
 				'plan_level'       => $plan_risk,
@@ -529,11 +530,13 @@ final class Plan_Proposal_Service {
 			$action_ready      = array_key_exists( 'proposal_ready', $preview ) ? (bool) $preview['proposal_ready'] : true;
 			$action_needs_input = array_values( array_map( 'sanitize_key', (array) ( $preview['needs_input'] ?? array() ) ) );
 			$action_blockers   = is_array( $preview['preflight_blockers'] ?? null ) ? array_values( $preview['preflight_blockers'] ) : array();
+			$depends_on        = array_values( array_map( 'sanitize_key', (array) ( $preview['depends_on'] ?? array() ) ) );
 
 			$batch_actions[] = array(
 				'action_id'         => $action_id,
 				'action_index'      => absint( $preview['action_index'] ?? count( $batch_actions ) ),
 				'target_ability_id' => $target_ability_id,
+				'depends_on'        => $depends_on,
 				'input'             => is_array( $item['input'] ?? null ) ? $item['input'] : array(),
 				'requires_approval' => true,
 				'commit_execution'  => false,
@@ -547,6 +550,7 @@ final class Plan_Proposal_Service {
 				'action_id'         => $action_id,
 				'action_index'      => absint( $preview['action_index'] ?? 0 ),
 				'target_ability_id' => $target_ability_id,
+				'depends_on'        => $depends_on,
 				'preview'           => $this->sanitize_payload( $preview ),
 			);
 

@@ -765,6 +765,7 @@ magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/build-media-inven
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'media delete candidates do not enter executable proposals by default' ), 'WordPress smoke validates default destructive media delete guard.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'requires-input proposal cannot enter committable state' ), 'WordPress smoke validates requires_input preflight blocking.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'output-reference plan creates one batch proposal' ), 'WordPress smoke validates output-reference plan batch proposal creation.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'output-reference batch proposal preserves depends_on on write action' ), 'WordPress smoke validates batch proposal dependency preservation.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'stale pending proposal expires before detail response' ), 'WordPress smoke validates stale proposal expiration.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'expired proposal can be archived' ), 'WordPress smoke validates proposal archiving.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'archived proposal can be reopened for review' ), 'WordPress smoke validates proposal reopening.' );
@@ -848,6 +849,7 @@ foreach (
 		'preflight_blockers',
 		'plan_requires_batch_proposal',
 		'plan_to_proposal_batch',
+		'depends_on',
 		'skipped_destructive_candidates',
 		'manual_review',
 		'commit_execution',
