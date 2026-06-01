@@ -21,6 +21,7 @@ queue:
 
 - compact status strip;
 - paginated pending proposal review list;
+- bounded bulk rejection for selected pending proposals;
 - stale proposal counts that link operators to the expired/archive tab;
 - short recent activity disclosure, collapsed by default;
 - `Advanced Access` disclosure for low-frequency Core app-key management.

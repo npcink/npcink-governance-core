@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-01 — Admin bulk rejection for obsolete pending proposals
+
+- **Module**: Core admin governance review queue.
+- **Status**: Administrators can now reject selected pending proposals from
+  the Review Queue without opening each proposal detail page.
+- **Completed**:
+  - Added a bounded Review Queue bulk reject form with selected proposal
+    checkboxes and a rejection note.
+  - Added `admin_post_magick_ai_core_bulk_reject_proposals`, capped at 50
+    selected proposal ids per request.
+  - Reused `Proposal_Service::reject()` per proposal so existing pending-only,
+    TTL, rollback, and `proposal.rejected` audit behavior remains the source
+    of truth.
+  - Documented the admin-only bulk rejection behavior in Core admin surface and
+    operability docs.
+- **Verification**:
+  - `composer test:all`
+  - `composer smoke:wp`
+  - `git diff --check`
+- **Boundary**:
+  - This is an admin governance convenience only. It does not expose Adapter or
+    generic REST bulk cancellation, add a cancel-proposal ability, or execute
+    WordPress writes.
+
 ## 2026-06-01 — Proposal flood guardrails added
 
 - **Module**: Core proposal creation governance.

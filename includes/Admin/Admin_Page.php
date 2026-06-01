@@ -92,6 +92,7 @@ final class Admin_Page {
 		add_action( 'admin_post_magick_ai_core_revoke_app_key', array( $this, 'handle_revoke_app_key' ) );
 		add_action( 'admin_post_magick_ai_core_approve_proposal', array( $this, 'handle_approve' ) );
 		add_action( 'admin_post_magick_ai_core_reject_proposal', array( $this, 'handle_reject' ) );
+		add_action( 'admin_post_magick_ai_core_bulk_reject_proposals', array( $this, 'handle_bulk_reject' ) );
 		add_action( 'admin_post_magick_ai_core_archive_proposal', array( $this, 'handle_archive' ) );
 		add_action( 'admin_post_magick_ai_core_reopen_proposal', array( $this, 'handle_reopen' ) );
 	}
@@ -418,36 +419,56 @@ final class Admin_Page {
 		?>
 		<h2><?php echo esc_html__( 'Needs Review', 'magick-ai-core' ); ?></h2>
 		<p><?php echo esc_html( $this->pagination_summary( $total, $page, self::REVIEW_PAGE_SIZE ) ); ?></p>
-		<table class="widefat striped" style="max-width: 1100px;">
-			<thead>
-				<tr>
-					<th scope="col"><?php echo esc_html__( 'Proposal', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Created', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Action', 'magick-ai-core' ); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php if ( empty( $pending ) ) : ?>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="max-width: 1100px;">
+			<input type="hidden" name="action" value="magick_ai_core_bulk_reject_proposals" />
+			<?php wp_nonce_field( 'magick_ai_core_bulk_reject_proposals' ); ?>
+			<table class="widefat striped">
+				<thead>
 					<tr>
-						<td colspan="3"><?php echo esc_html__( 'No active proposals. Expired items are moved out of the review queue automatically.', 'magick-ai-core' ); ?></td>
+						<td class="check-column"><span class="screen-reader-text"><?php echo esc_html__( 'Select proposal', 'magick-ai-core' ); ?></span></td>
+						<th scope="col"><?php echo esc_html__( 'Proposal', 'magick-ai-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Created', 'magick-ai-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Action', 'magick-ai-core' ); ?></th>
 					</tr>
-				<?php endif; ?>
-				<?php foreach ( $pending as $proposal ) : ?>
-					<tr>
-						<td>
-							<strong><?php echo esc_html( (string) ( $proposal['title'] ?: $proposal['proposal_id'] ) ); ?></strong><br />
-							<code><?php echo esc_html( (string) $proposal['ability_id'] ); ?></code>
-						</td>
-						<td><?php echo esc_html( (string) $proposal['created_at'] ); ?></td>
-						<td>
-							<a class="button" href="<?php echo esc_url( $this->detail_url( (string) $proposal['proposal_id'] ) ); ?>">
-								<?php echo esc_html__( 'Review', 'magick-ai-core' ); ?>
-							</a>
-						</td>
-					</tr>
-				<?php endforeach; ?>
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					<?php if ( empty( $pending ) ) : ?>
+						<tr>
+							<td colspan="4"><?php echo esc_html__( 'No active proposals. Expired items are moved out of the review queue automatically.', 'magick-ai-core' ); ?></td>
+						</tr>
+					<?php endif; ?>
+					<?php foreach ( $pending as $proposal ) : ?>
+						<?php $proposal_id = (string) $proposal['proposal_id']; ?>
+						<tr>
+							<th scope="row" class="check-column">
+								<input type="checkbox" name="proposal_ids[]" value="<?php echo esc_attr( $proposal_id ); ?>" aria-label="<?php echo esc_attr__( 'Select proposal', 'magick-ai-core' ); ?>" />
+							</th>
+							<td>
+								<strong><?php echo esc_html( (string) ( $proposal['title'] ?: $proposal_id ) ); ?></strong><br />
+								<code><?php echo esc_html( (string) $proposal['ability_id'] ); ?></code>
+							</td>
+							<td><?php echo esc_html( (string) $proposal['created_at'] ); ?></td>
+							<td>
+								<a class="button" href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>">
+									<?php echo esc_html__( 'Review', 'magick-ai-core' ); ?>
+								</a>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+			<?php if ( ! empty( $pending ) ) : ?>
+				<p style="display: flex; gap: 8px; align-items: end; flex-wrap: wrap;">
+					<label style="min-width: 360px; max-width: 620px; flex: 1;">
+						<?php echo esc_html__( 'Bulk rejection note', 'magick-ai-core' ); ?><br />
+						<input type="text" class="large-text" name="note" value="<?php echo esc_attr__( 'Superseded by batch cleanup proposal.', 'magick-ai-core' ); ?>" />
+					</label>
+					<button type="submit" class="button">
+						<?php echo esc_html__( 'Reject selected', 'magick-ai-core' ); ?>
+					</button>
+				</p>
+			<?php endif; ?>
+		</form>
 		<?php $this->render_pagination( $total, $page, self::REVIEW_PAGE_SIZE, 'review_page', array() ); ?>
 		<?php
 	}
@@ -552,6 +573,61 @@ final class Admin_Page {
 	 */
 	public function handle_reject(): void {
 		$this->handle_decision( 'reject' );
+	}
+
+	/**
+	 * Handles bulk rejection from the review queue.
+	 *
+	 * @return void
+	 */
+	public function handle_bulk_reject(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to update proposals.', 'magick-ai-core' ) );
+		}
+
+		check_admin_referer( 'magick_ai_core_bulk_reject_proposals' );
+
+		$proposal_ids = isset( $_POST['proposal_ids'] ) ? (array) wp_unslash( $_POST['proposal_ids'] ) : array();
+		$proposal_ids = array_values( array_unique( array_filter( array_map( 'sanitize_text_field', $proposal_ids ) ) ) );
+		$proposal_ids = array_slice( $proposal_ids, 0, 50 );
+		$note         = isset( $_POST['note'] ) ? sanitize_textarea_field( wp_unslash( (string) $_POST['note'] ) ) : '';
+		if ( '' === $note ) {
+			$note = __( 'Superseded by batch cleanup proposal.', 'magick-ai-core' );
+		}
+
+		if ( empty( $proposal_ids ) ) {
+			wp_safe_redirect( $this->admin_url( array( 'magick_ai_core_error' => 'magick_ai_core_bulk_reject_empty' ) ) );
+			exit;
+		}
+
+		$rejected = 0;
+		$failed   = 0;
+		foreach ( $proposal_ids as $proposal_id ) {
+			$result = $this->service->reject(
+				$proposal_id,
+				array(
+					'note'        => $note,
+					'source'      => 'admin_bulk',
+					'bulk_action' => 'reject_selected',
+				)
+			);
+			if ( is_wp_error( $result ) ) {
+				++$failed;
+				continue;
+			}
+			++$rejected;
+		}
+
+		$args = array(
+			'magick_ai_core_message' => 'bulk_rejected',
+			'bulk_rejected'          => (string) $rejected,
+		);
+		if ( $failed > 0 ) {
+			$args['bulk_failed'] = (string) $failed;
+		}
+
+		wp_safe_redirect( $this->admin_url( $args ) );
+		exit;
 	}
 
 	/**
@@ -1828,6 +1904,7 @@ final class Admin_Page {
 		$messages = array(
 			'approved'                                      => __( 'Proposal approved.', 'magick-ai-core' ),
 			'rejected'                                      => __( 'Proposal rejected.', 'magick-ai-core' ),
+			'bulk_rejected'                                 => __( 'Selected proposals rejected.', 'magick-ai-core' ),
 			'archived'                                      => __( 'Proposal archived.', 'magick-ai-core' ),
 			'reopened'                                      => __( 'Proposal reopened for review.', 'magick-ai-core' ),
 			'app_key_revoked'                               => __( 'App key disabled.', 'magick-ai-core' ),
@@ -1839,6 +1916,7 @@ final class Admin_Page {
 			'magick_ai_core_proposal_reopen_not_allowed'    => __( 'Only expired or archived proposals can be reopened.', 'magick-ai-core' ),
 			'magick_ai_core_proposal_already_decided'       => __( 'Only pending proposals can be approved or rejected.', 'magick-ai-core' ),
 			'magick_ai_core_proposal_transition_failed'     => __( 'Proposal status could not be updated.', 'magick-ai-core' ),
+			'magick_ai_core_bulk_reject_empty'              => __( 'Select at least one pending proposal to reject.', 'magick-ai-core' ),
 		);
 
 		return (string) ( $messages[ $code ] ?? __( 'Proposal action could not be completed.', 'magick-ai-core' ) );

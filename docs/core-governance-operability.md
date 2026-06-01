@@ -49,6 +49,11 @@ The WordPress admin proposal detail also shows:
 - approve/reject form for pending proposals.
 - archive/reopen controls for expired or archived proposals.
 
+The default review queue also supports bounded bulk rejection for selected
+pending proposals. Bulk rejection reuses the normal reject transition for each
+row so every proposal still records `proposal.rejected`; it is intended for
+obsolete pending proposals that have been superseded by a safer batch review.
+
 ### Expired And Archived Proposals
 
 Pending proposals expire automatically after the Core pending review TTL. Core
