@@ -849,6 +849,8 @@ foreach (
 		'preflight_blockers',
 		'plan_requires_batch_proposal',
 		'plan_to_proposal_batch',
+		'batch_approval',
+		'proposal_mode',
 		'depends_on',
 		'skipped_destructive_candidates',
 		'manual_review',

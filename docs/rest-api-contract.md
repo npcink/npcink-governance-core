@@ -312,13 +312,15 @@ Request fields:
 | `plan_input` | object | no | Input originally used to build the plan. Used for safety gates such as `include_delete_candidates=true`. |
 | `caller` | object | no | Caller metadata copied into generated proposals. |
 
-Each accepted independent `write_action` becomes a separate pending proposal.
-If the plan uses `depends_on` or `$outputs.<prior_action_id>.<field>` references,
-Core keeps the dependent actions together as one ordered batch proposal. That
-batch proposal stores `input.write_actions[]` and uses the first target ability
-as its proposal `ability_id` only for Core availability and preflight checks;
-this first ability id is not a safety endorsement for every batch action. Core
-preserves each action's `depends_on` metadata for review and audit, while final
+Each accepted independent `write_action` becomes a separate pending proposal by
+default. If the plan declares `batch_approval=true` or
+`proposal_mode=batch`, or if the plan uses `depends_on` or
+`$outputs.<prior_action_id>.<field>` references, Core keeps the actions
+together as one ordered batch proposal. That batch proposal stores
+`input.write_actions[]` and uses the first target ability as its proposal
+`ability_id` only for Core availability and preflight checks; this first
+ability id is not a safety endorsement for every batch action. Core preserves
+each action's `depends_on` metadata for review and audit, while final
 per-action allowlist and schema checks remain in the Adapter execution path.
 Final execution still happens outside Core.
 

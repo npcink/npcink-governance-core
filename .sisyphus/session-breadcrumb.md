@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-06-01 — Cleanup plans request single batch approval
+
+- **Module**: Abilities cleanup planning output and Core plan-to-proposal
+  intake.
+- **Status**: `magick-ai/build-test-content-cleanup-plan` now declares
+  `proposal_mode=batch` and `batch_approval=true`, and Core honors explicit
+  plan-level batch approval flags before falling back to dependency/output
+  reference detection.
+- **Completed**:
+  - Capped cleanup plan `max_actions` at 50 so a single generated batch stays
+    within Adapter's existing execution action limit.
+  - Preserved explicit batch approval metadata in Core batch proposal previews.
+  - Updated Core plan-to-proposal REST/governance docs for explicit batch
+    approval semantics and Adapter execution boundary.
+  - Added smoke coverage proving two independent cleanup `trash-post` actions
+    become one `plan_to_proposal_batch` proposal.
+- **Verification**:
+  - `composer test:all` in `magick-ai-abilities`
+  - `composer smoke:wp` in `magick-ai-abilities`
+  - `composer test:all` in `magick-ai-core`
+  - `composer smoke:wp` in `magick-ai-core`
+- **Boundary**:
+  - This changes planning metadata and Core governance intake only. It does not
+    add final write execution to Core, change Adapter's executor, add queues,
+    or add proposal cancellation/bulk cancellation.
+
 ## 2026-06-01 — Core fail-closed fault injection documented and gated
 
 - **Module**: Core governance reliability documentation and test gates.

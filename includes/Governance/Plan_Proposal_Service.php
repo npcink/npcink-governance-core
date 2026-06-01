@@ -160,7 +160,7 @@ final class Plan_Proposal_Service {
 			$items[] = $item;
 		}
 
-		if ( $this->plan_requires_batch_proposal( $write_actions ) ) {
+		if ( $this->plan_requires_batch_proposal( $plan, $write_actions ) ) {
 			if ( empty( $blocked_items ) && ! empty( $items ) ) {
 				$batch_item = $this->batch_proposal_payload_for_actions( $plan_ability_id, $plan, $caller, $items, $warnings );
 				$proposal   = $this->proposals->create( $batch_item );
@@ -460,10 +460,19 @@ final class Plan_Proposal_Service {
 	/**
 	 * Returns whether a plan must stay in one proposal for ordered execution.
 	 *
-	 * @param array<int,mixed> $write_actions Write actions.
+	 * @param array<string,mixed> $plan Plan data.
+	 * @param array<int,mixed>    $write_actions Write actions.
 	 * @return bool
 	 */
-	private function plan_requires_batch_proposal( array $write_actions ): bool {
+	private function plan_requires_batch_proposal( array $plan, array $write_actions ): bool {
+		if ( true === (bool) ( $plan['batch_approval'] ?? false ) ) {
+			return true;
+		}
+
+		if ( 'batch' === (string) ( $plan['proposal_mode'] ?? '' ) ) {
+			return true;
+		}
+
 		foreach ( $write_actions as $action ) {
 			if ( ! is_array( $action ) ) {
 				continue;
@@ -577,6 +586,8 @@ final class Plan_Proposal_Service {
 				'plan_ability_id' => $plan_ability_id,
 				'batch_id'        => $batch_id,
 				'issue_types'     => array_values( array_map( 'sanitize_key', (array) ( $plan['issue_types'] ?? array() ) ) ),
+				'proposal_mode'   => sanitize_key( (string) ( $plan['proposal_mode'] ?? '' ) ),
+				'batch_approval'  => true === (bool) ( $plan['batch_approval'] ?? false ),
 			),
 			'action_count'       => count( $batch_actions ),
 			'action_ids'         => $action_ids,

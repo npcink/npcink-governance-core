@@ -904,26 +904,43 @@ magick_ai_core_smoke_assert( isset( $content_plan_proposal['preview']['before'] 
 magick_ai_core_smoke_assert( isset( $content_plan_proposal['preview']['after_suggestion'] ), 'content fix plan proposal preview includes after_suggestion' );
 magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $content_plan_proposal['proposal_id'] ?? '' ) );
 
+$cleanup_pattern = 'Core Plan Bridge Test Cleanup Candidate ' . wp_generate_uuid4();
 $cleanup_post_id = wp_insert_post(
 	array(
-		'post_title'   => 'Core Plan Bridge Test Cleanup Candidate',
-		'post_content' => 'This Core Plan Bridge Test Cleanup Candidate should be detected as test content for cleanup planning.',
+		'post_title'   => $cleanup_pattern . ' A',
+		'post_content' => 'This ' . $cleanup_pattern . ' A should be detected as test content for cleanup planning.',
 		'post_status'  => 'draft',
 		'post_type'    => 'post',
 	),
 	true
 );
 magick_ai_core_smoke_assert( ! is_wp_error( $cleanup_post_id ) && (int) $cleanup_post_id > 0, 'plan bridge cleanup fixture post is created' );
+$cleanup_second_post_id = wp_insert_post(
+	array(
+		'post_title'   => $cleanup_pattern . ' B',
+		'post_content' => 'This ' . $cleanup_pattern . ' B should be detected as test content for cleanup planning.',
+		'post_status'  => 'draft',
+		'post_type'    => 'post',
+	),
+	true
+);
+magick_ai_core_smoke_assert( ! is_wp_error( $cleanup_second_post_id ) && (int) $cleanup_second_post_id > 0, 'second plan bridge cleanup fixture post is created' );
 
 $cleanup_plan_input = array(
-	'patterns'    => array( 'Core Plan Bridge Test Cleanup Candidate' ),
+	'patterns'    => array( $cleanup_pattern ),
 	'max_actions' => 5,
 );
 $cleanup_plan       = magick_ai_core_smoke_run_plan_ability( 'magick-ai/build-test-content-cleanup-plan', $cleanup_plan_input );
 $cleanup_plan_result = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-test-content-cleanup-plan', $cleanup_plan, $cleanup_plan_input );
-magick_ai_core_smoke_assert( (int) ( $cleanup_plan_result['proposal_count'] ?? 0 ) >= 1, 'test content cleanup plan generates Core proposals' );
+magick_ai_core_smoke_assert( 1 === (int) ( $cleanup_plan_result['proposal_count'] ?? 0 ), 'test content cleanup plan generates one batch Core proposal' );
 $cleanup_plan_proposal = is_array( $cleanup_plan_result['proposals'][0] ?? null ) ? $cleanup_plan_result['proposals'][0] : array();
-magick_ai_core_smoke_assert_plan_proposal_shape( $cleanup_plan_proposal, 'magick-ai/trash-post', true );
+$cleanup_plan_input_payload = is_array( $cleanup_plan_proposal['input'] ?? null ) ? $cleanup_plan_proposal['input'] : array();
+$cleanup_plan_actions       = is_array( $cleanup_plan_input_payload['write_actions'] ?? null ) ? array_values( $cleanup_plan_input_payload['write_actions'] ) : array();
+magick_ai_core_smoke_assert( 'plan_to_proposal_batch' === (string) ( $cleanup_plan_proposal['preview']['source']['type'] ?? '' ), 'test content cleanup plan records batch proposal source type' );
+magick_ai_core_smoke_assert( 'batch' === (string) ( $cleanup_plan_proposal['preview']['source']['proposal_mode'] ?? '' ), 'test content cleanup batch preserves proposal_mode' );
+magick_ai_core_smoke_assert( true === (bool) ( $cleanup_plan_proposal['preview']['source']['batch_approval'] ?? false ), 'test content cleanup batch preserves batch_approval' );
+magick_ai_core_smoke_assert( 2 === count( $cleanup_plan_actions ), 'test content cleanup batch stores both trash-post actions' );
+magick_ai_core_smoke_assert( 'magick-ai/trash-post' === (string) ( $cleanup_plan_actions[0]['target_ability_id'] ?? '' ), 'test content cleanup batch stores trash-post action targets' );
 magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $cleanup_plan_proposal['proposal_id'] ?? '' ) );
 
 $plan_attachment_id = wp_insert_post(

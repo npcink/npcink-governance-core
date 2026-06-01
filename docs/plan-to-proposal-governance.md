@@ -39,10 +39,12 @@ Core does not own:
    `/wp-json/wp-abilities/v1/abilities/{ability_id}/run`.
 2. Adapter posts the plan output to
    `POST /wp-json/magick-ai-core/v1/proposals/from-plan`.
-3. Core creates one pending proposal per accepted independent `write_action`.
-   If actions use `depends_on` or `$outputs.<prior_action_id>.<field>`, Core
-   creates one ordered batch proposal so the Adapter can resolve outputs during
-   approved execution. Core preserves `depends_on` for review and audit; the
+3. Core creates one pending proposal per accepted independent `write_action` by
+   default. If the plan declares `batch_approval=true` or
+   `proposal_mode=batch`, or if actions use `depends_on` or
+   `$outputs.<prior_action_id>.<field>`, Core creates one ordered batch
+   proposal so the Adapter can review and execute the approved group through
+   its batch resolver. Core preserves `depends_on` for review and audit; the
    batch proposal's first `ability_id` is only a Core availability/preflight
    anchor, not a per-action execution safety endorsement.
 4. Admin or trusted policy approves or rejects proposals through the existing
@@ -110,6 +112,20 @@ are copied into generated proposal warnings and blocked item context.
 Permanent media deletion is stricter: `magick-ai/delete-media-permanently`
 actions are blocked unless the submitted `plan_input` explicitly contains
 `include_delete_candidates=true`. Allowed delete proposals remain high risk.
+
+## Batch Approval
+
+Planning abilities may request a single approval for a bounded group of related
+actions by returning `batch_approval=true` or `proposal_mode=batch` at the plan
+data level. This is intended for one-plan, many-action cleanup cases where
+separate proposals would create review fatigue without improving governance.
+
+Batch approval does not let Core execute writes. The proposal stores the
+ordered `input.write_actions[]`, records `source.type=plan_to_proposal_batch`,
+and still requires normal approval and commit preflight. The Adapter execution
+path must continue to enforce its per-action allowlist, schema validation,
+dependency/output reference rules, and batch size limits before any WordPress
+mutation happens.
 
 ## Commit Preflight
 

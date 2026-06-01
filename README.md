@@ -111,9 +111,11 @@ The plan-to-proposal bridge extends that pattern to read-only planning
 abilities such as `magick-ai/build-content-inventory-fix-plan`,
 `magick-ai/build-test-content-cleanup-plan`, and
 `magick-ai/build-media-inventory-fix-plan`. Core accepts the plan output,
-validates each target ability, stores one pending proposal per `write_action`,
-preserves `preview.before`, `preview.after_suggestion`, `dry_run=true`, and
-`commit=false`, and keeps final mutation execution outside Core. See
+validates each target ability, stores either one pending proposal per
+`write_action` or one `plan_to_proposal_batch` proposal when the plan explicitly
+requests batch approval, preserves `preview.before`,
+`preview.after_suggestion`, `dry_run=true`, and `commit=false`, and keeps final
+mutation execution outside Core. See
 [Plan To Proposal Governance](docs/plan-to-proposal-governance.md).
 
 The current governance operability baseline adds proposal audit timelines,

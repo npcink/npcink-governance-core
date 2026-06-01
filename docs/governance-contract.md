@@ -70,7 +70,15 @@ Core may consume these read-only planning ability outputs:
 Plan intake does not execute the plan ability and does not execute target write
 abilities. It accepts a successful plan payload, validates that the planning
 ability is direct-read, validates each `write_action.target_ability_id` against
-current ability intake, then creates one pending proposal per accepted action.
+current ability intake, then creates one pending proposal per accepted action
+unless the plan explicitly requests batch approval.
+
+Plans may request one review item for a group of generated actions with either
+`batch_approval=true` or `proposal_mode=batch`. Core then creates one
+`plan_to_proposal_batch` proposal containing `input.write_actions[]`. The batch
+proposal remains a governance record only; Adapter or another host executor is
+still responsible for final per-action allowlist and schema checks after Core
+approval and commit preflight.
 
 Generated proposal previews must preserve:
 
