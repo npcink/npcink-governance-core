@@ -192,6 +192,8 @@ foreach (
 		'approved_input_hash',
 		'approved_preview_hash',
 		'policy_version',
+		'$outputs.<prior_action_id>.<field>',
+		'ordered batch proposal',
 		'scope_decision',
 		'app_id',
 		'key_id',
@@ -762,6 +764,7 @@ magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/build-test-conten
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick-ai/build-media-inventory-fix-plan' ), 'WordPress smoke validates media plan-to-proposal intake.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'media delete candidates do not enter executable proposals by default' ), 'WordPress smoke validates default destructive media delete guard.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'requires-input proposal cannot enter committable state' ), 'WordPress smoke validates requires_input preflight blocking.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'output-reference plan creates one batch proposal' ), 'WordPress smoke validates output-reference plan batch proposal creation.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'stale pending proposal expires before detail response' ), 'WordPress smoke validates stale proposal expiration.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'expired proposal can be archived' ), 'WordPress smoke validates proposal archiving.' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'archived proposal can be reopened for review' ), 'WordPress smoke validates proposal reopening.' );
@@ -843,6 +846,8 @@ foreach (
 		'proposal_ready',
 		'needs_input',
 		'preflight_blockers',
+		'plan_requires_batch_proposal',
+		'plan_to_proposal_batch',
 		'skipped_destructive_candidates',
 		'manual_review',
 		'commit_execution',

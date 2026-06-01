@@ -1041,6 +1041,69 @@ magick_ai_core_smoke_assert( 409 === (int) $requires_input_preflight['status'], 
 magick_ai_core_smoke_assert( false === (bool) ( $requires_input_preflight['data']['data']['proposal_item_preflight']['executable'] ?? true ), 'requires-input preflight marks proposal item blocked' );
 magick_ai_core_smoke_assert( array( 'title' ) === (array) ( $requires_input_preflight['data']['data']['proposal_item_preflight']['needs_input'] ?? array() ), 'requires-input preflight reports fields needing human input' );
 
+$output_reference_plan = array(
+	'success' => true,
+	'data'    => array(
+		'batch_id'         => 'core_plan_bridge_output_reference_smoke',
+		'issue_types'      => array( 'acceptance' ),
+		'write_actions'    => array(
+			array(
+				'action_id'          => 'create-draft-fixture',
+				'target_ability_id'  => 'magick-ai/create-draft',
+				'input'              => array(
+					'post_type' => 'post',
+					'status'    => 'draft',
+					'title'     => 'Core plan bridge output reference draft',
+					'content'   => '<p>Created for Core plan bridge output reference smoke.</p>',
+					'dry_run'   => true,
+					'commit'    => false,
+				),
+				'requires_approval'  => true,
+				'commit_execution'   => false,
+				'required_scopes'    => array( 'post.write' ),
+				'risk'               => 'medium',
+				'reason'             => 'Create a draft fixture for a dependent update action.',
+				'proposal_ready'     => true,
+			),
+			array(
+				'action_id'          => 'update-created-draft',
+				'target_ability_id'  => 'magick-ai/update-post',
+				'depends_on'         => array( 'create-draft-fixture' ),
+				'input'              => array(
+					'post_id' => '$outputs.create-draft-fixture.post_id',
+					'title'   => 'Core plan bridge output reference updated draft',
+					'dry_run' => true,
+					'commit'  => false,
+				),
+				'requires_approval'  => true,
+				'commit_execution'   => false,
+				'required_scopes'    => array( 'post.write' ),
+				'risk'               => 'medium',
+				'reason'             => 'Update the draft created by the prior action.',
+				'proposal_ready'     => true,
+			),
+		),
+		'preview'          => array(),
+		'risk'             => array(
+			'level'  => 'medium',
+			'reason' => 'Ordered write action smoke.',
+		),
+		'requires_approval' => true,
+		'commit_execution' => false,
+		'dry_run'          => true,
+	),
+);
+$output_reference_result = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-content-inventory-fix-plan', $output_reference_plan, array() );
+magick_ai_core_smoke_assert( 1 === (int) ( $output_reference_result['proposal_count'] ?? 0 ), 'output-reference plan creates one batch proposal' );
+$output_reference_proposal = is_array( $output_reference_result['proposals'][0] ?? null ) ? $output_reference_result['proposals'][0] : array();
+$output_reference_input    = is_array( $output_reference_proposal['input'] ?? null ) ? $output_reference_proposal['input'] : array();
+$output_reference_actions  = is_array( $output_reference_input['write_actions'] ?? null ) ? array_values( $output_reference_input['write_actions'] ) : array();
+magick_ai_core_smoke_assert( 'plan_to_proposal_batch' === (string) ( $output_reference_proposal['preview']['source']['type'] ?? '' ), 'output-reference plan proposal records batch source type' );
+magick_ai_core_smoke_assert( 'magick-ai/create-draft' === (string) ( $output_reference_proposal['ability_id'] ?? '' ), 'output-reference batch proposal stores first target ability for Core availability checks' );
+magick_ai_core_smoke_assert( 2 === count( $output_reference_actions ), 'output-reference batch proposal stores ordered write_actions' );
+magick_ai_core_smoke_assert( '$outputs.create-draft-fixture.post_id' === (string) ( $output_reference_actions[1]['input']['post_id'] ?? '' ), 'output-reference batch proposal preserves post_id output reference' );
+magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $output_reference_proposal['proposal_id'] ?? '' ) );
+
 $unsafe_action_plan = $requires_input_plan;
 $unsafe_action_plan['data']['write_actions'][0]['requires_approval'] = false;
 $unsafe_action_plan['data']['write_actions'][0]['commit_execution'] = true;

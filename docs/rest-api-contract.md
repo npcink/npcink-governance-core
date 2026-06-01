@@ -312,9 +312,14 @@ Request fields:
 | `plan_input` | object | no | Input originally used to build the plan. Used for safety gates such as `include_delete_candidates=true`. |
 | `caller` | object | no | Caller metadata copied into generated proposals. |
 
-Each accepted `write_action` becomes a separate pending proposal. The generated
-proposal stores the action `target_ability_id` as the proposal `ability_id` and
-preserves:
+Each accepted independent `write_action` becomes a separate pending proposal.
+If the plan uses `depends_on` or `$outputs.<prior_action_id>.<field>` references,
+Core keeps the dependent actions together as one ordered batch proposal. That
+batch proposal stores `input.write_actions[]` and uses the first target ability
+as its proposal `ability_id` only for Core availability and preflight checks;
+final execution still happens outside Core.
+
+Generated proposals preserve:
 
 - target ability input with `dry_run=true` and `commit=false`;
 - `preview.before`;

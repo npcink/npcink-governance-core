@@ -39,7 +39,10 @@ Core does not own:
    `/wp-json/wp-abilities/v1/abilities/{ability_id}/run`.
 2. Adapter posts the plan output to
    `POST /wp-json/magick-ai-core/v1/proposals/from-plan`.
-3. Core creates one pending proposal per accepted `write_action`.
+3. Core creates one pending proposal per accepted independent `write_action`.
+   If actions use `depends_on` or `$outputs.<prior_action_id>.<field>`, Core
+   creates one ordered batch proposal so the Adapter can resolve outputs during
+   approved execution.
 4. Admin or trusted policy approves or rejects proposals through the existing
    proposal routes.
 5. Adapter calls
@@ -134,4 +137,3 @@ Each generated proposal also records the normal proposal lifecycle events:
 
 Use `proposal_id`, `ability_id`, and `correlation_id` filters in Core
 Governance Audit to trace the plan-to-proposal lifecycle.
-

@@ -122,6 +122,7 @@ final class Plan_Proposal_Service {
 		$blocked_items = array();
 		$needs_input   = array();
 		$warnings      = $this->plan_warnings( $manual_review, $skipped_destructive );
+		$items         = array();
 
 		foreach ( $write_actions as $index => $raw_action ) {
 			if ( ! is_array( $raw_action ) ) {
@@ -156,26 +157,53 @@ final class Plan_Proposal_Service {
 				continue;
 			}
 
-			$proposal = $this->proposals->create( $item );
-			if ( is_wp_error( $proposal ) ) {
-				$blocked_items[] = array(
-					'index'     => $index,
-					'action_id' => sanitize_key( (string) ( $raw_action['action_id'] ?? '' ) ),
-					'code'      => $proposal->get_error_code(),
-					'reason'    => $proposal->get_error_message(),
-				);
-				continue;
-			}
+			$items[] = $item;
+		}
 
-			if ( ! empty( $proposal['preview']['needs_input'] ?? array() ) ) {
-				$needs_input[] = array(
-					'proposal_id' => (string) $proposal['proposal_id'],
-					'action_id'   => (string) ( $proposal['preview']['action_id'] ?? '' ),
-					'fields'      => (array) ( $proposal['preview']['needs_input'] ?? array() ),
-				);
+		if ( $this->plan_requires_batch_proposal( $write_actions ) ) {
+			if ( empty( $blocked_items ) && ! empty( $items ) ) {
+				$batch_item = $this->batch_proposal_payload_for_actions( $plan_ability_id, $plan, $caller, $items, $warnings );
+				$proposal   = $this->proposals->create( $batch_item );
+				if ( is_wp_error( $proposal ) ) {
+					$blocked_items[] = array(
+						'index'  => 0,
+						'code'   => $proposal->get_error_code(),
+						'reason' => $proposal->get_error_message(),
+					);
+				} else {
+					if ( ! empty( $proposal['preview']['needs_input'] ?? array() ) ) {
+						$needs_input[] = array(
+							'proposal_id' => (string) $proposal['proposal_id'],
+							'action_id'   => 'batch',
+							'fields'      => (array) ( $proposal['preview']['needs_input'] ?? array() ),
+						);
+					}
+					$created[] = $proposal;
+				}
 			}
+		} else {
+			foreach ( $items as $item ) {
+				$proposal = $this->proposals->create( $item );
+				if ( is_wp_error( $proposal ) ) {
+					$blocked_items[] = array(
+						'index'     => absint( $item['preview']['action_index'] ?? 0 ),
+						'action_id' => sanitize_key( (string) ( $item['preview']['action_id'] ?? '' ) ),
+						'code'      => $proposal->get_error_code(),
+						'reason'    => $proposal->get_error_message(),
+					);
+					continue;
+				}
 
-			$created[] = $proposal;
+				if ( ! empty( $proposal['preview']['needs_input'] ?? array() ) ) {
+					$needs_input[] = array(
+						'proposal_id' => (string) $proposal['proposal_id'],
+						'action_id'   => (string) ( $proposal['preview']['action_id'] ?? '' ),
+						'fields'      => (array) ( $proposal['preview']['needs_input'] ?? array() ),
+					);
+				}
+
+				$created[] = $proposal;
+			}
 		}
 
 		$this->audit->record(
@@ -423,6 +451,175 @@ final class Plan_Proposal_Service {
 					'batch_id'        => sanitize_text_field( (string) ( $plan['batch_id'] ?? '' ) ),
 					'action_id'       => $action_id,
 					'action_index'    => $index,
+				)
+			),
+		);
+	}
+
+	/**
+	 * Returns whether a plan must stay in one proposal for ordered execution.
+	 *
+	 * @param array<int,mixed> $write_actions Write actions.
+	 * @return bool
+	 */
+	private function plan_requires_batch_proposal( array $write_actions ): bool {
+		foreach ( $write_actions as $action ) {
+			if ( ! is_array( $action ) ) {
+				continue;
+			}
+			if ( ! empty( $action['depends_on'] ?? array() ) ) {
+				return true;
+			}
+			if ( $this->value_contains_output_reference( $action['input'] ?? array() ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns whether a value tree contains an output reference token.
+	 *
+	 * @param mixed $value Value.
+	 * @return bool
+	 */
+	private function value_contains_output_reference( $value ): bool {
+		if ( is_string( $value ) ) {
+			return false !== strpos( $value, '$outputs.' );
+		}
+		if ( ! is_array( $value ) ) {
+			return false;
+		}
+		foreach ( $value as $child ) {
+			if ( $this->value_contains_output_reference( $child ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Builds one batch proposal payload from dependent plan actions.
+	 *
+	 * @param string              $plan_ability_id Plan ability id.
+	 * @param array<string,mixed> $plan Plan data.
+	 * @param array<string,mixed> $caller Caller metadata.
+	 * @param array<int,array<string,mixed>> $items Per-action proposal payloads.
+	 * @param array<string,mixed> $warnings Plan warnings.
+	 * @return array<string,mixed>
+	 */
+	private function batch_proposal_payload_for_actions( string $plan_ability_id, array $plan, array $caller, array $items, array $warnings ): array {
+		$first        = is_array( $items[0] ?? null ) ? $items[0] : array();
+		$first_preview = is_array( $first['preview'] ?? null ) ? $first['preview'] : array();
+		$batch_id     = sanitize_text_field( (string) ( $plan['batch_id'] ?? '' ) );
+		$batch_actions = array();
+		$action_previews = array();
+		$action_ids   = array();
+		$target_ids   = array();
+		$needs_input  = array();
+		$preflight_blockers = array();
+		$proposal_ready = true;
+
+		foreach ( $items as $item ) {
+			$preview           = is_array( $item['preview'] ?? null ) ? $item['preview'] : array();
+			$action_id         = sanitize_key( (string) ( $preview['action_id'] ?? '' ) );
+			$target_ability_id = sanitize_text_field( (string) ( $preview['target_ability_id'] ?? ( $item['ability_id'] ?? '' ) ) );
+			$action_ready      = array_key_exists( 'proposal_ready', $preview ) ? (bool) $preview['proposal_ready'] : true;
+			$action_needs_input = array_values( array_map( 'sanitize_key', (array) ( $preview['needs_input'] ?? array() ) ) );
+			$action_blockers   = is_array( $preview['preflight_blockers'] ?? null ) ? array_values( $preview['preflight_blockers'] ) : array();
+
+			$batch_actions[] = array(
+				'action_id'         => $action_id,
+				'action_index'      => absint( $preview['action_index'] ?? count( $batch_actions ) ),
+				'target_ability_id' => $target_ability_id,
+				'input'             => is_array( $item['input'] ?? null ) ? $item['input'] : array(),
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => $action_ready,
+				'requires_input'    => $action_needs_input,
+				'preflight_blockers' => $action_blockers,
+				'required_scopes'   => array_values( array_map( 'sanitize_key', (array) ( $preview['required_scopes'] ?? array() ) ) ),
+				'reason'            => sanitize_textarea_field( (string) ( $preview['reason'] ?? '' ) ),
+			);
+			$action_previews[] = array(
+				'action_id'         => $action_id,
+				'action_index'      => absint( $preview['action_index'] ?? 0 ),
+				'target_ability_id' => $target_ability_id,
+				'preview'           => $this->sanitize_payload( $preview ),
+			);
+
+			$action_ids[] = $action_id;
+			$target_ids[] = $target_ability_id;
+			$needs_input  = array_merge( $needs_input, $action_needs_input );
+			if ( ! $action_ready ) {
+				$proposal_ready = false;
+			}
+			foreach ( $action_blockers as $blocker ) {
+				$preflight_blockers[] = array(
+					'action_id' => $action_id,
+					'blocker'   => $this->sanitize_payload( $blocker ),
+				);
+			}
+		}
+
+		$target_ids  = array_values( array_unique( array_filter( $target_ids ) ) );
+		$action_ids  = array_values( array_filter( $action_ids ) );
+		$needs_input = array_values( array_unique( array_filter( $needs_input ) ) );
+		$preview     = array(
+			'source' => array(
+				'type'            => 'plan_to_proposal_batch',
+				'plan_ability_id' => $plan_ability_id,
+				'batch_id'        => $batch_id,
+				'issue_types'     => array_values( array_map( 'sanitize_key', (array) ( $plan['issue_types'] ?? array() ) ) ),
+			),
+			'action_count'       => count( $batch_actions ),
+			'action_ids'         => $action_ids,
+			'target_ability_ids' => $target_ids,
+			'actions'            => $action_previews,
+			'risk'               => is_array( $plan['risk'] ?? null ) ? $this->sanitize_payload( $plan['risk'] ) : array(),
+			'warnings'           => $warnings,
+			'blocked_items'      => array(
+				'manual_review'                  => $this->sanitize_payload( $plan['manual_review'] ?? array() ),
+				'skipped_destructive_candidates' => $this->sanitize_payload( $plan['skipped_destructive_candidates'] ?? array() ),
+			),
+			'requires_approval'  => true,
+			'dry_run'            => true,
+			'commit'             => false,
+			'commit_execution'   => false,
+			'proposal_ready'     => $proposal_ready && empty( $needs_input ) && empty( $preflight_blockers ),
+			'needs_input'        => $needs_input,
+			'preflight_blockers' => $preflight_blockers,
+		);
+
+		return array(
+			'ability_id' => sanitize_text_field( (string) ( $first['ability_id'] ?? ( $first_preview['target_ability_id'] ?? '' ) ) ),
+			'title'      => sprintf(
+				/* translators: 1: plan ability id, 2: batch id. */
+				__( 'Plan batch proposal: %1$s (%2$s)', 'magick-ai-core' ),
+				$plan_ability_id,
+				$batch_id
+			),
+			'summary'    => sprintf(
+				/* translators: 1: plan ability id, 2: action count. */
+				__( 'Created from %1$s as an ordered batch with %2$d actions. Final execution remains outside Core.', 'magick-ai-core' ),
+				$plan_ability_id,
+				count( $batch_actions )
+			),
+			'input'      => array(
+				'write_actions' => $batch_actions,
+				'dry_run'       => true,
+				'commit'        => false,
+			),
+			'preview'    => $preview,
+			'caller'     => array_merge(
+				$caller,
+				array(
+					'source'          => 'plan_to_proposal_batch',
+					'plan_ability_id' => $plan_ability_id,
+					'batch_id'        => $batch_id,
+					'action_count'    => count( $batch_actions ),
 				)
 			),
 		);
