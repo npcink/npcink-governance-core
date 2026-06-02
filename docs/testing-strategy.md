@@ -180,7 +180,12 @@ Tests should keep these out of Core runtime:
 - MCP runtime;
 - Content Assistant product workflow ownership;
 - provider credential storage;
-- batch/queue/operator console logic.
+- workflow/task queue, batch execution, or operator runtime console logic.
+
+Allowed governance terms such as Review Queue, pending proposal queue, bounded
+bulk rejection, and `plan_to_proposal_batch` must stay tied to proposal
+lifecycle records. They must not become workflow/task queue ownership, batch
+execution, retries, leases, schedulers, or operator runtime consoles.
 
 ## Adapter-Owned Acceptance
 

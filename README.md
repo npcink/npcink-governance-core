@@ -21,8 +21,8 @@ This plugin owns:
 This plugin does not own:
 
 - article generation, SEO writing, media alt generation, or comment reply UX;
-- workflow runtime, queues, batch consoles, MCP runtime, or Agent Gateway task
-  catalogs;
+- workflow runtime, workflow/task queues, batch execution consoles, MCP
+  runtime, or Agent Gateway task catalogs;
 - model routing, provider keys, prompt/preset management, or cloud billing;
 - reusable WordPress ability definitions, which belong in
   `magick-ai-abilities` or other provider plugins.
@@ -118,6 +118,11 @@ requests batch approval, preserves `preview.before`,
 `preview.after_suggestion`, `dry_run=true`, and `commit=false`, and keeps final
 mutation execution outside Core. See
 [Plan To Proposal Governance](docs/plan-to-proposal-governance.md).
+
+Core documentation may use Review Queue, pending proposal queue, bounded bulk
+rejection, and `plan_to_proposal_batch` for governance review records. Those
+Those terms do not permit workflow/task queue ownership, batch execution, retries,
+leases, schedulers, or operator runtime consoles inside Core.
 
 The current governance operability baseline adds proposal audit timelines,
 audit filters for ability/app/key/caller/correlation, app scope-decision

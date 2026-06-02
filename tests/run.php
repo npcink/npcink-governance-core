@@ -74,8 +74,11 @@ foreach (
 		'WordPress AI operation governance layer',
 		'It does not generate content',
 		'Current Stage Governance Reliability',
-		'Approval Policy Evaluator Standard',
-		'GET /wp-json/magick-ai-core/v1/capabilities',
+			'Approval Policy Evaluator Standard',
+			'workflow/task queues, batch execution consoles',
+			'Review Queue, pending proposal queue',
+			'Those terms do not permit workflow/task queue ownership',
+			'GET /wp-json/magick-ai-core/v1/capabilities',
 		'POST /wp-json/magick-ai-core/v1/apps',
 		'POST /wp-json/magick-ai-core/v1/proposals',
 		'POST /wp-json/magick-ai-core/v1/proposals/from-plan',
@@ -724,6 +727,8 @@ magick_ai_core_assert( false !== strpos( $testing_strategy, 'trusted Adapter app
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'Fail-closed governance paths' ), 'Testing strategy records fail-closed governance path coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'proposal.policy_evaluated' ), 'Testing strategy records policy decision audit failure coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'proposal.auto_approved' ), 'Testing strategy records auto approval audit failure coverage.' );
+magick_ai_core_assert( false !== strpos( $testing_strategy, 'workflow/task queue, batch execution, or operator runtime console logic' ), 'Testing strategy bans runtime queue and batch execution ownership precisely.' );
+magick_ai_core_assert( false !== strpos( $testing_strategy, 'Allowed governance terms such as Review Queue' ), 'Testing strategy distinguishes governance review terms from runtime queues.' );
 
 $reliability_standard = magick_ai_core_read( $root . '/docs/current-stage-governance-reliability.md' );
 foreach (

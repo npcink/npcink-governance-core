@@ -41,8 +41,8 @@ Core does not own:
 
 - article, media, comment, SEO, or toolbox product workflows;
 - model routing, provider keys, prompt/preset management, or cloud billing;
-- workflow runtime, queues, batch consoles, MCP runtime, or Agent Gateway task
-  catalogs;
+- workflow runtime, workflow/task queues, batch execution consoles, MCP
+  runtime, or Agent Gateway task catalogs;
 - reusable WordPress ability definitions, which belong in
   `/Users/muze/gitee/magick-ai-abilities`.
 
@@ -57,7 +57,12 @@ Do not introduce:
 - MCP runtime;
 - Content Assistant product UX;
 - provider credential storage;
-- batch/queue/operator console code.
+- workflow/task queue, batch execution, or operator runtime console code.
+
+Core may still use governance-specific review terms such as Review Queue,
+pending proposal queue, bounded bulk rejection, and `plan_to_proposal_batch`.
+Those are proposal lifecycle records and review affordances, not workflow/task
+queue ownership or batch execution.
 
 If a feature needs any of the above, stop and write a boundary note instead of
 implementing it inside Core.
