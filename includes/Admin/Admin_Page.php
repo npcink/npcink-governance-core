@@ -1375,12 +1375,13 @@ final class Admin_Page {
 	 * @return void
 	 */
 	private function render_review_context( array $proposal, ?array $capability ): void {
-		$preview        = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
-		$risk           = $preview['risk'] ?? null;
-		$risk_label     = is_array( $risk ) ? (string) ( $risk['level'] ?? $risk['target_risk_level'] ?? '' ) : (string) $risk;
-		$target_ability = (string) ( $preview['target_ability_id'] ?? $proposal['ability_id'] );
-		$reason         = (string) ( $preview['reason'] ?? '' );
-		$ready_label    = array_key_exists( 'proposal_ready', $preview )
+		$preview          = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
+		$article_workflow = is_array( $preview['article_workflow'] ?? null ) ? $preview['article_workflow'] : array();
+		$risk             = $preview['risk'] ?? null;
+		$risk_label       = is_array( $risk ) ? (string) ( $risk['level'] ?? $risk['target_risk_level'] ?? '' ) : (string) $risk;
+		$target_ability   = (string) ( $preview['target_ability_id'] ?? $proposal['ability_id'] );
+		$reason           = (string) ( $preview['reason'] ?? '' );
+		$ready_label      = array_key_exists( 'proposal_ready', $preview )
 			? ( (bool) $preview['proposal_ready'] ? __( 'yes', 'magick-ai-core' ) : __( 'no', 'magick-ai-core' ) )
 			: __( 'not declared', 'magick-ai-core' );
 
@@ -1433,9 +1434,66 @@ final class Admin_Page {
 					}
 					?>
 				<?php endif; ?>
+				<?php
+				if ( ! empty( $article_workflow ) ) {
+					$this->render_article_workflow_review_context( $article_workflow, (string) $proposal['ability_id'] );
+				}
+				?>
 			</tbody>
 		</table>
 		<?php
+	}
+
+	/**
+	 * Renders a compact article workflow summary for proposal review.
+	 *
+	 * @param array<string,mixed> $article_workflow Article workflow preview.
+	 * @param string              $proposal_ability_id Final write ability id.
+	 * @return void
+	 */
+	private function render_article_workflow_review_context( array $article_workflow, string $proposal_ability_id ): void {
+		$goal           = is_array( $article_workflow['article_goal_brief'] ?? null ) ? $article_workflow['article_goal_brief'] : array();
+		$draft          = is_array( $article_workflow['article_draft_candidate'] ?? null ) ? $article_workflow['article_draft_candidate'] : array();
+		$risk_report    = is_array( $article_workflow['article_risk_report'] ?? null ) ? $article_workflow['article_risk_report'] : array();
+		$blocked_claims = is_array( $risk_report['blocked_claims'] ?? null ) ? $risk_report['blocked_claims'] : array();
+		$needs_review   = is_array( $risk_report['needs_review'] ?? null ) ? $risk_report['needs_review'] : array();
+		$title          = (string) ( $draft['title'] ?? $goal['title'] ?? $goal['topic'] ?? '' );
+
+		$this->render_review_value_row(
+			__( 'Article workflow', 'magick-ai-core' ),
+			array(
+				'title'                  => '' !== $title ? $title : '-',
+				'artifact_type'          => (string) ( $article_workflow['artifact_type'] ?? '' ),
+				'version'                => absint( $article_workflow['version'] ?? 0 ),
+				'risk_level'             => (string) ( $risk_report['risk_level'] ?? '-' ),
+				'ready_for_proposal'     => ! empty( $risk_report['ready_for_proposal'] ) ? __( 'yes', 'magick-ai-core' ) : __( 'no', 'magick-ai-core' ),
+				'blocked_claims'         => count( $blocked_claims ),
+				'needs_review'           => count( $needs_review ),
+				'final_write_ability'    => $proposal_ability_id,
+				'final_write_path'       => (string) ( $article_workflow['final_write_path'] ?? '' ),
+				'direct_wordpress_write' => ! empty( $article_workflow['direct_wordpress_write'] ) ? __( 'yes', 'magick-ai-core' ) : __( 'no', 'magick-ai-core' ),
+			)
+		);
+
+		$artifact_availability = array();
+		foreach (
+			array(
+				'article_goal_brief',
+				'research_evidence_pack',
+				'article_outline',
+				'article_draft_candidate',
+				'discoverability_pack',
+				'article_risk_report',
+			) as $artifact_key
+		) {
+			$artifact_availability[ $artifact_key ] = ! empty( $article_workflow[ $artifact_key ] ) ? __( 'included', 'magick-ai-core' ) : __( 'missing', 'magick-ai-core' );
+		}
+
+		$this->render_review_value_row( __( 'Article artifacts', 'magick-ai-core' ), $artifact_availability );
+
+		if ( ! empty( $blocked_claims ) ) {
+			$this->render_review_value_row( __( 'Blocked claims', 'magick-ai-core' ), $blocked_claims );
+		}
 	}
 
 	/**

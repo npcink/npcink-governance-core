@@ -44,6 +44,9 @@ The WordPress admin proposal detail also shows:
 - proposal status, age, expiry, and summary;
 - review context from live ability intake and preview metadata, including
   before/after suggestions when present;
+- article workflow summary when `preview.article_workflow` exists, including
+  title/topic, risk level, readiness, blocked-claim count, final write ability,
+  final write path, direct-write state, and required artifact availability;
 - raw caller, input, and preview JSON behind an explicit disclosure;
 - audit timeline with event, actor, and compact detail metadata;
 - approve/reject form for pending proposals.

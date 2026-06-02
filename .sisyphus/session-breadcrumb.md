@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-02 — Article writing plan review summary added
+
+- **Module**: Core admin proposal detail.
+- **Status**: Core now summarizes `preview.article_workflow` in the proposal
+  review context so an approver can see the article title/topic, risk,
+  readiness, blocked-claim count, final write ability, final write path,
+  direct-write state, and required artifact availability before opening raw
+  JSON.
+- **Completed**:
+  - Added a compact Article workflow summary to the existing proposal detail
+    Review Context table.
+  - Kept the complete caller/input/preview payload behind the existing raw
+    proposal disclosure.
+  - Documented the admin review behavior in Core governance operability docs
+    and added static contracts.
+- **Verification**:
+  - `composer test:all`
+  - `composer smoke:wp`
+  - `git diff --check`
+- **Boundary**:
+  - This is review presentation only. It does not add article generation,
+    auto approval, final execution, workflow runtime, queueing, Cloud control
+    plane behavior, or direct WordPress writes inside Core.
+
 ## 2026-06-02 — Article writing plan governance handoff started
 
 - **Module**: Core plan-to-proposal article writing handoff.
