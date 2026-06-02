@@ -165,6 +165,19 @@ proposal -> approval -> commit-preflight response -> commit.preflighted audit
 
 Core still does not execute the target WordPress mutation.
 
+### Local Observability Hook
+
+Core emits a local `magick_ai_observability_event` action for proposal create,
+plan intake, approve, reject, and commit-preflight REST operations. The payload
+is metadata-only and includes stable operation kind, status, error code,
+latency, and safe identifiers such as proposal id, ability id, or correlation
+id when available.
+
+This hook is optional operational detail for local listeners such as a Cloud
+Addon. It is not an audit replacement, not a Cloud transport client, not a
+remote log shipping system, and not a second proposal, approval, preflight, or
+WordPress write truth.
+
 ## Non-Goals
 
 Do not add these as part of Core governance operability:
@@ -176,6 +189,7 @@ Do not add these as part of Core governance operability:
 - OAuth or cloud account system;
 - product UX for content, SEO, comments, media, or workflows;
 - provider credential storage;
+- mandatory remote telemetry or Cloud writeback;
 - long-term metrics warehouse or log shipping.
 
 ## Next Decisions

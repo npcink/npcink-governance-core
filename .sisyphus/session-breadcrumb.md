@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-02 — Local proposal observability hook documented
+
+- **Module**: Core proposal REST operability.
+- **Status**: Proposal create, plan intake, approve, reject, and
+  commit-preflight REST operations emit metadata-only local observability
+  events.
+- **Completed**:
+  - Added the `Observability` bridge for local
+    `magick_ai_observability_event` actions.
+  - Emitted safe operation metadata from proposal REST callbacks, including
+    status, error code, latency, proposal id, ability id, and correlation id
+    when available.
+  - Documented the hook as optional local operational detail, not an audit
+    replacement, Cloud transport client, remote telemetry requirement, or
+    second governance truth.
+  - Added static contracts for the bridge, event kinds, and operability
+    boundary text.
+- **Verification**:
+  - `composer test:all`
+- **Boundary**:
+  - Local audit remains the governance record. Cloud Addon may listen locally,
+    but Core does not call Cloud, ship logs remotely, execute abilities, own a
+    workflow runtime, or move proposal/approval/preflight truth out of Core.
+
 ## 2026-06-02 — Observation-only approval policy evaluator added
 
 - **Module**: Core proposal creation governance.

@@ -331,6 +331,8 @@ foreach (
 		'core_proxy_execute=false',
 		'Do not add these as part of Core governance operability',
 		'final commit execution',
+		'magick_ai_observability_event',
+		'not an audit replacement',
 		'AI Provider Log Correlation',
 	) as $required
 ) {
@@ -785,6 +787,10 @@ magick_ai_core_assert( false !== strpos( $capabilities_controller, 'capabilities
 
 $proposals_controller = magick_ai_core_read( $root . '/includes/Rest/Proposals_Controller.php' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, "'/proposals'" ), 'Proposals REST route is registered.' );
+magick_ai_core_assert( false !== strpos( $proposals_controller, 'Observability::emit' ), 'Proposal REST operations emit local observability events.' );
+magick_ai_core_assert( false !== strpos( $proposals_controller, 'core.proposal.create' ), 'Proposal create emits operation observability.' );
+magick_ai_core_assert( false !== strpos( $proposals_controller, 'core.proposal.plan_ingest' ), 'Plan intake emits operation observability.' );
+magick_ai_core_assert( false !== strpos( $proposals_controller, 'core.commit.preflight' ), 'Commit preflight emits operation observability.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, "'/proposals/from-plan'" ), 'Plan-to-proposal REST route is registered.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, 'create_proposals_from_plan' ), 'Plan-to-proposal REST callback is registered.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, 'get_proposal' ), 'Proposal detail REST callback is registered.' );
@@ -929,6 +935,11 @@ magick_ai_core_assert( false !== strpos( $audit_controller, 'correlation_id' ), 
 $request_context = magick_ai_core_read( $root . '/includes/Security/Request_Context.php' );
 magick_ai_core_assert( false !== strpos( $request_context, 'scope_decision' ), 'Request context stores scope decision.' );
 magick_ai_core_assert( false !== strpos( $request_context, 'mark_scope_decision' ), 'Request context can update scope decision for denials.' );
+
+$observability = magick_ai_core_read( $root . '/includes/Observability.php' );
+foreach ( array( 'Observability', 'magick_ai_observability_event', 'schema_version', 'plugin_slug', 'source', 'local', 'event_kind' ) as $required ) {
+	magick_ai_core_assert( false !== strpos( $observability, $required ), 'Observability bridge contains required text: ' . $required );
+}
 
 $admin_page = magick_ai_core_read( $root . '/includes/Admin/Admin_Page.php' );
 $admin_surface_standard = magick_ai_core_read( $root . '/docs/admin-surface-standard.md' );

@@ -11,6 +11,7 @@ use MagickAI\Core\Governance\Commit_Preflight_Service;
 use MagickAI\Core\Governance\Plan_Proposal_Service;
 use MagickAI\Core\Governance\Proposal_Repository;
 use MagickAI\Core\Governance\Proposal_Service;
+use MagickAI\Core\Observability;
 use MagickAI\Core\Security\App_Authenticator;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -307,6 +308,7 @@ final class Proposals_Controller {
 	 * @return WP_REST_Response|\WP_Error
 	 */
 	public function create_proposal( WP_REST_Request $request ) {
+		$started = microtime( true );
 		$result = $this->service->create(
 			array(
 				'ability_id' => $request->get_param( 'ability_id' ),
@@ -319,8 +321,20 @@ final class Proposals_Controller {
 		);
 
 		if ( is_wp_error( $result ) ) {
+			$this->emit_operation_event( 'core.proposal.create', $started, $result, array( 'ability_id' => (string) $request->get_param( 'ability_id' ) ) );
 			return $result;
 		}
+
+		$this->emit_operation_event(
+			'core.proposal.create',
+			$started,
+			null,
+			array(
+				'ability_id'   => (string) ( $result['ability_id'] ?? $request->get_param( 'ability_id' ) ),
+				'proposal_id'  => (string) ( $result['proposal_id'] ?? '' ),
+				'deduplicated' => ! empty( $result['deduplicated'] ),
+			)
+		);
 
 		return new WP_REST_Response( $result, ! empty( $result['deduplicated'] ) ? 200 : 201 );
 	}
@@ -332,6 +346,7 @@ final class Proposals_Controller {
 	 * @return WP_REST_Response|\WP_Error
 	 */
 	public function create_proposals_from_plan( WP_REST_Request $request ) {
+		$started = microtime( true );
 		$result = $this->plan_proposals->create_from_plan(
 			(string) $request->get_param( 'plan_ability_id' ),
 			is_array( $request->get_param( 'plan' ) ) ? $request->get_param( 'plan' ) : array(),
@@ -340,8 +355,20 @@ final class Proposals_Controller {
 		);
 
 		if ( is_wp_error( $result ) ) {
+			$this->emit_operation_event( 'core.proposal.plan_ingest', $started, $result, array( 'ability_id' => (string) $request->get_param( 'plan_ability_id' ) ) );
 			return $result;
 		}
+
+		$this->emit_operation_event(
+			'core.proposal.plan_ingest',
+			$started,
+			null,
+			array(
+				'ability_id'     => (string) $request->get_param( 'plan_ability_id' ),
+				'proposal_count' => is_array( $result['proposals'] ?? null ) ? count( $result['proposals'] ) : 0,
+				'blocked_count'  => is_array( $result['blocked_items'] ?? null ) ? count( $result['blocked_items'] ) : 0,
+			)
+		);
 
 		return new WP_REST_Response( $result, 201 );
 	}
@@ -353,6 +380,7 @@ final class Proposals_Controller {
 	 * @return WP_REST_Response|\WP_Error
 	 */
 	public function approve_proposal( WP_REST_Request $request ) {
+		$started = microtime( true );
 		$result = $this->service->approve(
 			(string) $request->get_param( 'proposal_id' ),
 			array(
@@ -361,8 +389,19 @@ final class Proposals_Controller {
 		);
 
 		if ( is_wp_error( $result ) ) {
+			$this->emit_operation_event( 'core.proposal.approve', $started, $result, array( 'proposal_id' => (string) $request->get_param( 'proposal_id' ) ) );
 			return $result;
 		}
+
+		$this->emit_operation_event(
+			'core.proposal.approve',
+			$started,
+			null,
+			array(
+				'proposal_id' => (string) ( $result['proposal_id'] ?? $request->get_param( 'proposal_id' ) ),
+				'ability_id'  => (string) ( $result['ability_id'] ?? '' ),
+			)
+		);
 
 		return new WP_REST_Response( $result, 200 );
 	}
@@ -374,6 +413,7 @@ final class Proposals_Controller {
 	 * @return WP_REST_Response|\WP_Error
 	 */
 	public function reject_proposal( WP_REST_Request $request ) {
+		$started = microtime( true );
 		$result = $this->service->reject(
 			(string) $request->get_param( 'proposal_id' ),
 			array(
@@ -382,8 +422,19 @@ final class Proposals_Controller {
 		);
 
 		if ( is_wp_error( $result ) ) {
+			$this->emit_operation_event( 'core.proposal.reject', $started, $result, array( 'proposal_id' => (string) $request->get_param( 'proposal_id' ) ) );
 			return $result;
 		}
+
+		$this->emit_operation_event(
+			'core.proposal.reject',
+			$started,
+			null,
+			array(
+				'proposal_id' => (string) ( $result['proposal_id'] ?? $request->get_param( 'proposal_id' ) ),
+				'ability_id'  => (string) ( $result['ability_id'] ?? '' ),
+			)
+		);
 
 		return new WP_REST_Response( $result, 200 );
 	}
@@ -395,15 +446,51 @@ final class Proposals_Controller {
 	 * @return WP_REST_Response|\WP_Error
 	 */
 	public function commit_preflight( WP_REST_Request $request ) {
+		$started = microtime( true );
 		$result = $this->preflight->preflight(
 			(string) $request->get_param( 'proposal_id' ),
 			$request->get_params()
 		);
 
 		if ( is_wp_error( $result ) ) {
+			$this->emit_operation_event( 'core.commit.preflight', $started, $result, array( 'proposal_id' => (string) $request->get_param( 'proposal_id' ) ) );
 			return $result;
 		}
 
+		$this->emit_operation_event(
+			'core.commit.preflight',
+			$started,
+			null,
+			array(
+				'proposal_id'    => (string) ( $result['proposal_id'] ?? $request->get_param( 'proposal_id' ) ),
+				'ability_id'     => (string) ( $result['proposal']['ability_id'] ?? '' ),
+				'correlation_id' => (string) ( $result['correlation_id'] ?? '' ),
+			)
+		);
+
 		return new WP_REST_Response( $result, 200 );
+	}
+
+	/**
+	 * Emits a metadata-only operation event.
+	 *
+	 * @param string          $event_kind Event kind.
+	 * @param float           $started Start time.
+	 * @param \WP_Error|null  $error Error result.
+	 * @param array<string,mixed> $context Safe context fields.
+	 * @return void
+	 */
+	private function emit_operation_event( string $event_kind, float $started, $error, array $context = array() ): void {
+		Observability::emit(
+			$event_kind,
+			array_merge(
+				array(
+					'status'     => is_wp_error( $error ) ? 'error' : 'ok',
+					'error_code' => is_wp_error( $error ) ? (string) $error->get_error_code() : '',
+					'latency_ms' => max( 0, (int) round( ( microtime( true ) - $started ) * 1000 ) ),
+				),
+				$context
+			)
+		);
 	}
 }
