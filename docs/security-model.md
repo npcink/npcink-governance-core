@@ -107,8 +107,11 @@ context for human review.
 
 Permanent media deletion is excluded from generated proposals unless the host
 explicitly submits `include_delete_candidates=true` with the plan input. The
-plan payload itself is not trusted to open that gate. Even then, the generated
-proposal remains high risk, pending approval, and subject to commit preflight.
+plan payload itself is not trusted to open that gate. The upstream planning
+ability must also have emitted an allowed delete action under its own narrow
+flags, such as `include_unattached_test_media=true` for unattached test media.
+Even then, the generated proposal remains high risk, pending approval, and
+subject to commit preflight.
 
 ## Legacy Confirmation Ban
 

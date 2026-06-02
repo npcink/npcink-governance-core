@@ -337,7 +337,7 @@ Request fields:
 | --- | --- | --- | --- |
 | `plan_ability_id` | string | yes | Must be one of the supported read-only planning ability ids and currently discoverable as `governance_mode=direct_read`. |
 | `plan` | object | yes | Ability success envelope or its `data` object. Must include `requires_approval=true`, `dry_run=true`, `commit_execution=false`, and `write_actions`. |
-| `plan_input` | object | no | Input originally used to build the plan. Used for safety gates such as `include_delete_candidates=true`. |
+| `plan_input` | object | no | Input originally used to build the plan. Used for safety gates such as `include_delete_candidates=true`; media delete plans may also require source-side flags such as `include_unattached_test_media=true` or `include_trash_parent_media=true` before the plan emits a delete action. |
 | `caller` | object | no | Caller metadata copied into generated proposals. |
 
 Each accepted independent `write_action` becomes a separate pending proposal by
@@ -413,10 +413,13 @@ Response `201`:
 ```
 
 Destructive media deletion is excluded unless `include_delete_candidates=true`
-is present in the plan input supplied to this route. Actions with
-`requires_input` still become reviewable proposals, but their preview carries
-`proposal_ready=false`, `needs_input`, and `preflight_blockers`; commit
-preflight must return `409` until the missing input is resolved by the host.
+is present in the plan input supplied to this route. The media planning ability
+must also have accepted its own narrow destructive flag, such as
+`include_unattached_test_media=true` or `include_trash_parent_media=true`, before
+Core has a delete action to review. Actions with `requires_input` still become
+reviewable proposals, but their preview carries `proposal_ready=false`,
+`needs_input`, and `preflight_blockers`; commit preflight must return `409`
+until the missing input is resolved by the host.
 
 Errors:
 

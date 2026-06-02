@@ -909,6 +909,13 @@ foreach (
 	magick_ai_core_assert( false !== strpos( $plan_proposal_service, $required ), 'Plan-to-proposal service contains required text: ' . $required );
 }
 
+$smoke_wp = magick_ai_core_read( $root . '/tests/smoke-wp.php' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'include_unattached_test_media' ), 'Smoke test media delete fixture opts into abilities-side test media delete policy.' );
+
+$plan_to_proposal_docs = magick_ai_core_read( $root . '/docs/plan-to-proposal-governance.md' );
+magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_unattached_test_media' ), 'Plan-to-proposal docs mention abilities-side unattached test media delete gate.' );
+magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_trash_parent_media' ), 'Plan-to-proposal docs mention abilities-side trash-parent media delete gate.' );
+
 $audit_repository = magick_ai_core_read( $root . '/includes/Audit/Audit_Log_Repository.php' );
 magick_ai_core_assert( false !== strpos( $audit_repository, 'sanitize_text_field( $event_name )' ), 'Audit repository preserves dotted event names.' );
 magick_ai_core_assert( false !== strpos( $audit_repository, 'list_filtered' ), 'Audit repository supports filtered event lists.' );

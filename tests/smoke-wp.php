@@ -980,10 +980,11 @@ magick_ai_core_smoke_assert( (int) ( $media_plan_proposal['preview']['warnings']
 magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $media_plan_proposal['proposal_id'] ?? '' ) );
 
 $media_delete_plan_input = array(
-	'attachment_ids'            => array( (int) $plan_attachment_id ),
-	'issue_types'               => array( 'possibly_unattached' ),
-	'include_delete_candidates' => true,
-	'max_actions'               => 5,
+	'attachment_ids'                  => array( (int) $plan_attachment_id ),
+	'issue_types'                     => array( 'possibly_unattached' ),
+	'include_delete_candidates'       => true,
+	'include_unattached_test_media'   => true,
+	'max_actions'                     => 5,
 );
 $media_delete_plan       = magick_ai_core_smoke_run_plan_ability( 'magick-ai/build-media-inventory-fix-plan', $media_delete_plan_input );
 $media_delete_blocked    = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-media-inventory-fix-plan', $media_delete_plan, array( 'include_delete_candidates' => false ) );

@@ -111,7 +111,11 @@ are copied into generated proposal warnings and blocked item context.
 
 Permanent media deletion is stricter: `magick-ai/delete-media-permanently`
 actions are blocked unless the submitted `plan_input` explicitly contains
-`include_delete_candidates=true`. Allowed delete proposals remain high risk.
+`include_delete_candidates=true`. The media planning ability still decides
+whether a delete action can be emitted at all; current destructive-media plans
+also require a narrow source-side flag such as
+`include_unattached_test_media=true` or `include_trash_parent_media=true`.
+Allowed delete proposals remain high risk.
 
 ## Batch Approval
 

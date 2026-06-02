@@ -108,7 +108,10 @@ commit preflight must return `magick_ai_core_proposal_items_blocked`.
 Permanent media deletion is blocked by default. A plan action targeting
 `magick-ai/delete-media-permanently` may become a proposal only when
 `include_delete_candidates=true` is explicitly supplied with the plan input,
-and it must remain high risk.
+and it must remain high risk. The planning ability must still satisfy its own
+destructive-media policy first, such as requiring
+`include_unattached_test_media=true` for unattached test media or
+`include_trash_parent_media=true` for media attached to trash-parent content.
 
 ## Approval Boundary
 

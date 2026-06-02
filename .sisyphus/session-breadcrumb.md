@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-02 — Media delete smoke aligned with abilities policy
+
+- **Module**: Core plan-to-proposal smoke coverage and contracts.
+- **Status**: WordPress smoke now matches the current media planning ability
+  contract before exercising Core's separate destructive media delete gate.
+- **Completed**:
+  - Updated the explicit media delete smoke fixture to pass the abilities-side
+    `include_unattached_test_media=true` opt-in before expecting a
+    `magick-ai/delete-media-permanently` plan action.
+  - Documented that Core's `plan_input.include_delete_candidates=true` gate is
+    in addition to the media planning ability's own narrow destructive-media
+    flags, such as `include_unattached_test_media` and
+    `include_trash_parent_media`.
+  - Added static contracts so the smoke fixture and plan-to-proposal docs keep
+    this two-layer guard visible.
+- **Verification**:
+  - `composer test:all`
+  - `composer smoke:wp`
+  - `git diff --check`
+- **Next Steps**:
+  - Keep the approval policy evaluator observation-only unless the next slice
+    adds explicit auto-approval authorization, trusted test-content evidence,
+    and per-window auto-approval quotas.
+
 ## 2026-06-02 — Local proposal observability hook documented
 
 - **Module**: Core proposal REST operability.
