@@ -102,7 +102,12 @@ composer validate --no-check-publish
 - proposal audit timeline, audit filters, app scope-decision attribution, and
   commit-preflight correlation id.
 
-The smoke test creates local proposal and audit records. That is expected.
+The smoke test deletes its local WordPress content fixtures, including posts,
+comments, terms, and media attachments, and revokes app keys created during the
+run. It creates local proposal and audit records by default. That is expected.
+For local cleanup-only runs, set `MAGICK_AI_CORE_SMOKE_PURGE=1` to purge the
+tracked proposal, app-key, rate-limit, and audit rows for the current smoke run
+after assertions have completed.
 
 ## Adapter Local TLS
 

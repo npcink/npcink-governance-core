@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-02 — Smoke fixture cleanup hardened
+
+- **Module**: Core WordPress smoke gate fixture lifecycle.
+- **Status**: WordPress smoke now cleans transient local fixtures while keeping
+  governance evidence persistent by default.
+- **Completed**:
+  - Expanded smoke shutdown cleanup from media-only to posts, comments, terms,
+    and attachments, with per-run fixture titles and explicit end-of-run
+    deletion assertions.
+  - Added app-key fixture tracking so smoke-created app keys are revoked even
+    when later assertions fail.
+  - Added optional `MAGICK_AI_CORE_SMOKE_PURGE=1` local cleanup mode for tracked
+    proposal, app-key, rate-limit, and audit rows after assertions complete.
+  - Documented the default persistence boundary and added static contracts for
+    fixture cleanup and optional purge behavior.
+- **Verification**:
+  - `composer test:all`
+  - `composer smoke:wp`
+  - `MAGICK_AI_CORE_SMOKE_PURGE=1 composer smoke:wp`
+  - `git diff --check`
+- **Boundary**:
+  - Core still records real proposal and audit rows by default; the purge path
+    is explicit local smoke cleanup only and does not change runtime governance
+    behavior.
+
 ## 2026-06-02 — Approval policy standard and roadmap documented
 
 - **Module**: Core approval policy documentation.

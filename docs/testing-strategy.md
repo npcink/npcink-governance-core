@@ -92,6 +92,13 @@ Use it for behavior that requires real WordPress:
   and approval audit attribution;
 - real proposal and audit persistence.
 
+The smoke test should clean up transient WordPress content fixtures on shutdown,
+including posts, comments, terms, and media attachments, and should revoke app
+keys created for the run. Proposal and audit rows remain persistent by default
+to preserve the governance evidence checked by the smoke gate. Local-only runs
+may set `MAGICK_AI_CORE_SMOKE_PURGE=1` to purge tracked proposal, app-key,
+rate-limit, and audit rows for the current run after assertions complete.
+
 The smoke test should stay small. It is a confidence gate, not a full end-to-end
 suite.
 

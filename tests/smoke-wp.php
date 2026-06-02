@@ -13,7 +13,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $magick_ai_core_smoke_run_id                 = wp_generate_uuid4();
+$magick_ai_core_smoke_post_fixture_ids       = array();
+$magick_ai_core_smoke_comment_fixture_ids    = array();
 $magick_ai_core_smoke_attachment_fixture_ids = array();
+$magick_ai_core_smoke_term_fixtures          = array();
+$magick_ai_core_smoke_app_key_fixture_ids    = array();
+$magick_ai_core_smoke_app_fixture_ids        = array();
+$magick_ai_core_smoke_proposal_fixture_ids   = array();
 $magick_ai_core_smoke_cleanup_completed      = false;
 
 /**
@@ -33,6 +39,38 @@ function magick_ai_core_smoke_assert( bool $condition, string $message ): void {
 }
 
 /**
+ * Registers a post fixture for cleanup even when the smoke test fails.
+ *
+ * @param int $post_id Post id.
+ * @return void
+ */
+function magick_ai_core_smoke_register_post_fixture( int $post_id ): void {
+	global $magick_ai_core_smoke_post_fixture_ids;
+
+	if ( $post_id <= 0 ) {
+		return;
+	}
+
+	$magick_ai_core_smoke_post_fixture_ids[ $post_id ] = true;
+}
+
+/**
+ * Registers a comment fixture for cleanup even when the smoke test fails.
+ *
+ * @param int $comment_id Comment id.
+ * @return void
+ */
+function magick_ai_core_smoke_register_comment_fixture( int $comment_id ): void {
+	global $magick_ai_core_smoke_comment_fixture_ids;
+
+	if ( $comment_id <= 0 ) {
+		return;
+	}
+
+	$magick_ai_core_smoke_comment_fixture_ids[ $comment_id ] = true;
+}
+
+/**
  * Registers a media fixture for cleanup even when the smoke test fails.
  *
  * @param int $attachment_id Attachment post id.
@@ -49,12 +87,177 @@ function magick_ai_core_smoke_register_attachment_fixture( int $attachment_id ):
 }
 
 /**
- * Deletes registered media fixtures.
+ * Registers a taxonomy term fixture for cleanup even when the smoke test fails.
+ *
+ * @param int    $term_id Term id.
+ * @param string $taxonomy Taxonomy id.
+ * @return void
+ */
+function magick_ai_core_smoke_register_term_fixture( int $term_id, string $taxonomy ): void {
+	global $magick_ai_core_smoke_term_fixtures;
+
+	if ( $term_id <= 0 || '' === $taxonomy ) {
+		return;
+	}
+
+	$magick_ai_core_smoke_term_fixtures[ $taxonomy . ':' . $term_id ] = array(
+		'term_id'  => $term_id,
+		'taxonomy' => $taxonomy,
+	);
+}
+
+/**
+ * Registers an app key fixture for revocation and optional purge.
+ *
+ * @param string $key_id App key id.
+ * @return void
+ */
+function magick_ai_core_smoke_register_app_key_fixture( string $key_id ): void {
+	global $magick_ai_core_smoke_app_key_fixture_ids;
+
+	$key_id = trim( $key_id );
+	if ( '' === $key_id ) {
+		return;
+	}
+
+	$magick_ai_core_smoke_app_key_fixture_ids[ $key_id ] = true;
+}
+
+/**
+ * Registers an app fixture for optional purge.
+ *
+ * @param string $app_id App id.
+ * @return void
+ */
+function magick_ai_core_smoke_register_app_fixture( string $app_id ): void {
+	global $magick_ai_core_smoke_app_fixture_ids;
+
+	$app_id = trim( $app_id );
+	if ( '' === $app_id ) {
+		return;
+	}
+
+	$magick_ai_core_smoke_app_fixture_ids[ $app_id ] = true;
+}
+
+/**
+ * Registers a proposal fixture for optional purge.
+ *
+ * @param string $proposal_id Proposal id.
+ * @return void
+ */
+function magick_ai_core_smoke_register_proposal_fixture( string $proposal_id ): void {
+	global $magick_ai_core_smoke_proposal_fixture_ids;
+
+	$proposal_id = trim( $proposal_id );
+	if ( '' === $proposal_id ) {
+		return;
+	}
+
+	$magick_ai_core_smoke_proposal_fixture_ids[ $proposal_id ] = true;
+}
+
+/**
+ * Tracks app and proposal fixtures created by REST calls.
+ *
+ * @param string $method HTTP method.
+ * @param string $route REST route.
+ * @param mixed  $data Response data.
+ * @return void
+ */
+function magick_ai_core_smoke_track_rest_fixture( string $method, string $route, $data ): void {
+	if ( 'POST' !== strtoupper( $method ) || ! is_array( $data ) ) {
+		return;
+	}
+
+	if ( '/magick-ai-core/v1/apps' === $route ) {
+		magick_ai_core_smoke_register_app_fixture( (string) ( $data['app_id'] ?? '' ) );
+		magick_ai_core_smoke_register_app_key_fixture( (string) ( $data['key_id'] ?? '' ) );
+		return;
+	}
+
+	if ( '/magick-ai-core/v1/proposals' === $route ) {
+		magick_ai_core_smoke_register_proposal_fixture( (string) ( $data['proposal_id'] ?? '' ) );
+		return;
+	}
+
+	if ( '/magick-ai-core/v1/proposals/from-plan' === $route ) {
+		foreach ( (array) ( $data['proposals'] ?? array() ) as $proposal ) {
+			if ( is_array( $proposal ) ) {
+				magick_ai_core_smoke_register_proposal_fixture( (string) ( $proposal['proposal_id'] ?? '' ) );
+			}
+		}
+	}
+}
+
+/**
+ * Whether smoke should purge tracked governance rows instead of only revoking keys.
+ *
+ * @return bool
+ */
+function magick_ai_core_smoke_should_purge_governance_records(): bool {
+	$value = getenv( 'MAGICK_AI_CORE_SMOKE_PURGE' );
+	if ( ! is_string( $value ) ) {
+		return false;
+	}
+
+	return in_array( strtolower( trim( $value ) ), array( '1', 'true', 'yes' ), true );
+}
+
+/**
+ * Deletes tracked governance rows when explicitly requested for local cleanup.
+ *
+ * @return void
+ */
+function magick_ai_core_smoke_purge_governance_records(): void {
+	global $wpdb, $magick_ai_core_smoke_app_fixture_ids, $magick_ai_core_smoke_app_key_fixture_ids, $magick_ai_core_smoke_proposal_fixture_ids;
+
+	if ( ! magick_ai_core_smoke_should_purge_governance_records() ) {
+		return;
+	}
+
+	$audit_table     = $wpdb->prefix . 'magick_ai_core_audit_log';
+	$app_table       = $wpdb->prefix . 'magick_ai_core_app_keys';
+	$rate_table      = $wpdb->prefix . 'magick_ai_core_app_rate_limits';
+	$proposal_table  = $wpdb->prefix . 'magick_ai_core_proposals';
+	$proposal_ids    = array_keys( $magick_ai_core_smoke_proposal_fixture_ids );
+	$app_ids         = array_keys( $magick_ai_core_smoke_app_fixture_ids );
+	$key_ids         = array_keys( $magick_ai_core_smoke_app_key_fixture_ids );
+
+	foreach ( $proposal_ids as $proposal_id ) {
+		$wpdb->delete( $audit_table, array( 'proposal_id' => sanitize_text_field( $proposal_id ) ), array( '%s' ) );
+		$wpdb->delete( $proposal_table, array( 'proposal_id' => sanitize_text_field( $proposal_id ) ), array( '%s' ) );
+	}
+
+	foreach ( $app_ids as $app_id ) {
+		$wpdb->delete( $rate_table, array( 'app_id' => sanitize_text_field( $app_id ) ), array( '%s' ) );
+		$wpdb->query(
+			$wpdb->prepare(
+				'DELETE FROM ' . $audit_table . ' WHERE metadata_json LIKE %s',
+				'%' . $wpdb->esc_like( '"app_id":"' . $app_id . '"' ) . '%'
+			)
+		);
+	}
+
+	foreach ( $key_ids as $key_id ) {
+		$wpdb->delete( $rate_table, array( 'key_id' => sanitize_text_field( $key_id ) ), array( '%s' ) );
+		$wpdb->delete( $app_table, array( 'key_id' => sanitize_text_field( $key_id ) ), array( '%s' ) );
+		$wpdb->query(
+			$wpdb->prepare(
+				'DELETE FROM ' . $audit_table . ' WHERE metadata_json LIKE %s',
+				'%' . $wpdb->esc_like( '"key_id":"' . $key_id . '"' ) . '%'
+			)
+		);
+	}
+}
+
+/**
+ * Deletes registered smoke fixtures.
  *
  * @return void
  */
 function magick_ai_core_smoke_cleanup_fixtures(): void {
-	global $magick_ai_core_smoke_attachment_fixture_ids, $magick_ai_core_smoke_cleanup_completed;
+	global $magick_ai_core_smoke_post_fixture_ids, $magick_ai_core_smoke_comment_fixture_ids, $magick_ai_core_smoke_attachment_fixture_ids, $magick_ai_core_smoke_term_fixtures, $magick_ai_core_smoke_app_key_fixture_ids, $magick_ai_core_smoke_cleanup_completed;
 
 	if ( $magick_ai_core_smoke_cleanup_completed ) {
 		return;
@@ -62,7 +265,27 @@ function magick_ai_core_smoke_cleanup_fixtures(): void {
 
 	$magick_ai_core_smoke_cleanup_completed = true;
 
-	foreach ( array_keys( $magick_ai_core_smoke_attachment_fixture_ids ) as $attachment_id ) {
+	foreach ( array_keys( (array) $magick_ai_core_smoke_app_key_fixture_ids ) as $key_id ) {
+		$app_keys = new \MagickAI\Core\Security\App_Key_Repository();
+		$revoked  = $app_keys->revoke_by_key_id( (string) $key_id );
+		$app      = $app_keys->find_by_key_id( (string) $key_id );
+		if ( ! $revoked && is_array( $app ) && 'revoked' !== (string) ( $app['status'] ?? '' ) ) {
+			fwrite( STDERR, '[warn] failed to revoke smoke app key fixture ' . (string) $key_id . "\n" );
+		}
+	}
+
+	foreach ( array_keys( (array) $magick_ai_core_smoke_comment_fixture_ids ) as $comment_id ) {
+		$comment_id = (int) $comment_id;
+		if ( $comment_id <= 0 || ! get_comment( $comment_id ) ) {
+			continue;
+		}
+
+		if ( false === wp_delete_comment( $comment_id, true ) ) {
+			fwrite( STDERR, '[warn] failed to delete smoke comment fixture ' . $comment_id . "\n" );
+		}
+	}
+
+	foreach ( array_keys( (array) $magick_ai_core_smoke_attachment_fixture_ids ) as $attachment_id ) {
 		$attachment_id = (int) $attachment_id;
 		if ( $attachment_id <= 0 || 'attachment' !== get_post_type( $attachment_id ) ) {
 			continue;
@@ -73,6 +296,32 @@ function magick_ai_core_smoke_cleanup_fixtures(): void {
 			fwrite( STDERR, '[warn] failed to delete smoke attachment fixture ' . $attachment_id . "\n" );
 		}
 	}
+
+	foreach ( array_keys( (array) $magick_ai_core_smoke_post_fixture_ids ) as $post_id ) {
+		$post_id = (int) $post_id;
+		if ( $post_id <= 0 || false === get_post_type( $post_id ) ) {
+			continue;
+		}
+
+		if ( false === wp_delete_post( $post_id, true ) ) {
+			fwrite( STDERR, '[warn] failed to delete smoke post fixture ' . $post_id . "\n" );
+		}
+	}
+
+	foreach ( (array) $magick_ai_core_smoke_term_fixtures as $term_fixture ) {
+		$term_id  = (int) ( $term_fixture['term_id'] ?? 0 );
+		$taxonomy = (string) ( $term_fixture['taxonomy'] ?? '' );
+		if ( $term_id <= 0 || '' === $taxonomy || ! term_exists( $term_id, $taxonomy ) ) {
+			continue;
+		}
+
+		$deleted = wp_delete_term( $term_id, $taxonomy );
+		if ( is_wp_error( $deleted ) || false === $deleted ) {
+			fwrite( STDERR, '[warn] failed to delete smoke term fixture ' . $taxonomy . ':' . $term_id . "\n" );
+		}
+	}
+
+	magick_ai_core_smoke_purge_governance_records();
 }
 
 register_shutdown_function( 'magick_ai_core_smoke_cleanup_fixtures' );
@@ -112,6 +361,7 @@ function magick_ai_core_smoke_rest_result( string $method, string $route, array 
 	$response = rest_do_request( $request );
 	$status   = (int) $response->get_status();
 	$data     = $response->get_data();
+	magick_ai_core_smoke_track_rest_fixture( $method, $route, $data );
 
 	return array(
 		'status' => $status,
@@ -157,6 +407,7 @@ function magick_ai_core_smoke_rest_result_as_app( string $method, string $route,
 	$response = rest_do_request( $request );
 	$status   = (int) $response->get_status();
 	$data     = $response->get_data();
+	magick_ai_core_smoke_track_rest_fixture( $method, $route, $data );
 
 	return array(
 		'status' => $status,
@@ -368,9 +619,11 @@ function magick_ai_core_smoke_assert_capability_guidance( array $ability, string
  * @return array{comment_id:int,post_id:int,current_status:string}
  */
 function magick_ai_core_smoke_create_pending_comment(): array {
+	global $magick_ai_core_smoke_run_id;
+
 	$post_id = wp_insert_post(
 		array(
-			'post_title'   => 'Core Governance Comment Smoke',
+			'post_title'   => 'Core Governance Comment Smoke ' . $magick_ai_core_smoke_run_id,
 			'post_content' => 'Comment moderation smoke parent post.',
 			'post_status'  => 'publish',
 			'post_type'    => 'post',
@@ -378,17 +631,19 @@ function magick_ai_core_smoke_create_pending_comment(): array {
 		true
 	);
 	magick_ai_core_smoke_assert( ! is_wp_error( $post_id ) && (int) $post_id > 0, 'comment smoke parent post is created' );
+	magick_ai_core_smoke_register_post_fixture( (int) $post_id );
 
 	$comment_id = wp_insert_comment(
 		array(
 			'comment_post_ID'      => (int) $post_id,
 			'comment_author'       => 'Core Smoke Reviewer',
 			'comment_author_email' => 'core-smoke@example.test',
-			'comment_content'      => 'Pending comment for Core governance smoke.',
+			'comment_content'      => 'Pending comment for Core governance smoke ' . $magick_ai_core_smoke_run_id . '.',
 			'comment_approved'     => '0',
 		)
 	);
 	magick_ai_core_smoke_assert( (int) $comment_id > 0, 'pending comment is created for comment approval governance' );
+	magick_ai_core_smoke_register_comment_fixture( (int) $comment_id );
 
 	$comment = get_comment( (int) $comment_id );
 	magick_ai_core_smoke_assert( $comment instanceof WP_Comment, 'pending comment can be loaded for preview' );
@@ -410,13 +665,18 @@ function magick_ai_core_smoke_create_pending_comment(): array {
 function magick_ai_core_smoke_term_id( string $name, string $taxonomy ): int {
 	$existing = term_exists( $name, $taxonomy );
 	if ( is_array( $existing ) ) {
-		return (int) ( $existing['term_id'] ?? 0 );
+		$term_id = (int) ( $existing['term_id'] ?? 0 );
+		magick_ai_core_smoke_register_term_fixture( $term_id, $taxonomy );
+		return $term_id;
 	}
 	if ( is_int( $existing ) ) {
+		magick_ai_core_smoke_register_term_fixture( $existing, $taxonomy );
 		return $existing;
 	}
 	if ( is_string( $existing ) && is_numeric( $existing ) ) {
-		return (int) $existing;
+		$term_id = (int) $existing;
+		magick_ai_core_smoke_register_term_fixture( $term_id, $taxonomy );
+		return $term_id;
 	}
 
 	$created = wp_insert_term( $name, $taxonomy );
@@ -424,7 +684,10 @@ function magick_ai_core_smoke_term_id( string $name, string $taxonomy ): int {
 		return 0;
 	}
 
-	return (int) ( is_array( $created ) ? ( $created['term_id'] ?? 0 ) : 0 );
+	$term_id = (int) ( is_array( $created ) ? ( $created['term_id'] ?? 0 ) : 0 );
+	magick_ai_core_smoke_register_term_fixture( $term_id, $taxonomy );
+
+	return $term_id;
 }
 
 /**
@@ -433,10 +696,12 @@ function magick_ai_core_smoke_term_id( string $name, string $taxonomy ): int {
  * @return array{post_id:int,taxonomy:string,current_term_id:int,candidate_term_id:int,current_terms:array<int,int>}
  */
 function magick_ai_core_smoke_create_taxonomy_terms_fixture(): array {
+	global $magick_ai_core_smoke_run_id;
+
 	$taxonomy = 'post_tag';
 	$post_id  = wp_insert_post(
 		array(
-			'post_title'   => 'Taxonomy terms smoke parent post',
+			'post_title'   => 'Taxonomy terms smoke parent post ' . $magick_ai_core_smoke_run_id,
 			'post_content' => 'Taxonomy terms governance smoke content.',
 			'post_status'  => 'draft',
 			'post_type'    => 'post',
@@ -444,9 +709,10 @@ function magick_ai_core_smoke_create_taxonomy_terms_fixture(): array {
 		true
 	);
 	magick_ai_core_smoke_assert( ! is_wp_error( $post_id ) && (int) $post_id > 0, 'taxonomy smoke parent post is created' );
+	magick_ai_core_smoke_register_post_fixture( (int) $post_id );
 
-	$current_term_id   = magick_ai_core_smoke_term_id( 'Core Smoke Current Topic', $taxonomy );
-	$candidate_term_id = magick_ai_core_smoke_term_id( 'Core Smoke Candidate Topic', $taxonomy );
+	$current_term_id   = magick_ai_core_smoke_term_id( 'Core Smoke Current Topic ' . $magick_ai_core_smoke_run_id, $taxonomy );
+	$candidate_term_id = magick_ai_core_smoke_term_id( 'Core Smoke Candidate Topic ' . $magick_ai_core_smoke_run_id, $taxonomy );
 	magick_ai_core_smoke_assert( $current_term_id > 0 && $candidate_term_id > 0, 'taxonomy smoke existing terms are available' );
 
 	$set_terms = wp_set_post_terms( (int) $post_id, array( $current_term_id ), $taxonomy, false );
@@ -547,6 +813,8 @@ function magick_ai_core_smoke_run_plan_ability( string $ability_id, array $input
  * @return array<string,mixed>
  */
 function magick_ai_core_smoke_create_proposals_from_plan( string $ability_id, array $plan, array $plan_input ): array {
+	global $magick_ai_core_smoke_run_id;
+
 	return magick_ai_core_smoke_rest(
 		'POST',
 		'/magick-ai-core/v1/proposals/from-plan',
@@ -555,7 +823,7 @@ function magick_ai_core_smoke_create_proposals_from_plan( string $ability_id, ar
 			'plan'            => $plan,
 			'plan_input'      => $plan_input,
 			'caller'          => array(
-				'source' => 'tests/smoke-wp.php',
+				'source' => 'tests/smoke-wp.php:' . $magick_ai_core_smoke_run_id,
 			),
 		)
 	);
@@ -620,6 +888,8 @@ function magick_ai_core_smoke_approve_and_preflight_plan_proposal( string $propo
  * @return string
  */
 function magick_ai_core_smoke_run_governance_proposal( string $ability_id, array $items_by_id, string $title, array $input, array $preview ): string {
+	global $magick_ai_core_smoke_run_id;
+
 	magick_ai_core_smoke_assert( isset( $items_by_id[ $ability_id ] ), $ability_id . ' is discoverable for proposal governance' );
 	magick_ai_core_smoke_assert( 'read' !== (string) ( $items_by_id[ $ability_id ]['risk_level'] ?? 'read' ), $ability_id . ' is write-like for proposal governance' );
 	magick_ai_core_smoke_assert( true === (bool) ( $items_by_id[ $ability_id ]['requires_approval'] ?? false ), $ability_id . ' requires approval for proposal governance' );
@@ -629,12 +899,12 @@ function magick_ai_core_smoke_run_governance_proposal( string $ability_id, array
 		'/magick-ai-core/v1/proposals',
 		array(
 			'ability_id' => $ability_id,
-			'title'      => $title,
+			'title'      => $title . ' ' . $magick_ai_core_smoke_run_id,
 			'summary'    => 'Created by real WordPress smoke test.',
 			'input'      => $input,
 			'preview'    => $preview,
 			'caller'     => array(
-				'source' => 'tests/smoke-wp.php',
+				'source' => 'tests/smoke-wp.php:' . $magick_ai_core_smoke_run_id,
 			),
 		)
 	);
@@ -728,7 +998,7 @@ $app = magick_ai_core_smoke_rest(
 	'POST',
 	'/magick-ai-core/v1/apps',
 	array(
-		'app_label'           => 'OpenClaw smoke adapter',
+		'app_label'           => 'OpenClaw smoke adapter ' . $magick_ai_core_smoke_run_id,
 		'caller_type'         => 'mcp_adapter',
 		'rate_limit'          => 20,
 		'rate_window_seconds' => 3600,
@@ -754,7 +1024,7 @@ $revoked_app = magick_ai_core_smoke_rest(
 	'POST',
 	'/magick-ai-core/v1/apps',
 	array(
-		'app_label'           => 'OpenClaw revoked smoke',
+		'app_label'           => 'OpenClaw revoked smoke ' . $magick_ai_core_smoke_run_id,
 		'caller_type'         => 'mcp_adapter',
 		'scopes'              => array( 'capabilities:read' ),
 		'rate_limit'          => 20,
@@ -820,7 +1090,7 @@ $planning_label = magick_ai_core_smoke_rest_result(
 	'/magick-ai-core/v1/proposals',
 	array(
 		'ability_id' => 'content/draft-preview',
-		'title'      => 'Planning label should not be accepted',
+		'title'      => 'Planning label should not be accepted ' . $magick_ai_core_smoke_run_id,
 	)
 );
 magick_ai_core_smoke_assert( 404 === (int) $planning_label['status'], 'proposal creation rejects planning labels that are not real ability ids' );
@@ -830,7 +1100,7 @@ $proposal_id = magick_ai_core_smoke_run_governance_proposal(
 	$items_by_id,
 	'Smoke draft proposal',
 	array(
-		'title'   => 'Core Governance Smoke Draft',
+		'title'   => 'Core Governance Smoke Draft ' . $magick_ai_core_smoke_run_id,
 		'content' => '<p>Smoke draft content.</p>',
 		'status'  => 'draft',
 		'dry_run' => true,
@@ -848,14 +1118,14 @@ $seo_proposal_id = magick_ai_core_smoke_run_governance_proposal(
 	'Smoke SEO metadata proposal',
 	array(
 		'post_id'         => 1,
-		'seo_title'       => 'Smoke SEO Title',
+		'seo_title'       => 'Smoke SEO Title ' . $magick_ai_core_smoke_run_id,
 		'seo_description' => 'Smoke SEO description.',
 		'dry_run'         => true,
 		'commit'          => false,
 	),
 	array(
 		'field_patch'      => array(
-			'seo_title'       => 'Smoke SEO Title',
+			'seo_title'       => 'Smoke SEO Title ' . $magick_ai_core_smoke_run_id,
 			'seo_description' => 'Smoke SEO description.',
 		),
 		'dry_run'          => true,
@@ -927,9 +1197,10 @@ magick_ai_core_smoke_assert( '' !== $taxonomy_proposal_id, 'taxonomy terms propo
 $taxonomy_after = magick_ai_core_smoke_post_term_ids( $taxonomy_fixture['post_id'], $taxonomy_fixture['taxonomy'] );
 magick_ai_core_smoke_assert( $taxonomy_before === $taxonomy_after, 'taxonomy terms governance loop does not mutate post terms' );
 
+$plan_content_title   = 'Core Plan Bridge Content Candidate ' . $magick_ai_core_smoke_run_id;
 $plan_content_post_id = wp_insert_post(
 	array(
-		'post_title'   => 'Core Plan Bridge Content Candidate',
+		'post_title'   => $plan_content_title,
 		'post_content' => 'Core plan bridge content candidate with enough words for deterministic SEO and excerpt planning smoke coverage.',
 		'post_excerpt' => '',
 		'post_status'  => 'draft',
@@ -938,6 +1209,7 @@ $plan_content_post_id = wp_insert_post(
 	true
 );
 magick_ai_core_smoke_assert( ! is_wp_error( $plan_content_post_id ) && (int) $plan_content_post_id > 0, 'plan bridge content fixture post is created' );
+magick_ai_core_smoke_register_post_fixture( (int) $plan_content_post_id );
 
 $content_plan_input = array(
 	'post_ids'    => array( (int) $plan_content_post_id ),
@@ -953,7 +1225,7 @@ magick_ai_core_smoke_assert( isset( $content_plan_proposal['preview']['before'] 
 magick_ai_core_smoke_assert( isset( $content_plan_proposal['preview']['after_suggestion'] ), 'content fix plan proposal preview includes after_suggestion' );
 magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $content_plan_proposal['proposal_id'] ?? '' ) );
 
-$cleanup_pattern = 'Core Plan Bridge Test Cleanup Candidate ' . wp_generate_uuid4();
+$cleanup_pattern = 'Core Plan Bridge Test Cleanup Candidate ' . $magick_ai_core_smoke_run_id;
 $cleanup_post_id = wp_insert_post(
 	array(
 		'post_title'   => $cleanup_pattern . ' A',
@@ -964,6 +1236,7 @@ $cleanup_post_id = wp_insert_post(
 	true
 );
 magick_ai_core_smoke_assert( ! is_wp_error( $cleanup_post_id ) && (int) $cleanup_post_id > 0, 'plan bridge cleanup fixture post is created' );
+magick_ai_core_smoke_register_post_fixture( (int) $cleanup_post_id );
 $cleanup_second_post_id = wp_insert_post(
 	array(
 		'post_title'   => $cleanup_pattern . ' B',
@@ -974,6 +1247,7 @@ $cleanup_second_post_id = wp_insert_post(
 	true
 );
 magick_ai_core_smoke_assert( ! is_wp_error( $cleanup_second_post_id ) && (int) $cleanup_second_post_id > 0, 'second plan bridge cleanup fixture post is created' );
+magick_ai_core_smoke_register_post_fixture( (int) $cleanup_second_post_id );
 
 $cleanup_plan_input = array(
 	'patterns'    => array( $cleanup_pattern ),
@@ -1010,7 +1284,7 @@ magick_ai_core_smoke_register_attachment_fixture( (int) $plan_attachment_id );
 $media_plan_input = array(
 	'attachment_ids'  => array( (int) $plan_attachment_id ),
 	'issue_types'     => array( 'missing_alt', 'missing_caption', 'missing_description', 'possibly_unattached' ),
-	'article_title'   => 'Core Plan Bridge Content Candidate',
+	'article_title'   => $plan_content_title,
 	'article_excerpt' => 'Smoke media metadata context.',
 	'focus_keyword'   => 'plan bridge',
 	'max_actions'     => 5,
@@ -1057,7 +1331,7 @@ magick_ai_core_smoke_assert( 'high' === (string) ( $media_delete_proposal['previ
 $requires_input_plan = array(
 	'success' => true,
 	'data'    => array(
-		'batch_id'         => 'core_plan_bridge_requires_input_smoke',
+			'batch_id'         => 'core_plan_bridge_requires_input_smoke_' . $magick_ai_core_smoke_run_id,
 		'issue_types'      => array( 'title' ),
 		'write_actions'    => array(
 			array(
@@ -1113,7 +1387,7 @@ magick_ai_core_smoke_assert( array( 'title' ) === (array) ( $requires_input_pref
 $output_reference_plan = array(
 	'success' => true,
 	'data'    => array(
-		'batch_id'         => 'core_plan_bridge_output_reference_smoke',
+			'batch_id'         => 'core_plan_bridge_output_reference_smoke_' . $magick_ai_core_smoke_run_id,
 		'issue_types'      => array( 'acceptance' ),
 		'write_actions'    => array(
 			array(
@@ -1122,7 +1396,7 @@ $output_reference_plan = array(
 				'input'              => array(
 					'post_type' => 'post',
 					'status'    => 'draft',
-					'title'     => 'Core plan bridge output reference draft',
+						'title'     => 'Core plan bridge output reference draft ' . $magick_ai_core_smoke_run_id,
 					'content'   => '<p>Created for Core plan bridge output reference smoke.</p>',
 					'dry_run'   => true,
 					'commit'    => false,
@@ -1140,7 +1414,7 @@ $output_reference_plan = array(
 				'depends_on'         => array( 'create-draft-fixture' ),
 				'input'              => array(
 					'post_id' => '$outputs.create-draft-fixture.post_id',
-					'title'   => 'Core plan bridge output reference updated draft',
+						'title'   => 'Core plan bridge output reference updated draft ' . $magick_ai_core_smoke_run_id,
 					'dry_run' => true,
 					'commit'  => false,
 				),
@@ -1190,10 +1464,10 @@ magick_ai_core_smoke_assert( 'action_commit_execution_rejected' === (string) ( $
 
 $app_proposal_payload = array(
 	'ability_id' => 'magick-ai/create-draft',
-	'title'      => 'App authenticated proposal',
+	'title'      => 'App authenticated proposal ' . $magick_ai_core_smoke_run_id,
 	'summary'    => 'Created by app key smoke test.',
 	'input'      => array(
-		'title'   => 'App Auth Draft',
+		'title'   => 'App Auth Draft ' . $magick_ai_core_smoke_run_id,
 		'content' => '<p>App auth content.</p>',
 		'dry_run' => true,
 	),
@@ -1201,7 +1475,7 @@ $app_proposal_payload = array(
 		'dry_run' => true,
 	),
 	'caller'     => array(
-		'source' => 'app-auth-smoke',
+		'source' => 'app-auth-smoke:' . $magick_ai_core_smoke_run_id,
 	),
 );
 $app_created = magick_ai_core_smoke_rest_as_app(
@@ -1245,7 +1519,7 @@ $quota_app = magick_ai_core_smoke_rest(
 	'POST',
 	'/magick-ai-core/v1/apps',
 	array(
-		'app_label'           => 'OpenClaw pending quota smoke',
+		'app_label'           => 'OpenClaw pending quota smoke ' . $magick_ai_core_smoke_run_id,
 		'scopes'              => array( 'proposals:create' ),
 		'rate_limit'          => 100,
 		'rate_window_seconds' => 3600,
@@ -1259,10 +1533,10 @@ for ( $quota_index = 1; $quota_index <= 20; ++$quota_index ) {
 		$quota_token,
 		array(
 			'ability_id' => 'magick-ai/create-draft',
-			'title'      => 'Pending quota proposal ' . $quota_index,
+			'title'      => 'Pending quota proposal ' . $magick_ai_core_smoke_run_id . ' ' . $quota_index,
 			'summary'    => 'Created to verify pending proposal quota.',
 			'input'      => array(
-				'title'   => 'Pending quota draft ' . $quota_index,
+				'title'   => 'Pending quota draft ' . $magick_ai_core_smoke_run_id . ' ' . $quota_index,
 				'content' => '<p>Pending quota smoke.</p>',
 				'dry_run' => true,
 			),
@@ -1270,7 +1544,7 @@ for ( $quota_index = 1; $quota_index <= 20; ++$quota_index ) {
 				'dry_run' => true,
 			),
 			'caller'     => array(
-				'source' => 'pending-quota-smoke',
+				'source' => 'pending-quota-smoke:' . $magick_ai_core_smoke_run_id,
 			),
 		)
 	);
@@ -1281,10 +1555,10 @@ $quota_blocked = magick_ai_core_smoke_rest_result_as_app(
 	$quota_token,
 	array(
 		'ability_id' => 'magick-ai/create-draft',
-		'title'      => 'Pending quota proposal blocked',
+		'title'      => 'Pending quota proposal blocked ' . $magick_ai_core_smoke_run_id,
 		'summary'    => 'This should be blocked by pending proposal quota.',
 		'input'      => array(
-			'title'   => 'Pending quota blocked draft',
+			'title'   => 'Pending quota blocked draft ' . $magick_ai_core_smoke_run_id,
 			'content' => '<p>Pending quota smoke.</p>',
 			'dry_run' => true,
 		),
@@ -1292,7 +1566,7 @@ $quota_blocked = magick_ai_core_smoke_rest_result_as_app(
 			'dry_run' => true,
 		),
 		'caller'     => array(
-			'source' => 'pending-quota-smoke',
+			'source' => 'pending-quota-smoke:' . $magick_ai_core_smoke_run_id,
 		),
 	)
 );
@@ -1307,7 +1581,7 @@ $trusted_adapter_app = magick_ai_core_smoke_rest(
 	'POST',
 	'/magick-ai-core/v1/apps',
 	array(
-		'app_label'           => 'Trusted Adapter approve smoke',
+		'app_label'           => 'Trusted Adapter approve smoke ' . $magick_ai_core_smoke_run_id,
 		'caller_type'         => 'trusted_adapter',
 		'scopes'              => array( 'capabilities:read', 'proposals:create', 'proposals:read', 'proposals:approve', 'commit:preflight' ),
 		'rate_limit'          => 20,
@@ -1324,10 +1598,10 @@ $trusted_created = magick_ai_core_smoke_rest_as_app(
 	$trusted_adapter_token,
 	array(
 		'ability_id' => 'magick-ai/create-draft',
-		'title'      => 'Trusted Adapter approval proposal',
+		'title'      => 'Trusted Adapter approval proposal ' . $magick_ai_core_smoke_run_id,
 		'summary'    => 'Created by trusted Adapter approval smoke test.',
 		'input'      => array(
-			'title'   => 'Trusted Adapter Draft',
+			'title'   => 'Trusted Adapter Draft ' . $magick_ai_core_smoke_run_id,
 			'content' => '<p>Trusted Adapter content.</p>',
 			'dry_run' => true,
 			'commit'  => false,
@@ -1337,7 +1611,7 @@ $trusted_created = magick_ai_core_smoke_rest_as_app(
 			'commit_execution' => false,
 		),
 		'caller'     => array(
-			'source' => 'trusted-adapter-smoke',
+			'source' => 'trusted-adapter-smoke:' . $magick_ai_core_smoke_run_id,
 		),
 	)
 );
@@ -1367,7 +1641,7 @@ $rate_app = magick_ai_core_smoke_rest(
 	'POST',
 	'/magick-ai-core/v1/apps',
 	array(
-		'app_label'           => 'OpenClaw rate smoke',
+		'app_label'           => 'OpenClaw rate smoke ' . $magick_ai_core_smoke_run_id,
 		'caller_type'         => 'mcp_adapter',
 		'scopes'              => array( 'capabilities:read' ),
 		'rate_limit'          => 1,
@@ -1387,7 +1661,7 @@ $stale = magick_ai_core_smoke_rest(
 	'/magick-ai-core/v1/proposals',
 	array(
 		'ability_id' => 'magick-ai/create-draft',
-		'title'      => 'Smoke stale proposal',
+		'title'      => 'Smoke stale proposal ' . $magick_ai_core_smoke_run_id,
 		'summary'    => 'Created to verify automatic expiration.',
 	)
 );
@@ -1435,7 +1709,7 @@ $second = magick_ai_core_smoke_rest(
 	'/magick-ai-core/v1/proposals',
 	array(
 		'ability_id' => 'magick-ai/create-draft',
-		'title'      => 'Smoke rejection proposal',
+		'title'      => 'Smoke rejection proposal ' . $magick_ai_core_smoke_run_id,
 		'summary'    => 'Created by real WordPress smoke test.',
 	)
 );
@@ -1666,6 +1940,18 @@ foreach ( $preflight_audit_items as $item ) {
 }
 
 magick_ai_core_smoke_cleanup_fixtures();
+magick_ai_core_smoke_assert( null === get_comment( (int) $pending_comment['comment_id'] ), 'pending comment fixture is deleted after smoke' );
+magick_ai_core_smoke_assert( false === get_post_type( (int) $pending_comment['post_id'] ), 'comment parent post fixture is deleted after smoke' );
+magick_ai_core_smoke_assert( false === get_post_type( (int) $taxonomy_fixture['post_id'] ), 'taxonomy post fixture is deleted after smoke' );
+magick_ai_core_smoke_assert( 0 === (int) term_exists( (int) $taxonomy_fixture['current_term_id'], (string) $taxonomy_fixture['taxonomy'] ), 'taxonomy current term fixture is deleted after smoke' );
+magick_ai_core_smoke_assert( 0 === (int) term_exists( (int) $taxonomy_fixture['candidate_term_id'], (string) $taxonomy_fixture['taxonomy'] ), 'taxonomy candidate term fixture is deleted after smoke' );
+magick_ai_core_smoke_assert( false === get_post_type( (int) $plan_content_post_id ), 'plan bridge content post fixture is deleted after smoke' );
+magick_ai_core_smoke_assert( false === get_post_type( (int) $cleanup_post_id ), 'plan bridge cleanup post fixture is deleted after smoke' );
+magick_ai_core_smoke_assert( false === get_post_type( (int) $cleanup_second_post_id ), 'second plan bridge cleanup post fixture is deleted after smoke' );
 magick_ai_core_smoke_assert( false === get_post_type( (int) $plan_attachment_id ), 'plan bridge media fixture attachment is deleted after smoke' );
+if ( ! magick_ai_core_smoke_should_purge_governance_records() ) {
+	$main_app_key_after = ( new \MagickAI\Core\Security\App_Key_Repository() )->find_by_key_id( $key_id );
+	magick_ai_core_smoke_assert( is_array( $main_app_key_after ) && 'revoked' === (string) ( $main_app_key_after['status'] ?? '' ), 'smoke app key fixture is revoked after smoke' );
+}
 
 echo "magick-ai-core WordPress smoke: ok\n";
