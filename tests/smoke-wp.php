@@ -12,6 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 1 );
 }
 
+$magick_ai_core_smoke_run_id                 = wp_generate_uuid4();
+$magick_ai_core_smoke_attachment_fixture_ids = array();
+$magick_ai_core_smoke_cleanup_completed      = false;
+
 /**
  * Smoke assertion helper.
  *
@@ -27,6 +31,51 @@ function magick_ai_core_smoke_assert( bool $condition, string $message ): void {
 
 	echo '[ok] ' . $message . "\n";
 }
+
+/**
+ * Registers a media fixture for cleanup even when the smoke test fails.
+ *
+ * @param int $attachment_id Attachment post id.
+ * @return void
+ */
+function magick_ai_core_smoke_register_attachment_fixture( int $attachment_id ): void {
+	global $magick_ai_core_smoke_attachment_fixture_ids;
+
+	if ( $attachment_id <= 0 ) {
+		return;
+	}
+
+	$magick_ai_core_smoke_attachment_fixture_ids[ $attachment_id ] = true;
+}
+
+/**
+ * Deletes registered media fixtures.
+ *
+ * @return void
+ */
+function magick_ai_core_smoke_cleanup_fixtures(): void {
+	global $magick_ai_core_smoke_attachment_fixture_ids, $magick_ai_core_smoke_cleanup_completed;
+
+	if ( $magick_ai_core_smoke_cleanup_completed ) {
+		return;
+	}
+
+	$magick_ai_core_smoke_cleanup_completed = true;
+
+	foreach ( array_keys( $magick_ai_core_smoke_attachment_fixture_ids ) as $attachment_id ) {
+		$attachment_id = (int) $attachment_id;
+		if ( $attachment_id <= 0 || 'attachment' !== get_post_type( $attachment_id ) ) {
+			continue;
+		}
+
+		$deleted = wp_delete_attachment( $attachment_id, true );
+		if ( false === $deleted ) {
+			fwrite( STDERR, '[warn] failed to delete smoke attachment fixture ' . $attachment_id . "\n" );
+		}
+	}
+}
+
+register_shutdown_function( 'magick_ai_core_smoke_cleanup_fixtures' );
 
 /**
  * Dispatches a REST request as admin.
@@ -943,11 +992,12 @@ magick_ai_core_smoke_assert( 2 === count( $cleanup_plan_actions ), 'test content
 magick_ai_core_smoke_assert( 'magick-ai/trash-post' === (string) ( $cleanup_plan_actions[0]['target_ability_id'] ?? '' ), 'test content cleanup batch stores trash-post action targets' );
 magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $cleanup_plan_proposal['proposal_id'] ?? '' ) );
 
-$plan_attachment_id = wp_insert_post(
+$plan_attachment_title = 'Core Plan Bridge Media Candidate ' . $magick_ai_core_smoke_run_id;
+$plan_attachment_id    = wp_insert_post(
 	array(
 		'post_type'      => 'attachment',
 		'post_status'    => 'inherit',
-		'post_title'     => 'Core Plan Bridge Media Candidate',
+		'post_title'     => $plan_attachment_title,
 		'post_mime_type' => 'image/jpeg',
 		'post_excerpt'   => '',
 		'post_content'   => '',
@@ -955,6 +1005,7 @@ $plan_attachment_id = wp_insert_post(
 	true
 );
 magick_ai_core_smoke_assert( ! is_wp_error( $plan_attachment_id ) && (int) $plan_attachment_id > 0, 'plan bridge media fixture attachment is created' );
+magick_ai_core_smoke_register_attachment_fixture( (int) $plan_attachment_id );
 
 $media_plan_input = array(
 	'attachment_ids'  => array( (int) $plan_attachment_id ),
@@ -1613,5 +1664,8 @@ magick_ai_core_smoke_assert( count( $preflight_audit_items ) >= 1, 'audit endpoi
 foreach ( $preflight_audit_items as $item ) {
 	magick_ai_core_smoke_assert( 'commit.preflighted' === (string) ( is_array( $item ) ? ( $item['event_name'] ?? '' ) : '' ), 'event audit filter returns only matching event names' );
 }
+
+magick_ai_core_smoke_cleanup_fixtures();
+magick_ai_core_smoke_assert( false === get_post_type( (int) $plan_attachment_id ), 'plan bridge media fixture attachment is deleted after smoke' );
 
 echo "magick-ai-core WordPress smoke: ok\n";

@@ -943,6 +943,9 @@ foreach (
 
 $smoke_wp = magick_ai_core_read( $root . '/tests/smoke-wp.php' );
 magick_ai_core_assert( false !== strpos( $smoke_wp, 'include_unattached_test_media' ), 'Smoke test media delete fixture opts into abilities-side test media delete policy.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'magick_ai_core_smoke_register_attachment_fixture' ), 'Smoke test registers media attachment fixtures for cleanup.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'register_shutdown_function' ), 'Smoke test runs fixture cleanup on shutdown.' );
+magick_ai_core_assert( false !== strpos( $smoke_wp, 'wp_delete_attachment' ), 'Smoke test permanently deletes media attachment fixtures.' );
 
 $plan_to_proposal_docs = magick_ai_core_read( $root . '/docs/plan-to-proposal-governance.md' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_unattached_test_media' ), 'Plan-to-proposal docs mention abilities-side unattached test media delete gate.' );
