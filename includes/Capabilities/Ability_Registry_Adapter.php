@@ -202,6 +202,7 @@ final class Ability_Registry_Adapter {
 				? (array) $definition['required_scopes']
 				: ( '' !== $required_scope ? array( $required_scope ) : array() )
 		);
+		$read_policy       = $this->read_governance_policy( $ability_id, sanitize_key( $risk_level ), $guidance, $definition, $meta, $annotations );
 
 		return array(
 			'ability_id'        => $ability_id,
@@ -216,6 +217,10 @@ final class Ability_Registry_Adapter {
 			'execution_surface' => $guidance['execution_surface'],
 			'core_proxy_execute' => false,
 			'commit_execution'  => false,
+			'read_policy'       => $read_policy['read_policy'],
+			'sensitivity'       => $read_policy['sensitivity'],
+			'redaction_required' => $read_policy['redaction_required'],
+			'read_audit_mode'   => $read_policy['read_audit_mode'],
 			'input_schema'      => is_array( $definition['input_schema'] ?? null ) ? $definition['input_schema'] : array( 'type' => 'object' ),
 			'output_schema'     => is_array( $definition['output_schema'] ?? null ) ? $definition['output_schema'] : array( 'type' => 'object' ),
 			'source'            => $this->first_string( array( $definition['source'] ?? null ), $source ),
@@ -242,6 +247,82 @@ final class Ability_Registry_Adapter {
 			'governance_mode'   => 'proposal_required',
 			'execution_surface' => 'adapter_after_core_preflight',
 		);
+	}
+
+	/**
+	 * Returns read-side governance metadata for adapter routing.
+	 *
+	 * @param string              $ability_id Ability id.
+	 * @param string              $risk_level Risk level.
+	 * @param array<string,mixed> $guidance Execution guidance.
+	 * @param array<string,mixed> $definition Raw definition.
+	 * @param array<string,mixed> $meta Meta fields.
+	 * @param array<string,mixed> $annotations Annotation fields.
+	 * @return array{read_policy:string,sensitivity:string,redaction_required:bool,read_audit_mode:string}
+	 */
+	private function read_governance_policy( string $ability_id, string $risk_level, array $guidance, array $definition, array $meta, array $annotations ): array {
+		if ( 'direct_read' !== (string) ( $guidance['governance_mode'] ?? '' ) || 'read' !== $risk_level ) {
+			return array(
+				'read_policy'        => 'not_direct_read',
+				'sensitivity'        => 'internal',
+				'redaction_required' => false,
+				'read_audit_mode'    => 'none',
+			);
+		}
+
+		$sensitivity = sanitize_key(
+			$this->first_string(
+				array(
+					$definition['sensitivity'] ?? null,
+					$meta['sensitivity'] ?? null,
+					$annotations['sensitivity'] ?? null,
+				),
+				$this->infer_read_sensitivity( $ability_id )
+			)
+		);
+		if ( ! in_array( $sensitivity, array( 'public', 'internal', 'sensitive' ), true ) ) {
+			$sensitivity = 'internal';
+		}
+
+		$redaction_required = $this->first_bool(
+			array(
+				$definition['redaction_required'] ?? null,
+				$meta['redaction_required'] ?? null,
+				$annotations['redaction_required'] ?? null,
+			),
+			'sensitive' === $sensitivity
+		);
+
+		return array(
+			'read_policy'        => 'direct_read_' . $sensitivity,
+			'sensitivity'        => $sensitivity,
+			'redaction_required' => $redaction_required,
+			'read_audit_mode'    => 'adapter_read_envelope',
+		);
+	}
+
+	/**
+	 * Infers read sensitivity when the provider has not declared one.
+	 *
+	 * @param string $ability_id Ability id.
+	 * @return string
+	 */
+	private function infer_read_sensitivity( string $ability_id ): string {
+		$ability_id = strtolower( $ability_id );
+
+		foreach ( array( 'diagnostic', 'permissions', 'database', 'error-log', 'plugin-conflict', 'ops' ) as $needle ) {
+			if ( false !== strpos( $ability_id, $needle ) ) {
+				return 'sensitive';
+			}
+		}
+
+		foreach ( array( 'inventory', 'plan', 'media', 'pages', 'posts', 'users', 'menu', 'term', 'workflow' ) as $needle ) {
+			if ( false !== strpos( $ability_id, $needle ) ) {
+				return 'internal';
+			}
+		}
+
+		return 'public';
 	}
 
 	/**

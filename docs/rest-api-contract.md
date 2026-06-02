@@ -122,6 +122,10 @@ Response `200`:
       "execution_surface": "wp_abilities_rest",
       "core_proxy_execute": false,
       "commit_execution": false,
+      "read_policy": "direct_read_public",
+      "sensitivity": "public",
+      "redaction_required": false,
+      "read_audit_mode": "adapter_read_envelope",
       "input_schema": { "type": "object" },
       "output_schema": { "type": "object" },
       "source": "magick_ai_abilities",
@@ -152,6 +156,14 @@ Capability execution guidance:
   Abilities API, not Core.
 - `execution_surface=adapter_after_core_preflight` means execution belongs to
   the adapter or host only after Core approval and commit preflight.
+- `read_policy` is `direct_read_public`, `direct_read_internal`,
+  `direct_read_sensitive`, or `not_direct_read`.
+- `sensitivity` is `public`, `internal`, or `sensitive`.
+- `redaction_required=true` means the adapter must run the read result through
+  its read redaction policy before returning it to OpenClaw or logging it.
+- `read_audit_mode=adapter_read_envelope` means read execution is not a Core
+  proposal event; the adapter must return/log a read envelope with correlation
+  context.
 - `core_proxy_execute=false` is fixed in the current contract. Core does not
   provide `/execute` or `/proxy-execute`.
 - `commit_execution=false` remains fixed until a separate final commit

@@ -597,6 +597,7 @@ function magick_ai_core_smoke_assert_plan_bridge_contract( array $items_by_id ):
 		magick_ai_core_smoke_assert( 'read' === (string) ( $items_by_id[ $ability_id ]['risk_level'] ?? '' ), $ability_id . ' is a read-risk planning ability' );
 		magick_ai_core_smoke_assert( false === (bool) ( $items_by_id[ $ability_id ]['requires_approval'] ?? true ), $ability_id . ' does not require approval before read execution' );
 		magick_ai_core_smoke_assert_capability_guidance( $items_by_id[ $ability_id ], 'direct_read', 'wp_abilities_rest', $ability_id . ' uses direct read guidance' );
+		magick_ai_core_smoke_assert_read_policy( $items_by_id[ $ability_id ], 'direct_read_internal', 'internal', false, $ability_id . ' uses internal read policy' );
 	}
 }
 
@@ -614,6 +615,23 @@ function magick_ai_core_smoke_assert_capability_guidance( array $ability, string
 	magick_ai_core_smoke_assert( $execution_surface === (string) ( $ability['execution_surface'] ?? '' ), $message . ' execution_surface' );
 	magick_ai_core_smoke_assert( false === (bool) ( $ability['core_proxy_execute'] ?? true ), $message . ' keeps Core proxy execution disabled' );
 	magick_ai_core_smoke_assert( false === (bool) ( $ability['commit_execution'] ?? true ), $message . ' keeps Core commit execution disabled' );
+}
+
+/**
+ * Verifies read governance metadata on a capability row.
+ *
+ * @param array<string,mixed> $ability Capability row.
+ * @param string              $read_policy Expected read policy.
+ * @param string              $sensitivity Expected sensitivity.
+ * @param bool                $redaction_required Expected redaction requirement.
+ * @param string              $message Assertion message.
+ * @return void
+ */
+function magick_ai_core_smoke_assert_read_policy( array $ability, string $read_policy, string $sensitivity, bool $redaction_required, string $message ): void {
+	magick_ai_core_smoke_assert( $read_policy === (string) ( $ability['read_policy'] ?? '' ), $message . ' read_policy' );
+	magick_ai_core_smoke_assert( $sensitivity === (string) ( $ability['sensitivity'] ?? '' ), $message . ' sensitivity' );
+	magick_ai_core_smoke_assert( array_key_exists( 'redaction_required', $ability ) && $redaction_required === (bool) $ability['redaction_required'], $message . ' redaction_required' );
+	magick_ai_core_smoke_assert( 'adapter_read_envelope' === (string) ( $ability['read_audit_mode'] ?? '' ), $message . ' read_audit_mode' );
 }
 
 /**
@@ -1071,12 +1089,18 @@ magick_ai_core_smoke_assert( 401 === (int) $revoked_result['status'], 'revoked a
 $items_by_id                     = array();
 $all_have_governance_mode        = true;
 $all_have_execution_surface      = true;
+$all_have_read_policy            = true;
+$all_have_sensitivity            = true;
+$all_have_redaction_requirement  = true;
 $all_disable_core_proxy_execute  = true;
 $all_disable_core_commit_execute = true;
 foreach ( $items as $item ) {
 	if ( is_array( $item ) && '' !== (string) ( $item['ability_id'] ?? '' ) ) {
 		$all_have_governance_mode        = $all_have_governance_mode && array_key_exists( 'governance_mode', $item );
 		$all_have_execution_surface      = $all_have_execution_surface && array_key_exists( 'execution_surface', $item );
+		$all_have_read_policy            = $all_have_read_policy && array_key_exists( 'read_policy', $item );
+		$all_have_sensitivity            = $all_have_sensitivity && array_key_exists( 'sensitivity', $item );
+		$all_have_redaction_requirement  = $all_have_redaction_requirement && array_key_exists( 'redaction_required', $item );
 		$all_disable_core_proxy_execute  = $all_disable_core_proxy_execute && false === (bool) ( $item['core_proxy_execute'] ?? true );
 		$all_disable_core_commit_execute = $all_disable_core_commit_execute && false === (bool) ( $item['commit_execution'] ?? true );
 		$items_by_id[ (string) $item['ability_id'] ] = $item;
@@ -1084,11 +1108,18 @@ foreach ( $items as $item ) {
 }
 magick_ai_core_smoke_assert( $all_have_governance_mode, 'all capability rows expose governance mode guidance' );
 magick_ai_core_smoke_assert( $all_have_execution_surface, 'all capability rows expose execution surface guidance' );
+magick_ai_core_smoke_assert( $all_have_read_policy, 'all capability rows expose read policy guidance' );
+magick_ai_core_smoke_assert( $all_have_sensitivity, 'all capability rows expose read sensitivity guidance' );
+magick_ai_core_smoke_assert( $all_have_redaction_requirement, 'all capability rows expose read redaction requirement' );
 magick_ai_core_smoke_assert( $all_disable_core_proxy_execute, 'all capability rows keep Core proxy execution disabled' );
 magick_ai_core_smoke_assert( $all_disable_core_commit_execute, 'all capability rows keep Core commit execution disabled' );
 
 magick_ai_core_smoke_assert( isset( $items_by_id['magick-ai/site-info'] ), 'site-info read ability is discoverable for direct read guidance' );
 magick_ai_core_smoke_assert_capability_guidance( $items_by_id['magick-ai/site-info'], 'direct_read', 'wp_abilities_rest', 'site-info uses direct read execution guidance' );
+magick_ai_core_smoke_assert_read_policy( $items_by_id['magick-ai/site-info'], 'direct_read_public', 'public', false, 'site-info uses public read policy' );
+if ( isset( $items_by_id['magick-ai-abilities/wp-diagnostics-summary'] ) ) {
+	magick_ai_core_smoke_assert_read_policy( $items_by_id['magick-ai-abilities/wp-diagnostics-summary'], 'direct_read_sensitive', 'sensitive', true, 'diagnostics uses sensitive read policy' );
+}
 
 magick_ai_core_smoke_assert_create_draft_contract( $items_by_id );
 magick_ai_core_smoke_assert_seo_meta_contract( $items_by_id );

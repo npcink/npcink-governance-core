@@ -104,6 +104,10 @@ guidance on each capability row:
 | --- | --- | --- |
 | `governance_mode` | `direct_read`, `proposal_required` | Whether the adapter may call a read ability directly or must start a Core proposal. |
 | `execution_surface` | `wp_abilities_rest`, `adapter_after_core_preflight` | Where the adapter should route execution after reading Core guidance. |
+| `read_policy` | `direct_read_public`, `direct_read_internal`, `direct_read_sensitive`, `not_direct_read` | Read-side policy class for adapter envelopes and redaction. |
+| `sensitivity` | `public`, `internal`, `sensitive` | Consumer-facing sensitivity level for direct-read results. |
+| `redaction_required` | `true`, `false` | Whether Adapter must run read-result redaction before returning the result. |
+| `read_audit_mode` | `adapter_read_envelope`, `none` | Where read execution evidence is recorded. |
 | `core_proxy_execute` | `false` | Core does not proxy ability execution. |
 | `commit_execution` | `false` | Core does not execute final WordPress mutation from capability discovery or commit preflight. |
 
@@ -119,6 +123,9 @@ For rows with:
 {
   "governance_mode": "direct_read",
   "execution_surface": "wp_abilities_rest",
+  "read_policy": "direct_read_public",
+  "sensitivity": "public",
+  "redaction_required": false,
   "core_proxy_execute": false
 }
 ```
@@ -126,6 +133,8 @@ For rows with:
 The adapter may call the canonical WordPress Abilities API execution surface,
 subject to the ability permission callback and site authentication policy. Core
 is not required unless the host wants governance discovery or audit context.
+For `direct_read_sensitive` rows, the adapter must return a read envelope and
+apply its redaction policy before exposing the result to OpenClaw.
 
 Examples include site context, diagnostics, and workflow recipe read helpers.
 
