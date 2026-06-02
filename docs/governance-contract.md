@@ -129,6 +129,9 @@ proposal with `policy_profile=manual` and
 does not expose a rules DSL, and does not add workflow runtime, long-running
 policy jobs, or a configuration UI.
 
+Implementation rules and the staged auto-approval roadmap are documented in
+[Approval Policy Evaluator Standard](approval-policy-evaluator-standard.md).
+
 Reserved policy decision values are:
 
 - `manual_required`

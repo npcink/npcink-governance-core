@@ -67,6 +67,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Approval Commit Contract](docs/approval-commit-contract.md)
 - [Agent MCP Entry Contract](docs/agent-mcp-entry-contract.md)
 - [App Auth Scope Policy](docs/app-auth-scope-policy.md)
+- [Approval Policy Evaluator Standard](docs/approval-policy-evaluator-standard.md)
 - [Core Governance Operability](docs/core-governance-operability.md)
 - [AI Provider Log Correlation](docs/ai-provider-log-correlation.md)
 - [Core Governance Handoff Validation](docs/core-governance-handoff-validation.md)
@@ -124,6 +125,13 @@ attribution, and commit-preflight correlation ids. See
 [Core Governance Operability](docs/core-governance-operability.md). This makes
 the Core loop easier to review and debug without adding ability execution or a
 workflow runtime.
+
+The approval policy evaluator is currently observation-only. It records
+`manual_required` and `proposal.policy_evaluated` for every created proposal,
+but does not auto-approve. Future conservative auto approval must follow
+[Approval Policy Evaluator Standard](docs/approval-policy-evaluator-standard.md):
+explicit enablement, trusted caller/app authorization, narrow scenario checks,
+quotas, audit, and mandatory commit preflight.
 
 Real AI provider request logs remain owned by the WordPress `ai` plugin.
 Magick AI Adapter should carry Core `proposal_id` and commit-preflight

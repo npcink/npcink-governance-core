@@ -74,6 +74,7 @@ foreach (
 		'WordPress AI operation governance layer',
 		'It does not generate content',
 		'Current Stage Governance Reliability',
+		'Approval Policy Evaluator Standard',
 		'GET /wp-json/magick-ai-core/v1/capabilities',
 		'POST /wp-json/magick-ai-core/v1/apps',
 		'POST /wp-json/magick-ai-core/v1/proposals',
@@ -158,6 +159,37 @@ magick_ai_core_assert( false !== strpos( $governance, 'proposal.listed' ), 'Gove
 magick_ai_core_assert( false !== strpos( $governance, 'commit.preflighted' ), 'Governance contract records commit.preflighted event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'currently discoverable ability id' ), 'Governance contract requires real discoverable proposal ability ids.' );
 magick_ai_core_assert( false !== strpos( $governance, 'must not reintroduce' ), 'Governance contract rejects legacy confirmation parameters.' );
+
+$approval_policy_standard = magick_ai_core_read( $root . '/docs/approval-policy-evaluator-standard.md' );
+foreach (
+	array(
+		'Status: active planning standard',
+		'observation-only',
+		'manual_required',
+		'auto_approved',
+		'blocked',
+		'guarded',
+		'trusted_local',
+		'break_glass',
+		'caller.core_policy',
+		'proposal.policy_evaluated',
+		'proposal.auto_approved',
+		'build-test-content-cleanup-plan',
+		'plan_to_proposal_batch',
+		'magick-ai/trash-post',
+		'trusted test-content',
+		'include_unattached_test_media',
+		'magick-ai/delete-media-permanently',
+		'magick-ai/set-post-terms',
+		'per-window auto-approval quotas',
+		'Do not implement real auto approval until all of these are true',
+		'Adapter still executes only after approved status and successful preflight',
+		'does not add a rules DSL',
+		'composer smoke:wp',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $approval_policy_standard, $required ), 'Approval policy standard contains required text: ' . $required );
+}
 
 $rest_contract = magick_ai_core_read( $root . '/docs/rest-api-contract.md' );
 foreach (

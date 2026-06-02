@@ -1,5 +1,24 @@
 # Session Breadcrumb
 
+## 2026-06-02 — Approval policy standard and roadmap documented
+
+- **Module**: Core approval policy documentation.
+- **Status**: The observation-only evaluator, future guarded candidate path,
+  and auto-approval stop conditions are now captured in a dedicated standard
+  for future AI development sessions.
+- **Completed**:
+  - Added `docs/approval-policy-evaluator-standard.md` with evaluator
+    boundaries, decision shape, storage/audit expectations, spam guardrails,
+    candidate scenarios, non-candidates, implementation phases, and test gates.
+  - Linked the standard from README, governance contract, security model, and
+    next-stage plan.
+  - Added static contracts so future edits keep the policy boundary and staged
+    roadmap visible.
+- **Next Steps**:
+  - If policy work continues, implement only Phase 1 dry-run `guarded`
+    candidate evaluation for trusted test cleanup trash batches while keeping
+    proposal status `pending`.
+
 ## 2026-06-02 — Media delete smoke aligned with abilities policy
 
 - **Module**: Core plan-to-proposal smoke coverage and contracts.

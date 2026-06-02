@@ -93,6 +93,10 @@ proposal and writes `proposal.policy_evaluated`. It deliberately does not auto
 approve, does not accept caller-supplied policy rules, and does not add a rules
 DSL, workflow runtime, scheduler, or configuration center. If policy decision
 audit cannot be written, Core fails closed and deletes the created proposal row.
+Future policy changes must follow
+[Approval Policy Evaluator Standard](approval-policy-evaluator-standard.md),
+including explicit enablement, trusted caller/app authorization, quotas, audit,
+and mandatory commit preflight.
 
 Commit preflight returns Core-generated approval-commit context without running
 the target ability. Final write or destructive execution must require that
