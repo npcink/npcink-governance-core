@@ -35,10 +35,17 @@ Preflight must:
 
 - fail unless the proposal exists and is approved;
 - fail when the target ability is no longer discoverable;
+- fail when the target ability's governance-relevant contract has changed since
+  proposal creation;
+- fail when the current WordPress user no longer has the target ability's
+  declared WordPress capability;
 - fail when the proposal preview marks the item as not ready, lists
   `needs_input`, or carries `preflight_blockers`;
+- fail when a successful execution handoff has already been issued for the same
+  approved proposal input;
 - fail when the request includes legacy confirmation parameters;
 - return Core-generated approval context;
+- return `contract_preflight` and `permission_preflight` on success;
 - return `proposal_item_preflight` describing executable, blocked, warning, and
   needs-input state;
 - return `execution_handoff` so Adapter can route final execution without
@@ -48,7 +55,8 @@ Preflight must:
 - bind approval context to the real `ability_id`, approved input hash, approved
   preview hash, approval update timestamp, and policy version;
 - return `commit_execution=false`;
-- record `commit.preflighted` on success.
+- record `commit.preflighted` on success;
+- record `commit.preflight_failed` for proposal-bound preflight failures.
 
 ## Approved Context
 
@@ -90,9 +98,10 @@ array(
 )
 ```
 
-The handoff object is not a second approval and not an execution token. It
-exists so Adapter can implement a single user-facing approve-and-execute action
-while Core remains the approval, preflight, and audit authority.
+The handoff object is not a second approval and not an execution token. Core
+issues one handoff per approved proposal input. Adapter must treat duplicate
+preflight rejection as a signal to use the original audited handoff or create a
+new proposal after fresh review.
 
 Generic MCP keys should not receive `proposals:approve`. Productized Magick AI
 Adapter may use a separately issued trusted key with `proposals:approve` when
@@ -108,7 +117,9 @@ Commit must fail when:
 
 - the proposal is missing or not approved;
 - the ability is not known;
+- the ability contract changed after proposal creation;
 - required permission is missing;
+- a preflight handoff was already issued for the approved input;
 - approval context is absent, stale, or mismatched;
 - the provider tries to bypass dry-run/proposal semantics;
 - a plan-generated proposal still has unresolved `needs_input` or

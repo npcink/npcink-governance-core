@@ -120,7 +120,11 @@ host approval context created by Core.
 
 Proposal creation validates that the target ability is currently discoverable.
 Commit preflight repeats discovery against the stored real `ability_id` and
-fails closed if that ability disappeared after approval.
+fails closed if that ability disappeared after approval. Proposal creation also
+stores a governance-relevant ability contract fingerprint covering risk,
+approval requirement, execution guidance, WordPress capability, required scopes,
+and input schema. Commit preflight fails closed if the live fingerprint no
+longer matches the approved proposal.
 
 Core evaluates a lightweight approval policy decision during proposal creation.
 The default `manual` mode records `manual_required` for every proposal with
@@ -173,6 +177,7 @@ MVP event names:
 - `capabilities.listed`
 - `audit.listed`
 - `commit.preflighted`
+- `commit.preflight_failed`
 - `app.created`
 - `app.revoked`
 - `app.rate_limited`
@@ -207,7 +212,9 @@ Audit list filters include:
 
 Successful commit preflight returns a `correlation_id` in the response,
 includes it in `approval_context.correlation_id`, and records the same value in
-the `commit.preflighted` audit event metadata.
+the `commit.preflighted` audit event metadata. Proposal-bound preflight failures
+record `commit.preflight_failed` with the stable error code, target ability id,
+proposal status, and `commit_execution=false`.
 
 App-authenticated audit metadata includes `scope_decision`, currently
 `allowed`, `denied`, or `rate_limited`.

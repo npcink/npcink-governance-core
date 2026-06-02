@@ -106,7 +106,11 @@ Auto approval allowlist: trusted test cleanup trash-post batches.
 Commit preflight returns Core-generated approval-commit context without running
 the target ability. Final write or destructive execution must require that
 context and must fail closed if the proposal is missing, not approved, stale,
-unauthorized, or not auditable.
+unauthorized, or not auditable. Preflight also compares the live ability
+contract to the contract fingerprint captured at proposal creation, checks the
+declared WordPress capability for user-authenticated requests, audits
+proposal-bound failures as `commit.preflight_failed`, and issues only one
+successful execution handoff per approved proposal input.
 
 Plan-to-proposal intake must keep plan and action execution disabled. Core
 requires `dry_run=true`, rejects `commit=true` or `commit_execution=true`, and
@@ -197,7 +201,10 @@ into `caller.auth`.
 Commit preflight returns and audits a `correlation_id` so an adapter can connect
 the approval context it received to the `commit.preflighted` audit event. The
 correlation id is not an execution token and does not authorize final WordPress
-mutation by itself.
+mutation by itself. If an adapter needs to retry after Core already issued a
+handoff, it must use its own idempotent execution record or create a new
+proposal after fresh review; Core will reject duplicate handoff issuance for the
+same approved proposal input.
 
 ## Local Development Credentials
 

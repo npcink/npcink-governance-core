@@ -565,6 +565,16 @@ Response `200`:
 {
   "proposal": {},
   "capability": {},
+  "contract_preflight": {
+    "contract_matches": true,
+    "approved_contract_hash": "sha256...",
+    "current_contract_hash": "sha256..."
+  },
+  "permission_preflight": {
+    "allowed": true,
+    "capability": "delete_posts",
+    "source": "current_user_can"
+  },
   "proposal_item_preflight": {
     "executable": true,
     "proposal_ready": true,
@@ -610,12 +620,16 @@ Errors:
 | `magick_ai_core_proposal_not_approved` | `409` | Proposal is not approved. |
 | `magick_ai_core_proposal_items_blocked` | `409` | Proposal preview has `proposal_ready=false`, `needs_input`, or `preflight_blockers`. |
 | `magick_ai_core_ability_unavailable` | `409` | Target ability is no longer discoverable. |
+| `magick_ai_core_ability_contract_changed` | `409` | Target ability risk, approval, schema, scope, execution guidance, or WordPress capability changed after proposal creation. |
+| `magick_ai_core_commit_preflight_already_issued` | `409` | Core already issued one execution handoff for this approved proposal input. |
 | `magick_ai_core_preflight_forbidden` | `403` | Current user lacks permission. |
+| `magick_ai_core_ability_permission_denied` | `403` | Current WordPress user lacks the target ability's declared WordPress capability. |
 | `magick_ai_core_preflight_audit_failed` | `500` | Preflight could not be audited. |
 
 Audit event:
 
 - `commit.preflighted`
+- `commit.preflight_failed` for proposal-bound preflight failures
 
 App audit attribution:
 
@@ -629,7 +643,8 @@ Preflight audit correlation:
 - `approval_context.ability_id`;
 - `approval_context.approved_input_hash`;
 - `approval_context.policy_version`;
-- `commit.preflighted` event `metadata.correlation_id`.
+- `commit.preflighted` event `metadata.correlation_id`;
+- `commit.preflighted` event `metadata.ability_contract_hash`.
 
 Execution handoff:
 
@@ -639,7 +654,9 @@ Execution handoff:
 - `execution_handoff.commit_execution=false`.
 
 The handoff object is routing guidance for Adapter. It is not an execution
-token and does not make Core execute the target ability.
+token and does not make Core execute the target ability. Core issues at most one
+successful handoff per approved proposal input; replay attempts fail with
+`magick_ai_core_commit_preflight_already_issued`.
 
 ## Planned Routes
 

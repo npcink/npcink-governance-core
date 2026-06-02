@@ -95,7 +95,8 @@ final class Proposal_Service {
 			);
 		}
 
-		if ( null === $this->abilities->find( $ability_id ) ) {
+		$capability = $this->abilities->find( $ability_id );
+		if ( null === $capability ) {
 			return new WP_Error(
 				'magick_ai_core_ability_not_available',
 				__( 'Proposal target ability is not available.', 'magick-ai-core' ),
@@ -110,7 +111,7 @@ final class Proposal_Service {
 			$caller['auth'] = Request_Context::audit_metadata();
 		}
 
-		$guardrail = $this->proposal_create_guardrail( $ability_id, $input );
+		$guardrail = $this->proposal_create_guardrail( $ability_id, $input, $capability );
 		$caller['core_guardrails'] = $guardrail;
 		$policy = $this->policy_evaluator->evaluate(
 			array(
@@ -464,7 +465,7 @@ final class Proposal_Service {
 	 * @param array<string,mixed> $input Proposal input.
 	 * @return array<string,mixed>
 	 */
-	private function proposal_create_guardrail( string $ability_id, array $input ): array {
+	private function proposal_create_guardrail( string $ability_id, array $input, array $capability ): array {
 		$subject = 'user';
 		$limit   = self::PENDING_QUOTA_PER_USER;
 		$key     = 'user:' . max( 0, get_current_user_id() );
@@ -494,6 +495,43 @@ final class Proposal_Service {
 			'pending_quota_limit'   => $limit,
 			'input_hash'            => $input_hash,
 			'dedupe_hash'           => $dedupe_hash,
+			'ability_contract_hash' => $this->ability_contract_hash( $capability ),
+			'ability_contract'      => $this->ability_contract_fingerprint( $capability ),
+		);
+	}
+
+	/**
+	 * Returns the stable contract hash for a normalized ability row.
+	 *
+	 * @param array<string,mixed> $capability Normalized capability row.
+	 * @return string
+	 */
+	private function ability_contract_hash( array $capability ): string {
+		$json = wp_json_encode( $this->ability_contract_fingerprint( $capability ) );
+
+		return hash( 'sha256', is_string( $json ) ? $json : '' );
+	}
+
+	/**
+	 * Returns the governance-relevant part of a normalized ability row.
+	 *
+	 * @param array<string,mixed> $capability Normalized capability row.
+	 * @return array<string,mixed>
+	 */
+	private function ability_contract_fingerprint( array $capability ): array {
+		$required_scopes = array_values( array_map( 'sanitize_text_field', (array) ( $capability['required_scopes'] ?? array() ) ) );
+		sort( $required_scopes );
+
+		return array(
+			'ability_id'        => sanitize_text_field( (string) ( $capability['ability_id'] ?? '' ) ),
+			'risk_level'        => sanitize_key( (string) ( $capability['risk_level'] ?? '' ) ),
+			'requires_approval' => (bool) ( $capability['requires_approval'] ?? false ),
+			'governance_mode'   => sanitize_key( (string) ( $capability['governance_mode'] ?? '' ) ),
+			'execution_surface' => sanitize_key( (string) ( $capability['execution_surface'] ?? '' ) ),
+			'capability'        => sanitize_key( (string) ( $capability['capability'] ?? '' ) ),
+			'required_scope'    => sanitize_text_field( (string) ( $capability['required_scope'] ?? '' ) ),
+			'required_scopes'   => $required_scopes,
+			'input_schema'      => $this->normalize_payload_for_hash( $this->sanitize_payload_for_hash( $capability['input_schema'] ?? array() ) ),
 		);
 	}
 

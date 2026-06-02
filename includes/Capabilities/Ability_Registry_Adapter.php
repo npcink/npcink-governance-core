@@ -190,6 +190,18 @@ final class Ability_Registry_Adapter {
 			in_array( $risk_level, array( 'write', 'destructive' ), true )
 		);
 		$guidance          = $this->execution_guidance( sanitize_key( $risk_level ), $requires_approval );
+		$required_scope    = $this->first_string(
+			array(
+				$definition['required_scope'] ?? null,
+				$meta['required_scope'] ?? null,
+			),
+			''
+		);
+		$required_scopes   = $this->sanitize_scope_list(
+			is_array( $definition['required_scopes'] ?? null )
+				? (array) $definition['required_scopes']
+				: ( '' !== $required_scope ? array( $required_scope ) : array() )
+		);
 
 		return array(
 			'ability_id'        => $ability_id,
@@ -197,6 +209,9 @@ final class Ability_Registry_Adapter {
 			'description'       => $this->first_string( array( $definition['description'] ?? null ), '' ),
 			'risk_level'        => sanitize_key( $risk_level ),
 			'requires_approval' => $requires_approval,
+			'capability'        => $this->first_string( array( $definition['capability'] ?? null, $meta['capability'] ?? null ), '' ),
+			'required_scope'    => $required_scope,
+			'required_scopes'   => $required_scopes,
 			'governance_mode'   => $guidance['governance_mode'],
 			'execution_surface' => $guidance['execution_surface'],
 			'core_proxy_execute' => false,
@@ -265,6 +280,25 @@ final class Ability_Registry_Adapter {
 		}
 
 		return $fallback;
+	}
+
+	/**
+	 * Sanitizes scope metadata.
+	 *
+	 * @param array<mixed> $scopes Scope values.
+	 * @return array<int,string>
+	 */
+	private function sanitize_scope_list( array $scopes ): array {
+		$clean = array();
+		foreach ( $scopes as $scope ) {
+			if ( ! is_string( $scope ) || '' === trim( $scope ) ) {
+				continue;
+			}
+
+			$clean[] = sanitize_text_field( $scope );
+		}
+
+		return array_values( array_unique( $clean ) );
 	}
 
 	/**
