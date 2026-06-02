@@ -78,6 +78,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Admin Surface Standard](docs/admin-surface-standard.md)
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
 - [Plan To Proposal Governance](docs/plan-to-proposal-governance.md)
+- [Article Writing Workflow Contract](docs/article-writing-workflow-contract.md)
 - [Create Draft Governance Scenario](docs/create-draft-governance-scenario.md)
 - [Set Post SEO Meta Governance Scenario](docs/set-post-seo-meta-governance-scenario.md)
 - [Approve Comment Governance Scenario](docs/approve-comment-governance-scenario.md)
@@ -111,17 +112,19 @@ dry-run write proposal to Core for approval and commit preflight.
 The plan-to-proposal bridge extends that pattern to read-only planning
 abilities such as `magick-ai/build-content-inventory-fix-plan`,
 `magick-ai/build-test-content-cleanup-plan`, and
-`magick-ai/build-media-inventory-fix-plan`. Core accepts the plan output,
-validates each target ability, stores either one pending proposal per
+`magick-ai/build-media-inventory-fix-plan`. It also accepts the P0 Toolbox
+article handoff `magick-ai-toolbox/build-article-write-plan`, but only as a
+single reviewed `magick-ai/create-draft` proposal. Core accepts the plan
+output, validates each target ability, stores either one pending proposal per
 `write_action` or one `plan_to_proposal_batch` proposal when the plan explicitly
 requests batch approval, preserves `preview.before`,
-`preview.after_suggestion`, `dry_run=true`, and `commit=false`, and keeps final
-mutation execution outside Core. See
+`preview.after_suggestion`, `dry_run=true`, `commit=false`, and article
+workflow artifacts where applicable, and keeps final mutation execution outside
+Core. See
 [Plan To Proposal Governance](docs/plan-to-proposal-governance.md).
 
 Core documentation may use Review Queue, pending proposal queue, bounded bulk
-rejection, and `plan_to_proposal_batch` for governance review records. Those
-Those terms do not permit workflow/task queue ownership, batch execution, retries,
+rejection, and `plan_to_proposal_batch` for governance review records. Those terms do not permit workflow/task queue ownership, batch execution, retries,
 leases, schedulers, or operator runtime consoles inside Core.
 
 The current governance operability baseline adds proposal audit timelines,

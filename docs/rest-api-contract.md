@@ -345,6 +345,7 @@ abilities:
 - `magick-ai/build-content-inventory-fix-plan`
 - `magick-ai/build-test-content-cleanup-plan`
 - `magick-ai/build-media-inventory-fix-plan`
+- `magick-ai-toolbox/build-article-write-plan`
 
 Permission: `manage_options` or app scope `proposals:create`.
 
@@ -356,6 +357,14 @@ Request fields:
 | `plan` | object | yes | Ability success envelope or its `data` object. Must include `requires_approval=true`, `dry_run=true`, `commit_execution=false`, and `write_actions`. |
 | `plan_input` | object | no | Input originally used to build the plan. Used for safety gates such as `include_delete_candidates=true`; media delete plans may also require source-side flags such as `include_unattached_test_media=true` or `include_trash_parent_media=true` before the plan emits a delete action. |
 | `caller` | object | no | Caller metadata copied into generated proposals. |
+
+For `magick-ai-toolbox/build-article-write-plan`, the plan must declare
+`artifact_type=article_write_plan`, `version>=1`, and include
+`article_goal_brief`, `research_evidence_pack`, `article_outline`,
+`article_draft_candidate`, `discoverability_pack`, and `article_risk_report`.
+The P0 action set must contain exactly one `magick-ai/create-draft` action with
+`status=draft` or no explicit status. `publish`, high-risk reports, blocked
+claims, `commit=true`, or `dry_run=false` are rejected before proposal creation.
 
 Each accepted independent `write_action` becomes a separate pending proposal by
 default. If the plan declares `batch_approval=true` or

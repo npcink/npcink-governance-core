@@ -11,9 +11,13 @@ an execution bridge.
 - `magick-ai/build-content-inventory-fix-plan`
 - `magick-ai/build-test-content-cleanup-plan`
 - `magick-ai/build-media-inventory-fix-plan`
+- `magick-ai-toolbox/build-article-write-plan`
 
-These abilities belong to `magick-ai-abilities`. They are executed through the
-WordPress Abilities API by the host or adapter. Core only receives their output.
+The `magick-ai/*` planning abilities belong to `magick-ai-abilities`; the
+Toolbox article handoff belongs to `magick-ai-toolbox`. They are executed
+through the WordPress Abilities API by the host or adapter. Core only receives
+their output. The Toolbox plan is included here because Core can govern its
+draft-write plan without owning Toolbox workflow UX or content generation.
 
 ## Boundary
 
@@ -56,6 +60,22 @@ Core does not own:
 
 Core still returns `commit_execution=false`; there is no Core write execution
 route.
+
+## Article Writing Handoff
+
+`magick-ai-toolbox/build-article-write-plan` is the P0 AI-assisted writing
+handoff. It must return `artifact_type=article_write_plan`, `version>=1`,
+`requires_approval=true`, `dry_run=true`, `commit_execution=false`, and the
+standard article artifacts documented in
+[Article Writing Workflow Contract](article-writing-workflow-contract.md).
+
+Core accepts that plan only when `article_risk_report.ready_for_proposal=true`,
+`article_risk_report.risk_level` is not `high`,
+`article_risk_report.blocked_claims` is empty, and the plan contains exactly
+one draft-only `magick-ai/create-draft` write action. The generated proposal
+preserves `preview.article_workflow` for review. Core does not generate the
+article, run Toolbox tools, call Cloud, approve the proposal, or execute the
+draft write.
 
 ## Proposal Preview Contract
 

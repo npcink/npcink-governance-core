@@ -458,6 +458,16 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'post_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
+			'magick-ai-toolbox/build-article-write-plan' => array(
+				'ability_id'        => 'magick-ai-toolbox/build-article-write-plan',
+				'label'             => 'Build Article Write Plan',
+				'risk_level'        => 'read',
+				'requires_approval' => false,
+				'capability'        => 'manage_options',
+				'required_scopes'   => array( 'cap.toolbox.workflow_suggest' ),
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
 		);
 	}
 }
@@ -780,6 +790,7 @@ require_once dirname( __DIR__ ) . '/includes/Capabilities/Ability_Registry_Adapt
 require_once dirname( __DIR__ ) . '/includes/Governance/Approval_Policy_Evaluator.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Proposal_Repository.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Proposal_Service.php';
+require_once dirname( __DIR__ ) . '/includes/Governance/Plan_Proposal_Service.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Commit_Preflight_Service.php';
 require_once dirname( __DIR__ ) . '/includes/Security/App_Key_Repository.php';
 require_once dirname( __DIR__ ) . '/includes/Security/App_Rate_Limiter.php';
@@ -846,6 +857,28 @@ function magick_ai_core_fail_closed_governance_stack(): array {
 		'preflight' => $preflight,
 		'proposals' => $proposals,
 		'audit'     => $audit,
+	);
+}
+
+/**
+ * Returns a plan-to-proposal service stack.
+ *
+ * @return array{service:\MagickAI\Core\Governance\Plan_Proposal_Service,proposals:\MagickAI\Core\Governance\Proposal_Repository}
+ */
+function magick_ai_core_fail_closed_plan_stack(): array {
+	$proposals = new \MagickAI\Core\Governance\Proposal_Repository();
+	$abilities = new \MagickAI\Core\Capabilities\Ability_Registry_Adapter();
+	$audit     = new \MagickAI\Core\Audit\Audit_Log_Repository();
+	$proposal_service = new \MagickAI\Core\Governance\Proposal_Service(
+		$proposals,
+		$abilities,
+		$audit,
+		new \MagickAI\Core\Governance\Approval_Policy_Evaluator()
+	);
+
+	return array(
+		'service'   => new \MagickAI\Core\Governance\Plan_Proposal_Service( $abilities, $proposal_service, $audit ),
+		'proposals' => $proposals,
 	);
 }
 
@@ -965,9 +998,111 @@ function magick_ai_core_fail_closed_cleanup_batch_payload(): array {
 	);
 }
 
+/**
+ * Creates a representative Toolbox article write plan.
+ *
+ * @return array<string,mixed>
+ */
+function magick_ai_core_fail_closed_article_write_plan(): array {
+	return array(
+		'artifact_type'          => 'article_write_plan',
+		'version'                => 1,
+		'batch_id'               => 'article_write_fault_injection',
+		'requires_approval'      => true,
+		'dry_run'                => true,
+		'commit_execution'       => false,
+		'proposal_mode'          => 'single',
+		'article_goal_brief'     => array(
+			'topic' => 'Governed writing workflow',
+		),
+		'research_evidence_pack' => array(
+			'sources' => array(
+				array(
+					'title' => 'Internal planning note',
+					'url'   => 'https://example.test/article-contract',
+				),
+			),
+		),
+		'article_outline'        => array(
+			'sections' => array(
+				array( 'heading' => 'Overview' ),
+			),
+		),
+		'article_draft_candidate' => array(
+			'content_markdown'  => 'Draft body.',
+			'used_sources'      => array( 'https://example.test/article-contract' ),
+			'unverified_claims' => array(),
+			'needs_human_input' => array(),
+		),
+		'discoverability_pack'   => array(
+			'seo_title'       => 'Governed writing workflow',
+			'seo_description' => 'Draft description.',
+		),
+		'article_risk_report'    => array(
+			'risk_level'         => 'low',
+			'blocked_claims'     => array(),
+			'needs_review'       => array(),
+			'ready_for_proposal' => true,
+		),
+		'write_actions'          => array(
+			array(
+				'action_id'         => 'create_article_draft',
+				'target_ability_id' => 'magick-ai/create-draft',
+				'input'             => array(
+					'title'   => 'Governed writing workflow',
+					'content' => 'Draft body.',
+					'status'  => 'draft',
+					'dry_run' => true,
+					'commit'  => false,
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+		),
+	);
+}
+
 $proposal_table = 'wp_magick_ai_core_proposals';
 $audit_table    = 'wp_magick_ai_core_audit_log';
 $app_table      = 'wp_magick_ai_core_app_keys';
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$article_plan = magick_ai_core_fail_closed_article_write_plan();
+$article_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-write-plan', $article_plan, array(), array( 'source' => 'toolbox_article_workflow' ) );
+magick_ai_core_fail_closed_assert( ! is_wp_error( $article_result ), 'Valid Toolbox article write plan creates a Core proposal.' );
+magick_ai_core_fail_closed_assert( 1 === (int) ( $article_result['proposal_count'] ?? 0 ), 'Valid Toolbox article write plan creates exactly one proposal.' );
+magick_ai_core_fail_closed_assert( 'magick-ai/create-draft' === (string) ( $article_result['proposals'][0]['ability_id'] ?? '' ), 'Valid Toolbox article write plan targets create-draft.' );
+magick_ai_core_fail_closed_assert( is_array( $article_result['proposals'][0]['preview']['article_workflow'] ?? null ), 'Valid Toolbox article write plan preserves article workflow preview.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$publish_plan = magick_ai_core_fail_closed_article_write_plan();
+$publish_plan['write_actions'][0]['input']['status'] = 'publish';
+$publish_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-write-plan', $publish_plan );
+magick_ai_core_fail_closed_assert( is_wp_error( $publish_result ), 'Article write plan requesting publish is rejected.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_article_plan_publish_rejected' === $publish_result->get_error_code(), 'Article publish rejection uses stable error code.' );
+magick_ai_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Rejected publish article plan stores no proposal row.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$blocked_claims_plan = magick_ai_core_fail_closed_article_write_plan();
+$blocked_claims_plan['article_risk_report']['blocked_claims'] = array( 'Unverified ranking guarantee.' );
+$blocked_claims_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-write-plan', $blocked_claims_plan );
+magick_ai_core_fail_closed_assert( is_wp_error( $blocked_claims_result ), 'Article write plan with blocked claims is rejected.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_article_plan_blocked_claims' === $blocked_claims_result->get_error_code(), 'Article blocked-claims rejection uses stable error code.' );
+magick_ai_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Rejected blocked-claims article plan stores no proposal row.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$high_risk_plan = magick_ai_core_fail_closed_article_write_plan();
+$high_risk_plan['article_risk_report']['risk_level'] = 'high';
+$high_risk_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-write-plan', $high_risk_plan );
+magick_ai_core_fail_closed_assert( is_wp_error( $high_risk_result ), 'High-risk article write plan is rejected.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_article_plan_risk_blocked' === $high_risk_result->get_error_code(), 'Article high-risk rejection uses stable error code.' );
+magick_ai_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Rejected high-risk article plan stores no proposal row.' );
 
 $wpdb = magick_ai_core_fail_closed_reset_db();
 $wpdb->fail_insert_tables[] = $proposal_table;

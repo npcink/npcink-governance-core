@@ -51,7 +51,9 @@ Documented but not implemented:
 ## Current Execution Decision
 
 Core can now govern both single dry-run write proposals and supported
-read-only plans that produce multiple `write_actions`. ADR-003 keeps final
+read-only plans that produce multiple `write_actions`. It can also accept the
+P0 Toolbox `article_write_plan` handoff as one governed `magick-ai/create-draft`
+proposal while leaving the writing workflow in Toolbox. ADR-003 keeps final
 WordPress execution outside Core for the current stage:
 
 - Core stays the governance layer for proposal records, approval/rejection,

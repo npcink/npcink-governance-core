@@ -70,12 +70,20 @@ Core may consume these read-only planning ability outputs:
 - `magick-ai/build-content-inventory-fix-plan`
 - `magick-ai/build-test-content-cleanup-plan`
 - `magick-ai/build-media-inventory-fix-plan`
+- `magick-ai-toolbox/build-article-write-plan`
 
 Plan intake does not execute the plan ability and does not execute target write
 abilities. It accepts a successful plan payload, validates that the planning
 ability is direct-read, validates each `write_action.target_ability_id` against
 current ability intake, then creates one pending proposal per accepted action
 unless the plan explicitly requests batch approval.
+
+The P0 article writing handoff is stricter: Toolbox owns the workflow artifact,
+and Core accepts `magick-ai-toolbox/build-article-write-plan` only when it is an
+`article_write_plan` containing the required article artifacts, a passing risk
+report, no blocked claims, and exactly one draft-only
+`magick-ai/create-draft` action. Core preserves those artifacts in proposal
+preview context for review without generating content or executing the write.
 
 Plans may request one review item for a group of generated actions with either
 `batch_approval=true` or `proposal_mode=batch`. Core then creates one

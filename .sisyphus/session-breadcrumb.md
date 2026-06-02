@@ -1,5 +1,33 @@
 # Session Breadcrumb
 
+## 2026-06-02 — Article writing plan governance handoff started
+
+- **Module**: Core plan-to-proposal article writing handoff.
+- **Status**: Core now recognizes the P0 Toolbox
+  `magick-ai-toolbox/build-article-write-plan` handoff as a governed
+  single-draft proposal source.
+- **Completed**:
+  - Added `docs/article-writing-workflow-contract.md` to freeze the cross-plugin
+    ownership split for Toolbox, Abilities, Core, Adapter, and Cloud Addon.
+  - Extended `Plan_Proposal_Service` to accept the Toolbox article plan only
+    when it is a direct-read `article_write_plan` with required workflow
+    artifacts, passing risk report, no blocked claims, and exactly one
+    draft-only `magick-ai/create-draft` action.
+  - Preserved article workflow artifacts under proposal
+    `preview.article_workflow` for Core review without adding generation,
+    execution, workflow runtime, queueing, or Cloud control-plane behavior.
+  - Updated REST, governance, ability-intake, plan-to-proposal, README, and
+    next-stage docs plus static/fail-closed contracts.
+- **Verification**:
+  - `composer test:all`
+  - `composer smoke:wp`
+  - `git diff --check`
+- **Next Steps**:
+  - Implement the Toolbox-side `magick-ai-toolbox/build-article-write-plan`
+    ability and operator flow artifacts.
+  - Then expose the OpenClaw relay/execute path through Adapter using the
+    existing Core preflight and allowlisted `magick-ai/create-draft` execution.
+
 ## 2026-06-02 — Development approval policy modes enabled
 
 - **Module**: Core approval policy evaluator and admin governance setting.

@@ -75,6 +75,7 @@ foreach (
 		'It does not generate content',
 		'Current Stage Governance Reliability',
 			'Approval Policy Evaluator Standard',
+			'Article Writing Workflow Contract',
 			'workflow/task queues, batch execution consoles',
 			'Review Queue, pending proposal queue',
 			'Those terms do not permit workflow/task queue ownership',
@@ -949,9 +950,25 @@ foreach (
 		'magick-ai/build-content-inventory-fix-plan',
 		'magick-ai/build-test-content-cleanup-plan',
 		'magick-ai/build-media-inventory-fix-plan',
+		'magick-ai-toolbox/build-article-write-plan',
 		'proposal.plan_ingested',
 		'magick-ai/delete-media-permanently',
 		'destructive_media_delete_not_explicitly_included',
+		'validate_article_write_plan_contract',
+		'article_workflow_preview',
+		'article_workflow_artifact_keys',
+		'article_write_plan',
+		'article_goal_brief',
+		'research_evidence_pack',
+		'article_outline',
+		'article_draft_candidate',
+		'discoverability_pack',
+		'article_risk_report',
+		'magick_ai_core_article_plan_publish_rejected',
+		'magick_ai_core_article_plan_blocked_claims',
+		'magick_ai_core_article_plan_risk_blocked',
+		'magick_ai_core_article_plan_target_rejected',
+		'magick-ai/create-draft',
 		'proposal_ready',
 		'needs_input',
 		'preflight_blockers',
@@ -989,6 +1006,34 @@ magick_ai_core_assert( false !== strpos( $development_workflow, 'MAGICK_AI_CORE_
 $plan_to_proposal_docs = magick_ai_core_read( $root . '/docs/plan-to-proposal-governance.md' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_unattached_test_media' ), 'Plan-to-proposal docs mention abilities-side unattached test media delete gate.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_trash_parent_media' ), 'Plan-to-proposal docs mention abilities-side trash-parent media delete gate.' );
+magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'magick-ai-toolbox/build-article-write-plan' ), 'Plan-to-proposal docs include the Toolbox article writing handoff.' );
+magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_workflow' ), 'Plan-to-proposal docs require article workflow preview evidence.' );
+
+$article_writing_contract = magick_ai_core_read( $root . '/docs/article-writing-workflow-contract.md' );
+foreach (
+	array(
+		'Status: active planning contract',
+		'magick-ai-toolbox/build-article-write-plan',
+		'magick-ai-toolbox/get-content-discoverability-context',
+		'magick-ai/create-draft',
+		'article_goal_brief',
+		'research_evidence_pack',
+		'article_outline',
+		'article_draft_candidate',
+		'discoverability_pack',
+		'article_risk_report',
+		'article_write_plan',
+		'ready_for_proposal',
+		'blocked_claims',
+		'status',
+		'draft',
+		'commit_execution=false',
+		'Cloud Addon may provide hosted runtime enhancement',
+		'not a second control',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $article_writing_contract, $required ), 'Article writing workflow contract contains required text: ' . $required );
+}
 
 $audit_repository = magick_ai_core_read( $root . '/includes/Audit/Audit_Log_Repository.php' );
 magick_ai_core_assert( false !== strpos( $audit_repository, 'sanitize_text_field( $event_name )' ), 'Audit repository preserves dotted event names.' );

@@ -44,11 +44,17 @@ Core may accept output from these read-only planning abilities:
 - `magick-ai/build-content-inventory-fix-plan`
 - `magick-ai/build-test-content-cleanup-plan`
 - `magick-ai/build-media-inventory-fix-plan`
+- `magick-ai-toolbox/build-article-write-plan`
 
 They must remain discoverable as `governance_mode=direct_read` with
 `execution_surface=wp_abilities_rest`. Core does not execute them. A host or
 adapter runs the plan through WordPress Abilities API and submits the resulting
 plan payload to Core.
+
+`magick-ai-toolbox/build-article-write-plan` is the P0 AI-assisted writing
+handoff owned by Toolbox. Core accepts it only as a reviewed
+`article_write_plan` that can create one `magick-ai/create-draft` proposal; it
+does not move article generation, workflow state, or operator UX into Core.
 
 Each plan `write_action.target_ability_id` must resolve through normal ability
 intake as a proposal-governed write or destructive ability. Core must not

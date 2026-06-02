@@ -28,6 +28,7 @@ final class Plan_Proposal_Service {
 		'magick-ai/build-content-inventory-fix-plan' => true,
 		'magick-ai/build-test-content-cleanup-plan'  => true,
 		'magick-ai/build-media-inventory-fix-plan'   => true,
+		'magick-ai-toolbox/build-article-write-plan' => true,
 	);
 
 	/**
@@ -108,6 +109,13 @@ final class Plan_Proposal_Service {
 		$contract_error = $this->validate_plan_contract( $plan );
 		if ( is_wp_error( $contract_error ) ) {
 			return $contract_error;
+		}
+
+		if ( 'magick-ai-toolbox/build-article-write-plan' === $plan_ability_id ) {
+			$article_contract_error = $this->validate_article_write_plan_contract( $plan );
+			if ( is_wp_error( $article_contract_error ) ) {
+				return $article_contract_error;
+			}
 		}
 
 		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
@@ -314,6 +322,144 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Validates the P0 article writing plan contract.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_article_write_plan_contract( array $plan ) {
+		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
+		if ( 'article_write_plan' !== $artifact_type ) {
+			return new WP_Error(
+				'magick_ai_core_article_plan_invalid',
+				__( 'Article write plans must declare artifact_type=article_write_plan.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( absint( $plan['version'] ?? 0 ) < 1 ) {
+			return new WP_Error(
+				'magick_ai_core_article_plan_invalid',
+				__( 'Article write plans must declare version 1 or newer.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		foreach ( $this->article_workflow_artifact_keys() as $artifact_key ) {
+			if ( ! is_array( $plan[ $artifact_key ] ?? null ) ) {
+				return new WP_Error(
+					'magick_ai_core_article_plan_artifact_missing',
+					__( 'Article write plans must include every required workflow artifact.', 'magick-ai-core' ),
+					array(
+						'status'   => 422,
+						'artifact' => $artifact_key,
+					)
+				);
+			}
+		}
+
+		$risk_report = is_array( $plan['article_risk_report'] ?? null ) ? $plan['article_risk_report'] : array();
+		if ( true !== (bool) ( $risk_report['ready_for_proposal'] ?? false ) ) {
+			return new WP_Error(
+				'magick_ai_core_article_plan_not_ready',
+				__( 'Article write plans must pass risk review before proposal intake.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( 'high' === sanitize_key( (string) ( $risk_report['risk_level'] ?? '' ) ) ) {
+			return new WP_Error(
+				'magick_ai_core_article_plan_risk_blocked',
+				__( 'High-risk article plans must be revised before draft proposal intake.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( ! empty( $risk_report['blocked_claims'] ?? array() ) ) {
+			return new WP_Error(
+				'magick_ai_core_article_plan_blocked_claims',
+				__( 'Article write plans with blocked claims cannot create proposals.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( 1 !== count( $write_actions ) || ! is_array( $write_actions[0] ?? null ) ) {
+			return new WP_Error(
+				'magick_ai_core_article_plan_action_count_rejected',
+				__( 'P0 article write plans must contain exactly one create-draft action.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$action = $write_actions[0];
+		if ( 'magick-ai/create-draft' !== sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) ) ) {
+			return new WP_Error(
+				'magick_ai_core_article_plan_target_rejected',
+				__( 'P0 article write plans may target only magick-ai/create-draft.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$input  = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+		$status = sanitize_key( (string) ( $input['status'] ?? ( $input['post_status'] ?? 'draft' ) ) );
+		if ( '' !== $status && 'draft' !== $status ) {
+			return new WP_Error(
+				'magick_ai_core_article_plan_publish_rejected',
+				__( 'Article write plans may create drafts only.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true === (bool) ( $input['commit'] ?? false ) || false === (bool) ( $input['dry_run'] ?? true ) ) {
+			return new WP_Error(
+				'magick_ai_core_article_plan_commit_rejected',
+				__( 'Article write plan input must remain dry-run and must not request commit.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Returns article workflow artifact keys that must be reviewable.
+	 *
+	 * @return array<int,string>
+	 */
+	private function article_workflow_artifact_keys(): array {
+		return array(
+			'article_goal_brief',
+			'research_evidence_pack',
+			'article_outline',
+			'article_draft_candidate',
+			'discoverability_pack',
+			'article_risk_report',
+		);
+	}
+
+	/**
+	 * Builds preview context for article write plans.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function article_workflow_preview( array $plan ): array {
+		$preview = array(
+			'artifact_type'          => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
+			'version'                => absint( $plan['version'] ?? 0 ),
+			'final_write_path'       => 'core_proposal_required',
+			'direct_wordpress_write' => false,
+		);
+
+		foreach ( $this->article_workflow_artifact_keys() as $artifact_key ) {
+			$preview[ $artifact_key ] = $this->sanitize_payload( $plan[ $artifact_key ] ?? array() );
+		}
+
+		return $preview;
+	}
+
+	/**
 	 * Builds one Proposal_Service payload for a write action.
 	 *
 	 * @param string              $plan_ability_id Plan ability id.
@@ -425,6 +571,10 @@ final class Plan_Proposal_Service {
 			'preflight_blockers'  => $preflight_blockers,
 			'plan_preview_row'    => $matched_preview,
 		);
+
+		if ( 'magick-ai-toolbox/build-article-write-plan' === $plan_ability_id ) {
+			$preview['article_workflow'] = $this->article_workflow_preview( $plan );
+		}
 
 		$title = sprintf(
 			/* translators: 1: target ability id, 2: action id. */
