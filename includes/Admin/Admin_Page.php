@@ -9,6 +9,7 @@ namespace MagickAI\Core\Admin;
 
 use MagickAI\Core\Audit\Audit_Log_Repository;
 use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
+use MagickAI\Core\Governance\Approval_Policy_Evaluator;
 use MagickAI\Core\Governance\Proposal_Repository;
 use MagickAI\Core\Governance\Proposal_Service;
 use MagickAI\Core\Security\App_Key_Repository;
@@ -95,6 +96,7 @@ final class Admin_Page {
 		add_action( 'admin_post_magick_ai_core_bulk_reject_proposals', array( $this, 'handle_bulk_reject' ) );
 		add_action( 'admin_post_magick_ai_core_archive_proposal', array( $this, 'handle_archive' ) );
 		add_action( 'admin_post_magick_ai_core_reopen_proposal', array( $this, 'handle_reopen' ) );
+		add_action( 'admin_post_magick_ai_core_update_approval_policy', array( $this, 'handle_update_approval_policy' ) );
 	}
 
 	/**
@@ -349,9 +351,62 @@ final class Admin_Page {
 	private function render_review_workbench( array $summary, int $pending_count, int $expired_count, int $archived_count, array $pending, int $page ): void {
 		?>
 		<?php $this->render_summary_strip( $summary, $pending_count, $expired_count, $archived_count ); ?>
+		<?php $this->render_approval_policy_entry(); ?>
 		<?php $this->render_pending_proposals( $pending, $pending_count, $page ); ?>
 		<?php $this->render_recent_activity(); ?>
 		<?php $this->render_advanced_access_entry(); ?>
+		<?php
+	}
+
+	/**
+	 * Renders the lightweight development approval policy setting.
+	 *
+	 * @return void
+	 */
+	private function render_approval_policy_entry(): void {
+		$current = Approval_Policy_Evaluator::current_policy_mode();
+		$labels  = array(
+			Approval_Policy_Evaluator::MODE_MANUAL          => __( 'Manual', 'magick-ai-core' ),
+			Approval_Policy_Evaluator::MODE_DRY_RUN_GUARDED => __( 'Dry-run guarded', 'magick-ai-core' ),
+			Approval_Policy_Evaluator::MODE_LOCAL_GUARDED   => __( 'Local guarded', 'magick-ai-core' ),
+		);
+		?>
+		<details style="max-width: 1100px; margin: 0 0 16px;">
+			<summary style="cursor: pointer;">
+				<strong><?php echo esc_html__( 'Development Approval Policy', 'magick-ai-core' ); ?></strong>
+				<span style="color: #646970;">
+					<?php
+					printf(
+						/* translators: %s: current policy mode. */
+						esc_html__( 'Current mode: %s', 'magick-ai-core' ),
+						esc_html( (string) ( $labels[ $current ] ?? $current ) )
+					);
+					?>
+				</span>
+			</summary>
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top: 8px;">
+				<input type="hidden" name="action" value="magick_ai_core_update_approval_policy" />
+				<?php wp_nonce_field( 'magick_ai_core_update_approval_policy' ); ?>
+				<table class="form-table" role="presentation">
+					<tbody>
+						<tr>
+							<th scope="row"><label for="magick-ai-core-approval-policy-mode"><?php echo esc_html__( 'Policy mode', 'magick-ai-core' ); ?></label></th>
+							<td>
+								<select id="magick-ai-core-approval-policy-mode" name="policy_mode">
+									<?php foreach ( Approval_Policy_Evaluator::allowed_policy_modes() as $mode ) : ?>
+										<option value="<?php echo esc_attr( $mode ); ?>" <?php selected( $current, $mode ); ?>>
+											<?php echo esc_html( (string) ( $labels[ $mode ] ?? $mode ) ); ?>
+										</option>
+									<?php endforeach; ?>
+								</select>
+								<p class="description"><?php echo esc_html__( 'Local guarded only auto-approves trusted test-content cleanup trash batches. Destructive deletes, comments, terms, and published content updates remain manual.', 'magick-ai-core' ); ?></p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<p><button type="submit" class="button button-secondary"><?php echo esc_html__( 'Save approval policy', 'magick-ai-core' ); ?></button></p>
+			</form>
+		</details>
 		<?php
 	}
 
@@ -739,6 +794,33 @@ final class Admin_Page {
 	 */
 	public function handle_reopen(): void {
 		$this->handle_lifecycle_action( 'reopen' );
+	}
+
+	/**
+	 * Handles the lightweight approval policy mode form.
+	 *
+	 * @return void
+	 */
+	public function handle_update_approval_policy(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to update approval policy.', 'magick-ai-core' ) );
+		}
+
+		check_admin_referer( 'magick_ai_core_update_approval_policy' );
+
+		$mode = isset( $_POST['policy_mode'] ) ? Approval_Policy_Evaluator::sanitize_policy_mode( wp_unslash( (string) $_POST['policy_mode'] ) ) : Approval_Policy_Evaluator::MODE_MANUAL;
+		update_option( Approval_Policy_Evaluator::OPTION_POLICY_MODE, $mode, false );
+
+		$this->audit->record(
+			'core.approval_policy_updated',
+			array(
+				'policy_mode'      => $mode,
+				'commit_execution' => false,
+			)
+		);
+
+		wp_safe_redirect( $this->admin_url( array( 'magick_ai_core_message' => 'approval_policy_updated' ) ) );
+		exit;
 	}
 
 	/**
@@ -2001,6 +2083,7 @@ final class Admin_Page {
 			'archived'                                      => __( 'Proposal archived.', 'magick-ai-core' ),
 			'reopened'                                      => __( 'Proposal reopened for review.', 'magick-ai-core' ),
 			'app_key_revoked'                               => __( 'App key disabled.', 'magick-ai-core' ),
+			'approval_policy_updated'                       => __( 'Approval policy mode updated.', 'magick-ai-core' ),
 			'magick_ai_core_app_key_not_active'             => __( 'App key is missing or already disabled.', 'magick-ai-core' ),
 			'magick_ai_core_app_key_revoke_failed'          => __( 'App key could not be disabled.', 'magick-ai-core' ),
 			'magick_ai_core_proposal_not_found'             => __( 'Proposal was not found.', 'magick-ai-core' ),

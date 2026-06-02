@@ -315,6 +315,73 @@ if ( ! function_exists( 'wp_generate_password' ) ) {
 	}
 }
 
+if ( ! function_exists( 'get_option' ) ) {
+	/**
+	 * Option read stub.
+	 *
+	 * @param string $name Option name.
+	 * @param mixed  $default Default.
+	 * @return mixed
+	 */
+	function get_option( string $name, $default = false ) {
+		global $magick_ai_core_fail_closed_options;
+
+		$magick_ai_core_fail_closed_options = is_array( $magick_ai_core_fail_closed_options ?? null ) ? $magick_ai_core_fail_closed_options : array();
+
+		return $magick_ai_core_fail_closed_options[ $name ] ?? $default;
+	}
+}
+
+if ( ! function_exists( 'update_option' ) ) {
+	/**
+	 * Option write stub.
+	 *
+	 * @param string $name Option name.
+	 * @param mixed  $value Value.
+	 * @return bool
+	 */
+	function update_option( string $name, $value, $autoload = null ): bool {
+		global $magick_ai_core_fail_closed_options;
+
+		$magick_ai_core_fail_closed_options[ $name ] = $value;
+
+		return true;
+	}
+}
+
+if ( ! function_exists( 'get_transient' ) ) {
+	/**
+	 * Transient read stub.
+	 *
+	 * @param string $key Key.
+	 * @return mixed
+	 */
+	function get_transient( string $key ) {
+		global $magick_ai_core_fail_closed_transients;
+
+		$magick_ai_core_fail_closed_transients = is_array( $magick_ai_core_fail_closed_transients ?? null ) ? $magick_ai_core_fail_closed_transients : array();
+
+		return $magick_ai_core_fail_closed_transients[ $key ] ?? false;
+	}
+}
+
+if ( ! function_exists( 'set_transient' ) ) {
+	/**
+	 * Transient write stub.
+	 *
+	 * @param string $key Key.
+	 * @param mixed  $value Value.
+	 * @return bool
+	 */
+	function set_transient( string $key, $value, int $expiration = 0 ): bool {
+		global $magick_ai_core_fail_closed_transients;
+
+		$magick_ai_core_fail_closed_transients[ $key ] = $value;
+
+		return true;
+	}
+}
+
 if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 	/**
 	 * Ability provider fixture.
@@ -327,6 +394,14 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'ability_id'        => 'magick-ai/create-draft',
 				'label'             => 'Create Draft',
 				'risk_level'        => 'write',
+				'requires_approval' => true,
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
+			'magick-ai/trash-post' => array(
+				'ability_id'        => 'magick-ai/trash-post',
+				'label'             => 'Trash Post',
+				'risk_level'        => 'medium',
 				'requires_approval' => true,
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
@@ -618,9 +693,11 @@ require_once dirname( __DIR__ ) . '/includes/Rest/Apps_Controller.php';
  * @return Magick_AI_Core_Fail_Closed_WPDB
  */
 function magick_ai_core_fail_closed_reset_db(): Magick_AI_Core_Fail_Closed_WPDB {
-	global $wpdb;
+	global $wpdb, $magick_ai_core_fail_closed_options, $magick_ai_core_fail_closed_transients;
 
 	$wpdb = new Magick_AI_Core_Fail_Closed_WPDB();
+	$magick_ai_core_fail_closed_options = array();
+	$magick_ai_core_fail_closed_transients = array();
 	\MagickAI\Core\Security\Request_Context::clear();
 
 	return $wpdb;
@@ -662,6 +739,58 @@ function magick_ai_core_fail_closed_payload(): array {
 	);
 }
 
+/**
+ * Creates a trusted cleanup batch payload.
+ *
+ * @return array<string,mixed>
+ */
+function magick_ai_core_fail_closed_cleanup_batch_payload(): array {
+	return array(
+		'ability_id' => 'magick-ai/trash-post',
+		'title'      => 'Cleanup batch',
+		'summary'    => 'Trash trusted test content.',
+		'input'      => array(
+			'write_actions' => array(
+				array(
+					'action_id'         => 'trash_test_post_101',
+					'target_ability_id' => 'magick-ai/trash-post',
+					'input'             => array(
+						'post_id' => 101,
+						'dry_run' => true,
+						'commit'  => false,
+					),
+					'requires_approval' => true,
+					'commit_execution'  => false,
+				),
+			),
+			'dry_run'       => true,
+			'commit'        => false,
+		),
+		'preview'    => array(
+			'source'       => array(
+				'type'            => 'plan_to_proposal_batch',
+				'plan_ability_id' => 'magick-ai/build-test-content-cleanup-plan',
+				'batch_approval'  => true,
+			),
+			'action_count' => 1,
+			'plan_preview' => array(
+				'posts' => array(
+					array(
+						'post_id'         => 101,
+						'title'           => 'Core Plan Bridge Test Cleanup Candidate',
+						'matched_pattern' => 'Core Plan Bridge Test Cleanup Candidate',
+					),
+				),
+			),
+		),
+		'caller'     => array(
+			'source'          => 'plan_to_proposal_batch',
+			'plan_ability_id' => 'magick-ai/build-test-content-cleanup-plan',
+			'batch_id'        => 'fault_injection_cleanup',
+		),
+	);
+}
+
 $proposal_table = 'wp_magick_ai_core_proposals';
 $audit_table    = 'wp_magick_ai_core_audit_log';
 $app_table      = 'wp_magick_ai_core_app_keys';
@@ -697,6 +826,53 @@ $result = $stack['service']->create( magick_ai_core_fail_closed_payload() );
 magick_ai_core_fail_closed_assert( is_wp_error( $result ), 'Policy decision audit failure returns WP_Error.' );
 magick_ai_core_fail_closed_assert( 'magick_ai_core_policy_decision_audit_failed' === $result->get_error_code(), 'Policy decision audit failure uses stable error code.' );
 magick_ai_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Unaudited policy decision deletes the proposal row.' );
+
+$wpdb = magick_ai_core_fail_closed_reset_db();
+update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::MODE_LOCAL_GUARDED, false );
+\MagickAI\Core\Security\Request_Context::set_app(
+	array(
+		'app_id'       => 'app_auto',
+		'key_id'       => 'key_auto',
+		'caller_type'  => 'trusted_adapter',
+		'scope'        => 'proposals:create',
+		'scopes'       => array( 'proposals:create', 'proposals:approve' ),
+		'route_family' => 'proposals_create',
+	)
+);
+$stack    = magick_ai_core_fail_closed_proposal_stack();
+$proposal = $stack['service']->create( magick_ai_core_fail_closed_cleanup_batch_payload() );
+magick_ai_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Local guarded cleanup proposal is created.' );
+magick_ai_core_fail_closed_assert( 'approved' === (string) ( $proposal['status'] ?? '' ), 'Local guarded cleanup proposal is auto-approved.' );
+magick_ai_core_fail_closed_assert( 'auto_approved' === (string) ( $proposal['policy_decision'] ?? '' ), 'Local guarded cleanup records auto-approved decision.' );
+magick_ai_core_fail_closed_assert( 'trusted_local' === (string) ( $proposal['policy_profile'] ?? '' ), 'Local guarded cleanup records trusted_local profile.' );
+$auto_approval_events = array_filter(
+	$wpdb->rows( $audit_table ),
+	static function ( array $row ): bool {
+		return 'proposal.auto_approved' === (string) ( $row['event_name'] ?? '' );
+	}
+);
+magick_ai_core_fail_closed_assert( 1 === count( $auto_approval_events ), 'Local guarded cleanup writes proposal.auto_approved audit.' );
+
+$wpdb = magick_ai_core_fail_closed_reset_db();
+update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::MODE_LOCAL_GUARDED, false );
+\MagickAI\Core\Security\Request_Context::set_app(
+	array(
+		'app_id'       => 'app_auto',
+		'key_id'       => 'key_auto',
+		'caller_type'  => 'trusted_adapter',
+		'scope'        => 'proposals:create',
+		'scopes'       => array( 'proposals:create', 'proposals:approve' ),
+		'route_family' => 'proposals_create',
+	)
+);
+$wpdb->fail_insert_event_names[] = 'proposal.auto_approved';
+$stack  = magick_ai_core_fail_closed_proposal_stack();
+$result = $stack['service']->create( magick_ai_core_fail_closed_cleanup_batch_payload() );
+magick_ai_core_fail_closed_assert( is_wp_error( $result ), 'Auto approval audit failure returns WP_Error.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_auto_approval_audit_failed' === $result->get_error_code(), 'Auto approval audit failure uses stable error code.' );
+$proposal_rows = $wpdb->rows( $proposal_table );
+magick_ai_core_fail_closed_assert( 1 === count( $proposal_rows ), 'Auto approval audit failure keeps the audited proposal row.' );
+magick_ai_core_fail_closed_assert( 'pending' === (string) $proposal_rows[0]['status'], 'Auto approval audit failure leaves proposal pending, not approved.' );
 
 $wpdb = magick_ai_core_fail_closed_reset_db();
 $stack    = magick_ai_core_fail_closed_proposal_stack();

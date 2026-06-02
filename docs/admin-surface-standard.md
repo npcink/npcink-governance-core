@@ -24,6 +24,8 @@ queue:
   compact source trace for Adapter/OpenClaw handoff lookup;
 - bounded bulk rejection for selected pending proposals;
 - stale proposal counts that link operators to the expired/archive tab;
+- `Development Approval Policy` disclosure for the lightweight manual,
+  dry-run guarded, and local guarded policy modes;
 - short recent activity disclosure, collapsed by default;
 - `Advanced Access` disclosure for low-frequency Core app-key management.
 
@@ -66,6 +68,7 @@ Core admin must not add:
 - OpenClaw onboarding or client handoff copy;
 - ability definitions or callback test controls;
 - cloud connection settings or entitlement controls;
+- a general policy rules UI or workflow-style approval configuration center;
 - workflow runtime, queue, batch, MCP, or Agent Gateway control panels;
 - provider credentials, prompt/preset settings, or final write execution.
 

@@ -337,33 +337,30 @@ for the productized OpenClaw acceptance checklist.
 
 ### 11. Approval Policy Evaluator Roadmap
 
-Status: observation-only baseline implemented; real auto approval is deferred.
+Status: development approval modes implemented for cleanup only.
 
 Goal: support a conservative future auto-approval tier without turning Core
 into a policy engine or workflow runtime.
 
 Current rule:
 
-- every proposal remains `manual_required`;
+- `manual` remains the default and every proposal remains `manual_required`;
 - every successful proposal creation writes `proposal.policy_evaluated`;
-- no proposal status changes automatically;
+- `dry_run_guarded` records trusted cleanup candidates without approving them;
+- `local_guarded` may auto-approve only trusted test cleanup trash-post
+  batches;
 - Adapter still executes only approved proposals that pass Core commit
   preflight.
 
 Recommended next slice:
 
-- add dry-run `guarded` candidate evaluation for
-  `build-test-content-cleanup-plan` -> `plan_to_proposal_batch` proposals that
-  contain only `magick-ai/trash-post` actions targeting trusted test content;
-- keep the actual proposal status `pending`;
-- record stable allow/block reasons and evidence in audit metadata;
+- observe `local_guarded` in development and keep the allowlist limited to
+  `build-test-content-cleanup-plan` -> `plan_to_proposal_batch` proposals whose
+  actions all target `magick-ai/trash-post`;
+- do not add create-draft auto approval until cleanup auto approval has been
+  stable through local smoke and operator review;
 - do not add a rules DSL, scheduler, workflow runtime, UI configuration center,
   or final execution path.
-
-Do not enable real auto approval until the conditions in
-[Approval Policy Evaluator Standard](approval-policy-evaluator-standard.md) are
-met, including explicit enablement, trusted caller/app authorization, duplicate
-input protection, per-window quotas, audit, and mandatory commit preflight.
 
 ## Stop Conditions
 

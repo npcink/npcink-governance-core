@@ -126,12 +126,13 @@ attribution, and commit-preflight correlation ids. See
 the Core loop easier to review and debug without adding ability execution or a
 workflow runtime.
 
-The approval policy evaluator is currently observation-only. It records
-`manual_required` and `proposal.policy_evaluated` for every created proposal,
-but does not auto-approve. Future conservative auto approval must follow
-[Approval Policy Evaluator Standard](docs/approval-policy-evaluator-standard.md):
-explicit enablement, trusted caller/app authorization, narrow scenario checks,
-quotas, audit, and mandatory commit preflight.
+The approval policy evaluator defaults to `manual`, records
+`proposal.policy_evaluated` for every created proposal, and supports two
+development-only guarded modes. `dry_run_guarded` records cleanup candidates
+without approval. `local_guarded` can auto-approve only trusted
+`build-test-content-cleanup-plan` trash-post batches when explicit
+authorization, test-content evidence, quotas, and audit all pass. See
+[Approval Policy Evaluator Standard](docs/approval-policy-evaluator-standard.md).
 
 Real AI provider request logs remain owned by the WordPress `ai` plugin.
 Magick AI Adapter should carry Core `proposal_id` and commit-preflight

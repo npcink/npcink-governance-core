@@ -10,17 +10,27 @@ engine or workflow runtime.
 
 ## Current State
 
-The first evaluator is observation-only. During proposal creation, Core records
-`manual_required` for every proposal with `policy_profile=manual` and
-`policy_version=core-approval-policy-v1`. It writes
-`proposal.policy_evaluated` for every successful proposal creation and fails
-closed by deleting the created proposal row if that audit event cannot be
-recorded.
+The evaluator supports three site policy modes stored in
+`magick_ai_core_approval_policy_mode`:
+
+- `manual`: default. Core records `manual_required` for every proposal with
+  `policy_profile=manual`.
+- `dry_run_guarded`: development observation mode. Core may classify trusted
+  cleanup trash-post batches with `policy_profile=guarded`, but the proposal
+  remains `pending`.
+- `local_guarded`: development auto-approval mode. Core may approve only
+  trusted test-content cleanup trash-post batches after explicit authorization,
+  persisted evidence, quota checks, and audit.
+
+Every successful proposal creation writes `proposal.policy_evaluated`. If that
+audit event cannot be recorded, Core fails closed by deleting the created
+proposal row.
 
 Current behavior is intentionally unchanged:
 
-- all proposals remain `pending` by default;
-- no proposal is auto-approved;
+- all proposals remain `pending` by default in `manual`;
+- no proposal is auto-approved unless `local_guarded` is explicitly enabled and
+  every narrow cleanup condition passes;
 - Adapter remains thin and executes only approved proposals that pass Core
   commit preflight;
 - policy fields are non-secret governance metadata, not caller-controlled
@@ -35,7 +45,7 @@ Core may own:
 - a hardcoded evaluator class;
 - stable policy decision fields;
 - audit metadata for every policy decision;
-- conservative fail-closed checks before future auto approval;
+- conservative fail-closed checks before and during auto approval;
 - proposal spam guardrails that protect Core's governance queue.
 
 Core must not own:
@@ -86,10 +96,15 @@ Audit metadata for `proposal.policy_evaluated` must include:
 - `policy_decision`
 - `policy_profile`
 - `policy_version`
+- `policy_mode`
 - `policy_reasons`
 - `auto_approval_applied`
 - `commit_execution=false`
 - proposal id and ability id when available
+
+When `local_guarded` changes proposal status, Core must also write
+`proposal.auto_approved`. If that audit event cannot be written, Core must not
+leave the proposal approved.
 
 Policy-only diagnostics that are useful for operators but not part of the
 proposal API should stay in audit metadata. Ephemeral evaluator inputs that are
@@ -107,14 +122,13 @@ of the policy standard even when the first implementation only records
 - app-authenticated callers have a bounded pending proposal quota;
 - administrator callers have a high but finite pending proposal quota;
 - stale pending proposals are expired before create guardrail checks;
-- future auto approval must add separate per-window quotas, at minimum hourly
-  and daily limits per app/caller/profile;
-- future auto approval should record quota subject, quota window, and quota
-  decision in audit metadata.
+- `local_guarded` uses separate hourly and daily auto-approval quotas per
+  app/caller/profile;
+- auto approval records quota subject and limits in audit metadata.
 
 ## Auto-Approval Readiness
 
-Do not implement real auto approval until all of these are true:
+Do not widen real auto approval beyond cleanup until all of these remain true:
 
 - auto approval is explicitly enabled by Core-owned configuration or a trusted
   host policy contract;
@@ -130,14 +144,13 @@ Do not implement real auto approval until all of these are true:
   correlation id, and preflight policy version;
 - Adapter still executes only after approved status and successful preflight.
 
-The safest next slice is a dry-run candidate mode: compute whether a proposal
-would qualify for a future `guarded` auto approval, record the decision and
-reasons, but leave status `pending`.
+The current safe production default is still `manual`. Use `dry_run_guarded`
+first when validating a new local environment, then `local_guarded` only to
+reduce repetitive development approvals for trusted cleanup batches.
 
 ## First Narrow Candidate: Test Cleanup Trash Batch
 
-This is the first scenario worth considering for dry-run candidate evaluation
-and, later, real auto approval.
+This is the only implemented auto-approval scenario.
 
 Required properties:
 
@@ -151,14 +164,14 @@ Required properties:
 - caller/app key must be authenticated and explicitly authorized for approval;
 - duplicate input hash must reuse or block instead of creating repeated
   approved proposals;
-- auto approval must write `proposal.policy_evaluated` and a dedicated audit
-  event such as `proposal.auto_approved` if it changes proposal status.
+- auto approval must write `proposal.policy_evaluated` and
+  `proposal.auto_approved` if it changes proposal status.
 
-Evidence needed before real auto approval:
+Evidence required for real auto approval:
 
 - persisted preview evidence proving each action targets test content;
-- smoke coverage for batch size cap, non-test content block, mixed target
-  block, missing approval scope block, and quota block;
+- smoke or static coverage for batch size cap, non-test content block, mixed
+  target block, missing approval scope block, and quota block;
 - documentation that Adapter still performs per-action allowlist and schema
   checks before final WordPress mutation.
 
@@ -214,7 +227,7 @@ Status: implemented.
 
 ### Phase 1: Dry-Run Guarded Candidates
 
-Recommended next implementation.
+Status: implemented.
 
 - Add evaluator checks for cleanup trash-post batch candidates.
 - Return `manual_required` while adding stable reasons such as
@@ -225,7 +238,7 @@ Recommended next implementation.
 
 ### Phase 2: Explicit Auto Approval For Cleanup Only
 
-Do not start until Phase 1 evidence is stable.
+Status: implemented for development `local_guarded`.
 
 - Add explicit enablement and app/scope authorization.
 - Add hourly and daily auto-approval quotas.

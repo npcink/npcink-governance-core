@@ -123,11 +123,16 @@ Commit preflight repeats discovery against the stored real `ability_id` and
 fails closed if that ability disappeared after approval.
 
 Core evaluates a lightweight approval policy decision during proposal creation.
-The first version is observation-only and records `manual_required` for every
-proposal with `policy_profile=manual` and
-`policy_version=core-approval-policy-v1`. It does not auto-approve proposals,
-does not expose a rules DSL, and does not add workflow runtime, long-running
-policy jobs, or a configuration UI.
+The default `manual` mode records `manual_required` for every proposal with
+`policy_profile=manual` and `policy_version=core-approval-policy-v1`.
+Development mode `dry_run_guarded` may classify trusted cleanup candidates with
+`policy_profile=guarded` while leaving them pending. Development mode
+`local_guarded` may return `auto_approved` only for trusted
+`build-test-content-cleanup-plan` batch proposals whose actions all target
+`magick-ai/trash-post`, have persisted test-content evidence, pass caller
+authorization, and pass auto-approval quotas. The evaluator does not expose a
+rules DSL and does not add workflow runtime, long-running policy jobs, final
+execution, or a configuration center.
 
 Implementation rules and the staged auto-approval roadmap are documented in
 [Approval Policy Evaluator Standard](approval-policy-evaluator-standard.md).
@@ -154,6 +159,7 @@ MVP event names:
 
 - `proposal.created`
 - `proposal.policy_evaluated`
+- `proposal.auto_approved`
 - `proposal.deduplicated`
 - `proposal.quota_blocked`
 - `proposal.plan_ingested`
@@ -171,6 +177,7 @@ MVP event names:
 - `app.revoked`
 - `app.rate_limited`
 - `app.scope_denied`
+- `core.approval_policy_updated`
 
 Future event names:
 

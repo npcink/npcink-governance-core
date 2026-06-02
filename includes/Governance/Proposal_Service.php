@@ -204,6 +204,14 @@ final class Proposal_Service {
 			return $this->audit_failed_error( 'magick_ai_core_policy_decision_audit_failed' );
 		}
 
+		$auto_approved = $this->maybe_auto_approve_created_proposal( $proposal, $policy );
+		if ( is_wp_error( $auto_approved ) ) {
+			return $auto_approved;
+		}
+		if ( is_array( $auto_approved ) ) {
+			$proposal = $auto_approved;
+		}
+
 		return $proposal;
 	}
 
@@ -222,9 +230,75 @@ final class Proposal_Service {
 			'policy_decision'        => (string) ( $policy['policy_decision'] ?? Approval_Policy_Evaluator::DECISION_MANUAL_REQUIRED ),
 			'policy_profile'         => (string) ( $policy['policy_profile'] ?? Approval_Policy_Evaluator::PROFILE_MANUAL ),
 			'policy_version'         => (string) ( $policy['policy_version'] ?? Approval_Policy_Evaluator::VERSION ),
+			'policy_mode'            => sanitize_key( (string) ( $policy['policy_mode'] ?? Approval_Policy_Evaluator::MODE_MANUAL ) ),
 			'policy_reasons'         => array_values( array_map( 'sanitize_key', (array) ( $policy['policy_reasons'] ?? array() ) ) ),
+			'auto_approval_quota'    => $this->auto_approval_quota_audit_metadata( is_array( $policy['auto_approval_quota'] ?? null ) ? $policy['auto_approval_quota'] : array() ),
 			'auto_approval_applied'  => $auto_approval_applied,
 			'commit_execution'       => false,
+		);
+	}
+
+	/**
+	 * Applies a successful auto-approval policy decision after creation audit.
+	 *
+	 * @param array<string,mixed> $proposal Created proposal.
+	 * @param array<string,mixed> $policy Policy decision.
+	 * @return array<string,mixed>|WP_Error|null
+	 */
+	private function maybe_auto_approve_created_proposal( array $proposal, array $policy ) {
+		if ( Approval_Policy_Evaluator::DECISION_AUTO_APPROVED !== (string) ( $policy['policy_decision'] ?? '' ) ) {
+			return null;
+		}
+
+		$proposal_id = sanitize_text_field( (string) ( $proposal['proposal_id'] ?? '' ) );
+		if ( '' === $proposal_id ) {
+			return $this->transition_failed_error();
+		}
+
+		if ( ! $this->policy_evaluator->consume_auto_approval_quota( $policy ) ) {
+			$this->proposals->delete_by_proposal_id( $proposal_id );
+			return new WP_Error(
+				'magick_ai_core_auto_approval_quota_failed',
+				__( 'Auto approval quota could not be consumed.', 'magick-ai-core' ),
+				array( 'status' => 500 )
+			);
+		}
+
+		$approved = $this->proposals->update_status( $proposal_id, Proposal_Repository::STATUS_APPROVED );
+		if ( null === $approved ) {
+			$this->proposals->delete_by_proposal_id( $proposal_id );
+			return $this->transition_failed_error();
+		}
+
+		$event_id = $this->audit->record(
+			'proposal.auto_approved',
+			$this->policy_audit_metadata( $approved, $policy, true ),
+			$proposal_id
+		);
+
+		if ( '' === $event_id ) {
+			$this->proposals->update_status( $proposal_id, Proposal_Repository::STATUS_PENDING );
+			return $this->audit_failed_error( 'magick_ai_core_auto_approval_audit_failed' );
+		}
+
+		return $approved;
+	}
+
+	/**
+	 * Builds safe auto-approval quota audit metadata.
+	 *
+	 * @param array<string,mixed> $quota Quota metadata.
+	 * @return array<string,mixed>
+	 */
+	private function auto_approval_quota_audit_metadata( array $quota ): array {
+		if ( empty( $quota ) ) {
+			return array();
+		}
+
+		return array(
+			'subject'    => sanitize_text_field( (string) ( $quota['subject'] ?? '' ) ),
+			'hour_limit' => absint( $quota['hour_limit'] ?? 0 ),
+			'day_limit'  => absint( $quota['day_limit'] ?? 0 ),
 		);
 	}
 

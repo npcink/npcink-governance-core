@@ -225,6 +225,7 @@ final class App_Authenticator {
 				'key_id'       => (string) $app['key_id'],
 				'caller_type'  => (string) $app['caller_type'],
 				'scope'        => $scope,
+				'scopes'       => (array) ( $app['scopes'] ?? array() ),
 				'route_family' => $route_family,
 			)
 		);

@@ -38,12 +38,14 @@ final class Request_Context {
 	 * @return void
 	 */
 	public static function set_app( array $context ): void {
+		$scopes = array_values( array_unique( array_map( 'sanitize_text_field', (array) ( $context['scopes'] ?? array() ) ) ) );
 		self::$app = array(
 			'auth_type'      => 'app_key',
 			'app_id'         => sanitize_text_field( (string) ( $context['app_id'] ?? '' ) ),
 			'key_id'         => sanitize_text_field( (string) ( $context['key_id'] ?? '' ) ),
 			'caller_type'    => sanitize_key( (string) ( $context['caller_type'] ?? 'external_app' ) ),
 			'scope'          => sanitize_text_field( (string) ( $context['scope'] ?? '' ) ),
+			'scopes'         => $scopes,
 			'scope_decision' => sanitize_key( (string) ( $context['scope_decision'] ?? 'allowed' ) ),
 			'route_family'   => sanitize_key( (string) ( $context['route_family'] ?? '' ) ),
 		);
@@ -79,7 +81,15 @@ final class Request_Context {
 	 * @return bool
 	 */
 	public static function has_scope( string $scope ): bool {
-		return self::is_app() && $scope === (string) ( self::$app['scope'] ?? '' );
+		if ( ! self::is_app() ) {
+			return false;
+		}
+
+		if ( $scope === (string) ( self::$app['scope'] ?? '' ) ) {
+			return true;
+		}
+
+		return in_array( $scope, (array) ( self::$app['scopes'] ?? array() ), true );
 	}
 
 	/**

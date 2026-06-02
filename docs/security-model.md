@@ -88,15 +88,20 @@ The MVP supports:
 
 The MVP does not execute final writes.
 
-The first approval policy evaluator records `manual_required` for every
-proposal and writes `proposal.policy_evaluated`. It deliberately does not auto
-approve, does not accept caller-supplied policy rules, and does not add a rules
-DSL, workflow runtime, scheduler, or configuration center. If policy decision
-audit cannot be written, Core fails closed and deletes the created proposal row.
-Future policy changes must follow
-[Approval Policy Evaluator Standard](approval-policy-evaluator-standard.md),
-including explicit enablement, trusted caller/app authorization, quotas, audit,
-and mandatory commit preflight.
+The approval policy evaluator defaults to `manual`, records `manual_required`
+for every proposal, and writes `proposal.policy_evaluated`. Development-only
+`dry_run_guarded` records trusted cleanup candidates without changing proposal
+status. Development-only `local_guarded` may auto-approve only trusted test
+cleanup trash-post batches, and no other proposal class, when explicit
+caller/app authorization, persisted test-content evidence, quota, and audit
+checks pass. The only auto-approval class is trusted test cleanup trash-post
+batches. It does not accept caller-supplied policy rules and does not add a
+rules DSL, workflow runtime, scheduler, final execution, or configuration
+center. If policy decision audit cannot be written, Core fails closed and
+deletes the created proposal row; if auto-approval audit cannot be written, the
+proposal is not left approved.
+
+Auto approval allowlist: trusted test cleanup trash-post batches.
 
 Commit preflight returns Core-generated approval-commit context without running
 the target ability. Final write or destructive execution must require that

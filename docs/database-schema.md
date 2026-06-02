@@ -83,6 +83,7 @@ MVP event names:
 - `capabilities.listed`
 - `proposal.created`
 - `proposal.policy_evaluated`
+- `proposal.auto_approved`
 - `proposal.plan_ingested`
 - `proposal.approved`
 - `proposal.rejected`
@@ -93,12 +94,14 @@ MVP event names:
 - `proposal.listed`
 - `audit.listed`
 - `commit.preflighted`
+- `core.approval_policy_updated`
 
 Governance operability metadata:
 
 - proposal lifecycle events include `ability_id` when available;
 - policy evaluation events include `policy_decision`, `policy_profile`,
-  `policy_version`, `policy_reasons`, `auto_approval_applied=false`, and
+  `policy_version`, `policy_mode`, `policy_reasons`,
+  `auto_approval_applied`, optional auto-approval quota limits, and
   `commit_execution=false`;
 - plan intake events include `plan_ability_id`, `batch_id`,
   `action_count`, `proposal_count`, `blocked_count`,

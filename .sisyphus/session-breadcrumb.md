@@ -1,5 +1,33 @@
 # Session Breadcrumb
 
+## 2026-06-02 — Development approval policy modes enabled
+
+- **Module**: Core approval policy evaluator and admin governance setting.
+- **Status**: Core now supports `manual`, `dry_run_guarded`, and
+  `local_guarded` policy modes while keeping final execution outside Core.
+- **Completed**:
+  - Added the `magick_ai_core_approval_policy_mode` option with a lightweight
+    `Development Approval Policy` admin disclosure.
+  - Implemented `dry_run_guarded` candidate recording for trusted
+    `build-test-content-cleanup-plan` batch proposals that only target
+    `magick-ai/trash-post`.
+  - Implemented `local_guarded` auto approval for the same cleanup batch shape
+    when test-content evidence, app/admin authorization, quota, and audit pass.
+  - Added `proposal.auto_approved` audit, fail-closed rollback for failed auto
+    approval audit, hourly/daily auto-approval quotas, and app scope context
+    checks across all app key scopes.
+  - Preserved plan preview evidence in batch proposal previews so the policy
+    evaluator does not trust caller claims alone.
+- **Verification**:
+  - `composer test:all`
+  - `composer smoke:wp`
+  - `git diff --check`
+- **Boundary**:
+  - Default mode remains `manual`. `local_guarded` does not auto-approve media
+    deletion, post deletion, terms, comments, replies, create-draft, or
+    published-content updates. Adapter remains thin and still executes only
+    approved proposals after Core commit preflight.
+
 ## 2026-06-02 — Smoke fixture cleanup hardened
 
 - **Module**: Core WordPress smoke gate fixture lifecycle.

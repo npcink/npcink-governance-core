@@ -61,7 +61,7 @@ ability ids.
 | `capabilities:read` | Read normalized Core capability rows. |
 | `proposals:create` | Create proposals for real `ability_id` values. |
 | `proposals:read` | List or fetch proposal records. |
-| `proposals:approve` | Approve proposals when a trusted host policy is allowed to do so. |
+| `proposals:approve` | Approve proposals when a trusted host policy is allowed to do so; also authorizes `local_guarded` cleanup auto approval when paired with `proposals:create`. |
 | `proposals:reject` | Reject proposals. |
 | `commit:preflight` | Request Core-generated approval context for approved proposals. |
 | `audit:read` | Read audit events. |
@@ -79,6 +79,10 @@ avoid wildcard write semantics.
   separately issued trusted Adapter key. That key represents a host-controlled
   UI or policy that has already presented the proposal preview and risk context
   to the user.
+- In `local_guarded` policy mode, an app-created cleanup batch can be
+  auto-approved only when the app key carries both `proposals:create` and
+  `proposals:approve`; Core still requires trusted test-content evidence,
+  quotas, audit, and commit preflight.
 - Commit preflight requires `commit:preflight` and an approved proposal.
 - Audit listing requires `audit:read`.
 - Write/destructive WordPress execution is outside Core until final commit

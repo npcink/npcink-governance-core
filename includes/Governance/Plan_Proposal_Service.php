@@ -593,6 +593,7 @@ final class Plan_Proposal_Service {
 			'action_ids'         => $action_ids,
 			'target_ability_ids' => $target_ids,
 			'actions'            => $action_previews,
+			'plan_preview'       => $this->sanitize_payload( $plan['preview'] ?? array() ),
 			'risk'               => is_array( $plan['risk'] ?? null ) ? $this->sanitize_payload( $plan['risk'] ) : array(),
 			'warnings'           => $warnings,
 			'blocked_items'      => array(

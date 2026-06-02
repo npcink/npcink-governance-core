@@ -21,6 +21,7 @@ $magick_ai_core_smoke_app_key_fixture_ids    = array();
 $magick_ai_core_smoke_app_fixture_ids        = array();
 $magick_ai_core_smoke_proposal_fixture_ids   = array();
 $magick_ai_core_smoke_cleanup_completed      = false;
+$magick_ai_core_smoke_initial_policy_mode    = get_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::MODE_MANUAL );
 
 /**
  * Smoke assertion helper.
@@ -257,13 +258,14 @@ function magick_ai_core_smoke_purge_governance_records(): void {
  * @return void
  */
 function magick_ai_core_smoke_cleanup_fixtures(): void {
-	global $magick_ai_core_smoke_post_fixture_ids, $magick_ai_core_smoke_comment_fixture_ids, $magick_ai_core_smoke_attachment_fixture_ids, $magick_ai_core_smoke_term_fixtures, $magick_ai_core_smoke_app_key_fixture_ids, $magick_ai_core_smoke_cleanup_completed;
+	global $magick_ai_core_smoke_post_fixture_ids, $magick_ai_core_smoke_comment_fixture_ids, $magick_ai_core_smoke_attachment_fixture_ids, $magick_ai_core_smoke_term_fixtures, $magick_ai_core_smoke_app_key_fixture_ids, $magick_ai_core_smoke_cleanup_completed, $magick_ai_core_smoke_initial_policy_mode;
 
 	if ( $magick_ai_core_smoke_cleanup_completed ) {
 		return;
 	}
 
 	$magick_ai_core_smoke_cleanup_completed = true;
+	update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::sanitize_policy_mode( (string) $magick_ai_core_smoke_initial_policy_mode ), false );
 
 	foreach ( array_keys( (array) $magick_ai_core_smoke_app_key_fixture_ids ) as $key_id ) {
 		$app_keys = new \MagickAI\Core\Security\App_Key_Repository();
@@ -325,6 +327,7 @@ function magick_ai_core_smoke_cleanup_fixtures(): void {
 }
 
 register_shutdown_function( 'magick_ai_core_smoke_cleanup_fixtures' );
+update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::MODE_MANUAL, false );
 
 /**
  * Dispatches a REST request as admin.
@@ -830,6 +833,33 @@ function magick_ai_core_smoke_create_proposals_from_plan( string $ability_id, ar
 }
 
 /**
+ * Creates Core proposals from a planning ability output as an app client.
+ *
+ * @param string              $ability_id Planning ability id.
+ * @param array<string,mixed> $plan Planning ability response envelope.
+ * @param array<string,mixed> $plan_input Input used to build the plan.
+ * @param string              $token App token.
+ * @return array<string,mixed>
+ */
+function magick_ai_core_smoke_create_proposals_from_plan_as_app( string $ability_id, array $plan, array $plan_input, string $token ): array {
+	global $magick_ai_core_smoke_run_id;
+
+	return magick_ai_core_smoke_rest_as_app(
+		'POST',
+		'/magick-ai-core/v1/proposals/from-plan',
+		$token,
+		array(
+			'plan_ability_id' => $ability_id,
+			'plan'            => $plan,
+			'plan_input'      => $plan_input,
+			'caller'          => array(
+				'source' => 'tests/smoke-wp.php-app:' . $magick_ai_core_smoke_run_id,
+			),
+		)
+	);
+}
+
+/**
  * Verifies a proposal produced by the plan-to-proposal bridge.
  *
  * @param array<string,mixed> $proposal Proposal row.
@@ -1264,7 +1294,96 @@ magick_ai_core_smoke_assert( 'batch' === (string) ( $cleanup_plan_proposal['prev
 magick_ai_core_smoke_assert( true === (bool) ( $cleanup_plan_proposal['preview']['source']['batch_approval'] ?? false ), 'test content cleanup batch preserves batch_approval' );
 magick_ai_core_smoke_assert( 2 === count( $cleanup_plan_actions ), 'test content cleanup batch stores both trash-post actions' );
 magick_ai_core_smoke_assert( 'magick-ai/trash-post' === (string) ( $cleanup_plan_actions[0]['target_ability_id'] ?? '' ), 'test content cleanup batch stores trash-post action targets' );
+magick_ai_core_smoke_assert( 'manual_required' === (string) ( $cleanup_plan_proposal['policy_decision'] ?? '' ), 'manual policy keeps cleanup batch manual by default' );
 magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $cleanup_plan_proposal['proposal_id'] ?? '' ) );
+
+update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::MODE_DRY_RUN_GUARDED, false );
+$dry_guarded_pattern = 'Core Dry Guarded Test Cleanup Candidate ' . $magick_ai_core_smoke_run_id;
+$dry_guarded_post_id = wp_insert_post(
+	array(
+		'post_title'   => $dry_guarded_pattern . ' A',
+		'post_content' => 'This ' . $dry_guarded_pattern . ' A should be detected as test content for dry-run guarded cleanup.',
+		'post_status'  => 'draft',
+		'post_type'    => 'post',
+	),
+	true
+);
+magick_ai_core_smoke_assert( ! is_wp_error( $dry_guarded_post_id ) && (int) $dry_guarded_post_id > 0, 'dry-run guarded cleanup fixture post is created' );
+magick_ai_core_smoke_register_post_fixture( (int) $dry_guarded_post_id );
+$dry_guarded_plan_input = array(
+	'patterns'    => array( $dry_guarded_pattern ),
+	'max_actions' => 5,
+);
+$dry_guarded_plan = magick_ai_core_smoke_run_plan_ability( 'magick-ai/build-test-content-cleanup-plan', $dry_guarded_plan_input );
+$dry_guarded_result = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-test-content-cleanup-plan', $dry_guarded_plan, $dry_guarded_plan_input );
+magick_ai_core_smoke_assert( 1 === (int) ( $dry_guarded_result['proposal_count'] ?? 0 ), 'dry-run guarded cleanup plan generates one batch Core proposal' );
+$dry_guarded_proposal = is_array( $dry_guarded_result['proposals'][0] ?? null ) ? $dry_guarded_result['proposals'][0] : array();
+magick_ai_core_smoke_assert( 'pending' === (string) ( $dry_guarded_proposal['status'] ?? '' ), 'dry-run guarded cleanup remains pending' );
+magick_ai_core_smoke_assert( 'manual_required' === (string) ( $dry_guarded_proposal['policy_decision'] ?? '' ), 'dry-run guarded cleanup remains manual_required' );
+magick_ai_core_smoke_assert( 'guarded' === (string) ( $dry_guarded_proposal['policy_profile'] ?? '' ), 'dry-run guarded cleanup records guarded profile' );
+magick_ai_core_smoke_assert( in_array( 'guarded_cleanup_candidate', (array) ( $dry_guarded_proposal['policy_reasons'] ?? array() ), true ), 'dry-run guarded cleanup records candidate reason' );
+magick_ai_core_smoke_assert( in_array( 'auto_approval_dry_run_only', (array) ( $dry_guarded_proposal['policy_reasons'] ?? array() ), true ), 'dry-run guarded cleanup records dry-run-only reason' );
+magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $dry_guarded_proposal['proposal_id'] ?? '' ) );
+
+$local_guarded_app = magick_ai_core_smoke_rest(
+	'POST',
+	'/magick-ai-core/v1/apps',
+	array(
+		'app_label'           => 'Local Guarded Approval Smoke ' . $magick_ai_core_smoke_run_id,
+		'caller_type'         => 'trusted_adapter',
+		'scopes'              => array( 'capabilities:read', 'proposals:create', 'proposals:read', 'proposals:approve', 'commit:preflight', 'audit:read' ),
+		'rate_limit'          => 20,
+		'rate_window_seconds' => 3600,
+	)
+);
+$local_guarded_token = (string) ( $local_guarded_app['token'] ?? '' );
+magick_ai_core_smoke_assert( '' !== $local_guarded_token, 'local guarded app key is created for auto approval smoke' );
+
+update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::MODE_LOCAL_GUARDED, false );
+$local_guarded_pattern = 'Core Local Guarded Test Cleanup Candidate ' . $magick_ai_core_smoke_run_id;
+$local_guarded_post_id = wp_insert_post(
+	array(
+		'post_title'   => $local_guarded_pattern . ' A',
+		'post_content' => 'This ' . $local_guarded_pattern . ' A should be detected as test content for local guarded cleanup.',
+		'post_status'  => 'draft',
+		'post_type'    => 'post',
+	),
+	true
+);
+magick_ai_core_smoke_assert( ! is_wp_error( $local_guarded_post_id ) && (int) $local_guarded_post_id > 0, 'local guarded cleanup fixture post is created' );
+magick_ai_core_smoke_register_post_fixture( (int) $local_guarded_post_id );
+$local_guarded_plan_input = array(
+	'patterns'    => array( $local_guarded_pattern ),
+	'max_actions' => 5,
+);
+$local_guarded_plan = magick_ai_core_smoke_run_plan_ability( 'magick-ai/build-test-content-cleanup-plan', $local_guarded_plan_input );
+$local_guarded_result = magick_ai_core_smoke_create_proposals_from_plan_as_app( 'magick-ai/build-test-content-cleanup-plan', $local_guarded_plan, $local_guarded_plan_input, $local_guarded_token );
+magick_ai_core_smoke_assert( 1 === (int) ( $local_guarded_result['proposal_count'] ?? 0 ), 'local guarded cleanup plan generates one batch Core proposal' );
+$local_guarded_proposal = is_array( $local_guarded_result['proposals'][0] ?? null ) ? $local_guarded_result['proposals'][0] : array();
+$local_guarded_proposal_id = (string) ( $local_guarded_proposal['proposal_id'] ?? '' );
+magick_ai_core_smoke_assert( 'approved' === (string) ( $local_guarded_proposal['status'] ?? '' ), 'local guarded cleanup is auto-approved' );
+magick_ai_core_smoke_assert( 'auto_approved' === (string) ( $local_guarded_proposal['policy_decision'] ?? '' ), 'local guarded cleanup records auto-approved decision' );
+magick_ai_core_smoke_assert( 'trusted_local' === (string) ( $local_guarded_proposal['policy_profile'] ?? '' ), 'local guarded cleanup records trusted_local profile' );
+magick_ai_core_smoke_assert( in_array( 'local_guarded_cleanup_auto_approved', (array) ( $local_guarded_proposal['policy_reasons'] ?? array() ), true ), 'local guarded cleanup records auto-approved reason' );
+$local_guarded_preflight = magick_ai_core_smoke_rest_as_app( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $local_guarded_proposal_id ) . '/commit-preflight', $local_guarded_token );
+magick_ai_core_smoke_assert( true === (bool) ( $local_guarded_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'local guarded cleanup preflight passes without manual approval' );
+$local_guarded_audit = magick_ai_core_smoke_rest_as_app(
+	'GET',
+	'/magick-ai-core/v1/audit',
+	$local_guarded_token,
+	array(
+		'proposal_id' => $local_guarded_proposal_id,
+		'limit'       => 20,
+	)
+);
+$local_guarded_events = array_values( array_map(
+	static function ( $item ): string {
+		return is_array( $item ) ? (string) ( $item['event_name'] ?? '' ) : '';
+	},
+	(array) ( $local_guarded_audit['items'] ?? array() )
+) );
+magick_ai_core_smoke_assert( in_array( 'proposal.auto_approved', $local_guarded_events, true ), 'local guarded cleanup writes auto approval audit event' );
+update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::MODE_MANUAL, false );
 
 $plan_attachment_title = 'Core Plan Bridge Media Candidate ' . $magick_ai_core_smoke_run_id;
 $plan_attachment_id    = wp_insert_post(

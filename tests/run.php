@@ -149,6 +149,7 @@ foreach (
 $governance = magick_ai_core_read( $root . '/docs/governance-contract.md' );
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.created' ), 'Governance contract records proposal.created event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.policy_evaluated' ), 'Governance contract records proposal.policy_evaluated event.' );
+magick_ai_core_assert( false !== strpos( $governance, 'proposal.auto_approved' ), 'Governance contract records proposal.auto_approved event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.approved' ), 'Governance contract records proposal.approved event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.rejected' ), 'Governance contract records proposal.rejected event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.expired' ), 'Governance contract records proposal.expired event.' );
@@ -164,7 +165,9 @@ $approval_policy_standard = magick_ai_core_read( $root . '/docs/approval-policy-
 foreach (
 	array(
 		'Status: active planning standard',
-		'observation-only',
+		'magick_ai_core_approval_policy_mode',
+		'dry_run_guarded',
+		'local_guarded',
 		'manual_required',
 		'auto_approved',
 		'blocked',
@@ -181,8 +184,8 @@ foreach (
 		'include_unattached_test_media',
 		'magick-ai/delete-media-permanently',
 		'magick-ai/set-post-terms',
-		'per-window auto-approval quotas',
-		'Do not implement real auto approval until all of these are true',
+		'hourly and daily auto-approval quotas',
+		'Do not widen real auto approval beyond cleanup until all of these remain true',
 		'Adapter still executes only after approved status and successful preflight',
 		'does not add a rules DSL',
 		'composer smoke:wp',
@@ -279,6 +282,7 @@ foreach (
 		'app.rate_limited',
 		'proposal.created',
 		'proposal.policy_evaluated',
+		'proposal.auto_approved',
 		'proposal.plan_ingested',
 		'proposal.expired',
 		'proposal.archived',
@@ -302,8 +306,10 @@ foreach (
 		'App Auth Scope Policy',
 		'Authorization: Bearer mai_core.<key_id>.<secret>',
 		'raw app secrets',
-		'observation-only approval policy evaluation',
+		'local_guarded',
+		'trusted test cleanup trash-post batches',
 		'proposal.policy_evaluated',
+		'proposal is not left approved',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $security_model, $required ), 'Security model contains required text: ' . $required );
@@ -713,6 +719,7 @@ magick_ai_core_assert( false !== strpos( $testing_strategy, 'commit-preflight `c
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'trusted Adapter approval coverage' ), 'Testing strategy records trusted Adapter approval smoke coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'Fail-closed governance paths' ), 'Testing strategy records fail-closed governance path coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'proposal.policy_evaluated' ), 'Testing strategy records policy decision audit failure coverage.' );
+magick_ai_core_assert( false !== strpos( $testing_strategy, 'proposal.auto_approved' ), 'Testing strategy records auto approval audit failure coverage.' );
 
 $reliability_standard = magick_ai_core_read( $root . '/docs/current-stage-governance-reliability.md' );
 foreach (
@@ -847,9 +854,18 @@ foreach (
 		'trusted_local',
 		'break_glass',
 		'core-approval-policy-v1',
+		'OPTION_POLICY_MODE',
+		'MODE_DRY_RUN_GUARDED',
+		'MODE_LOCAL_GUARDED',
+		'CLEANUP_BATCH_MAX_ACTIONS',
+		'AUTO_APPROVAL_HOURLY_LIMIT',
+		'AUTO_APPROVAL_DAILY_LIMIT',
 		'auto_approval_dry_run_only',
+		'local_guarded_cleanup_auto_approved',
+		'guarded_cleanup_rejected_missing_test_content_evidence',
 		'build-test-content-cleanup-plan',
 		'magick-ai/trash-post',
+		'consume_auto_approval_quota',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $approval_policy_evaluator, $required ), 'Approval policy evaluator contains required text: ' . $required );
@@ -867,6 +883,9 @@ magick_ai_core_assert( false !== strpos( $proposal_repository, 'policy_decision'
 magick_ai_core_assert( false !== strpos( $proposal_repository, 'policy_reasons' ), 'Proposal repository returns policy_reasons.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.created' ), 'Proposal service records proposal.created audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.policy_evaluated' ), 'Proposal service records policy evaluation audit event.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.auto_approved' ), 'Proposal service records auto approval audit event.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'magick_ai_core_auto_approval_audit_failed' ), 'Proposal service fails closed when auto approval audit fails.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'magick_ai_core_auto_approval_quota_failed' ), 'Proposal service fails closed when auto approval quota cannot be consumed.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.deduplicated' ), 'Proposal service records proposal.deduplicated audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.quota_blocked' ), 'Proposal service records proposal.quota_blocked audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'Ability_Registry_Adapter' ), 'Proposal service validates target abilities against ability intake.' );
@@ -988,6 +1007,8 @@ magick_ai_core_assert( false !== strpos( $audit_controller, 'correlation_id' ), 
 $request_context = magick_ai_core_read( $root . '/includes/Security/Request_Context.php' );
 magick_ai_core_assert( false !== strpos( $request_context, 'scope_decision' ), 'Request context stores scope decision.' );
 magick_ai_core_assert( false !== strpos( $request_context, 'mark_scope_decision' ), 'Request context can update scope decision for denials.' );
+magick_ai_core_assert( false !== strpos( $request_context, "'scopes'" ), 'Request context stores app scopes for local guarded auto approval.' );
+magick_ai_core_assert( false !== strpos( $request_context, 'in_array( $scope' ), 'Request context can check any app scope, not only the current route scope.' );
 
 $observability = magick_ai_core_read( $root . '/includes/Observability.php' );
 foreach ( array( 'Observability', 'magick_ai_observability_event', 'schema_version', 'plugin_slug', 'source', 'local', 'event_kind' ) as $required ) {
@@ -1003,9 +1024,11 @@ foreach (
 		'pending proposal review list',
 		'Governance Audit',
 		'Expired / Archived',
+		'Development Approval Policy',
 		'Advanced Access',
 		'paginated',
 		'low-frequency fallback action',
+		'general policy rules UI',
 		'OpenClaw onboarding',
 		'ability definitions',
 		'cloud connection settings',
@@ -1018,6 +1041,7 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_bulk_reject_proposals' ), 'Admin page registers bulk reject handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_archive_proposal' ), 'Admin page registers archive handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_reopen_proposal' ), 'Admin page registers reopen handler.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_update_approval_policy' ), 'Admin page registers approval policy mode handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_create_app_key' ), 'Admin page registers app-key creation handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_revoke_app_key' ), 'Admin page registers app-key revocation handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'check_admin_referer' ), 'Admin proposal actions enforce nonce.' );
@@ -1028,6 +1052,10 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'Proposal ID:' ), 'Admin r
 magick_ai_core_assert( false !== strpos( $admin_page, 'pending_proposal_trace_parts' ), 'Admin review queue summarizes source trace metadata.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'plan_ability_id' ), 'Admin review queue can show plan-to-proposal source metadata.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Advanced Access' ), 'Admin page folds Core app-key management behind advanced access.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Development Approval Policy' ), 'Admin page exposes lightweight development approval policy mode.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'MODE_DRY_RUN_GUARDED' ), 'Admin page exposes dry-run guarded approval mode.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'MODE_LOCAL_GUARDED' ), 'Admin page exposes local guarded approval mode.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'update_option( Approval_Policy_Evaluator::OPTION_POLICY_MODE' ), 'Admin page persists approval policy mode through a bounded option.' );
 magick_ai_core_assert( false !== strpos( $admin_page, "'app-keys'" ), 'Admin page keeps app-key management available behind an advanced view.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'render_admin_tabs' ), 'Admin page exposes tabbed Core sections.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'nav-tab-wrapper' ), 'Admin page uses WordPress admin tabs for Core sections.' );

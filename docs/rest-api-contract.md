@@ -286,16 +286,18 @@ Proposal rows include policy fields:
 
 | Name | Type | Notes |
 | --- | --- | --- |
-| `policy_decision` | string | First version returns `manual_required`. Reserved values are `manual_required`, `auto_approved`, and `blocked`. |
-| `policy_profile` | string | First version returns `manual`. Reserved profiles are `manual`, `guarded`, `trusted_local`, and `break_glass`. |
+| `policy_decision` | string | Defaults to `manual_required`. `local_guarded` may return `auto_approved` only for trusted test cleanup trash-post batches. Reserved values are `manual_required`, `auto_approved`, and `blocked`. |
+| `policy_profile` | string | Defaults to `manual`. `dry_run_guarded` may return `guarded`; `local_guarded` auto approval returns `trusted_local`. Reserved profiles are `manual`, `guarded`, `trusted_local`, and `break_glass`. |
 | `policy_version` | string | Current value is `core-approval-policy-v1`. |
 | `policy_reasons` | array | Stable, sanitized reason keys. |
 
-The first policy evaluator is observation-only. It stores
-`caller.core_policy`, promotes the same fields into proposal responses, and
-records an audit event. It does not auto-approve proposals and does not add a
-rules DSL, workflow runtime, long-running scheduler, or policy configuration
-UI.
+The policy evaluator stores `caller.core_policy`, promotes the same fields into
+proposal responses, and records `proposal.policy_evaluated`. `manual` remains
+the default and does not auto-approve. `local_guarded` may auto-approve only
+trusted `build-test-content-cleanup-plan` `plan_to_proposal_batch` proposals
+whose actions all target `magick-ai/trash-post`. It does not add a rules DSL,
+workflow runtime, long-running scheduler, final execution path, or policy
+configuration UI.
 
 Errors:
 
@@ -306,11 +308,14 @@ Errors:
 | `magick_ai_core_proposal_insert_failed` | `500` | Proposal row could not be stored. |
 | `magick_ai_core_proposal_audit_failed` | `500` | Proposal creation could not be audited; Core deletes the created proposal before failing. |
 | `magick_ai_core_policy_decision_audit_failed` | `500` | Policy decision could not be audited; Core deletes the created proposal before failing. |
+| `magick_ai_core_auto_approval_audit_failed` | `500` | Auto approval could not be audited; Core does not leave the proposal approved. |
+| `magick_ai_core_auto_approval_quota_failed` | `500` | Auto approval quota could not be consumed; Core deletes the created proposal before failing. |
 
 Audit event:
 
 - `proposal.created`
 - `proposal.policy_evaluated`
+- `proposal.auto_approved` when `local_guarded` changes status to approved
 
 App audit attribution:
 
