@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-06-02 — Observation-only approval policy evaluator added
+
+- **Module**: Core proposal creation governance.
+- **Status**: Proposal creation now evaluates and records a lightweight
+  approval policy decision while keeping every proposal manual by default.
+- **Completed**:
+  - Added a hardcoded `Approval_Policy_Evaluator` skeleton with reserved
+    decisions `manual_required`, `auto_approved`, and `blocked`.
+  - Stored non-secret `caller.core_policy` metadata and promoted
+    `policy_decision`, `policy_profile`, `policy_version`, and
+    `policy_reasons` into proposal responses.
+  - Recorded `proposal.policy_evaluated` on successful proposal creation and
+    fail-closed behavior when policy decision audit cannot be written.
+  - Documented that the first evaluator is observation-only: no auto approval,
+    no rules DSL, no workflow runtime, no scheduler, and no policy UI.
+- **Next Steps**:
+  - Before enabling real auto approval, persist enough cleanup-plan evidence to
+    prove every `trash-post` action targets trusted test content, add explicit
+    auto-approval authorization/scope or equivalent app context, and add
+    per-window auto-approval quotas.
+- **Boundary**:
+  - This keeps Core as proposal/approval/preflight/audit truth. Adapter remains
+    thin and must still execute only approved proposals that pass preflight.
+    The change does not add final WordPress execution, workflow runtime,
+    queues, MCP runtime, provider credentials, or a configuration center.
+
 ## 2026-06-01 — Review queue proposal trace restored
 
 - **Module**: Core admin governance review queue.

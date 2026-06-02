@@ -147,6 +147,7 @@ foreach (
 
 $governance = magick_ai_core_read( $root . '/docs/governance-contract.md' );
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.created' ), 'Governance contract records proposal.created event.' );
+magick_ai_core_assert( false !== strpos( $governance, 'proposal.policy_evaluated' ), 'Governance contract records proposal.policy_evaluated event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.approved' ), 'Governance contract records proposal.approved event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.rejected' ), 'Governance contract records proposal.rejected event.' );
 magick_ai_core_assert( false !== strpos( $governance, 'proposal.expired' ), 'Governance contract records proposal.expired event.' );
@@ -182,6 +183,7 @@ foreach (
 		'magick_ai_core_ability_not_available',
 		'magick_ai_core_proposal_insert_failed',
 		'magick_ai_core_proposal_audit_failed',
+		'magick_ai_core_policy_decision_audit_failed',
 		'magick_ai_core_proposal_decision_audit_failed',
 		'magick_ai_core_legacy_confirmation_rejected',
 		'magick_ai_core_proposal_expired',
@@ -189,6 +191,9 @@ foreach (
 		'archived',
 		'audit_timeline',
 		'correlation_id',
+		'policy_decision',
+		'policy_profile',
+		'policy_reasons',
 		'approved_input_hash',
 		'approved_preview_hash',
 		'policy_version',
@@ -241,6 +246,7 @@ foreach (
 		'app.revoked',
 		'app.rate_limited',
 		'proposal.created',
+		'proposal.policy_evaluated',
 		'proposal.plan_ingested',
 		'proposal.expired',
 		'proposal.archived',
@@ -264,6 +270,8 @@ foreach (
 		'App Auth Scope Policy',
 		'Authorization: Bearer mai_core.<key_id>.<secret>',
 		'raw app secrets',
+		'observation-only approval policy evaluation',
+		'proposal.policy_evaluated',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $security_model, $required ), 'Security model contains required text: ' . $required );
@@ -670,6 +678,7 @@ magick_ai_core_assert( false !== strpos( $testing_strategy, 'proposal `audit_tim
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'commit-preflight `correlation_id`' ), 'Testing strategy records preflight correlation smoke coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'trusted Adapter approval coverage' ), 'Testing strategy records trusted Adapter approval smoke coverage.' );
 magick_ai_core_assert( false !== strpos( $testing_strategy, 'Fail-closed governance paths' ), 'Testing strategy records fail-closed governance path coverage.' );
+magick_ai_core_assert( false !== strpos( $testing_strategy, 'proposal.policy_evaluated' ), 'Testing strategy records policy decision audit failure coverage.' );
 
 $reliability_standard = magick_ai_core_read( $root . '/docs/current-stage-governance-reliability.md' );
 foreach (
@@ -788,6 +797,25 @@ magick_ai_core_assert( false !== strpos( $proposals_controller, 'expire_stale_pe
 
 $proposal_service = magick_ai_core_read( $root . '/includes/Governance/Proposal_Service.php' );
 $proposal_repository = magick_ai_core_read( $root . '/includes/Governance/Proposal_Repository.php' );
+$approval_policy_evaluator = magick_ai_core_read( $root . '/includes/Governance/Approval_Policy_Evaluator.php' );
+foreach (
+	array(
+		'Approval_Policy_Evaluator',
+		'manual_required',
+		'auto_approved',
+		'blocked',
+		'manual',
+		'guarded',
+		'trusted_local',
+		'break_glass',
+		'core-approval-policy-v1',
+		'auto_approval_dry_run_only',
+		'build-test-content-cleanup-plan',
+		'magick-ai/trash-post',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $approval_policy_evaluator, $required ), 'Approval policy evaluator contains required text: ' . $required );
+}
 magick_ai_core_assert( false !== strpos( $proposal_repository, 'STATUS_EXPIRED' ), 'Proposal repository defines expired status.' );
 magick_ai_core_assert( false !== strpos( $proposal_repository, 'STATUS_ARCHIVED' ), 'Proposal repository defines archived status.' );
 magick_ai_core_assert( false !== strpos( $proposal_repository, 'list_stale_pending' ), 'Proposal repository can list stale pending proposals.' );
@@ -796,7 +824,11 @@ magick_ai_core_assert( false !== strpos( $proposal_repository, 'count_by_status'
 magick_ai_core_assert( false !== strpos( $proposal_repository, 'OFFSET %d' ), 'Proposal repository supports paginated admin lists.' );
 magick_ai_core_assert( false !== strpos( $proposal_repository, 'magick_ai_core_proposal_insert_failed' ), 'Proposal repository returns a stable insert failure error.' );
 magick_ai_core_assert( false !== strpos( $proposal_repository, 'delete_by_proposal_id' ), 'Proposal repository can remove unaudited created proposals.' );
+magick_ai_core_assert( false !== strpos( $proposal_repository, 'policy_fields_from_caller' ), 'Proposal repository promotes stored policy fields into responses.' );
+magick_ai_core_assert( false !== strpos( $proposal_repository, 'policy_decision' ), 'Proposal repository returns policy_decision.' );
+magick_ai_core_assert( false !== strpos( $proposal_repository, 'policy_reasons' ), 'Proposal repository returns policy_reasons.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.created' ), 'Proposal service records proposal.created audit event.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.policy_evaluated' ), 'Proposal service records policy evaluation audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.deduplicated' ), 'Proposal service records proposal.deduplicated audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.quota_blocked' ), 'Proposal service records proposal.quota_blocked audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'Ability_Registry_Adapter' ), 'Proposal service validates target abilities against ability intake.' );
@@ -811,6 +843,8 @@ magick_ai_core_assert( false !== strpos( $proposal_service, 'PENDING_QUOTA_PER_A
 magick_ai_core_assert( false !== strpos( $proposal_service, 'PENDING_QUOTA_PER_USER' ), 'Proposal service defines a user pending proposal quota.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'magick_ai_core_pending_proposal_quota_exceeded' ), 'Proposal service blocks callers with too many pending proposals.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'core_guardrails' ), 'Proposal service stores non-secret proposal creation guardrail metadata.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'core_policy' ), 'Proposal service stores non-secret policy decision metadata.' );
+magick_ai_core_assert( false !== strpos( $proposal_service, 'magick_ai_core_policy_decision_audit_failed' ), 'Proposal service fails closed when policy decision audit fails.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'deduplicated' ), 'Proposal service returns existing pending duplicates.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.listed' ), 'Proposal service records proposal.listed audit event.' );
 magick_ai_core_assert( false !== strpos( $proposal_service, 'proposal.viewed' ), 'Proposal service records proposal.viewed audit event.' );

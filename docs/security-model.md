@@ -27,11 +27,13 @@ Implemented layers include:
 - ability scopes;
 - rate limits;
 - pending proposal quota and duplicate pending proposal reuse;
+- observation-only approval policy evaluation;
 - per-app audit attribution.
 
 Planned layers include:
 
 - write-mode policy;
+- explicitly enabled auto approval for tightly bounded cases;
 - idempotency keys;
 
 These must be documented before implementation. They must not be inferred from
@@ -78,12 +80,19 @@ The MVP supports:
 
 - proposal creation;
 - proposal creation from supported read-only planning ability output;
+- policy decision recording;
 - approval;
 - rejection;
 - commit preflight;
 - audit records.
 
 The MVP does not execute final writes.
+
+The first approval policy evaluator records `manual_required` for every
+proposal and writes `proposal.policy_evaluated`. It deliberately does not auto
+approve, does not accept caller-supplied policy rules, and does not add a rules
+DSL, workflow runtime, scheduler, or configuration center. If policy decision
+audit cannot be written, Core fails closed and deletes the created proposal row.
 
 Commit preflight returns Core-generated approval-commit context without running
 the target ability. Final write or destructive execution must require that

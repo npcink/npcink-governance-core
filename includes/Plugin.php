@@ -10,6 +10,7 @@ namespace MagickAI\Core;
 use MagickAI\Core\Admin\Admin_Page;
 use MagickAI\Core\Audit\Audit_Log_Repository;
 use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
+use MagickAI\Core\Governance\Approval_Policy_Evaluator;
 use MagickAI\Core\Governance\Commit_Preflight_Service;
 use MagickAI\Core\Governance\Plan_Proposal_Service;
 use MagickAI\Core\Governance\Proposal_Repository;
@@ -64,6 +65,13 @@ final class Plugin {
 	 * @var Proposal_Service|null
 	 */
 	private $proposal_service = null;
+
+	/**
+	 * Approval policy evaluator.
+	 *
+	 * @var Approval_Policy_Evaluator|null
+	 */
+	private $approval_policy_evaluator = null;
 
 	/**
 	 * Commit preflight service.
@@ -205,11 +213,25 @@ final class Plugin {
 			$this->proposal_service = new Proposal_Service(
 				$this->proposal_repository(),
 				$this->ability_adapter(),
-				$this->audit_repository()
+				$this->audit_repository(),
+				$this->approval_policy_evaluator()
 			);
 		}
 
 		return $this->proposal_service;
+	}
+
+	/**
+	 * Returns approval policy evaluator.
+	 *
+	 * @return Approval_Policy_Evaluator
+	 */
+	public function approval_policy_evaluator(): Approval_Policy_Evaluator {
+		if ( null === $this->approval_policy_evaluator ) {
+			$this->approval_policy_evaluator = new Approval_Policy_Evaluator();
+		}
+
+		return $this->approval_policy_evaluator;
 	}
 
 	/**

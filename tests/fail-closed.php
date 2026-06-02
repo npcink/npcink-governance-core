@@ -361,6 +361,13 @@ final class Magick_AI_Core_Fail_Closed_WPDB {
 	public $fail_insert_tables = array();
 
 	/**
+	 * Audit event names whose insert should fail.
+	 *
+	 * @var array<int,string>
+	 */
+	public $fail_insert_event_names = array();
+
+	/**
 	 * Tables whose update should fail.
 	 *
 	 * @var array<int,string>
@@ -390,6 +397,9 @@ final class Magick_AI_Core_Fail_Closed_WPDB {
 	 */
 	public function insert( string $table, array $record, array $format = array() ) {
 		if ( in_array( $table, $this->fail_insert_tables, true ) ) {
+			return false;
+		}
+		if ( false !== strpos( $table, 'magick_ai_core_audit_log' ) && in_array( (string) ( $record['event_name'] ?? '' ), $this->fail_insert_event_names, true ) ) {
 			return false;
 		}
 
@@ -594,6 +604,7 @@ function magick_ai_core_fail_closed_assert( bool $condition, string $message ): 
 require_once dirname( __DIR__ ) . '/includes/Security/Request_Context.php';
 require_once dirname( __DIR__ ) . '/includes/Audit/Audit_Log_Repository.php';
 require_once dirname( __DIR__ ) . '/includes/Capabilities/Ability_Registry_Adapter.php';
+require_once dirname( __DIR__ ) . '/includes/Governance/Approval_Policy_Evaluator.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Proposal_Repository.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Proposal_Service.php';
 require_once dirname( __DIR__ ) . '/includes/Security/App_Key_Repository.php';
@@ -625,7 +636,8 @@ function magick_ai_core_fail_closed_proposal_stack(): array {
 	$service   = new \MagickAI\Core\Governance\Proposal_Service(
 		$proposals,
 		new \MagickAI\Core\Capabilities\Ability_Registry_Adapter(),
-		new \MagickAI\Core\Audit\Audit_Log_Repository()
+		new \MagickAI\Core\Audit\Audit_Log_Repository(),
+		new \MagickAI\Core\Governance\Approval_Policy_Evaluator()
 	);
 
 	return array(
@@ -669,6 +681,22 @@ $result = $stack['service']->create( magick_ai_core_fail_closed_payload() );
 magick_ai_core_fail_closed_assert( is_wp_error( $result ), 'Proposal creation audit failure returns WP_Error.' );
 magick_ai_core_fail_closed_assert( 'magick_ai_core_proposal_audit_failed' === $result->get_error_code(), 'Proposal creation audit failure uses stable error code.' );
 magick_ai_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Unaudited proposal creation is deleted.' );
+
+$wpdb = magick_ai_core_fail_closed_reset_db();
+$stack    = magick_ai_core_fail_closed_proposal_stack();
+$proposal = $stack['service']->create( magick_ai_core_fail_closed_payload() );
+magick_ai_core_fail_closed_assert( ! is_wp_error( $proposal ) && 'manual_required' === (string) ( $proposal['policy_decision'] ?? '' ), 'Control proposal records the default policy decision.' );
+magick_ai_core_fail_closed_assert( 'manual' === (string) ( $proposal['policy_profile'] ?? '' ), 'Control proposal records the default policy profile.' );
+magick_ai_core_fail_closed_assert( 'core-approval-policy-v1' === (string) ( $proposal['policy_version'] ?? '' ), 'Control proposal records the policy version.' );
+magick_ai_core_fail_closed_assert( in_array( 'default_manual_required', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Control proposal records manual policy reason.' );
+
+$wpdb = magick_ai_core_fail_closed_reset_db();
+$wpdb->fail_insert_event_names[] = 'proposal.policy_evaluated';
+$stack  = magick_ai_core_fail_closed_proposal_stack();
+$result = $stack['service']->create( magick_ai_core_fail_closed_payload() );
+magick_ai_core_fail_closed_assert( is_wp_error( $result ), 'Policy decision audit failure returns WP_Error.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_policy_decision_audit_failed' === $result->get_error_code(), 'Policy decision audit failure uses stable error code.' );
+magick_ai_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Unaudited policy decision deletes the proposal row.' );
 
 $wpdb = magick_ai_core_fail_closed_reset_db();
 $stack    = magick_ai_core_fail_closed_proposal_stack();

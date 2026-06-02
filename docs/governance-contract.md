@@ -41,6 +41,10 @@ Core-generated fields:
 
 - `proposal_id`
 - `status`
+- `policy_decision`
+- `policy_profile`
+- `policy_version`
+- `policy_reasons`
 - `created_at`
 - `updated_at`
 
@@ -115,6 +119,26 @@ Proposal creation validates that the target ability is currently discoverable.
 Commit preflight repeats discovery against the stored real `ability_id` and
 fails closed if that ability disappeared after approval.
 
+Core evaluates a lightweight approval policy decision during proposal creation.
+The first version is observation-only and records `manual_required` for every
+proposal with `policy_profile=manual` and
+`policy_version=core-approval-policy-v1`. It does not auto-approve proposals,
+does not expose a rules DSL, and does not add workflow runtime, long-running
+policy jobs, or a configuration UI.
+
+Reserved policy decision values are:
+
+- `manual_required`
+- `auto_approved`
+- `blocked`
+
+Reserved policy profiles are:
+
+- `manual`
+- `guarded`
+- `trusted_local`
+- `break_glass`
+
 The new Core uses approval-commit terminology. It must not reintroduce
 `confirm_token`, `write_confirmed`, or other legacy confirmation parameters.
 
@@ -123,6 +147,7 @@ The new Core uses approval-commit terminology. It must not reintroduce
 MVP event names:
 
 - `proposal.created`
+- `proposal.policy_evaluated`
 - `proposal.deduplicated`
 - `proposal.quota_blocked`
 - `proposal.plan_ingested`

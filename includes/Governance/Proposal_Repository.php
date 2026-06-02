@@ -441,18 +441,42 @@ final class Proposal_Repository {
 	 * @return array<string,mixed>
 	 */
 	private function normalize_row( array $row ): array {
+		$caller = $this->decode_json_field( $row['caller_json'] ?? '' );
+		$policy = $this->policy_fields_from_caller( is_array( $caller ) ? $caller : array() );
+
 		return array(
-			'proposal_id' => sanitize_text_field( (string) ( $row['proposal_id'] ?? '' ) ),
-			'ability_id'  => sanitize_text_field( (string) ( $row['ability_id'] ?? '' ) ),
-			'status'      => sanitize_key( (string) ( $row['status'] ?? '' ) ),
-			'title'       => sanitize_text_field( (string) ( $row['title'] ?? '' ) ),
-			'summary'     => sanitize_textarea_field( (string) ( $row['summary'] ?? '' ) ),
-			'input'       => $this->decode_json_field( $row['input_json'] ?? '' ),
-			'preview'     => $this->decode_json_field( $row['preview_json'] ?? '' ),
-			'caller'      => $this->decode_json_field( $row['caller_json'] ?? '' ),
-			'created_by'  => (int) ( $row['created_by'] ?? 0 ),
-			'created_at'  => sanitize_text_field( (string) ( $row['created_at'] ?? '' ) ),
-			'updated_at'  => sanitize_text_field( (string) ( $row['updated_at'] ?? '' ) ),
+			'proposal_id'     => sanitize_text_field( (string) ( $row['proposal_id'] ?? '' ) ),
+			'ability_id'      => sanitize_text_field( (string) ( $row['ability_id'] ?? '' ) ),
+			'status'          => sanitize_key( (string) ( $row['status'] ?? '' ) ),
+			'title'           => sanitize_text_field( (string) ( $row['title'] ?? '' ) ),
+			'summary'         => sanitize_textarea_field( (string) ( $row['summary'] ?? '' ) ),
+			'input'           => $this->decode_json_field( $row['input_json'] ?? '' ),
+			'preview'         => $this->decode_json_field( $row['preview_json'] ?? '' ),
+			'caller'          => is_array( $caller ) ? $caller : array(),
+			'policy_decision' => $policy['policy_decision'],
+			'policy_profile'  => $policy['policy_profile'],
+			'policy_version'  => $policy['policy_version'],
+			'policy_reasons'  => $policy['policy_reasons'],
+			'created_by'      => (int) ( $row['created_by'] ?? 0 ),
+			'created_at'      => sanitize_text_field( (string) ( $row['created_at'] ?? '' ) ),
+			'updated_at'      => sanitize_text_field( (string) ( $row['updated_at'] ?? '' ) ),
+		);
+	}
+
+	/**
+	 * Returns normalized policy fields from caller metadata.
+	 *
+	 * @param array<string,mixed> $caller Caller metadata.
+	 * @return array{policy_decision:string,policy_profile:string,policy_version:string,policy_reasons:array<int,string>}
+	 */
+	private function policy_fields_from_caller( array $caller ): array {
+		$policy = is_array( $caller['core_policy'] ?? null ) ? $caller['core_policy'] : array();
+
+		return array(
+			'policy_decision' => sanitize_key( (string) ( $policy['policy_decision'] ?? Approval_Policy_Evaluator::DECISION_MANUAL_REQUIRED ) ),
+			'policy_profile'  => sanitize_key( (string) ( $policy['policy_profile'] ?? Approval_Policy_Evaluator::PROFILE_MANUAL ) ),
+			'policy_version'  => sanitize_key( (string) ( $policy['policy_version'] ?? Approval_Policy_Evaluator::VERSION ) ),
+			'policy_reasons'  => array_values( array_map( 'sanitize_key', (array) ( $policy['policy_reasons'] ?? array( 'default_manual_required' ) ) ) ),
 		);
 	}
 

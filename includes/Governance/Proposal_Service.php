@@ -46,6 +46,13 @@ final class Proposal_Service {
 	private $audit;
 
 	/**
+	 * Approval policy evaluator.
+	 *
+	 * @var Approval_Policy_Evaluator
+	 */
+	private $policy_evaluator;
+
+	/**
 	 * Whether stale pending expiry has run before create in this request.
 	 *
 	 * @var bool
@@ -58,15 +65,18 @@ final class Proposal_Service {
 	 * @param Proposal_Repository      $proposals Proposal repository.
 	 * @param Ability_Registry_Adapter $abilities Ability adapter.
 	 * @param Audit_Log_Repository     $audit Audit repository.
+	 * @param Approval_Policy_Evaluator $policy_evaluator Policy evaluator.
 	 */
 	public function __construct(
 		Proposal_Repository $proposals,
 		Ability_Registry_Adapter $abilities,
-		Audit_Log_Repository $audit
+		Audit_Log_Repository $audit,
+		Approval_Policy_Evaluator $policy_evaluator
 	) {
-		$this->proposals = $proposals;
-		$this->abilities = $abilities;
-		$this->audit     = $audit;
+		$this->proposals        = $proposals;
+		$this->abilities        = $abilities;
+		$this->audit            = $audit;
+		$this->policy_evaluator = $policy_evaluator;
 	}
 
 	/**
@@ -102,6 +112,15 @@ final class Proposal_Service {
 
 		$guardrail = $this->proposal_create_guardrail( $ability_id, $input );
 		$caller['core_guardrails'] = $guardrail;
+		$policy = $this->policy_evaluator->evaluate(
+			array(
+				'ability_id' => $ability_id,
+				'input'      => $input,
+				'preview'    => $preview,
+				'caller'     => $caller,
+			)
+		);
+		$caller['core_policy'] = $policy;
 		$this->expire_stale_pending_before_create();
 
 		$pending = $this->proposals->list_pending_for_guardrail( (string) $guardrail['pending_quota_key'], '', max( 500, (int) $guardrail['pending_quota_limit'] ) );
@@ -165,10 +184,7 @@ final class Proposal_Service {
 
 		$event_id = $this->audit->record(
 			'proposal.created',
-			array(
-				'ability_id' => $ability_id,
-				'status'     => $proposal['status'],
-			),
+			$this->policy_audit_metadata( $proposal, $policy, false ),
 			(string) $proposal['proposal_id']
 		);
 
@@ -177,7 +193,39 @@ final class Proposal_Service {
 			return $this->audit_failed_error( 'magick_ai_core_proposal_audit_failed' );
 		}
 
+		$policy_event_id = $this->audit->record(
+			'proposal.policy_evaluated',
+			$this->policy_audit_metadata( $proposal, $policy, false ),
+			(string) $proposal['proposal_id']
+		);
+
+		if ( '' === $policy_event_id ) {
+			$this->proposals->delete_by_proposal_id( (string) $proposal['proposal_id'] );
+			return $this->audit_failed_error( 'magick_ai_core_policy_decision_audit_failed' );
+		}
+
 		return $proposal;
+	}
+
+	/**
+	 * Builds policy audit metadata.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @param array<string,mixed> $policy Policy decision.
+	 * @param bool                $auto_approval_applied Whether status changed automatically.
+	 * @return array<string,mixed>
+	 */
+	private function policy_audit_metadata( array $proposal, array $policy, bool $auto_approval_applied ): array {
+		return array(
+			'ability_id'             => (string) ( $proposal['ability_id'] ?? '' ),
+			'status'                 => (string) ( $proposal['status'] ?? '' ),
+			'policy_decision'        => (string) ( $policy['policy_decision'] ?? Approval_Policy_Evaluator::DECISION_MANUAL_REQUIRED ),
+			'policy_profile'         => (string) ( $policy['policy_profile'] ?? Approval_Policy_Evaluator::PROFILE_MANUAL ),
+			'policy_version'         => (string) ( $policy['policy_version'] ?? Approval_Policy_Evaluator::VERSION ),
+			'policy_reasons'         => array_values( array_map( 'sanitize_key', (array) ( $policy['policy_reasons'] ?? array() ) ) ),
+			'auto_approval_applied'  => $auto_approval_applied,
+			'commit_execution'       => false,
+		);
 	}
 
 	/**

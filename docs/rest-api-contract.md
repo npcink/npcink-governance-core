@@ -187,6 +187,10 @@ Response `200`:
       "input": {},
       "preview": {},
       "caller": {},
+      "policy_decision": "manual_required",
+      "policy_profile": "manual",
+      "policy_version": "core-approval-policy-v1",
+      "policy_reasons": ["default_manual_required"],
       "created_by": 1,
       "created_at": "2026-05-29 00:00:00",
       "updated_at": "2026-05-29 00:00:00"
@@ -278,6 +282,21 @@ Request fields:
 
 Response `201`: proposal row.
 
+Proposal rows include policy fields:
+
+| Name | Type | Notes |
+| --- | --- | --- |
+| `policy_decision` | string | First version returns `manual_required`. Reserved values are `manual_required`, `auto_approved`, and `blocked`. |
+| `policy_profile` | string | First version returns `manual`. Reserved profiles are `manual`, `guarded`, `trusted_local`, and `break_glass`. |
+| `policy_version` | string | Current value is `core-approval-policy-v1`. |
+| `policy_reasons` | array | Stable, sanitized reason keys. |
+
+The first policy evaluator is observation-only. It stores
+`caller.core_policy`, promotes the same fields into proposal responses, and
+records an audit event. It does not auto-approve proposals and does not add a
+rules DSL, workflow runtime, long-running scheduler, or policy configuration
+UI.
+
 Errors:
 
 | Code | HTTP | Meaning |
@@ -286,10 +305,12 @@ Errors:
 | `magick_ai_core_ability_not_available` | `404` | Target ability id is not currently discoverable. |
 | `magick_ai_core_proposal_insert_failed` | `500` | Proposal row could not be stored. |
 | `magick_ai_core_proposal_audit_failed` | `500` | Proposal creation could not be audited; Core deletes the created proposal before failing. |
+| `magick_ai_core_policy_decision_audit_failed` | `500` | Policy decision could not be audited; Core deletes the created proposal before failing. |
 
 Audit event:
 
 - `proposal.created`
+- `proposal.policy_evaluated`
 
 App audit attribution:
 
@@ -362,6 +383,10 @@ Response `201`:
       "proposal_id": "uuid",
       "ability_id": "magick-ai/set-post-seo-meta",
       "status": "pending",
+      "policy_decision": "manual_required",
+      "policy_profile": "manual",
+      "policy_version": "core-approval-policy-v1",
+      "policy_reasons": ["default_manual_required"],
       "input": {
         "post_id": 123,
         "seo_title": "Suggested title",

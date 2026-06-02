@@ -20,7 +20,7 @@ records; they are not workflow runtime state.
 | `summary` | `longtext` | yes | Human-readable summary. |
 | `input_json` | `longtext` | yes | Sanitized structured input. |
 | `preview_json` | `longtext` | yes | Sanitized dry-run preview or handoff payload. |
-| `caller_json` | `longtext` | yes | Sanitized caller metadata. |
+| `caller_json` | `longtext` | yes | Sanitized caller metadata, including non-secret Core guardrails and policy decision metadata. |
 | `created_by` | `bigint(20) unsigned` | no | WordPress user id. |
 | `created_at` | `datetime` | no | UTC time from `current_time( 'mysql', true )`. |
 | `updated_at` | `datetime` | no | UTC time from `current_time( 'mysql', true )`. |
@@ -82,6 +82,7 @@ MVP event names:
 - `app.scope_denied`
 - `capabilities.listed`
 - `proposal.created`
+- `proposal.policy_evaluated`
 - `proposal.plan_ingested`
 - `proposal.approved`
 - `proposal.rejected`
@@ -96,6 +97,9 @@ MVP event names:
 Governance operability metadata:
 
 - proposal lifecycle events include `ability_id` when available;
+- policy evaluation events include `policy_decision`, `policy_profile`,
+  `policy_version`, `policy_reasons`, `auto_approval_applied=false`, and
+  `commit_execution=false`;
 - plan intake events include `plan_ability_id`, `batch_id`,
   `action_count`, `proposal_count`, `blocked_count`,
   `needs_input_count`, and `commit_execution=false`;

@@ -41,6 +41,8 @@ evidence would be unsafe:
 - proposal and app-key row insert failures return stable `WP_Error` codes;
 - proposal creation deletes the unaudited row when `proposal.created` audit
   cannot be written;
+- proposal creation deletes the row when `proposal.policy_evaluated` cannot be
+  written;
 - approval and rejection roll back to the previous proposal status when
   decision audit cannot be written;
 - app-key creation revokes the newly created key and withholds the one-time
