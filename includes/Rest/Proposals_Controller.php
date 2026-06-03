@@ -481,16 +481,42 @@ final class Proposals_Controller {
 	 * @return void
 	 */
 	private function emit_operation_event( string $event_kind, float $started, $error, array $context = array() ): void {
+		$status = $this->operation_event_status( $event_kind, $error );
 		Observability::emit(
 			$event_kind,
 			array_merge(
 				array(
-					'status'     => is_wp_error( $error ) ? 'error' : 'ok',
+					'status'     => $status,
 					'error_code' => is_wp_error( $error ) ? (string) $error->get_error_code() : '',
 					'latency_ms' => max( 0, (int) round( ( microtime( true ) - $started ) * 1000 ) ),
 				),
 				$context
 			)
 		);
+	}
+
+	/**
+	 * Returns the observability status for one operation result.
+	 *
+	 * @param string         $event_kind Event kind.
+	 * @param \WP_Error|null $error Error result.
+	 * @return string
+	 */
+	private function operation_event_status( string $event_kind, $error ): string {
+		if ( ! is_wp_error( $error ) ) {
+			return 'ok';
+		}
+
+		if ( 'core.commit.preflight' !== $event_kind ) {
+			return 'error';
+		}
+
+		$warning_codes = array(
+			'magick_ai_core_proposal_not_approved',
+			'magick_ai_core_proposal_items_blocked',
+			'magick_ai_core_commit_preflight_already_issued',
+		);
+
+		return in_array( (string) $error->get_error_code(), $warning_codes, true ) ? 'warning' : 'error';
 	}
 }

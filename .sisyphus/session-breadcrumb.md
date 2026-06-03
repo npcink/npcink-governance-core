@@ -1,5 +1,37 @@
 # Session Breadcrumb
 
+## 2026-06-03 — Core observability trigger coverage hardened
+
+- **Module**: Core local observability metadata for proposal and commit
+  preflight REST operations.
+- **Status**: Core now treats the real `core.proposal.*` and
+  `core.commit.preflight` event names as the canonical local operation
+  vocabulary, emits warning status for expected governance preflight blocks,
+  and bounds observability payloads to safe scalar metadata.
+- **Completed**:
+  - Kept `core.proposal.create`, `core.proposal.plan_ingest`,
+    `core.proposal.approve`, `core.proposal.reject`, and
+    `core.commit.preflight` as canonical event kinds instead of adding alias
+    events.
+  - Added observability payload allowlisting so proposal input, preview,
+    caller payloads, approval notes, generated content, and policy payloads
+    cannot pass through Core's local event bridge.
+  - Added fail-closed/controller coverage proving create, approve, reject,
+    successful preflight, blocked preflight, and plan-ingest failure emit
+    metadata-only events with stable status and error-code behavior.
+  - Updated Cloud plugin-observability docs to consume the canonical Core
+    event names already observed in real smoke.
+- **Verification**:
+  - `composer test:all`
+  - `composer smoke:wp`
+  - `git diff --check` in `magick-ai-core`
+  - `git diff --check` in `magick-ai-cloud`
+- **Boundary**:
+  - Core still only emits local `magick_ai_observability_event` metadata.
+    Cloud Addon remains the only uploader. This does not add Cloud approval,
+    rejection, preflight mutation, proposal mutation, remote telemetry client
+    code, workflow runtime, or WordPress writes inside Core.
+
 ## 2026-06-03 — Cloud bulk article boundary contract started
 
 - **Module**: Core article workflow and Cloud boundary documentation.

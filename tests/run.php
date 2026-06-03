@@ -244,6 +244,8 @@ foreach (
 		'key_id',
 		'caller_type',
 		'event_name',
+		'core.commit.preflight',
+		'status=warning',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $rest_contract, $required ), 'REST API contract contains required text: ' . $required );
@@ -842,7 +844,10 @@ magick_ai_core_assert( false !== strpos( $proposals_controller, "'/proposals'" )
 magick_ai_core_assert( false !== strpos( $proposals_controller, 'Observability::emit' ), 'Proposal REST operations emit local observability events.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, 'core.proposal.create' ), 'Proposal create emits operation observability.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, 'core.proposal.plan_ingest' ), 'Plan intake emits operation observability.' );
+magick_ai_core_assert( false !== strpos( $proposals_controller, 'core.proposal.approve' ), 'Proposal approve emits operation observability.' );
+magick_ai_core_assert( false !== strpos( $proposals_controller, 'core.proposal.reject' ), 'Proposal reject emits operation observability.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, 'core.commit.preflight' ), 'Commit preflight emits operation observability.' );
+magick_ai_core_assert( false !== strpos( $proposals_controller, 'magick_ai_core_proposal_items_blocked' ), 'Commit preflight classifies blocked proposal observability.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, "'/proposals/from-plan'" ), 'Plan-to-proposal REST route is registered.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, 'create_proposals_from_plan' ), 'Plan-to-proposal REST callback is registered.' );
 magick_ai_core_assert( false !== strpos( $proposals_controller, 'get_proposal' ), 'Proposal detail REST callback is registered.' );
@@ -1099,8 +1104,13 @@ magick_ai_core_assert( false !== strpos( $request_context, "'scopes'" ), 'Reques
 magick_ai_core_assert( false !== strpos( $request_context, 'in_array( $scope' ), 'Request context can check any app scope, not only the current route scope.' );
 
 $observability = magick_ai_core_read( $root . '/includes/Observability.php' );
-foreach ( array( 'Observability', 'magick_ai_observability_event', 'schema_version', 'plugin_slug', 'source', 'local', 'event_kind' ) as $required ) {
+foreach ( array( 'Observability', 'magick_ai_observability_event', 'schema_version', 'plugin_slug', 'source', 'local', 'event_kind', 'sanitize_payload', 'proposal_count', 'blocked_count' ) as $required ) {
 	magick_ai_core_assert( false !== strpos( $observability, $required ), 'Observability bridge contains required text: ' . $required );
+}
+
+$core_operability = magick_ai_core_read( $root . '/docs/core-governance-operability.md' );
+foreach ( array( 'core.proposal.create', 'core.proposal.plan_ingest', 'core.proposal.approve', 'core.proposal.reject', 'core.commit.preflight', 'approval notes', 'policy payloads' ) as $required ) {
+	magick_ai_core_assert( false !== strpos( $core_operability, $required ), 'Core operability documents observability contract: ' . $required );
 }
 
 $admin_page = magick_ai_core_read( $root . '/includes/Admin/Admin_Page.php' );

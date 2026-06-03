@@ -652,6 +652,19 @@ Audit event:
 - `commit.preflighted`
 - `commit.preflight_failed` for proposal-bound preflight failures
 
+Local observability event:
+
+- `core.commit.preflight`
+
+Successful preflight emits `status=ok` with `proposal_id`, `ability_id`,
+`correlation_id`, `latency_ms`, and an empty `error_code`. Expected governance
+blocks such as `magick_ai_core_proposal_not_approved`,
+`magick_ai_core_proposal_items_blocked`, and
+`magick_ai_core_commit_preflight_already_issued` emit `status=warning` with the
+stable `error_code`. Other preflight failures emit `status=error`.
+Observability events are metadata-only and must not include proposal input,
+preview, caller payloads, approval notes, generated content, or policy payloads.
+
 App audit attribution:
 
 - `metadata.auth.scope=commit:preflight`

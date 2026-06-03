@@ -113,6 +113,15 @@ if ( ! class_exists( 'WP_REST_Request' ) ) {
 		}
 
 		/**
+		 * Returns all parameters.
+		 *
+		 * @return array<string,mixed>
+		 */
+		public function get_params(): array {
+			return $this->params;
+		}
+
+		/**
 		 * Returns one header.
 		 *
 		 * @param string $key Header key.
@@ -293,6 +302,25 @@ if ( ! function_exists( 'wp_json_encode' ) ) {
 	 */
 	function wp_json_encode( $value, int $flags = 0, int $depth = 512 ) {
 		return json_encode( $value, $flags, $depth );
+	}
+}
+
+if ( ! function_exists( 'do_action' ) ) {
+	/**
+	 * Action dispatcher stub.
+	 *
+	 * @param string $hook Hook name.
+	 * @param mixed  ...$args Action arguments.
+	 * @return void
+	 */
+	function do_action( string $hook, ...$args ): void {
+		global $magick_ai_core_fail_closed_actions;
+
+		$magick_ai_core_fail_closed_actions = is_array( $magick_ai_core_fail_closed_actions ?? null ) ? $magick_ai_core_fail_closed_actions : array();
+		$magick_ai_core_fail_closed_actions[] = array(
+			'hook' => $hook,
+			'args' => $args,
+		);
 	}
 }
 
@@ -785,6 +813,7 @@ function magick_ai_core_fail_closed_assert( bool $condition, string $message ): 
 }
 
 require_once dirname( __DIR__ ) . '/includes/Security/Request_Context.php';
+require_once dirname( __DIR__ ) . '/includes/Observability.php';
 require_once dirname( __DIR__ ) . '/includes/Audit/Audit_Log_Repository.php';
 require_once dirname( __DIR__ ) . '/includes/Capabilities/Ability_Registry_Adapter.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Approval_Policy_Evaluator.php';
@@ -796,6 +825,7 @@ require_once dirname( __DIR__ ) . '/includes/Security/App_Key_Repository.php';
 require_once dirname( __DIR__ ) . '/includes/Security/App_Rate_Limiter.php';
 require_once dirname( __DIR__ ) . '/includes/Security/App_Authenticator.php';
 require_once dirname( __DIR__ ) . '/includes/Rest/Apps_Controller.php';
+require_once dirname( __DIR__ ) . '/includes/Rest/Proposals_Controller.php';
 
 /**
  * Resets global storage.
@@ -803,13 +833,14 @@ require_once dirname( __DIR__ ) . '/includes/Rest/Apps_Controller.php';
  * @return Magick_AI_Core_Fail_Closed_WPDB
  */
 function magick_ai_core_fail_closed_reset_db(): Magick_AI_Core_Fail_Closed_WPDB {
-	global $wpdb, $magick_ai_core_fail_closed_options, $magick_ai_core_fail_closed_transients, $magick_ai_core_fail_closed_caps, $magick_ai_core_fail_closed_abilities;
+	global $wpdb, $magick_ai_core_fail_closed_options, $magick_ai_core_fail_closed_transients, $magick_ai_core_fail_closed_caps, $magick_ai_core_fail_closed_abilities, $magick_ai_core_fail_closed_actions;
 
 	$wpdb = new Magick_AI_Core_Fail_Closed_WPDB();
 	$magick_ai_core_fail_closed_options = array();
 	$magick_ai_core_fail_closed_transients = array();
 	$magick_ai_core_fail_closed_caps = array();
 	$magick_ai_core_fail_closed_abilities = null;
+	$magick_ai_core_fail_closed_actions = array();
 	\MagickAI\Core\Security\Request_Context::clear();
 
 	return $wpdb;
@@ -858,6 +889,101 @@ function magick_ai_core_fail_closed_governance_stack(): array {
 		'proposals' => $proposals,
 		'audit'     => $audit,
 	);
+}
+
+/**
+ * Returns a proposal REST controller stack.
+ *
+ * @return array{controller:\MagickAI\Core\Rest\Proposals_Controller,service:\MagickAI\Core\Governance\Proposal_Service,preflight:\MagickAI\Core\Governance\Commit_Preflight_Service,proposals:\MagickAI\Core\Governance\Proposal_Repository,audit:\MagickAI\Core\Audit\Audit_Log_Repository}
+ */
+function magick_ai_core_fail_closed_proposals_controller_stack(): array {
+	$proposals = new \MagickAI\Core\Governance\Proposal_Repository();
+	$abilities = new \MagickAI\Core\Capabilities\Ability_Registry_Adapter();
+	$audit     = new \MagickAI\Core\Audit\Audit_Log_Repository();
+	$service   = new \MagickAI\Core\Governance\Proposal_Service(
+		$proposals,
+		$abilities,
+		$audit,
+		new \MagickAI\Core\Governance\Approval_Policy_Evaluator()
+	);
+	$preflight = new \MagickAI\Core\Governance\Commit_Preflight_Service( $proposals, $abilities, $audit );
+	$plan      = new \MagickAI\Core\Governance\Plan_Proposal_Service( $abilities, $service, $audit );
+	$auth      = new \MagickAI\Core\Security\App_Authenticator(
+		new \MagickAI\Core\Security\App_Key_Repository(),
+		new \MagickAI\Core\Security\App_Rate_Limiter(),
+		$audit
+	);
+
+	return array(
+		'controller' => new \MagickAI\Core\Rest\Proposals_Controller( $service, $proposals, $preflight, $plan, $auth ),
+		'service'    => $service,
+		'preflight'  => $preflight,
+		'proposals'  => $proposals,
+		'audit'      => $audit,
+	);
+}
+
+/**
+ * Resets captured observability action events.
+ *
+ * @return void
+ */
+function magick_ai_core_fail_closed_reset_observability_events(): void {
+	global $magick_ai_core_fail_closed_actions;
+
+	$magick_ai_core_fail_closed_actions = array();
+}
+
+/**
+ * Returns captured observability payloads.
+ *
+ * @param string $event_kind Optional event kind filter.
+ * @return array<int,array<string,mixed>>
+ */
+function magick_ai_core_fail_closed_observability_events( string $event_kind = '' ): array {
+	global $magick_ai_core_fail_closed_actions;
+
+	$actions = is_array( $magick_ai_core_fail_closed_actions ?? null ) ? $magick_ai_core_fail_closed_actions : array();
+	$events  = array();
+
+	foreach ( $actions as $action ) {
+		if ( 'magick_ai_observability_event' !== (string) ( $action['hook'] ?? '' ) ) {
+			continue;
+		}
+
+		$args    = is_array( $action['args'] ?? null ) ? $action['args'] : array();
+		$payload = is_array( $args[0] ?? null ) ? $args[0] : array();
+		if ( '' !== $event_kind && $event_kind !== (string) ( $payload['event_kind'] ?? '' ) ) {
+			continue;
+		}
+
+		$events[] = $payload;
+	}
+
+	return $events;
+}
+
+/**
+ * Asserts that an observability event contains metadata only.
+ *
+ * @param array<string,mixed> $event Event payload.
+ * @param string              $message Assertion message prefix.
+ * @return void
+ */
+function magick_ai_core_fail_closed_assert_observability_metadata_only( array $event, string $message ): void {
+	foreach ( array( 'input', 'preview', 'caller', 'proposal', 'policy', 'note', 'payload', 'payload_json', 'raw' ) as $forbidden_key ) {
+		magick_ai_core_fail_closed_assert( ! array_key_exists( $forbidden_key, $event ), $message . ' omits forbidden key ' . $forbidden_key . '.' );
+	}
+
+	foreach ( $event as $key => $value ) {
+		magick_ai_core_fail_closed_assert( ! is_array( $value ), $message . ' keeps field ' . $key . ' bounded to a scalar.' );
+	}
+
+	$json = wp_json_encode( $event );
+	$json = is_string( $json ) ? $json : '';
+	foreach ( array( 'RAW_GENERATED_CONTENT_SENTINEL', 'APPROVAL_NOTE_SENTINEL', 'REJECTION_NOTE_SENTINEL', 'CALLER_SECRET_SENTINEL', 'POLICY_PAYLOAD_SENTINEL' ) as $sentinel ) {
+		magick_ai_core_fail_closed_assert( false === strpos( $json, $sentinel ), $message . ' does not expose ' . $sentinel . '.' );
+	}
 }
 
 /**
@@ -1067,6 +1193,113 @@ function magick_ai_core_fail_closed_article_write_plan(): array {
 $proposal_table = 'wp_magick_ai_core_proposals';
 $audit_table    = 'wp_magick_ai_core_audit_log';
 $app_table      = 'wp_magick_ai_core_app_keys';
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_proposals_controller_stack();
+$controller = $stack['controller'];
+$create_payload = magick_ai_core_fail_closed_governance_payload( 'magick-ai/create-draft' );
+$create_payload['input']['content'] = 'RAW_GENERATED_CONTENT_SENTINEL';
+$create_payload['preview']['policy_payload'] = 'POLICY_PAYLOAD_SENTINEL';
+$create_payload['caller']['secret_hint'] = 'CALLER_SECRET_SENTINEL';
+magick_ai_core_fail_closed_reset_observability_events();
+$create_response = $controller->create_proposal( new WP_REST_Request( $create_payload ) );
+magick_ai_core_fail_closed_assert( $create_response instanceof WP_REST_Response && 201 === $create_response->get_status(), 'Proposal REST create succeeds for observability smoke.' );
+$created_proposal = $create_response->get_data();
+$proposal_id      = (string) ( is_array( $created_proposal ) ? ( $created_proposal['proposal_id'] ?? '' ) : '' );
+$create_events    = magick_ai_core_fail_closed_observability_events( 'core.proposal.create' );
+magick_ai_core_fail_closed_assert( 1 === count( $create_events ), 'Proposal create emits one observability event.' );
+magick_ai_core_fail_closed_assert( 'ok' === (string) ( $create_events[0]['status'] ?? '' ), 'Proposal create emits ok status.' );
+magick_ai_core_fail_closed_assert( $proposal_id === (string) ( $create_events[0]['proposal_id'] ?? '' ), 'Proposal create event includes proposal id.' );
+magick_ai_core_fail_closed_assert( 'magick-ai/create-draft' === (string) ( $create_events[0]['ability_id'] ?? '' ), 'Proposal create event includes ability id.' );
+magick_ai_core_fail_closed_assert_observability_metadata_only( $create_events[0], 'Proposal create observability event' );
+
+magick_ai_core_fail_closed_reset_observability_events();
+$approve_response = $controller->approve_proposal(
+	new WP_REST_Request(
+		array(
+			'proposal_id' => $proposal_id,
+			'note'        => 'APPROVAL_NOTE_SENTINEL',
+		)
+	)
+);
+magick_ai_core_fail_closed_assert( $approve_response instanceof WP_REST_Response && 200 === $approve_response->get_status(), 'Proposal REST approve succeeds for observability smoke.' );
+$approve_events = magick_ai_core_fail_closed_observability_events( 'core.proposal.approve' );
+magick_ai_core_fail_closed_assert( 1 === count( $approve_events ), 'Proposal approve emits one observability event.' );
+magick_ai_core_fail_closed_assert( 'ok' === (string) ( $approve_events[0]['status'] ?? '' ), 'Proposal approve emits ok status.' );
+magick_ai_core_fail_closed_assert( $proposal_id === (string) ( $approve_events[0]['proposal_id'] ?? '' ), 'Proposal approve event includes proposal id.' );
+magick_ai_core_fail_closed_assert_observability_metadata_only( $approve_events[0], 'Proposal approve observability event' );
+
+magick_ai_core_fail_closed_reset_observability_events();
+$preflight_response = $controller->commit_preflight( new WP_REST_Request( array( 'proposal_id' => $proposal_id ) ) );
+magick_ai_core_fail_closed_assert( $preflight_response instanceof WP_REST_Response && 200 === $preflight_response->get_status(), 'Proposal REST preflight succeeds for observability smoke.' );
+$preflight_data   = $preflight_response->get_data();
+$preflight_events = magick_ai_core_fail_closed_observability_events( 'core.commit.preflight' );
+magick_ai_core_fail_closed_assert( 1 === count( $preflight_events ), 'Successful preflight emits one observability event.' );
+magick_ai_core_fail_closed_assert( 'ok' === (string) ( $preflight_events[0]['status'] ?? '' ), 'Successful preflight emits ok status.' );
+magick_ai_core_fail_closed_assert( '' === (string) ( $preflight_events[0]['error_code'] ?? '' ), 'Successful preflight emits empty error code.' );
+magick_ai_core_fail_closed_assert( (string) ( is_array( $preflight_data ) ? ( $preflight_data['correlation_id'] ?? '' ) : '' ) === (string) ( $preflight_events[0]['correlation_id'] ?? '' ), 'Successful preflight event includes correlation id.' );
+magick_ai_core_fail_closed_assert_observability_metadata_only( $preflight_events[0], 'Successful preflight observability event' );
+
+$reject_payload = magick_ai_core_fail_closed_governance_payload( 'magick-ai/set-post-terms' );
+$reject_response = $controller->create_proposal( new WP_REST_Request( $reject_payload ) );
+magick_ai_core_fail_closed_assert( $reject_response instanceof WP_REST_Response && 201 === $reject_response->get_status(), 'Second proposal REST create succeeds for reject observability smoke.' );
+$reject_proposal = $reject_response->get_data();
+$reject_id       = (string) ( is_array( $reject_proposal ) ? ( $reject_proposal['proposal_id'] ?? '' ) : '' );
+magick_ai_core_fail_closed_reset_observability_events();
+$reject_result = $controller->reject_proposal(
+	new WP_REST_Request(
+		array(
+			'proposal_id' => $reject_id,
+			'note'        => 'REJECTION_NOTE_SENTINEL',
+		)
+	)
+);
+magick_ai_core_fail_closed_assert( $reject_result instanceof WP_REST_Response && 200 === $reject_result->get_status(), 'Proposal REST reject succeeds for observability smoke.' );
+$reject_events = magick_ai_core_fail_closed_observability_events( 'core.proposal.reject' );
+magick_ai_core_fail_closed_assert( 1 === count( $reject_events ), 'Proposal reject emits one observability event.' );
+magick_ai_core_fail_closed_assert( 'ok' === (string) ( $reject_events[0]['status'] ?? '' ), 'Proposal reject emits ok status.' );
+magick_ai_core_fail_closed_assert( $reject_id === (string) ( $reject_events[0]['proposal_id'] ?? '' ), 'Proposal reject event includes proposal id.' );
+magick_ai_core_fail_closed_assert_observability_metadata_only( $reject_events[0], 'Proposal reject observability event' );
+
+$blocked_payload = magick_ai_core_fail_closed_governance_payload( 'magick-ai/trash-post' );
+$blocked_payload['preview']['proposal_ready'] = false;
+$blocked_payload['preview']['preflight_blockers'] = array(
+	array(
+		'code'   => 'destructive_review_missing',
+		'reason' => 'Destructive review evidence is required.',
+	),
+);
+$blocked_create = $controller->create_proposal( new WP_REST_Request( $blocked_payload ) );
+magick_ai_core_fail_closed_assert( $blocked_create instanceof WP_REST_Response && 201 === $blocked_create->get_status(), 'Blocked proposal REST create succeeds for observability smoke.' );
+$blocked_proposal = $blocked_create->get_data();
+$blocked_id       = (string) ( is_array( $blocked_proposal ) ? ( $blocked_proposal['proposal_id'] ?? '' ) : '' );
+$blocked_approve  = $controller->approve_proposal( new WP_REST_Request( array( 'proposal_id' => $blocked_id ) ) );
+magick_ai_core_fail_closed_assert( $blocked_approve instanceof WP_REST_Response && 200 === $blocked_approve->get_status(), 'Blocked proposal REST approve succeeds before preflight block.' );
+magick_ai_core_fail_closed_reset_observability_events();
+$blocked_preflight = $controller->commit_preflight( new WP_REST_Request( array( 'proposal_id' => $blocked_id ) ) );
+magick_ai_core_fail_closed_assert( is_wp_error( $blocked_preflight ), 'Blocked proposal REST preflight returns WP_Error.' );
+$blocked_events = magick_ai_core_fail_closed_observability_events( 'core.commit.preflight' );
+magick_ai_core_fail_closed_assert( 1 === count( $blocked_events ), 'Blocked preflight emits one observability event.' );
+magick_ai_core_fail_closed_assert( 'warning' === (string) ( $blocked_events[0]['status'] ?? '' ), 'Blocked preflight emits warning status.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_proposal_items_blocked' === (string) ( $blocked_events[0]['error_code'] ?? '' ), 'Blocked preflight event includes stable error code.' );
+magick_ai_core_fail_closed_assert_observability_metadata_only( $blocked_events[0], 'Blocked preflight observability event' );
+
+$plan_error_request = new WP_REST_Request(
+	array(
+		'plan_ability_id' => 'magick-ai/not-real-plan',
+		'plan'            => array( 'success' => false ),
+		'plan_input'      => array(),
+		'caller'          => array( 'secret_hint' => 'CALLER_SECRET_SENTINEL' ),
+	)
+);
+magick_ai_core_fail_closed_reset_observability_events();
+$plan_error = $controller->create_proposals_from_plan( $plan_error_request );
+magick_ai_core_fail_closed_assert( is_wp_error( $plan_error ), 'Invalid plan intake returns WP_Error for observability smoke.' );
+$plan_events = magick_ai_core_fail_closed_observability_events( 'core.proposal.plan_ingest' );
+magick_ai_core_fail_closed_assert( 1 === count( $plan_events ), 'Plan intake failure emits one observability event.' );
+magick_ai_core_fail_closed_assert( 'error' === (string) ( $plan_events[0]['status'] ?? '' ), 'Plan intake failure emits error status.' );
+magick_ai_core_fail_closed_assert( '' !== (string) ( $plan_events[0]['error_code'] ?? '' ), 'Plan intake failure emits stable error code.' );
+magick_ai_core_fail_closed_assert_observability_metadata_only( $plan_events[0], 'Plan intake observability event' );
 
 $wpdb  = magick_ai_core_fail_closed_reset_db();
 $stack = magick_ai_core_fail_closed_plan_stack();

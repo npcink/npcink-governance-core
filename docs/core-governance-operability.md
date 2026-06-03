@@ -176,6 +176,21 @@ is metadata-only and includes stable operation kind, status, error code,
 latency, and safe identifiers such as proposal id, ability id, or correlation
 id when available.
 
+Canonical Core operation event kinds are:
+
+- `core.proposal.create`
+- `core.proposal.plan_ingest`
+- `core.proposal.approve`
+- `core.proposal.reject`
+- `core.commit.preflight`
+
+Successful operations emit `status=ok`. Expected governance preflight blocks,
+such as a pending proposal, blocked proposal items, or duplicate handoff
+request, emit `status=warning` with the stable Core `magick_ai_core_*`
+`error_code`. Failed operation paths emit `status=error`. Event payloads are
+bounded to operational metadata and must not include proposal input, preview,
+caller payloads, approval notes, generated content, or policy payloads.
+
 This hook is optional operational detail for local listeners such as a Cloud
 Addon. It is not an audit replacement, not a Cloud transport client, not a
 remote log shipping system, and not a second proposal, approval, preflight, or
