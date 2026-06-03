@@ -12,6 +12,7 @@ use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
 use MagickAI\Core\Governance\Approval_Policy_Evaluator;
 use MagickAI\Core\Governance\Proposal_Repository;
 use MagickAI\Core\Governance\Proposal_Service;
+use MagickAI\Core\Media\Media_Derivative_Settings;
 use MagickAI\Core\Security\App_Key_Repository;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -66,6 +67,13 @@ final class Admin_Page {
 	private $apps;
 
 	/**
+	 * Media derivative settings.
+	 *
+	 * @var Media_Derivative_Settings
+	 */
+	private $media_settings;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Ability_Registry_Adapter $abilities Ability adapter.
@@ -73,13 +81,15 @@ final class Admin_Page {
 	 * @param Audit_Log_Repository     $audit Audit repository.
 	 * @param Proposal_Service         $service Proposal service.
 	 * @param App_Key_Repository       $apps App key repository.
+	 * @param Media_Derivative_Settings $media_settings Media settings.
 	 */
-	public function __construct( Ability_Registry_Adapter $abilities, Proposal_Repository $proposals, Audit_Log_Repository $audit, Proposal_Service $service, App_Key_Repository $apps ) {
-		$this->abilities = $abilities;
-		$this->proposals = $proposals;
-		$this->audit     = $audit;
-		$this->service   = $service;
-		$this->apps      = $apps;
+	public function __construct( Ability_Registry_Adapter $abilities, Proposal_Repository $proposals, Audit_Log_Repository $audit, Proposal_Service $service, App_Key_Repository $apps, Media_Derivative_Settings $media_settings ) {
+		$this->abilities      = $abilities;
+		$this->proposals      = $proposals;
+		$this->audit          = $audit;
+		$this->service        = $service;
+		$this->apps           = $apps;
+		$this->media_settings = $media_settings;
 	}
 
 	/**
@@ -297,6 +307,9 @@ final class Admin_Page {
 			<?php elseif ( 'app-keys' === $view ) : ?>
 				<?php $this->render_admin_tabs( '' ); ?>
 				<?php $this->render_external_access(); ?>
+			<?php elseif ( 'media-policy' === $view ) : ?>
+				<?php $this->render_admin_tabs( 'media-policy' ); ?>
+				<?php $this->render_media_policy_settings(); ?>
 			<?php else : ?>
 				<?php $this->render_admin_tabs( 'review' ); ?>
 				<?php $this->render_review_workbench( $summary, $pending_count, $expired_count, $archived_count, $pending, $review_page ); ?>
@@ -324,6 +337,10 @@ final class Admin_Page {
 			'archive'  => array(
 				'label' => __( 'Expired / Archived', 'magick-ai-core' ),
 				'url'   => $this->view_url( 'archive' ),
+			),
+			'media-policy' => array(
+				'label' => __( 'Media Policy', 'magick-ai-core' ),
+				'url'   => $this->view_url( 'media-policy' ),
 			),
 		);
 		?>
@@ -407,6 +424,113 @@ final class Admin_Page {
 				<p><button type="submit" class="button button-secondary"><?php echo esc_html__( 'Save approval policy', 'magick-ai-core' ); ?></button></p>
 			</form>
 		</details>
+		<?php
+	}
+
+	/**
+	 * Renders local media derivative policy settings.
+	 *
+	 * @return void
+	 */
+	private function render_media_policy_settings(): void {
+		$settings = $this->media_settings->get_all();
+		?>
+		<h2><?php echo esc_html__( 'Media Optimization Policy', 'magick-ai-core' ); ?></h2>
+		<p style="max-width: 820px;"><?php echo esc_html__( 'Core stores the local site policy for optimized media derivatives. Toolbox may use these defaults for one-run handoffs, and Cloud Addon may execute them when available, but final WordPress writes still require local proposal governance.', 'magick-ai-core' ); ?></p>
+		<form method="post" action="options.php" style="max-width: 960px;">
+			<?php settings_fields( 'magick_ai_core_media_derivative' ); ?>
+			<table class="form-table" role="presentation">
+				<tbody>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'Media optimization', 'magick-ai-core' ); ?></th>
+						<td>
+							<label>
+								<input type="checkbox" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[enabled]" value="1" <?php checked( ! empty( $settings['enabled'] ) ); ?> />
+								<?php echo esc_html__( 'Enable local media derivative policy', 'magick-ai-core' ); ?>
+							</label>
+							<p class="description"><?php echo esc_html__( 'This stores defaults only. It does not optimize files, approve proposals, or write attachment metadata.', 'magick-ai-core' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="magick-ai-core-media-format"><?php echo esc_html__( 'Output format', 'magick-ai-core' ); ?></label></th>
+						<td>
+							<select id="magick-ai-core-media-format" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[target_format]">
+								<?php foreach ( $this->media_settings->allowed_formats() as $format ) : ?>
+									<option value="<?php echo esc_attr( $format ); ?>" <?php selected( (string) $settings['target_format'], $format ); ?>>
+										<?php echo esc_html( strtoupper( $format ) ); ?>
+									</option>
+								<?php endforeach; ?>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="magick-ai-core-media-width"><?php echo esc_html__( 'Maximum width', 'magick-ai-core' ); ?></label></th>
+						<td>
+							<input id="magick-ai-core-media-width" type="number" min="320" max="7680" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[max_width]" value="<?php echo esc_attr( (string) $settings['max_width'] ); ?>" />
+							<span><?php echo esc_html__( 'px', 'magick-ai-core' ); ?></span>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="magick-ai-core-media-quality"><?php echo esc_html__( 'Quality', 'magick-ai-core' ); ?></label></th>
+						<td>
+							<input id="magick-ai-core-media-quality" type="number" min="1" max="100" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[quality]" value="<?php echo esc_attr( (string) $settings['quality'] ); ?>" />
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'Watermark', 'magick-ai-core' ); ?></th>
+						<td>
+							<label>
+								<input type="checkbox" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_enabled]" value="1" <?php checked( ! empty( $settings['watermark_enabled'] ) ); ?> />
+								<?php echo esc_html__( 'Use image watermark when a logo attachment is configured', 'magick-ai-core' ); ?>
+							</label>
+							<p>
+								<label for="magick-ai-core-watermark-attachment"><?php echo esc_html__( 'Logo attachment ID', 'magick-ai-core' ); ?></label><br />
+								<input id="magick-ai-core-watermark-attachment" type="number" min="0" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_attachment_id]" value="<?php echo esc_attr( (string) $settings['watermark_attachment_id'] ); ?>" />
+							</p>
+							<details>
+								<summary><?php echo esc_html__( 'Watermark placement', 'magick-ai-core' ); ?></summary>
+								<p>
+									<label for="magick-ai-core-watermark-position"><?php echo esc_html__( 'Position', 'magick-ai-core' ); ?></label><br />
+									<select id="magick-ai-core-watermark-position" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_position]">
+										<?php foreach ( $this->media_settings->allowed_watermark_positions() as $position ) : ?>
+											<option value="<?php echo esc_attr( $position ); ?>" <?php selected( (string) $settings['watermark_position'], $position ); ?>>
+												<?php echo esc_html( ucwords( str_replace( '_', ' ', $position ) ) ); ?>
+											</option>
+										<?php endforeach; ?>
+									</select>
+								</p>
+								<p>
+									<label for="magick-ai-core-watermark-opacity"><?php echo esc_html__( 'Opacity', 'magick-ai-core' ); ?></label><br />
+									<input id="magick-ai-core-watermark-opacity" type="number" min="0" max="100" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_opacity]" value="<?php echo esc_attr( (string) $settings['watermark_opacity'] ); ?>" />
+									<span><?php echo esc_html__( '%', 'magick-ai-core' ); ?></span>
+								</p>
+								<p>
+									<label for="magick-ai-core-watermark-scale"><?php echo esc_html__( 'Scale', 'magick-ai-core' ); ?></label><br />
+									<input id="magick-ai-core-watermark-scale" type="number" min="1" max="100" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_scale]" value="<?php echo esc_attr( (string) $settings['watermark_scale'] ); ?>" />
+									<span><?php echo esc_html__( '%', 'magick-ai-core' ); ?></span>
+								</p>
+								<p>
+									<label for="magick-ai-core-watermark-margin"><?php echo esc_html__( 'Margin', 'magick-ai-core' ); ?></label><br />
+									<input id="magick-ai-core-watermark-margin" type="number" min="0" max="1000" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_margin]" value="<?php echo esc_attr( (string) $settings['watermark_margin'] ); ?>" />
+									<span><?php echo esc_html__( 'px', 'magick-ai-core' ); ?></span>
+								</p>
+							</details>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'Execution preference', 'magick-ai-core' ); ?></th>
+						<td>
+							<label>
+								<input type="checkbox" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[use_cloud_when_available]" value="1" <?php checked( ! empty( $settings['use_cloud_when_available'] ) ); ?> />
+								<?php echo esc_html__( 'Use Cloud execution when Cloud Addon is installed and verified', 'magick-ai-core' ); ?>
+							</label>
+							<p class="description"><?php echo esc_html__( 'Cloud remains an optional runtime. Core keeps the policy and final local write decision.', 'magick-ai-core' ); ?></p>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<?php submit_button( __( 'Save media policy', 'magick-ai-core' ) ); ?>
+		</form>
 		<?php
 	}
 

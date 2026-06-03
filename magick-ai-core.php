@@ -24,6 +24,29 @@ require_once MAGICK_AI_CORE_DIR . 'includes/Autoloader.php';
 
 \MagickAI\Core\Autoloader::register();
 
+if ( ! function_exists( 'magick_ai_core_get_media_derivative_settings' ) ) {
+	/**
+	 * Returns the local Core media derivative policy summary.
+	 *
+	 * @return array<string,mixed>
+	 */
+	function magick_ai_core_get_media_derivative_settings(): array {
+		return \MagickAI\Core\Plugin::instance()->media_derivative_settings()->summary();
+	}
+}
+
+if ( ! function_exists( 'magick_ai_core_build_media_derivative_ability_input' ) ) {
+	/**
+	 * Builds one-run input for magick-ai/build-media-derivative-cloud-request.
+	 *
+	 * @param array<string,mixed> $overrides One-run overrides.
+	 * @return array<string,mixed>
+	 */
+	function magick_ai_core_build_media_derivative_ability_input( array $overrides = array() ): array {
+		return \MagickAI\Core\Plugin::instance()->media_derivative_settings()->ability_input( $overrides );
+	}
+}
+
 register_activation_hook( __FILE__, array( \MagickAI\Core\Plugin::class, 'activate' ) );
 
 add_action(

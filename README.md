@@ -143,6 +143,13 @@ attribution, and commit-preflight correlation ids. See
 the Core loop easier to review and debug without adding ability execution or a
 workflow runtime.
 
+Core also stores the local media derivative defaults: output format, max width,
+quality, watermark attachment and placement, and whether Cloud execution should
+be used when available. These settings are local WordPress policy truth. Toolbox
+may read them for one-run operator handoffs, Cloud Addon may sign and dispatch
+the request, and Cloud may process the derivative artifact, but final proposal,
+approval, adoption, and WordPress writes stay local.
+
 The approval policy evaluator defaults to `manual`, records
 `proposal.policy_evaluated` for every created proposal, and supports two
 development-only guarded modes. `dry_run_guarded` records cleanup candidates

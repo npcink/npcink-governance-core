@@ -134,6 +134,35 @@ foreach ( array( 'PARENT_MENU_SLUG', 'add_menu_page', 'add_submenu_page', 'Core'
 magick_ai_core_assert( false !== strpos( $admin_page, "__( 'Core', 'magick-ai-core' ),\n\t\t\tself::MENU_CAPABILITY" ), 'Admin submenu title is Core.' );
 magick_ai_core_assert( false !== strpos( $admin_page, "'magick-ai-cloud-addon'" ), 'Admin overview links to the canonical Cloud Addon slug.' );
 magick_ai_core_assert( false !== strpos( $admin_page, "__( 'Cloud Addon', 'magick-ai-core' )" ), 'Admin overview labels the Cloud Addon surface.' );
+
+$media_settings = magick_ai_core_read( $root . '/includes/Media/Media_Derivative_Settings.php' );
+foreach (
+	array(
+		'Media_Derivative_Settings',
+		'magick_ai_core_media_derivative_settings',
+		"'target_format'           => 'webp'",
+		"'max_width'               => 1600",
+		"'quality'                 => 82",
+		"'watermark_enabled'       => false",
+		"'watermark_attachment_id' => 0",
+		"'use_cloud_when_available' => true",
+		'preferred_format',
+		'target_max_width',
+		'watermark',
+		'policy_owner',
+		'final_write_owner',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $media_settings, $required ), 'Media derivative settings implement local policy contract: ' . $required );
+}
+foreach ( array( 'update_attached_file', 'wp_update_attachment_metadata', 'wp_update_post', 'update_post_meta' ) as $forbidden ) {
+	magick_ai_core_assert( false === strpos( $media_settings, $forbidden ), 'Media derivative settings do not perform WordPress media writes: ' . $forbidden );
+}
+magick_ai_core_assert( false !== strpos( $main_plugin, 'magick_ai_core_get_media_derivative_settings' ), 'Core exposes a media derivative settings helper for local surfaces.' );
+magick_ai_core_assert( false !== strpos( $main_plugin, 'magick_ai_core_build_media_derivative_ability_input' ), 'Core exposes a media derivative ability-input helper for one-run handoffs.' );
+magick_ai_core_assert( false !== strpos( $admin_page, "'media-policy'" ) && false !== strpos( $admin_page, 'render_media_policy_settings' ), 'Admin page exposes a lightweight local Media Policy tab.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Core stores the local site policy for optimized media derivatives' ), 'Media Policy tab describes Core as local policy owner.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Cloud remains an optional runtime' ), 'Media Policy tab keeps Cloud as optional runtime detail.' );
 foreach (
 	array(
 		$root . '/README.md',
