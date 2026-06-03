@@ -54,3 +54,17 @@ candidates, SEO writing, or bulk writing artifacts.
 The phrase "bulk article publishing in Cloud" is rejected for the current
 product. The correct architecture is local Ability recipe orchestration with
 Core-governed write actions.
+
+## Rejected Product Language
+
+Do not describe current or planned Cloud capability as:
+
+- Cloud article generator;
+- Cloud writing assistant;
+- Cloud bulk article writer;
+- hosted article drafting;
+- article publishing automation;
+- Cloud article import.
+
+When writing docs or UI copy, use local Article Assistant Workbench, local
+Ability recipe, or Core-governed draft write proposal instead.

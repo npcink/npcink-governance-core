@@ -1,5 +1,23 @@
 # Session Breadcrumb
 
+## 2026-06-03 — Article assistant complexity budget documented
+
+- **Module**: Core cross-project article recipe contracts.
+- **Status**: The article surface is now explicitly constrained as a local
+  Article Assistant Workbench and Ability recipe, not an article generation
+  product or Cloud writing feature.
+- **Completed**:
+  - Added a recipe complexity budget for `article_draft_v1`.
+  - Added P0 product-budget language for one local article, one reviewed draft
+    proposal, no Cloud writing, no batch writing, no workflow runtime, and no
+    automatic approval.
+  - Added rejected Cloud product language to prevent future drift back into
+    hosted article generation or import.
+- **Boundary**:
+  - Documentation/contract update only. It does not add routes, execution,
+    Cloud writing, queues, workflow runtime, approval automation, or WordPress
+    writes inside Core.
+
 ## 2026-06-03 — Article writing reduced to local Ability recipe
 
 - **Module**: Core recipe and Cloud writing boundary documentation.

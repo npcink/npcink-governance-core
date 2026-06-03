@@ -18,6 +18,29 @@ prepare or review a draft, inspect risk, and request a governed WordPress draft
 write. Operators review. Core governs the write. Cloud does not provide article
 writing generation.
 
+This contract should be read as an article assistant workbench contract, not an
+article generation product contract. The valuable product surface is the local,
+single-article composition of evidence, context, review artifacts, and a
+Core-ready draft write proposal.
+
+It is not an article generation product.
+
+## P0 Product Budget
+
+P0 remains intentionally narrow:
+
+- one article and one draft proposal per run;
+- optional operator-supplied or locally reviewed draft body;
+- no Cloud article writing, Cloud article import, or Cloud article plan;
+- no batch writing, background writing jobs, scheduler, or workflow runtime;
+- no automatic approval based on recipe readiness;
+- no direct WordPress write from Toolbox, Cloud Addon, or Core.
+
+The accepted surface name is Article Assistant Workbench. Avoid presenting this
+as an article generator, bulk writing tool, autonomous writer, or Cloud writing
+feature. Any UI, README, Adapter guidance, or Cloud Addon copy should keep that
+language aligned.
+
 ## Project Ownership
 
 | Project | Owns | Does not own |

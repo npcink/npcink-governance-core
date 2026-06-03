@@ -138,6 +138,9 @@ Abilities and Core-governed `write_actions`. The
 [Cloud Bulk Article Run Contract](docs/cloud-bulk-article-run-contract.md) is a
 prohibited/deprecated planning contract: Cloud must not generate article drafts,
 SEO copy, bulk article runs, or `article_write_plan` candidates.
+The accepted product surface is a local Article Assistant Workbench: one
+article, reviewed artifacts, and one Core-governed draft proposal, not an
+article generation product or Cloud writing feature.
 
 The current governance operability baseline adds proposal audit timelines,
 audit filters for ability/app/key/caller/correlation, app scope-decision

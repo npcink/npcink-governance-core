@@ -1077,6 +1077,10 @@ foreach (
 		'Final WordPress writes stay local and Abilities API based',
 		'Cloud Addon must not import Cloud article artifacts',
 		'not a second control',
+		'Article Assistant Workbench',
+		'not an article generation product',
+		'one article and one draft proposal per run',
+		'no batch writing',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $article_writing_contract, $required ), 'Article writing workflow contract contains required text: ' . $required );
@@ -1096,6 +1100,9 @@ foreach (
 		'Cloud must not store article body generation jobs',
 		'Core must not become article-aware beyond validating supported plan output',
 		'Do not add Cloud article import flows',
+		'local article assistant workbench',
+		'one local article at a time',
+		'hidden content-generation platform',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $ability_recipe_contract, $required ), 'Ability recipe orchestration contract contains required text: ' . $required );
@@ -1114,6 +1121,9 @@ foreach (
 		'Core POST /proposals/from-plan',
 		'Cloud must not generate, store, or return article body content',
 		'local Ability recipe orchestration',
+		'Rejected Product Language',
+		'Cloud article generator',
+		'local Article Assistant Workbench',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $cloud_bulk_article_contract, $required ), 'Cloud bulk article run contract contains required text: ' . $required );

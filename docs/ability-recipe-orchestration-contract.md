@@ -15,6 +15,33 @@ system, prompt store, or Cloud writing surface.
 Article drafting is the first example recipe, not a privileged product
 exception.
 
+## Complexity Budget
+
+Recipes must stay thin. Their value is the scientific ordering of existing
+Abilities, operator checkpoints, and Core-governed write handoffs, not a new
+product runtime.
+
+The accepted product language is local article assistant workbench or local
+Ability recipe. Avoid language such as article generation product, Cloud
+writer, bulk article publisher, or autonomous writing workflow when describing
+the current architecture.
+
+For `article_draft_v1`, the current budget is:
+
+- one local article at a time;
+- no batch article queue, scheduler, retry worker, or durable recipe runtime;
+- no Cloud-generated draft body, SEO copy, or article plan;
+- no automatic approval from recipe readiness;
+- no final write except the Core-approved `magick-ai/create-draft` Ability
+  callback executed outside Core.
+
+If a future feature needs more than this budget, it must be documented as a
+new local recipe profile and still enter Core through the same governed
+`write_actions` bridge. It must not extend this article recipe into a hidden
+content-generation platform.
+
+It must not become a hidden content-generation platform.
+
 ## Recipe Shape
 
 A recipe should describe:
