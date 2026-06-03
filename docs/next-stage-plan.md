@@ -68,14 +68,13 @@ The current-stage reliability baseline is documented in
 The next implementation priority is fail-closed governance behavior, not
 app-key rotation or expiry automation.
 
-The next article workflow priority is not local bulk publishing. Local plugins
-should keep the single or small-set article review path stable while Cloud
-handles large article production as runtime preparation. The boundary is
-documented in
-[Cloud Bulk Article Run Contract](cloud-bulk-article-run-contract.md): Cloud
-may own bulk run state, queues, retries, progress, and cost detail; selected
-artifacts still return to the local `article_write_plan` -> Core proposal ->
-approval -> commit-preflight -> Abilities API path for draft creation.
+The next article workflow priority is simplification. Article drafting should
+be treated as the local `article_draft_v1` Ability recipe documented in
+[Ability Recipe Orchestration Contract](ability-recipe-orchestration-contract.md),
+not as a special Core feature and not as a Cloud writing product. The
+[Cloud Bulk Article Run Contract](cloud-bulk-article-run-contract.md) is now a
+prohibited/deprecated planning contract that prevents Cloud article draft,
+SEO-copy, bulk-writing, or `article_write_plan` generation.
 
 ## Strategic Product Boundary
 
@@ -249,28 +248,28 @@ See [Set Post SEO Meta Governance Scenario](set-post-seo-meta-governance-scenari
 See [Approve Comment Governance Scenario](approve-comment-governance-scenario.md).
 See [Taxonomy Terms Preview Governance Scenario](taxonomy-terms-preview-governance-scenario.md).
 
-### 6A. Cloud Bulk Article Preparation
+### 6A. Local Ability Recipe Orchestration
 
-Status: contract active, implementation deferred outside Core.
+Status: contract active, Cloud writing prohibited.
 
-Goal: allow Cloud to prepare large article runs without making Core, Cloud
-Addon, Toolbox, or Adapter a bulk publishing control plane.
+Goal: keep article drafting as a local Ability recipe and prevent Core, Cloud
+Addon, Toolbox, Adapter, or Cloud from growing article-specific control planes.
 
 Acceptance:
 
-- Cloud run APIs and workers belong outside Core.
-- Cloud output is reviewable article artifacts and `article_write_plan`
-  candidates, not publish commands.
-- Cloud Addon may show read-only run summaries and selected results.
-- Toolbox may import selected ready items into the existing article workflow.
+- Article drafting is represented as `article_draft_v1` recipe guidance.
+- Recipe steps reference real local Ability ids.
+- Toolbox may expose recipe UX and local artifacts.
 - Core accepts imported plans only through the existing
   `POST /proposals/from-plan` contract.
 - final WordPress writes remain local, proposal-governed, preflighted, audited,
   and executed through WordPress Abilities API.
+- Cloud does not generate drafts, SEO copy, `article_write_plan` candidates, or
+  bulk article artifacts.
 - no local workflow runtime, queue, retry worker, or bulk publish console is
   added to Core.
 
-See [Cloud Bulk Article Run Contract](cloud-bulk-article-run-contract.md).
+See [Ability Recipe Orchestration Contract](ability-recipe-orchestration-contract.md).
 
 ### 7. Core Governance Operability
 

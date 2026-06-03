@@ -75,6 +75,7 @@ foreach (
 		'It does not generate content',
 		'Current Stage Governance Reliability',
 			'Approval Policy Evaluator Standard',
+			'Ability Recipe Orchestration Contract',
 			'Article Writing Workflow Contract',
 			'Cloud Bulk Article Run Contract',
 			'workflow/task queues, batch execution consoles',
@@ -471,8 +472,8 @@ magick_ai_core_assert( false !== strpos( $readme, 'Create Draft Governance Scena
 magick_ai_core_assert( false !== strpos( $readme, 'Set Post SEO Meta Governance Scenario' ), 'README links Set Post SEO Meta Governance Scenario.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Approve Comment Governance Scenario' ), 'README links Approve Comment Governance Scenario.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Taxonomy Terms Preview Governance Scenario' ), 'README links Taxonomy Terms Preview Governance Scenario.' );
-magick_ai_core_assert( false !== strpos( $readme, 'Large article production may be offloaded to Cloud only as runtime preparation' ), 'README documents Cloud bulk article runtime preparation boundary.' );
-magick_ai_core_assert( false !== strpos( $readme, 'write owner or a second approval/control plane' ), 'README keeps Cloud out of write and approval ownership.' );
+magick_ai_core_assert( false !== strpos( $readme, 'Article writing is now treated as local Ability recipe orchestration' ), 'README documents local Ability recipe orchestration boundary.' );
+magick_ai_core_assert( false !== strpos( $readme, 'Cloud must not generate article drafts' ), 'README prohibits Cloud writing generation.' );
 
 $openclaw_execution_guidance = magick_ai_core_read( $root . '/docs/openclaw-execution-guidance.md' );
 foreach (
@@ -1047,12 +1048,14 @@ magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_unatta
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_trash_parent_media' ), 'Plan-to-proposal docs mention abilities-side trash-parent media delete gate.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'magick-ai-toolbox/build-article-write-plan' ), 'Plan-to-proposal docs include the Toolbox article writing handoff.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_workflow' ), 'Plan-to-proposal docs require article workflow preview evidence.' );
-magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'are not approval, preflight, proposal status' ), 'Plan-to-proposal docs keep Cloud run evidence out of Core approval truth.' );
+magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'Article writing is a local Ability recipe' ), 'Plan-to-proposal docs treat article writing as local Ability recipe.' );
+magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'must not produce article drafts' ), 'Plan-to-proposal docs prohibit Cloud draft generation.' );
 
 $article_writing_contract = magick_ai_core_read( $root . '/docs/article-writing-workflow-contract.md' );
 foreach (
 	array(
 		'Status: active planning contract',
+		'article_draft_v1',
 		'magick-ai-toolbox/build-article-write-plan',
 		'magick-ai-toolbox/get-content-discoverability-context',
 		'magick-ai/create-draft',
@@ -1068,38 +1071,49 @@ foreach (
 		'status',
 		'draft',
 		'commit_execution=false',
+		'Ability Recipe Orchestration Contract',
 		'Cloud Bulk Article Run Contract',
-		'Cloud may prepare many article artifacts',
+		'Cloud must not generate article drafts',
 		'Final WordPress writes stay local and Abilities API based',
-		'Cloud Addon may provide hosted runtime enhancement',
+		'Cloud Addon must not import Cloud article artifacts',
 		'not a second control',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $article_writing_contract, $required ), 'Article writing workflow contract contains required text: ' . $required );
 }
 
-$cloud_bulk_article_contract = magick_ai_core_read( $root . '/docs/cloud-bulk-article-run-contract.md' );
+$ability_recipe_contract = magick_ai_core_read( $root . '/docs/ability-recipe-orchestration-contract.md' );
 foreach (
 	array(
 		'Status: active planning contract',
+		'An ability recipe is a deterministic orchestration plan',
+		'Article drafting is the first example recipe',
+		'article_draft_v1',
+		'magick-ai-toolbox/get-content-discoverability-context',
+		'magick-ai-toolbox/build-article-write-plan',
+		'magick-ai/create-draft',
+		'Cloud must not provide article writing generation',
+		'Cloud must not store article body generation jobs',
+		'Core must not become article-aware beyond validating supported plan output',
+		'Do not add Cloud article import flows',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $ability_recipe_contract, $required ), 'Ability recipe orchestration contract contains required text: ' . $required );
+}
+
+$cloud_bulk_article_contract = magick_ai_core_read( $root . '/docs/cloud-bulk-article-run-contract.md' );
+foreach (
+	array(
+		'Status: prohibited and deprecated planning contract',
 		'bulk_article_run_v1',
-		'Bulk article publishing does not belong in Cloud',
-		'bulk article production and preparation in Cloud',
-		'ready_for_local_review',
-		'partially_ready_for_local_review',
+		'article writing generation',
+		'Cloud-produced `article_write_plan` candidates',
+		'Ability Recipe Orchestration Contract',
 		'article_write_plan',
 		'magick-ai-toolbox/build-article-write-plan',
-		'POST /wp-json/magick-ai-core/v1/proposals/from-plan',
-		'Cloud status is runtime evidence only',
-		'not Core proposal status',
-		'not store WordPress admin credentials',
-		'must not call WordPress write endpoints',
-		'must not mark an item as approved',
-		'status=publish',
-		'post_status=publish',
-		'commit=true',
-		'dry_run=false',
-		'Final WordPress writes stay local',
+		'Core POST /proposals/from-plan',
+		'Cloud must not generate, store, or return article body content',
+		'local Ability recipe orchestration',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $cloud_bulk_article_contract, $required ), 'Cloud bulk article run contract contains required text: ' . $required );

@@ -78,6 +78,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Admin Surface Standard](docs/admin-surface-standard.md)
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
 - [Plan To Proposal Governance](docs/plan-to-proposal-governance.md)
+- [Ability Recipe Orchestration Contract](docs/ability-recipe-orchestration-contract.md)
 - [Article Writing Workflow Contract](docs/article-writing-workflow-contract.md)
 - [Cloud Bulk Article Run Contract](docs/cloud-bulk-article-run-contract.md)
 - [Create Draft Governance Scenario](docs/create-draft-governance-scenario.md)
@@ -130,13 +131,13 @@ Core documentation may use Review Queue, pending proposal queue, bounded bulk
 rejection, and `plan_to_proposal_batch` for governance review records. Those terms do not permit workflow/task queue ownership, batch execution, retries,
 leases, schedulers, or operator runtime consoles inside Core.
 
-Large article production may be offloaded to Cloud only as runtime preparation
-and artifact generation. The [Cloud Bulk Article Run Contract](docs/cloud-bulk-article-run-contract.md)
-keeps bulk run state, queues, retries, progress, and cost detail outside Core,
-while selected article artifacts still return to the local
-`article_write_plan` -> Core proposal -> approval -> commit-preflight ->
-Abilities API path for draft creation. Cloud must not become the WordPress
-write owner or a second approval/control plane.
+Article writing is now treated as local Ability recipe orchestration, not a
+Cloud writing product. The [Ability Recipe Orchestration Contract](docs/ability-recipe-orchestration-contract.md)
+keeps article drafting as a local `article_draft_v1` recipe over standard
+Abilities and Core-governed `write_actions`. The
+[Cloud Bulk Article Run Contract](docs/cloud-bulk-article-run-contract.md) is a
+prohibited/deprecated planning contract: Cloud must not generate article drafts,
+SEO copy, bulk article runs, or `article_write_plan` candidates.
 
 The current governance operability baseline adds proposal audit timelines,
 audit filters for ability/app/key/caller/correlation, app scope-decision

@@ -1,5 +1,27 @@
 # Session Breadcrumb
 
+## 2026-06-03 — Article writing reduced to local Ability recipe
+
+- **Module**: Core recipe and Cloud writing boundary documentation.
+- **Status**: Article drafting is now documented as the local
+  `article_draft_v1` Ability recipe instead of a special Core feature or Cloud
+  writing product.
+- **Completed**:
+  - Added `docs/ability-recipe-orchestration-contract.md` to define recipe
+    orchestration over standard Abilities.
+  - Reclassified `docs/cloud-bulk-article-run-contract.md` as a prohibited and
+    deprecated planning contract so Cloud does not generate article drafts, SEO
+    copy, bulk writing artifacts, or `article_write_plan` candidates.
+  - Updated README, article writing, plan-to-proposal, and next-stage docs plus
+    static contracts.
+- **Verification**:
+  - `composer test:all` passed.
+  - `git diff --check` passed.
+- **Boundary**:
+  - This is documentation/contract reduction only. It does not add routes,
+    execution, Cloud writing, queues, workflow runtime, approval automation, or
+    WordPress writes inside Core.
+
 ## 2026-06-03 — Core observability trigger coverage hardened
 
 - **Module**: Core local observability metadata for proposal and commit

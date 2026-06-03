@@ -13,9 +13,10 @@ into Core.
 The first product shape is an AI-assisted writing workflow, not automatic
 publishing.
 
-The workflow helps an operator collect research, prepare a draft, review
-SEO/GEO/AEO suggestions, inspect risk, and request a governed WordPress draft
-write. AI produces suggestions. Operators review. Core governs the write.
+The workflow is a local Ability recipe. It helps an operator collect research,
+prepare or review a draft, inspect risk, and request a governed WordPress draft
+write. Operators review. Core governs the write. Cloud does not provide article
+writing generation.
 
 ## Project Ownership
 
@@ -25,7 +26,7 @@ write. AI produces suggestions. Operators review. Core governs the write.
 | `magick-ai-abilities` | Standard WordPress abilities, schemas, callbacks, permissions, dry-run previews, and reusable deterministic helpers such as context, risk, compose, and write callbacks. | Product workflow state, model routing, cloud execution, approval truth, audit truth, or final governance. |
 | `magick-ai-core` | Plan intake, proposal records, approval/rejection, commit preflight, fail-closed policy checks, and audit. | Article generation, Toolbox workflow state, ability execution, final writes, workflow runtime, queues, model routing, or provider credentials. |
 | `magick-ai-adapter` | OpenClaw channel routes, capability guidance, direct-read Ability API calls, proposal relay, commit-preflight relay, and allowlisted execution after Core approval and preflight. | Article generation, SEO/GEO/AEO judgment, workflow state, approval truth, or generic write proxying. |
-| `magick-ai-cloud-addon` | Hosted runtime transport, signed Cloud requests, run/result reads, health, stats, and entitlement detail. | Local control plane, proposal truth, approval truth, workflow truth, ability registry, prompt/router/preset ownership, or WordPress writes. |
+| `magick-ai-cloud-addon` | Cloud connection, health, stats, and entitlement detail for non-writing service surfaces. | Article generation, local control plane, proposal truth, approval truth, workflow truth, ability registry, prompt/router/preset ownership, or WordPress writes. |
 
 ## P0 Flow
 
@@ -35,7 +36,8 @@ The first slice supports one article and one draft write proposal:
 2. Toolbox reads `magick-ai-toolbox/get-content-discoverability-context`.
 3. Toolbox runs bounded research, image-source, and vector-search actions when
    configured.
-4. Toolbox or a host runtime produces the standard artifacts:
+4. Toolbox, local/provider Abilities, or the operator produce the standard
+   artifacts:
    - `article_goal_brief`
    - `research_evidence_pack`
    - `article_outline`
@@ -108,20 +110,20 @@ The P0 plan is intentionally single-action. Later slices may add separate
 governed proposals for SEO meta, terms, media metadata, and featured images
 after the single draft loop is stable.
 
-## Cloud Bulk Production
+## Ability Recipe Position
 
-Large article production may use Cloud for queue-backed generation, research
-expansion, retries, progress, cost, quota, and diagnostics. That Cloud work
-must produce reviewable artifacts and `article_write_plan` candidates; it must
-not publish articles or bypass local governance.
+Article drafting is the `article_draft_v1` profile of
+[Ability Recipe Orchestration Contract](ability-recipe-orchestration-contract.md).
+The recipe is a scientific composition of standard Abilities, not an article
+exception in Core and not a Cloud writing feature.
 
-The Cloud boundary is defined in
+The Cloud boundary is defined in the prohibited/deprecated
 [Cloud Bulk Article Run Contract](cloud-bulk-article-run-contract.md). The
 short version is:
 
-- Cloud may prepare many article artifacts.
-- Cloud Addon may read run summaries and selected results.
-- Toolbox may import selected ready items into the local article writing flow.
+- Cloud must not generate article drafts, SEO copy, or bulk writing artifacts.
+- Cloud Addon must not import Cloud article artifacts.
+- Toolbox may run local recipe UX and render local artifacts.
 - Core still accepts only locally submitted, reviewable plan data.
 - Adapter still executes only after Core approval and commit preflight.
 - Final WordPress writes stay local and Abilities API based.
@@ -158,10 +160,10 @@ preflight, and audit correlation. Core still returns `commit_execution=false`.
    `magick-ai/set-post-terms`, `magick-ai/update-media-details`, and
    `magick-ai/set-post-featured-image` when the target abilities and Adapter
    execution profiles are ready.
-3. P2: topic clusters, editorial calendars, and batch draft plans. Batch output
-   must remain reviewable plan data and must not become automatic publishing.
-4. P3: Cloud bulk production may prepare many article plans, but local import
-   remains bounded and Core-governed.
+3. P2: additional local recipe profiles for topic clusters or editorial
+   calendars may be documented, but they must remain local Ability recipes and
+   must not become Cloud writing generation.
+4. P3: any batch behavior must be local, bounded, reviewable, and Core-governed.
 
 ## Boundary Guardrails
 
