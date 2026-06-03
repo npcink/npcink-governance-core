@@ -482,12 +482,14 @@ final class Proposals_Controller {
 	 */
 	private function emit_operation_event( string $event_kind, float $started, $error, array $context = array() ): void {
 		$status = $this->operation_event_status( $event_kind, $error );
+		$error_code = is_wp_error( $error ) ? (string) $error->get_error_code() : '';
 		Observability::emit(
 			$event_kind,
 			array_merge(
 				array(
 					'status'     => $status,
-					'error_code' => is_wp_error( $error ) ? (string) $error->get_error_code() : '',
+					'event_id'   => $this->operation_event_id( $event_kind, $status, $error_code, $context ),
+					'error_code' => $error_code,
 					'latency_ms' => max( 0, (int) round( ( microtime( true ) - $started ) * 1000 ) ),
 				),
 				$context
@@ -518,5 +520,33 @@ final class Proposals_Controller {
 		);
 
 		return in_array( (string) $error->get_error_code(), $warning_codes, true ) ? 'warning' : 'error';
+	}
+
+	/**
+	 * Builds a stable metadata-only event id for operation dedupe.
+	 *
+	 * @param string              $event_kind Event kind.
+	 * @param string              $status Event status.
+	 * @param string              $error_code Error code, when present.
+	 * @param array<string,mixed> $context Safe event context.
+	 * @return string
+	 */
+	private function operation_event_id( string $event_kind, string $status, string $error_code, array $context ): string {
+		$identity = array(
+			'event_kind'     => $event_kind,
+			'status'         => $status,
+			'error_code'     => $error_code,
+			'ability_id'     => (string) ( $context['ability_id'] ?? '' ),
+			'proposal_id'    => (string) ( $context['proposal_id'] ?? '' ),
+			'correlation_id' => (string) ( $context['correlation_id'] ?? '' ),
+			'proposal_count' => (int) ( $context['proposal_count'] ?? 0 ),
+			'blocked_count'  => (int) ( $context['blocked_count'] ?? 0 ),
+			'deduplicated'   => ! empty( $context['deduplicated'] ),
+		);
+		$json     = function_exists( 'wp_json_encode' ) ? wp_json_encode( $identity ) : json_encode( $identity );
+		$hash     = hash( 'sha256', is_string( $json ) ? $json : '' );
+		$prefix   = sanitize_key( str_replace( '.', '_', $event_kind ) );
+
+		return $prefix . '_' . substr( $hash, 0, 32 );
 	}
 }

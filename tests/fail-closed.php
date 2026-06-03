@@ -979,6 +979,10 @@ function magick_ai_core_fail_closed_assert_observability_metadata_only( array $e
 		magick_ai_core_fail_closed_assert( ! is_array( $value ), $message . ' keeps field ' . $key . ' bounded to a scalar.' );
 	}
 
+	$event_id = (string) ( $event['event_id'] ?? '' );
+	magick_ai_core_fail_closed_assert( '' !== $event_id, $message . ' includes a stable event id.' );
+	magick_ai_core_fail_closed_assert( 1 === preg_match( '/^[a-z0-9_]+$/', $event_id ), $message . ' event id is bounded to safe characters.' );
+
 	$json = wp_json_encode( $event );
 	$json = is_string( $json ) ? $json : '';
 	foreach ( array( 'RAW_GENERATED_CONTENT_SENTINEL', 'APPROVAL_NOTE_SENTINEL', 'REJECTION_NOTE_SENTINEL', 'CALLER_SECRET_SENTINEL', 'POLICY_PAYLOAD_SENTINEL' ) as $sentinel ) {

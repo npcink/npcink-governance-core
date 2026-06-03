@@ -53,8 +53,9 @@ final class Observability {
 	 */
 	private static function sanitize_payload( array $payload ): array {
 		$allowed = array(
-			'status'         => 'status',
-			'error_code'     => 'key',
+				'status'         => 'status',
+				'event_id'       => 'key',
+				'error_code'     => 'key',
 			'status_detail'  => 'key',
 			'latency_ms'     => 'int',
 			'ability_id'     => 'text',

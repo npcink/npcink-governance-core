@@ -1104,7 +1104,7 @@ magick_ai_core_assert( false !== strpos( $request_context, "'scopes'" ), 'Reques
 magick_ai_core_assert( false !== strpos( $request_context, 'in_array( $scope' ), 'Request context can check any app scope, not only the current route scope.' );
 
 $observability = magick_ai_core_read( $root . '/includes/Observability.php' );
-foreach ( array( 'Observability', 'magick_ai_observability_event', 'schema_version', 'plugin_slug', 'source', 'local', 'event_kind', 'sanitize_payload', 'proposal_count', 'blocked_count' ) as $required ) {
+foreach ( array( 'Observability', 'magick_ai_observability_event', 'schema_version', 'plugin_slug', 'source', 'local', 'event_kind', 'event_id', 'sanitize_payload', 'proposal_count', 'blocked_count' ) as $required ) {
 	magick_ai_core_assert( false !== strpos( $observability, $required ), 'Observability bridge contains required text: ' . $required );
 }
 
