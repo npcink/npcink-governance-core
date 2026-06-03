@@ -345,6 +345,8 @@ abilities:
 - `magick-ai/build-content-inventory-fix-plan`
 - `magick-ai/build-test-content-cleanup-plan`
 - `magick-ai/build-media-inventory-fix-plan`
+- `magick-ai/build-media-reference-repair-plan`
+- `magick-ai/build-media-settings-reference-repair-plan`
 - `magick-ai-toolbox/build-article-write-plan`
 
 Permission: `manage_options` or app scope `proposals:create`.

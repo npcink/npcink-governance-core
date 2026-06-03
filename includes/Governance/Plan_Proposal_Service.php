@@ -25,10 +25,12 @@ final class Plan_Proposal_Service {
 	 * @var array<string,bool>
 	 */
 	private $allowed_plan_abilities = array(
-		'magick-ai/build-content-inventory-fix-plan' => true,
-		'magick-ai/build-test-content-cleanup-plan'  => true,
-		'magick-ai/build-media-inventory-fix-plan'   => true,
-		'magick-ai-toolbox/build-article-write-plan' => true,
+		'magick-ai/build-content-inventory-fix-plan'                  => true,
+		'magick-ai/build-test-content-cleanup-plan'                   => true,
+		'magick-ai/build-media-inventory-fix-plan'                    => true,
+		'magick-ai/build-media-reference-repair-plan'                 => true,
+		'magick-ai/build-media-settings-reference-repair-plan'        => true,
+		'magick-ai-toolbox/build-article-write-plan'                  => true,
 	);
 
 	/**

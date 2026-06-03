@@ -70,6 +70,8 @@ Core may consume these read-only planning ability outputs:
 - `magick-ai/build-content-inventory-fix-plan`
 - `magick-ai/build-test-content-cleanup-plan`
 - `magick-ai/build-media-inventory-fix-plan`
+- `magick-ai/build-media-reference-repair-plan`
+- `magick-ai/build-media-settings-reference-repair-plan`
 - `magick-ai-toolbox/build-article-write-plan`
 
 Plan intake does not execute the plan ability and does not execute target write

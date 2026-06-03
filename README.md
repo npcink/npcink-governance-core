@@ -113,7 +113,9 @@ dry-run write proposal to Core for approval and commit preflight.
 The plan-to-proposal bridge extends that pattern to read-only planning
 abilities such as `magick-ai/build-content-inventory-fix-plan`,
 `magick-ai/build-test-content-cleanup-plan`, and
-`magick-ai/build-media-inventory-fix-plan`. It also accepts the P0 Toolbox
+`magick-ai/build-media-inventory-fix-plan`,
+`magick-ai/build-media-reference-repair-plan`, and
+`magick-ai/build-media-settings-reference-repair-plan`. It also accepts the P0 Toolbox
 article handoff `magick-ai-toolbox/build-article-write-plan`, but only as a
 single reviewed `magick-ai/create-draft` proposal. Core accepts the plan
 output, validates each target ability, stores either one pending proposal per

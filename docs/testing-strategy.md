@@ -83,7 +83,8 @@ Use it for behavior that requires real WordPress:
 - the plan-to-proposal bridge for
   `magick-ai/build-content-inventory-fix-plan`,
   `magick-ai/build-test-content-cleanup-plan`, and
-  `magick-ai/build-media-inventory-fix-plan`, including generated proposals,
+  `magick-ai/build-media-inventory-fix-plan`, plus media reference repair
+  planning for post content and setting/theme-mod URL patches, including generated proposals,
   destructive media delete exclusion by default, and `requires_input`
   preflight blocking;
 - governance operability coverage, including proposal `audit_timeline`,
