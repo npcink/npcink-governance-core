@@ -77,6 +77,14 @@ preserves `preview.article_workflow` for review. Core does not generate the
 article, run Toolbox tools, call Cloud, approve the proposal, or execute the
 draft write.
 
+Cloud bulk article runs are upstream runtime preparation only. A Cloud-produced
+item may become a Core proposal only after a local operator imports it as the
+same `magick-ai-toolbox/build-article-write-plan` shape and it passes the same
+single-draft acceptance rules. Cloud run status, callbacks, and item readiness
+are not approval, preflight, proposal status, or WordPress write
+authorization. See
+[Cloud Bulk Article Run Contract](cloud-bulk-article-run-contract.md).
+
 ## Proposal Preview Contract
 
 Generated proposal previews preserve:

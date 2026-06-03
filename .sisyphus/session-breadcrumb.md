@@ -1,5 +1,27 @@
 # Session Breadcrumb
 
+## 2026-06-03 — Cloud bulk article boundary contract started
+
+- **Module**: Core article workflow and Cloud boundary documentation.
+- **Status**: Core now documents the intended split for large article work:
+  Cloud may prepare bulk article artifacts and run evidence, but selected items
+  must return to the local `article_write_plan` -> Core proposal -> approval
+  -> commit-preflight -> WordPress Abilities API path for draft creation.
+- **Completed**:
+  - Added `docs/cloud-bulk-article-run-contract.md` with the
+    `bulk_article_run_v1` planning shape, status vocabulary, local import flow,
+    and hard guardrails against Cloud direct publishing.
+  - Linked the contract from README, article workflow, plan-to-proposal, and
+    next-stage docs.
+  - Added static contracts for the Cloud bulk article boundary.
+- **Verification**:
+  - `composer test:all`
+  - `git diff --check`
+- **Boundary**:
+  - This is contract/documentation only. It does not add Core REST routes,
+    Cloud callbacks, queueing, worker state, workflow runtime, automatic
+    approval, final execution, or WordPress writes inside Core.
+
 ## 2026-06-02 — Article writing plan review summary added
 
 - **Module**: Core admin proposal detail.

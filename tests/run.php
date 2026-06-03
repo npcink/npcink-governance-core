@@ -76,6 +76,7 @@ foreach (
 		'Current Stage Governance Reliability',
 			'Approval Policy Evaluator Standard',
 			'Article Writing Workflow Contract',
+			'Cloud Bulk Article Run Contract',
 			'workflow/task queues, batch execution consoles',
 			'Review Queue, pending proposal queue',
 			'Those terms do not permit workflow/task queue ownership',
@@ -439,6 +440,8 @@ magick_ai_core_assert( false !== strpos( $readme, 'Create Draft Governance Scena
 magick_ai_core_assert( false !== strpos( $readme, 'Set Post SEO Meta Governance Scenario' ), 'README links Set Post SEO Meta Governance Scenario.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Approve Comment Governance Scenario' ), 'README links Approve Comment Governance Scenario.' );
 magick_ai_core_assert( false !== strpos( $readme, 'Taxonomy Terms Preview Governance Scenario' ), 'README links Taxonomy Terms Preview Governance Scenario.' );
+magick_ai_core_assert( false !== strpos( $readme, 'Large article production may be offloaded to Cloud only as runtime preparation' ), 'README documents Cloud bulk article runtime preparation boundary.' );
+magick_ai_core_assert( false !== strpos( $readme, 'write owner or a second approval/control plane' ), 'README keeps Cloud out of write and approval ownership.' );
 
 $openclaw_execution_guidance = magick_ai_core_read( $root . '/docs/openclaw-execution-guidance.md' );
 foreach (
@@ -1008,6 +1011,7 @@ magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_unatta
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_trash_parent_media' ), 'Plan-to-proposal docs mention abilities-side trash-parent media delete gate.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'magick-ai-toolbox/build-article-write-plan' ), 'Plan-to-proposal docs include the Toolbox article writing handoff.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_workflow' ), 'Plan-to-proposal docs require article workflow preview evidence.' );
+magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'are not approval, preflight, proposal status' ), 'Plan-to-proposal docs keep Cloud run evidence out of Core approval truth.' );
 
 $article_writing_contract = magick_ai_core_read( $root . '/docs/article-writing-workflow-contract.md' );
 foreach (
@@ -1028,11 +1032,41 @@ foreach (
 		'status',
 		'draft',
 		'commit_execution=false',
+		'Cloud Bulk Article Run Contract',
+		'Cloud may prepare many article artifacts',
+		'Final WordPress writes stay local and Abilities API based',
 		'Cloud Addon may provide hosted runtime enhancement',
 		'not a second control',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $article_writing_contract, $required ), 'Article writing workflow contract contains required text: ' . $required );
+}
+
+$cloud_bulk_article_contract = magick_ai_core_read( $root . '/docs/cloud-bulk-article-run-contract.md' );
+foreach (
+	array(
+		'Status: active planning contract',
+		'bulk_article_run_v1',
+		'Bulk article publishing does not belong in Cloud',
+		'bulk article production and preparation in Cloud',
+		'ready_for_local_review',
+		'partially_ready_for_local_review',
+		'article_write_plan',
+		'magick-ai-toolbox/build-article-write-plan',
+		'POST /wp-json/magick-ai-core/v1/proposals/from-plan',
+		'Cloud status is runtime evidence only',
+		'not Core proposal status',
+		'not store WordPress admin credentials',
+		'must not call WordPress write endpoints',
+		'must not mark an item as approved',
+		'status=publish',
+		'post_status=publish',
+		'commit=true',
+		'dry_run=false',
+		'Final WordPress writes stay local',
+	) as $required
+) {
+	magick_ai_core_assert( false !== strpos( $cloud_bulk_article_contract, $required ), 'Cloud bulk article run contract contains required text: ' . $required );
 }
 
 $audit_repository = magick_ai_core_read( $root . '/includes/Audit/Audit_Log_Repository.php' );

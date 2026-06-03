@@ -108,6 +108,24 @@ The P0 plan is intentionally single-action. Later slices may add separate
 governed proposals for SEO meta, terms, media metadata, and featured images
 after the single draft loop is stable.
 
+## Cloud Bulk Production
+
+Large article production may use Cloud for queue-backed generation, research
+expansion, retries, progress, cost, quota, and diagnostics. That Cloud work
+must produce reviewable artifacts and `article_write_plan` candidates; it must
+not publish articles or bypass local governance.
+
+The Cloud boundary is defined in
+[Cloud Bulk Article Run Contract](cloud-bulk-article-run-contract.md). The
+short version is:
+
+- Cloud may prepare many article artifacts.
+- Cloud Addon may read run summaries and selected results.
+- Toolbox may import selected ready items into the local article writing flow.
+- Core still accepts only locally submitted, reviewable plan data.
+- Adapter still executes only after Core approval and commit preflight.
+- Final WordPress writes stay local and Abilities API based.
+
 ## Core Acceptance Rules
 
 Core accepts `magick-ai-toolbox/build-article-write-plan` only when the
@@ -142,6 +160,8 @@ preflight, and audit correlation. Core still returns `commit_execution=false`.
    execution profiles are ready.
 3. P2: topic clusters, editorial calendars, and batch draft plans. Batch output
    must remain reviewable plan data and must not become automatic publishing.
+4. P3: Cloud bulk production may prepare many article plans, but local import
+   remains bounded and Core-governed.
 
 ## Boundary Guardrails
 

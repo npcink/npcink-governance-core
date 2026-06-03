@@ -68,6 +68,15 @@ The current-stage reliability baseline is documented in
 The next implementation priority is fail-closed governance behavior, not
 app-key rotation or expiry automation.
 
+The next article workflow priority is not local bulk publishing. Local plugins
+should keep the single or small-set article review path stable while Cloud
+handles large article production as runtime preparation. The boundary is
+documented in
+[Cloud Bulk Article Run Contract](cloud-bulk-article-run-contract.md): Cloud
+may own bulk run state, queues, retries, progress, and cost detail; selected
+artifacts still return to the local `article_write_plan` -> Core proposal ->
+approval -> commit-preflight -> Abilities API path for draft creation.
+
 ## Strategic Product Boundary
 
 The next stage should keep Core focused on the governance kernel. WordPress 7.0
@@ -239,6 +248,29 @@ See [Create Draft Governance Scenario](create-draft-governance-scenario.md).
 See [Set Post SEO Meta Governance Scenario](set-post-seo-meta-governance-scenario.md).
 See [Approve Comment Governance Scenario](approve-comment-governance-scenario.md).
 See [Taxonomy Terms Preview Governance Scenario](taxonomy-terms-preview-governance-scenario.md).
+
+### 6A. Cloud Bulk Article Preparation
+
+Status: contract active, implementation deferred outside Core.
+
+Goal: allow Cloud to prepare large article runs without making Core, Cloud
+Addon, Toolbox, or Adapter a bulk publishing control plane.
+
+Acceptance:
+
+- Cloud run APIs and workers belong outside Core.
+- Cloud output is reviewable article artifacts and `article_write_plan`
+  candidates, not publish commands.
+- Cloud Addon may show read-only run summaries and selected results.
+- Toolbox may import selected ready items into the existing article workflow.
+- Core accepts imported plans only through the existing
+  `POST /proposals/from-plan` contract.
+- final WordPress writes remain local, proposal-governed, preflighted, audited,
+  and executed through WordPress Abilities API.
+- no local workflow runtime, queue, retry worker, or bulk publish console is
+  added to Core.
+
+See [Cloud Bulk Article Run Contract](cloud-bulk-article-run-contract.md).
 
 ### 7. Core Governance Operability
 
