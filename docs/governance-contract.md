@@ -75,6 +75,7 @@ Core may consume these read-only planning ability outputs:
 - `magick-ai/build-media-optimization-plan`
 - `magick-ai-toolbox/build-article-write-plan`
 - `magick-ai-toolbox/build-article-batch-write-plan`
+- `magick-ai-toolbox/build-article-media-batch-write-plan`
 
 Plan intake does not execute the plan ability and does not execute target write
 abilities. It accepts a successful plan payload, validates that the planning
@@ -96,6 +97,15 @@ The bounded article batch handoff is separate from P0. Core accepts
 one reviewed article artifact set per action. Core stores one batch proposal
 for one user approval, but it still does not generate articles, approve the
 proposal, execute writes, or run a batch writing job.
+
+The media-enabled article batch handoff is separate from the draft-only batch.
+Core accepts `magick-ai-toolbox/build-article-media-batch-write-plan` only when
+it is an `article_media_batch_write_plan` with explicit batch approval, 1 to 5
+reviewed article artifact sets, preserved image-source candidate evidence, and
+allowlisted draft/media actions such as `magick-ai/create-draft`,
+`magick-ai/upload-media-from-url`, `magick-ai/update-media-details`, and
+`magick-ai/set-post-featured-image`. Core stores the grouped proposal only; it
+does not search images, import media, set featured images, or execute writes.
 
 The media optimization handoff is the governed shape for the user intent
 "optimize this attachment." Core accepts

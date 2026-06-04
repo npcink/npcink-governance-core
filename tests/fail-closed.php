@@ -496,6 +496,26 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'attachment_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
+			'magick-ai/upload-media-from-url' => array(
+				'ability_id'        => 'magick-ai/upload-media-from-url',
+				'label'             => 'Upload Media From URL',
+				'risk_level'        => 'write',
+				'requires_approval' => true,
+				'capability'        => 'upload_files',
+				'required_scopes'   => array( 'media.write' ),
+				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'url' => array( 'type' => 'string' ), 'attach_to_post_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
+			'magick-ai/set-post-featured-image' => array(
+				'ability_id'        => 'magick-ai/set-post-featured-image',
+				'label'             => 'Set Post Featured Image',
+				'risk_level'        => 'write',
+				'requires_approval' => true,
+				'capability'        => 'edit_posts',
+				'required_scopes'   => array( 'media.write' ),
+				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'post_id' => array( 'type' => 'integer' ), 'attachment_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
 			'magick-ai/adopt-cloud-media-derivative' => array(
 				'ability_id'        => 'magick-ai/adopt-cloud-media-derivative',
 				'label'             => 'Adopt Cloud Media Derivative',
@@ -519,6 +539,16 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 			'magick-ai-toolbox/build-article-batch-write-plan' => array(
 				'ability_id'        => 'magick-ai-toolbox/build-article-batch-write-plan',
 				'label'             => 'Build Article Batch Write Plan',
+				'risk_level'        => 'read',
+				'requires_approval' => false,
+				'capability'        => 'manage_options',
+				'required_scopes'   => array( 'cap.toolbox.workflow_suggest' ),
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
+			'magick-ai-toolbox/build-article-media-batch-write-plan' => array(
+				'ability_id'        => 'magick-ai-toolbox/build-article-media-batch-write-plan',
+				'label'             => 'Build Article Media Batch Write Plan',
 				'risk_level'        => 'read',
 				'requires_approval' => false,
 				'capability'        => 'manage_options',
@@ -1278,6 +1308,117 @@ function magick_ai_core_fail_closed_article_batch_write_plan(): array {
 }
 
 /**
+ * Creates a representative Toolbox article media batch write plan.
+ *
+ * @return array<string,mixed>
+ */
+function magick_ai_core_fail_closed_article_media_batch_write_plan(): array {
+	$single_plan = magick_ai_core_fail_closed_article_write_plan();
+	$article     = $single_plan;
+	unset( $article['artifact_type'], $article['version'], $article['batch_id'], $article['requires_approval'], $article['dry_run'], $article['commit_execution'], $article['proposal_mode'], $article['write_actions'] );
+	$article['featured_image_candidate'] = array(
+		'provider'          => 'unsplash',
+		'regular_url'       => 'https://images.example.test/photo.jpg',
+		'source_url'        => 'https://unsplash.com/photos/example',
+		'download_location' => 'https://api.unsplash.com/photos/example/download',
+		'photographer'      => 'Example Photographer',
+		'attribution'       => 'Photo by Example Photographer on Unsplash.',
+	);
+
+	return array(
+		'artifact_type'     => 'article_media_batch_write_plan',
+		'version'           => 1,
+		'batch_id'          => 'article_media_batch_write_fault_injection',
+		'requires_approval' => true,
+		'dry_run'           => true,
+		'commit_execution'  => false,
+		'proposal_mode'     => 'batch',
+		'batch_approval'    => true,
+		'articles'          => array( $article ),
+		'media_workflow'    => array(
+			array(
+				'article_index'      => 0,
+				'candidate_provider' => 'unsplash',
+				'source_url'         => 'https://unsplash.com/photos/example',
+				'download_location'  => 'https://api.unsplash.com/photos/example/download',
+				'attribution'        => 'Photo by Example Photographer on Unsplash.',
+			),
+		),
+		'write_actions'     => array(
+			array(
+				'action_id'         => 'create_article_draft_1',
+				'target_ability_id' => 'magick-ai/create-draft',
+				'input'             => array(
+					'title'   => 'Governed writing workflow',
+					'content' => 'Draft body.',
+					'status'  => 'draft',
+					'dry_run' => true,
+					'commit'  => false,
+				),
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+			array(
+				'action_id'         => 'upload_featured_image_1',
+				'target_ability_id' => 'magick-ai/upload-media-from-url',
+				'depends_on'        => array( 'create_article_draft_1' ),
+				'input'             => array(
+					'url'               => 'https://images.example.test/photo.jpg',
+					'alt'               => 'Example image alt text.',
+					'source_type'       => 'stock',
+					'source_page_url'   => 'https://unsplash.com/photos/example',
+					'photographer_name' => 'Example Photographer',
+					'attribution_text'  => 'Photo by Example Photographer on Unsplash.',
+					'attach_to_post_id' => '$outputs.create_article_draft_1.post_id',
+					'dry_run'           => true,
+					'commit'            => false,
+				),
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+			array(
+				'action_id'         => 'update_featured_image_details_1',
+				'target_ability_id' => 'magick-ai/update-media-details',
+				'depends_on'        => array( 'upload_featured_image_1' ),
+				'input'             => array(
+					'attachment_id'     => '$outputs.upload_featured_image_1.attachment_id',
+					'alt'               => 'Example image alt text.',
+					'source_type'       => 'stock',
+					'source_page_url'   => 'https://unsplash.com/photos/example',
+					'photographer_name' => 'Example Photographer',
+					'attribution_text'  => 'Photo by Example Photographer on Unsplash.',
+					'dry_run'           => true,
+					'commit'            => false,
+				),
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+			array(
+				'action_id'         => 'set_featured_image_1',
+				'target_ability_id' => 'magick-ai/set-post-featured-image',
+				'depends_on'        => array( 'create_article_draft_1', 'upload_featured_image_1' ),
+				'input'             => array(
+					'post_id'       => '$outputs.create_article_draft_1.post_id',
+					'attachment_id' => '$outputs.upload_featured_image_1.attachment_id',
+					'dry_run'       => true,
+					'commit'        => false,
+				),
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+		),
+		'risk'              => array(
+			'level'  => 'medium',
+			'reason' => 'Draft creation with reviewed media upload and featured-image assignment.',
+		),
+	);
+}
+
+/**
  * Creates a representative media optimization plan.
  *
  * @return array<string,mixed>
@@ -1521,6 +1662,33 @@ $article_batch_publish_plan['write_actions'][1]['input']['status'] = 'publish';
 $article_batch_publish_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-batch-write-plan', $article_batch_publish_plan );
 magick_ai_core_fail_closed_assert( is_wp_error( $article_batch_publish_result ), 'Article batch write plan requesting publish is rejected.' );
 magick_ai_core_fail_closed_assert( 'magick_ai_core_article_batch_publish_rejected' === $article_batch_publish_result->get_error_code(), 'Article batch publish rejection uses stable error code.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$article_media_batch_plan = magick_ai_core_fail_closed_article_media_batch_write_plan();
+$article_media_batch_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-media-batch-write-plan', $article_media_batch_plan, array(), array( 'source' => 'toolbox_article_media_batch_workflow' ) );
+magick_ai_core_fail_closed_assert( ! is_wp_error( $article_media_batch_result ), 'Valid Toolbox article media batch write plan creates a Core proposal.' );
+magick_ai_core_fail_closed_assert( 1 === (int) ( $article_media_batch_result['proposal_count'] ?? 0 ), 'Valid Toolbox article media batch write plan creates one batch proposal.' );
+$article_media_batch_proposal = is_array( $article_media_batch_result['proposals'][0] ?? null ) ? $article_media_batch_result['proposals'][0] : array();
+magick_ai_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $article_media_batch_proposal['preview']['source']['type'] ?? '' ), 'Article media batch write plan stores batch proposal source.' );
+magick_ai_core_fail_closed_assert( 4 === count( (array) ( $article_media_batch_proposal['input']['write_actions'] ?? array() ) ), 'Article media batch proposal stores draft and media write actions.' );
+magick_ai_core_fail_closed_assert( is_array( $article_media_batch_proposal['preview']['article_media_batch_workflow'] ?? null ), 'Article media batch proposal preserves media workflow preview.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$article_media_missing_candidate = magick_ai_core_fail_closed_article_media_batch_write_plan();
+unset( $article_media_missing_candidate['articles'][0]['featured_image_candidate'] );
+$article_media_missing_candidate_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-media-batch-write-plan', $article_media_missing_candidate );
+magick_ai_core_fail_closed_assert( is_wp_error( $article_media_missing_candidate_result ), 'Article media batch write plan without image candidate evidence is rejected.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_article_media_batch_candidate_missing' === $article_media_missing_candidate_result->get_error_code(), 'Article media candidate rejection uses stable error code.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$article_media_missing_featured = magick_ai_core_fail_closed_article_media_batch_write_plan();
+array_pop( $article_media_missing_featured['write_actions'] );
+$article_media_missing_featured_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-media-batch-write-plan', $article_media_missing_featured );
+magick_ai_core_fail_closed_assert( is_wp_error( $article_media_missing_featured_result ), 'Article media batch write plan without featured-image action is rejected.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_article_media_batch_actions_missing' === $article_media_missing_featured_result->get_error_code(), 'Article media missing featured action rejection uses stable error code.' );
 
 $wpdb  = magick_ai_core_fail_closed_reset_db();
 $stack = magick_ai_core_fail_closed_plan_stack();

@@ -49,6 +49,7 @@ Core may accept output from these read-only planning abilities:
 - `magick-ai/build-media-optimization-plan`
 - `magick-ai-toolbox/build-article-write-plan`
 - `magick-ai-toolbox/build-article-batch-write-plan`
+- `magick-ai-toolbox/build-article-media-batch-write-plan`
 
 They must remain discoverable as `governance_mode=direct_read` with
 `execution_surface=wp_abilities_rest`. Core does not execute them. A host or
@@ -65,6 +66,13 @@ draft handoff owned by Toolbox. Core accepts it only as a reviewed
 `article_batch_write_plan` with explicit batch approval and 2 to 5 draft-only
 `magick-ai/create-draft` actions. It does not move article generation, batch
 writing jobs, workflow state, or Cloud writing into Core.
+
+`magick-ai-toolbox/build-article-media-batch-write-plan` is the media-enabled
+local article batch handoff owned by Toolbox. Core accepts it only as a
+reviewed `article_media_batch_write_plan` with explicit batch approval,
+preserved image-source candidate evidence, and allowlisted draft/media write
+actions. It does not move image search, media import, featured-image setting,
+article generation, workflow state, or Cloud writing into Core.
 
 `magick-ai/build-media-optimization-plan` is the bounded local media
 optimization handoff owned by `magick-ai-abilities` or a local product plugin.

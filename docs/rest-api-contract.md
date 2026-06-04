@@ -350,6 +350,7 @@ abilities:
 - `magick-ai/build-media-optimization-plan`
 - `magick-ai-toolbox/build-article-write-plan`
 - `magick-ai-toolbox/build-article-batch-write-plan`
+- `magick-ai-toolbox/build-article-media-batch-write-plan`
 
 Permission: `manage_options` or app scope `proposals:create`.
 
@@ -376,6 +377,14 @@ For `magick-ai-toolbox/build-article-batch-write-plan`, the plan must declare
 `magick-ai/create-draft` actions plus one reviewed article artifact set per
 action under `articles[]`. Publish, high-risk reports, blocked claims,
 `commit=true`, or `dry_run=false` are rejected before proposal creation.
+
+For `magick-ai-toolbox/build-article-media-batch-write-plan`, the plan must
+declare `artifact_type=article_media_batch_write_plan`,
+`proposal_mode=batch`, `batch_approval=true`, and include 1 to 5 reviewed
+article artifact sets with `featured_image_candidate` evidence. The action set
+must include draft creation, `magick-ai/upload-media-from-url`, and
+`magick-ai/set-post-featured-image` actions for each article, with optional
+`magick-ai/update-media-details` or `magick-ai/patch-post-content` actions.
 
 For `magick-ai/build-media-optimization-plan`, the plan must declare
 `artifact_type=media_optimization_plan`, `proposal_mode=batch`,

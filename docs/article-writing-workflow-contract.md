@@ -194,6 +194,19 @@ The generated proposal is one `plan_to_proposal_batch` record. Adapter must
 still execute each action individually through its allowlisted execution
 profile after Core approval and commit preflight.
 
+## Article Media Batch Plan Shape
+
+`magick-ai-toolbox/build-article-media-batch-write-plan` is the bounded local
+media-enabled batch profile for reviewed drafts with reviewed image-source
+candidates. It must return `artifact_type=article_media_batch_write_plan`,
+`proposal_mode=batch`, `batch_approval=true`, one reviewed article artifact set
+per article, `featured_image_candidate` evidence for every article, and
+allowlisted write actions for `magick-ai/create-draft`,
+`magick-ai/upload-media-from-url`, `magick-ai/update-media-details`, and
+`magick-ai/set-post-featured-image`. It is not a Cloud writing feature, image
+generation runtime, media import runtime, approval store, or final write
+executor.
+
 ## Ability Recipe Position
 
 Article drafting is the `article_draft_v1` profile of

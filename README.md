@@ -123,6 +123,10 @@ optimization batch, and accepts the P0 Toolbox article handoff
 `magick-ai/create-draft` proposal. The bounded local article batch handoff
 `magick-ai-toolbox/build-article-batch-write-plan` may create one reviewed
 batch of 2 to 5 draft-only `magick-ai/create-draft` actions. Core accepts the
+media-enabled local article batch handoff
+`magick-ai-toolbox/build-article-media-batch-write-plan` only as one
+reviewed `article_media_batch_write_plan` with draft creation, media upload,
+media metadata, and featured-image actions grouped in a Core batch proposal.
 plan output, validates each target ability, stores either one pending proposal
 per `write_action` or one `plan_to_proposal_batch` proposal when the plan
 explicitly requests batch approval, preserves `preview.before`,

@@ -16,6 +16,7 @@ an execution bridge.
 - `magick-ai/build-media-optimization-plan`
 - `magick-ai-toolbox/build-article-write-plan`
 - `magick-ai-toolbox/build-article-batch-write-plan`
+- `magick-ai-toolbox/build-article-media-batch-write-plan`
 
 The `magick-ai/*` planning abilities belong to `magick-ai-abilities`; the
 Toolbox article handoff belongs to `magick-ai-toolbox`. They are executed
@@ -102,6 +103,17 @@ rejected before proposal creation. Core stores one `plan_to_proposal_batch`
 proposal so the user can approve the related draft writes once, while Adapter
 still performs per-action allowlist, schema, idempotency, and execution checks
 outside Core.
+
+`magick-ai-toolbox/build-article-media-batch-write-plan` is the media-enabled
+local batch handoff for reviewed drafts with reviewed image-source candidates.
+It is not a Cloud writing feature and not an image generation/import runtime.
+Core accepts it only when it declares
+`artifact_type=article_media_batch_write_plan`, `proposal_mode=batch`,
+`batch_approval=true`, includes 1 to 5 reviewed article artifact sets,
+preserves selected image-source candidate evidence, and uses only allowlisted
+draft/media actions such as `magick-ai/create-draft`,
+`magick-ai/upload-media-from-url`, `magick-ai/update-media-details`, and
+`magick-ai/set-post-featured-image`.
 
 ## Media Optimization Handoff
 

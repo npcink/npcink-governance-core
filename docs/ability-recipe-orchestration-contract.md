@@ -69,6 +69,7 @@ Recipe steps must reference real local Ability ids, for example:
 - `magick-ai-toolbox/vector-search`
 - `magick-ai-toolbox/build-article-write-plan`
 - `magick-ai-toolbox/build-article-batch-write-plan`
+- `magick-ai-toolbox/build-article-media-batch-write-plan`
 - `magick-ai/create-draft`
 
 ## Article Draft Recipe
@@ -106,6 +107,15 @@ Core still governs only the resulting `write_actions`.
 The batch proposal is an approval grouping. It is not a batch writing job,
 queue, scheduler, or Cloud generation surface.
 
+`article_media_batch_draft_v1` is a bounded local recipe profile for reviewed
+drafts plus reviewed image-source candidates. It builds an
+`article_media_batch_write_plan` through
+`magick-ai-toolbox/build-article-media-batch-write-plan` with draft creation,
+media upload, media metadata, and featured-image write actions, then submits
+that plan through Core proposal intake. The media proposal is an approval
+grouping only; Toolbox does not import media, Core does not execute writes, and
+Cloud must not generate the article or image-source plan.
+
 ## Ownership
 
 | Project | Owns | Does not own |
@@ -132,7 +142,8 @@ Allowed Cloud involvement for writing-related screens is limited to:
 
 Cloud must not store article body generation jobs, generate draft candidates,
 return `article_write_plan` candidates, or expose a bulk article run endpoint.
-Cloud must also not generate `article_batch_write_plan` candidates.
+Cloud must also not generate `article_batch_write_plan` or
+`article_media_batch_write_plan` candidates.
 
 ## Core Boundary
 

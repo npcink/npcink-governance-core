@@ -33,9 +33,12 @@ final class Plan_Proposal_Service {
 		'magick-ai/build-media-optimization-plan'                     => true,
 		'magick-ai-toolbox/build-article-write-plan'                  => true,
 		'magick-ai-toolbox/build-article-batch-write-plan'            => true,
+		'magick-ai-toolbox/build-article-media-batch-write-plan'      => true,
 	);
 
 	private const ARTICLE_BATCH_MAX_ACTIONS = 5;
+	private const ARTICLE_MEDIA_BATCH_MAX_ARTICLES = 5;
+	private const ARTICLE_MEDIA_BATCH_MAX_ACTIONS = 25;
 
 	/**
 	 * Ability adapter.
@@ -128,6 +131,13 @@ final class Plan_Proposal_Service {
 			$article_batch_contract_error = $this->validate_article_batch_write_plan_contract( $plan );
 			if ( is_wp_error( $article_batch_contract_error ) ) {
 				return $article_batch_contract_error;
+			}
+		}
+
+		if ( 'magick-ai-toolbox/build-article-media-batch-write-plan' === $plan_ability_id ) {
+			$article_media_batch_contract_error = $this->validate_article_media_batch_write_plan_contract( $plan );
+			if ( is_wp_error( $article_media_batch_contract_error ) ) {
+				return $article_media_batch_contract_error;
 			}
 		}
 
@@ -424,6 +434,144 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Validates a bounded article media batch plan.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_article_media_batch_write_plan_contract( array $plan ) {
+		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
+		if ( 'article_media_batch_write_plan' !== $artifact_type ) {
+			return new WP_Error(
+				'magick_ai_core_article_media_batch_plan_invalid',
+				__( 'Article media batch write plans must declare artifact_type=article_media_batch_write_plan.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true !== (bool) ( $plan['batch_approval'] ?? false ) || 'batch' !== sanitize_key( (string) ( $plan['proposal_mode'] ?? '' ) ) ) {
+			return new WP_Error(
+				'magick_ai_core_article_media_batch_mode_required',
+				__( 'Article media batch write plans must explicitly request batch proposal approval.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$articles = is_array( $plan['articles'] ?? null ) ? array_values( $plan['articles'] ) : array();
+		if ( count( $articles ) < 1 || count( $articles ) > self::ARTICLE_MEDIA_BATCH_MAX_ARTICLES ) {
+			return new WP_Error(
+				'magick_ai_core_article_media_batch_size_rejected',
+				__( 'Article media batch write plans must include 1 to 5 reviewed articles.', 'magick-ai-core' ),
+				array(
+					'status'       => 422,
+					'max_articles' => self::ARTICLE_MEDIA_BATCH_MAX_ARTICLES,
+				)
+			);
+		}
+
+		foreach ( $articles as $article_index => $article ) {
+			if ( ! is_array( $article ) ) {
+				return new WP_Error(
+					'magick_ai_core_article_media_batch_artifacts_missing',
+					__( 'Article media batch entries must be objects.', 'magick-ai-core' ),
+					array(
+						'status'        => 422,
+						'article_index' => $article_index,
+					)
+				);
+			}
+			$artifact_error = $this->validate_article_artifacts( $article, 'magick_ai_core_article_media_batch_' );
+			if ( is_wp_error( $artifact_error ) ) {
+				return $artifact_error;
+			}
+			if ( ! is_array( $article['featured_image_candidate'] ?? null ) ) {
+				return new WP_Error(
+					'magick_ai_core_article_media_batch_candidate_missing',
+					__( 'Article media batch entries must preserve the selected image-source candidate.', 'magick-ai-core' ),
+					array(
+						'status'        => 422,
+						'article_index' => $article_index,
+					)
+				);
+			}
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( count( $write_actions ) < count( $articles ) * 3 || count( $write_actions ) > self::ARTICLE_MEDIA_BATCH_MAX_ACTIONS ) {
+			return new WP_Error(
+				'magick_ai_core_article_media_batch_actions_rejected',
+				__( 'Article media batch write plans must contain a bounded group of draft, media upload, and featured-image actions.', 'magick-ai-core' ),
+				array(
+					'status'      => 422,
+					'max_actions' => self::ARTICLE_MEDIA_BATCH_MAX_ACTIONS,
+				)
+			);
+		}
+
+		$target_counts = array(
+			'magick-ai/create-draft'             => 0,
+			'magick-ai/upload-media-from-url'    => 0,
+			'magick-ai/set-post-featured-image'  => 0,
+		);
+		$allowed_targets = array(
+			'magick-ai/create-draft'             => true,
+			'magick-ai/upload-media-from-url'    => true,
+			'magick-ai/update-media-details'     => true,
+			'magick-ai/set-post-featured-image'  => true,
+			'magick-ai/patch-post-content'       => true,
+		);
+
+		foreach ( $write_actions as $action_index => $action ) {
+			if ( ! is_array( $action ) ) {
+				return new WP_Error(
+					'magick_ai_core_article_media_batch_action_invalid',
+					__( 'Article media batch write actions must be objects.', 'magick-ai-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+
+			$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
+			if ( ! isset( $allowed_targets[ $target_ability_id ] ) ) {
+				return new WP_Error(
+					'magick_ai_core_article_media_batch_target_rejected',
+					__( 'Article media batch plans may target only draft and allowlisted media actions.', 'magick-ai-core' ),
+					array(
+						'status'            => 422,
+						'action_index'      => $action_index,
+						'target_ability_id' => $target_ability_id,
+					)
+				);
+			}
+			if ( isset( $target_counts[ $target_ability_id ] ) ) {
+				++$target_counts[ $target_ability_id ];
+			}
+
+			$action_error = $this->validate_article_media_batch_action( $action, $action_index );
+			if ( is_wp_error( $action_error ) ) {
+				return $action_error;
+			}
+		}
+
+		foreach ( $target_counts as $target => $count ) {
+			if ( $count < count( $articles ) ) {
+				return new WP_Error(
+					'magick_ai_core_article_media_batch_actions_missing',
+					__( 'Article media batch plans must include create, upload, and featured-image actions for every article.', 'magick-ai-core' ),
+					array(
+						'status'            => 422,
+						'target_ability_id' => $target,
+					)
+				);
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Validates a media optimization plan for one user-intent approval.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -637,6 +785,139 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Validates one action from an article media batch plan.
+	 *
+	 * @param array<string,mixed> $action Write action.
+	 * @param int                 $action_index Action index.
+	 * @return true|WP_Error
+	 */
+	private function validate_article_media_batch_action( array $action, int $action_index ) {
+		$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
+		if ( 'magick-ai/create-draft' === $target_ability_id ) {
+			return $this->validate_article_draft_action( $action, 'magick_ai_core_article_media_batch_' );
+		}
+
+		$input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+		if ( true === (bool) ( $input['commit'] ?? false ) || false === (bool) ( $input['dry_run'] ?? true ) ) {
+			return new WP_Error(
+				'magick_ai_core_article_media_batch_commit_rejected',
+				__( 'Article media batch action input must remain dry-run and must not request commit.', 'magick-ai-core' ),
+				array(
+					'status'       => 422,
+					'action_index' => $action_index,
+				)
+			);
+		}
+
+		if ( 'magick-ai/upload-media-from-url' === $target_ability_id ) {
+			if ( ! $this->is_valid_absolute_url( $input['url'] ?? null ) ) {
+				return new WP_Error(
+					'magick_ai_core_article_media_batch_media_url_missing',
+					__( 'Article media upload actions must include a reviewed media URL.', 'magick-ai-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+			return true;
+		}
+
+		if ( 'magick-ai/update-media-details' === $target_ability_id ) {
+			if ( ! $this->is_exact_output_reference( $input['attachment_id'] ?? null ) && absint( $input['attachment_id'] ?? 0 ) <= 0 ) {
+				return new WP_Error(
+					'magick_ai_core_article_media_batch_attachment_missing',
+					__( 'Article media metadata actions must include attachment_id or an approved output reference.', 'magick-ai-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+			return true;
+		}
+
+		if ( 'magick-ai/set-post-featured-image' === $target_ability_id ) {
+			if ( ! $this->is_exact_output_reference( $input['post_id'] ?? null ) && absint( $input['post_id'] ?? 0 ) <= 0 ) {
+				return new WP_Error(
+					'magick_ai_core_article_media_batch_post_missing',
+					__( 'Article featured-image actions must include post_id or an approved output reference.', 'magick-ai-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+			if ( ! $this->is_exact_output_reference( $input['attachment_id'] ?? null ) && absint( $input['attachment_id'] ?? 0 ) <= 0 && ! $this->is_valid_absolute_url( $input['media_url'] ?? null ) ) {
+				return new WP_Error(
+					'magick_ai_core_article_media_batch_featured_image_missing',
+					__( 'Article featured-image actions must include attachment_id, media_url, or an approved output reference.', 'magick-ai-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+			return true;
+		}
+
+		if ( 'magick-ai/patch-post-content' === $target_ability_id ) {
+			if ( ! $this->is_exact_output_reference( $input['post_id'] ?? null ) && absint( $input['post_id'] ?? 0 ) <= 0 ) {
+				return new WP_Error(
+					'magick_ai_core_article_media_batch_post_missing',
+					__( 'Article inline-image patch actions must include post_id or an approved output reference.', 'magick-ai-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+			if ( ! is_array( $input['operations'] ?? null ) ) {
+				return new WP_Error(
+					'magick_ai_core_article_media_batch_patch_missing',
+					__( 'Article inline-image patch actions must include operations.', 'magick-ai-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Checks whether a value is an exact batch output reference.
+	 *
+	 * @param mixed $value Value.
+	 * @return bool
+	 */
+	private function is_exact_output_reference( $value ): bool {
+		return is_string( $value ) && 1 === preg_match( '/^\$outputs\.[A-Za-z0-9_-]+\.[A-Za-z0-9_]+$/', $value );
+	}
+
+	/**
+	 * Checks for an absolute HTTP(S) URL without depending on WordPress URL helpers.
+	 *
+	 * @param mixed $value Candidate URL.
+	 * @return bool
+	 */
+	private function is_valid_absolute_url( $value ): bool {
+		if ( ! is_string( $value ) ) {
+			return false;
+		}
+
+		$url = trim( $value );
+		if ( '' === $url || false === filter_var( $url, FILTER_VALIDATE_URL ) ) {
+			return false;
+		}
+
+		$scheme = strtolower( (string) parse_url( $url, PHP_URL_SCHEME ) );
+		return in_array( $scheme, array( 'http', 'https' ), true );
+	}
+
+	/**
 	 * Returns article workflow artifact keys that must be reviewable.
 	 *
 	 * @return array<int,string>
@@ -687,6 +968,29 @@ final class Plan_Proposal_Service {
 			'version'                => absint( $plan['version'] ?? 0 ),
 			'max_actions'            => self::ARTICLE_BATCH_MAX_ACTIONS,
 			'article_count'          => count( $articles ),
+			'final_write_path'       => 'core_batch_proposal_required',
+			'direct_wordpress_write' => false,
+			'articles'               => $this->sanitize_payload( $articles ),
+		);
+	}
+
+	/**
+	 * Builds preview context for article media batch plans.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function article_media_batch_workflow_preview( array $plan ): array {
+		$articles       = is_array( $plan['articles'] ?? null ) ? array_values( $plan['articles'] ) : array();
+		$media_workflow = is_array( $plan['media_workflow'] ?? null ) ? array_values( $plan['media_workflow'] ) : array();
+
+		return array(
+			'artifact_type'          => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
+			'version'                => absint( $plan['version'] ?? 0 ),
+			'max_articles'           => self::ARTICLE_MEDIA_BATCH_MAX_ARTICLES,
+			'max_actions'            => self::ARTICLE_MEDIA_BATCH_MAX_ACTIONS,
+			'article_count'          => count( $articles ),
+			'media_workflow'         => $this->sanitize_payload( $media_workflow ),
 			'final_write_path'       => 'core_batch_proposal_required',
 			'direct_wordpress_write' => false,
 			'articles'               => $this->sanitize_payload( $articles ),
@@ -830,6 +1134,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'magick-ai-toolbox/build-article-batch-write-plan' === $plan_ability_id ) {
 			$preview['article_batch_workflow'] = $this->article_batch_workflow_preview( $plan );
+		}
+		if ( 'magick-ai-toolbox/build-article-media-batch-write-plan' === $plan_ability_id ) {
+			$preview['article_media_batch_workflow'] = $this->article_media_batch_workflow_preview( $plan );
 		}
 		if ( 'magick-ai/build-media-optimization-plan' === $plan_ability_id ) {
 			$preview['media_optimization'] = $this->media_optimization_preview( $plan );
@@ -1020,6 +1327,9 @@ final class Plan_Proposal_Service {
 
 		if ( 'magick-ai-toolbox/build-article-batch-write-plan' === $plan_ability_id ) {
 			$preview['article_batch_workflow'] = $this->article_batch_workflow_preview( $plan );
+		}
+		if ( 'magick-ai-toolbox/build-article-media-batch-write-plan' === $plan_ability_id ) {
+			$preview['article_media_batch_workflow'] = $this->article_media_batch_workflow_preview( $plan );
 		}
 		if ( 'magick-ai/build-media-optimization-plan' === $plan_ability_id ) {
 			$preview['media_optimization'] = $this->media_optimization_preview( $plan );
