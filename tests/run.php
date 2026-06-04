@@ -277,8 +277,10 @@ foreach (
 		'ordered batch proposal',
 		'magick-ai-toolbox/build-article-batch-write-plan',
 		'magick-ai/build-media-optimization-plan',
+		'magick-ai/build-media-rename-plan',
 		'article_batch_write_plan',
 		'media_optimization_plan',
+		'media_rename_plan',
 		'scope_decision',
 		'app_id',
 		'key_id',
@@ -1001,25 +1003,33 @@ foreach (
 		'magick-ai/build-media-reference-repair-plan',
 		'magick-ai/build-media-settings-reference-repair-plan',
 		'magick-ai/build-media-optimization-plan',
+		'magick-ai/build-media-rename-plan',
 		'magick-ai-toolbox/build-article-write-plan',
 		'magick-ai-toolbox/build-article-batch-write-plan',
 		'magick-ai-toolbox/build-article-media-batch-write-plan',
+		'magick-ai-toolbox/build-image-candidate-adoption-plan',
 		'proposal.plan_ingested',
 		'magick-ai/delete-media-permanently',
 		'destructive_media_delete_not_explicitly_included',
 		'validate_article_write_plan_contract',
 		'validate_article_batch_write_plan_contract',
 		'validate_article_media_batch_write_plan_contract',
+		'validate_image_candidate_adoption_plan_contract',
 		'validate_media_optimization_plan_contract',
+		'validate_media_rename_plan_contract',
 		'article_workflow_preview',
 		'article_batch_workflow_preview',
 		'article_media_batch_workflow_preview',
 		'media_optimization_preview',
+		'media_rename_preview',
 		'article_workflow_artifact_keys',
 		'article_write_plan',
 		'article_batch_write_plan',
 		'article_media_batch_write_plan',
+		'image_candidate_adoption_plan',
+		'image_candidate.v1',
 		'media_optimization_plan',
+		'media_rename_plan',
 		'article_goal_brief',
 		'research_evidence_pack',
 		'article_outline',
@@ -1032,8 +1042,12 @@ foreach (
 		'magick_ai_core_article_batch_mode_required',
 		'magick_ai_core_article_media_batch_mode_required',
 		'magick_ai_core_article_media_batch_candidate_missing',
+		'magick_ai_core_image_candidate_contract_missing',
+		'magick_ai_core_image_candidate_source_type_invalid',
 		'magick_ai_core_media_optimization_batch_required',
 		'magick_ai_core_media_optimization_attachment_mismatch',
+		'magick_ai_core_media_rename_target_file_missing',
+		'magick_ai_core_media_rename_attachment_mismatch',
 		'magick_ai_core_article_plan_',
 		'magick_ai_core_article_batch_',
 		'magick_ai_core_article_media_batch_',
@@ -1085,9 +1099,11 @@ magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'magick-ai-tool
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'magick-ai-toolbox/build-article-batch-write-plan' ), 'Plan-to-proposal docs include the Toolbox article batch writing handoff.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'magick-ai-toolbox/build-article-media-batch-write-plan' ), 'Plan-to-proposal docs include the Toolbox article media batch handoff.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'magick-ai/build-media-optimization-plan' ), 'Plan-to-proposal docs include the media optimization handoff.' );
+magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'magick-ai/build-media-rename-plan' ), 'Plan-to-proposal docs include the media rename handoff.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_workflow' ), 'Plan-to-proposal docs require article workflow preview evidence.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'proposal_mode=batch' ), 'Plan-to-proposal docs require explicit batch proposal mode where needed.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'optimize this media item' ), 'Plan-to-proposal docs define media optimization as a user intent.' );
+magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'target_file_name' ), 'Plan-to-proposal docs require reviewed media rename target filename.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'Article writing is a local Ability recipe' ), 'Plan-to-proposal docs treat article writing as local Ability recipe.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'must not produce article drafts' ), 'Plan-to-proposal docs prohibit Cloud draft generation.' );
 

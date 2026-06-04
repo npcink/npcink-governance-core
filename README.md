@@ -118,7 +118,8 @@ abilities such as `magick-ai/build-content-inventory-fix-plan`,
 `magick-ai/build-media-reference-repair-plan`, and
 `magick-ai/build-media-settings-reference-repair-plan`. It also accepts
 `magick-ai/build-media-optimization-plan` only as one attachment-level media
-optimization batch, and accepts the P0 Toolbox article handoff
+optimization batch, `magick-ai/build-media-rename-plan` only as one reviewed
+attachment rename proposal, and accepts the P0 Toolbox article handoff
 `magick-ai-toolbox/build-article-write-plan` only as a single reviewed
 `magick-ai/create-draft` proposal. The bounded local article batch handoff
 `magick-ai-toolbox/build-article-batch-write-plan` may create one reviewed

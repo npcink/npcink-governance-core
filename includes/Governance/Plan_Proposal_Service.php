@@ -31,9 +31,11 @@ final class Plan_Proposal_Service {
 		'magick-ai/build-media-reference-repair-plan'                 => true,
 		'magick-ai/build-media-settings-reference-repair-plan'        => true,
 		'magick-ai/build-media-optimization-plan'                     => true,
+		'magick-ai/build-media-rename-plan'                           => true,
 		'magick-ai-toolbox/build-article-write-plan'                  => true,
 		'magick-ai-toolbox/build-article-batch-write-plan'            => true,
 		'magick-ai-toolbox/build-article-media-batch-write-plan'      => true,
+		'magick-ai-toolbox/build-image-candidate-adoption-plan'       => true,
 	);
 
 	private const ARTICLE_BATCH_MAX_ACTIONS = 5;
@@ -141,10 +143,24 @@ final class Plan_Proposal_Service {
 			}
 		}
 
+		if ( 'magick-ai-toolbox/build-image-candidate-adoption-plan' === $plan_ability_id ) {
+			$image_candidate_contract_error = $this->validate_image_candidate_adoption_plan_contract( $plan );
+			if ( is_wp_error( $image_candidate_contract_error ) ) {
+				return $image_candidate_contract_error;
+			}
+		}
+
 		if ( 'magick-ai/build-media-optimization-plan' === $plan_ability_id ) {
 			$media_optimization_contract_error = $this->validate_media_optimization_plan_contract( $plan );
 			if ( is_wp_error( $media_optimization_contract_error ) ) {
 				return $media_optimization_contract_error;
+			}
+		}
+
+		if ( 'magick-ai/build-media-rename-plan' === $plan_ability_id ) {
+			$media_rename_contract_error = $this->validate_media_rename_plan_contract( $plan );
+			if ( is_wp_error( $media_rename_contract_error ) ) {
+				return $media_rename_contract_error;
 			}
 		}
 
@@ -572,6 +588,174 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Validates a bounded image candidate adoption plan.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_image_candidate_adoption_plan_contract( array $plan ) {
+		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
+		if ( 'image_candidate_adoption_plan' !== $artifact_type ) {
+			return new WP_Error(
+				'magick_ai_core_image_candidate_adoption_plan_invalid',
+				__( 'Image candidate adoption plans must declare artifact_type=image_candidate_adoption_plan.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$candidate = is_array( $plan['selected_image_candidate'] ?? null ) ? $plan['selected_image_candidate'] : array();
+		if ( empty( $candidate ) || 'image_candidate.v1' !== (string) ( $candidate['contract_version'] ?? $plan['candidate_contract_version'] ?? '' ) ) {
+			return new WP_Error(
+				'magick_ai_core_image_candidate_contract_missing',
+				__( 'Image candidate adoption plans must preserve a selected image_candidate.v1 candidate.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( count( $write_actions ) < 2 || count( $write_actions ) > 3 ) {
+			return new WP_Error(
+				'magick_ai_core_image_candidate_actions_rejected',
+				__( 'Image candidate adoption plans must contain upload, metadata, and optional featured-image actions only.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$target_counts = array(
+			'magick-ai/upload-media-from-url'   => 0,
+			'magick-ai/update-media-details'    => 0,
+			'magick-ai/set-post-featured-image' => 0,
+		);
+
+		foreach ( $write_actions as $action_index => $action ) {
+			if ( ! is_array( $action ) ) {
+				return new WP_Error(
+					'magick_ai_core_image_candidate_action_invalid',
+					__( 'Image candidate adoption actions must be objects.', 'magick-ai-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+			$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
+			if ( ! isset( $target_counts[ $target_ability_id ] ) ) {
+				return new WP_Error(
+					'magick_ai_core_image_candidate_target_rejected',
+					__( 'Image candidate adoption plans may target only media import, metadata, and featured-image abilities.', 'magick-ai-core' ),
+					array(
+						'status'            => 422,
+						'action_index'      => $action_index,
+						'target_ability_id' => $target_ability_id,
+					)
+				);
+			}
+			++$target_counts[ $target_ability_id ];
+
+			$action_error = $this->validate_image_candidate_adoption_action( $action, $action_index );
+			if ( is_wp_error( $action_error ) ) {
+				return $action_error;
+			}
+		}
+
+		if ( 1 !== $target_counts['magick-ai/upload-media-from-url'] || 1 !== $target_counts['magick-ai/update-media-details'] || $target_counts['magick-ai/set-post-featured-image'] > 1 ) {
+			return new WP_Error(
+				'magick_ai_core_image_candidate_actions_missing',
+				__( 'Image candidate adoption plans must include exactly one media upload and one metadata action, plus at most one featured-image action.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validates one image candidate adoption write action.
+	 *
+	 * @param array<string,mixed> $action Write action.
+	 * @param int                 $action_index Action index.
+	 * @return true|WP_Error
+	 */
+	private function validate_image_candidate_adoption_action( array $action, int $action_index ) {
+		$input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+		if ( true === (bool) ( $input['commit'] ?? false ) || false === (bool) ( $input['dry_run'] ?? true ) ) {
+			return new WP_Error(
+				'magick_ai_core_image_candidate_commit_rejected',
+				__( 'Image candidate adoption action input must remain dry-run and must not request commit.', 'magick-ai-core' ),
+				array(
+					'status'       => 422,
+					'action_index' => $action_index,
+				)
+			);
+		}
+
+		$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
+		if ( 'magick-ai/upload-media-from-url' === $target_ability_id ) {
+			if ( ! $this->is_valid_absolute_url( $input['url'] ?? null ) ) {
+				return new WP_Error(
+					'magick_ai_core_image_candidate_url_missing',
+					__( 'Image candidate upload actions must include a reviewed candidate URL.', 'magick-ai-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+			$source_type = sanitize_key( (string) ( $input['source_type'] ?? '' ) );
+			if ( '' !== $source_type && ! in_array( $source_type, array( 'owned', 'ai_generated', 'stock', 'external', 'test' ), true ) ) {
+				return new WP_Error(
+					'magick_ai_core_image_candidate_source_type_invalid',
+					__( 'Image candidate source_type must be owned, ai_generated, stock, external, or test.', 'magick-ai-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+			return true;
+		}
+
+		if ( 'magick-ai/update-media-details' === $target_ability_id ) {
+			if ( ! $this->is_exact_output_reference( $input['attachment_id'] ?? null ) && absint( $input['attachment_id'] ?? 0 ) <= 0 ) {
+				return new WP_Error(
+					'magick_ai_core_image_candidate_attachment_missing',
+					__( 'Image candidate metadata actions must include attachment_id or an approved output reference.', 'magick-ai-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+			return true;
+		}
+
+		if ( 'magick-ai/set-post-featured-image' === $target_ability_id ) {
+			if ( ! $this->is_exact_output_reference( $input['attachment_id'] ?? null ) && absint( $input['attachment_id'] ?? 0 ) <= 0 ) {
+				return new WP_Error(
+					'magick_ai_core_image_candidate_featured_attachment_missing',
+					__( 'Image candidate featured-image actions must include attachment_id or an approved output reference.', 'magick-ai-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+			if ( absint( $input['post_id'] ?? 0 ) <= 0 && ! $this->is_exact_output_reference( $input['post_id'] ?? null ) ) {
+				return new WP_Error(
+					'magick_ai_core_image_candidate_featured_post_missing',
+					__( 'Image candidate featured-image actions must include post_id or an approved output reference.', 'magick-ai-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Validates a media optimization plan for one user-intent approval.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -644,6 +828,69 @@ final class Plan_Proposal_Service {
 			return new WP_Error(
 				'magick_ai_core_media_optimization_attachment_mismatch',
 				__( 'Media optimization plans must target exactly one attachment across all write actions.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validates a governed media rename plan for one attachment.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_media_rename_plan_contract( array $plan ) {
+		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
+		if ( 'media_rename_plan' !== $artifact_type ) {
+			return new WP_Error(
+				'magick_ai_core_media_rename_plan_invalid',
+				__( 'Media rename plans must declare artifact_type=media_rename_plan.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( 1 !== count( $write_actions ) || ! is_array( $write_actions[0] ?? null ) ) {
+			return new WP_Error(
+				'magick_ai_core_media_rename_actions_missing',
+				__( 'Media rename plans must include exactly one rename-media-file action.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$action = $write_actions[0];
+		if ( 'magick-ai/rename-media-file' !== sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) ) ) {
+			return new WP_Error(
+				'magick_ai_core_media_rename_target_rejected',
+				__( 'Media rename plans may target only magick-ai/rename-media-file.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$input         = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+		$attachment_id = absint( $plan['attachment_id'] ?? ( $input['attachment_id'] ?? 0 ) );
+		if ( $attachment_id <= 0 || absint( $input['attachment_id'] ?? 0 ) !== $attachment_id ) {
+			return new WP_Error(
+				'magick_ai_core_media_rename_attachment_mismatch',
+				__( 'Media rename plans must target exactly one attachment.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( '' === trim( sanitize_text_field( (string) ( $input['target_file_name'] ?? '' ) ) ) ) {
+			return new WP_Error(
+				'magick_ai_core_media_rename_target_file_missing',
+				__( 'Media rename plans must include a reviewed target_file_name.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true === (bool) ( $input['commit'] ?? false ) || false === (bool) ( $input['dry_run'] ?? true ) ) {
+			return new WP_Error(
+				'magick_ai_core_media_rename_commit_rejected',
+				__( 'Media rename action input must remain dry-run and must not request commit.', 'magick-ai-core' ),
 				array( 'status' => 422 )
 			);
 		}
@@ -1017,6 +1264,23 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Builds preview context for media rename plans.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function media_rename_preview( array $plan ): array {
+		return array(
+			'artifact_type'          => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
+			'version'                => absint( $plan['version'] ?? 0 ),
+			'attachment_id'          => absint( $plan['attachment_id'] ?? 0 ),
+			'preview'                => $this->sanitize_payload( $plan['preview'] ?? array() ),
+			'final_write_path'       => 'core_proposal_required',
+			'direct_wordpress_write' => false,
+		);
+	}
+
+	/**
 	 * Builds one Proposal_Service payload for a write action.
 	 *
 	 * @param string              $plan_ability_id Plan ability id.
@@ -1140,6 +1404,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'magick-ai/build-media-optimization-plan' === $plan_ability_id ) {
 			$preview['media_optimization'] = $this->media_optimization_preview( $plan );
+		}
+		if ( 'magick-ai/build-media-rename-plan' === $plan_ability_id ) {
+			$preview['media_rename'] = $this->media_rename_preview( $plan );
 		}
 
 		$title = sprintf(
@@ -1333,6 +1600,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'magick-ai/build-media-optimization-plan' === $plan_ability_id ) {
 			$preview['media_optimization'] = $this->media_optimization_preview( $plan );
+		}
+		if ( 'magick-ai/build-media-rename-plan' === $plan_ability_id ) {
+			$preview['media_rename'] = $this->media_rename_preview( $plan );
 		}
 
 		return array(

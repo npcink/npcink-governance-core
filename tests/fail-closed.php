@@ -526,6 +526,16 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'attachment_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
+			'magick-ai/rename-media-file' => array(
+				'ability_id'        => 'magick-ai/rename-media-file',
+				'label'             => 'Rename Media File',
+				'risk_level'        => 'write',
+				'requires_approval' => true,
+				'capability'        => 'upload_files',
+				'required_scopes'   => array( 'media.write' ),
+				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'attachment_id' => array( 'type' => 'integer' ), 'target_file_name' => array( 'type' => 'string' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
 			'magick-ai-toolbox/build-article-write-plan' => array(
 				'ability_id'        => 'magick-ai-toolbox/build-article-write-plan',
 				'label'             => 'Build Article Write Plan',
@@ -556,9 +566,29 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
+			'magick-ai-toolbox/build-image-candidate-adoption-plan' => array(
+				'ability_id'        => 'magick-ai-toolbox/build-image-candidate-adoption-plan',
+				'label'             => 'Build Image Candidate Adoption Plan',
+				'risk_level'        => 'read',
+				'requires_approval' => false,
+				'capability'        => 'manage_options',
+				'required_scopes'   => array( 'cap.toolbox.workflow_suggest' ),
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
 			'magick-ai/build-media-optimization-plan' => array(
 				'ability_id'        => 'magick-ai/build-media-optimization-plan',
 				'label'             => 'Build Media Optimization Plan',
+				'risk_level'        => 'read',
+				'requires_approval' => false,
+				'capability'        => 'upload_files',
+				'required_scopes'   => array( 'media.read' ),
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
+			'magick-ai/build-media-rename-plan' => array(
+				'ability_id'        => 'magick-ai/build-media-rename-plan',
+				'label'             => 'Build Media Rename Plan',
 				'risk_level'        => 'read',
 				'requires_approval' => false,
 				'capability'        => 'upload_files',
@@ -1488,6 +1518,159 @@ function magick_ai_core_fail_closed_media_optimization_plan(): array {
 	);
 }
 
+/**
+ * Creates a representative media rename plan.
+ *
+ * @return array<string,mixed>
+ */
+function magick_ai_core_fail_closed_media_rename_plan(): array {
+	return array(
+		'artifact_type'       => 'media_rename_plan',
+		'version'             => 1,
+		'batch_id'            => 'media_rename_fault_injection',
+		'attachment_id'       => 1493,
+		'requires_approval'   => true,
+		'dry_run'             => true,
+		'commit_execution'    => false,
+		'proposal_mode'       => 'single',
+		'batch_approval'      => false,
+		'action_count'        => 1,
+		'preview'             => array(
+			'before' => array(
+				'relative_file' => '2026/05/old-name.webp',
+				'file_basename' => 'old-name.webp',
+				'mime_type'     => 'image/webp',
+				'content_hashes' => array(
+					'md5'    => '1d7ea1565313df58fa0769e93e5310df',
+					'sha256' => str_repeat( 'a', 64 ),
+				),
+			),
+			'after_suggestion' => array(
+				'relative_file' => '2026/05/1d7ea1565313df58fa0769e93e5310df.webp',
+				'file_basename' => '1d7ea1565313df58fa0769e93e5310df.webp',
+				'mime_type'     => 'image/webp',
+			),
+		),
+		'write_actions'       => array(
+			array(
+				'action_id'         => 'rename_media_file_1493',
+				'target_ability_id' => 'magick-ai/rename-media-file',
+				'input'             => array(
+					'attachment_id'                  => 1493,
+					'target_file_name'               => '1d7ea1565313df58fa0769e93e5310df.webp',
+					'expected_current_relative_file' => '2026/05/old-name.webp',
+					'expected_current_mime_type'     => 'image/webp',
+					'expected_current_md5'           => '1d7ea1565313df58fa0769e93e5310df',
+					'dry_run'                        => true,
+					'commit'                         => false,
+					'idempotency_key'                => 'media-rename-1493',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+		),
+		'risk'                => array(
+			'level'  => 'medium',
+			'reason' => 'One attachment main file rename changes its public URL.',
+		),
+	);
+}
+
+/**
+ * Creates a representative image candidate adoption plan.
+ *
+ * @return array<string,mixed>
+ */
+function magick_ai_core_fail_closed_image_candidate_adoption_plan(): array {
+	return array(
+		'artifact_type'              => 'image_candidate_adoption_plan',
+		'version'                    => 1,
+		'candidate_contract_version' => 'image_candidate.v1',
+		'batch_id'                   => 'image_candidate_adoption_fault_injection',
+		'requires_approval'          => true,
+		'dry_run'                    => true,
+		'commit_execution'           => false,
+		'proposal_mode'              => 'batch',
+		'batch_approval'             => true,
+		'selected_image_candidate'   => array(
+			'contract_version' => 'image_candidate.v1',
+			'source_type'      => 'stock',
+			'provider'         => 'unsplash',
+			'provider_origin'  => 'toolbox',
+			'download_url'     => 'https://images.example.test/photo.jpg',
+			'thumbnail_url'    => 'https://images.example.test/photo-thumb.jpg',
+			'source_url'       => 'https://unsplash.com/photos/example',
+			'attribution'      => 'Photo by Example on Unsplash.',
+		),
+		'write_actions'              => array(
+			array(
+				'action_id'         => 'upload_image_candidate',
+				'target_ability_id' => 'magick-ai/upload-media-from-url',
+				'input'             => array(
+					'url'               => 'https://images.example.test/photo.jpg',
+					'title'             => 'Reviewed image candidate',
+					'alt'               => 'Reviewed image candidate',
+					'caption'           => 'Photo by Example on Unsplash.',
+					'description'       => 'Reviewed stock image.',
+					'source_type'       => 'stock',
+					'source_page_url'   => 'https://unsplash.com/photos/example',
+					'photographer_name' => 'Example',
+					'attribution_text'  => 'Photo by Example on Unsplash.',
+					'attach_to_post_id' => 1493,
+					'dry_run'           => true,
+					'commit'            => false,
+					'idempotency_key'   => 'image-candidate-upload-1493',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+			array(
+				'action_id'         => 'update_image_candidate_details',
+				'target_ability_id' => 'magick-ai/update-media-details',
+				'depends_on'        => array( 'upload_image_candidate' ),
+				'input'             => array(
+					'attachment_id'     => '$outputs.upload_image_candidate.attachment_id',
+					'title'             => 'Reviewed image candidate',
+					'alt'               => 'Reviewed image candidate',
+					'caption'           => 'Photo by Example on Unsplash.',
+					'description'       => 'Reviewed stock image.',
+					'source_type'       => 'stock',
+					'source_page_url'   => 'https://unsplash.com/photos/example',
+					'photographer_name' => 'Example',
+					'attribution_text'  => 'Photo by Example on Unsplash.',
+					'dry_run'           => true,
+					'commit'            => false,
+					'idempotency_key'   => 'image-candidate-details-1493',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+			array(
+				'action_id'         => 'set_image_candidate_featured_image',
+				'target_ability_id' => 'magick-ai/set-post-featured-image',
+				'depends_on'        => array( 'upload_image_candidate' ),
+				'input'             => array(
+					'post_id'       => 1493,
+					'attachment_id' => '$outputs.upload_image_candidate.attachment_id',
+					'dry_run'       => true,
+					'commit'        => false,
+					'idempotency_key' => 'image-candidate-featured-1493',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+		),
+	);
+}
+
 $proposal_table = 'wp_magick_ai_core_proposals';
 $audit_table    = 'wp_magick_ai_core_audit_log';
 $app_table      = 'wp_magick_ai_core_app_keys';
@@ -1716,6 +1899,59 @@ $media_optimization_mismatch['write_actions'][1]['input']['attachment_id'] = 149
 $media_optimization_mismatch_result = $stack['service']->create_from_plan( 'magick-ai/build-media-optimization-plan', $media_optimization_mismatch );
 magick_ai_core_fail_closed_assert( is_wp_error( $media_optimization_mismatch_result ), 'Media optimization plan spanning multiple attachments is rejected.' );
 magick_ai_core_fail_closed_assert( 'magick_ai_core_media_optimization_attachment_mismatch' === $media_optimization_mismatch_result->get_error_code(), 'Media optimization attachment mismatch uses stable error code.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$media_rename_plan = magick_ai_core_fail_closed_media_rename_plan();
+$media_rename_result = $stack['service']->create_from_plan( 'magick-ai/build-media-rename-plan', $media_rename_plan, array(), array( 'source' => 'abilities_media_rename' ) );
+magick_ai_core_fail_closed_assert( ! is_wp_error( $media_rename_result ), 'Valid media rename plan creates a Core proposal.' );
+magick_ai_core_fail_closed_assert( 1 === (int) ( $media_rename_result['proposal_count'] ?? 0 ), 'Valid media rename plan creates one proposal.' );
+$media_rename_proposal = is_array( $media_rename_result['proposals'][0] ?? null ) ? $media_rename_result['proposals'][0] : array();
+magick_ai_core_fail_closed_assert( 'magick-ai/rename-media-file' === (string) ( $media_rename_proposal['ability_id'] ?? '' ), 'Media rename plan creates a rename-media-file proposal.' );
+magick_ai_core_fail_closed_assert( is_array( $media_rename_proposal['preview']['media_rename'] ?? null ), 'Media rename proposal preserves rename preview.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$media_rename_missing_target = magick_ai_core_fail_closed_media_rename_plan();
+unset( $media_rename_missing_target['write_actions'][0]['input']['target_file_name'] );
+$media_rename_missing_target_result = $stack['service']->create_from_plan( 'magick-ai/build-media-rename-plan', $media_rename_missing_target );
+magick_ai_core_fail_closed_assert( is_wp_error( $media_rename_missing_target_result ), 'Media rename plan without target file name is rejected.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_media_rename_target_file_missing' === $media_rename_missing_target_result->get_error_code(), 'Media rename missing target file rejection uses stable error code.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$media_rename_mismatch = magick_ai_core_fail_closed_media_rename_plan();
+$media_rename_mismatch['write_actions'][0]['input']['attachment_id'] = 1494;
+$media_rename_mismatch_result = $stack['service']->create_from_plan( 'magick-ai/build-media-rename-plan', $media_rename_mismatch );
+magick_ai_core_fail_closed_assert( is_wp_error( $media_rename_mismatch_result ), 'Media rename plan spanning multiple attachments is rejected.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_media_rename_attachment_mismatch' === $media_rename_mismatch_result->get_error_code(), 'Media rename attachment mismatch uses stable error code.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$image_candidate_plan = magick_ai_core_fail_closed_image_candidate_adoption_plan();
+$image_candidate_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-image-candidate-adoption-plan', $image_candidate_plan, array(), array( 'source' => 'toolbox_image_candidate_adoption' ) );
+magick_ai_core_fail_closed_assert( ! is_wp_error( $image_candidate_result ), 'Valid image candidate adoption plan creates a Core proposal.' );
+magick_ai_core_fail_closed_assert( 1 === (int) ( $image_candidate_result['proposal_count'] ?? 0 ), 'Valid image candidate adoption plan creates one batch proposal.' );
+$image_candidate_proposal = is_array( $image_candidate_result['proposals'][0] ?? null ) ? $image_candidate_result['proposals'][0] : array();
+magick_ai_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $image_candidate_proposal['preview']['source']['type'] ?? '' ), 'Image candidate adoption plan stores batch proposal source.' );
+magick_ai_core_fail_closed_assert( 3 === count( (array) ( $image_candidate_proposal['input']['write_actions'] ?? array() ) ), 'Image candidate adoption proposal stores media import, metadata, and featured-image actions.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$image_candidate_missing_contract = magick_ai_core_fail_closed_image_candidate_adoption_plan();
+unset( $image_candidate_missing_contract['candidate_contract_version'] );
+unset( $image_candidate_missing_contract['selected_image_candidate']['contract_version'] );
+$image_candidate_missing_contract_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-image-candidate-adoption-plan', $image_candidate_missing_contract );
+magick_ai_core_fail_closed_assert( is_wp_error( $image_candidate_missing_contract_result ), 'Image candidate adoption plan without candidate contract is rejected.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_image_candidate_contract_missing' === $image_candidate_missing_contract_result->get_error_code(), 'Image candidate missing contract rejection uses stable error code.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$image_candidate_bad_source = magick_ai_core_fail_closed_image_candidate_adoption_plan();
+$image_candidate_bad_source['write_actions'][0]['input']['source_type'] = 'unsupported';
+$image_candidate_bad_source_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-image-candidate-adoption-plan', $image_candidate_bad_source );
+magick_ai_core_fail_closed_assert( is_wp_error( $image_candidate_bad_source_result ), 'Image candidate adoption plan with invalid source_type is rejected.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_image_candidate_source_type_invalid' === $image_candidate_bad_source_result->get_error_code(), 'Image candidate invalid source type rejection uses stable error code.' );
 
 $wpdb = magick_ai_core_fail_closed_reset_db();
 $wpdb->fail_insert_tables[] = $proposal_table;

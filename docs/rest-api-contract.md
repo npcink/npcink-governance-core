@@ -348,9 +348,11 @@ abilities:
 - `magick-ai/build-media-reference-repair-plan`
 - `magick-ai/build-media-settings-reference-repair-plan`
 - `magick-ai/build-media-optimization-plan`
+- `magick-ai/build-media-rename-plan`
 - `magick-ai-toolbox/build-article-write-plan`
 - `magick-ai-toolbox/build-article-batch-write-plan`
 - `magick-ai-toolbox/build-article-media-batch-write-plan`
+- `magick-ai-toolbox/build-image-candidate-adoption-plan`
 
 Permission: `manage_options` or app scope `proposals:create`.
 
@@ -386,12 +388,28 @@ must include draft creation, `magick-ai/upload-media-from-url`, and
 `magick-ai/set-post-featured-image` actions for each article, with optional
 `magick-ai/update-media-details` or `magick-ai/patch-post-content` actions.
 
+For `magick-ai-toolbox/build-image-candidate-adoption-plan`, the plan must
+declare `artifact_type=image_candidate_adoption_plan` and carry a normalized
+`image_candidate.v1` candidate through `candidate_contract_version` or
+`selected_image_candidate.contract_version`. The action set must include
+exactly one `magick-ai/upload-media-from-url` action, exactly one
+`magick-ai/update-media-details` action, and at most one optional
+`magick-ai/set-post-featured-image` action. Every action must be dry-run and
+must not request commit execution.
+
 For `magick-ai/build-media-optimization-plan`, the plan must declare
 `artifact_type=media_optimization_plan`, `proposal_mode=batch`,
 `batch_approval=true`, and target exactly one `attachment_id` across all
 actions. It must include `magick-ai/update-media-details` and either
 `magick-ai/adopt-cloud-media-derivative` or
 `magick-ai/replace-media-file`.
+
+For `magick-ai/build-media-rename-plan`, the plan must declare
+`artifact_type=media_rename_plan`, target exactly one `attachment_id`, and
+contain exactly one dry-run `magick-ai/rename-media-file` action with a
+reviewed `target_file_name`. The action may preserve expected current path,
+MIME type, MD5, SHA256, conflict mode, and backup suffix guards for the host
+executor.
 
 Each accepted independent `write_action` becomes a separate pending proposal by
 default. If the plan declares `batch_approval=true` or

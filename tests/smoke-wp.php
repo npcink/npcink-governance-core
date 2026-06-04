@@ -1473,6 +1473,19 @@ magick_ai_core_smoke_assert_plan_proposal_shape( $media_plan_proposal, 'magick-a
 magick_ai_core_smoke_assert( (int) ( $media_plan_proposal['preview']['warnings']['skipped_destructive_candidate_count'] ?? 0 ) >= 1, 'media plan proposal preserves skipped destructive candidates' );
 magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $media_plan_proposal['proposal_id'] ?? '' ) );
 
+$media_rename_plan_input = array(
+	'attachment_id'     => (int) $plan_attachment_id,
+	'target_file_name'  => 'core-smoke-media-rename-reviewed',
+);
+$media_rename_plan = magick_ai_core_smoke_run_plan_ability( 'magick-ai/build-media-rename-plan', $media_rename_plan_input );
+$media_rename_plan_result = magick_ai_core_smoke_create_proposals_from_plan( 'magick-ai/build-media-rename-plan', $media_rename_plan, $media_rename_plan_input );
+magick_ai_core_smoke_assert( 1 === (int) ( $media_rename_plan_result['proposal_count'] ?? 0 ), 'media rename plan generates one Core proposal' );
+$media_rename_proposal = is_array( $media_rename_plan_result['proposals'][0] ?? null ) ? $media_rename_plan_result['proposals'][0] : array();
+magick_ai_core_smoke_assert_plan_proposal_shape( $media_rename_proposal, 'magick-ai/rename-media-file', true );
+magick_ai_core_smoke_assert( 'core-smoke-media-rename-reviewed' === (string) ( $media_rename_proposal['input']['target_file_name'] ?? '' ), 'media rename proposal preserves reviewed target filename' );
+magick_ai_core_smoke_assert( is_array( $media_rename_proposal['preview']['media_rename'] ?? null ), 'media rename proposal preserves rename preview context' );
+magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $media_rename_proposal['proposal_id'] ?? '' ) );
+
 $media_delete_plan_input = array(
 	'attachment_ids'                  => array( (int) $plan_attachment_id ),
 	'issue_types'                     => array( 'possibly_unattached' ),

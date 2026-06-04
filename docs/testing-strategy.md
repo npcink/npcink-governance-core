@@ -92,6 +92,9 @@ Use it for behavior that requires real WordPress:
   `magick-ai/build-media-optimization-plan`, including explicit batch approval
   and fail-closed rejection of publish, missing derivative, or multi-attachment
   cases;
+- bounded media rename plan contracts for `magick-ai/build-media-rename-plan`,
+  including one reviewed `magick-ai/rename-media-file` action and fail-closed
+  rejection of missing target filename or multi-attachment cases;
 - governance operability coverage, including proposal `audit_timeline`,
   commit-preflight `correlation_id`, app `scope_decision`, and audit filters
   for ability, app, key, caller type, and correlation id;

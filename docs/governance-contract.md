@@ -73,9 +73,11 @@ Core may consume these read-only planning ability outputs:
 - `magick-ai/build-media-reference-repair-plan`
 - `magick-ai/build-media-settings-reference-repair-plan`
 - `magick-ai/build-media-optimization-plan`
+- `magick-ai/build-media-rename-plan`
 - `magick-ai-toolbox/build-article-write-plan`
 - `magick-ai-toolbox/build-article-batch-write-plan`
 - `magick-ai-toolbox/build-article-media-batch-write-plan`
+- `magick-ai-toolbox/build-image-candidate-adoption-plan`
 
 Plan intake does not execute the plan ability and does not execute target write
 abilities. It accepts a successful plan payload, validates that the planning
@@ -107,6 +109,16 @@ allowlisted draft/media actions such as `magick-ai/create-draft`,
 `magick-ai/set-post-featured-image`. Core stores the grouped proposal only; it
 does not search images, import media, set featured images, or execute writes.
 
+The image candidate adoption handoff is separate from article generation and
+media derivative optimization. Core accepts
+`magick-ai-toolbox/build-image-candidate-adoption-plan` only when it is an
+`image_candidate_adoption_plan` with a normalized `image_candidate.v1`
+candidate, one `magick-ai/upload-media-from-url` action, one
+`magick-ai/update-media-details` action, and at most one
+`magick-ai/set-post-featured-image` action. Core stores the grouped proposal
+only; it does not search stock providers, generate images, import media, set
+featured images, or execute writes.
+
 The media optimization handoff is the governed shape for the user intent
 "optimize this attachment." Core accepts
 `magick-ai/build-media-optimization-plan` only as an explicit batch proposal
@@ -115,6 +127,13 @@ derivative adoption action such as
 `magick-ai/adopt-cloud-media-derivative` or `magick-ai/replace-media-file`.
 Cloud may provide derivative artifacts and diagnostics, but approval, adoption,
 and WordPress writes stay local and outside Core execution.
+
+The media rename handoff is the governed shape for the user intent "rename this
+attachment file." Core accepts `magick-ai/build-media-rename-plan` only as a
+single `media_rename_plan` for exactly one attachment and one
+`magick-ai/rename-media-file` action with a reviewed `target_file_name`.
+Filename generation rules stay in OpenClaw/local product policy; Core stores
+proposal truth and approval context only.
 
 Plans may request one review item for a group of generated actions with either
 `batch_approval=true` or `proposal_mode=batch`. Core then creates one

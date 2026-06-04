@@ -14,15 +14,18 @@ an execution bridge.
 - `magick-ai/build-media-reference-repair-plan`
 - `magick-ai/build-media-settings-reference-repair-plan`
 - `magick-ai/build-media-optimization-plan`
+- `magick-ai/build-media-rename-plan`
 - `magick-ai-toolbox/build-article-write-plan`
 - `magick-ai-toolbox/build-article-batch-write-plan`
 - `magick-ai-toolbox/build-article-media-batch-write-plan`
+- `magick-ai-toolbox/build-image-candidate-adoption-plan`
 
 The `magick-ai/*` planning abilities belong to `magick-ai-abilities`; the
-Toolbox article handoff belongs to `magick-ai-toolbox`. They are executed
+Toolbox article and image candidate handoffs belong to `magick-ai-toolbox`. They are executed
 through the WordPress Abilities API by the host or adapter. Core only receives
 their output. The Toolbox plan is included here because Core can govern its
-draft-write plan without owning Toolbox workflow UX or content generation.
+write plan without owning Toolbox workflow UX, content generation, image
+search, or image generation.
 
 ## Boundary
 
@@ -115,6 +118,29 @@ draft/media actions such as `magick-ai/create-draft`,
 `magick-ai/upload-media-from-url`, `magick-ai/update-media-details`, and
 `magick-ai/set-post-featured-image`.
 
+## Image Candidate Adoption Handoff
+
+`magick-ai-toolbox/build-image-candidate-adoption-plan` is the bounded local
+handoff for adopting one reviewed image candidate from stock, AI-generated,
+owned, external, or manual-upload sources. It is not a Cloud image registry,
+not an image generation runtime, and not a media import executor.
+
+Core accepts it only when it declares
+`artifact_type=image_candidate_adoption_plan`, carries
+`candidate_contract_version=image_candidate.v1` or a selected candidate with
+`contract_version=image_candidate.v1`, and contains dry-run write actions for:
+
+- exactly one `magick-ai/upload-media-from-url` action;
+- exactly one `magick-ai/update-media-details` action;
+- at most one `magick-ai/set-post-featured-image` action.
+
+Each action must keep `dry_run=true` and `commit=false`. Core stores one
+`plan_to_proposal_batch` proposal so the user can approve the reviewed import,
+metadata, and optional featured-image update together. Adapter or the local
+host still performs per-action allowlist, schema, idempotency, and execution
+checks after Core approval and commit preflight. Core does not download the
+image, upload media, set featured images, or persist provider candidate truth.
+
 ## Media Optimization Handoff
 
 `magick-ai/build-media-optimization-plan` is the bounded local plan for the user
@@ -136,6 +162,19 @@ preview, or processing diagnostics through the local Cloud Addon path, but
 final proposal, approval, adoption, and WordPress writes stay local. Core does
 not optimize images, execute media writes, or approve the proposal
 automatically.
+
+## Media Rename Handoff
+
+`magick-ai/build-media-rename-plan` is the bounded local plan for renaming one
+attachment main file after the operator has reviewed the filename. It is not a
+filename policy engine and does not compute hashes inside Core.
+
+Core accepts it only when it declares `artifact_type=media_rename_plan`, targets
+exactly one `attachment_id`, and contains exactly one dry-run
+`magick-ai/rename-media-file` action with a non-empty `target_file_name`.
+Optional expected current path, MIME type, MD5, SHA256, conflict mode, and
+backup suffix guards may be preserved in action input for Adapter/host
+execution after Core approval and commit preflight.
 
 ## Proposal Preview Contract
 
