@@ -106,6 +106,13 @@ final class Media_Derivative_Settings {
 	 * @return array<string,mixed>
 	 */
 	public function ability_input( array $overrides = array() ): array {
+		if ( isset( $overrides['preferred_format'] ) && ! isset( $overrides['target_format'] ) ) {
+			$overrides['target_format'] = $overrides['preferred_format'];
+		}
+		if ( isset( $overrides['target_max_width'] ) && ! isset( $overrides['max_width'] ) ) {
+			$overrides['max_width'] = $overrides['target_max_width'];
+		}
+
 		$settings = $this->sanitize( array_merge( $this->get_all(), $overrides ) );
 		$input    = array(
 			'preferred_format' => $settings['target_format'],
@@ -126,6 +133,13 @@ final class Media_Derivative_Settings {
 				'scale_percent' => $settings['watermark_scale'],
 				'margin_px'     => $settings['watermark_margin'],
 			);
+		}
+		if (
+			( ! array_key_exists( 'watermark_enabled', $overrides ) || ! empty( $overrides['watermark_enabled'] ) )
+			&& is_array( $overrides['watermark'] ?? null )
+			&& ! empty( $overrides['watermark'] )
+		) {
+			$input['watermark'] = $this->sanitize_watermark_plan( $overrides['watermark'], $settings );
 		}
 
 		return $input;
@@ -148,9 +162,38 @@ final class Media_Derivative_Settings {
 			'watermark_configured'    => (bool) $settings['watermark_enabled'] && absint( $settings['watermark_attachment_id'] ) > 0,
 			'watermark_attachment_id' => absint( $settings['watermark_attachment_id'] ),
 			'watermark_position'      => (string) $settings['watermark_position'],
+			'watermark_opacity'       => (int) $settings['watermark_opacity'],
+			'watermark_scale'         => (int) $settings['watermark_scale'],
+			'watermark_margin'        => (int) $settings['watermark_margin'],
 			'use_cloud_when_available' => (bool) $settings['use_cloud_when_available'],
 			'policy_owner'            => 'magick_ai_core',
 			'final_write_owner'       => 'local_wordpress_host',
+		);
+	}
+
+	/**
+	 * Sanitizes a one-run watermark plan without changing stored policy.
+	 *
+	 * @param array<string,mixed> $watermark Raw watermark input.
+	 * @param array<string,mixed> $settings Current sanitized settings.
+	 * @return array<string,mixed>
+	 */
+	private function sanitize_watermark_plan( array $watermark, array $settings ): array {
+		$position = sanitize_key( (string) ( $watermark['position'] ?? $settings['watermark_position'] ?? 'bottom_right' ) );
+		if ( ! in_array( $position, $this->allowed_watermark_positions(), true ) ) {
+			$position = 'bottom_right';
+		}
+
+		$opacity = is_numeric( $watermark['opacity'] ?? null )
+			? (float) $watermark['opacity']
+			: ( (int) ( $settings['watermark_opacity'] ?? 80 ) / 100 );
+
+		return array(
+			'type'          => 'image',
+			'position'      => $position,
+			'opacity'       => round( max( 0, min( 1, $opacity ) ), 3 ),
+			'scale_percent' => max( 1, min( 100, absint( $watermark['scale_percent'] ?? $settings['watermark_scale'] ?? 20 ) ) ),
+			'margin_px'     => max( 0, min( 1000, absint( $watermark['margin_px'] ?? $settings['watermark_margin'] ?? 24 ) ) ),
 		);
 	}
 
