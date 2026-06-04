@@ -34,6 +34,8 @@ Implemented:
   to Magick AI Adapter.
 - plan-to-proposal governance bridge for content inventory fix, test content
   cleanup, and media inventory fix plans.
+- bounded local article batch draft and media optimization plan contracts that
+  enter Core only as explicit `plan_to_proposal_batch` proposal records.
 - trusted Adapter approval support through scoped `proposals:approve`, with
   Core still returning `commit_execution=false` and execution handoff guidance.
 
@@ -53,7 +55,11 @@ Documented but not implemented:
 Core can now govern both single dry-run write proposals and supported
 read-only plans that produce multiple `write_actions`. It can also accept the
 P0 Toolbox `article_write_plan` handoff as one governed `magick-ai/create-draft`
-proposal while leaving the writing workflow in Toolbox. ADR-003 keeps final
+proposal while leaving the writing workflow in Toolbox. A separate bounded
+local `article_batch_write_plan` may group 2 to 5 reviewed draft-only actions
+into one batch proposal, and a `media_optimization_plan` may combine one
+attachment's metadata and derivative adoption writes into one approval. ADR-003
+keeps final
 WordPress execution outside Core for the current stage:
 
 - Core stays the governance layer for proposal records, approval/rejection,
@@ -74,7 +80,8 @@ be treated as the local `article_draft_v1` Ability recipe documented in
 not as a special Core feature and not as a Cloud writing product. The
 [Cloud Bulk Article Run Contract](cloud-bulk-article-run-contract.md) is now a
 prohibited/deprecated planning contract that prevents Cloud article draft,
-SEO-copy, bulk-writing, or `article_write_plan` generation.
+SEO-copy, bulk-writing, `article_write_plan`, or `article_batch_write_plan`
+generation.
 
 ## Strategic Product Boundary
 

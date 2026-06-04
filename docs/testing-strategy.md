@@ -87,6 +87,11 @@ Use it for behavior that requires real WordPress:
   planning for post content and setting/theme-mod URL patches, including generated proposals,
   destructive media delete exclusion by default, and `requires_input`
   preflight blocking;
+- bounded batch plan contracts for
+  `magick-ai-toolbox/build-article-batch-write-plan` and
+  `magick-ai/build-media-optimization-plan`, including explicit batch approval
+  and fail-closed rejection of publish, missing derivative, or multi-attachment
+  cases;
 - governance operability coverage, including proposal `audit_timeline`,
   commit-preflight `correlation_id`, app `scope_decision`, and audit filters
   for ability, app, key, caller type, and correlation id;

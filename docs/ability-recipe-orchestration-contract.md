@@ -35,6 +35,13 @@ For `article_draft_v1`, the current budget is:
 - no final write except the Core-approved `magick-ai/create-draft` Ability
   callback executed outside Core.
 
+`article_batch_draft_v1` is a separate bounded local profile for the same
+Article Assistant Workbench. It may group 2 to 5 locally reviewed draft-only
+`magick-ai/create-draft` actions into one Core `plan_to_proposal_batch`
+proposal through `magick-ai-toolbox/build-article-batch-write-plan`. It must
+not add a queue, scheduler, retry worker, Cloud writing generation, automatic
+approval, or direct WordPress write.
+
 If a future feature needs more than this budget, it must be documented as a
 new local recipe profile and still enter Core through the same governed
 `write_actions` bridge. It must not extend this article recipe into a hidden
@@ -61,6 +68,7 @@ Recipe steps must reference real local Ability ids, for example:
 - `magick-ai-toolbox/search-image-source`
 - `magick-ai-toolbox/vector-search`
 - `magick-ai-toolbox/build-article-write-plan`
+- `magick-ai-toolbox/build-article-batch-write-plan`
 - `magick-ai/create-draft`
 
 ## Article Draft Recipe
@@ -79,6 +87,24 @@ Recipe steps must reference real local Ability ids, for example:
 
 The recipe may use `article_write_plan` as a profile-specific artifact, but
 Core still governs only the resulting `write_actions`.
+
+## Article Batch Draft Recipe
+
+`article_batch_draft_v1` is a bounded local recipe profile:
+
+1. gather or reuse local site/content context;
+2. prepare 2 to 5 reviewed article artifact sets locally;
+3. ensure each article risk report is ready, non-high, and has no blocked
+   claims;
+4. build an `article_batch_write_plan` with `proposal_mode=batch` and
+   `batch_approval=true`;
+5. submit the plan through Core `POST /proposals/from-plan`;
+6. approve and preflight the one batch proposal in Core;
+7. execute each approved `magick-ai/create-draft` action through WordPress
+   Abilities API outside Core.
+
+The batch proposal is an approval grouping. It is not a batch writing job,
+queue, scheduler, or Cloud generation surface.
 
 ## Ownership
 
@@ -106,6 +132,7 @@ Allowed Cloud involvement for writing-related screens is limited to:
 
 Cloud must not store article body generation jobs, generate draft candidates,
 return `article_write_plan` candidates, or expose a bulk article run endpoint.
+Cloud must also not generate `article_batch_write_plan` candidates.
 
 ## Core Boundary
 

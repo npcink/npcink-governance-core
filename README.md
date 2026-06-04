@@ -116,12 +116,16 @@ abilities such as `magick-ai/build-content-inventory-fix-plan`,
 `magick-ai/build-test-content-cleanup-plan`, and
 `magick-ai/build-media-inventory-fix-plan`,
 `magick-ai/build-media-reference-repair-plan`, and
-`magick-ai/build-media-settings-reference-repair-plan`. It also accepts the P0 Toolbox
-article handoff `magick-ai-toolbox/build-article-write-plan`, but only as a
-single reviewed `magick-ai/create-draft` proposal. Core accepts the plan
-output, validates each target ability, stores either one pending proposal per
-`write_action` or one `plan_to_proposal_batch` proposal when the plan explicitly
-requests batch approval, preserves `preview.before`,
+`magick-ai/build-media-settings-reference-repair-plan`. It also accepts
+`magick-ai/build-media-optimization-plan` only as one attachment-level media
+optimization batch, and accepts the P0 Toolbox article handoff
+`magick-ai-toolbox/build-article-write-plan` only as a single reviewed
+`magick-ai/create-draft` proposal. The bounded local article batch handoff
+`magick-ai-toolbox/build-article-batch-write-plan` may create one reviewed
+batch of 2 to 5 draft-only `magick-ai/create-draft` actions. Core accepts the
+plan output, validates each target ability, stores either one pending proposal
+per `write_action` or one `plan_to_proposal_batch` proposal when the plan
+explicitly requests batch approval, preserves `preview.before`,
 `preview.after_suggestion`, `dry_run=true`, `commit=false`, and article
 workflow artifacts where applicable, and keeps final mutation execution outside
 Core. See
@@ -134,13 +138,18 @@ leases, schedulers, or operator runtime consoles inside Core.
 Article writing is now treated as local Ability recipe orchestration, not a
 Cloud writing product. The [Ability Recipe Orchestration Contract](docs/ability-recipe-orchestration-contract.md)
 keeps article drafting as a local `article_draft_v1` recipe over standard
-Abilities and Core-governed `write_actions`. The
+Abilities and Core-governed `write_actions`. The bounded
+`article_batch_draft_v1` profile may group 2 to 5 locally reviewed draft-only
+actions into one Core batch proposal, but it remains local and does not add
+Cloud writing, a queue, automatic approval, or Core execution. The
 [Cloud Bulk Article Run Contract](docs/cloud-bulk-article-run-contract.md) is a
 prohibited/deprecated planning contract: Cloud must not generate article drafts,
-SEO copy, bulk article runs, or `article_write_plan` candidates.
+SEO copy, bulk article runs, `article_write_plan` candidates, or
+`article_batch_write_plan` candidates.
 The accepted product surface is a local Article Assistant Workbench: one
-article, reviewed artifacts, and one Core-governed draft proposal, not an
-article generation product or Cloud writing feature.
+article or bounded reviewed draft batch, reviewed artifacts, and
+Core-governed draft proposals, not an article generation product or Cloud
+writing feature.
 
 The current governance operability baseline adds proposal audit timelines,
 audit filters for ability/app/key/caller/correlation, app scope-decision
@@ -155,6 +164,10 @@ be used when available. These settings are local WordPress policy truth. Toolbox
 may read them for one-run operator handoffs, Cloud Addon may sign and dispatch
 the request, and Cloud may process the derivative artifact, but final proposal,
 approval, adoption, and WordPress writes stay local.
+When a local media optimization plan combines SEO metadata with derivative
+adoption, Core governs it as one `plan_to_proposal_batch` for a single
+attachment so the user approves the optimization intent once while Adapter
+still validates and executes each write action outside Core.
 
 The approval policy evaluator defaults to `manual`, records
 `proposal.policy_evaluated` for every created proposal, and supports two

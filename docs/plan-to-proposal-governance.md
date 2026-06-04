@@ -13,7 +13,9 @@ an execution bridge.
 - `magick-ai/build-media-inventory-fix-plan`
 - `magick-ai/build-media-reference-repair-plan`
 - `magick-ai/build-media-settings-reference-repair-plan`
+- `magick-ai/build-media-optimization-plan`
 - `magick-ai-toolbox/build-article-write-plan`
+- `magick-ai-toolbox/build-article-batch-write-plan`
 
 The `magick-ai/*` planning abilities belong to `magick-ai-abilities`; the
 Toolbox article handoff belongs to `magick-ai-toolbox`. They are executed
@@ -88,6 +90,41 @@ single-draft acceptance rules. See
 [Ability Recipe Orchestration Contract](ability-recipe-orchestration-contract.md)
 and [Cloud Bulk Article Run Contract](cloud-bulk-article-run-contract.md).
 
+`magick-ai-toolbox/build-article-batch-write-plan` is the bounded local batch
+draft handoff for the same Article Assistant Workbench. It is not a Cloud
+writing feature. Core accepts it only when it declares
+`artifact_type=article_batch_write_plan`, `proposal_mode=batch`,
+`batch_approval=true`, includes 2 to 5 draft-only
+`magick-ai/create-draft` actions, and carries one reviewed article artifact set
+per action. Publish requests, high-risk article artifacts, blocked claims,
+`commit=true`, `dry_run=false`, or missing per-article review artifacts are
+rejected before proposal creation. Core stores one `plan_to_proposal_batch`
+proposal so the user can approve the related draft writes once, while Adapter
+still performs per-action allowlist, schema, idempotency, and execution checks
+outside Core.
+
+## Media Optimization Handoff
+
+`magick-ai/build-media-optimization-plan` is the bounded local plan for the user
+intent "optimize this media item." It must declare
+`artifact_type=media_optimization_plan`, `proposal_mode=batch`,
+`batch_approval=true`, and target exactly one attachment across all write
+actions.
+
+The plan must include:
+
+- one `magick-ai/update-media-details` action for title, alt, caption,
+  description, or source metadata;
+- one derivative adoption action, currently
+  `magick-ai/adopt-cloud-media-derivative` or `magick-ai/replace-media-file`;
+- dry-run preview evidence for the metadata change and derivative change.
+
+Cloud may create or return a derivative artifact, checksum, mime type, size
+preview, or processing diagnostics through the local Cloud Addon path, but
+final proposal, approval, adoption, and WordPress writes stay local. Core does
+not optimize images, execute media writes, or approve the proposal
+automatically.
+
 ## Proposal Preview Contract
 
 Generated proposal previews preserve:
@@ -154,6 +191,9 @@ Planning abilities may request a single approval for a bounded group of related
 actions by returning `batch_approval=true` or `proposal_mode=batch` at the plan
 data level. This is intended for one-plan, many-action cleanup cases where
 separate proposals would create review fatigue without improving governance.
+It is also the required shape for article batch draft and media optimization
+plans, where the proposal represents one user intent and `write_actions[]`
+records the per-ability execution units.
 
 Batch approval does not let Core execute writes. The proposal stores the
 ordered `input.write_actions[]`, records `source.type=plan_to_proposal_batch`,

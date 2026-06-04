@@ -269,6 +269,10 @@ foreach (
 		'policy_version',
 		'$outputs.<prior_action_id>.<field>',
 		'ordered batch proposal',
+		'magick-ai-toolbox/build-article-batch-write-plan',
+		'magick-ai/build-media-optimization-plan',
+		'article_batch_write_plan',
+		'media_optimization_plan',
 		'scope_decision',
 		'app_id',
 		'key_id',
@@ -990,24 +994,38 @@ foreach (
 		'magick-ai/build-media-inventory-fix-plan',
 		'magick-ai/build-media-reference-repair-plan',
 		'magick-ai/build-media-settings-reference-repair-plan',
+		'magick-ai/build-media-optimization-plan',
 		'magick-ai-toolbox/build-article-write-plan',
+		'magick-ai-toolbox/build-article-batch-write-plan',
 		'proposal.plan_ingested',
 		'magick-ai/delete-media-permanently',
 		'destructive_media_delete_not_explicitly_included',
 		'validate_article_write_plan_contract',
+		'validate_article_batch_write_plan_contract',
+		'validate_media_optimization_plan_contract',
 		'article_workflow_preview',
+		'article_batch_workflow_preview',
+		'media_optimization_preview',
 		'article_workflow_artifact_keys',
 		'article_write_plan',
+		'article_batch_write_plan',
+		'media_optimization_plan',
 		'article_goal_brief',
 		'research_evidence_pack',
 		'article_outline',
 		'article_draft_candidate',
 		'discoverability_pack',
 		'article_risk_report',
-		'magick_ai_core_article_plan_publish_rejected',
-		'magick_ai_core_article_plan_blocked_claims',
-		'magick_ai_core_article_plan_risk_blocked',
-		'magick_ai_core_article_plan_target_rejected',
+		'ARTICLE_BATCH_MAX_ACTIONS',
+		'magick_ai_core_article_batch_mode_required',
+		'magick_ai_core_media_optimization_batch_required',
+		'magick_ai_core_media_optimization_attachment_mismatch',
+		'magick_ai_core_article_plan_',
+		'magick_ai_core_article_batch_',
+		'publish_rejected',
+		'blocked_claims',
+		'risk_blocked',
+		'target_rejected',
 		'magick-ai/create-draft',
 		'proposal_ready',
 		'needs_input',
@@ -1047,7 +1065,11 @@ $plan_to_proposal_docs = magick_ai_core_read( $root . '/docs/plan-to-proposal-go
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_unattached_test_media' ), 'Plan-to-proposal docs mention abilities-side unattached test media delete gate.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_trash_parent_media' ), 'Plan-to-proposal docs mention abilities-side trash-parent media delete gate.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'magick-ai-toolbox/build-article-write-plan' ), 'Plan-to-proposal docs include the Toolbox article writing handoff.' );
+magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'magick-ai-toolbox/build-article-batch-write-plan' ), 'Plan-to-proposal docs include the Toolbox article batch writing handoff.' );
+magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'magick-ai/build-media-optimization-plan' ), 'Plan-to-proposal docs include the media optimization handoff.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_workflow' ), 'Plan-to-proposal docs require article workflow preview evidence.' );
+magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'proposal_mode=batch' ), 'Plan-to-proposal docs require explicit batch proposal mode where needed.' );
+magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'optimize this media item' ), 'Plan-to-proposal docs define media optimization as a user intent.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'Article writing is a local Ability recipe' ), 'Plan-to-proposal docs treat article writing as local Ability recipe.' );
 magick_ai_core_assert( false !== strpos( $plan_to_proposal_docs, 'must not produce article drafts' ), 'Plan-to-proposal docs prohibit Cloud draft generation.' );
 
@@ -1081,6 +1103,10 @@ foreach (
 		'not an article generation product',
 		'one article and one draft proposal per run',
 		'no batch writing',
+		'magick-ai-toolbox/build-article-batch-write-plan',
+		'article_batch_write_plan',
+		'2 to 5 actions',
+		'plan_to_proposal_batch',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $article_writing_contract, $required ), 'Article writing workflow contract contains required text: ' . $required );
@@ -1095,13 +1121,16 @@ foreach (
 		'article_draft_v1',
 		'magick-ai-toolbox/get-content-discoverability-context',
 		'magick-ai-toolbox/build-article-write-plan',
+		'magick-ai-toolbox/build-article-batch-write-plan',
 		'magick-ai/create-draft',
 		'Cloud must not provide article writing generation',
 		'Cloud must not store article body generation jobs',
+		'Cloud must also not generate `article_batch_write_plan` candidates',
 		'Core must not become article-aware beyond validating supported plan output',
 		'Do not add Cloud article import flows',
 		'local article assistant workbench',
 		'one local article at a time',
+		'article_batch_draft_v1',
 		'hidden content-generation platform',
 	) as $required
 ) {
@@ -1115,8 +1144,10 @@ foreach (
 		'bulk_article_run_v1',
 		'article writing generation',
 		'Cloud-produced `article_write_plan` candidates',
+		'Cloud-produced `article_batch_write_plan` candidates',
 		'Ability Recipe Orchestration Contract',
 		'article_write_plan',
+		'article_batch_write_plan',
 		'magick-ai-toolbox/build-article-write-plan',
 		'Core POST /proposals/from-plan',
 		'Cloud must not generate, store, or return article body content',

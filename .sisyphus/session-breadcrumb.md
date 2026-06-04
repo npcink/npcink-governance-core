@@ -1,5 +1,43 @@
 # Session Breadcrumb
 
+## 2026-06-04 — User-intent batch proposal contracts added
+
+- **Module**: Core plan-to-proposal governance contracts.
+- **Status**: Core now accepts explicit, bounded user-intent batch plan shapes
+  for local article draft batches and single-attachment media optimization.
+- **Completed**:
+  - Added `magick-ai-toolbox/build-article-batch-write-plan` as a separate
+    local Article Assistant Workbench handoff that can create one
+    `plan_to_proposal_batch` with 2 to 5 draft-only
+    `magick-ai/create-draft` actions.
+  - Added `magick-ai/build-media-optimization-plan` as a single-attachment
+    media optimization handoff that can combine `update-media-details` with
+    derivative adoption into one batch proposal.
+  - Kept the existing P0 `magick-ai-toolbox/build-article-write-plan`
+    single-draft contract intact.
+  - Added fail-closed coverage for valid batch proposals and rejection of
+    missing explicit batch mode, publish requests, missing media derivative
+    actions, and multi-attachment media optimization.
+  - Updated the smoke gate to recognize the current
+    `magick-ai-abilities/npcink-abilities-toolkit.php` plugin basename.
+- **Verification**:
+  - `composer test:all`
+  - `WP_CLI_PHP="$HOME/Library/Application Support/Local/lightning-services/php-8.2.29+0/bin/darwin-arm64/bin/php" composer smoke:wp`
+  - `git diff --check`
+- **Boundary**:
+  - Core still only accepts plan output, creates proposal records, records
+    approval/rejection/preflight/audit, and returns `commit_execution=false`.
+    This does not add article generation, media processing, final WordPress
+    writes, workflow/task queues, batch execution consoles, Cloud approval,
+    Cloud writing, or automatic approval.
+- **Next Steps**:
+  - Implement the new plan abilities in the owning projects:
+    `magick-ai-toolbox` for article batch draft plans and
+    `magick-ai-abilities` or the local media product surface for media
+    optimization plans.
+  - Add Adapter execution profiles that validate each batch action after Core
+    approval and commit preflight.
+
 ## 2026-06-03 — Article assistant complexity budget documented
 
 - **Module**: Core cross-project article recipe contracts.

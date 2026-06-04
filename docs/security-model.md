@@ -118,6 +118,13 @@ forces stored proposal inputs back to `dry_run=true` and `commit=false`.
 `manual_review` and `skipped_destructive_candidates` are preserved in preview
 context for human review.
 
+Explicit batch proposals are an approval grouping only. Bounded article batch
+draft plans and media optimization plans may create one `plan_to_proposal_batch`
+record when the plan declares `proposal_mode=batch` and `batch_approval=true`,
+but Core still does not auto-approve them, execute them, run a batch job, or
+skip Adapter-side per-action allowlist, schema, idempotency, and permission
+checks.
+
 Permanent media deletion is excluded from generated proposals unless the host
 explicitly submits `include_delete_candidates=true` with the plan input. The
 plan payload itself is not trusted to open that gate. The upstream planning

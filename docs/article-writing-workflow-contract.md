@@ -36,6 +36,11 @@ P0 remains intentionally narrow:
 - no automatic approval based on recipe readiness;
 - no direct WordPress write from Toolbox, Cloud Addon, or Core.
 
+This P0 budget remains valid for `article_draft_v1`. A separate bounded local
+batch profile may create one Core batch proposal for multiple reviewed draft
+actions, but it must not change P0 into Cloud writing, automatic publishing, a
+background writing job, or an unreviewed article generator.
+
 The accepted surface name is Article Assistant Workbench. Avoid presenting this
 as an article generator, bulk writing tool, autonomous writer, or Cloud writing
 feature. Any UI, README, Adapter guidance, or Cloud Addon copy should keep that
@@ -45,7 +50,7 @@ language aligned.
 
 | Project | Owns | Does not own |
 | --- | --- | --- |
-| `magick-ai-toolbox` | Operator-facing workflow UI, fixed writing flow artifacts, research/image/vector tool UX, content discoverability context, and `magick-ai-toolbox/build-article-write-plan`. | Final WordPress writes, Core proposal records, approval truth, audit truth, OpenClaw channel truth, or hosted runtime ownership. |
+| `magick-ai-toolbox` | Operator-facing workflow UI, fixed writing flow artifacts, research/image/vector tool UX, content discoverability context, `magick-ai-toolbox/build-article-write-plan`, and bounded local `magick-ai-toolbox/build-article-batch-write-plan`. | Final WordPress writes, Core proposal records, approval truth, audit truth, OpenClaw channel truth, hosted runtime ownership, or Cloud writing. |
 | `magick-ai-abilities` | Standard WordPress abilities, schemas, callbacks, permissions, dry-run previews, and reusable deterministic helpers such as context, risk, compose, and write callbacks. | Product workflow state, model routing, cloud execution, approval truth, audit truth, or final governance. |
 | `magick-ai-core` | Plan intake, proposal records, approval/rejection, commit preflight, fail-closed policy checks, and audit. | Article generation, Toolbox workflow state, ability execution, final writes, workflow runtime, queues, model routing, or provider credentials. |
 | `magick-ai-adapter` | OpenClaw channel routes, capability guidance, direct-read Ability API calls, proposal relay, commit-preflight relay, and allowlisted execution after Core approval and preflight. | Article generation, SEO/GEO/AEO judgment, workflow state, approval truth, or generic write proxying. |
@@ -133,6 +138,62 @@ The P0 plan is intentionally single-action. Later slices may add separate
 governed proposals for SEO meta, terms, media metadata, and featured images
 after the single draft loop is stable.
 
+## Article Batch Draft Plan Shape
+
+`magick-ai-toolbox/build-article-batch-write-plan` is the bounded local batch
+profile for "draft these reviewed articles." It is not the P0 single-article
+path and not a Cloud writing feature. The planning ability must return:
+
+```json
+{
+  "artifact_type": "article_batch_write_plan",
+  "version": 1,
+  "batch_id": "article_batch_write_...",
+  "requires_approval": true,
+  "dry_run": true,
+  "commit_execution": false,
+  "proposal_mode": "batch",
+  "batch_approval": true,
+  "articles": [
+    {
+      "article_goal_brief": {},
+      "research_evidence_pack": {},
+      "article_outline": {},
+      "article_draft_candidate": {},
+      "discoverability_pack": {},
+      "article_risk_report": {
+        "risk_level": "low",
+        "blocked_claims": [],
+        "ready_for_proposal": true
+      }
+    }
+  ],
+  "write_actions": [
+    {
+      "action_id": "create_article_draft_1",
+      "target_ability_id": "magick-ai/create-draft",
+      "input": {
+        "title": "Draft title",
+        "content": "Draft body",
+        "status": "draft",
+        "dry_run": true,
+        "commit": false
+      },
+      "risk": "medium",
+      "requires_approval": true,
+      "commit_execution": false,
+      "proposal_ready": true
+    }
+  ]
+}
+```
+
+Core accepts only 2 to 5 actions, all targeting `magick-ai/create-draft`, all
+draft-only, all dry-run, and all backed by a matching reviewed artifact entry.
+The generated proposal is one `plan_to_proposal_batch` record. Adapter must
+still execute each action individually through its allowlisted execution
+profile after Core approval and commit preflight.
+
 ## Ability Recipe Position
 
 Article drafting is the `article_draft_v1` profile of
@@ -179,14 +240,17 @@ preflight, and audit correlation. Core still returns `commit_execution=false`.
 ## Expansion Order
 
 1. P0: single `magick-ai/create-draft` proposal.
-2. P1: separate governed proposals for `magick-ai/set-post-seo-meta`,
+2. P1: bounded local article batch draft proposal through
+   `magick-ai-toolbox/build-article-batch-write-plan`.
+3. P1: separate governed proposals for `magick-ai/set-post-seo-meta`,
    `magick-ai/set-post-terms`, `magick-ai/update-media-details`, and
    `magick-ai/set-post-featured-image` when the target abilities and Adapter
    execution profiles are ready.
-3. P2: additional local recipe profiles for topic clusters or editorial
+4. P2: additional local recipe profiles for topic clusters or editorial
    calendars may be documented, but they must remain local Ability recipes and
    must not become Cloud writing generation.
-4. P3: any batch behavior must be local, bounded, reviewable, and Core-governed.
+5. P3: any broader batch behavior must be local, bounded, reviewable, and
+   Core-governed.
 
 ## Boundary Guardrails
 

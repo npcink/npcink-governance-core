@@ -30,8 +30,12 @@ final class Plan_Proposal_Service {
 		'magick-ai/build-media-inventory-fix-plan'                    => true,
 		'magick-ai/build-media-reference-repair-plan'                 => true,
 		'magick-ai/build-media-settings-reference-repair-plan'        => true,
+		'magick-ai/build-media-optimization-plan'                     => true,
 		'magick-ai-toolbox/build-article-write-plan'                  => true,
+		'magick-ai-toolbox/build-article-batch-write-plan'            => true,
 	);
+
+	private const ARTICLE_BATCH_MAX_ACTIONS = 5;
 
 	/**
 	 * Ability adapter.
@@ -117,6 +121,20 @@ final class Plan_Proposal_Service {
 			$article_contract_error = $this->validate_article_write_plan_contract( $plan );
 			if ( is_wp_error( $article_contract_error ) ) {
 				return $article_contract_error;
+			}
+		}
+
+		if ( 'magick-ai-toolbox/build-article-batch-write-plan' === $plan_ability_id ) {
+			$article_batch_contract_error = $this->validate_article_batch_write_plan_contract( $plan );
+			if ( is_wp_error( $article_batch_contract_error ) ) {
+				return $article_batch_contract_error;
+			}
+		}
+
+		if ( 'magick-ai/build-media-optimization-plan' === $plan_ability_id ) {
+			$media_optimization_contract_error = $this->validate_media_optimization_plan_contract( $plan );
+			if ( is_wp_error( $media_optimization_contract_error ) ) {
+				return $media_optimization_contract_error;
 			}
 		}
 
@@ -324,6 +342,168 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Validates a bounded batch article draft plan.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_article_batch_write_plan_contract( array $plan ) {
+		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
+		if ( 'article_batch_write_plan' !== $artifact_type ) {
+			return new WP_Error(
+				'magick_ai_core_article_batch_plan_invalid',
+				__( 'Article batch write plans must declare artifact_type=article_batch_write_plan.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true !== (bool) ( $plan['batch_approval'] ?? false ) || 'batch' !== sanitize_key( (string) ( $plan['proposal_mode'] ?? '' ) ) ) {
+			return new WP_Error(
+				'magick_ai_core_article_batch_mode_required',
+				__( 'Article batch write plans must explicitly request batch proposal approval.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( count( $write_actions ) < 2 || count( $write_actions ) > self::ARTICLE_BATCH_MAX_ACTIONS ) {
+			return new WP_Error(
+				'magick_ai_core_article_batch_size_rejected',
+				__( 'Article batch write plans must contain a bounded group of draft actions.', 'magick-ai-core' ),
+				array(
+					'status'      => 422,
+					'max_actions' => self::ARTICLE_BATCH_MAX_ACTIONS,
+				)
+			);
+		}
+
+		$articles = is_array( $plan['articles'] ?? null ) ? array_values( $plan['articles'] ) : array();
+		if ( count( $articles ) !== count( $write_actions ) ) {
+			return new WP_Error(
+				'magick_ai_core_article_batch_artifacts_missing',
+				__( 'Article batch write plans must include one reviewed article artifact set per draft action.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		foreach ( $articles as $article_index => $article ) {
+			if ( ! is_array( $article ) ) {
+				return new WP_Error(
+					'magick_ai_core_article_batch_artifacts_missing',
+					__( 'Article batch entries must be objects.', 'magick-ai-core' ),
+					array(
+						'status'        => 422,
+						'article_index' => $article_index,
+					)
+				);
+			}
+			$artifact_error = $this->validate_article_artifacts( $article, 'magick_ai_core_article_batch_' );
+			if ( is_wp_error( $artifact_error ) ) {
+				return $artifact_error;
+			}
+		}
+
+		foreach ( $write_actions as $action_index => $action ) {
+			if ( ! is_array( $action ) ) {
+				return new WP_Error(
+					'magick_ai_core_article_batch_action_invalid',
+					__( 'Article batch write actions must be objects.', 'magick-ai-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+			$draft_error = $this->validate_article_draft_action( $action, 'magick_ai_core_article_batch_' );
+			if ( is_wp_error( $draft_error ) ) {
+				return $draft_error;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validates a media optimization plan for one user-intent approval.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_media_optimization_plan_contract( array $plan ) {
+		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
+		if ( 'media_optimization_plan' !== $artifact_type ) {
+			return new WP_Error(
+				'magick_ai_core_media_optimization_plan_invalid',
+				__( 'Media optimization plans must declare artifact_type=media_optimization_plan.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true !== (bool) ( $plan['batch_approval'] ?? false ) || 'batch' !== sanitize_key( (string) ( $plan['proposal_mode'] ?? '' ) ) ) {
+			return new WP_Error(
+				'magick_ai_core_media_optimization_batch_required',
+				__( 'Media optimization plans must explicitly request one batch proposal approval.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( count( $write_actions ) < 2 ) {
+			return new WP_Error(
+				'magick_ai_core_media_optimization_actions_missing',
+				__( 'Media optimization plans must include metadata and derivative adoption actions.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$targets = array();
+		foreach ( $write_actions as $action ) {
+			if ( is_array( $action ) ) {
+				$targets[] = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
+			}
+		}
+
+		if ( ! in_array( 'magick-ai/update-media-details', $targets, true ) ) {
+			return new WP_Error(
+				'magick_ai_core_media_optimization_metadata_missing',
+				__( 'Media optimization plans must include magick-ai/update-media-details.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$derivative_targets = array(
+			'magick-ai/adopt-cloud-media-derivative',
+			'magick-ai/replace-media-file',
+		);
+		if ( empty( array_intersect( $targets, $derivative_targets ) ) ) {
+			return new WP_Error(
+				'magick_ai_core_media_optimization_derivative_missing',
+				__( 'Media optimization plans must include a governed derivative adoption action.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$attachment_ids = array();
+		foreach ( $write_actions as $action ) {
+			$input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+			$id    = absint( $input['attachment_id'] ?? 0 );
+			if ( $id > 0 ) {
+				$attachment_ids[] = $id;
+			}
+		}
+		$attachment_ids = array_values( array_unique( $attachment_ids ) );
+		if ( 1 !== count( $attachment_ids ) ) {
+			return new WP_Error(
+				'magick_ai_core_media_optimization_attachment_mismatch',
+				__( 'Media optimization plans must target exactly one attachment across all write actions.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		return true;
+	}
+
+	/**
 	 * Validates the P0 article writing plan contract.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -347,42 +527,9 @@ final class Plan_Proposal_Service {
 			);
 		}
 
-		foreach ( $this->article_workflow_artifact_keys() as $artifact_key ) {
-			if ( ! is_array( $plan[ $artifact_key ] ?? null ) ) {
-				return new WP_Error(
-					'magick_ai_core_article_plan_artifact_missing',
-					__( 'Article write plans must include every required workflow artifact.', 'magick-ai-core' ),
-					array(
-						'status'   => 422,
-						'artifact' => $artifact_key,
-					)
-				);
-			}
-		}
-
-		$risk_report = is_array( $plan['article_risk_report'] ?? null ) ? $plan['article_risk_report'] : array();
-		if ( true !== (bool) ( $risk_report['ready_for_proposal'] ?? false ) ) {
-			return new WP_Error(
-				'magick_ai_core_article_plan_not_ready',
-				__( 'Article write plans must pass risk review before proposal intake.', 'magick-ai-core' ),
-				array( 'status' => 422 )
-			);
-		}
-
-		if ( 'high' === sanitize_key( (string) ( $risk_report['risk_level'] ?? '' ) ) ) {
-			return new WP_Error(
-				'magick_ai_core_article_plan_risk_blocked',
-				__( 'High-risk article plans must be revised before draft proposal intake.', 'magick-ai-core' ),
-				array( 'status' => 422 )
-			);
-		}
-
-		if ( ! empty( $risk_report['blocked_claims'] ?? array() ) ) {
-			return new WP_Error(
-				'magick_ai_core_article_plan_blocked_claims',
-				__( 'Article write plans with blocked claims cannot create proposals.', 'magick-ai-core' ),
-				array( 'status' => 422 )
-			);
+		$artifact_error = $this->validate_article_artifacts( $plan, 'magick_ai_core_article_plan_' );
+		if ( is_wp_error( $artifact_error ) ) {
+			return $artifact_error;
 		}
 
 		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
@@ -395,9 +542,74 @@ final class Plan_Proposal_Service {
 		}
 
 		$action = $write_actions[0];
+		$draft_error = $this->validate_article_draft_action( $action, 'magick_ai_core_article_plan_' );
+		if ( is_wp_error( $draft_error ) ) {
+			return $draft_error;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validates article review artifacts.
+	 *
+	 * @param array<string,mixed> $payload Artifact payload.
+	 * @param string              $error_prefix Error code prefix.
+	 * @return true|WP_Error
+	 */
+	private function validate_article_artifacts( array $payload, string $error_prefix ) {
+		foreach ( $this->article_workflow_artifact_keys() as $artifact_key ) {
+			if ( ! is_array( $payload[ $artifact_key ] ?? null ) ) {
+				return new WP_Error(
+					$error_prefix . 'artifact_missing',
+					__( 'Article write plans must include every required workflow artifact.', 'magick-ai-core' ),
+					array(
+						'status'   => 422,
+						'artifact' => $artifact_key,
+					)
+				);
+			}
+		}
+
+		$risk_report = is_array( $payload['article_risk_report'] ?? null ) ? $payload['article_risk_report'] : array();
+		if ( true !== (bool) ( $risk_report['ready_for_proposal'] ?? false ) ) {
+			return new WP_Error(
+				$error_prefix . 'not_ready',
+				__( 'Article write plans must pass risk review before proposal intake.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( 'high' === sanitize_key( (string) ( $risk_report['risk_level'] ?? '' ) ) ) {
+			return new WP_Error(
+				$error_prefix . 'risk_blocked',
+				__( 'High-risk article plans must be revised before draft proposal intake.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( ! empty( $risk_report['blocked_claims'] ?? array() ) ) {
+			return new WP_Error(
+				$error_prefix . 'blocked_claims',
+				__( 'Article write plans with blocked claims cannot create proposals.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validates a draft-only article write action.
+	 *
+	 * @param array<string,mixed> $action Write action.
+	 * @param string              $error_prefix Error code prefix.
+	 * @return true|WP_Error
+	 */
+	private function validate_article_draft_action( array $action, string $error_prefix ) {
 		if ( 'magick-ai/create-draft' !== sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) ) ) {
 			return new WP_Error(
-				'magick_ai_core_article_plan_target_rejected',
+				$error_prefix . 'target_rejected',
 				__( 'P0 article write plans may target only magick-ai/create-draft.', 'magick-ai-core' ),
 				array( 'status' => 422 )
 			);
@@ -407,7 +619,7 @@ final class Plan_Proposal_Service {
 		$status = sanitize_key( (string) ( $input['status'] ?? ( $input['post_status'] ?? 'draft' ) ) );
 		if ( '' !== $status && 'draft' !== $status ) {
 			return new WP_Error(
-				'magick_ai_core_article_plan_publish_rejected',
+				$error_prefix . 'publish_rejected',
 				__( 'Article write plans may create drafts only.', 'magick-ai-core' ),
 				array( 'status' => 422 )
 			);
@@ -415,7 +627,7 @@ final class Plan_Proposal_Service {
 
 		if ( true === (bool) ( $input['commit'] ?? false ) || false === (bool) ( $input['dry_run'] ?? true ) ) {
 			return new WP_Error(
-				'magick_ai_core_article_plan_commit_rejected',
+				$error_prefix . 'commit_rejected',
 				__( 'Article write plan input must remain dry-run and must not request commit.', 'magick-ai-core' ),
 				array( 'status' => 422 )
 			);
@@ -459,6 +671,45 @@ final class Plan_Proposal_Service {
 		}
 
 		return $preview;
+	}
+
+	/**
+	 * Builds preview context for bounded article batch plans.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function article_batch_workflow_preview( array $plan ): array {
+		$articles = is_array( $plan['articles'] ?? null ) ? array_values( $plan['articles'] ) : array();
+
+		return array(
+			'artifact_type'          => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
+			'version'                => absint( $plan['version'] ?? 0 ),
+			'max_actions'            => self::ARTICLE_BATCH_MAX_ACTIONS,
+			'article_count'          => count( $articles ),
+			'final_write_path'       => 'core_batch_proposal_required',
+			'direct_wordpress_write' => false,
+			'articles'               => $this->sanitize_payload( $articles ),
+		);
+	}
+
+	/**
+	 * Builds preview context for media optimization plans.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function media_optimization_preview( array $plan ): array {
+		return array(
+			'artifact_type'          => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
+			'version'                => absint( $plan['version'] ?? 0 ),
+			'optimization_goal'      => sanitize_key( (string) ( $plan['optimization_goal'] ?? 'media_optimization' ) ),
+			'attachment_id'          => absint( $plan['attachment_id'] ?? 0 ),
+			'derivative_preview'     => $this->sanitize_payload( $plan['derivative_preview'] ?? array() ),
+			'metadata_preview'       => $this->sanitize_payload( $plan['metadata_preview'] ?? array() ),
+			'final_write_path'       => 'core_batch_proposal_required',
+			'direct_wordpress_write' => false,
+		);
 	}
 
 	/**
@@ -576,6 +827,12 @@ final class Plan_Proposal_Service {
 
 		if ( 'magick-ai-toolbox/build-article-write-plan' === $plan_ability_id ) {
 			$preview['article_workflow'] = $this->article_workflow_preview( $plan );
+		}
+		if ( 'magick-ai-toolbox/build-article-batch-write-plan' === $plan_ability_id ) {
+			$preview['article_batch_workflow'] = $this->article_batch_workflow_preview( $plan );
+		}
+		if ( 'magick-ai/build-media-optimization-plan' === $plan_ability_id ) {
+			$preview['media_optimization'] = $this->media_optimization_preview( $plan );
 		}
 
 		$title = sprintf(
@@ -760,6 +1017,13 @@ final class Plan_Proposal_Service {
 			'needs_input'        => $needs_input,
 			'preflight_blockers' => $preflight_blockers,
 		);
+
+		if ( 'magick-ai-toolbox/build-article-batch-write-plan' === $plan_ability_id ) {
+			$preview['article_batch_workflow'] = $this->article_batch_workflow_preview( $plan );
+		}
+		if ( 'magick-ai/build-media-optimization-plan' === $plan_ability_id ) {
+			$preview['media_optimization'] = $this->media_optimization_preview( $plan );
+		}
 
 		return array(
 			'ability_id' => sanitize_text_field( (string) ( $first['ability_id'] ?? ( $first_preview['target_ability_id'] ?? '' ) ) ),

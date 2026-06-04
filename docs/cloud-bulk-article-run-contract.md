@@ -15,6 +15,7 @@ Cloud must not provide:
 - article title, outline, paragraph, draft, SEO copy, or body generation;
 - batch article draft production;
 - Cloud-produced `article_write_plan` candidates;
+- Cloud-produced `article_batch_write_plan` candidates;
 - Cloud article artifact import into Toolbox;
 - Cloud-side article scheduling or publishing;
 - Cloud WordPress credentials or direct WordPress writes.
@@ -47,7 +48,8 @@ functions:
 - allowed non-content runtime tasks.
 
 Cloud must not generate, store, or return article body content, draft
-candidates, SEO writing, or bulk writing artifacts.
+candidates, SEO writing, `article_write_plan`, `article_batch_write_plan`, or
+bulk writing artifacts.
 
 ## Boundary Statement
 

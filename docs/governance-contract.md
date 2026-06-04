@@ -72,7 +72,9 @@ Core may consume these read-only planning ability outputs:
 - `magick-ai/build-media-inventory-fix-plan`
 - `magick-ai/build-media-reference-repair-plan`
 - `magick-ai/build-media-settings-reference-repair-plan`
+- `magick-ai/build-media-optimization-plan`
 - `magick-ai-toolbox/build-article-write-plan`
+- `magick-ai-toolbox/build-article-batch-write-plan`
 
 Plan intake does not execute the plan ability and does not execute target write
 abilities. It accepts a successful plan payload, validates that the planning
@@ -86,6 +88,23 @@ and Core accepts `magick-ai-toolbox/build-article-write-plan` only when it is an
 report, no blocked claims, and exactly one draft-only
 `magick-ai/create-draft` action. Core preserves those artifacts in proposal
 preview context for review without generating content or executing the write.
+
+The bounded article batch handoff is separate from P0. Core accepts
+`magick-ai-toolbox/build-article-batch-write-plan` only when it is an
+`article_batch_write_plan` with `proposal_mode=batch`,
+`batch_approval=true`, 2 to 5 draft-only `magick-ai/create-draft` actions, and
+one reviewed article artifact set per action. Core stores one batch proposal
+for one user approval, but it still does not generate articles, approve the
+proposal, execute writes, or run a batch writing job.
+
+The media optimization handoff is the governed shape for the user intent
+"optimize this attachment." Core accepts
+`magick-ai/build-media-optimization-plan` only as an explicit batch proposal
+for exactly one attachment, combining `magick-ai/update-media-details` with a
+derivative adoption action such as
+`magick-ai/adopt-cloud-media-derivative` or `magick-ai/replace-media-file`.
+Cloud may provide derivative artifacts and diagnostics, but approval, adoption,
+and WordPress writes stay local and outside Core execution.
 
 Plans may request one review item for a group of generated actions with either
 `batch_approval=true` or `proposal_mode=batch`. Core then creates one

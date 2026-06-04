@@ -347,7 +347,9 @@ abilities:
 - `magick-ai/build-media-inventory-fix-plan`
 - `magick-ai/build-media-reference-repair-plan`
 - `magick-ai/build-media-settings-reference-repair-plan`
+- `magick-ai/build-media-optimization-plan`
 - `magick-ai-toolbox/build-article-write-plan`
+- `magick-ai-toolbox/build-article-batch-write-plan`
 
 Permission: `manage_options` or app scope `proposals:create`.
 
@@ -367,6 +369,20 @@ For `magick-ai-toolbox/build-article-write-plan`, the plan must declare
 The P0 action set must contain exactly one `magick-ai/create-draft` action with
 `status=draft` or no explicit status. `publish`, high-risk reports, blocked
 claims, `commit=true`, or `dry_run=false` are rejected before proposal creation.
+
+For `magick-ai-toolbox/build-article-batch-write-plan`, the plan must declare
+`artifact_type=article_batch_write_plan`, `proposal_mode=batch`,
+`batch_approval=true`, and include 2 to 5 draft-only
+`magick-ai/create-draft` actions plus one reviewed article artifact set per
+action under `articles[]`. Publish, high-risk reports, blocked claims,
+`commit=true`, or `dry_run=false` are rejected before proposal creation.
+
+For `magick-ai/build-media-optimization-plan`, the plan must declare
+`artifact_type=media_optimization_plan`, `proposal_mode=batch`,
+`batch_approval=true`, and target exactly one `attachment_id` across all
+actions. It must include `magick-ai/update-media-details` and either
+`magick-ai/adopt-cloud-media-derivative` or
+`magick-ai/replace-media-file`.
 
 Each accepted independent `write_action` becomes a separate pending proposal by
 default. If the plan declares `batch_approval=true` or

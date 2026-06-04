@@ -1004,8 +1004,27 @@ function magick_ai_core_smoke_run_governance_proposal( string $ability_id, array
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 $core_plugin      = 'magick-ai-core/magick-ai-core.php';
-$abilities_plugin = 'magick-ai-abilities/magick-ai-abilities.php';
+$abilities_plugins = array(
+	'magick-ai-abilities/magick-ai-abilities.php',
+	'magick-ai-abilities/npcink-abilities-toolkit.php',
+);
+$abilities_plugin  = '';
+foreach ( $abilities_plugins as $candidate_plugin ) {
+	if ( is_plugin_active( $candidate_plugin ) ) {
+		$abilities_plugin = $candidate_plugin;
+		break;
+	}
+}
+if ( '' === $abilities_plugin ) {
+	foreach ( $abilities_plugins as $candidate_plugin ) {
+		if ( file_exists( WP_PLUGIN_DIR . '/' . $candidate_plugin ) ) {
+			$abilities_plugin = $candidate_plugin;
+			break;
+		}
+	}
+}
 
+magick_ai_core_smoke_assert( '' !== $abilities_plugin, 'magick-ai-abilities plugin file found' );
 if ( ! is_plugin_active( $abilities_plugin ) ) {
 	$result = activate_plugin( $abilities_plugin );
 	magick_ai_core_smoke_assert( ! is_wp_error( $result ), 'magick-ai-abilities activated' );

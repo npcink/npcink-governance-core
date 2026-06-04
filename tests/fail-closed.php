@@ -486,6 +486,26 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'post_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
+			'magick-ai/update-media-details' => array(
+				'ability_id'        => 'magick-ai/update-media-details',
+				'label'             => 'Update Media Details',
+				'risk_level'        => 'write',
+				'requires_approval' => true,
+				'capability'        => 'upload_files',
+				'required_scopes'   => array( 'media.write' ),
+				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'attachment_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
+			'magick-ai/adopt-cloud-media-derivative' => array(
+				'ability_id'        => 'magick-ai/adopt-cloud-media-derivative',
+				'label'             => 'Adopt Cloud Media Derivative',
+				'risk_level'        => 'write',
+				'requires_approval' => true,
+				'capability'        => 'upload_files',
+				'required_scopes'   => array( 'media.write' ),
+				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'attachment_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
 			'magick-ai-toolbox/build-article-write-plan' => array(
 				'ability_id'        => 'magick-ai-toolbox/build-article-write-plan',
 				'label'             => 'Build Article Write Plan',
@@ -493,6 +513,26 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'requires_approval' => false,
 				'capability'        => 'manage_options',
 				'required_scopes'   => array( 'cap.toolbox.workflow_suggest' ),
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
+			'magick-ai-toolbox/build-article-batch-write-plan' => array(
+				'ability_id'        => 'magick-ai-toolbox/build-article-batch-write-plan',
+				'label'             => 'Build Article Batch Write Plan',
+				'risk_level'        => 'read',
+				'requires_approval' => false,
+				'capability'        => 'manage_options',
+				'required_scopes'   => array( 'cap.toolbox.workflow_suggest' ),
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
+			'magick-ai/build-media-optimization-plan' => array(
+				'ability_id'        => 'magick-ai/build-media-optimization-plan',
+				'label'             => 'Build Media Optimization Plan',
+				'risk_level'        => 'read',
+				'requires_approval' => false,
+				'capability'        => 'upload_files',
+				'required_scopes'   => array( 'media.read' ),
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
@@ -1194,6 +1234,119 @@ function magick_ai_core_fail_closed_article_write_plan(): array {
 	);
 }
 
+/**
+ * Creates a representative Toolbox article batch write plan.
+ *
+ * @return array<string,mixed>
+ */
+function magick_ai_core_fail_closed_article_batch_write_plan(): array {
+	$single_plan = magick_ai_core_fail_closed_article_write_plan();
+	$articles    = array();
+	$actions     = array();
+
+	for ( $index = 1; $index <= 3; $index++ ) {
+		$article = $single_plan;
+		unset( $article['artifact_type'], $article['version'], $article['batch_id'], $article['requires_approval'], $article['dry_run'], $article['commit_execution'], $article['proposal_mode'], $article['write_actions'] );
+		$article['article_goal_brief']['topic'] = 'Governed writing workflow ' . $index;
+		$article['article_draft_candidate']['content_markdown'] = 'Draft body ' . $index . '.';
+		$articles[] = $article;
+
+		$action = $single_plan['write_actions'][0];
+		$action['action_id'] = 'create_article_draft_' . $index;
+		$action['input']['title'] = 'Governed writing workflow ' . $index;
+		$action['input']['content'] = 'Draft body ' . $index . '.';
+		$action['input']['idempotency_key'] = 'article-batch-' . $index;
+		$actions[] = $action;
+	}
+
+	return array(
+		'artifact_type'     => 'article_batch_write_plan',
+		'version'           => 1,
+		'batch_id'          => 'article_batch_write_fault_injection',
+		'requires_approval' => true,
+		'dry_run'           => true,
+		'commit_execution'  => false,
+		'proposal_mode'     => 'batch',
+		'batch_approval'    => true,
+		'articles'          => $articles,
+		'write_actions'     => $actions,
+		'risk'              => array(
+			'level'  => 'medium',
+			'reason' => 'Three draft-only article writes.',
+		),
+	);
+}
+
+/**
+ * Creates a representative media optimization plan.
+ *
+ * @return array<string,mixed>
+ */
+function magick_ai_core_fail_closed_media_optimization_plan(): array {
+	return array(
+		'artifact_type'       => 'media_optimization_plan',
+		'version'             => 1,
+		'batch_id'            => 'media_optimization_fault_injection',
+		'attachment_id'       => 1493,
+		'optimization_goal'   => 'image_seo_and_webp',
+		'requires_approval'   => true,
+		'dry_run'             => true,
+		'commit_execution'    => false,
+		'proposal_mode'       => 'batch',
+		'batch_approval'      => true,
+		'metadata_preview'    => array(
+			'before' => array( 'alt' => '' ),
+			'after'  => array( 'alt' => 'AI generated product image' ),
+		),
+		'derivative_preview'  => array(
+			'before' => array( 'mime_type' => 'image/png', 'size_bytes' => 900000 ),
+			'after'  => array( 'mime_type' => 'image/webp', 'size_bytes' => 210000 ),
+		),
+		'write_actions'       => array(
+			array(
+				'action_id'         => 'update_media_details',
+				'target_ability_id' => 'magick-ai/update-media-details',
+				'input'             => array(
+					'attachment_id'    => 1493,
+					'title'            => 'Optimized AI image',
+					'alt'              => 'AI generated product image',
+					'caption'          => 'AI generated product image.',
+					'description'      => 'Optimized image metadata.',
+					'source_type'      => 'ai_generated',
+					'dry_run'          => true,
+					'commit'           => false,
+					'idempotency_key'  => 'media-optimize-metadata-1493',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+			array(
+				'action_id'         => 'adopt_webp_derivative',
+				'target_ability_id' => 'magick-ai/adopt-cloud-media-derivative',
+				'input'             => array(
+					'attachment_id'                  => 1493,
+					'derivative_artifact'            => 'cloud://artifact/webp-1493',
+					'expected_current_mime_type'     => 'image/png',
+					'expected_derivative_mime_type'  => 'image/webp',
+					'dry_run'                        => true,
+					'commit'                         => false,
+					'idempotency_key'                => 'media-optimize-derivative-1493',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+		),
+		'risk'                => array(
+			'level'  => 'medium',
+			'reason' => 'One attachment metadata update and derivative adoption.',
+		),
+	);
+}
+
 $proposal_table = 'wp_magick_ai_core_proposals';
 $audit_table    = 'wp_magick_ai_core_audit_log';
 $app_table      = 'wp_magick_ai_core_app_keys';
@@ -1340,6 +1493,61 @@ $high_risk_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/buil
 magick_ai_core_fail_closed_assert( is_wp_error( $high_risk_result ), 'High-risk article write plan is rejected.' );
 magick_ai_core_fail_closed_assert( 'magick_ai_core_article_plan_risk_blocked' === $high_risk_result->get_error_code(), 'Article high-risk rejection uses stable error code.' );
 magick_ai_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Rejected high-risk article plan stores no proposal row.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$article_batch_plan = magick_ai_core_fail_closed_article_batch_write_plan();
+$article_batch_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-batch-write-plan', $article_batch_plan, array(), array( 'source' => 'toolbox_article_batch_workflow' ) );
+magick_ai_core_fail_closed_assert( ! is_wp_error( $article_batch_result ), 'Valid Toolbox article batch write plan creates a Core proposal.' );
+magick_ai_core_fail_closed_assert( 1 === (int) ( $article_batch_result['proposal_count'] ?? 0 ), 'Valid Toolbox article batch write plan creates one batch proposal.' );
+$article_batch_proposal = is_array( $article_batch_result['proposals'][0] ?? null ) ? $article_batch_result['proposals'][0] : array();
+magick_ai_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $article_batch_proposal['preview']['source']['type'] ?? '' ), 'Article batch write plan stores batch proposal source.' );
+magick_ai_core_fail_closed_assert( 3 === count( (array) ( $article_batch_proposal['input']['write_actions'] ?? array() ) ), 'Article batch proposal stores all draft write actions.' );
+magick_ai_core_fail_closed_assert( is_array( $article_batch_proposal['preview']['article_batch_workflow'] ?? null ), 'Article batch proposal preserves batch workflow preview.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$article_batch_without_flag = magick_ai_core_fail_closed_article_batch_write_plan();
+$article_batch_without_flag['batch_approval'] = false;
+$article_batch_without_flag['proposal_mode'] = 'single';
+$article_batch_without_flag_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-batch-write-plan', $article_batch_without_flag );
+magick_ai_core_fail_closed_assert( is_wp_error( $article_batch_without_flag_result ), 'Article batch write plan without explicit batch mode is rejected.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_article_batch_mode_required' === $article_batch_without_flag_result->get_error_code(), 'Article batch mode rejection uses stable error code.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$article_batch_publish_plan = magick_ai_core_fail_closed_article_batch_write_plan();
+$article_batch_publish_plan['write_actions'][1]['input']['status'] = 'publish';
+$article_batch_publish_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-batch-write-plan', $article_batch_publish_plan );
+magick_ai_core_fail_closed_assert( is_wp_error( $article_batch_publish_result ), 'Article batch write plan requesting publish is rejected.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_article_batch_publish_rejected' === $article_batch_publish_result->get_error_code(), 'Article batch publish rejection uses stable error code.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$media_optimization_plan = magick_ai_core_fail_closed_media_optimization_plan();
+$media_optimization_result = $stack['service']->create_from_plan( 'magick-ai/build-media-optimization-plan', $media_optimization_plan, array(), array( 'source' => 'toolbox_media_optimization' ) );
+magick_ai_core_fail_closed_assert( ! is_wp_error( $media_optimization_result ), 'Valid media optimization plan creates a Core proposal.' );
+magick_ai_core_fail_closed_assert( 1 === (int) ( $media_optimization_result['proposal_count'] ?? 0 ), 'Valid media optimization plan creates one batch proposal.' );
+$media_optimization_proposal = is_array( $media_optimization_result['proposals'][0] ?? null ) ? $media_optimization_result['proposals'][0] : array();
+magick_ai_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $media_optimization_proposal['preview']['source']['type'] ?? '' ), 'Media optimization plan stores batch proposal source.' );
+magick_ai_core_fail_closed_assert( 2 === count( (array) ( $media_optimization_proposal['input']['write_actions'] ?? array() ) ), 'Media optimization proposal stores metadata and derivative actions.' );
+magick_ai_core_fail_closed_assert( is_array( $media_optimization_proposal['preview']['media_optimization'] ?? null ), 'Media optimization proposal preserves optimization preview.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$media_optimization_missing_derivative = magick_ai_core_fail_closed_media_optimization_plan();
+array_pop( $media_optimization_missing_derivative['write_actions'] );
+$media_optimization_missing_result = $stack['service']->create_from_plan( 'magick-ai/build-media-optimization-plan', $media_optimization_missing_derivative );
+magick_ai_core_fail_closed_assert( is_wp_error( $media_optimization_missing_result ), 'Media optimization plan without derivative adoption is rejected.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_media_optimization_actions_missing' === $media_optimization_missing_result->get_error_code(), 'Media optimization missing action rejection uses stable error code.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
+$media_optimization_mismatch = magick_ai_core_fail_closed_media_optimization_plan();
+$media_optimization_mismatch['write_actions'][1]['input']['attachment_id'] = 1494;
+$media_optimization_mismatch_result = $stack['service']->create_from_plan( 'magick-ai/build-media-optimization-plan', $media_optimization_mismatch );
+magick_ai_core_fail_closed_assert( is_wp_error( $media_optimization_mismatch_result ), 'Media optimization plan spanning multiple attachments is rejected.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_media_optimization_attachment_mismatch' === $media_optimization_mismatch_result->get_error_code(), 'Media optimization attachment mismatch uses stable error code.' );
 
 $wpdb = magick_ai_core_fail_closed_reset_db();
 $wpdb->fail_insert_tables[] = $proposal_table;

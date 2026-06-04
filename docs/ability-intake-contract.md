@@ -46,7 +46,9 @@ Core may accept output from these read-only planning abilities:
 - `magick-ai/build-media-inventory-fix-plan`
 - `magick-ai/build-media-reference-repair-plan`
 - `magick-ai/build-media-settings-reference-repair-plan`
+- `magick-ai/build-media-optimization-plan`
 - `magick-ai-toolbox/build-article-write-plan`
+- `magick-ai-toolbox/build-article-batch-write-plan`
 
 They must remain discoverable as `governance_mode=direct_read` with
 `execution_surface=wp_abilities_rest`. Core does not execute them. A host or
@@ -57,6 +59,18 @@ plan payload to Core.
 handoff owned by Toolbox. Core accepts it only as a reviewed
 `article_write_plan` that can create one `magick-ai/create-draft` proposal; it
 does not move article generation, workflow state, or operator UX into Core.
+
+`magick-ai-toolbox/build-article-batch-write-plan` is the bounded local batch
+draft handoff owned by Toolbox. Core accepts it only as a reviewed
+`article_batch_write_plan` with explicit batch approval and 2 to 5 draft-only
+`magick-ai/create-draft` actions. It does not move article generation, batch
+writing jobs, workflow state, or Cloud writing into Core.
+
+`magick-ai/build-media-optimization-plan` is the bounded local media
+optimization handoff owned by `magick-ai-abilities` or a local product plugin.
+Core accepts it only as an explicit batch plan for one attachment, combining
+metadata updates with derivative adoption while leaving Cloud processing and
+final WordPress writes outside Core.
 
 Each plan `write_action.target_ability_id` must resolve through normal ability
 intake as a proposal-governed write or destructive ability. Core must not
