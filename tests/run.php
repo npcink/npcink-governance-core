@@ -1262,6 +1262,10 @@ foreach (
 		'OpenClaw onboarding',
 		'ability definitions',
 		'cloud connection settings',
+		'Time Display',
+		'WordPress site timezone',
+		'Y-m-d H:i:s',
+		'Do not print raw UTC strings',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $admin_surface_standard, $required ), 'Admin surface standard documents Core page boundary: ' . $required );

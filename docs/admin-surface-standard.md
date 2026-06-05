@@ -61,6 +61,16 @@ must not render placeholder-only columns such as `- / -`. Optional app, scope,
 and correlation metadata belongs in a compact detail cell and should appear
 only when it exists.
 
+## Time Display
+
+Core stores governance proposal, audit, app-key, and rate-limit timestamps as
+UTC machine values. Keep those stored values and REST response fields stable.
+
+Any timestamp shown in the Core wp-admin page must be formatted through the
+WordPress site timezone as `Y-m-d H:i:s`. Do not print raw UTC strings or
+database datetime values directly in the human-facing admin UI unless the label
+explicitly describes a machine/debug value.
+
 ## Do Not Add
 
 Core admin must not add:
