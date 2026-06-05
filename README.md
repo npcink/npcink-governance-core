@@ -87,6 +87,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Taxonomy Terms Preview Governance Scenario](docs/taxonomy-terms-preview-governance-scenario.md)
 - [Development Workflow](docs/development-workflow.md)
 - [Testing Strategy](docs/testing-strategy.md)
+- [WordPress.org Release Gate](docs/wordpress-org-release-gate.md)
 - [Next Stage Plan](docs/next-stage-plan.md)
 - [Strategy And Product Split](docs/strategy-and-product-split.md)
 - [ADR-001: Rebuild Core As A Governance Layer](docs/decisions/ADR-001-rebuild-core-as-governance-layer.md)
