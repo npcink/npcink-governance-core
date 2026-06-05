@@ -88,6 +88,58 @@ function magick_ai_core_smoke_register_attachment_fixture( int $attachment_id ):
 }
 
 /**
+ * Creates a real local media attachment fixture with an attached uploads file.
+ *
+ * @param string $title Attachment title.
+ * @return int
+ */
+function magick_ai_core_smoke_create_media_attachment_fixture( string $title ): int {
+	global $magick_ai_core_smoke_run_id;
+
+	$uploads = wp_upload_dir();
+	magick_ai_core_smoke_assert( empty( $uploads['error'] ), 'smoke media fixture uploads directory is available' );
+
+	$directory = trailingslashit( (string) $uploads['path'] );
+	if ( ! is_dir( $directory ) ) {
+		wp_mkdir_p( $directory );
+	}
+	magick_ai_core_smoke_assert( is_dir( $directory ) && is_writable( $directory ), 'smoke media fixture uploads directory is writable' );
+
+	$file_name = sanitize_file_name( 'core-smoke-media-' . $magick_ai_core_smoke_run_id . '.png' );
+	$file_path = $directory . $file_name;
+	$image_bytes = base64_decode( 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=', true );
+	magick_ai_core_smoke_assert( is_string( $image_bytes ) && '' !== $image_bytes, 'smoke media fixture image bytes decode' );
+	magick_ai_core_smoke_assert( false !== file_put_contents( $file_path, $image_bytes ), 'smoke media fixture file is written' );
+
+	$attachment_id = wp_insert_post(
+		array(
+			'post_type'      => 'attachment',
+			'post_status'    => 'inherit',
+			'post_title'     => $title,
+			'post_mime_type' => 'image/png',
+			'post_excerpt'   => '',
+			'post_content'   => '',
+			'guid'           => trailingslashit( (string) $uploads['url'] ) . $file_name,
+		),
+		true
+	);
+	magick_ai_core_smoke_assert( ! is_wp_error( $attachment_id ) && (int) $attachment_id > 0, 'smoke media fixture attachment post is created' );
+	update_attached_file( (int) $attachment_id, $file_path );
+	update_post_meta(
+		(int) $attachment_id,
+		'_wp_attachment_metadata',
+		array(
+			'width'  => 1,
+			'height' => 1,
+			'file'   => ltrim( trailingslashit( (string) $uploads['subdir'] ) . $file_name, '/' ),
+		)
+	);
+	magick_ai_core_smoke_register_attachment_fixture( (int) $attachment_id );
+
+	return (int) $attachment_id;
+}
+
+/**
  * Registers a taxonomy term fixture for cleanup even when the smoke test fails.
  *
  * @param int    $term_id Term id.
@@ -1436,19 +1488,8 @@ magick_ai_core_smoke_assert( in_array( 'proposal.auto_approved', $local_guarded_
 update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::MODE_MANUAL, false );
 
 $plan_attachment_title = 'Core Plan Bridge Media Candidate ' . $magick_ai_core_smoke_run_id;
-$plan_attachment_id    = wp_insert_post(
-	array(
-		'post_type'      => 'attachment',
-		'post_status'    => 'inherit',
-		'post_title'     => $plan_attachment_title,
-		'post_mime_type' => 'image/jpeg',
-		'post_excerpt'   => '',
-		'post_content'   => '',
-	),
-	true
-);
-magick_ai_core_smoke_assert( ! is_wp_error( $plan_attachment_id ) && (int) $plan_attachment_id > 0, 'plan bridge media fixture attachment is created' );
-magick_ai_core_smoke_register_attachment_fixture( (int) $plan_attachment_id );
+$plan_attachment_id    = magick_ai_core_smoke_create_media_attachment_fixture( $plan_attachment_title );
+magick_ai_core_smoke_assert( (int) $plan_attachment_id > 0, 'plan bridge media fixture attachment is created' );
 
 $media_plan_input = array(
 	'attachment_ids'  => array( (int) $plan_attachment_id ),
@@ -1482,7 +1523,7 @@ $media_rename_plan_result = magick_ai_core_smoke_create_proposals_from_plan( 'ma
 magick_ai_core_smoke_assert( 1 === (int) ( $media_rename_plan_result['proposal_count'] ?? 0 ), 'media rename plan generates one Core proposal' );
 $media_rename_proposal = is_array( $media_rename_plan_result['proposals'][0] ?? null ) ? $media_rename_plan_result['proposals'][0] : array();
 magick_ai_core_smoke_assert_plan_proposal_shape( $media_rename_proposal, 'magick-ai/rename-media-file', true );
-magick_ai_core_smoke_assert( 'core-smoke-media-rename-reviewed' === (string) ( $media_rename_proposal['input']['target_file_name'] ?? '' ), 'media rename proposal preserves reviewed target filename' );
+magick_ai_core_smoke_assert( 'core-smoke-media-rename-reviewed.png' === (string) ( $media_rename_proposal['input']['target_file_name'] ?? '' ), 'media rename proposal preserves reviewed target filename' );
 magick_ai_core_smoke_assert( is_array( $media_rename_proposal['preview']['media_rename'] ?? null ), 'media rename proposal preserves rename preview context' );
 magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $media_rename_proposal['proposal_id'] ?? '' ) );
 
