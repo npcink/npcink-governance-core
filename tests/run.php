@@ -1276,6 +1276,12 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core
 magick_ai_core_assert( false !== strpos( $admin_page, 'admin_post_magick_ai_core_revoke_app_key' ), 'Admin page registers app-key revocation handler.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'check_admin_referer' ), 'Admin proposal actions enforce nonce.' );
 magick_ai_core_assert( false !== strpos( $admin_page, "current_user_can( 'manage_options' )" ), 'Admin proposal actions enforce capability.' );
+magick_ai_core_assert( false !== strpos( $admin_page, "DATETIME_DISPLAY_FORMAT = 'Y-m-d H:i:s'" ), 'Admin page standardizes visible datetime format.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'display_datetime' ), 'Admin page centralizes visible datetime formatting.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'wp_date( self::DATETIME_DISPLAY_FORMAT, $timestamp )' ), 'Admin page formats stored UTC timestamps with the WordPress timezone.' );
+magick_ai_core_assert( false !== strpos( $admin_page, "\$this->display_datetime( (string) \$proposal['created_at'] )" ), 'Admin review queue formats proposal creation time through WordPress time.' );
+magick_ai_core_assert( false !== strpos( $admin_page, "\$this->display_datetime( (string) \$event['created_at'] )" ), 'Admin audit views format event time through WordPress time.' );
+magick_ai_core_assert( false === strpos( $admin_page, "echo esc_html( (string) \$event['created_at']" ), 'Admin page does not output raw UTC audit timestamps.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Reject selected' ), 'Admin review queue exposes bulk rejection.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'array_slice( $proposal_ids, 0, 50 )' ), 'Admin bulk rejection is bounded.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Proposal ID:' ), 'Admin review queue keeps proposal ids visible.' );

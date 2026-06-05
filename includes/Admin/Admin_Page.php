@@ -30,6 +30,7 @@ final class Admin_Page {
 	const ARCHIVE_PAGE_SIZE = 20;
 	const AUDIT_PAGE_SIZE   = 25;
 	const APP_KEY_PAGE_SIZE = 10;
+	const DATETIME_DISPLAY_FORMAT = 'Y-m-d H:i:s';
 
 	/**
 	 * Ability adapter.
@@ -634,7 +635,7 @@ final class Admin_Page {
 								</span>
 								<?php $this->render_pending_proposal_trace( $proposal ); ?>
 							</td>
-							<td><?php echo esc_html( (string) $proposal['created_at'] ); ?></td>
+							<td><?php echo esc_html( $this->display_datetime( (string) $proposal['created_at'] ) ); ?></td>
 							<td>
 								<a class="button" href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>">
 									<?php echo esc_html__( 'Review', 'magick-ai-core' ); ?>
@@ -776,7 +777,7 @@ final class Admin_Page {
 					<?php foreach ( $events as $event ) : ?>
 						<?php $proposal_id = (string) ( $event['proposal_id'] ?? '' ); ?>
 						<tr>
-							<td><?php echo esc_html( (string) $event['created_at'] ); ?></td>
+							<td><?php echo esc_html( $this->display_datetime( (string) $event['created_at'] ) ); ?></td>
 							<td><code><?php echo esc_html( (string) $event['event_name'] ); ?></code></td>
 							<td>
 								<?php if ( '' !== $proposal_id ) : ?>
@@ -817,7 +818,7 @@ final class Admin_Page {
 					</tr>
 					<tr>
 						<th scope="row"><?php echo esc_html__( 'Last used', 'magick-ai-core' ); ?></th>
-						<td><?php echo esc_html( '' !== $last_used ? $last_used : __( 'Never', 'magick-ai-core' ) ); ?></td>
+						<td><?php echo esc_html( '' !== $last_used ? $this->display_datetime( $last_used ) : __( 'Never', 'magick-ai-core' ) ); ?></td>
 					</tr>
 					<tr>
 						<th scope="row"><?php echo esc_html__( 'Action', 'magick-ai-core' ); ?></th>
@@ -1124,7 +1125,7 @@ final class Admin_Page {
 						<td><code><?php echo esc_html( (string) $app['key_id'] ); ?></code></td>
 						<td><?php echo esc_html( (string) $app['status'] ); ?></td>
 						<td><?php echo esc_html( implode( ', ', (array) $app['scopes'] ) ); ?></td>
-						<td><?php echo esc_html( (string) ( $app['last_used_at'] ?: __( 'Never', 'magick-ai-core' ) ) ); ?></td>
+						<td><?php echo esc_html( '' !== (string) $app['last_used_at'] ? $this->display_datetime( (string) $app['last_used_at'] ) : __( 'Never', 'magick-ai-core' ) ); ?></td>
 						<td>
 							<?php if ( 'active' === (string) $app['status'] ) : ?>
 								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
@@ -1203,7 +1204,7 @@ final class Admin_Page {
 						</td>
 						<td><?php echo esc_html( $this->status_label( (string) $proposal['status'] ) ); ?></td>
 						<td><?php echo esc_html( $this->proposal_age_label( $proposal ) ); ?></td>
-						<td><?php echo esc_html( (string) $proposal['updated_at'] ); ?></td>
+						<td><?php echo esc_html( $this->display_datetime( (string) $proposal['updated_at'] ) ); ?></td>
 						<td><?php $this->render_lifecycle_actions( $proposal, true ); ?></td>
 					</tr>
 				<?php endforeach; ?>
@@ -1701,7 +1702,7 @@ final class Admin_Page {
 				<?php endif; ?>
 				<?php foreach ( $events as $event ) : ?>
 					<tr>
-						<td><?php echo esc_html( (string) $event['created_at'] ); ?></td>
+						<td><?php echo esc_html( $this->display_datetime( (string) $event['created_at'] ) ); ?></td>
 						<td><code><?php echo esc_html( (string) $event['event_name'] ); ?></code></td>
 						<td><?php echo esc_html( (string) $event['actor_id'] ); ?></td>
 						<td><?php $this->render_audit_detail( $event ); ?></td>
@@ -1804,7 +1805,7 @@ final class Admin_Page {
 					$ability_id     = (string) ( $metadata['ability_id'] ?? '' );
 					?>
 					<tr>
-						<td><?php echo esc_html( (string) $event['created_at'] ); ?></td>
+						<td><?php echo esc_html( $this->display_datetime( (string) $event['created_at'] ) ); ?></td>
 						<td><code><?php echo esc_html( (string) $event['event_name'] ); ?></code></td>
 						<td>
 							<?php if ( '' !== $proposal_id ) : ?>
@@ -2138,6 +2139,35 @@ final class Admin_Page {
 		);
 
 		return (string) ( $labels[ $status ] ?? $status );
+	}
+
+	/**
+	 * Formats a stored UTC datetime for the site's WordPress timezone.
+	 *
+	 * @param string $datetime UTC datetime string.
+	 * @return string
+	 */
+	private function display_datetime( string $datetime ): string {
+		$datetime = trim( $datetime );
+		if ( '' === $datetime ) {
+			return '';
+		}
+
+		$has_timezone = (bool) preg_match( '/(?:Z|UTC|[+-]\d{2}:?\d{2})$/i', $datetime );
+		$timestamp    = strtotime( $has_timezone ? $datetime : $datetime . ' UTC' );
+		if ( false === $timestamp ) {
+			return $datetime;
+		}
+
+		if ( function_exists( 'wp_date' ) ) {
+			return wp_date( self::DATETIME_DISPLAY_FORMAT, $timestamp );
+		}
+
+		if ( function_exists( 'date_i18n' ) ) {
+			return date_i18n( self::DATETIME_DISPLAY_FORMAT, $timestamp, true );
+		}
+
+		return gmdate( self::DATETIME_DISPLAY_FORMAT, $timestamp );
 	}
 
 	/**
