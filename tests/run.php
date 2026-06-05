@@ -155,7 +155,9 @@ foreach (
 		'target_format',
 		'max_width',
 		'sanitize_watermark_plan',
+		'sanitize_watermark_color',
 		'watermark',
+		"'type'       => 'text'",
 		'policy_owner',
 		'final_write_owner',
 	) as $required

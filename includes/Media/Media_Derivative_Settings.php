@@ -179,6 +179,11 @@ final class Media_Derivative_Settings {
 	 * @return array<string,mixed>
 	 */
 	private function sanitize_watermark_plan( array $watermark, array $settings ): array {
+		$type = sanitize_key( (string) ( $watermark['type'] ?? 'image' ) );
+		if ( ! in_array( $type, array( 'image', 'text' ), true ) ) {
+			$type = 'image';
+		}
+
 		$position = sanitize_key( (string) ( $watermark['position'] ?? $settings['watermark_position'] ?? 'bottom_right' ) );
 		if ( ! in_array( $position, $this->allowed_watermark_positions(), true ) ) {
 			$position = 'bottom_right';
@@ -187,14 +192,70 @@ final class Media_Derivative_Settings {
 		$opacity = is_numeric( $watermark['opacity'] ?? null )
 			? (float) $watermark['opacity']
 			: ( (int) ( $settings['watermark_opacity'] ?? 80 ) / 100 );
+		$opacity   = round( max( 0, min( 1, $opacity ) ), 3 );
+		$margin_px = max( 0, min( 1000, absint( $watermark['margin_px'] ?? $settings['watermark_margin'] ?? 24 ) ) );
 
-		return array(
+		if ( 'text' === $type ) {
+			$text = sanitize_text_field( (string) ( $watermark['text'] ?? 'AI' ) );
+			if ( '' === $text ) {
+				$text = 'AI';
+			}
+			$text = function_exists( 'mb_substr' ) ? mb_substr( $text, 0, 64 ) : substr( $text, 0, 64 );
+
+			return array(
+				'type'       => 'text',
+				'text'       => $text,
+				'position'   => $position,
+				'opacity'    => $opacity,
+				'font_size'  => max( 8, min( 256, absint( $watermark['font_size'] ?? 48 ) ) ),
+				'color'      => $this->sanitize_watermark_color( $watermark['color'] ?? '#FFFFFF', '#FFFFFF' ),
+				'background' => $this->sanitize_watermark_color( $watermark['background'] ?? 'rgba(0,0,0,0.35)', 'rgba(0,0,0,0.35)' ),
+				'margin_px'  => $margin_px,
+			);
+		}
+
+		$artifact_id = sanitize_text_field( (string) ( $watermark['artifact_id'] ?? '' ) );
+		$sanitized   = array(
 			'type'          => 'image',
 			'position'      => $position,
-			'opacity'       => round( max( 0, min( 1, $opacity ) ), 3 ),
+			'opacity'       => $opacity,
 			'scale_percent' => max( 1, min( 100, absint( $watermark['scale_percent'] ?? $settings['watermark_scale'] ?? 20 ) ) ),
-			'margin_px'     => max( 0, min( 1000, absint( $watermark['margin_px'] ?? $settings['watermark_margin'] ?? 24 ) ) ),
+			'margin_px'     => $margin_px,
 		);
+		if ( '' !== $artifact_id ) {
+			$sanitized['artifact_id'] = $artifact_id;
+		}
+
+		return $sanitized;
+	}
+
+	/**
+	 * Sanitizes a text watermark color token.
+	 *
+	 * @param mixed  $value Raw color.
+	 * @param string $default Default color.
+	 * @return string
+	 */
+	private function sanitize_watermark_color( $value, string $default ): string {
+		$color = trim( sanitize_text_field( (string) $value ) );
+		if ( 'transparent' === strtolower( $color ) ) {
+			return 'transparent';
+		}
+		if ( 1 === preg_match( '/^#[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?$/', $color ) ) {
+			return strtoupper( $color );
+		}
+		if ( 1 === preg_match( '/^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})(?:\s*,\s*(0|1|0?\.\d+))?\s*\)$/', $color, $matches ) ) {
+			$r     = max( 0, min( 255, (int) $matches[1] ) );
+			$g     = max( 0, min( 255, (int) $matches[2] ) );
+			$b     = max( 0, min( 255, (int) $matches[3] ) );
+			$alpha = isset( $matches[4] ) && '' !== $matches[4] ? max( 0, min( 1, (float) $matches[4] ) ) : null;
+
+			return null === $alpha
+				? sprintf( 'rgb(%d,%d,%d)', $r, $g, $b )
+				: sprintf( 'rgba(%d,%d,%d,%s)', $r, $g, $b, rtrim( rtrim( sprintf( '%.3F', $alpha ), '0' ), '.' ) );
+		}
+
+		return $default;
 	}
 
 	/**
