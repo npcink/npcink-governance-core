@@ -52,7 +52,7 @@ language aligned.
 | --- | --- | --- |
 | `magick-ai-toolbox` | Operator-facing workflow UI, fixed writing flow artifacts, research/image/vector tool UX, content discoverability context, `magick-ai-toolbox/build-article-write-plan`, and bounded local `magick-ai-toolbox/build-article-batch-write-plan`. | Final WordPress writes, Core proposal records, approval truth, audit truth, OpenClaw channel truth, hosted runtime ownership, or Cloud writing. |
 | `magick-ai-abilities` | Standard WordPress abilities, schemas, callbacks, permissions, dry-run previews, and reusable deterministic helpers such as context, risk, compose, and write callbacks. | Product workflow state, model routing, cloud execution, approval truth, audit truth, or final governance. |
-| `magick-ai-core` | Plan intake, proposal records, approval/rejection, commit preflight, fail-closed policy checks, and audit. | Article generation, Toolbox workflow state, ability execution, final writes, workflow runtime, queues, model routing, or provider credentials. |
+| `npcink-governance-core` | Plan intake, proposal records, approval/rejection, commit preflight, fail-closed policy checks, and audit. | Article generation, Toolbox workflow state, ability execution, final writes, workflow runtime, queues, model routing, or provider credentials. |
 | `magick-ai-adapter` | OpenClaw channel routes, capability guidance, direct-read Ability API calls, proposal relay, commit-preflight relay, and allowlisted execution after Core approval and preflight. | Article generation, SEO/GEO/AEO judgment, workflow state, approval truth, or generic write proxying. |
 | `magick-ai-cloud-addon` | Cloud connection, health, stats, and entitlement detail for non-writing service surfaces. | Article generation, local control plane, proposal truth, approval truth, workflow truth, ability registry, prompt/router/preset ownership, or WordPress writes. |
 
@@ -74,7 +74,7 @@ The first slice supports one article and one draft write proposal:
    - `article_risk_report`
    - `article_write_plan`
 5. Toolbox submits the plan to Core through
-   `POST /wp-json/magick-ai-core/v1/proposals/from-plan` with
+   `POST /wp-json/npcink-governance-core/v1/proposals/from-plan` with
    `plan_ability_id=magick-ai-toolbox/build-article-write-plan`.
 6. Core validates the plan and creates a pending `magick-ai/create-draft`
    proposal only when the plan is ready.

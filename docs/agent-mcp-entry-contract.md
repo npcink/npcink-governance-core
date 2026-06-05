@@ -2,7 +2,7 @@
 
 Status: planning contract; runtime implementation not started.
 
-Magick AI Core is MCP-aware, but it is not an MCP runtime. WordPress, a
+Npcink Governance Core is MCP-aware, but it is not an MCP runtime. WordPress, a
 dedicated MCP adapter, or an agent host may expose WordPress abilities to
 agents. Core only provides the governance entrypoints that decide whether an
 operation needs approval, who approved it, whether it can proceed to commit,
@@ -33,7 +33,7 @@ WordPress stores final state.
 | WordPress Abilities API | Canonical ability discovery and execution surface. |
 | `magick-ai-abilities` or provider plugins | Stable `ability_id`, schemas, permission callbacks, risk metadata, read helpers, and host-governed write/destructive abilities. |
 | MCP adapter or agent host | Channel transport, tool presentation, agent request validation, and actual WordPress Abilities API calls. |
-| `magick-ai-core` | Ability intake, proposal records, approval/rejection, commit preflight, app policy, and audit. |
+| `npcink-governance-core` | Ability intake, proposal records, approval/rejection, commit preflight, app policy, and audit. |
 | Product plugin | Domain workflow, UX, previews, and user-facing orchestration. |
 
 ## Allowed Core Shape
@@ -83,14 +83,14 @@ For write or destructive abilities:
 1. Adapter discovers the real `ability_id`.
 2. Adapter or product plugin prepares a preview, diff, dry-run payload, or
    human-readable handoff.
-3. Adapter calls `POST /wp-json/magick-ai-core/v1/proposals`.
+3. Adapter calls `POST /wp-json/npcink-governance-core/v1/proposals`.
 4. Adapter may poll proposal status through Core `GET /proposals/{proposal_id}`
    or through a dedicated adapter read proxy that forwards to Core with
    `proposals:read`.
 5. A human or separately documented trusted host policy approves or rejects the
    proposal.
 6. Adapter calls
-   `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/commit-preflight`.
+   `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight`.
 7. Core returns approval context with `commit_execution=false`.
 8. Adapter calls the target WordPress ability only if the ability contract
    accepts Core approval context and idempotency protection.

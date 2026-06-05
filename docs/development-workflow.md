@@ -10,7 +10,7 @@ local `magick-ai` WordPress site.
 Project:
 
 ```text
-/Users/muze/gitee/magick-ai-core
+/Users/muze/gitee/npcink-governance-core
 ```
 
 Local WordPress root:
@@ -22,8 +22,8 @@ Local WordPress root:
 Plugin symlink:
 
 ```text
-/Users/muze/Local Sites/magick-ai/app/public/wp-content/plugins/magick-ai-core
--> /Users/muze/gitee/magick-ai-core
+/Users/muze/Local Sites/magick-ai/app/public/wp-content/plugins/npcink-governance-core
+-> /Users/muze/gitee/npcink-governance-core
 ```
 
 Atomic ability provider:

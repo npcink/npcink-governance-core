@@ -1,6 +1,6 @@
 <?php
 /**
- * Real WordPress smoke test for Magick AI Core.
+ * Real WordPress smoke test for Npcink Governance Core.
  *
  * Run through WP-CLI after the plugin is symlinked into the LocalWP site.
  *
@@ -21,7 +21,7 @@ $magick_ai_core_smoke_app_key_fixture_ids    = array();
 $magick_ai_core_smoke_app_fixture_ids        = array();
 $magick_ai_core_smoke_proposal_fixture_ids   = array();
 $magick_ai_core_smoke_cleanup_completed      = false;
-$magick_ai_core_smoke_initial_policy_mode    = get_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::MODE_MANUAL );
+$magick_ai_core_smoke_initial_policy_mode    = 'manual';
 
 /**
  * Smoke assertion helper.
@@ -223,18 +223,18 @@ function magick_ai_core_smoke_track_rest_fixture( string $method, string $route,
 		return;
 	}
 
-	if ( '/magick-ai-core/v1/apps' === $route ) {
+	if ( '/npcink-governance-core/v1/apps' === $route ) {
 		magick_ai_core_smoke_register_app_fixture( (string) ( $data['app_id'] ?? '' ) );
 		magick_ai_core_smoke_register_app_key_fixture( (string) ( $data['key_id'] ?? '' ) );
 		return;
 	}
 
-	if ( '/magick-ai-core/v1/proposals' === $route ) {
+	if ( '/npcink-governance-core/v1/proposals' === $route ) {
 		magick_ai_core_smoke_register_proposal_fixture( (string) ( $data['proposal_id'] ?? '' ) );
 		return;
 	}
 
-	if ( '/magick-ai-core/v1/proposals/from-plan' === $route ) {
+	if ( '/npcink-governance-core/v1/proposals/from-plan' === $route ) {
 		foreach ( (array) ( $data['proposals'] ?? array() ) as $proposal ) {
 			if ( is_array( $proposal ) ) {
 				magick_ai_core_smoke_register_proposal_fixture( (string) ( $proposal['proposal_id'] ?? '' ) );
@@ -317,7 +317,9 @@ function magick_ai_core_smoke_cleanup_fixtures(): void {
 	}
 
 	$magick_ai_core_smoke_cleanup_completed = true;
-	update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::sanitize_policy_mode( (string) $magick_ai_core_smoke_initial_policy_mode ), false );
+	if ( class_exists( \MagickAI\Core\Governance\Approval_Policy_Evaluator::class ) ) {
+		update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::sanitize_policy_mode( (string) $magick_ai_core_smoke_initial_policy_mode ), false );
+	}
 
 	foreach ( array_keys( (array) $magick_ai_core_smoke_app_key_fixture_ids ) as $key_id ) {
 		$app_keys = new \MagickAI\Core\Security\App_Key_Repository();
@@ -379,7 +381,6 @@ function magick_ai_core_smoke_cleanup_fixtures(): void {
 }
 
 register_shutdown_function( 'magick_ai_core_smoke_cleanup_fixtures' );
-update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::MODE_MANUAL, false );
 
 /**
  * Dispatches a REST request as admin.
@@ -890,7 +891,7 @@ function magick_ai_core_smoke_create_proposals_from_plan( string $ability_id, ar
 
 	return magick_ai_core_smoke_rest(
 		'POST',
-		'/magick-ai-core/v1/proposals/from-plan',
+		'/npcink-governance-core/v1/proposals/from-plan',
 		array(
 			'plan_ability_id' => $ability_id,
 			'plan'            => $plan,
@@ -916,7 +917,7 @@ function magick_ai_core_smoke_create_proposals_from_plan_as_app( string $ability
 
 	return magick_ai_core_smoke_rest_as_app(
 		'POST',
-		'/magick-ai-core/v1/proposals/from-plan',
+		'/npcink-governance-core/v1/proposals/from-plan',
 		$token,
 		array(
 			'plan_ability_id' => $ability_id,
@@ -962,14 +963,14 @@ function magick_ai_core_smoke_assert_plan_proposal_shape( array $proposal, strin
 function magick_ai_core_smoke_approve_and_preflight_plan_proposal( string $proposal_id ): array {
 	$approved = magick_ai_core_smoke_rest(
 		'POST',
-		'/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/approve',
+		'/npcink-governance-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/approve',
 		array(
 			'note' => 'Plan bridge smoke approval.',
 		)
 	);
 	magick_ai_core_smoke_assert( 'approved' === (string) ( $approved['status'] ?? '' ), 'plan-generated proposal is approved through Core REST' );
 
-	$preflight = magick_ai_core_smoke_rest( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/commit-preflight' );
+	$preflight = magick_ai_core_smoke_rest( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/commit-preflight' );
 	magick_ai_core_smoke_assert( false === (bool) ( $preflight['commit_execution'] ?? true ), 'plan-generated proposal preflight keeps Core execution disabled' );
 	magick_ai_core_smoke_assert( true === (bool) ( $preflight['proposal_item_preflight']['executable'] ?? false ), 'plan-generated proposal preflight marks ready item executable' );
 	magick_ai_core_smoke_assert( '' !== (string) ( $preflight['correlation_id'] ?? '' ), 'plan-generated proposal preflight returns correlation id' );
@@ -996,7 +997,7 @@ function magick_ai_core_smoke_run_governance_proposal( string $ability_id, array
 
 	$created = magick_ai_core_smoke_rest(
 		'POST',
-		'/magick-ai-core/v1/proposals',
+		'/npcink-governance-core/v1/proposals',
 		array(
 			'ability_id' => $ability_id,
 			'title'      => $title . ' ' . $magick_ai_core_smoke_run_id,
@@ -1013,17 +1014,17 @@ function magick_ai_core_smoke_run_governance_proposal( string $ability_id, array
 	magick_ai_core_smoke_assert( '' !== $proposal_id && 'pending' === (string) ( $created['status'] ?? '' ), $ability_id . ' proposal created in pending status' );
 	magick_ai_core_smoke_assert( $ability_id === (string) ( $created['ability_id'] ?? '' ), $ability_id . ' proposal stores the real ability id' );
 
-	$detail = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) );
+	$detail = magick_ai_core_smoke_rest( 'GET', '/npcink-governance-core/v1/proposals/' . rawurlencode( $proposal_id ) );
 	magick_ai_core_smoke_assert( $proposal_id === (string) ( $detail['proposal_id'] ?? '' ), $ability_id . ' proposal detail endpoint returns created proposal' );
 	$detail_timeline = (array) ( $detail['audit_timeline'] ?? array() );
 	magick_ai_core_smoke_assert( count( $detail_timeline ) >= 1, $ability_id . ' proposal detail includes audit timeline' );
 
-	$pending_preflight = magick_ai_core_smoke_rest_result( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/commit-preflight' );
+	$pending_preflight = magick_ai_core_smoke_rest_result( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/commit-preflight' );
 	magick_ai_core_smoke_assert( 409 === (int) $pending_preflight['status'], $ability_id . ' commit preflight fails for pending proposal' );
 
 	$approved = magick_ai_core_smoke_rest(
 		'POST',
-		'/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/approve',
+		'/npcink-governance-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/approve',
 		array(
 			'note' => 'Smoke approval.',
 		)
@@ -1031,7 +1032,7 @@ function magick_ai_core_smoke_run_governance_proposal( string $ability_id, array
 
 	magick_ai_core_smoke_assert( 'approved' === (string) ( $approved['status'] ?? '' ), $ability_id . ' proposal approved through REST' );
 
-	$preflight = magick_ai_core_smoke_rest( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/commit-preflight' );
+	$preflight = magick_ai_core_smoke_rest( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/commit-preflight' );
 	magick_ai_core_smoke_assert( false === (bool) ( $preflight['commit_execution'] ?? true ), $ability_id . ' commit preflight does not execute ability' );
 	magick_ai_core_smoke_assert( true === (bool) ( $preflight['approval_context']['approval_commit_authorized'] ?? false ), $ability_id . ' commit preflight returns approval authorization context' );
 	magick_ai_core_smoke_assert( 'approved_commit' === (string) ( $preflight['approval_context']['confirmation_state'] ?? '' ), $ability_id . ' commit preflight returns approved_commit state' );
@@ -1055,7 +1056,25 @@ function magick_ai_core_smoke_run_governance_proposal( string $ability_id, array
 
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-$core_plugin      = 'magick-ai-core/magick-ai-core.php';
+$core_plugins = array(
+	'npcink-governance-core/npcink-governance-core.php',
+	'magick-ai-core/npcink-governance-core.php',
+);
+$core_plugin  = '';
+foreach ( $core_plugins as $candidate_plugin ) {
+	if ( is_plugin_active( $candidate_plugin ) ) {
+		$core_plugin = $candidate_plugin;
+		break;
+	}
+}
+if ( '' === $core_plugin ) {
+	foreach ( $core_plugins as $candidate_plugin ) {
+		if ( file_exists( WP_PLUGIN_DIR . '/' . $candidate_plugin ) ) {
+			$core_plugin = $candidate_plugin;
+			break;
+		}
+	}
+}
 $abilities_plugins = array(
 	'magick-ai-abilities/magick-ai-abilities.php',
 	'magick-ai-abilities/npcink-abilities-toolkit.php',
@@ -1082,12 +1101,17 @@ if ( ! is_plugin_active( $abilities_plugin ) ) {
 	magick_ai_core_smoke_assert( ! is_wp_error( $result ), 'magick-ai-abilities activated' );
 }
 
+magick_ai_core_smoke_assert( '' !== $core_plugin, 'npcink-governance-core plugin file found' );
 if ( is_plugin_active( $core_plugin ) ) {
 	deactivate_plugins( $core_plugin, true );
 }
 
 $activated = activate_plugin( $core_plugin );
-magick_ai_core_smoke_assert( ! is_wp_error( $activated ) && is_plugin_active( $core_plugin ), 'magick-ai-core activated' );
+magick_ai_core_smoke_assert( ! is_wp_error( $activated ) && is_plugin_active( $core_plugin ), 'npcink-governance-core activated' );
+\MagickAI\Core\Plugin::instance()->register();
+
+$magick_ai_core_smoke_initial_policy_mode = get_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::MODE_MANUAL );
+update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::MODE_MANUAL, false );
 
 global $wpdb;
 
@@ -1106,7 +1130,7 @@ magick_ai_core_smoke_assert( $audit_table === $audit_exists, 'audit table exists
 magick_ai_core_smoke_assert( $app_table === $app_exists, 'app key table exists' );
 magick_ai_core_smoke_assert( $rate_table === $rate_exists, 'app rate limit table exists' );
 
-$capabilities = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/capabilities' );
+$capabilities = magick_ai_core_smoke_rest( 'GET', '/npcink-governance-core/v1/capabilities' );
 $items        = is_array( $capabilities['items'] ?? null ) ? $capabilities['items'] : array();
 
 magick_ai_core_smoke_assert( true === (bool) ( $capabilities['available'] ?? false ), 'capability source is available' );
@@ -1115,7 +1139,7 @@ magick_ai_core_smoke_assert( count( $items ) > 0, 'capabilities endpoint returns
 
 $app = magick_ai_core_smoke_rest(
 	'POST',
-	'/magick-ai-core/v1/apps',
+	'/npcink-governance-core/v1/apps',
 	array(
 		'app_label'           => 'OpenClaw smoke adapter ' . $magick_ai_core_smoke_run_id,
 		'caller_type'         => 'mcp_adapter',
@@ -1131,17 +1155,17 @@ magick_ai_core_smoke_assert( '' !== $app_id && '' !== $key_id, 'app key creation
 magick_ai_core_smoke_assert( in_array( 'proposals:create', (array) ( $app['scopes'] ?? array() ), true ), 'app key defaults include proposal creation scope' );
 magick_ai_core_smoke_assert( ! array_key_exists( 'secret_hash', $app ), 'app key creation response does not expose secret hash' );
 
-$apps_list = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/apps', array( 'limit' => 5 ) );
+$apps_list = magick_ai_core_smoke_rest( 'GET', '/npcink-governance-core/v1/apps', array( 'limit' => 5 ) );
 $apps_json = wp_json_encode( $apps_list );
 magick_ai_core_smoke_assert( is_string( $apps_json ) && false === strpos( $apps_json, (string) ( $app['secret'] ?? 'unreachable-secret' ) ), 'app list does not expose raw app secret' );
 magick_ai_core_smoke_assert( is_string( $apps_json ) && false === strpos( $apps_json, 'secret_hash' ), 'app list does not expose secret hash' );
 
-$app_capabilities = magick_ai_core_smoke_rest_as_app( 'GET', '/magick-ai-core/v1/capabilities', $app_token );
+$app_capabilities = magick_ai_core_smoke_rest_as_app( 'GET', '/npcink-governance-core/v1/capabilities', $app_token );
 magick_ai_core_smoke_assert( count( (array) ( $app_capabilities['items'] ?? array() ) ) > 0, 'app-authenticated capabilities read succeeds' );
 
 $revoked_app = magick_ai_core_smoke_rest(
 	'POST',
-	'/magick-ai-core/v1/apps',
+	'/npcink-governance-core/v1/apps',
 	array(
 		'app_label'           => 'OpenClaw revoked smoke ' . $magick_ai_core_smoke_run_id,
 		'caller_type'         => 'mcp_adapter',
@@ -1154,7 +1178,7 @@ $revoked_token = (string) ( $revoked_app['token'] ?? '' );
 $revoked_key   = (string) ( $revoked_app['key_id'] ?? '' );
 $app_keys      = new \MagickAI\Core\Security\App_Key_Repository();
 magick_ai_core_smoke_assert( $app_keys->revoke_by_key_id( $revoked_key ), 'app key repository revokes active key' );
-$revoked_result = magick_ai_core_smoke_rest_result_as_app( 'GET', '/magick-ai-core/v1/capabilities', $revoked_token );
+$revoked_result = magick_ai_core_smoke_rest_result_as_app( 'GET', '/npcink-governance-core/v1/capabilities', $revoked_token );
 magick_ai_core_smoke_assert( 401 === (int) $revoked_result['status'], 'revoked app key returns 401' );
 
 $items_by_id                     = array();
@@ -1219,7 +1243,7 @@ foreach ( $workflow_cases as $case_id => $case ) {
 
 $planning_label = magick_ai_core_smoke_rest_result(
 	'POST',
-	'/magick-ai-core/v1/proposals',
+	'/npcink-governance-core/v1/proposals',
 	array(
 		'ability_id' => 'content/draft-preview',
 		'title'      => 'Planning label should not be accepted ' . $magick_ai_core_smoke_run_id,
@@ -1429,7 +1453,7 @@ magick_ai_core_smoke_approve_and_preflight_plan_proposal( (string) ( $dry_guarde
 
 $local_guarded_app = magick_ai_core_smoke_rest(
 	'POST',
-	'/magick-ai-core/v1/apps',
+	'/npcink-governance-core/v1/apps',
 	array(
 		'app_label'           => 'Local Guarded Approval Smoke ' . $magick_ai_core_smoke_run_id,
 		'caller_type'         => 'trusted_adapter',
@@ -1467,11 +1491,11 @@ magick_ai_core_smoke_assert( 'approved' === (string) ( $local_guarded_proposal['
 magick_ai_core_smoke_assert( 'auto_approved' === (string) ( $local_guarded_proposal['policy_decision'] ?? '' ), 'local guarded cleanup records auto-approved decision' );
 magick_ai_core_smoke_assert( 'trusted_local' === (string) ( $local_guarded_proposal['policy_profile'] ?? '' ), 'local guarded cleanup records trusted_local profile' );
 magick_ai_core_smoke_assert( in_array( 'local_guarded_cleanup_auto_approved', (array) ( $local_guarded_proposal['policy_reasons'] ?? array() ), true ), 'local guarded cleanup records auto-approved reason' );
-$local_guarded_preflight = magick_ai_core_smoke_rest_as_app( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $local_guarded_proposal_id ) . '/commit-preflight', $local_guarded_token );
+$local_guarded_preflight = magick_ai_core_smoke_rest_as_app( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( $local_guarded_proposal_id ) . '/commit-preflight', $local_guarded_token );
 magick_ai_core_smoke_assert( true === (bool) ( $local_guarded_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'local guarded cleanup preflight passes without manual approval' );
 $local_guarded_audit = magick_ai_core_smoke_rest_as_app(
 	'GET',
-	'/magick-ai-core/v1/audit',
+	'/npcink-governance-core/v1/audit',
 	$local_guarded_token,
 	array(
 		'proposal_id' => $local_guarded_proposal_id,
@@ -1597,12 +1621,12 @@ magick_ai_core_smoke_assert_plan_proposal_shape( $requires_input_proposal, 'magi
 magick_ai_core_smoke_assert( array( 'title' ) === (array) ( $requires_input_proposal['preview']['needs_input'] ?? array() ), 'requires-input proposal preserves missing field list' );
 magick_ai_core_smoke_rest(
 	'POST',
-	'/magick-ai-core/v1/proposals/' . rawurlencode( (string) ( $requires_input_proposal['proposal_id'] ?? '' ) ) . '/approve',
+	'/npcink-governance-core/v1/proposals/' . rawurlencode( (string) ( $requires_input_proposal['proposal_id'] ?? '' ) ) . '/approve',
 	array(
 		'note' => 'Approve blocked proposal for preflight smoke.',
 	)
 );
-$requires_input_preflight = magick_ai_core_smoke_rest_result( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( (string) ( $requires_input_proposal['proposal_id'] ?? '' ) ) . '/commit-preflight' );
+$requires_input_preflight = magick_ai_core_smoke_rest_result( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( (string) ( $requires_input_proposal['proposal_id'] ?? '' ) ) . '/commit-preflight' );
 magick_ai_core_smoke_assert( 409 === (int) $requires_input_preflight['status'], 'requires-input proposal cannot enter committable state' );
 magick_ai_core_smoke_assert( false === (bool) ( $requires_input_preflight['data']['data']['proposal_item_preflight']['executable'] ?? true ), 'requires-input preflight marks proposal item blocked' );
 magick_ai_core_smoke_assert( array( 'title' ) === (array) ( $requires_input_preflight['data']['data']['proposal_item_preflight']['needs_input'] ?? array() ), 'requires-input preflight reports fields needing human input' );
@@ -1703,7 +1727,7 @@ $app_proposal_payload = array(
 );
 $app_created = magick_ai_core_smoke_rest_as_app(
 	'POST',
-	'/magick-ai-core/v1/proposals',
+	'/npcink-governance-core/v1/proposals',
 	$app_token,
 	$app_proposal_payload
 );
@@ -1712,24 +1736,24 @@ magick_ai_core_smoke_assert( '' !== $app_proposal_id, 'app-authenticated proposa
 magick_ai_core_smoke_assert( $app_id === (string) ( $app_created['caller']['auth']['app_id'] ?? '' ), 'app-authenticated proposal stores app attribution' );
 magick_ai_core_smoke_assert( 'proposals:create' === (string) ( $app_created['caller']['auth']['scope'] ?? '' ), 'app-authenticated proposal stores scope attribution' );
 magick_ai_core_smoke_assert( 'allowed' === (string) ( $app_created['caller']['auth']['scope_decision'] ?? '' ), 'app-authenticated proposal stores allowed scope decision' );
-$app_duplicate = magick_ai_core_smoke_rest_result_as_app( 'POST', '/magick-ai-core/v1/proposals', $app_token, $app_proposal_payload );
+$app_duplicate = magick_ai_core_smoke_rest_result_as_app( 'POST', '/npcink-governance-core/v1/proposals', $app_token, $app_proposal_payload );
 magick_ai_core_smoke_assert( 200 === (int) $app_duplicate['status'], 'duplicate app proposal returns existing pending proposal with HTTP 200' );
 $app_duplicate_data = is_array( $app_duplicate['data'] ?? null ) ? $app_duplicate['data'] : array();
 magick_ai_core_smoke_assert( $app_proposal_id === (string) ( $app_duplicate_data['proposal_id'] ?? '' ), 'duplicate app proposal reuses the existing pending proposal id' );
 magick_ai_core_smoke_assert( true === (bool) ( $app_duplicate_data['deduplicated'] ?? false ), 'duplicate app proposal response is marked deduplicated' );
 
-$app_approve = magick_ai_core_smoke_rest_result_as_app( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $app_proposal_id ) . '/approve', $app_token );
+$app_approve = magick_ai_core_smoke_rest_result_as_app( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( $app_proposal_id ) . '/approve', $app_token );
 magick_ai_core_smoke_assert( 403 === (int) $app_approve['status'], 'app-authenticated approval is denied without approval scope' );
 
 magick_ai_core_smoke_rest(
 	'POST',
-	'/magick-ai-core/v1/proposals/' . rawurlencode( $app_proposal_id ) . '/approve',
+	'/npcink-governance-core/v1/proposals/' . rawurlencode( $app_proposal_id ) . '/approve',
 	array(
 		'note' => 'Admin approval for app-authenticated proposal.',
 	)
 );
 
-$app_preflight = magick_ai_core_smoke_rest_as_app( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $app_proposal_id ) . '/commit-preflight', $app_token );
+$app_preflight = magick_ai_core_smoke_rest_as_app( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( $app_proposal_id ) . '/commit-preflight', $app_token );
 magick_ai_core_smoke_assert( false === (bool) ( $app_preflight['commit_execution'] ?? true ), 'app-authenticated commit preflight does not execute ability' );
 magick_ai_core_smoke_assert( true === (bool) ( $app_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'app-authenticated commit preflight returns approval context' );
 magick_ai_core_smoke_assert( '' !== (string) ( $app_preflight['correlation_id'] ?? '' ), 'app-authenticated commit preflight returns correlation id' );
@@ -1740,7 +1764,7 @@ magick_ai_core_smoke_assert( false === (bool) ( $app_preflight['execution_handof
 
 $quota_app = magick_ai_core_smoke_rest(
 	'POST',
-	'/magick-ai-core/v1/apps',
+	'/npcink-governance-core/v1/apps',
 	array(
 		'app_label'           => 'OpenClaw pending quota smoke ' . $magick_ai_core_smoke_run_id,
 		'scopes'              => array( 'proposals:create' ),
@@ -1752,7 +1776,7 @@ $quota_token = (string) ( $quota_app['token'] ?? '' );
 for ( $quota_index = 1; $quota_index <= 20; ++$quota_index ) {
 	magick_ai_core_smoke_rest_as_app(
 		'POST',
-		'/magick-ai-core/v1/proposals',
+		'/npcink-governance-core/v1/proposals',
 		$quota_token,
 		array(
 			'ability_id' => 'magick-ai/create-draft',
@@ -1774,7 +1798,7 @@ for ( $quota_index = 1; $quota_index <= 20; ++$quota_index ) {
 }
 $quota_blocked = magick_ai_core_smoke_rest_result_as_app(
 	'POST',
-	'/magick-ai-core/v1/proposals',
+	'/npcink-governance-core/v1/proposals',
 	$quota_token,
 	array(
 		'ability_id' => 'magick-ai/create-draft',
@@ -1797,12 +1821,12 @@ magick_ai_core_smoke_assert( 429 === (int) $quota_blocked['status'], 'app pendin
 $quota_blocked_data = is_array( $quota_blocked['data'] ?? null ) ? $quota_blocked['data'] : array();
 magick_ai_core_smoke_assert( 'magick_ai_core_pending_proposal_quota_exceeded' === (string) ( $quota_blocked_data['code'] ?? '' ), 'pending proposal quota returns stable error code' );
 
-$app_audit_denied = magick_ai_core_smoke_rest_result_as_app( 'GET', '/magick-ai-core/v1/audit', $app_token, array( 'limit' => 5 ) );
+$app_audit_denied = magick_ai_core_smoke_rest_result_as_app( 'GET', '/npcink-governance-core/v1/audit', $app_token, array( 'limit' => 5 ) );
 magick_ai_core_smoke_assert( 403 === (int) $app_audit_denied['status'], 'app-authenticated audit read is denied without audit scope' );
 
 $trusted_adapter_app = magick_ai_core_smoke_rest(
 	'POST',
-	'/magick-ai-core/v1/apps',
+	'/npcink-governance-core/v1/apps',
 	array(
 		'app_label'           => 'Trusted Adapter approve smoke ' . $magick_ai_core_smoke_run_id,
 		'caller_type'         => 'trusted_adapter',
@@ -1817,7 +1841,7 @@ magick_ai_core_smoke_assert( '' !== $trusted_adapter_token && '' !== $trusted_ad
 
 $trusted_created = magick_ai_core_smoke_rest_as_app(
 	'POST',
-	'/magick-ai-core/v1/proposals',
+	'/npcink-governance-core/v1/proposals',
 	$trusted_adapter_token,
 	array(
 		'ability_id' => 'magick-ai/create-draft',
@@ -1843,7 +1867,7 @@ magick_ai_core_smoke_assert( '' !== $trusted_proposal_id, 'trusted Adapter app c
 
 $trusted_approved = magick_ai_core_smoke_rest_as_app(
 	'POST',
-	'/magick-ai-core/v1/proposals/' . rawurlencode( $trusted_proposal_id ) . '/approve',
+	'/npcink-governance-core/v1/proposals/' . rawurlencode( $trusted_proposal_id ) . '/approve',
 	$trusted_adapter_token,
 	array(
 		'note' => 'Trusted Adapter approve-and-execute smoke approval.',
@@ -1851,7 +1875,7 @@ $trusted_approved = magick_ai_core_smoke_rest_as_app(
 );
 magick_ai_core_smoke_assert( 'approved' === (string) ( $trusted_approved['status'] ?? '' ), 'trusted Adapter app approves proposal with approval scope' );
 
-$trusted_preflight = magick_ai_core_smoke_rest_as_app( 'POST', '/magick-ai-core/v1/proposals/' . rawurlencode( $trusted_proposal_id ) . '/commit-preflight', $trusted_adapter_token );
+$trusted_preflight = magick_ai_core_smoke_rest_as_app( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( $trusted_proposal_id ) . '/commit-preflight', $trusted_adapter_token );
 magick_ai_core_smoke_assert( true === (bool) ( $trusted_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'trusted Adapter app receives approval context after approval' );
 magick_ai_core_smoke_assert( 'adapter_after_core_preflight' === (string) ( $trusted_preflight['execution_handoff']['executor'] ?? '' ), 'trusted Adapter preflight returns execution handoff' );
 magick_ai_core_smoke_assert( 'magick-ai/create-draft' === (string) ( $trusted_preflight['execution_handoff']['ability_id'] ?? '' ), 'trusted Adapter execution handoff includes target ability id' );
@@ -1862,7 +1886,7 @@ magick_ai_core_smoke_assert( false === (bool) ( $trusted_preflight['execution_ha
 
 $rate_app = magick_ai_core_smoke_rest(
 	'POST',
-	'/magick-ai-core/v1/apps',
+	'/npcink-governance-core/v1/apps',
 	array(
 		'app_label'           => 'OpenClaw rate smoke ' . $magick_ai_core_smoke_run_id,
 		'caller_type'         => 'mcp_adapter',
@@ -1872,16 +1896,16 @@ $rate_app = magick_ai_core_smoke_rest(
 	)
 );
 $rate_token = (string) ( $rate_app['token'] ?? '' );
-magick_ai_core_smoke_rest_as_app( 'GET', '/magick-ai-core/v1/capabilities', $rate_token );
-$rate_limited = magick_ai_core_smoke_rest_result_as_app( 'GET', '/magick-ai-core/v1/capabilities', $rate_token );
+magick_ai_core_smoke_rest_as_app( 'GET', '/npcink-governance-core/v1/capabilities', $rate_token );
+$rate_limited = magick_ai_core_smoke_rest_result_as_app( 'GET', '/npcink-governance-core/v1/capabilities', $rate_token );
 magick_ai_core_smoke_assert( 429 === (int) $rate_limited['status'], 'app rate limit returns 429 after fixed window is exhausted' );
 
-$listed = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/proposals', array( 'limit' => 10 ) );
+$listed = magick_ai_core_smoke_rest( 'GET', '/npcink-governance-core/v1/proposals', array( 'limit' => 10 ) );
 magick_ai_core_smoke_assert( count( (array) ( $listed['items'] ?? array() ) ) > 0, 'proposal list endpoint returns proposals' );
 
 $stale = magick_ai_core_smoke_rest(
 	'POST',
-	'/magick-ai-core/v1/proposals',
+	'/npcink-governance-core/v1/proposals',
 	array(
 		'ability_id' => 'magick-ai/create-draft',
 		'title'      => 'Smoke stale proposal ' . $magick_ai_core_smoke_run_id,
@@ -1906,7 +1930,7 @@ $wpdb->update(
 	array( '%s' )
 );
 
-$expired_detail = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/proposals/' . rawurlencode( $stale_id ) );
+$expired_detail = magick_ai_core_smoke_rest( 'GET', '/npcink-governance-core/v1/proposals/' . rawurlencode( $stale_id ) );
 magick_ai_core_smoke_assert( 'expired' === (string) ( $expired_detail['status'] ?? '' ), 'stale pending proposal expires before detail response' );
 
 $archived = $proposal_service->archive( $stale_id, array( 'source' => 'smoke' ) );
@@ -1915,12 +1939,12 @@ magick_ai_core_smoke_assert( is_array( $archived ) && 'archived' === (string) ( 
 $reopened = $proposal_service->reopen( $stale_id, array( 'source' => 'smoke' ) );
 magick_ai_core_smoke_assert( is_array( $reopened ) && 'pending' === (string) ( $reopened['status'] ?? '' ), 'archived proposal can be reopened for review' );
 
-$missing_detail = magick_ai_core_smoke_rest_result( 'GET', '/magick-ai-core/v1/proposals/missing-smoke-proposal' );
+$missing_detail = magick_ai_core_smoke_rest_result( 'GET', '/npcink-governance-core/v1/proposals/missing-smoke-proposal' );
 magick_ai_core_smoke_assert( 404 === (int) $missing_detail['status'], 'proposal detail endpoint returns 404 for missing proposal' );
 
 $legacy_preflight = magick_ai_core_smoke_rest_result(
 	'POST',
-	'/magick-ai-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/commit-preflight',
+	'/npcink-governance-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/commit-preflight',
 	array(
 		'confirm_token' => 'legacy',
 	)
@@ -1929,7 +1953,7 @@ magick_ai_core_smoke_assert( 400 === (int) $legacy_preflight['status'], 'commit 
 
 $second = magick_ai_core_smoke_rest(
 	'POST',
-	'/magick-ai-core/v1/proposals',
+	'/npcink-governance-core/v1/proposals',
 	array(
 		'ability_id' => 'magick-ai/create-draft',
 		'title'      => 'Smoke rejection proposal ' . $magick_ai_core_smoke_run_id,
@@ -1942,7 +1966,7 @@ magick_ai_core_smoke_assert( '' !== $reject_id, 'second proposal created for rej
 
 $rejected = magick_ai_core_smoke_rest(
 	'POST',
-	'/magick-ai-core/v1/proposals/' . rawurlencode( $reject_id ) . '/reject',
+	'/npcink-governance-core/v1/proposals/' . rawurlencode( $reject_id ) . '/reject',
 	array(
 		'note' => 'Smoke rejection.',
 	)
@@ -1950,12 +1974,12 @@ $rejected = magick_ai_core_smoke_rest(
 
 magick_ai_core_smoke_assert( 'rejected' === (string) ( $rejected['status'] ?? '' ), 'proposal rejected through REST' );
 
-$audit = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/audit', array( 'limit' => 20 ) );
+$audit = magick_ai_core_smoke_rest( 'GET', '/npcink-governance-core/v1/audit', array( 'limit' => 20 ) );
 magick_ai_core_smoke_assert( count( (array) ( $audit['items'] ?? array() ) ) >= 3, 'audit endpoint returns governance events' );
 
 $proposal_audit = magick_ai_core_smoke_rest(
 	'GET',
-	'/magick-ai-core/v1/audit',
+	'/npcink-governance-core/v1/audit',
 	array(
 		'proposal_id' => $proposal_id,
 		'limit'       => 20,
@@ -1969,7 +1993,7 @@ foreach ( $proposal_audit_items as $item ) {
 
 $taxonomy_proposal_audit = magick_ai_core_smoke_rest(
 	'GET',
-	'/magick-ai-core/v1/audit',
+	'/npcink-governance-core/v1/audit',
 	array(
 		'proposal_id' => $taxonomy_proposal_id,
 		'limit'       => 20,
@@ -1986,7 +2010,7 @@ foreach ( $taxonomy_audit_items as $item ) {
 }
 magick_ai_core_smoke_assert( $found_taxonomy_preflight, 'taxonomy terms audit correlates commit preflight with set-post-terms' );
 
-$taxonomy_timeline_detail = magick_ai_core_smoke_rest( 'GET', '/magick-ai-core/v1/proposals/' . rawurlencode( $taxonomy_proposal_id ) );
+$taxonomy_timeline_detail = magick_ai_core_smoke_rest( 'GET', '/npcink-governance-core/v1/proposals/' . rawurlencode( $taxonomy_proposal_id ) );
 $taxonomy_timeline_items  = (array) ( $taxonomy_timeline_detail['audit_timeline'] ?? array() );
 magick_ai_core_smoke_assert( count( $taxonomy_timeline_items ) >= 4, 'taxonomy proposal detail includes audit timeline through preflight' );
 
@@ -1995,7 +2019,7 @@ magick_ai_core_smoke_assert( '' !== $taxonomy_correlation_id, 'taxonomy terms pr
 
 $ability_audit = magick_ai_core_smoke_rest(
 	'GET',
-	'/magick-ai-core/v1/audit',
+	'/npcink-governance-core/v1/audit',
 	array(
 		'ability_id' => 'magick-ai/set-post-terms',
 		'limit'      => 20,
@@ -2009,7 +2033,7 @@ foreach ( $ability_audit_items as $item ) {
 
 $correlation_audit = magick_ai_core_smoke_rest(
 	'GET',
-	'/magick-ai-core/v1/audit',
+	'/npcink-governance-core/v1/audit',
 	array(
 		'correlation_id' => $taxonomy_correlation_id,
 		'limit'          => 20,
@@ -2023,7 +2047,7 @@ foreach ( $correlation_audit_items as $item ) {
 
 $app_proposal_audit = magick_ai_core_smoke_rest(
 	'GET',
-	'/magick-ai-core/v1/audit',
+	'/npcink-governance-core/v1/audit',
 	array(
 		'proposal_id' => $app_proposal_id,
 		'limit'       => 20,
@@ -2040,7 +2064,7 @@ magick_ai_core_smoke_assert( $found_app_attribution, 'app-authenticated audit ev
 
 $trusted_proposal_audit = magick_ai_core_smoke_rest(
 	'GET',
-	'/magick-ai-core/v1/audit',
+	'/npcink-governance-core/v1/audit',
 	array(
 		'proposal_id' => $trusted_proposal_id,
 		'limit'       => 20,
@@ -2068,7 +2092,7 @@ magick_ai_core_smoke_assert( $found_trusted_preflight, 'trusted Adapter prefligh
 
 $app_id_audit = magick_ai_core_smoke_rest(
 	'GET',
-	'/magick-ai-core/v1/audit',
+	'/npcink-governance-core/v1/audit',
 	array(
 		'app_id' => $app_id,
 		'limit'  => 20,
@@ -2084,7 +2108,7 @@ foreach ( $app_id_audit_items as $item ) {
 
 $key_id_audit = magick_ai_core_smoke_rest(
 	'GET',
-	'/magick-ai-core/v1/audit',
+	'/npcink-governance-core/v1/audit',
 	array(
 		'key_id' => $key_id,
 		'limit'  => 20,
@@ -2100,7 +2124,7 @@ foreach ( $key_id_audit_items as $item ) {
 
 $caller_type_audit = magick_ai_core_smoke_rest(
 	'GET',
-	'/magick-ai-core/v1/audit',
+	'/npcink-governance-core/v1/audit',
 	array(
 		'caller_type' => 'mcp_adapter',
 		'limit'       => 20,
@@ -2116,7 +2140,7 @@ foreach ( $caller_type_audit_items as $item ) {
 
 $scope_denied_audit = magick_ai_core_smoke_rest(
 	'GET',
-	'/magick-ai-core/v1/audit',
+	'/npcink-governance-core/v1/audit',
 	array(
 		'event_name' => 'app.scope_denied',
 		'limit'      => 20,
@@ -2133,7 +2157,7 @@ magick_ai_core_smoke_assert( $found_denied_app_decision, 'app scope denial audit
 
 $rate_limited_audit = magick_ai_core_smoke_rest(
 	'GET',
-	'/magick-ai-core/v1/audit',
+	'/npcink-governance-core/v1/audit',
 	array(
 		'event_name' => 'app.rate_limited',
 		'limit'      => 20,
@@ -2150,7 +2174,7 @@ magick_ai_core_smoke_assert( $found_rate_limited_decision, 'app rate-limit audit
 
 $preflight_audit = magick_ai_core_smoke_rest(
 	'GET',
-	'/magick-ai-core/v1/audit',
+	'/npcink-governance-core/v1/audit',
 	array(
 		'event_name' => 'commit.preflighted',
 		'limit'      => 20,
@@ -2177,4 +2201,4 @@ if ( ! magick_ai_core_smoke_should_purge_governance_records() ) {
 	magick_ai_core_smoke_assert( is_array( $main_app_key_after ) && 'revoked' === (string) ( $main_app_key_after['status'] ?? '' ), 'smoke app key fixture is revoked after smoke' );
 }
 
-echo "magick-ai-core WordPress smoke: ok\n";
+echo "npcink-governance-core WordPress smoke: ok\n";

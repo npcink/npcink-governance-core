@@ -2,8 +2,8 @@
 
 Status: active for MVP.
 
-All MVP routes use the namespace `magick-ai-core/v1`. Routes accept either a
-WordPress administrator with `manage_options` or a scoped Magick AI Core app key
+All MVP routes use the namespace `npcink-governance-core/v1`. Routes accept either a
+WordPress administrator with `manage_options` or a scoped Npcink Governance Core app key
 when the route has an app scope listed below.
 
 Agent and MCP adapter entry is governed by

@@ -30,14 +30,14 @@ Core does not own:
 
 ## Required Flow
 
-1. A consumer calls `GET /wp-json/magick-ai-core/v1/capabilities`.
+1. A consumer calls `GET /wp-json/npcink-governance-core/v1/capabilities`.
 2. The consumer locates `magick-ai/approve-comment` and verifies it is a
    write-risk ability with `requires_approval=true`.
 3. The consumer reads the input schema, especially:
    - `comment_id` is required and identifies an existing WordPress comment;
    - `dry_run`, `commit`, and `idempotency_key` are governance controls;
    - default intent remains dry-run / no commit.
-4. The consumer calls `POST /wp-json/magick-ai-core/v1/proposals` with:
+4. The consumer calls `POST /wp-json/npcink-governance-core/v1/proposals` with:
    - `ability_id=magick-ai/approve-comment`;
    - structured `input` containing `comment_id`;
    - a moderation preview containing `comment_id`, current status, target
@@ -45,7 +45,7 @@ Core does not own:
    - non-secret caller attribution.
 5. A WordPress administrator approves or rejects in Core.
 6. After approval, the consumer calls
-   `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/commit-preflight`.
+   `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight`.
 7. Core returns:
    - the stored proposal;
    - the rediscovered capability row;

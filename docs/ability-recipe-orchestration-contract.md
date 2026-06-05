@@ -122,7 +122,7 @@ Cloud must not generate the article or image-source plan.
 | --- | --- | --- |
 | `magick-ai-abilities` | Standard Ability definitions, schemas, callbacks, previews, and permissions. | Product workflow state, Cloud writing, approval truth, or recipe runtime ownership. |
 | `magick-ai-toolbox` | Operator-facing recipe UX, fixed recipe buttons, and artifact rendering. | Core proposal truth, approval truth, final writes, or Cloud writing. |
-| `magick-ai-core` | Proposal records, approval/rejection, commit preflight, plan intake, and audit. | Recipe execution, article generation, queues, or Ability callbacks. |
+| `npcink-governance-core` | Proposal records, approval/rejection, commit preflight, plan intake, and audit. | Recipe execution, article generation, queues, or Ability callbacks. |
 | `magick-ai-adapter` | OpenClaw channel guidance and Core/Abilities relay. | Recipe truth, Cloud writing, approval truth, or arbitrary write proxying. |
 | `magick-ai-cloud-addon` | Cloud connection, health, entitlement, and bounded non-content runtime transport. | Writing generation, recipe truth, proposal truth, or WordPress writes. |
 | `magick-ai-cloud` | Hosted runtime infrastructure for allowed non-writing service tasks. | Article drafting, bulk writing, prompt/preset ownership, publishing, or WordPress write ownership. |

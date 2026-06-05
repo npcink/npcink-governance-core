@@ -34,7 +34,7 @@ Core does not own:
 
 ## Required Flow
 
-1. A consumer calls `GET /wp-json/magick-ai-core/v1/capabilities`.
+1. A consumer calls `GET /wp-json/npcink-governance-core/v1/capabilities`.
 2. The consumer locates:
    - `magick-ai/propose-post-taxonomy-terms` as a read-risk helper with
      `governance_mode=direct_read` and `execution_surface=wp_abilities_rest`;
@@ -44,7 +44,7 @@ Core does not own:
    through Core.
 4. The helper resolves existing terms only and returns a dry-run proposal
    payload targeting `magick-ai/set-post-terms`.
-5. The consumer calls `POST /wp-json/magick-ai-core/v1/proposals` with:
+5. The consumer calls `POST /wp-json/npcink-governance-core/v1/proposals` with:
    - `ability_id=magick-ai/set-post-terms`;
    - `input` from the helper's `proposal.input`;
    - `preview.proposal_helper_ability_id=magick-ai/propose-post-taxonomy-terms`;
@@ -54,7 +54,7 @@ Core does not own:
    - non-secret caller attribution.
 6. A WordPress administrator approves or rejects in Core.
 7. After approval, the consumer calls
-   `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/commit-preflight`.
+   `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight`.
 8. Core returns:
    - the stored proposal;
    - the rediscovered `magick-ai/set-post-terms` capability row;

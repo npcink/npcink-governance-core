@@ -36,7 +36,7 @@ Execution remains outside Core:
 
 ### Proposal Detail
 
-`GET /wp-json/magick-ai-core/v1/proposals/{proposal_id}` returns the proposal
+`GET /wp-json/npcink-governance-core/v1/proposals/{proposal_id}` returns the proposal
 row plus `audit_timeline`, ordered oldest to newest for the selected proposal.
 
 The WordPress admin proposal detail also shows:
@@ -79,7 +79,7 @@ ability or final WordPress mutation.
 
 ### Governance Audit Admin View
 
-`Magick AI -> Core` keeps recent activity on the default review workbench and
+`Npcink -> Core` keeps recent activity on the default review workbench and
 links to a dedicated `Governance Audit` view for full inspection. It is an
 operator view over Core audit records, not an AI request log viewer.
 
@@ -118,7 +118,7 @@ request record. See [AI Provider Log Correlation](ai-provider-log-correlation.md
 
 ### Audit Filters
 
-`GET /wp-json/magick-ai-core/v1/audit` supports these filters:
+`GET /wp-json/npcink-governance-core/v1/audit` supports these filters:
 
 - `proposal_id`;
 - `event_name`;

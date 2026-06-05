@@ -2,7 +2,7 @@
 
 Status: MVP contract.
 
-This document defines the first Magick AI Core governance boundary.
+This document defines the first Npcink Governance Core governance boundary.
 
 ## Operation Lifecycle
 

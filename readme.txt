@@ -1,4 +1,4 @@
-=== Magick AI Core ===
+=== Npcink Governance Core ===
 Contributors: muze233
 Tags: ai, governance, approval, audit, abilities
 Requires at least: 7.0
@@ -12,15 +12,15 @@ WordPress AI operation governance layer for ability intake, proposals, approval 
 
 == Description ==
 
-Magick AI Core is the governance layer for AI-assisted WordPress operations. It discovers ability metadata, records proposals, supports approval and rejection, performs commit preflight, and writes audit evidence.
+Npcink Governance Core is the governance layer for AI-assisted WordPress operations. It discovers ability metadata, records proposals, supports approval and rejection, performs commit preflight, and writes audit evidence.
 
 Core does not generate content, route models, run MCP or workflow runtimes, store provider credentials, proxy ability execution, or perform final WordPress mutations.
 
 == Installation ==
 
-1. Upload the plugin to `wp-content/plugins/magick-ai-core`.
-2. Activate Magick AI Core in WordPress.
-3. Open Magick AI > Core to review governance status, proposals, audit entries, and advanced Core app-key controls.
+1. Upload the plugin to `wp-content/plugins/npcink-governance-core`.
+2. Activate Npcink Governance Core in WordPress.
+3. Open Npcink > Core to review governance status, proposals, audit entries, and advanced Core app-key controls.
 
 == Frequently Asked Questions ==
 
@@ -30,7 +30,7 @@ No. Core records governance proposals and returns commit-preflight context. Fina
 
 = Should OpenClaw connect directly to Core? =
 
-Productized OpenClaw setup should connect through Magick AI Adapter. Direct Core app keys are only for internal governance clients and fallback testing.
+Productized OpenClaw setup should connect through a trusted adapter. Direct Core app keys are only for internal governance clients and fallback testing.
 
 == Changelog ==
 

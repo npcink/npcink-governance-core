@@ -1,6 +1,6 @@
-# Magick AI Core
+# Npcink Governance Core
 
-Magick AI Core is the WordPress AI operation governance layer.
+Npcink Governance Core is the WordPress AI operation governance layer.
 
 It does not generate content, own product workflows, route models, or replace
 the WordPress Abilities API. It discovers agent-callable abilities from
@@ -36,17 +36,17 @@ This plugin does not own:
 
 MVP routes require `manage_options` or a scoped app key where documented.
 
-- `GET /wp-json/magick-ai-core/v1/capabilities`
-- `GET /wp-json/magick-ai-core/v1/apps`
-- `POST /wp-json/magick-ai-core/v1/apps`
-- `GET /wp-json/magick-ai-core/v1/proposals`
-- `GET /wp-json/magick-ai-core/v1/proposals/{proposal_id}`
-- `POST /wp-json/magick-ai-core/v1/proposals`
-- `POST /wp-json/magick-ai-core/v1/proposals/from-plan`
-- `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/approve`
-- `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/reject`
-- `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/commit-preflight`
-- `GET /wp-json/magick-ai-core/v1/audit`
+- `GET /wp-json/npcink-governance-core/v1/capabilities`
+- `GET /wp-json/npcink-governance-core/v1/apps`
+- `POST /wp-json/npcink-governance-core/v1/apps`
+- `GET /wp-json/npcink-governance-core/v1/proposals`
+- `GET /wp-json/npcink-governance-core/v1/proposals/{proposal_id}`
+- `POST /wp-json/npcink-governance-core/v1/proposals`
+- `POST /wp-json/npcink-governance-core/v1/proposals/from-plan`
+- `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/approve`
+- `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/reject`
+- `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight`
+- `GET /wp-json/npcink-governance-core/v1/audit`
 
 The first implementation records proposals, approval/rejection decisions, and
 audit events, and provides commit preflight without executing writes. Final
@@ -194,7 +194,7 @@ not store prompts, responses, token metrics, provider credentials, or provider
 request logs.
 
 For Core governance credentials, WordPress administrators can open the
-collapsed `Advanced Access` entry from `Magick AI -> Core` to create a scoped
+collapsed `Advanced Access` entry from `Npcink -> Core` to create a scoped
 one-time app token and disable leaked or obsolete keys. This screen is a
 governance fallback, not an OpenClaw onboarding surface. Productized OpenClaw
 setup, local TLS client configuration, agent rules, and handoff instructions

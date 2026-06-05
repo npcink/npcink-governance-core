@@ -72,4 +72,8 @@ run_wp() {
 }
 
 run_wp core is-installed >/dev/null
+plugin_link="$WP_PATH/wp-content/plugins/npcink-governance-core"
+if [[ ! -e "$plugin_link" ]]; then
+	ln -s "$ROOT_DIR" "$plugin_link"
+fi
 run_wp eval-file "$ROOT_DIR/tests/smoke-wp.php"

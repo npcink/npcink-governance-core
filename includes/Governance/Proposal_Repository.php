@@ -104,7 +104,7 @@ final class Proposal_Repository {
 		if ( false === $inserted ) {
 			return new WP_Error(
 				'magick_ai_core_proposal_insert_failed',
-				__( 'Proposal could not be stored.', 'magick-ai-core' ),
+				__( 'Proposal could not be stored.', 'npcink-governance-core' ),
 				array( 'status' => 500 )
 			);
 		}

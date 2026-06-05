@@ -1,14 +1,14 @@
 # Product Positioning
 
-Status: active for the new Magick AI Core rebuild.
+Status: active for the new Npcink Governance Core rebuild.
 
-Magick AI Core is the WordPress AI operation governance layer: it lets agents,
+Npcink Governance Core is the WordPress AI operation governance layer: it lets agents,
 tools, and product plugins safely request, review, approve, and audit WordPress
 changes.
 
 ## One-Sentence Positioning
 
-Magick AI Core governs AI-assisted WordPress operations.
+Npcink Governance Core governs AI-assisted WordPress operations.
 
 ## Core Jobs
 
@@ -20,7 +20,7 @@ Magick AI Core governs AI-assisted WordPress operations.
 
 ## Non-Goals
 
-Magick AI Core does not own:
+Npcink Governance Core does not own:
 
 - content generation products;
 - article, media, comment, SEO, or toolbox workflows;
@@ -34,7 +34,7 @@ Magick AI Core does not own:
 
 | Project | Owns |
 | --- | --- |
-| `magick-ai-core` | Governance, proposal records, approval boundaries, audit logs, and host policy. |
+| `npcink-governance-core` | Governance, proposal records, approval boundaries, audit logs, and host policy. |
 | `magick-ai-abilities` | Reusable WordPress Abilities API definitions, schemas, callbacks, and dry-run previews. |
 | `magick-ai-content-assistant` | Article, media, and comment product UX that consumes Core governance. |
 | Toolbox or market-specific product plugins | Domestic environment fixes, search/index operations, WeChat integrations, CDN/storage workflows, compliance helpers, and other product UX that consumes Core governance. |

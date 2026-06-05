@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Exposes read-only capability intake.
  */
 final class Capabilities_Controller {
-	const NAMESPACE = 'magick-ai-core/v1';
+	const NAMESPACE = 'npcink-governance-core/v1';
 
 	/**
 	 * Ability adapter.

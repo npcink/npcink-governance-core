@@ -2,7 +2,7 @@
 
 Status: active for MVP.
 
-Magick AI Core currently owns four custom tables. They are created during plugin
+Npcink Governance Core currently owns four custom tables. They are created during plugin
 activation with `dbDelta()`.
 
 ## Table: `{prefix}magick_ai_core_proposals`

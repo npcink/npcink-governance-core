@@ -3,7 +3,7 @@
 /**
  * Minimal external governance adapter example for OpenClaw-like clients.
  *
- * This script calls Magick AI Core REST governance routes. It does not expose
+ * This script calls Npcink Governance Core REST governance routes. It does not expose
  * MCP tools, execute WordPress abilities, approve proposals, or route natural
  * language tasks.
  *
@@ -33,16 +33,16 @@ Usage:
   php openclaw-governance-adapter.php commit-preflight --proposal=<proposal_id>
 
 Required environment:
-  MAGICK_AI_CORE_BASE_URL
-  MAGICK_AI_CORE_APP_TOKEN
+  NPCINK_GOVERNANCE_CORE_BASE_URL
+  NPCINK_GOVERNANCE_CORE_APP_TOKEN
 
 Optional local TLS environment:
-  MAGICK_AI_CORE_CA_BUNDLE=/path/to/local-ca.pem
-  MAGICK_AI_CORE_INSECURE_SSL=true
+  NPCINK_GOVERNANCE_CORE_CA_BUNDLE=/path/to/local-ca.pem
+  NPCINK_GOVERNANCE_CORE_INSECURE_SSL=true
 
 Fallback PoC environment for manage_options user auth:
-  MAGICK_AI_CORE_USER
-  MAGICK_AI_CORE_APPLICATION_PASSWORD
+  NPCINK_GOVERNANCE_CORE_USER
+  NPCINK_GOVERNANCE_CORE_APPLICATION_PASSWORD
 
 Notes:
   - Use real ability ids, not planning labels such as content/draft-preview.
@@ -177,24 +177,24 @@ function magick_ai_core_adapter_is_local_url( string $url ): bool {
  * @return void
  */
 function magick_ai_core_adapter_configure_tls( $curl, string $base_url ): void {
-	$ca_bundle = getenv( 'MAGICK_AI_CORE_CA_BUNDLE' );
+	$ca_bundle = getenv( 'NPCINK_GOVERNANCE_CORE_CA_BUNDLE' );
 	if ( is_string( $ca_bundle ) && '' !== trim( $ca_bundle ) ) {
 		$ca_bundle = trim( $ca_bundle );
 		if ( ! is_readable( $ca_bundle ) ) {
-			magick_ai_core_adapter_fail( 'MAGICK_AI_CORE_CA_BUNDLE is not readable: ' . $ca_bundle, 2 );
+			magick_ai_core_adapter_fail( 'NPCINK_GOVERNANCE_CORE_CA_BUNDLE is not readable: ' . $ca_bundle, 2 );
 		}
 
 		curl_setopt( $curl, CURLOPT_CAINFO, $ca_bundle );
 		return;
 	}
 
-	$insecure = getenv( 'MAGICK_AI_CORE_INSECURE_SSL' );
+	$insecure = getenv( 'NPCINK_GOVERNANCE_CORE_INSECURE_SSL' );
 	if ( 'true' !== strtolower( trim( is_string( $insecure ) ? $insecure : '' ) ) ) {
 		return;
 	}
 
 	if ( ! magick_ai_core_adapter_is_local_url( $base_url ) ) {
-		magick_ai_core_adapter_fail( 'MAGICK_AI_CORE_INSECURE_SSL=true is only allowed for localhost, 127.0.0.1, ::1, or .local hosts.', 2 );
+		magick_ai_core_adapter_fail( 'NPCINK_GOVERNANCE_CORE_INSECURE_SSL=true is only allowed for localhost, 127.0.0.1, ::1, or .local hosts.', 2 );
 	}
 
 	curl_setopt( $curl, CURLOPT_SSL_VERIFYPEER, false );
@@ -214,12 +214,12 @@ function magick_ai_core_adapter_request( string $method, string $path, array $bo
 		magick_ai_core_adapter_fail( 'PHP cURL extension is required for this example adapter.', 2 );
 	}
 
-	$base_url = rtrim( magick_ai_core_adapter_env( 'MAGICK_AI_CORE_BASE_URL' ), '/' );
-	$app_token = getenv( 'MAGICK_AI_CORE_APP_TOKEN' );
-	$timeout  = getenv( 'MAGICK_AI_CORE_TIMEOUT' );
+	$base_url = rtrim( magick_ai_core_adapter_env( 'NPCINK_GOVERNANCE_CORE_BASE_URL' ), '/' );
+	$app_token = getenv( 'NPCINK_GOVERNANCE_CORE_APP_TOKEN' );
+	$timeout  = getenv( 'NPCINK_GOVERNANCE_CORE_TIMEOUT' );
 	$timeout  = is_string( $timeout ) && '' !== trim( $timeout ) ? max( 1, (int) $timeout ) : 30;
 
-	$url = $base_url . '/wp-json/magick-ai-core/v1/' . ltrim( $path, '/' );
+	$url = $base_url . '/wp-json/npcink-governance-core/v1/' . ltrim( $path, '/' );
 
 	$headers = array(
 		'Accept: application/json',
@@ -228,8 +228,8 @@ function magick_ai_core_adapter_request( string $method, string $path, array $bo
 	if ( is_string( $app_token ) && '' !== trim( $app_token ) ) {
 		$headers[] = 'Authorization: Bearer ' . trim( $app_token );
 	} else {
-		$user     = magick_ai_core_adapter_env( 'MAGICK_AI_CORE_USER' );
-		$password = magick_ai_core_adapter_env( 'MAGICK_AI_CORE_APPLICATION_PASSWORD' );
+		$user     = magick_ai_core_adapter_env( 'NPCINK_GOVERNANCE_CORE_USER' );
+		$password = magick_ai_core_adapter_env( 'NPCINK_GOVERNANCE_CORE_APPLICATION_PASSWORD' );
 		$headers[] = 'Authorization: Basic ' . base64_encode( $user . ':' . $password );
 	}
 

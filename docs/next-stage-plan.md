@@ -88,7 +88,7 @@ generation.
 The next stage should keep Core focused on the governance kernel. WordPress 7.0
 research and the current product split both point to the same plan:
 
-- `magick-ai-core` governs AI-assisted WordPress operations through proposals,
+- `npcink-governance-core` governs AI-assisted WordPress operations through proposals,
   approval boundaries, commit preflight, and audit.
 - `magick-ai-abilities` and provider plugins define reusable abilities and
   previews.
@@ -109,7 +109,7 @@ Goal: fetch one proposal by id.
 
 Routes:
 
-- `GET /wp-json/magick-ai-core/v1/proposals/{proposal_id}`
+- `GET /wp-json/npcink-governance-core/v1/proposals/{proposal_id}`
 
 Acceptance:
 
@@ -143,7 +143,7 @@ Goal: prepare for final commit without executing writes yet.
 
 Route:
 
-- `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/commit-preflight`
+- `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight`
 
 Acceptance:
 
@@ -161,7 +161,7 @@ Goal: let humans review pending proposals inside WordPress.
 
 Screen:
 
-- Magick AI -> Core
+- Npcink -> Core
 
 Acceptance:
 
@@ -186,7 +186,7 @@ Acceptance:
 Current implementation:
 
 - app keys are created by admin-only `POST /apps`;
-- app keys can also be created from `Magick AI -> Core` under the collapsed
+- app keys can also be created from `Npcink -> Core` under the collapsed
   `Advanced Access` entry;
 - the admin UI keeps Core app-key management out of first-level Core tabs while
   preserving one-time token display on the creation result page and paginated
@@ -331,7 +331,7 @@ Acceptance:
   or provider connector;
 - Adapter injects `proposal_id`, `correlation_id`, `ability_id`,
   `adapter_request_id`, `adapter_route`, `ai_provider`, `ai_model`, and
-  `governance_source=magick-ai-core` into the AI request log context;
+  `governance_source=npcink-governance-core` into the AI request log context;
 - AI Request Logs can be queried by `proposal_id` and `correlation_id`;
 - Core does not add provider execution, provider credentials, prompt/response
   storage, or token accounting.

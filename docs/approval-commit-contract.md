@@ -23,9 +23,9 @@ A final write or destructive operation may execute only when all are true:
 
 The current implementation supports:
 
-- `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/approve`
-- `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/reject`
-- `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/commit-preflight`
+- `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/approve`
+- `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/reject`
+- `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight`
 
 Approval and rejection routes update proposal status and write audit events.
 Commit preflight verifies that an approved proposal can produce Core-generated

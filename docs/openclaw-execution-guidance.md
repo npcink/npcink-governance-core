@@ -2,7 +2,7 @@
 
 Status: active Core contract.
 
-This document records how Magick AI Core should guide OpenClaw and similar
+This document records how Npcink Governance Core should guide OpenClaw and similar
 agent clients without becoming an ability execution proxy.
 
 The guidance aligns with
@@ -21,7 +21,7 @@ Layer ownership:
 | Layer | Owner | Responsibility |
 | --- | --- | --- |
 | Ability layer | `magick-ai-abilities` and provider plugins | Register canonical abilities, schemas, callbacks, permission callbacks, risk metadata, and dry-run previews. |
-| Governance layer | `magick-ai-core` | Discover abilities, classify risk, create proposals, record approval/rejection, run commit preflight, provide audit, and return execution guidance. |
+| Governance layer | `npcink-governance-core` | Discover abilities, classify risk, create proposals, record approval/rejection, run commit preflight, provide audit, and return execution guidance. |
 | Channel layer | OpenClaw Adapter, MCP Adapter, or Agent Gateway plugin | Present tools to OpenClaw, call read abilities, and execute approved write abilities only after Core preflight. |
 
 ## Why Governance And Execution Stay Separate
@@ -97,7 +97,7 @@ Until that ADR is accepted, Core must keep returning
 
 ## Capability Guidance Fields
 
-`GET /wp-json/magick-ai-core/v1/capabilities` includes machine-readable
+`GET /wp-json/npcink-governance-core/v1/capabilities` includes machine-readable
 guidance on each capability row:
 
 | Field | Values | Meaning |

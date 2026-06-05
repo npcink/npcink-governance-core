@@ -50,7 +50,7 @@ Core does not own:
 1. Adapter or host runs a supported read-only plan ability through
    `/wp-json/wp-abilities/v1/abilities/{ability_id}/run`.
 2. Adapter posts the plan output to
-   `POST /wp-json/magick-ai-core/v1/proposals/from-plan`.
+   `POST /wp-json/npcink-governance-core/v1/proposals/from-plan`.
 3. Core creates one pending proposal per accepted independent `write_action` by
    default. If the plan declares `batch_approval=true` or
    `proposal_mode=batch`, or if actions use `depends_on` or
@@ -62,7 +62,7 @@ Core does not own:
 4. Admin or trusted policy approves or rejects proposals through the existing
    proposal routes.
 5. Adapter calls
-   `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/commit-preflight`.
+   `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight`.
 6. Only after approval and successful preflight may the host call the real write
    ability outside Core.
 

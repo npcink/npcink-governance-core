@@ -10,7 +10,7 @@ Accepted.
 
 ## Context
 
-The old Magick AI Core exposed product workflows such as article generation,
+The old Npcink Governance Core exposed product workflows such as article generation,
 article optimization, media ALT handling, comment moderation, maintenance, and
 batch operations through workflow definitions and skill manifests.
 
@@ -22,7 +22,7 @@ such as Content Assistant own domain UX and host workflows.
 
 ## Decision
 
-`magick-ai-core` must not implement a workflow runtime.
+`npcink-governance-core` must not implement a workflow runtime.
 
 Core may:
 

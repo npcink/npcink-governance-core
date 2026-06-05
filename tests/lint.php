@@ -14,7 +14,7 @@ $root = dirname( __DIR__ );
  * @return array<int,string>
  */
 function magick_ai_core_lint_files( string $root ): array {
-	$files = array( $root . '/magick-ai-core.php' );
+	$files = array( $root . '/npcink-governance-core.php' );
 
 	foreach ( array( 'includes', 'tests', 'examples' ) as $directory ) {
 		$path = $root . '/' . $directory;

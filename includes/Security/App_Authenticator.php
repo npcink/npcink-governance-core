@@ -151,12 +151,12 @@ final class App_Authenticator {
 
 		$token = $this->token_from_request( $request );
 		if ( '' === $token ) {
-			return $this->error( 'magick_ai_core_app_auth_missing', __( 'App authentication is required.', 'magick-ai-core' ), 401 );
+			return $this->error( 'magick_ai_core_app_auth_missing', __( 'App authentication is required.', 'npcink-governance-core' ), 401 );
 		}
 
 		$parts = explode( '.', $token, 3 );
 		if ( 3 !== count( $parts ) || 'mai_core' !== $parts[0] ) {
-			return $this->error( 'magick_ai_core_app_auth_malformed', __( 'App authentication token is malformed.', 'magick-ai-core' ), 400 );
+			return $this->error( 'magick_ai_core_app_auth_malformed', __( 'App authentication token is malformed.', 'npcink-governance-core' ), 400 );
 		}
 
 		$key_id = sanitize_text_field( $parts[1] );
@@ -164,7 +164,7 @@ final class App_Authenticator {
 		$app    = $this->apps->find_by_key_id( $key_id );
 
 		if ( null === $app || 'active' !== (string) ( $app['status'] ?? '' ) || ! $this->apps->verify_secret( $app, $secret ) ) {
-			return $this->error( 'magick_ai_core_app_auth_invalid', __( 'App authentication token is invalid.', 'magick-ai-core' ), 401 );
+			return $this->error( 'magick_ai_core_app_auth_invalid', __( 'App authentication token is invalid.', 'npcink-governance-core' ), 401 );
 		}
 
 		if ( ! in_array( $scope, (array) ( $app['scopes'] ?? array() ), true ) ) {
@@ -177,7 +177,7 @@ final class App_Authenticator {
 					'route_family'   => sanitize_key( $route_family ),
 				)
 			);
-			return $this->error( 'magick_ai_core_app_scope_forbidden', __( 'App key does not have the required scope.', 'magick-ai-core' ), 403 );
+			return $this->error( 'magick_ai_core_app_scope_forbidden', __( 'App key does not have the required scope.', 'npcink-governance-core' ), 403 );
 		}
 
 		$this->set_context( $app, $scope, $route_family );
@@ -195,7 +195,7 @@ final class App_Authenticator {
 
 			return new WP_Error(
 				'magick_ai_core_app_rate_limited',
-				__( 'App key rate limit exceeded.', 'magick-ai-core' ),
+				__( 'App key rate limit exceeded.', 'npcink-governance-core' ),
 				array(
 					'status'     => 429,
 					'limit'      => (int) ( $rate['limit'] ?? 0 ),
@@ -243,7 +243,7 @@ final class App_Authenticator {
 			return trim( (string) $matches[1] );
 		}
 
-		return trim( (string) $request->get_header( 'x-magick-ai-core-app-token' ) );
+		return trim( (string) $request->get_header( 'x-npcink-governance-core-app-token' ) );
 	}
 
 	/**

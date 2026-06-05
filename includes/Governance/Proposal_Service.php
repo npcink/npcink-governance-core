@@ -90,7 +90,7 @@ final class Proposal_Service {
 		if ( '' === $ability_id || false === strpos( $ability_id, '/' ) ) {
 			return new WP_Error(
 				'magick_ai_core_invalid_ability_id',
-				__( 'A namespaced ability_id is required.', 'magick-ai-core' ),
+				__( 'A namespaced ability_id is required.', 'npcink-governance-core' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -99,7 +99,7 @@ final class Proposal_Service {
 		if ( null === $capability ) {
 			return new WP_Error(
 				'magick_ai_core_ability_not_available',
-				__( 'Proposal target ability is not available.', 'magick-ai-core' ),
+				__( 'Proposal target ability is not available.', 'npcink-governance-core' ),
 				array( 'status' => 404 )
 			);
 		}
@@ -158,7 +158,7 @@ final class Proposal_Service {
 
 			return new WP_Error(
 				'magick_ai_core_pending_proposal_quota_exceeded',
-				__( 'Too many pending proposals exist for this caller.', 'magick-ai-core' ),
+				__( 'Too many pending proposals exist for this caller.', 'npcink-governance-core' ),
 				array(
 					'status'        => 429,
 					'pending_count' => $pending_count,
@@ -260,7 +260,7 @@ final class Proposal_Service {
 			$this->proposals->delete_by_proposal_id( $proposal_id );
 			return new WP_Error(
 				'magick_ai_core_auto_approval_quota_failed',
-				__( 'Auto approval quota could not be consumed.', 'magick-ai-core' ),
+				__( 'Auto approval quota could not be consumed.', 'npcink-governance-core' ),
 				array( 'status' => 500 )
 			);
 		}
@@ -343,7 +343,7 @@ final class Proposal_Service {
 		if ( Proposal_Repository::STATUS_EXPIRED !== (string) ( $existing['status'] ?? '' ) ) {
 			return new WP_Error(
 				'magick_ai_core_proposal_archive_not_allowed',
-				__( 'Only expired proposals can be archived.', 'magick-ai-core' ),
+				__( 'Only expired proposals can be archived.', 'npcink-governance-core' ),
 				array( 'status' => 409 )
 			);
 		}
@@ -394,7 +394,7 @@ final class Proposal_Service {
 		if ( ! in_array( $previous_status, array( Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_ARCHIVED ), true ) ) {
 			return new WP_Error(
 				'magick_ai_core_proposal_reopen_not_allowed',
-				__( 'Only expired or archived proposals can be reopened.', 'magick-ai-core' ),
+				__( 'Only expired or archived proposals can be reopened.', 'npcink-governance-core' ),
 				array( 'status' => 409 )
 			);
 		}
@@ -759,7 +759,7 @@ final class Proposal_Service {
 	public function not_found_error(): WP_Error {
 		return new WP_Error(
 			'magick_ai_core_proposal_not_found',
-			__( 'Proposal was not found.', 'magick-ai-core' ),
+			__( 'Proposal was not found.', 'npcink-governance-core' ),
 			array( 'status' => 404 )
 		);
 	}
@@ -785,7 +785,7 @@ final class Proposal_Service {
 			$this->expire_one( $existing, 'decision_attempt_after_ttl' );
 			return new WP_Error(
 				'magick_ai_core_proposal_expired',
-				__( 'Proposal expired before a decision was made.', 'magick-ai-core' ),
+				__( 'Proposal expired before a decision was made.', 'npcink-governance-core' ),
 				array( 'status' => 409 )
 			);
 		}
@@ -793,7 +793,7 @@ final class Proposal_Service {
 		if ( 'pending' !== (string) ( $existing['status'] ?? '' ) ) {
 			return new WP_Error(
 				'magick_ai_core_proposal_already_decided',
-				__( 'Only pending proposals can be approved or rejected.', 'magick-ai-core' ),
+				__( 'Only pending proposals can be approved or rejected.', 'npcink-governance-core' ),
 				array( 'status' => 409 )
 			);
 		}
@@ -869,7 +869,7 @@ final class Proposal_Service {
 	private function transition_failed_error(): WP_Error {
 		return new WP_Error(
 			'magick_ai_core_proposal_transition_failed',
-			__( 'Proposal status could not be updated.', 'magick-ai-core' ),
+			__( 'Proposal status could not be updated.', 'npcink-governance-core' ),
 			array( 'status' => 500 )
 		);
 	}
@@ -883,7 +883,7 @@ final class Proposal_Service {
 	private function audit_failed_error( string $code ): WP_Error {
 		return new WP_Error(
 			$code,
-			__( 'Proposal lifecycle could not be audited.', 'magick-ai-core' ),
+			__( 'Proposal lifecycle could not be audited.', 'npcink-governance-core' ),
 			array( 'status' => 500 )
 		);
 	}

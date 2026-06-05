@@ -3,13 +3,13 @@
 Status: active planning guide.
 
 This document records the planning conclusion from the WordPress 7.0 research
-review and the current Magick AI Core product boundary.
+review and the current Npcink Governance Core product boundary.
 
 ## Planning Conclusion
 
-Do not grow Magick AI Core into a large AI product plugin.
+Do not grow Npcink Governance Core into a large AI product plugin.
 
-Magick AI Core should stay narrow and hard: it is the trust and governance
+Npcink Governance Core should stay narrow and hard: it is the trust and governance
 kernel for AI-assisted WordPress operations. Commercial value should be built in
 product plugins and ability providers that consume Core governance rather than
 inside Core itself.
@@ -40,7 +40,7 @@ quality, vertical workflows, compliance, and auditability.
 
 | Layer | Project | Responsibility |
 | --- | --- | --- |
-| Governance kernel | `magick-ai-core` | Ability intake, risk policy, proposal records, human or host approval, approval-commit authorization, audit logs, minimal governance REST/admin UI. |
+| Governance kernel | `npcink-governance-core` | Ability intake, risk policy, proposal records, human or host approval, approval-commit authorization, audit logs, minimal governance REST/admin UI. |
 | Ability layer | `magick-ai-abilities` and provider plugins | Reusable WordPress Abilities API definitions, schemas, permission callbacks, dry-run previews, and execution callbacks. |
 | Product layer | Content Assistant, Toolbox, commerce, SEO, media, agency, or vertical plugins | Domain UX, workflows, configuration wizards, market-specific features, and user-facing product value. |
 | Provider layer | Connector/provider plugins | AI provider registration, model support, credential connection, and provider-specific capability exposure through WordPress platform APIs. |
@@ -54,7 +54,7 @@ Core sells trust, not content generation.
 
 Use this product sentence when orienting future work:
 
-> Magick AI Core lets agents, tools, and product plugins request WordPress
+> Npcink Governance Core lets agents, tools, and product plugins request WordPress
 > changes safely by turning risky operations into reviewable proposals,
 > approval-commit authorization, and auditable lifecycle records.
 

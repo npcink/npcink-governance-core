@@ -23,8 +23,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Renders a compact governance overview.
  */
 final class Admin_Page {
-	const PARENT_MENU_SLUG  = 'magick-ai';
-	const MENU_SLUG         = 'magick-ai-core';
+	const PARENT_MENU_SLUG  = 'npcink';
+	const MENU_SLUG         = 'npcink-governance-core';
 	const MENU_CAPABILITY   = 'manage_options';
 	const REVIEW_PAGE_SIZE  = 20;
 	const ARCHIVE_PAGE_SIZE = 20;
@@ -123,8 +123,8 @@ final class Admin_Page {
 
 		add_submenu_page(
 			self::PARENT_MENU_SLUG,
-			__( 'Magick AI Core', 'magick-ai-core' ),
-			__( 'Core', 'magick-ai-core' ),
+			__( 'Npcink Governance Core', 'npcink-governance-core' ),
+			__( 'Core', 'npcink-governance-core' ),
 			self::MENU_CAPABILITY,
 			self::MENU_SLUG,
 			array( $this, 'render' ),
@@ -144,7 +144,7 @@ final class Admin_Page {
 		}
 
 		wp_enqueue_style(
-			'magick-ai-core-admin',
+			'npcink-governance-core-admin',
 			plugins_url( 'assets/admin.css', MAGICK_AI_CORE_FILE ),
 			array(),
 			MAGICK_AI_CORE_VERSION
@@ -152,7 +152,7 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Ensures the shared Magick AI parent menu exists.
+	 * Ensures the shared Npcink parent menu exists.
 	 *
 	 * @return void
 	 */
@@ -162,8 +162,8 @@ final class Admin_Page {
 		}
 
 		add_menu_page(
-			__( 'Magick AI', 'magick-ai-core' ),
-			__( 'Magick AI', 'magick-ai-core' ),
+			__( 'Npcink', 'npcink-governance-core' ),
+			__( 'Npcink', 'npcink-governance-core' ),
 			self::MENU_CAPABILITY,
 			self::PARENT_MENU_SLUG,
 			array( $this, 'render_overview' ),
@@ -173,8 +173,8 @@ final class Admin_Page {
 
 		add_submenu_page(
 			self::PARENT_MENU_SLUG,
-			__( 'Magick AI Overview', 'magick-ai-core' ),
-			__( 'Overview', 'magick-ai-core' ),
+			__( 'Npcink Overview', 'npcink-governance-core' ),
+			__( 'Overview', 'npcink-governance-core' ),
 			self::MENU_CAPABILITY,
 			self::PARENT_MENU_SLUG,
 			array( $this, 'render_overview' ),
@@ -183,7 +183,7 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Returns whether another Magick AI plugin already created the parent menu.
+	 * Returns whether another Npcink plugin already created the parent menu.
 	 *
 	 * @return bool
 	 */
@@ -200,26 +200,26 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Renders the shared Magick AI overview page.
+	 * Renders the shared Npcink overview page.
 	 *
 	 * @return void
 	 */
 	public function render_overview(): void {
 		if ( ! current_user_can( self::MENU_CAPABILITY ) ) {
-			wp_die( esc_html__( 'You do not have permission to access this page.', 'magick-ai-core' ) );
+			wp_die( esc_html__( 'You do not have permission to access this page.', 'npcink-governance-core' ) );
 		}
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html__( 'Magick AI', 'magick-ai-core' ); ?></h1>
-			<p><?php echo esc_html__( 'Local WordPress entry points for Magick AI governance, connections, cloud access, and ability packages.', 'magick-ai-core' ); ?></p>
-			<h2><?php echo esc_html__( 'Installed Surfaces', 'magick-ai-core' ); ?></h2>
-			<table class="widefat striped magick-ai-core-table-narrow">
+			<h1><?php echo esc_html__( 'Npcink', 'npcink-governance-core' ); ?></h1>
+			<p><?php echo esc_html__( 'Local WordPress entry points for Npcink governance, connections, cloud access, and ability packages.', 'npcink-governance-core' ); ?></p>
+			<h2><?php echo esc_html__( 'Installed Surfaces', 'npcink-governance-core' ); ?></h2>
+			<table class="widefat striped npcink-governance-core-table-narrow">
 				<tbody>
 					<?php
-					$this->render_overview_row( __( 'Core', 'magick-ai-core' ), __( 'Review proposals, approval decisions, commit preflight, audit, and Core app keys.', 'magick-ai-core' ), self::MENU_SLUG );
-					$this->render_overview_row( __( 'Adapter', 'magick-ai-core' ), __( 'Connect OpenClaw through the Adapter surface.', 'magick-ai-core' ), 'magick-ai-adapter' );
-					$this->render_overview_row( __( 'Abilities', 'magick-ai-core' ), __( 'Verify WordPress Abilities API packages and demo ability controls.', 'magick-ai-core' ), 'magick-ai-abilities' );
-					$this->render_overview_row( __( 'Cloud Addon', 'magick-ai-core' ), __( 'Connect this site to Magick AI Cloud without moving local control-plane truth.', 'magick-ai-core' ), 'magick-ai-cloud-addon' );
+					$this->render_overview_row( __( 'Core', 'npcink-governance-core' ), __( 'Review proposals, approval decisions, commit preflight, audit, and Core app keys.', 'npcink-governance-core' ), self::MENU_SLUG );
+					$this->render_overview_row( __( 'Adapter', 'npcink-governance-core' ), __( 'Connect OpenClaw through the Adapter surface.', 'npcink-governance-core' ), 'magick-ai-adapter' );
+					$this->render_overview_row( __( 'Abilities', 'npcink-governance-core' ), __( 'Verify WordPress Abilities API packages and demo ability controls.', 'npcink-governance-core' ), 'magick-ai-abilities' );
+					$this->render_overview_row( __( 'Cloud Addon', 'npcink-governance-core' ), __( 'Connect this site to cloud services without moving local control-plane truth.', 'npcink-governance-core' ), 'magick-ai-cloud-addon' );
 					?>
 				</tbody>
 			</table>
@@ -242,9 +242,9 @@ final class Admin_Page {
 			<td><?php echo esc_html( $description ); ?></td>
 			<td>
 				<?php if ( $this->is_submenu_registered( $slug ) ) : ?>
-					<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=' . $slug ) ); ?>"><?php echo esc_html__( 'Open', 'magick-ai-core' ); ?></a>
+					<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=' . $slug ) ); ?>"><?php echo esc_html__( 'Open', 'npcink-governance-core' ); ?></a>
 				<?php else : ?>
-					<span class="magick-ai-core-muted"><?php echo esc_html__( 'Not installed', 'magick-ai-core' ); ?></span>
+					<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Not installed', 'npcink-governance-core' ); ?></span>
 				<?php endif; ?>
 			</td>
 		</tr>
@@ -252,7 +252,7 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Returns whether a Magick AI submenu has been registered.
+	 * Returns whether a Npcink submenu has been registered.
 	 *
 	 * @param string $slug Menu page slug.
 	 * @return bool
@@ -276,7 +276,7 @@ final class Admin_Page {
 	 */
 	public function render(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You do not have permission to access this page.', 'magick-ai-core' ) );
+			wp_die( esc_html__( 'You do not have permission to access this page.', 'npcink-governance-core' ) );
 		}
 
 		$this->service->expire_stale_pending();
@@ -295,8 +295,8 @@ final class Admin_Page {
 		$error          = $this->admin_query_key( 'magick_ai_core_error' );
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html__( 'Magick AI Core', 'magick-ai-core' ); ?></h1>
-			<p><?php echo esc_html__( 'Governance review and audit for WordPress ability proposals.', 'magick-ai-core' ); ?></p>
+			<h1><?php echo esc_html__( 'Npcink Governance Core', 'npcink-governance-core' ); ?></h1>
+			<p><?php echo esc_html__( 'Governance review and audit for WordPress ability proposals.', 'npcink-governance-core' ); ?></p>
 
 			<?php if ( '' !== $message ) : ?>
 				<div class="notice notice-success is-dismissible">
@@ -314,7 +314,7 @@ final class Admin_Page {
 				<?php $this->render_proposal_detail( $selected ); ?>
 			<?php elseif ( '' !== $selected_id ) : ?>
 				<div class="notice notice-warning">
-					<p><?php echo esc_html__( 'Selected proposal was not found.', 'magick-ai-core' ); ?></p>
+					<p><?php echo esc_html__( 'Selected proposal was not found.', 'npcink-governance-core' ); ?></p>
 				</div>
 				<?php $this->render_admin_tabs( 'review' ); ?>
 				<?php $this->render_review_workbench( $summary, $pending_count, $expired_count, $archived_count, $pending, $review_page ); ?>
@@ -350,24 +350,24 @@ final class Admin_Page {
 	private function render_admin_tabs( string $active ): void {
 		$tabs = array(
 			'review'   => array(
-				'label' => __( 'Review Queue', 'magick-ai-core' ),
+				'label' => __( 'Review Queue', 'npcink-governance-core' ),
 				'url'   => $this->admin_url(),
 			),
 			'audit'    => array(
-				'label' => __( 'Governance Audit', 'magick-ai-core' ),
+				'label' => __( 'Governance Audit', 'npcink-governance-core' ),
 				'url'   => $this->view_url( 'audit' ),
 			),
 			'archive'  => array(
-				'label' => __( 'Expired / Archived', 'magick-ai-core' ),
+				'label' => __( 'Expired / Archived', 'npcink-governance-core' ),
 				'url'   => $this->view_url( 'archive' ),
 			),
 			'media-policy' => array(
-				'label' => __( 'Media Policy', 'magick-ai-core' ),
+				'label' => __( 'Media Policy', 'npcink-governance-core' ),
 				'url'   => $this->view_url( 'media-policy' ),
 			),
 		);
 		?>
-		<nav class="nav-tab-wrapper magick-ai-core-tabs" aria-label="<?php echo esc_attr__( 'Core admin sections', 'magick-ai-core' ); ?>">
+		<nav class="nav-tab-wrapper npcink-governance-core-tabs" aria-label="<?php echo esc_attr__( 'Core admin sections', 'npcink-governance-core' ); ?>">
 			<?php foreach ( $tabs as $key => $tab ) : ?>
 				<a class="nav-tab <?php echo $active === $key ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( (string) $tab['url'] ); ?>" <?php echo $active === $key ? 'aria-current="page"' : ''; ?>>
 					<?php echo esc_html( (string) $tab['label'] ); ?>
@@ -406,45 +406,45 @@ final class Admin_Page {
 	private function render_approval_policy_entry(): void {
 		$current = Approval_Policy_Evaluator::current_policy_mode();
 		$labels  = array(
-			Approval_Policy_Evaluator::MODE_MANUAL          => __( 'Manual', 'magick-ai-core' ),
-			Approval_Policy_Evaluator::MODE_DRY_RUN_GUARDED => __( 'Dry-run guarded', 'magick-ai-core' ),
-			Approval_Policy_Evaluator::MODE_LOCAL_GUARDED   => __( 'Local guarded', 'magick-ai-core' ),
+			Approval_Policy_Evaluator::MODE_MANUAL          => __( 'Manual', 'npcink-governance-core' ),
+			Approval_Policy_Evaluator::MODE_DRY_RUN_GUARDED => __( 'Dry-run guarded', 'npcink-governance-core' ),
+			Approval_Policy_Evaluator::MODE_LOCAL_GUARDED   => __( 'Local guarded', 'npcink-governance-core' ),
 		);
 		?>
-		<details class="magick-ai-core-disclosure magick-ai-core-max-wide">
+		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide">
 			<summary>
-				<strong><?php echo esc_html__( 'Development Approval Policy', 'magick-ai-core' ); ?></strong>
-				<span class="magick-ai-core-muted">
+				<strong><?php echo esc_html__( 'Development Approval Policy', 'npcink-governance-core' ); ?></strong>
+				<span class="npcink-governance-core-muted">
 					<?php
 					printf(
 						/* translators: %s: current policy mode. */
-						esc_html__( 'Current mode: %s', 'magick-ai-core' ),
+						esc_html__( 'Current mode: %s', 'npcink-governance-core' ),
 						esc_html( (string) ( $labels[ $current ] ?? $current ) )
 					);
 					?>
 				</span>
 			</summary>
-			<form class="magick-ai-core-form-spaced" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<form class="npcink-governance-core-form-spaced" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<input type="hidden" name="action" value="magick_ai_core_update_approval_policy" />
 				<?php wp_nonce_field( 'magick_ai_core_update_approval_policy' ); ?>
 				<table class="form-table" role="presentation">
 					<tbody>
 						<tr>
-							<th scope="row"><label for="magick-ai-core-approval-policy-mode"><?php echo esc_html__( 'Policy mode', 'magick-ai-core' ); ?></label></th>
+							<th scope="row"><label for="npcink-governance-core-approval-policy-mode"><?php echo esc_html__( 'Policy mode', 'npcink-governance-core' ); ?></label></th>
 							<td>
-								<select id="magick-ai-core-approval-policy-mode" name="policy_mode">
+								<select id="npcink-governance-core-approval-policy-mode" name="policy_mode">
 									<?php foreach ( Approval_Policy_Evaluator::allowed_policy_modes() as $mode ) : ?>
 										<option value="<?php echo esc_attr( $mode ); ?>" <?php selected( $current, $mode ); ?>>
 											<?php echo esc_html( (string) ( $labels[ $mode ] ?? $mode ) ); ?>
 										</option>
 									<?php endforeach; ?>
 								</select>
-								<p class="description"><?php echo esc_html__( 'Local guarded only auto-approves trusted test-content cleanup trash batches. Destructive deletes, comments, terms, and published content updates remain manual.', 'magick-ai-core' ); ?></p>
+								<p class="description"><?php echo esc_html__( 'Local guarded only auto-approves trusted test-content cleanup trash batches. Destructive deletes, comments, terms, and published content updates remain manual.', 'npcink-governance-core' ); ?></p>
 							</td>
 						</tr>
 					</tbody>
 				</table>
-				<p><button type="submit" class="button button-secondary"><?php echo esc_html__( 'Save approval policy', 'magick-ai-core' ); ?></button></p>
+				<p><button type="submit" class="button button-secondary"><?php echo esc_html__( 'Save approval policy', 'npcink-governance-core' ); ?></button></p>
 			</form>
 		</details>
 		<?php
@@ -458,26 +458,26 @@ final class Admin_Page {
 	private function render_media_policy_settings(): void {
 		$settings = $this->media_settings->get_all();
 		?>
-		<h2><?php echo esc_html__( 'Media Optimization Policy', 'magick-ai-core' ); ?></h2>
-		<p class="magick-ai-core-copy-width"><?php echo esc_html__( 'Core stores the local site policy for optimized media derivatives. Toolbox may use these defaults for one-run handoffs, and Cloud Addon may execute them when available, but final WordPress writes still require local proposal governance.', 'magick-ai-core' ); ?></p>
-		<form class="magick-ai-core-form-width" method="post" action="options.php">
+		<h2><?php echo esc_html__( 'Media Optimization Policy', 'npcink-governance-core' ); ?></h2>
+		<p class="npcink-governance-core-copy-width"><?php echo esc_html__( 'Core stores the local site policy for optimized media derivatives. Toolbox may use these defaults for one-run handoffs, and Cloud Addon may execute them when available, but final WordPress writes still require local proposal governance.', 'npcink-governance-core' ); ?></p>
+		<form class="npcink-governance-core-form-width" method="post" action="options.php">
 			<?php settings_fields( 'magick_ai_core_media_derivative' ); ?>
 			<table class="form-table" role="presentation">
 				<tbody>
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Media optimization', 'magick-ai-core' ); ?></th>
+						<th scope="row"><?php echo esc_html__( 'Media optimization', 'npcink-governance-core' ); ?></th>
 						<td>
 							<label>
 								<input type="checkbox" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[enabled]" value="1" <?php checked( ! empty( $settings['enabled'] ) ); ?> />
-								<?php echo esc_html__( 'Enable local media derivative policy', 'magick-ai-core' ); ?>
+								<?php echo esc_html__( 'Enable local media derivative policy', 'npcink-governance-core' ); ?>
 							</label>
-							<p class="description"><?php echo esc_html__( 'This stores defaults only. It does not optimize files, approve proposals, or write attachment metadata.', 'magick-ai-core' ); ?></p>
+							<p class="description"><?php echo esc_html__( 'This stores defaults only. It does not optimize files, approve proposals, or write attachment metadata.', 'npcink-governance-core' ); ?></p>
 						</td>
 					</tr>
 					<tr>
-						<th scope="row"><label for="magick-ai-core-media-format"><?php echo esc_html__( 'Output format', 'magick-ai-core' ); ?></label></th>
+						<th scope="row"><label for="npcink-governance-core-media-format"><?php echo esc_html__( 'Output format', 'npcink-governance-core' ); ?></label></th>
 						<td>
-							<select id="magick-ai-core-media-format" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[target_format]">
+							<select id="npcink-governance-core-media-format" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[target_format]">
 								<?php foreach ( $this->media_settings->allowed_formats() as $format ) : ?>
 									<option value="<?php echo esc_attr( $format ); ?>" <?php selected( (string) $settings['target_format'], $format ); ?>>
 										<?php echo esc_html( strtoupper( $format ) ); ?>
@@ -487,34 +487,34 @@ final class Admin_Page {
 						</td>
 					</tr>
 					<tr>
-						<th scope="row"><label for="magick-ai-core-media-width"><?php echo esc_html__( 'Maximum width', 'magick-ai-core' ); ?></label></th>
+						<th scope="row"><label for="npcink-governance-core-media-width"><?php echo esc_html__( 'Maximum width', 'npcink-governance-core' ); ?></label></th>
 						<td>
-							<input id="magick-ai-core-media-width" type="number" min="320" max="7680" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[max_width]" value="<?php echo esc_attr( (string) $settings['max_width'] ); ?>" />
-							<span><?php echo esc_html__( 'px', 'magick-ai-core' ); ?></span>
+							<input id="npcink-governance-core-media-width" type="number" min="320" max="7680" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[max_width]" value="<?php echo esc_attr( (string) $settings['max_width'] ); ?>" />
+							<span><?php echo esc_html__( 'px', 'npcink-governance-core' ); ?></span>
 						</td>
 					</tr>
 					<tr>
-						<th scope="row"><label for="magick-ai-core-media-quality"><?php echo esc_html__( 'Quality', 'magick-ai-core' ); ?></label></th>
+						<th scope="row"><label for="npcink-governance-core-media-quality"><?php echo esc_html__( 'Quality', 'npcink-governance-core' ); ?></label></th>
 						<td>
-							<input id="magick-ai-core-media-quality" type="number" min="1" max="100" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[quality]" value="<?php echo esc_attr( (string) $settings['quality'] ); ?>" />
+							<input id="npcink-governance-core-media-quality" type="number" min="1" max="100" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[quality]" value="<?php echo esc_attr( (string) $settings['quality'] ); ?>" />
 						</td>
 					</tr>
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Watermark', 'magick-ai-core' ); ?></th>
+						<th scope="row"><?php echo esc_html__( 'Watermark', 'npcink-governance-core' ); ?></th>
 						<td>
 							<label>
 								<input type="checkbox" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_enabled]" value="1" <?php checked( ! empty( $settings['watermark_enabled'] ) ); ?> />
-								<?php echo esc_html__( 'Use image watermark when a logo attachment is configured', 'magick-ai-core' ); ?>
+								<?php echo esc_html__( 'Use image watermark when a logo attachment is configured', 'npcink-governance-core' ); ?>
 							</label>
 							<p>
-								<label for="magick-ai-core-watermark-attachment"><?php echo esc_html__( 'Logo attachment ID', 'magick-ai-core' ); ?></label><br />
-								<input id="magick-ai-core-watermark-attachment" type="number" min="0" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_attachment_id]" value="<?php echo esc_attr( (string) $settings['watermark_attachment_id'] ); ?>" />
+								<label for="npcink-governance-core-watermark-attachment"><?php echo esc_html__( 'Logo attachment ID', 'npcink-governance-core' ); ?></label><br />
+								<input id="npcink-governance-core-watermark-attachment" type="number" min="0" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_attachment_id]" value="<?php echo esc_attr( (string) $settings['watermark_attachment_id'] ); ?>" />
 							</p>
 							<details>
-								<summary><?php echo esc_html__( 'Watermark placement', 'magick-ai-core' ); ?></summary>
+								<summary><?php echo esc_html__( 'Watermark placement', 'npcink-governance-core' ); ?></summary>
 								<p>
-									<label for="magick-ai-core-watermark-position"><?php echo esc_html__( 'Position', 'magick-ai-core' ); ?></label><br />
-									<select id="magick-ai-core-watermark-position" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_position]">
+									<label for="npcink-governance-core-watermark-position"><?php echo esc_html__( 'Position', 'npcink-governance-core' ); ?></label><br />
+									<select id="npcink-governance-core-watermark-position" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_position]">
 										<?php foreach ( $this->media_settings->allowed_watermark_positions() as $position ) : ?>
 											<option value="<?php echo esc_attr( $position ); ?>" <?php selected( (string) $settings['watermark_position'], $position ); ?>>
 												<?php echo esc_html( ucwords( str_replace( '_', ' ', $position ) ) ); ?>
@@ -523,36 +523,36 @@ final class Admin_Page {
 									</select>
 								</p>
 								<p>
-									<label for="magick-ai-core-watermark-opacity"><?php echo esc_html__( 'Opacity', 'magick-ai-core' ); ?></label><br />
-									<input id="magick-ai-core-watermark-opacity" type="number" min="0" max="100" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_opacity]" value="<?php echo esc_attr( (string) $settings['watermark_opacity'] ); ?>" />
-									<span><?php echo esc_html__( '%', 'magick-ai-core' ); ?></span>
+									<label for="npcink-governance-core-watermark-opacity"><?php echo esc_html__( 'Opacity', 'npcink-governance-core' ); ?></label><br />
+									<input id="npcink-governance-core-watermark-opacity" type="number" min="0" max="100" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_opacity]" value="<?php echo esc_attr( (string) $settings['watermark_opacity'] ); ?>" />
+									<span><?php echo esc_html__( '%', 'npcink-governance-core' ); ?></span>
 								</p>
 								<p>
-									<label for="magick-ai-core-watermark-scale"><?php echo esc_html__( 'Scale', 'magick-ai-core' ); ?></label><br />
-									<input id="magick-ai-core-watermark-scale" type="number" min="1" max="100" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_scale]" value="<?php echo esc_attr( (string) $settings['watermark_scale'] ); ?>" />
-									<span><?php echo esc_html__( '%', 'magick-ai-core' ); ?></span>
+									<label for="npcink-governance-core-watermark-scale"><?php echo esc_html__( 'Scale', 'npcink-governance-core' ); ?></label><br />
+									<input id="npcink-governance-core-watermark-scale" type="number" min="1" max="100" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_scale]" value="<?php echo esc_attr( (string) $settings['watermark_scale'] ); ?>" />
+									<span><?php echo esc_html__( '%', 'npcink-governance-core' ); ?></span>
 								</p>
 								<p>
-									<label for="magick-ai-core-watermark-margin"><?php echo esc_html__( 'Margin', 'magick-ai-core' ); ?></label><br />
-									<input id="magick-ai-core-watermark-margin" type="number" min="0" max="1000" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_margin]" value="<?php echo esc_attr( (string) $settings['watermark_margin'] ); ?>" />
-									<span><?php echo esc_html__( 'px', 'magick-ai-core' ); ?></span>
+									<label for="npcink-governance-core-watermark-margin"><?php echo esc_html__( 'Margin', 'npcink-governance-core' ); ?></label><br />
+									<input id="npcink-governance-core-watermark-margin" type="number" min="0" max="1000" step="1" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[watermark_margin]" value="<?php echo esc_attr( (string) $settings['watermark_margin'] ); ?>" />
+									<span><?php echo esc_html__( 'px', 'npcink-governance-core' ); ?></span>
 								</p>
 							</details>
 						</td>
 					</tr>
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Execution preference', 'magick-ai-core' ); ?></th>
+						<th scope="row"><?php echo esc_html__( 'Execution preference', 'npcink-governance-core' ); ?></th>
 						<td>
 							<label>
 								<input type="checkbox" name="<?php echo esc_attr( Media_Derivative_Settings::OPTION_NAME ); ?>[use_cloud_when_available]" value="1" <?php checked( ! empty( $settings['use_cloud_when_available'] ) ); ?> />
-								<?php echo esc_html__( 'Use Cloud execution when Cloud Addon is installed and verified', 'magick-ai-core' ); ?>
+								<?php echo esc_html__( 'Use Cloud execution when Cloud Addon is installed and verified', 'npcink-governance-core' ); ?>
 							</label>
-							<p class="description"><?php echo esc_html__( 'Cloud remains an optional runtime. Core keeps the policy and final local write decision.', 'magick-ai-core' ); ?></p>
+							<p class="description"><?php echo esc_html__( 'Cloud remains an optional runtime. Core keeps the policy and final local write decision.', 'npcink-governance-core' ); ?></p>
 						</td>
 					</tr>
 				</tbody>
 			</table>
-			<?php submit_button( __( 'Save media policy', 'magick-ai-core' ) ); ?>
+			<?php submit_button( __( 'Save media policy', 'npcink-governance-core' ) ); ?>
 		</form>
 		<?php
 	}
@@ -568,12 +568,12 @@ final class Admin_Page {
 	 */
 	private function render_summary_strip( array $summary, int $pending_count, int $expired_count, int $archived_count ): void {
 		?>
-		<h2><?php echo esc_html__( 'Review Queue', 'magick-ai-core' ); ?></h2>
-		<div class="magick-ai-core-status-strip">
-			<?php $this->render_status_metric( __( 'Needs review', 'magick-ai-core' ), (string) $pending_count, true ); ?>
-			<?php $this->render_status_metric( __( 'Expired', 'magick-ai-core' ), (string) $expired_count, false, false, $this->view_url( 'archive' ) ); ?>
-			<?php $this->render_status_metric( __( 'Archived', 'magick-ai-core' ), (string) $archived_count, false, false, $this->view_url( 'archive' ) ); ?>
-			<?php $this->render_status_metric( __( 'Available abilities', 'magick-ai-core' ), (string) $summary['count'] ); ?>
+		<h2><?php echo esc_html__( 'Review Queue', 'npcink-governance-core' ); ?></h2>
+		<div class="npcink-governance-core-status-strip">
+			<?php $this->render_status_metric( __( 'Needs review', 'npcink-governance-core' ), (string) $pending_count, true ); ?>
+			<?php $this->render_status_metric( __( 'Expired', 'npcink-governance-core' ), (string) $expired_count, false, false, $this->view_url( 'archive' ) ); ?>
+			<?php $this->render_status_metric( __( 'Archived', 'npcink-governance-core' ), (string) $archived_count, false, false, $this->view_url( 'archive' ) ); ?>
+			<?php $this->render_status_metric( __( 'Available abilities', 'npcink-governance-core' ), (string) $summary['count'] ); ?>
 		</div>
 		<?php
 	}
@@ -590,11 +590,11 @@ final class Admin_Page {
 	 */
 	private function render_status_metric( string $label, string $value, bool $primary = false, bool $code = false, string $url = '' ): void {
 		?>
-		<div class="<?php echo esc_attr( $primary ? 'magick-ai-core-metric magick-ai-core-metric-primary' : 'magick-ai-core-metric' ); ?>">
-			<div class="magick-ai-core-metric-label"><?php echo esc_html( $label ); ?></div>
-			<div class="<?php echo esc_attr( $primary ? 'magick-ai-core-metric-value magick-ai-core-metric-value-primary' : 'magick-ai-core-metric-value' ); ?>">
+		<div class="<?php echo esc_attr( $primary ? 'npcink-governance-core-metric npcink-governance-core-metric-primary' : 'npcink-governance-core-metric' ); ?>">
+			<div class="npcink-governance-core-metric-label"><?php echo esc_html( $label ); ?></div>
+			<div class="<?php echo esc_attr( $primary ? 'npcink-governance-core-metric-value npcink-governance-core-metric-value-primary' : 'npcink-governance-core-metric-value' ); ?>">
 				<?php if ( '' !== $url ) : ?>
-					<a class="magick-ai-core-plain-link" href="<?php echo esc_url( $url ); ?>">
+					<a class="npcink-governance-core-plain-link" href="<?php echo esc_url( $url ); ?>">
 				<?php endif; ?>
 				<?php if ( $code ) : ?>
 					<code><?php echo esc_html( $value ); ?></code>
@@ -619,40 +619,40 @@ final class Admin_Page {
 	 */
 	private function render_pending_proposals( array $pending, int $total, int $page ): void {
 		?>
-		<h2><?php echo esc_html__( 'Needs Review', 'magick-ai-core' ); ?></h2>
+		<h2><?php echo esc_html__( 'Needs Review', 'npcink-governance-core' ); ?></h2>
 		<p><?php echo esc_html( $this->pagination_summary( $total, $page, self::REVIEW_PAGE_SIZE ) ); ?></p>
-		<form class="magick-ai-core-max-wide" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+		<form class="npcink-governance-core-max-wide" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="magick_ai_core_bulk_reject_proposals" />
 			<?php wp_nonce_field( 'magick_ai_core_bulk_reject_proposals' ); ?>
 			<table class="widefat striped">
 				<thead>
 					<tr>
-						<td class="check-column"><span class="screen-reader-text"><?php echo esc_html__( 'Select proposal', 'magick-ai-core' ); ?></span></td>
-						<th scope="col"><?php echo esc_html__( 'Proposal', 'magick-ai-core' ); ?></th>
-						<th scope="col"><?php echo esc_html__( 'Created', 'magick-ai-core' ); ?></th>
-						<th scope="col"><?php echo esc_html__( 'Action', 'magick-ai-core' ); ?></th>
+						<td class="check-column"><span class="screen-reader-text"><?php echo esc_html__( 'Select proposal', 'npcink-governance-core' ); ?></span></td>
+						<th scope="col"><?php echo esc_html__( 'Proposal', 'npcink-governance-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Created', 'npcink-governance-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Action', 'npcink-governance-core' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php if ( empty( $pending ) ) : ?>
 						<tr>
-							<td colspan="4"><?php echo esc_html__( 'No active proposals. Expired items are moved out of the review queue automatically.', 'magick-ai-core' ); ?></td>
+							<td colspan="4"><?php echo esc_html__( 'No active proposals. Expired items are moved out of the review queue automatically.', 'npcink-governance-core' ); ?></td>
 						</tr>
 					<?php endif; ?>
 					<?php foreach ( $pending as $proposal ) : ?>
 						<?php $proposal_id = (string) $proposal['proposal_id']; ?>
 						<tr>
 							<th scope="row" class="check-column">
-								<input type="checkbox" name="proposal_ids[]" value="<?php echo esc_attr( $proposal_id ); ?>" aria-label="<?php echo esc_attr__( 'Select proposal', 'magick-ai-core' ); ?>" />
+								<input type="checkbox" name="proposal_ids[]" value="<?php echo esc_attr( $proposal_id ); ?>" aria-label="<?php echo esc_attr__( 'Select proposal', 'npcink-governance-core' ); ?>" />
 							</th>
 							<td>
 								<strong><?php echo esc_html( (string) ( $proposal['title'] ?: $proposal_id ) ); ?></strong><br />
-								<span class="magick-ai-core-subtle">
-									<?php echo esc_html__( 'Proposal ID:', 'magick-ai-core' ); ?>
+								<span class="npcink-governance-core-subtle">
+									<?php echo esc_html__( 'Proposal ID:', 'npcink-governance-core' ); ?>
 									<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
 								</span><br />
-								<span class="magick-ai-core-subtle">
-									<?php echo esc_html__( 'Ability:', 'magick-ai-core' ); ?>
+								<span class="npcink-governance-core-subtle">
+									<?php echo esc_html__( 'Ability:', 'npcink-governance-core' ); ?>
 									<code><?php echo esc_html( (string) $proposal['ability_id'] ); ?></code>
 								</span>
 								<?php $this->render_pending_proposal_trace( $proposal ); ?>
@@ -660,7 +660,7 @@ final class Admin_Page {
 							<td><?php echo esc_html( $this->display_datetime( (string) $proposal['created_at'] ) ); ?></td>
 							<td>
 								<a class="button" href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>">
-									<?php echo esc_html__( 'Review', 'magick-ai-core' ); ?>
+									<?php echo esc_html__( 'Review', 'npcink-governance-core' ); ?>
 								</a>
 							</td>
 						</tr>
@@ -668,13 +668,13 @@ final class Admin_Page {
 				</tbody>
 			</table>
 			<?php if ( ! empty( $pending ) ) : ?>
-				<p class="magick-ai-core-inline-actions">
-					<label class="magick-ai-core-flex-field">
-						<?php echo esc_html__( 'Bulk rejection note', 'magick-ai-core' ); ?><br />
-						<input type="text" class="large-text" name="note" value="<?php echo esc_attr__( 'Superseded by batch cleanup proposal.', 'magick-ai-core' ); ?>" />
+				<p class="npcink-governance-core-inline-actions">
+					<label class="npcink-governance-core-flex-field">
+						<?php echo esc_html__( 'Bulk rejection note', 'npcink-governance-core' ); ?><br />
+						<input type="text" class="large-text" name="note" value="<?php echo esc_attr__( 'Superseded by batch cleanup proposal.', 'npcink-governance-core' ); ?>" />
 					</label>
 					<button type="submit" class="button">
-						<?php echo esc_html__( 'Reject selected', 'magick-ai-core' ); ?>
+						<?php echo esc_html__( 'Reject selected', 'npcink-governance-core' ); ?>
 					</button>
 				</p>
 			<?php endif; ?>
@@ -697,8 +697,8 @@ final class Admin_Page {
 		}
 		?>
 		<br />
-		<span class="magick-ai-core-muted">
-			<?php echo esc_html__( 'Source:', 'magick-ai-core' ); ?>
+		<span class="npcink-governance-core-muted">
+			<?php echo esc_html__( 'Source:', 'npcink-governance-core' ); ?>
 			<?php echo esc_html( implode( ' · ', $trace ) ); ?>
 		</span>
 		<?php
@@ -724,7 +724,7 @@ final class Admin_Page {
 		if ( '' !== $plan_ability_id ) {
 			$parts[] = sprintf(
 				/* translators: %s: plan ability id. */
-				__( 'plan %s', 'magick-ai-core' ),
+				__( 'plan %s', 'npcink-governance-core' ),
 				$plan_ability_id
 			);
 		}
@@ -733,7 +733,7 @@ final class Admin_Page {
 		if ( '' !== $batch_id ) {
 			$parts[] = sprintf(
 				/* translators: %s: batch id. */
-				__( 'batch %s', 'magick-ai-core' ),
+				__( 'batch %s', 'npcink-governance-core' ),
 				$batch_id
 			);
 		}
@@ -742,7 +742,7 @@ final class Admin_Page {
 		if ( '' !== $action_id ) {
 			$parts[] = sprintf(
 				/* translators: %s: action id. */
-				__( 'action %s', 'magick-ai-core' ),
+				__( 'action %s', 'npcink-governance-core' ),
 				$action_id
 			);
 		}
@@ -751,7 +751,7 @@ final class Admin_Page {
 		if ( '' !== $caller_type ) {
 			$parts[] = sprintf(
 				/* translators: %s: caller type. */
-				__( 'caller %s', 'magick-ai-core' ),
+				__( 'caller %s', 'npcink-governance-core' ),
 				$caller_type
 			);
 		}
@@ -760,7 +760,7 @@ final class Admin_Page {
 		if ( '' !== $app_id ) {
 			$parts[] = sprintf(
 				/* translators: %s: app id. */
-				__( 'app %s', 'magick-ai-core' ),
+				__( 'app %s', 'npcink-governance-core' ),
 				$app_id
 			);
 		}
@@ -776,24 +776,24 @@ final class Admin_Page {
 	private function render_recent_activity(): void {
 		$events = $this->audit->list_recent( 10 );
 		?>
-		<details class="magick-ai-core-disclosure magick-ai-core-max-wide magick-ai-core-disclosure-top">
+		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide npcink-governance-core-disclosure-top">
 			<summary>
-				<strong><?php echo esc_html__( 'Recent Activity', 'magick-ai-core' ); ?></strong>
-				<span class="magick-ai-core-muted"><?php echo esc_html__( 'Latest Core governance events. Full audit is in its own tab.', 'magick-ai-core' ); ?></span>
+				<strong><?php echo esc_html__( 'Recent Activity', 'npcink-governance-core' ); ?></strong>
+				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Latest Core governance events. Full audit is in its own tab.', 'npcink-governance-core' ); ?></span>
 			</summary>
-			<table class="widefat striped magick-ai-core-table-spaced">
+			<table class="widefat striped npcink-governance-core-table-spaced">
 				<thead>
 					<tr>
-						<th scope="col"><?php echo esc_html__( 'Time', 'magick-ai-core' ); ?></th>
-						<th scope="col"><?php echo esc_html__( 'Event', 'magick-ai-core' ); ?></th>
-						<th scope="col"><?php echo esc_html__( 'Proposal', 'magick-ai-core' ); ?></th>
-						<th scope="col"><?php echo esc_html__( 'Actor', 'magick-ai-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Time', 'npcink-governance-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Event', 'npcink-governance-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Proposal', 'npcink-governance-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Actor', 'npcink-governance-core' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php if ( empty( $events ) ) : ?>
 						<tr>
-							<td colspan="4"><?php echo esc_html__( 'No recent governance activity.', 'magick-ai-core' ); ?></td>
+							<td colspan="4"><?php echo esc_html__( 'No recent governance activity.', 'npcink-governance-core' ); ?></td>
 						</tr>
 					<?php endif; ?>
 					<?php foreach ( $events as $event ) : ?>
@@ -805,7 +805,7 @@ final class Admin_Page {
 								<?php if ( '' !== $proposal_id ) : ?>
 									<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
 								<?php else : ?>
-									<?php echo esc_html__( 'System', 'magick-ai-core' ); ?>
+									<?php echo esc_html__( 'System', 'npcink-governance-core' ); ?>
 								<?php endif; ?>
 							</td>
 							<td><?php echo esc_html( (string) $event['actor_id'] ); ?></td>
@@ -813,7 +813,7 @@ final class Admin_Page {
 					<?php endforeach; ?>
 				</tbody>
 			</table>
-			<p><a href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Open full audit', 'magick-ai-core' ); ?></a></p>
+			<p><a href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Open full audit', 'npcink-governance-core' ); ?></a></p>
 		</details>
 		<?php
 	}
@@ -827,24 +827,24 @@ final class Admin_Page {
 		$active_count = $this->apps->count( 'active' );
 		$last_used    = $this->apps->latest_last_used_at();
 		?>
-		<details class="magick-ai-core-disclosure magick-ai-core-max-wide magick-ai-core-disclosure-top">
+		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide npcink-governance-core-disclosure-top">
 			<summary>
-				<strong><?php echo esc_html__( 'Advanced Access', 'magick-ai-core' ); ?></strong>
-				<span class="magick-ai-core-muted"><?php echo esc_html__( 'Core app keys for trusted governance clients.', 'magick-ai-core' ); ?></span>
+				<strong><?php echo esc_html__( 'Advanced Access', 'npcink-governance-core' ); ?></strong>
+				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Core app keys for trusted governance clients.', 'npcink-governance-core' ); ?></span>
 			</summary>
-			<table class="widefat striped magick-ai-core-table-spaced">
+			<table class="widefat striped npcink-governance-core-table-spaced">
 				<tbody>
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Active app keys', 'magick-ai-core' ); ?></th>
+						<th scope="row"><?php echo esc_html__( 'Active app keys', 'npcink-governance-core' ); ?></th>
 						<td><?php echo esc_html( (string) $active_count ); ?></td>
 					</tr>
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Last used', 'magick-ai-core' ); ?></th>
-						<td><?php echo esc_html( '' !== $last_used ? $this->display_datetime( $last_used ) : __( 'Never', 'magick-ai-core' ) ); ?></td>
+						<th scope="row"><?php echo esc_html__( 'Last used', 'npcink-governance-core' ); ?></th>
+						<td><?php echo esc_html( '' !== $last_used ? $this->display_datetime( $last_used ) : __( 'Never', 'npcink-governance-core' ) ); ?></td>
 					</tr>
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Action', 'magick-ai-core' ); ?></th>
-						<td><a class="button" href="<?php echo esc_url( $this->view_url( 'app-keys' ) ); ?>"><?php echo esc_html__( 'Manage Core app keys', 'magick-ai-core' ); ?></a></td>
+						<th scope="row"><?php echo esc_html__( 'Action', 'npcink-governance-core' ); ?></th>
+						<td><a class="button" href="<?php echo esc_url( $this->view_url( 'app-keys' ) ); ?>"><?php echo esc_html__( 'Manage Core app keys', 'npcink-governance-core' ); ?></a></td>
 					</tr>
 				</tbody>
 			</table>
@@ -877,7 +877,7 @@ final class Admin_Page {
 	 */
 	public function handle_bulk_reject(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You do not have permission to update proposals.', 'magick-ai-core' ) );
+			wp_die( esc_html__( 'You do not have permission to update proposals.', 'npcink-governance-core' ) );
 		}
 
 		check_admin_referer( 'magick_ai_core_bulk_reject_proposals' );
@@ -888,7 +888,7 @@ final class Admin_Page {
 		$proposal_ids = array_slice( $proposal_ids, 0, 50 );
 		$note         = isset( $_POST['note'] ) ? sanitize_textarea_field( wp_unslash( (string) $_POST['note'] ) ) : '';
 		if ( '' === $note ) {
-			$note = __( 'Superseded by batch cleanup proposal.', 'magick-ai-core' );
+			$note = __( 'Superseded by batch cleanup proposal.', 'npcink-governance-core' );
 		}
 
 		if ( empty( $proposal_ids ) ) {
@@ -951,7 +951,7 @@ final class Admin_Page {
 	 */
 	public function handle_update_approval_policy(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You do not have permission to update approval policy.', 'magick-ai-core' ) );
+			wp_die( esc_html__( 'You do not have permission to update approval policy.', 'npcink-governance-core' ) );
 		}
 
 		check_admin_referer( 'magick_ai_core_update_approval_policy' );
@@ -979,7 +979,7 @@ final class Admin_Page {
 	 */
 	public function handle_create_app_key(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You do not have permission to create app keys.', 'magick-ai-core' ) );
+			wp_die( esc_html__( 'You do not have permission to create app keys.', 'npcink-governance-core' ) );
 		}
 
 		check_admin_referer( 'magick_ai_core_create_app_key' );
@@ -1038,7 +1038,7 @@ final class Admin_Page {
 	 */
 	public function handle_revoke_app_key(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You do not have permission to revoke app keys.', 'magick-ai-core' ) );
+			wp_die( esc_html__( 'You do not have permission to revoke app keys.', 'npcink-governance-core' ) );
 		}
 
 		$key_id = isset( $_POST['key_id'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['key_id'] ) ) : '';
@@ -1079,14 +1079,14 @@ final class Admin_Page {
 		$page  = $this->bounded_page( $total, $page, self::APP_KEY_PAGE_SIZE );
 		$apps  = $this->apps->list_recent( self::APP_KEY_PAGE_SIZE, $this->offset_for_page( $page, self::APP_KEY_PAGE_SIZE ) );
 		?>
-		<p><a href="<?php echo esc_url( $this->admin_url() ); ?>">&larr; <?php echo esc_html__( 'Back to review queue', 'magick-ai-core' ); ?></a></p>
-		<h2><?php echo esc_html__( 'Advanced Access', 'magick-ai-core' ); ?></h2>
-		<p><?php echo esc_html__( 'Use this only for trusted Core governance clients. Productized OpenClaw setup belongs in Magick AI Adapter.', 'magick-ai-core' ); ?></p>
+		<p><a href="<?php echo esc_url( $this->admin_url() ); ?>">&larr; <?php echo esc_html__( 'Back to review queue', 'npcink-governance-core' ); ?></a></p>
+		<h2><?php echo esc_html__( 'Advanced Access', 'npcink-governance-core' ); ?></h2>
+		<p><?php echo esc_html__( 'Use this only for trusted Core governance clients. Productized OpenClaw setup belongs in a trusted adapter.', 'npcink-governance-core' ); ?></p>
 
 		<details style="max-width: 1100px; margin: 0 0 16px;">
 			<summary style="cursor: pointer;">
-				<strong><?php echo esc_html__( 'Create Core App Key', 'magick-ai-core' ); ?></strong>
-				<span style="color: #646970;"><?php echo esc_html__( 'Issue a scoped token for a trusted governance client.', 'magick-ai-core' ); ?></span>
+				<strong><?php echo esc_html__( 'Create Core App Key', 'npcink-governance-core' ); ?></strong>
+				<span style="color: #646970;"><?php echo esc_html__( 'Issue a scoped token for a trusted governance client.', 'npcink-governance-core' ); ?></span>
 			</summary>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top: 8px;">
 				<input type="hidden" name="action" value="magick_ai_core_create_app_key" />
@@ -1094,53 +1094,53 @@ final class Admin_Page {
 				<table class="form-table" role="presentation">
 					<tbody>
 						<tr>
-							<th scope="row"><label for="magick-ai-core-app-label"><?php echo esc_html__( 'App label', 'magick-ai-core' ); ?></label></th>
-							<td><input id="magick-ai-core-app-label" class="regular-text" type="text" name="app_label" value="Adapter Client" /></td>
+							<th scope="row"><label for="npcink-governance-core-app-label"><?php echo esc_html__( 'App label', 'npcink-governance-core' ); ?></label></th>
+							<td><input id="npcink-governance-core-app-label" class="regular-text" type="text" name="app_label" value="Adapter Client" /></td>
 						</tr>
 						<tr>
-							<th scope="row"><label for="magick-ai-core-caller-type"><?php echo esc_html__( 'Caller type', 'magick-ai-core' ); ?></label></th>
-							<td><input id="magick-ai-core-caller-type" class="regular-text" type="text" name="caller_type" value="product_adapter" /></td>
+							<th scope="row"><label for="npcink-governance-core-caller-type"><?php echo esc_html__( 'Caller type', 'npcink-governance-core' ); ?></label></th>
+							<td><input id="npcink-governance-core-caller-type" class="regular-text" type="text" name="caller_type" value="product_adapter" /></td>
 						</tr>
 						<tr>
-							<th scope="row"><?php echo esc_html__( 'Scopes', 'magick-ai-core' ); ?></th>
+							<th scope="row"><?php echo esc_html__( 'Scopes', 'npcink-governance-core' ); ?></th>
 							<td><?php $this->render_scope_checkboxes(); ?></td>
 						</tr>
 						<tr>
-							<th scope="row"><label for="magick-ai-core-rate-limit"><?php echo esc_html__( 'Rate limit', 'magick-ai-core' ); ?></label></th>
+							<th scope="row"><label for="npcink-governance-core-rate-limit"><?php echo esc_html__( 'Rate limit', 'npcink-governance-core' ); ?></label></th>
 							<td>
 								<label>
-									<?php echo esc_html__( 'Requests', 'magick-ai-core' ); ?>
-									<input id="magick-ai-core-rate-limit" type="number" min="1" max="10000" name="rate_limit" value="<?php echo esc_attr( (string) App_Key_Repository::DEFAULT_RATE_LIMIT ); ?>" />
+									<?php echo esc_html__( 'Requests', 'npcink-governance-core' ); ?>
+									<input id="npcink-governance-core-rate-limit" type="number" min="1" max="10000" name="rate_limit" value="<?php echo esc_attr( (string) App_Key_Repository::DEFAULT_RATE_LIMIT ); ?>" />
 								</label>
 								<label style="margin-left: 12px;">
-									<?php echo esc_html__( 'Window seconds', 'magick-ai-core' ); ?>
+									<?php echo esc_html__( 'Window seconds', 'npcink-governance-core' ); ?>
 									<input type="number" min="60" max="86400" name="rate_window_seconds" value="<?php echo esc_attr( (string) App_Key_Repository::DEFAULT_RATE_WINDOW ); ?>" />
 								</label>
 							</td>
 						</tr>
 					</tbody>
 				</table>
-				<p><button type="submit" class="button button-secondary"><?php echo esc_html__( 'Create Core App Key', 'magick-ai-core' ); ?></button></p>
+				<p><button type="submit" class="button button-secondary"><?php echo esc_html__( 'Create Core App Key', 'npcink-governance-core' ); ?></button></p>
 			</form>
 		</details>
 
-		<h3><?php echo esc_html__( 'Core App Keys', 'magick-ai-core' ); ?></h3>
+		<h3><?php echo esc_html__( 'Core App Keys', 'npcink-governance-core' ); ?></h3>
 		<p><?php echo esc_html( $this->pagination_summary( $total, $page, self::APP_KEY_PAGE_SIZE ) ); ?></p>
 		<table class="widefat striped" style="max-width: 1100px;">
 			<thead>
 				<tr>
-					<th scope="col"><?php echo esc_html__( 'Label', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'App ID', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Key ID', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Status', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Scopes', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Last used', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Action', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Label', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'App ID', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Key ID', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Status', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Scopes', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Last used', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Action', 'npcink-governance-core' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php if ( empty( $apps ) ) : ?>
-					<tr><td colspan="7"><?php echo esc_html__( 'No app keys yet.', 'magick-ai-core' ); ?></td></tr>
+					<tr><td colspan="7"><?php echo esc_html__( 'No app keys yet.', 'npcink-governance-core' ); ?></td></tr>
 				<?php endif; ?>
 				<?php foreach ( $apps as $app ) : ?>
 					<tr>
@@ -1149,17 +1149,17 @@ final class Admin_Page {
 						<td><code><?php echo esc_html( (string) $app['key_id'] ); ?></code></td>
 						<td><?php echo esc_html( (string) $app['status'] ); ?></td>
 						<td><?php echo esc_html( implode( ', ', (array) $app['scopes'] ) ); ?></td>
-						<td><?php echo esc_html( '' !== (string) $app['last_used_at'] ? $this->display_datetime( (string) $app['last_used_at'] ) : __( 'Never', 'magick-ai-core' ) ); ?></td>
+						<td><?php echo esc_html( '' !== (string) $app['last_used_at'] ? $this->display_datetime( (string) $app['last_used_at'] ) : __( 'Never', 'npcink-governance-core' ) ); ?></td>
 						<td>
 							<?php if ( 'active' === (string) $app['status'] ) : ?>
 								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 									<input type="hidden" name="action" value="magick_ai_core_revoke_app_key" />
 									<input type="hidden" name="key_id" value="<?php echo esc_attr( (string) $app['key_id'] ); ?>" />
 									<?php wp_nonce_field( 'magick_ai_core_revoke_app_key_' . (string) $app['key_id'] ); ?>
-									<button type="submit" class="button button-link-delete" onclick="return confirm('<?php echo esc_js( __( 'Disable this app key? Existing clients using this token will receive 401.', 'magick-ai-core' ) ); ?>');"><?php echo esc_html__( 'Disable', 'magick-ai-core' ); ?></button>
+									<button type="submit" class="button button-link-delete" onclick="return confirm('<?php echo esc_js( __( 'Disable this app key? Existing clients using this token will receive 401.', 'npcink-governance-core' ) ); ?>');"><?php echo esc_html__( 'Disable', 'npcink-governance-core' ); ?></button>
 								</form>
 							<?php else : ?>
-								<?php echo esc_html__( 'Disabled', 'magick-ai-core' ); ?>
+								<?php echo esc_html__( 'Disabled', 'npcink-governance-core' ); ?>
 							<?php endif; ?>
 						</td>
 					</tr>
@@ -1190,8 +1190,8 @@ final class Admin_Page {
 			$this->offset_for_page( $page, self::ARCHIVE_PAGE_SIZE )
 		);
 		?>
-		<h2><?php echo esc_html__( 'Expired / Archived', 'magick-ai-core' ); ?></h2>
-		<p><?php echo esc_html__( 'Stale requests are kept for audit but removed from the active review queue.', 'magick-ai-core' ); ?></p>
+		<h2><?php echo esc_html__( 'Expired / Archived', 'npcink-governance-core' ); ?></h2>
+		<p><?php echo esc_html__( 'Stale requests are kept for audit but removed from the active review queue.', 'npcink-governance-core' ); ?></p>
 		<ul class="subsubsub" style="float: none; margin: 0 0 12px;">
 			<?php foreach ( $this->archive_status_filters() as $key => $label ) : ?>
 				<li>
@@ -1205,17 +1205,17 @@ final class Admin_Page {
 		<table class="widefat striped" style="max-width: 1100px;">
 			<thead>
 				<tr>
-					<th scope="col"><?php echo esc_html__( 'Proposal', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Status', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Age', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Updated', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Action', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Proposal', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Status', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Age', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Updated', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Action', 'npcink-governance-core' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php if ( empty( $proposals ) ) : ?>
 					<tr>
-						<td colspan="5"><?php echo esc_html__( 'No expired or archived proposals.', 'magick-ai-core' ); ?></td>
+						<td colspan="5"><?php echo esc_html__( 'No expired or archived proposals.', 'npcink-governance-core' ); ?></td>
 					</tr>
 				<?php endif; ?>
 				<?php foreach ( $proposals as $proposal ) : ?>
@@ -1246,13 +1246,13 @@ final class Admin_Page {
 	private function render_scope_checkboxes(): void {
 		$defaults = $this->apps->default_scopes();
 		$labels   = array(
-			'capabilities:read' => __( 'Read capabilities', 'magick-ai-core' ),
-			'proposals:create'  => __( 'Create proposals', 'magick-ai-core' ),
-			'proposals:read'    => __( 'Read proposals', 'magick-ai-core' ),
-			'commit:preflight'  => __( 'Commit preflight', 'magick-ai-core' ),
-			'proposals:approve' => __( 'Approve proposals', 'magick-ai-core' ),
-			'proposals:reject'  => __( 'Reject proposals', 'magick-ai-core' ),
-			'audit:read'        => __( 'Read audit log', 'magick-ai-core' ),
+			'capabilities:read' => __( 'Read capabilities', 'npcink-governance-core' ),
+			'proposals:create'  => __( 'Create proposals', 'npcink-governance-core' ),
+			'proposals:read'    => __( 'Read proposals', 'npcink-governance-core' ),
+			'commit:preflight'  => __( 'Commit preflight', 'npcink-governance-core' ),
+			'proposals:approve' => __( 'Approve proposals', 'npcink-governance-core' ),
+			'proposals:reject'  => __( 'Reject proposals', 'npcink-governance-core' ),
+			'audit:read'        => __( 'Read audit log', 'npcink-governance-core' ),
 		);
 
 		foreach ( $this->apps->allowed_scopes() as $scope ) {
@@ -1280,40 +1280,40 @@ final class Admin_Page {
 		<head>
 			<meta charset="<?php echo esc_attr( get_bloginfo( 'charset' ) ); ?>" />
 			<meta name="viewport" content="width=device-width, initial-scale=1" />
-			<title><?php echo esc_html__( 'Core App Key Created', 'magick-ai-core' ); ?></title>
+			<title><?php echo esc_html__( 'Core App Key Created', 'npcink-governance-core' ); ?></title>
 			<?php
-			wp_enqueue_style( 'magick-ai-core-admin', $this->admin_stylesheet_url(), array(), MAGICK_AI_CORE_VERSION );
-			wp_print_styles( 'magick-ai-core-admin' );
+			wp_enqueue_style( 'npcink-governance-core-admin', $this->admin_stylesheet_url(), array(), MAGICK_AI_CORE_VERSION );
+			wp_print_styles( 'npcink-governance-core-admin' );
 			?>
 		</head>
 		<body>
 			<main>
-				<h1><?php echo esc_html__( 'Core App Key Created', 'magick-ai-core' ); ?></h1>
+				<h1><?php echo esc_html__( 'Core App Key Created', 'npcink-governance-core' ); ?></h1>
 				<div class="notice">
-					<p><?php echo esc_html__( 'Copy this token now. It is shown only once and is not stored in raw form.', 'magick-ai-core' ); ?></p>
-					<p><?php echo esc_html__( 'Use this token only in a trusted Adapter or internal governance client secret store. Configure productized OpenClaw setup in Magick AI Adapter.', 'magick-ai-core' ); ?></p>
+					<p><?php echo esc_html__( 'Copy this token now. It is shown only once and is not stored in raw form.', 'npcink-governance-core' ); ?></p>
+					<p><?php echo esc_html__( 'Use this token only in a trusted adapter or internal governance client secret store.', 'npcink-governance-core' ); ?></p>
 				</div>
 				<table>
 					<tbody>
 						<tr>
-							<th scope="row"><?php echo esc_html__( 'App ID', 'magick-ai-core' ); ?></th>
+							<th scope="row"><?php echo esc_html__( 'App ID', 'npcink-governance-core' ); ?></th>
 							<td><code><?php echo esc_html( (string) $app['app_id'] ); ?></code></td>
 						</tr>
 						<tr>
-							<th scope="row"><?php echo esc_html__( 'Key ID', 'magick-ai-core' ); ?></th>
+							<th scope="row"><?php echo esc_html__( 'Key ID', 'npcink-governance-core' ); ?></th>
 							<td><code><?php echo esc_html( (string) $app['key_id'] ); ?></code></td>
 						</tr>
 						<tr>
-							<th scope="row"><?php echo esc_html__( 'App token', 'magick-ai-core' ); ?></th>
+							<th scope="row"><?php echo esc_html__( 'App token', 'npcink-governance-core' ); ?></th>
 							<td><textarea rows="3" readonly><?php echo esc_textarea( $token ); ?></textarea></td>
 						</tr>
 						<tr>
-							<th scope="row"><?php echo esc_html__( 'Core env', 'magick-ai-core' ); ?></th>
+							<th scope="row"><?php echo esc_html__( 'Core env', 'npcink-governance-core' ); ?></th>
 							<td><textarea rows="4" readonly><?php echo esc_textarea( $this->core_env_text( $token ) ); ?></textarea></td>
 						</tr>
 					</tbody>
 				</table>
-				<p class="actions"><a class="button" href="<?php echo esc_url( $this->view_url( 'app-keys' ) ); ?>"><?php echo esc_html__( 'Back to Advanced Access', 'magick-ai-core' ); ?></a></p>
+				<p class="actions"><a class="button" href="<?php echo esc_url( $this->view_url( 'app-keys' ) ); ?>"><?php echo esc_html__( 'Back to Advanced Access', 'npcink-governance-core' ); ?></a></p>
 			</main>
 		</body>
 		</html>
@@ -1328,7 +1328,7 @@ final class Admin_Page {
 	 */
 	private function handle_decision( string $decision ): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You do not have permission to update proposals.', 'magick-ai-core' ) );
+			wp_die( esc_html__( 'You do not have permission to update proposals.', 'npcink-governance-core' ) );
 		}
 
 		$proposal_id = isset( $_POST['proposal_id'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['proposal_id'] ) ) : '';
@@ -1354,7 +1354,7 @@ final class Admin_Page {
 	 */
 	private function handle_lifecycle_action( string $action ): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You do not have permission to update proposals.', 'magick-ai-core' ) );
+			wp_die( esc_html__( 'You do not have permission to update proposals.', 'npcink-governance-core' ) );
 		}
 
 		$proposal_id = isset( $_POST['proposal_id'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['proposal_id'] ) ) : '';
@@ -1397,32 +1397,32 @@ final class Admin_Page {
 			)
 		);
 		?>
-		<p><a href="<?php echo esc_url( $this->admin_url() ); ?>">&larr; <?php echo esc_html__( 'Back to review queue', 'magick-ai-core' ); ?></a></p>
-		<h2><?php echo esc_html__( 'Proposal Detail', 'magick-ai-core' ); ?></h2>
+		<p><a href="<?php echo esc_url( $this->admin_url() ); ?>">&larr; <?php echo esc_html__( 'Back to review queue', 'npcink-governance-core' ); ?></a></p>
+		<h2><?php echo esc_html__( 'Proposal Detail', 'npcink-governance-core' ); ?></h2>
 		<table class="widefat striped" style="max-width: 1100px;">
 			<tbody>
 				<tr>
-					<th scope="row"><?php echo esc_html__( 'Proposal ID', 'magick-ai-core' ); ?></th>
+					<th scope="row"><?php echo esc_html__( 'Proposal ID', 'npcink-governance-core' ); ?></th>
 					<td><code><?php echo esc_html( $proposal_id ); ?></code></td>
 				</tr>
 				<tr>
-					<th scope="row"><?php echo esc_html__( 'Status', 'magick-ai-core' ); ?></th>
+					<th scope="row"><?php echo esc_html__( 'Status', 'npcink-governance-core' ); ?></th>
 					<td><?php echo esc_html( $this->status_label( (string) $proposal['status'] ) ); ?></td>
 				</tr>
 				<tr>
-					<th scope="row"><?php echo esc_html__( 'Age', 'magick-ai-core' ); ?></th>
+					<th scope="row"><?php echo esc_html__( 'Age', 'npcink-governance-core' ); ?></th>
 					<td><?php echo esc_html( $this->proposal_age_label( $proposal ) ); ?></td>
 				</tr>
 				<tr>
-					<th scope="row"><?php echo esc_html__( 'Expiry', 'magick-ai-core' ); ?></th>
+					<th scope="row"><?php echo esc_html__( 'Expiry', 'npcink-governance-core' ); ?></th>
 					<td><?php echo esc_html( $this->proposal_expiry_label( $proposal ) ); ?></td>
 				</tr>
 				<tr>
-					<th scope="row"><?php echo esc_html__( 'Ability', 'magick-ai-core' ); ?></th>
+					<th scope="row"><?php echo esc_html__( 'Ability', 'npcink-governance-core' ); ?></th>
 					<td><code><?php echo esc_html( (string) $proposal['ability_id'] ); ?></code></td>
 				</tr>
 				<tr>
-					<th scope="row"><?php echo esc_html__( 'Summary', 'magick-ai-core' ); ?></th>
+					<th scope="row"><?php echo esc_html__( 'Summary', 'npcink-governance-core' ); ?></th>
 					<td><?php echo esc_html( (string) $proposal['summary'] ); ?></td>
 				</tr>
 			</tbody>
@@ -1432,20 +1432,20 @@ final class Admin_Page {
 		<?php $this->render_review_context( $proposal, $capability ); ?>
 
 		<?php if ( Proposal_Repository::STATUS_PENDING === (string) $proposal['status'] ) : ?>
-			<h3><?php echo esc_html__( 'Decision', 'magick-ai-core' ); ?></h3>
+			<h3><?php echo esc_html__( 'Decision', 'npcink-governance-core' ); ?></h3>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="max-width: 760px;">
 				<input type="hidden" name="proposal_id" value="<?php echo esc_attr( $proposal_id ); ?>" />
 				<?php wp_nonce_field( 'magick_ai_core_decide_proposal_' . $proposal_id ); ?>
 				<p>
-					<label for="magick-ai-core-note"><?php echo esc_html__( 'Decision note', 'magick-ai-core' ); ?></label><br />
-					<textarea id="magick-ai-core-note" name="note" rows="3" class="large-text"></textarea>
+					<label for="npcink-governance-core-note"><?php echo esc_html__( 'Decision note', 'npcink-governance-core' ); ?></label><br />
+					<textarea id="npcink-governance-core-note" name="note" rows="3" class="large-text"></textarea>
 				</p>
 				<p>
 					<button type="submit" class="button button-primary" name="action" value="magick_ai_core_approve_proposal">
-						<?php echo esc_html__( 'Approve', 'magick-ai-core' ); ?>
+						<?php echo esc_html__( 'Approve', 'npcink-governance-core' ); ?>
 					</button>
 					<button type="submit" class="button" name="action" value="magick_ai_core_reject_proposal">
-						<?php echo esc_html__( 'Reject', 'magick-ai-core' ); ?>
+						<?php echo esc_html__( 'Reject', 'npcink-governance-core' ); ?>
 					</button>
 				</p>
 			</form>
@@ -1473,16 +1473,16 @@ final class Admin_Page {
 
 		if ( ! $compact ) {
 			?>
-			<h3><?php echo esc_html__( 'Lifecycle', 'magick-ai-core' ); ?></h3>
-			<p><?php echo esc_html__( 'Expired and archived proposals are not eligible for approval until reopened.', 'magick-ai-core' ); ?></p>
+			<h3><?php echo esc_html__( 'Lifecycle', 'npcink-governance-core' ); ?></h3>
+			<p><?php echo esc_html__( 'Expired and archived proposals are not eligible for approval until reopened.', 'npcink-governance-core' ); ?></p>
 			<?php
 		}
 		?>
 		<div style="display: flex; flex-wrap: wrap; gap: 8px;">
 			<?php if ( Proposal_Repository::STATUS_EXPIRED === $status ) : ?>
-				<?php $this->render_lifecycle_form( $proposal_id, 'archive', __( 'Archive', 'magick-ai-core' ), 'button' ); ?>
+				<?php $this->render_lifecycle_form( $proposal_id, 'archive', __( 'Archive', 'npcink-governance-core' ), 'button' ); ?>
 			<?php endif; ?>
-			<?php $this->render_lifecycle_form( $proposal_id, 'reopen', __( 'Reopen for review', 'magick-ai-core' ), 'button button-secondary' ); ?>
+			<?php $this->render_lifecycle_form( $proposal_id, 'reopen', __( 'Reopen for review', 'npcink-governance-core' ), 'button button-secondary' ); ?>
 		</div>
 		<?php
 	}
@@ -1522,55 +1522,55 @@ final class Admin_Page {
 		$target_ability   = (string) ( $preview['target_ability_id'] ?? $proposal['ability_id'] );
 		$reason           = (string) ( $preview['reason'] ?? '' );
 		$ready_label      = array_key_exists( 'proposal_ready', $preview )
-			? ( (bool) $preview['proposal_ready'] ? __( 'yes', 'magick-ai-core' ) : __( 'no', 'magick-ai-core' ) )
-			: __( 'not declared', 'magick-ai-core' );
+			? ( (bool) $preview['proposal_ready'] ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ) )
+			: __( 'not declared', 'npcink-governance-core' );
 
 		if ( '' === $risk_label && null !== $capability ) {
 			$risk_label = (string) $capability['risk_level'];
 		}
 		?>
-		<h3><?php echo esc_html__( 'Review Context', 'magick-ai-core' ); ?></h3>
+		<h3><?php echo esc_html__( 'Review Context', 'npcink-governance-core' ); ?></h3>
 		<table class="widefat striped" style="max-width: 1100px;">
 			<tbody>
 				<?php if ( null === $capability ) : ?>
 					<tr>
-						<td><?php echo esc_html__( 'The target ability is not currently discoverable. Commit preflight will fail closed until the provider exposes it again.', 'magick-ai-core' ); ?></td>
+						<td><?php echo esc_html__( 'The target ability is not currently discoverable. Commit preflight will fail closed until the provider exposes it again.', 'npcink-governance-core' ); ?></td>
 					</tr>
 				<?php else : ?>
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Target ability', 'magick-ai-core' ); ?></th>
+						<th scope="row"><?php echo esc_html__( 'Target ability', 'npcink-governance-core' ); ?></th>
 						<td><code><?php echo esc_html( $target_ability ); ?></code></td>
 					</tr>
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Risk', 'magick-ai-core' ); ?></th>
+						<th scope="row"><?php echo esc_html__( 'Risk', 'npcink-governance-core' ); ?></th>
 						<td><code><?php echo esc_html( '' !== $risk_label ? $risk_label : '-' ); ?></code></td>
 					</tr>
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Requires approval', 'magick-ai-core' ); ?></th>
-						<td><?php echo esc_html( ! empty( $capability['requires_approval'] ) ? __( 'yes', 'magick-ai-core' ) : __( 'no', 'magick-ai-core' ) ); ?></td>
+						<th scope="row"><?php echo esc_html__( 'Requires approval', 'npcink-governance-core' ); ?></th>
+						<td><?php echo esc_html( ! empty( $capability['requires_approval'] ) ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ) ); ?></td>
 					</tr>
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Proposal ready', 'magick-ai-core' ); ?></th>
+						<th scope="row"><?php echo esc_html__( 'Proposal ready', 'npcink-governance-core' ); ?></th>
 						<td><?php echo esc_html( $ready_label ); ?></td>
 					</tr>
 					<?php if ( '' !== $reason ) : ?>
 						<tr>
-							<th scope="row"><?php echo esc_html__( 'Reason', 'magick-ai-core' ); ?></th>
+							<th scope="row"><?php echo esc_html__( 'Reason', 'npcink-governance-core' ); ?></th>
 							<td><?php echo esc_html( $reason ); ?></td>
 						</tr>
 					<?php endif; ?>
 					<?php
 					if ( array_key_exists( 'before', $preview ) ) {
-						$this->render_review_value_row( __( 'Before', 'magick-ai-core' ), $preview['before'] );
+						$this->render_review_value_row( __( 'Before', 'npcink-governance-core' ), $preview['before'] );
 					}
 					if ( array_key_exists( 'after_suggestion', $preview ) ) {
-						$this->render_review_value_row( __( 'After suggestion', 'magick-ai-core' ), $preview['after_suggestion'] );
+						$this->render_review_value_row( __( 'After suggestion', 'npcink-governance-core' ), $preview['after_suggestion'] );
 					}
 					if ( ! empty( $preview['needs_input'] ) ) {
-						$this->render_review_value_row( __( 'Needs input', 'magick-ai-core' ), $preview['needs_input'] );
+						$this->render_review_value_row( __( 'Needs input', 'npcink-governance-core' ), $preview['needs_input'] );
 					}
 					if ( ! empty( $preview['blocked_items'] ) ) {
-						$this->render_review_value_row( __( 'Blocked items', 'magick-ai-core' ), $preview['blocked_items'] );
+						$this->render_review_value_row( __( 'Blocked items', 'npcink-governance-core' ), $preview['blocked_items'] );
 					}
 					?>
 				<?php endif; ?>
@@ -1600,18 +1600,18 @@ final class Admin_Page {
 		$title          = (string) ( $draft['title'] ?? $goal['title'] ?? $goal['topic'] ?? '' );
 
 		$this->render_review_value_row(
-			__( 'Article workflow', 'magick-ai-core' ),
+			__( 'Article workflow', 'npcink-governance-core' ),
 			array(
 				'title'                  => '' !== $title ? $title : '-',
 				'artifact_type'          => (string) ( $article_workflow['artifact_type'] ?? '' ),
 				'version'                => absint( $article_workflow['version'] ?? 0 ),
 				'risk_level'             => (string) ( $risk_report['risk_level'] ?? '-' ),
-				'ready_for_proposal'     => ! empty( $risk_report['ready_for_proposal'] ) ? __( 'yes', 'magick-ai-core' ) : __( 'no', 'magick-ai-core' ),
+				'ready_for_proposal'     => ! empty( $risk_report['ready_for_proposal'] ) ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ),
 				'blocked_claims'         => count( $blocked_claims ),
 				'needs_review'           => count( $needs_review ),
 				'final_write_ability'    => $proposal_ability_id,
 				'final_write_path'       => (string) ( $article_workflow['final_write_path'] ?? '' ),
-				'direct_wordpress_write' => ! empty( $article_workflow['direct_wordpress_write'] ) ? __( 'yes', 'magick-ai-core' ) : __( 'no', 'magick-ai-core' ),
+				'direct_wordpress_write' => ! empty( $article_workflow['direct_wordpress_write'] ) ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ),
 			)
 		);
 
@@ -1626,13 +1626,13 @@ final class Admin_Page {
 				'article_risk_report',
 			) as $artifact_key
 		) {
-			$artifact_availability[ $artifact_key ] = ! empty( $article_workflow[ $artifact_key ] ) ? __( 'included', 'magick-ai-core' ) : __( 'missing', 'magick-ai-core' );
+			$artifact_availability[ $artifact_key ] = ! empty( $article_workflow[ $artifact_key ] ) ? __( 'included', 'npcink-governance-core' ) : __( 'missing', 'npcink-governance-core' );
 		}
 
-		$this->render_review_value_row( __( 'Article artifacts', 'magick-ai-core' ), $artifact_availability );
+		$this->render_review_value_row( __( 'Article artifacts', 'npcink-governance-core' ), $artifact_availability );
 
 		if ( ! empty( $blocked_claims ) ) {
-			$this->render_review_value_row( __( 'Blocked claims', 'magick-ai-core' ), $blocked_claims );
+			$this->render_review_value_row( __( 'Blocked claims', 'npcink-governance-core' ), $blocked_claims );
 		}
 	}
 
@@ -1668,21 +1668,21 @@ final class Admin_Page {
 		?>
 		<details style="max-width: 1100px; margin-top: 12px;">
 			<summary style="cursor: pointer;">
-				<strong><?php echo esc_html__( 'Raw proposal payload', 'magick-ai-core' ); ?></strong>
-				<span style="color: #646970;"><?php echo esc_html__( 'Caller, input, and preview JSON.', 'magick-ai-core' ); ?></span>
+				<strong><?php echo esc_html__( 'Raw proposal payload', 'npcink-governance-core' ); ?></strong>
+				<span style="color: #646970;"><?php echo esc_html__( 'Caller, input, and preview JSON.', 'npcink-governance-core' ); ?></span>
 			</summary>
 			<table class="widefat striped" style="margin-top: 8px;">
 				<tbody>
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Caller', 'magick-ai-core' ); ?></th>
+						<th scope="row"><?php echo esc_html__( 'Caller', 'npcink-governance-core' ); ?></th>
 						<td><pre><?php echo esc_html( (string) wp_json_encode( $proposal['caller'], JSON_PRETTY_PRINT ) ); ?></pre></td>
 					</tr>
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Input', 'magick-ai-core' ); ?></th>
+						<th scope="row"><?php echo esc_html__( 'Input', 'npcink-governance-core' ); ?></th>
 						<td><pre><?php echo esc_html( (string) wp_json_encode( $proposal['input'], JSON_PRETTY_PRINT ) ); ?></pre></td>
 					</tr>
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Preview', 'magick-ai-core' ); ?></th>
+						<th scope="row"><?php echo esc_html__( 'Preview', 'npcink-governance-core' ); ?></th>
 						<td><pre><?php echo esc_html( (string) wp_json_encode( $proposal['preview'], JSON_PRETTY_PRINT ) ); ?></pre></td>
 					</tr>
 				</tbody>
@@ -1699,20 +1699,20 @@ final class Admin_Page {
 	 */
 	private function render_audit_timeline( array $events ): void {
 		?>
-		<h3><?php echo esc_html__( 'Audit Timeline', 'magick-ai-core' ); ?></h3>
+		<h3><?php echo esc_html__( 'Audit Timeline', 'npcink-governance-core' ); ?></h3>
 		<table class="widefat striped" style="max-width: 1100px;">
 			<thead>
 				<tr>
-					<th scope="col"><?php echo esc_html__( 'Time', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Event', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Actor', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Detail', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Time', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Event', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Actor', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Detail', 'npcink-governance-core' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php if ( empty( $events ) ) : ?>
 					<tr>
-						<td colspan="4"><?php echo esc_html__( 'No audit events recorded for this proposal yet.', 'magick-ai-core' ); ?></td>
+						<td colspan="4"><?php echo esc_html__( 'No audit events recorded for this proposal yet.', 'npcink-governance-core' ); ?></td>
 					</tr>
 				<?php endif; ?>
 				<?php foreach ( $events as $event ) : ?>
@@ -1738,80 +1738,80 @@ final class Admin_Page {
 	 */
 	private function render_governance_audit( array $events, array $filters, int $total ): void {
 		?>
-		<h2><?php echo esc_html__( 'Governance Audit', 'magick-ai-core' ); ?></h2>
-		<p><?php echo esc_html__( 'Recent Core governance events. AI Request Logs remain separate; correlate them with proposal_id or correlation_id.', 'magick-ai-core' ); ?></p>
+		<h2><?php echo esc_html__( 'Governance Audit', 'npcink-governance-core' ); ?></h2>
+		<p><?php echo esc_html__( 'Recent Core governance events. AI Request Logs remain separate; correlate them with proposal_id or correlation_id.', 'npcink-governance-core' ); ?></p>
 		<p><?php echo esc_html( $this->pagination_summary( $total, (int) $filters['page'], (int) $filters['limit'] ) ); ?></p>
 		<details style="max-width: 1100px; margin: 0 0 12px;" <?php echo $this->has_active_audit_filters( $filters ) ? 'open' : ''; ?>>
 			<summary style="cursor: pointer;">
-				<strong><?php echo esc_html__( 'Advanced audit filters', 'magick-ai-core' ); ?></strong>
-				<span style="color: #646970;"><?php echo esc_html__( 'Narrow by proposal, event, ability, app, caller, or correlation.', 'magick-ai-core' ); ?></span>
+				<strong><?php echo esc_html__( 'Advanced audit filters', 'npcink-governance-core' ); ?></strong>
+				<span style="color: #646970;"><?php echo esc_html__( 'Narrow by proposal, event, ability, app, caller, or correlation.', 'npcink-governance-core' ); ?></span>
 			</summary>
 			<form method="get" style="margin-top: 8px;">
-				<input type="hidden" name="page" value="magick-ai-core" />
+				<input type="hidden" name="page" value="npcink-governance-core" />
 				<input type="hidden" name="view" value="audit" />
 				<input type="hidden" name="<?php echo esc_attr( self::ADMIN_REQUEST_NONCE ); ?>" value="<?php echo esc_attr( wp_create_nonce( self::ADMIN_REQUEST_ACTION ) ); ?>" />
 				<table class="form-table" role="presentation">
 					<tbody>
 						<tr>
-							<th scope="row"><label for="magick-ai-core-audit-proposal"><?php echo esc_html__( 'Proposal ID', 'magick-ai-core' ); ?></label></th>
-							<td><input id="magick-ai-core-audit-proposal" class="regular-text" type="text" name="audit_proposal_id" value="<?php echo esc_attr( (string) $filters['proposal_id'] ); ?>" /></td>
+							<th scope="row"><label for="npcink-governance-core-audit-proposal"><?php echo esc_html__( 'Proposal ID', 'npcink-governance-core' ); ?></label></th>
+							<td><input id="npcink-governance-core-audit-proposal" class="regular-text" type="text" name="audit_proposal_id" value="<?php echo esc_attr( (string) $filters['proposal_id'] ); ?>" /></td>
 						</tr>
 						<tr>
-							<th scope="row"><label for="magick-ai-core-audit-event"><?php echo esc_html__( 'Event', 'magick-ai-core' ); ?></label></th>
-							<td><input id="magick-ai-core-audit-event" class="regular-text" type="text" name="audit_event_name" value="<?php echo esc_attr( (string) $filters['event_name'] ); ?>" placeholder="proposal.created" /></td>
+							<th scope="row"><label for="npcink-governance-core-audit-event"><?php echo esc_html__( 'Event', 'npcink-governance-core' ); ?></label></th>
+							<td><input id="npcink-governance-core-audit-event" class="regular-text" type="text" name="audit_event_name" value="<?php echo esc_attr( (string) $filters['event_name'] ); ?>" placeholder="proposal.created" /></td>
 						</tr>
 						<tr>
-							<th scope="row"><label for="magick-ai-core-audit-ability"><?php echo esc_html__( 'Ability ID', 'magick-ai-core' ); ?></label></th>
-							<td><input id="magick-ai-core-audit-ability" class="regular-text" type="text" name="audit_ability_id" value="<?php echo esc_attr( (string) $filters['ability_id'] ); ?>" placeholder="magick-ai/create-draft" /></td>
+							<th scope="row"><label for="npcink-governance-core-audit-ability"><?php echo esc_html__( 'Ability ID', 'npcink-governance-core' ); ?></label></th>
+							<td><input id="npcink-governance-core-audit-ability" class="regular-text" type="text" name="audit_ability_id" value="<?php echo esc_attr( (string) $filters['ability_id'] ); ?>" placeholder="magick-ai/create-draft" /></td>
 						</tr>
 						<tr>
-							<th scope="row"><label for="magick-ai-core-audit-app"><?php echo esc_html__( 'App ID', 'magick-ai-core' ); ?></label></th>
-							<td><input id="magick-ai-core-audit-app" class="regular-text" type="text" name="audit_app_id" value="<?php echo esc_attr( (string) $filters['app_id'] ); ?>" /></td>
+							<th scope="row"><label for="npcink-governance-core-audit-app"><?php echo esc_html__( 'App ID', 'npcink-governance-core' ); ?></label></th>
+							<td><input id="npcink-governance-core-audit-app" class="regular-text" type="text" name="audit_app_id" value="<?php echo esc_attr( (string) $filters['app_id'] ); ?>" /></td>
 						</tr>
 						<tr>
-							<th scope="row"><label for="magick-ai-core-audit-caller"><?php echo esc_html__( 'Caller type', 'magick-ai-core' ); ?></label></th>
-							<td><input id="magick-ai-core-audit-caller" class="regular-text" type="text" name="audit_caller_type" value="<?php echo esc_attr( (string) $filters['caller_type'] ); ?>" placeholder="product_adapter" /></td>
+							<th scope="row"><label for="npcink-governance-core-audit-caller"><?php echo esc_html__( 'Caller type', 'npcink-governance-core' ); ?></label></th>
+							<td><input id="npcink-governance-core-audit-caller" class="regular-text" type="text" name="audit_caller_type" value="<?php echo esc_attr( (string) $filters['caller_type'] ); ?>" placeholder="product_adapter" /></td>
 						</tr>
 						<tr>
-							<th scope="row"><label for="magick-ai-core-audit-correlation"><?php echo esc_html__( 'Correlation ID', 'magick-ai-core' ); ?></label></th>
-							<td><input id="magick-ai-core-audit-correlation" class="regular-text" type="text" name="audit_correlation_id" value="<?php echo esc_attr( (string) $filters['correlation_id'] ); ?>" /></td>
+							<th scope="row"><label for="npcink-governance-core-audit-correlation"><?php echo esc_html__( 'Correlation ID', 'npcink-governance-core' ); ?></label></th>
+							<td><input id="npcink-governance-core-audit-correlation" class="regular-text" type="text" name="audit_correlation_id" value="<?php echo esc_attr( (string) $filters['correlation_id'] ); ?>" /></td>
 						</tr>
 						<tr>
-							<th scope="row"><label for="magick-ai-core-audit-limit"><?php echo esc_html__( 'Per page', 'magick-ai-core' ); ?></label></th>
-							<td><input id="magick-ai-core-audit-limit" type="number" min="1" max="200" name="audit_limit" value="<?php echo esc_attr( (string) $filters['limit'] ); ?>" /></td>
+							<th scope="row"><label for="npcink-governance-core-audit-limit"><?php echo esc_html__( 'Per page', 'npcink-governance-core' ); ?></label></th>
+							<td><input id="npcink-governance-core-audit-limit" type="number" min="1" max="200" name="audit_limit" value="<?php echo esc_attr( (string) $filters['limit'] ); ?>" /></td>
 						</tr>
 						<tr>
-							<th scope="row"><?php echo esc_html__( 'Read events', 'magick-ai-core' ); ?></th>
+							<th scope="row"><?php echo esc_html__( 'Read events', 'npcink-governance-core' ); ?></th>
 							<td>
 								<label>
 									<input type="checkbox" name="audit_include_read_events" value="1" <?php checked( ! empty( $filters['include_read_events'] ) ); ?> />
-									<?php echo esc_html__( 'Include list/view noise events', 'magick-ai-core' ); ?>
+									<?php echo esc_html__( 'Include list/view noise events', 'npcink-governance-core' ); ?>
 								</label>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 				<p>
-					<button type="submit" class="button"><?php echo esc_html__( 'Filter Audit', 'magick-ai-core' ); ?></button>
-					<a class="button button-link" href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Clear', 'magick-ai-core' ); ?></a>
+					<button type="submit" class="button"><?php echo esc_html__( 'Filter Audit', 'npcink-governance-core' ); ?></button>
+					<a class="button button-link" href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Clear', 'npcink-governance-core' ); ?></a>
 				</p>
 			</form>
 		</details>
 		<table class="widefat striped" style="max-width: 1100px;">
 			<thead>
 				<tr>
-					<th scope="col"><?php echo esc_html__( 'Time', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Event', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Proposal', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Actor', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Ability', 'magick-ai-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Detail', 'magick-ai-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Time', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Event', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Proposal', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Actor', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Ability', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Detail', 'npcink-governance-core' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php if ( empty( $events ) ) : ?>
 					<tr>
-						<td colspan="6"><?php echo esc_html__( 'No governance audit events match the current filters.', 'magick-ai-core' ); ?></td>
+						<td colspan="6"><?php echo esc_html__( 'No governance audit events match the current filters.', 'npcink-governance-core' ); ?></td>
 					</tr>
 				<?php endif; ?>
 				<?php foreach ( $events as $event ) : ?>
@@ -1827,11 +1827,11 @@ final class Admin_Page {
 							<?php if ( '' !== $proposal_id ) : ?>
 								<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
 							<?php else : ?>
-								<?php echo esc_html__( 'System', 'magick-ai-core' ); ?>
+								<?php echo esc_html__( 'System', 'npcink-governance-core' ); ?>
 							<?php endif; ?>
 						</td>
 						<td><?php echo esc_html( (string) $event['actor_id'] ); ?></td>
-						<td><?php echo '' !== $ability_id ? '<code>' . esc_html( $ability_id ) . '</code>' : esc_html__( 'Core event', 'magick-ai-core' ); ?></td>
+						<td><?php echo '' !== $ability_id ? '<code>' . esc_html( $ability_id ) . '</code>' : esc_html__( 'Core event', 'npcink-governance-core' ); ?></td>
 						<td><?php $this->render_audit_detail( $event ); ?></td>
 					</tr>
 				<?php endforeach; ?>
@@ -1859,7 +1859,7 @@ final class Admin_Page {
 		$has_detail     = false;
 
 		if ( '' === $proposal_id ) {
-			$this->render_audit_badge( __( 'System event', 'magick-ai-core' ) );
+			$this->render_audit_badge( __( 'System event', 'npcink-governance-core' ) );
 			$has_detail = true;
 		}
 
@@ -1867,9 +1867,9 @@ final class Admin_Page {
 			$this->render_audit_badge(
 				sprintf(
 					/* translators: 1: app id, 2: caller type. */
-					__( 'App: %1$s / %2$s', 'magick-ai-core' ),
-					'' !== $app_id ? $app_id : __( 'unknown', 'magick-ai-core' ),
-					'' !== $caller_type ? $caller_type : __( 'unknown', 'magick-ai-core' )
+					__( 'App: %1$s / %2$s', 'npcink-governance-core' ),
+					'' !== $app_id ? $app_id : __( 'unknown', 'npcink-governance-core' ),
+					'' !== $caller_type ? $caller_type : __( 'unknown', 'npcink-governance-core' )
 				)
 			);
 			$has_detail = true;
@@ -1879,9 +1879,9 @@ final class Admin_Page {
 			$this->render_audit_badge(
 				sprintf(
 					/* translators: 1: scope, 2: scope decision. */
-					__( 'Scope: %1$s / %2$s', 'magick-ai-core' ),
-					'' !== $scope ? $scope : __( 'unknown', 'magick-ai-core' ),
-					'' !== $scope_decision ? $scope_decision : __( 'unknown', 'magick-ai-core' )
+					__( 'Scope: %1$s / %2$s', 'npcink-governance-core' ),
+					'' !== $scope ? $scope : __( 'unknown', 'npcink-governance-core' ),
+					'' !== $scope_decision ? $scope_decision : __( 'unknown', 'npcink-governance-core' )
 				)
 			);
 			$has_detail = true;
@@ -1891,7 +1891,7 @@ final class Admin_Page {
 			$this->render_audit_badge(
 				sprintf(
 					/* translators: %s: correlation id. */
-					__( 'Correlation: %s', 'magick-ai-core' ),
+					__( 'Correlation: %s', 'npcink-governance-core' ),
 					$correlation_id
 				)
 			);
@@ -1899,7 +1899,7 @@ final class Admin_Page {
 		}
 
 		if ( ! $has_detail ) {
-			echo esc_html__( 'No extra context', 'magick-ai-core' );
+			echo esc_html__( 'No extra context', 'npcink-governance-core' );
 		}
 	}
 
@@ -1982,9 +1982,9 @@ final class Admin_Page {
 	 */
 	private function archive_status_filters(): array {
 		return array(
-			'all'                                  => __( 'All', 'magick-ai-core' ),
-			Proposal_Repository::STATUS_EXPIRED  => __( 'Expired', 'magick-ai-core' ),
-			Proposal_Repository::STATUS_ARCHIVED => __( 'Archived', 'magick-ai-core' ),
+			'all'                                  => __( 'All', 'npcink-governance-core' ),
+			Proposal_Repository::STATUS_EXPIRED  => __( 'Expired', 'npcink-governance-core' ),
+			Proposal_Repository::STATUS_ARCHIVED => __( 'Archived', 'npcink-governance-core' ),
 		);
 	}
 
@@ -2087,7 +2087,7 @@ final class Admin_Page {
 	 */
 	private function pagination_summary( int $total, int $page, int $per_page ): string {
 		if ( $total <= 0 ) {
-			return __( 'No matching records.', 'magick-ai-core' );
+			return __( 'No matching records.', 'npcink-governance-core' );
 		}
 
 		$start = $this->offset_for_page( $page, $per_page ) + 1;
@@ -2095,7 +2095,7 @@ final class Admin_Page {
 
 		return sprintf(
 			/* translators: 1: first row number, 2: last row number, 3: total row count. */
-			__( 'Showing %1$d-%2$d of %3$d.', 'magick-ai-core' ),
+			__( 'Showing %1$d-%2$d of %3$d.', 'npcink-governance-core' ),
 			$start,
 			$end,
 			$total
@@ -2125,8 +2125,8 @@ final class Admin_Page {
 				'format'    => '',
 				'current'   => max( 1, $page ),
 				'total'     => $total_pages,
-				'prev_text' => __( 'Previous', 'magick-ai-core' ),
-				'next_text' => __( 'Next', 'magick-ai-core' ),
+				'prev_text' => __( 'Previous', 'npcink-governance-core' ),
+				'next_text' => __( 'Next', 'npcink-governance-core' ),
 			)
 		);
 
@@ -2147,11 +2147,11 @@ final class Admin_Page {
 	 */
 	private function status_label( string $status ): string {
 		$labels = array(
-			Proposal_Repository::STATUS_PENDING  => __( 'Needs review', 'magick-ai-core' ),
-			Proposal_Repository::STATUS_APPROVED => __( 'Approved', 'magick-ai-core' ),
-			Proposal_Repository::STATUS_REJECTED => __( 'Rejected', 'magick-ai-core' ),
-			Proposal_Repository::STATUS_EXPIRED  => __( 'Expired', 'magick-ai-core' ),
-			Proposal_Repository::STATUS_ARCHIVED => __( 'Archived', 'magick-ai-core' ),
+			Proposal_Repository::STATUS_PENDING  => __( 'Needs review', 'npcink-governance-core' ),
+			Proposal_Repository::STATUS_APPROVED => __( 'Approved', 'npcink-governance-core' ),
+			Proposal_Repository::STATUS_REJECTED => __( 'Rejected', 'npcink-governance-core' ),
+			Proposal_Repository::STATUS_EXPIRED  => __( 'Expired', 'npcink-governance-core' ),
+			Proposal_Repository::STATUS_ARCHIVED => __( 'Archived', 'npcink-governance-core' ),
 		);
 
 		return (string) ( $labels[ $status ] ?? $status );
@@ -2195,7 +2195,7 @@ final class Admin_Page {
 	private function proposal_age_label( array $proposal ): string {
 		$created = strtotime( (string) ( $proposal['created_at'] ?? '' ) );
 		if ( false === $created ) {
-			return __( 'Unknown', 'magick-ai-core' );
+			return __( 'Unknown', 'npcink-governance-core' );
 		}
 
 		$seconds = max( 0, time() - $created );
@@ -2212,27 +2212,27 @@ final class Admin_Page {
 		$status  = (string) ( $proposal['status'] ?? '' );
 		$created = strtotime( (string) ( $proposal['created_at'] ?? '' ) );
 		if ( false === $created ) {
-			return __( 'Unknown', 'magick-ai-core' );
+			return __( 'Unknown', 'npcink-governance-core' );
 		}
 
 		if ( Proposal_Repository::STATUS_PENDING !== $status ) {
 			if ( Proposal_Repository::STATUS_EXPIRED === $status || Proposal_Repository::STATUS_ARCHIVED === $status ) {
-				return __( 'Expired', 'magick-ai-core' );
+				return __( 'Expired', 'npcink-governance-core' );
 			}
 
-			return __( 'Not applicable', 'magick-ai-core' );
+			return __( 'Not applicable', 'npcink-governance-core' );
 		}
 
 		$expires_at = $created + $this->service->pending_ttl_seconds();
 		$remaining  = $expires_at - time();
 
 		if ( $remaining <= 0 ) {
-			return __( 'Expired', 'magick-ai-core' );
+			return __( 'Expired', 'npcink-governance-core' );
 		}
 
 		return sprintf(
 			/* translators: %s: remaining duration. */
-			__( 'Expires in %s', 'magick-ai-core' ),
+			__( 'Expires in %s', 'npcink-governance-core' ),
 			$this->duration_label( $remaining )
 		);
 	}
@@ -2247,7 +2247,7 @@ final class Admin_Page {
 		if ( $seconds < HOUR_IN_SECONDS ) {
 			return sprintf(
 				/* translators: %d: minutes. */
-				__( '%d min', 'magick-ai-core' ),
+				__( '%d min', 'npcink-governance-core' ),
 				max( 1, (int) ceil( $seconds / MINUTE_IN_SECONDS ) )
 			);
 		}
@@ -2255,14 +2255,14 @@ final class Admin_Page {
 		if ( $seconds < DAY_IN_SECONDS ) {
 			return sprintf(
 				/* translators: %d: hours. */
-				__( '%d hr', 'magick-ai-core' ),
+				__( '%d hr', 'npcink-governance-core' ),
 				max( 1, (int) ceil( $seconds / HOUR_IN_SECONDS ) )
 			);
 		}
 
 		return sprintf(
 			/* translators: %d: days. */
-			__( '%d days', 'magick-ai-core' ),
+			__( '%d days', 'npcink-governance-core' ),
 			max( 1, (int) ceil( $seconds / DAY_IN_SECONDS ) )
 		);
 	}
@@ -2395,25 +2395,25 @@ final class Admin_Page {
 	 */
 	private function message_text( string $code ): string {
 		$messages = array(
-			'approved'                                      => __( 'Proposal approved.', 'magick-ai-core' ),
-			'rejected'                                      => __( 'Proposal rejected.', 'magick-ai-core' ),
-			'bulk_rejected'                                 => __( 'Selected proposals rejected.', 'magick-ai-core' ),
-			'archived'                                      => __( 'Proposal archived.', 'magick-ai-core' ),
-			'reopened'                                      => __( 'Proposal reopened for review.', 'magick-ai-core' ),
-			'app_key_revoked'                               => __( 'App key disabled.', 'magick-ai-core' ),
-			'approval_policy_updated'                       => __( 'Approval policy mode updated.', 'magick-ai-core' ),
-			'magick_ai_core_app_key_not_active'             => __( 'App key is missing or already disabled.', 'magick-ai-core' ),
-			'magick_ai_core_app_key_revoke_failed'          => __( 'App key could not be disabled.', 'magick-ai-core' ),
-			'magick_ai_core_proposal_not_found'             => __( 'Proposal was not found.', 'magick-ai-core' ),
-			'magick_ai_core_proposal_expired'               => __( 'Proposal expired before a decision was made.', 'magick-ai-core' ),
-			'magick_ai_core_proposal_archive_not_allowed'   => __( 'Only expired proposals can be archived.', 'magick-ai-core' ),
-			'magick_ai_core_proposal_reopen_not_allowed'    => __( 'Only expired or archived proposals can be reopened.', 'magick-ai-core' ),
-			'magick_ai_core_proposal_already_decided'       => __( 'Only pending proposals can be approved or rejected.', 'magick-ai-core' ),
-			'magick_ai_core_proposal_transition_failed'     => __( 'Proposal status could not be updated.', 'magick-ai-core' ),
-			'magick_ai_core_bulk_reject_empty'              => __( 'Select at least one pending proposal to reject.', 'magick-ai-core' ),
+			'approved'                                      => __( 'Proposal approved.', 'npcink-governance-core' ),
+			'rejected'                                      => __( 'Proposal rejected.', 'npcink-governance-core' ),
+			'bulk_rejected'                                 => __( 'Selected proposals rejected.', 'npcink-governance-core' ),
+			'archived'                                      => __( 'Proposal archived.', 'npcink-governance-core' ),
+			'reopened'                                      => __( 'Proposal reopened for review.', 'npcink-governance-core' ),
+			'app_key_revoked'                               => __( 'App key disabled.', 'npcink-governance-core' ),
+			'approval_policy_updated'                       => __( 'Approval policy mode updated.', 'npcink-governance-core' ),
+			'magick_ai_core_app_key_not_active'             => __( 'App key is missing or already disabled.', 'npcink-governance-core' ),
+			'magick_ai_core_app_key_revoke_failed'          => __( 'App key could not be disabled.', 'npcink-governance-core' ),
+			'magick_ai_core_proposal_not_found'             => __( 'Proposal was not found.', 'npcink-governance-core' ),
+			'magick_ai_core_proposal_expired'               => __( 'Proposal expired before a decision was made.', 'npcink-governance-core' ),
+			'magick_ai_core_proposal_archive_not_allowed'   => __( 'Only expired proposals can be archived.', 'npcink-governance-core' ),
+			'magick_ai_core_proposal_reopen_not_allowed'    => __( 'Only expired or archived proposals can be reopened.', 'npcink-governance-core' ),
+			'magick_ai_core_proposal_already_decided'       => __( 'Only pending proposals can be approved or rejected.', 'npcink-governance-core' ),
+			'magick_ai_core_proposal_transition_failed'     => __( 'Proposal status could not be updated.', 'npcink-governance-core' ),
+			'magick_ai_core_bulk_reject_empty'              => __( 'Select at least one pending proposal to reject.', 'npcink-governance-core' ),
 		);
 
-		return (string) ( $messages[ $code ] ?? __( 'Proposal action could not be completed.', 'magick-ai-core' ) );
+		return (string) ( $messages[ $code ] ?? __( 'Proposal action could not be completed.', 'npcink-governance-core' ) );
 	}
 
 	/**
@@ -2424,8 +2424,8 @@ final class Admin_Page {
 	 */
 	private function core_env_text( string $token ): string {
 		$lines = array(
-			'MAGICK_AI_CORE_BASE_URL=' . home_url(),
-			'MAGICK_AI_CORE_APP_TOKEN=' . $token,
+			'NPCINK_GOVERNANCE_CORE_BASE_URL=' . home_url(),
+			'NPCINK_GOVERNANCE_CORE_APP_TOKEN=' . $token,
 		);
 
 		return implode( "\n", $lines );

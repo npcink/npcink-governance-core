@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Exposes app key management for administrators.
  */
 final class Apps_Controller {
-	const NAMESPACE = 'magick-ai-core/v1';
+	const NAMESPACE = 'npcink-governance-core/v1';
 
 	/**
 	 * App key repository.
@@ -168,7 +168,7 @@ final class Apps_Controller {
 			$this->apps->revoke_by_key_id( (string) $app['key_id'] );
 			return new WP_Error(
 				'magick_ai_core_app_audit_failed',
-				__( 'App key creation could not be audited.', 'magick-ai-core' ),
+				__( 'App key creation could not be audited.', 'npcink-governance-core' ),
 				array( 'status' => 500 )
 			);
 		}

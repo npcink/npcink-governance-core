@@ -2,7 +2,7 @@
 
 Status: active.
 
-Magick AI Core starts with a small but strict test pyramid.
+Npcink Governance Core starts with a small but strict test pyramid.
 
 ## Test Layers
 
@@ -13,7 +13,7 @@ Magick AI Core starts with a small but strict test pyramid.
 | Fail-closed fault injection | `composer test:fail-closed` | Inject database and audit persistence failures against Core classes and assert rollback or cleanup. |
 | Full local suite | `composer test:all` | Run lint, static contracts, and fault injection together. |
 | Real WordPress smoke | `composer smoke:wp` | Prove activation, schema creation, REST behavior, and `magick-ai-abilities` integration. |
-| Plugin Check release scan | `wp plugin check magick-ai-core --ignore-warnings` | Catch WordPress.org packaging and runtime security blockers before release. |
+| Plugin Check release scan | `wp plugin check npcink-governance-core --ignore-warnings` | Catch WordPress.org packaging and runtime security blockers before release. |
 
 ## Static Contract Rules
 
@@ -173,7 +173,7 @@ examples that are excluded from release packages by `.distignore`; use explicit
 exclusions when scanning the symlinked development checkout:
 
 ```bash
-wp plugin check magick-ai-core --ignore-warnings \
+wp plugin check npcink-governance-core --ignore-warnings \
   --exclude-directories=tests,examples,docs,.sisyphus \
   --exclude-files=README.md,AGENTS.md,.gitignore
 ```

@@ -1,24 +1,24 @@
-# Magick AI Admin Menu Standard
+# Npcink Admin Menu Standard
 
 Status: active for the local WordPress admin surfaces.
 
 ## Goal
 
-Magick AI plugins share one WordPress admin entry without merging ownership.
+Npcink plugins share one WordPress admin entry without merging ownership.
 The top-level menu is a navigation shell only. Each plugin keeps its own
 runtime, settings, data, and capability boundary.
 
 ## Top-Level Menu
 
-All Magick AI operator surfaces should use:
+All Npcink operator surfaces should use:
 
-- top-level menu title: `Magick AI`
-- top-level slug: `magick-ai`
+- top-level menu title: `Npcink`
+- top-level slug: `npcink`
 - capability: `manage_options`
 - icon: `dashicons-superhero`
 - position: `58`
 
-Each plugin that exposes a Magick AI operator surface may ensure the parent
+Each plugin that exposes a Npcink operator surface may ensure the parent
 menu exists, but it must first check the global admin menu and avoid registering
 a duplicate parent.
 
@@ -35,7 +35,7 @@ OpenClaw handoff, Cloud configuration, or Abilities API test workflows.
 
 | Position | Menu title | Owner | Responsibility |
 | --- | --- | --- | --- |
-| 10 | `Core` | `magick-ai-core` | Proposal review, approval/rejection, commit preflight, audit, and advanced Core app keys. |
+| 10 | `Core` | `npcink-governance-core` | Proposal review, approval/rejection, commit preflight, audit, and advanced Core app keys. |
 | 20 | `Adapter` | `magick-ai-adapter` | OpenClaw handoff, endpoint discovery, health, and client connection material. |
 | 40 | `Abilities` | `magick-ai-abilities` | Abilities API package test surface, route checks, and demo ability controls. |
 | 50 | `Cloud Addon` | `magick-ai-cloud-addon` | Cloud Base URL/API key entry, signed verification, local connection state, and read-only entitlement summary. |
@@ -49,17 +49,17 @@ OpenClaw handoff, Cloud configuration, or Abilities API test workflows.
 - Cloud Addon remains a thin connector. It must not become a billing, router,
   prompt, preset, queue, scheduler, workflow, or WordPress write control plane.
 - Abilities remains an independent WordPress Abilities API package plugin.
-  When the Magick AI parent menu exists, it may attach there. When installed
+  When the Npcink parent menu exists, it may attach there. When installed
   alone, it should keep a `Tools -> Abilities API Packages` fallback.
 
 ## Documentation Rule
 
 User-facing docs should refer to these admin paths:
 
-- `Magick AI -> Core`
-- `Magick AI -> Adapter`
-- `Magick AI -> Abilities`
-- `Magick AI -> Cloud Addon`
+- `Npcink -> Core`
+- `Npcink -> Adapter`
+- `Npcink -> Abilities`
+- `Npcink -> Cloud Addon`
 
 Only the standalone Abilities fallback should mention
 `Tools -> Abilities API Packages`.

@@ -62,8 +62,8 @@ function magick_ai_core_project_files( string $root ): array {
 	return $files;
 }
 
-$main_plugin = magick_ai_core_read( $root . '/magick-ai-core.php' );
-magick_ai_core_assert( false !== strpos( $main_plugin, 'Plugin Name: Magick AI Core' ), 'Main plugin file declares plugin header.' );
+$main_plugin = magick_ai_core_read( $root . '/npcink-governance-core.php' );
+magick_ai_core_assert( false !== strpos( $main_plugin, 'Plugin Name: Npcink Governance Core' ), 'Main plugin file declares plugin header.' );
 magick_ai_core_assert( false !== strpos( $main_plugin, 'register_activation_hook' ), 'Main plugin file registers activation hook.' );
 magick_ai_core_assert( false !== strpos( $main_plugin, 'plugins_loaded' ), 'Main plugin file boots after plugins_loaded.' );
 magick_ai_core_assert( false === strpos( $main_plugin, 'example.com' ), 'Main plugin header does not use placeholder Plugin URI.' );
@@ -81,13 +81,13 @@ foreach (
 			'workflow/task queues, batch execution consoles',
 			'Review Queue, pending proposal queue',
 			'Those terms do not permit workflow/task queue ownership',
-			'GET /wp-json/magick-ai-core/v1/capabilities',
-		'POST /wp-json/magick-ai-core/v1/apps',
-		'POST /wp-json/magick-ai-core/v1/proposals',
-		'POST /wp-json/magick-ai-core/v1/proposals/from-plan',
-		'GET /wp-json/magick-ai-core/v1/proposals/{proposal_id}',
-		'POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/approve',
-		'POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/commit-preflight',
+			'GET /wp-json/npcink-governance-core/v1/capabilities',
+		'POST /wp-json/npcink-governance-core/v1/apps',
+		'POST /wp-json/npcink-governance-core/v1/proposals',
+		'POST /wp-json/npcink-governance-core/v1/proposals/from-plan',
+		'GET /wp-json/npcink-governance-core/v1/proposals/{proposal_id}',
+		'POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/approve',
+		'POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight',
 	) as $required
 ) {
 	magick_ai_core_assert( false !== strpos( $readme, $required ), 'README contains required phrase: ' . $required );
@@ -96,7 +96,7 @@ foreach (
 $wp_readme = magick_ai_core_read( $root . '/readme.txt' );
 foreach (
 	array(
-		'=== Magick AI Core ===',
+		'=== Npcink Governance Core ===',
 		'Stable tag: 0.1.0',
 		'Requires at least: 7.0',
 		'Tested up to: 7.0',
@@ -119,12 +119,12 @@ foreach ( array( 'tests', 'examples', 'docs', 'AGENTS.md', '.sisyphus', '.workbu
 }
 
 $positioning = magick_ai_core_read( $root . '/docs/product-positioning.md' );
-magick_ai_core_assert( false !== strpos( $positioning, 'Magick AI Core governs AI-assisted WordPress operations.' ), 'Positioning keeps one-sentence product truth.' );
+magick_ai_core_assert( false !== strpos( $positioning, 'Npcink Governance Core governs AI-assisted WordPress operations.' ), 'Positioning keeps one-sentence product truth.' );
 magick_ai_core_assert( false !== strpos( $positioning, '`magick-ai-abilities`' ), 'Positioning names magick-ai-abilities as ability owner.' );
 magick_ai_core_assert( false !== strpos( $positioning, '`magick-ai-content-assistant`' ), 'Positioning names Content Assistant as product UX owner.' );
 
 $admin_menu_standard = magick_ai_core_read( $root . '/docs/admin-menu-standard.md' );
-foreach ( array( '`Magick AI`', '`Core`', '`Adapter`', '`Abilities`', '`Cloud Addon`' ) as $required ) {
+foreach ( array( '`Npcink`', '`Core`', '`Adapter`', '`Abilities`', '`Cloud Addon`' ) as $required ) {
 	magick_ai_core_assert( false !== strpos( $admin_menu_standard, $required ), 'Admin menu standard documents required entry: ' . $required );
 }
 
@@ -132,9 +132,9 @@ $admin_page = magick_ai_core_read( $root . '/includes/Admin/Admin_Page.php' );
 foreach ( array( 'PARENT_MENU_SLUG', 'add_menu_page', 'add_submenu_page', 'Core', 'admin.php' ) as $required ) {
 	magick_ai_core_assert( false !== strpos( $admin_page, $required ), 'Admin page implements shared menu contract: ' . $required );
 }
-magick_ai_core_assert( false !== strpos( $admin_page, "__( 'Core', 'magick-ai-core' ),\n\t\t\tself::MENU_CAPABILITY" ), 'Admin submenu title is Core.' );
+magick_ai_core_assert( false !== strpos( $admin_page, "__( 'Core', 'npcink-governance-core' ),\n\t\t\tself::MENU_CAPABILITY" ), 'Admin submenu title is Core.' );
 magick_ai_core_assert( false !== strpos( $admin_page, "'magick-ai-cloud-addon'" ), 'Admin overview links to the canonical Cloud Addon slug.' );
-magick_ai_core_assert( false !== strpos( $admin_page, "__( 'Cloud Addon', 'magick-ai-core' )" ), 'Admin overview labels the Cloud Addon surface.' );
+magick_ai_core_assert( false !== strpos( $admin_page, "__( 'Cloud Addon', 'npcink-governance-core' )" ), 'Admin overview labels the Cloud Addon surface.' );
 
 $media_settings = magick_ai_core_read( $root . '/includes/Media/Media_Derivative_Settings.php' );
 foreach (
@@ -441,7 +441,7 @@ foreach (
 		'adapter_route',
 		'ai_provider',
 		'ai_model',
-		'governance_source=magick-ai-core',
+		'governance_source=npcink-governance-core',
 		'commit_execution=false',
 		'core_proxy_execute=false',
 		'Core should not add a provider request endpoint',
@@ -546,12 +546,12 @@ $openclaw_adapter_readme = magick_ai_core_read( $root . '/examples/openclaw-gove
 foreach (
 	array(
 		'not an MCP server',
-		'GET /wp-json/magick-ai-core/v1/capabilities',
-		'POST /wp-json/magick-ai-core/v1/proposals',
-		'MAGICK_AI_CORE_CA_BUNDLE',
-		'MAGICK_AI_CORE_INSECURE_SSL',
-		'Do not use `MAGICK_AI_CORE_INSECURE_SSL=true` for production',
-		'MAGICK_AI_CORE_APPLICATION_PASSWORD',
+		'GET /wp-json/npcink-governance-core/v1/capabilities',
+		'POST /wp-json/npcink-governance-core/v1/proposals',
+		'NPCINK_GOVERNANCE_CORE_CA_BUNDLE',
+		'NPCINK_GOVERNANCE_CORE_INSECURE_SSL',
+		'Do not use `NPCINK_GOVERNANCE_CORE_INSECURE_SSL=true` for production',
+		'NPCINK_GOVERNANCE_CORE_APPLICATION_PASSWORD',
 		'Generic adapters should not approve proposals by default',
 		'governance_mode=direct_read',
 		'execution_surface=wp_abilities_rest',
@@ -661,16 +661,16 @@ foreach (
 		'magick-ai/propose-post-taxonomy-terms',
 		'magick-ai/set-post-terms',
 		'commit_execution',
-		'MAGICK_AI_CORE_BASE_URL',
-		'MAGICK_AI_CORE_APP_TOKEN',
-		'MAGICK_AI_CORE_CA_BUNDLE',
-		'MAGICK_AI_CORE_INSECURE_SSL',
+		'NPCINK_GOVERNANCE_CORE_BASE_URL',
+		'NPCINK_GOVERNANCE_CORE_APP_TOKEN',
+		'NPCINK_GOVERNANCE_CORE_CA_BUNDLE',
+		'NPCINK_GOVERNANCE_CORE_INSECURE_SSL',
 		'CURLOPT_CAINFO',
 		'CURLOPT_SSL_VERIFYPEER',
 		'CURLOPT_SSL_VERIFYHOST',
 		'magick_ai_core_adapter_is_local_url',
-		'MAGICK_AI_CORE_APPLICATION_PASSWORD',
-		'wp-json/magick-ai-core/v1',
+		'NPCINK_GOVERNANCE_CORE_APPLICATION_PASSWORD',
+		'wp-json/npcink-governance-core/v1',
 		'openclaw-governance-adapter-example',
 		'This adapter intentionally does not approve proposals.',
 	) as $required
@@ -732,8 +732,8 @@ magick_ai_core_assert( false !== strpos( $apps_controller, 'magick_ai_core_app_a
 $adr_001 = magick_ai_core_read( $root . '/docs/decisions/ADR-001-rebuild-core-as-governance-layer.md' );
 $adr_002 = magick_ai_core_read( $root . '/docs/decisions/ADR-002-no-workflow-runtime-in-core.md' );
 $adr_003 = magick_ai_core_read( $root . '/docs/decisions/ADR-003-keep-final-execution-outside-core.md' );
-magick_ai_core_assert( false !== strpos( $adr_001, 'Create a new standalone `magick-ai-core` plugin' ), 'ADR-001 records rebuild decision.' );
-magick_ai_core_assert( false !== strpos( $adr_002, '`magick-ai-core` must not implement a workflow runtime' ), 'ADR-002 bans workflow runtime ownership.' );
+magick_ai_core_assert( false !== strpos( $adr_001, 'Create a new standalone `npcink-governance-core` plugin' ), 'ADR-001 records rebuild decision.' );
+magick_ai_core_assert( false !== strpos( $adr_002, '`npcink-governance-core` must not implement a workflow runtime' ), 'ADR-002 bans workflow runtime ownership.' );
 magick_ai_core_assert( false !== strpos( $adr_003, 'Core remains governance-only' ), 'ADR-003 keeps Core governance-only for the current stage.' );
 magick_ai_core_assert( false !== strpos( $adr_003, 'adapter_after_core_preflight' ), 'ADR-003 keeps final execution in Adapter/product plugins.' );
 magick_ai_core_assert( false !== strpos( $adr_003, 'no Core `/execute`, `/proxy-execute`' ) && false !== strpos( $adr_003, 'commit route' ), 'ADR-003 blocks accidental Core execution routes.' );
@@ -1322,7 +1322,7 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'audit_filters_from_reques
 magick_ai_core_assert( false !== strpos( $admin_page, 'audit_proposal_id' ), 'Admin page exposes proposal audit filter.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'audit_correlation_id' ), 'Admin page exposes correlation audit filter.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'AI Request Logs remain separate' ), 'Admin page separates Core audit from AI Request Logs.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'Productized OpenClaw setup belongs in Magick AI Adapter' ), 'Admin page avoids presenting Core as the OpenClaw product entry point.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'Productized OpenClaw setup belongs in a trusted adapter' ), 'Admin page avoids presenting Core as the OpenClaw product entry point.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'Environment template' ), 'Admin default page no longer exposes an env template.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Create Core App Key' ), 'Admin page labels key creation as Core credential management.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'Issue a scoped token for a trusted governance client.' ), 'Admin page folds Core app-key creation behind an explicit disclosure.' );
@@ -1334,16 +1334,16 @@ magick_ai_core_assert( false !== strpos( $admin_page, 'core_env_text' ), 'Admin 
 magick_ai_core_assert( false === strpos( $admin_page, 'Direct Core Handoff' ), 'Admin page no longer exposes Core handoff guidance.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'Agent rules' ), 'Admin page does not host external agent rules.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'MAGICK_AI_ADAPTER_BASE_URL' ), 'Admin page does not export Adapter base URL guidance.' );
-magick_ai_core_assert( false === strpos( $admin_page, 'MAGICK_AI_CORE_INSECURE_SSL=true' ), 'Admin page does not export local TLS test settings.' );
-magick_ai_core_assert( false === strpos( $admin_page, 'MAGICK_AI_CORE_CA_BUNDLE' ), 'Admin page does not export local CA bundle settings.' );
+magick_ai_core_assert( false === strpos( $admin_page, 'NPCINK_GOVERNANCE_CORE_INSECURE_SSL=true' ), 'Admin page does not export local TLS test settings.' );
+magick_ai_core_assert( false === strpos( $admin_page, 'NPCINK_GOVERNANCE_CORE_CA_BUNDLE' ), 'Admin page does not export local CA bundle settings.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'include_local_tls' ), 'Admin page does not expose a local TLS export checkbox.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'is_local_base_url' ), 'Admin page no longer computes local TLS defaults.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'openclaw_handoff_text' ), 'Admin page does not generate OpenClaw handoff text.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'openclaw_env_text' ), 'Admin page does not use OpenClaw-named env helpers.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'create-draft-proposal' ), 'Admin page no longer embeds adapter scenario commands.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'create-taxonomy-terms-proposal' ), 'Admin page no longer embeds taxonomy adapter commands.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_BASE_URL' ), 'Admin page shows base URL env value.' );
-magick_ai_core_assert( false !== strpos( $admin_page, 'MAGICK_AI_CORE_APP_TOKEN' ), 'Admin page shows app token env value.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'NPCINK_GOVERNANCE_CORE_BASE_URL' ), 'Admin page shows base URL env value.' );
+magick_ai_core_assert( false !== strpos( $admin_page, 'NPCINK_GOVERNANCE_CORE_APP_TOKEN' ), 'Admin page shows app token env value.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'render_created_app_key' ), 'Admin page renders one-time app key result.' );
 magick_ai_core_assert( false !== strpos( $admin_page, 'nocache_headers' ), 'Admin app-key result prevents caching the one-time token.' );
 magick_ai_core_assert( false === strpos( $admin_page, 'wp-admin/admin-header.php' ), 'Admin app-key result avoids admin header inside admin-post context.' );
@@ -1383,7 +1383,7 @@ foreach ( magick_ai_core_project_files( $root ) as $file ) {
 	$contents = magick_ai_core_read( $file );
 
 	foreach ( $forbidden_runtime_terms as $term ) {
-		if ( ! preg_match( '/^(includes|magick-ai-core\.php)/', $relative ) ) {
+		if ( ! preg_match( '/^(includes|npcink-governance-core\.php)/', $relative ) ) {
 			continue;
 		}
 

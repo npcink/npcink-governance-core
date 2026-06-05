@@ -2,7 +2,7 @@
 
 Status: active for MVP.
 
-Magick AI Core is a governance plugin. The security model must fail closed.
+Npcink Governance Core is a governance plugin. The security model must fail closed.
 
 ## MVP Authorization
 
@@ -139,7 +139,7 @@ The rebuilt Core must not accept or emit:
 
 - `confirm_token`
 - `write_confirmed`
-- compatibility confirmation tokens from the old Magick AI Core
+- compatibility confirmation tokens from the old Npcink Governance Core
 
 Use approval-commit semantics only:
 
@@ -173,12 +173,12 @@ App tokens use:
 Authorization: Bearer mai_core.<key_id>.<secret>
 ```
 
-The raw secret is returned once by `POST /wp-json/magick-ai-core/v1/apps` and
+The raw secret is returned once by `POST /wp-json/npcink-governance-core/v1/apps` and
 stored only as `secret_hash`. `GET /apps`, proposals, and audit rows must not
 return raw app secrets or secret hashes.
 
 Administrators can also create the same scoped app token from the `Core App
-Keys` view under `Magick AI -> Core`. The default admin view stays focused on
+Keys` view under `Npcink -> Core`. The default admin view stays focused on
 status, pending proposals, and recent activity; app-key creation and revocation
 are low-frequency fallback actions. The raw token and minimal Core environment
 variables are displayed only on the creation result screen. Productized

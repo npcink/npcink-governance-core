@@ -1,14 +1,14 @@
 # OpenClaw Governance Adapter Example
 
 This is a minimal external-client example for connecting OpenClaw-like agent
-software to Magick AI Core governance.
+software to Npcink Governance Core governance.
 
 It is not an MCP server, tool catalog, workflow runtime, or WordPress ability
 executor. It only calls Core REST governance routes:
 
-- `GET /wp-json/magick-ai-core/v1/capabilities`
-- `POST /wp-json/magick-ai-core/v1/proposals`
-- `POST /wp-json/magick-ai-core/v1/proposals/{proposal_id}/commit-preflight`
+- `GET /wp-json/npcink-governance-core/v1/capabilities`
+- `POST /wp-json/npcink-governance-core/v1/proposals`
+- `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight`
 
 Generic adapters should not approve proposals by default. Approval should stay
 with the WordPress admin UI or a separately contracted trusted host policy.
@@ -26,14 +26,14 @@ Capability rows include execution guidance for OpenClaw-like clients:
 
 ## Authentication
 
-Use a scoped Magick AI Core app token when available. The token is returned once
-from `POST /wp-json/magick-ai-core/v1/apps` and should not be committed.
+Use a scoped Npcink Governance Core app token when available. The token is returned once
+from `POST /wp-json/npcink-governance-core/v1/apps` and should not be committed.
 
 Required environment variables:
 
 ```bash
-export MAGICK_AI_CORE_BASE_URL="https://example.test"
-export MAGICK_AI_CORE_APP_TOKEN="mai_core.key_xxx.secret_xxx"
+export NPCINK_GOVERNANCE_CORE_BASE_URL="https://example.test"
+export NPCINK_GOVERNANCE_CORE_APP_TOKEN="mai_core.key_xxx.secret_xxx"
 ```
 
 ## Local TLS
@@ -43,25 +43,25 @@ self-signed certificates for `.local` domains. Prefer passing a trusted CA
 bundle when available:
 
 ```bash
-export MAGICK_AI_CORE_CA_BUNDLE="/path/to/local-ca.pem"
+export NPCINK_GOVERNANCE_CORE_CA_BUNDLE="/path/to/local-ca.pem"
 ```
 
 For throwaway local PoC work against `localhost`, `127.0.0.1`, `::1`, or
 `.local` hosts, the example adapter can disable PHP cURL certificate validation:
 
 ```bash
-export MAGICK_AI_CORE_INSECURE_SSL="true"
+export NPCINK_GOVERNANCE_CORE_INSECURE_SSL="true"
 ```
 
-Do not use `MAGICK_AI_CORE_INSECURE_SSL=true` for production or public hosts.
+Do not use `NPCINK_GOVERNANCE_CORE_INSECURE_SSL=true` for production or public hosts.
 The script refuses that mode outside local-only hostnames.
 
 During early local PoC work, the script can still fall back to a WordPress
 Application Password for a `manage_options` user:
 
 ```bash
-export MAGICK_AI_CORE_USER="admin-user"
-export MAGICK_AI_CORE_APPLICATION_PASSWORD="xxxx xxxx xxxx xxxx xxxx xxxx"
+export NPCINK_GOVERNANCE_CORE_USER="admin-user"
+export NPCINK_GOVERNANCE_CORE_APPLICATION_PASSWORD="xxxx xxxx xxxx xxxx xxxx xxxx"
 ```
 
 ## Commands

@@ -29,7 +29,7 @@ final class Observability {
 
 		$base = array(
 			'schema_version' => '2026-06-01',
-			'plugin_slug'    => 'magick-ai-core',
+			'plugin_slug'    => 'npcink-governance-core',
 			'plugin_version' => defined( 'MAGICK_AI_CORE_VERSION' ) ? MAGICK_AI_CORE_VERSION : '',
 			'source'         => 'local',
 			'event_kind'     => $event_kind,

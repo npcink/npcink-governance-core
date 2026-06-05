@@ -1,4 +1,4 @@
-# AGENTS.md — Magick AI Core
+# AGENTS.md — Npcink Governance Core
 
 ## Session Startup Protocol
 
@@ -26,7 +26,7 @@ Every new AI development session should start with:
 
 ## Product Boundary
 
-Magick AI Core is the WordPress AI operation governance layer.
+Npcink Governance Core is the WordPress AI operation governance layer.
 
 Core owns:
 

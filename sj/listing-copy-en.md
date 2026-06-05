@@ -2,7 +2,7 @@
 
 ## Plugin Name
 
-Magick AI Core
+Npcink Governance Core
 
 ## Short Description
 
@@ -15,7 +15,7 @@ ai, governance, approval, audit, abilities
 
 ## Description
 
-Magick AI Core is the WordPress AI operation governance layer for ability
+Npcink Governance Core is the WordPress AI operation governance layer for ability
 intake, proposals, approval boundaries, commit preflight, scoped app keys, and
 audit logs.
 
@@ -25,12 +25,12 @@ proposals, supports approval and rejection, performs commit preflight, and
 stores audit evidence so site administrators and trusted hosts can review what
 was requested, approved, rejected, or prepared for commit.
 
-Core is part of the Magick AI plugin family, but it stays focused on governance.
-Ability definitions belong in Magick AI Abilities or other provider plugins.
-Productized OpenClaw connection belongs in Magick AI Adapter. Cloud service
-connection belongs in Magick AI Cloud Addon.
+Core is part of the Npcink plugin family, but it stays focused on governance.
+Ability definitions belong in Npcink Abilities Toolkit or other provider plugins.
+Productized OpenClaw connection belongs in trusted adapter. Cloud service
+connection belongs in cloud connector.
 
-Magick AI Core does not generate content, route models, run MCP or workflow
+Npcink Governance Core does not generate content, route models, run MCP or workflow
 runtimes, store provider credentials, proxy ability execution, or perform final
 WordPress mutations.
 
@@ -50,7 +50,7 @@ WordPress mutations.
 - WordPress administrators who need reviewable AI operation governance.
 - Host plugins and adapters that need proposal approval and commit preflight.
 - Developers separating ability execution from governance decisions.
-- Magick AI deployments that need a local WordPress control-plane boundary.
+- Npcink deployments that need a local WordPress control-plane boundary.
 
 ## Requirements
 
@@ -60,12 +60,12 @@ WordPress mutations.
 
 ## Series Boundary
 
-In the Magick AI plugin family:
+In the Npcink plugin family:
 
-- Magick AI Abilities owns ability definitions and callbacks.
-- Magick AI Core owns governance, approval, preflight, and audit.
-- Magick AI Adapter owns OpenClaw channel adaptation.
-- Magick AI Cloud Addon owns cloud service connection.
+- Npcink Abilities Toolkit owns ability definitions and callbacks.
+- Npcink Governance Core owns governance, approval, preflight, and audit.
+- trusted adapter owns OpenClaw channel adaptation.
+- cloud connector owns cloud service connection.
 
 This separation keeps Core focused on governance and keeps execution,
 transport, cloud services, and ability content in their own layers.

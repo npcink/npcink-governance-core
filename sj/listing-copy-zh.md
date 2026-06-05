@@ -2,7 +2,7 @@
 
 ## 插件名称
 
-Magick AI Core
+Npcink Governance Core
 
 ## 简短描述
 
@@ -14,7 +14,7 @@ ai, governance, approval, audit, abilities
 
 ## 插件介绍
 
-Magick AI Core 是 WordPress AI 操作的治理层，负责 ability intake、proposal、
+Npcink Governance Core 是 WordPress AI 操作的治理层，负责 ability intake、proposal、
 审批边界、commit preflight、scoped app key 和 audit log。
 
 它从 WordPress 和 provider 插件发现可被 agent 调用的能力，然后围绕操作提案
@@ -22,11 +22,10 @@ Magick AI Core 是 WordPress AI 操作的治理层，负责 ability intake、pro
 决策，执行 commit preflight，并保存 audit evidence，让站点管理员和可信 host
 可以审查哪些操作被请求、审批、拒绝或准备提交。
 
-Core 属于 Magick AI 系列插件，但它只聚焦治理。能力定义属于 Magick AI
-Abilities 或其他 provider 插件。产品化 OpenClaw 连接属于 Magick AI Adapter。
-云端服务连接属于 Magick AI Cloud Addon。
+Core 属于 Npcink 系列插件，但它只聚焦治理。能力定义属于 Npcink Abilities Toolkit 或其他 provider 插件。产品化 OpenClaw 连接属于 trusted adapter。
+云端服务连接属于 cloud connector。
 
-Magick AI Core 不生成内容、不路由模型、不运行 MCP 或 workflow runtime、不保存
+Npcink Governance Core 不生成内容、不路由模型、不运行 MCP 或 workflow runtime、不保存
 provider credentials、不代理 ability execution，也不执行最终 WordPress 写入。
 
 ## 核心功能
@@ -44,7 +43,7 @@ provider credentials、不代理 ability execution，也不执行最终 WordPres
 - 需要可审查 AI 操作治理的 WordPress 管理员。
 - 需要 proposal approval 和 commit preflight 的 host 插件或 adapter。
 - 希望把 ability execution 和 governance decision 分开的开发者。
-- 需要本地 WordPress control-plane 边界的 Magick AI 部署。
+- 需要本地 WordPress control-plane 边界的 Npcink 部署。
 
 ## 环境要求
 
@@ -53,12 +52,12 @@ provider credentials、不代理 ability execution，也不执行最终 WordPres
 
 ## 系列插件边界
 
-在 Magick AI 系列插件中：
+在 Npcink 系列插件中：
 
-- Magick AI Abilities 负责能力定义和 ability callback。
-- Magick AI Core 负责治理、审批、preflight、audit。
-- Magick AI Adapter 负责 OpenClaw 通道适配。
-- Magick AI Cloud Addon 负责链接云端服务。
+- Npcink Abilities Toolkit 负责能力定义和 ability callback。
+- Npcink Governance Core 负责治理、审批、preflight、audit。
+- trusted adapter 负责 OpenClaw 通道适配。
+- cloud connector 负责链接云端服务。
 
 这个分层让 Core 专注于治理，同时让执行、transport、云端服务和能力内容留在
 各自独立层。

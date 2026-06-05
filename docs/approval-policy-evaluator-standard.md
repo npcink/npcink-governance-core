@@ -2,7 +2,7 @@
 
 Status: active planning standard for the lightweight evaluator.
 
-Magick AI Core owns proposal, approval, commit-preflight, and audit truth. A
+Npcink Governance Core owns proposal, approval, commit-preflight, and audit truth. A
 policy evaluator may help Core classify whether a proposal still needs manual
 review, can be conservatively auto-approved in the future, or must be blocked.
 It must stay small enough to preserve Core as a governance layer, not a strategy

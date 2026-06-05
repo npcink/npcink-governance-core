@@ -23,7 +23,7 @@ Core package:
 
 The current product positioning is narrower:
 
-> Magick AI Core is the WordPress AI operation governance layer.
+> Npcink Governance Core is the WordPress AI operation governance layer.
 
 Continuing to delete old surfaces from the previous plugin was increasingly
 risky. The old codebase remained useful as a source of contracts and lessons,
@@ -31,7 +31,7 @@ but it was no longer a clean implementation base for the new Core.
 
 ## Decision
 
-Create a new standalone `magick-ai-core` plugin that implements only governance
+Create a new standalone `npcink-governance-core` plugin that implements only governance
 responsibilities:
 
 - ability intake;

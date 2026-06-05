@@ -1,6 +1,6 @@
 # Core Admin Surface Standard
 
-Status: active for `Magick AI -> Core`.
+Status: active for `Npcink -> Core`.
 
 ## Purpose
 

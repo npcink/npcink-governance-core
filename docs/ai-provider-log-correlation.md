@@ -8,7 +8,7 @@ storage into Core.
 
 ## Positioning
 
-Magick AI Core remains the governance authority:
+Npcink Governance Core remains the governance authority:
 
 - ability discovery guidance;
 - proposal records;
@@ -52,7 +52,7 @@ adapter_request_id
 adapter_route
 ai_provider
 ai_model
-governance_source=magick-ai-core
+governance_source=npcink-governance-core
 ```
 
 Recommended nested context:
@@ -66,7 +66,7 @@ Recommended nested context:
   "adapter_route": "<adapter route or tool name>",
   "ai_provider": "ollama",
   "ai_model": "qwen3.5:0.8b",
-  "governance_source": "magick-ai-core",
+  "governance_source": "npcink-governance-core",
   "magick_ai_core": {
     "proposal_id": "<core proposal id>",
     "correlation_id": "<core commit-preflight correlation id>"

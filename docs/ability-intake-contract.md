@@ -2,7 +2,7 @@
 
 Status: MVP contract.
 
-Magick AI Core consumes abilities. It does not define product abilities.
+Npcink Governance Core consumes abilities. It does not define product abilities.
 
 ## Discovery Order
 
@@ -138,7 +138,7 @@ Core uses that fixture to verify its current responsibility:
   language tasks by itself.
 
 Set `MAGICK_AI_ABILITIES_PATH=/path/to/magick-ai-abilities` when the sibling
-repository is not located next to `magick-ai-core`.
+repository is not located next to `npcink-governance-core`.
 
 ## Missing Dependencies
 

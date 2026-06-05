@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: Magick AI Core
+ * Plugin Name: Npcink Governance Core
  * Description: WordPress AI operation governance layer for ability intake, proposals, approval boundaries, and audit logs.
  * Version: 0.1.0
  * Requires at least: 7.0
  * Requires PHP: 8.0
- * Author: Magick AI
+ * Author: Npcink
  * License: GPL-2.0-or-later
- * Text Domain: magick-ai-core
+ * Text Domain: npcink-governance-core
  *
  * @package MagickAICore
  */

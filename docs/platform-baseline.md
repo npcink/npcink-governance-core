@@ -14,7 +14,7 @@ runtime requirements:
 
 ## Applies To
 
-- `magick-ai-core`
+- `npcink-governance-core`
 - `magick-ai-abilities`
 - `magick-ai-adapter`
 - `magick-ai-cloud-addon`

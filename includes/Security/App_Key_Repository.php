@@ -121,7 +121,7 @@ final class App_Key_Repository {
 		if ( ! is_string( $secret_hash ) ) {
 			return new WP_Error(
 				'magick_ai_core_app_secret_hash_failed',
-				__( 'App key secret could not be protected.', 'magick-ai-core' ),
+				__( 'App key secret could not be protected.', 'npcink-governance-core' ),
 				array( 'status' => 500 )
 			);
 		}
@@ -151,7 +151,7 @@ final class App_Key_Repository {
 		if ( false === $inserted ) {
 			return new WP_Error(
 				'magick_ai_core_app_insert_failed',
-				__( 'App key could not be stored.', 'magick-ai-core' ),
+				__( 'App key could not be stored.', 'npcink-governance-core' ),
 				array( 'status' => 500 )
 			);
 		}

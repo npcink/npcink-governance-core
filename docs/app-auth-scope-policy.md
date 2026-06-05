@@ -2,7 +2,7 @@
 
 Status: minimal implementation active.
 
-Magick AI Core supports the original `current_user_can( 'manage_options' )`
+Npcink Governance Core supports the original `current_user_can( 'manage_options' )`
 admin path and a minimal scoped app-key path for external governance clients.
 Agent, MCP, product-plugin, and hosted adapter entry must use scoped app
 identity when they are not operating as a WordPress administrator.
@@ -144,7 +144,7 @@ The same token may be sent as `X-Magick-AI-Core-App-Token` for clients that
 cannot set the `Authorization` header.
 
 WordPress administrators can issue tokens from either admin-only
-`POST /wp-json/magick-ai-core/v1/apps` or the `Magick AI -> Core`
+`POST /wp-json/npcink-governance-core/v1/apps` or the `Npcink -> Core`
 `Advanced Access` entry. Both paths use the same app identity store, default
 scope policy, and one-time raw-token display rule. The admin panel keeps app
 keys behind a low-frequency disclosure because it is a Core credential
@@ -158,7 +158,7 @@ historical proposal and audit attribution remains intact.
 
 LocalWP TLS switches, OpenClaw handoff text, and agent rules belong in
 Magick AI Adapter or another client-side adapter layer. Core does not export
-`MAGICK_AI_CORE_INSECURE_SSL`, adapter base URLs, or OpenClaw instructions from
+`NPCINK_GOVERNANCE_CORE_INSECURE_SSL`, adapter base URLs, or OpenClaw instructions from
 the app-key screen.
 
 Minimum requirements:

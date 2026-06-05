@@ -7,7 +7,7 @@ Accepted
 2026-06-01
 
 ## Context
-Magick AI Core now provides the governance loop for AI-assisted WordPress
+Npcink Governance Core now provides the governance loop for AI-assisted WordPress
 operations:
 
 - ability intake;

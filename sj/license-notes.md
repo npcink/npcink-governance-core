@@ -4,8 +4,8 @@
 
 These notes cover the WordPress.org listing assets for:
 
-- Plugin: Magick AI Core
-- Slug: `magick-ai-core`
+- Plugin: Npcink Governance Core
+- Slug: `npcink-governance-core`
 - Asset folder: `sj/`
 - WordPress.org export folder: `sj/exports/wordpress-org/`
 
@@ -57,7 +57,7 @@ The assets intentionally avoid:
 - Screenshots of third-party proprietary interfaces.
 
 The design uses abstract geometric shapes, proposal records, approval
-gates, preflight checks, audit timelines, and Magick AI family visual styling.
+gates, preflight checks, audit timelines, and Npcink family visual styling.
 
 ## Publishing Status
 
