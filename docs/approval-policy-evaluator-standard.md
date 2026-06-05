@@ -11,7 +11,7 @@ engine or workflow runtime.
 ## Current State
 
 The evaluator supports three site policy modes stored in
-`magick_ai_core_approval_policy_mode`:
+`npcink_governance_core_approval_policy_mode`:
 
 - `manual`: default. Core records `manual_required` for every proposal with
   `policy_profile=manual`.
@@ -156,7 +156,7 @@ Required properties:
 
 - source must be `build-test-content-cleanup-plan` through
   `plan_to_proposal_batch`;
-- every action target must be `magick-ai/trash-post`;
+- every action target must be `npcink-abilities-toolkit/trash-post`;
 - every post/title must match trusted test-content patterns, or the plan
   preview must carry a trusted test-content marker produced by the planning
   ability;
@@ -177,7 +177,7 @@ Evidence required for real auto approval:
 
 ## Later Candidate: Create Draft
 
-`magick-ai/create-draft` can be considered only after the cleanup batch path is
+`npcink-abilities-toolkit/create-draft` can be considered only after the cleanup batch path is
 proven.
 
 Required properties:
@@ -196,13 +196,13 @@ and easier to confuse with article-generation workflow ownership.
 
 Do not auto-approve these in the first policy stages:
 
-- `magick-ai/delete-media-permanently`
-- `magick-ai/delete-post-permanently`
-- `magick-ai/delete-term`
-- `magick-ai/set-post-terms`
-- `magick-ai/approve-comment`
-- `magick-ai/reply-comment`
-- `magick-ai/update-post` when it touches published content
+- `npcink-abilities-toolkit/delete-media-permanently`
+- `npcink-abilities-toolkit/delete-post-permanently`
+- `npcink-abilities-toolkit/delete-term`
+- `npcink-abilities-toolkit/set-post-terms`
+- `npcink-abilities-toolkit/approve-comment`
+- `npcink-abilities-toolkit/reply-comment`
+- `npcink-abilities-toolkit/update-post` when it touches published content
 
 These may still create reviewable proposals, but they must remain manual unless
 a later accepted standard replaces this one.

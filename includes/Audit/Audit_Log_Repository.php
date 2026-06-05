@@ -2,12 +2,12 @@
 /**
  * Audit log repository.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core\Audit;
+namespace Npcink\GovernanceCore\Audit;
 
-use MagickAI\Core\Security\Request_Context;
+use Npcink\GovernanceCore\Security\Request_Context;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -25,7 +25,7 @@ final class Audit_Log_Repository {
 	public function table_name(): string {
 		global $wpdb;
 
-		return $wpdb->prefix . 'magick_ai_core_audit_log';
+		return $wpdb->prefix . 'npcink_governance_core_audit_log';
 	}
 
 	/**

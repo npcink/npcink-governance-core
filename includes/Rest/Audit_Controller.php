@@ -2,13 +2,13 @@
 /**
  * Audit REST controller.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core\Rest;
+namespace Npcink\GovernanceCore\Rest;
 
-use MagickAI\Core\Audit\Audit_Log_Repository;
-use MagickAI\Core\Security\App_Authenticator;
+use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
+use Npcink\GovernanceCore\Security\App_Authenticator;
 use WP_REST_Request;
 use WP_REST_Response;
 

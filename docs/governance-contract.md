@@ -67,17 +67,17 @@ to review them again.
 
 Core may consume these read-only planning ability outputs:
 
-- `magick-ai/build-content-inventory-fix-plan`
-- `magick-ai/build-test-content-cleanup-plan`
-- `magick-ai/build-media-inventory-fix-plan`
-- `magick-ai/build-media-reference-repair-plan`
-- `magick-ai/build-media-settings-reference-repair-plan`
-- `magick-ai/build-media-optimization-plan`
-- `magick-ai/build-media-rename-plan`
-- `magick-ai-toolbox/build-article-write-plan`
-- `magick-ai-toolbox/build-article-batch-write-plan`
-- `magick-ai-toolbox/build-article-media-batch-write-plan`
-- `magick-ai-toolbox/build-image-candidate-adoption-plan`
+- `npcink-abilities-toolkit/build-content-inventory-fix-plan`
+- `npcink-abilities-toolkit/build-test-content-cleanup-plan`
+- `npcink-abilities-toolkit/build-media-inventory-fix-plan`
+- `npcink-abilities-toolkit/build-media-reference-repair-plan`
+- `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`
+- `npcink-abilities-toolkit/build-media-optimization-plan`
+- `npcink-abilities-toolkit/build-media-rename-plan`
+- `npcink-toolbox/build-article-write-plan`
+- `npcink-toolbox/build-article-batch-write-plan`
+- `npcink-toolbox/build-article-media-batch-write-plan`
+- `npcink-toolbox/build-image-candidate-adoption-plan`
 
 Plan intake does not execute the plan ability and does not execute target write
 abilities. It accepts a successful plan payload, validates that the planning
@@ -86,57 +86,57 @@ current ability intake, then creates one pending proposal per accepted action
 unless the plan explicitly requests batch approval.
 
 The P0 article writing handoff is stricter: Toolbox owns the workflow artifact,
-and Core accepts `magick-ai-toolbox/build-article-write-plan` only when it is an
+and Core accepts `npcink-toolbox/build-article-write-plan` only when it is an
 `article_write_plan` containing the required article artifacts, a passing risk
 report, no blocked claims, and exactly one draft-only
-`magick-ai/create-draft` action. Core preserves those artifacts in proposal
+`npcink-abilities-toolkit/create-draft` action. Core preserves those artifacts in proposal
 preview context for review without generating content or executing the write.
 
 The bounded article batch handoff is separate from P0. Core accepts
-`magick-ai-toolbox/build-article-batch-write-plan` only when it is an
+`npcink-toolbox/build-article-batch-write-plan` only when it is an
 `article_batch_write_plan` with `proposal_mode=batch`,
-`batch_approval=true`, 2 to 5 draft-only `magick-ai/create-draft` actions, and
+`batch_approval=true`, 2 to 5 draft-only `npcink-abilities-toolkit/create-draft` actions, and
 one reviewed article artifact set per action. Core stores one batch proposal
 for one user approval, but it still does not generate articles, approve the
 proposal, execute writes, or run a batch writing job.
 
 The media-enabled article batch handoff is separate from the draft-only batch.
-Core accepts `magick-ai-toolbox/build-article-media-batch-write-plan` only when
+Core accepts `npcink-toolbox/build-article-media-batch-write-plan` only when
 it is an `article_media_batch_write_plan` with explicit batch approval, 1 to 5
 reviewed article artifact sets, preserved image-source candidate evidence, and
-allowlisted draft/media actions such as `magick-ai/create-draft`,
-`magick-ai/upload-media-from-url`, `magick-ai/update-media-details`, and
-`magick-ai/set-post-featured-image`. Core stores the grouped proposal only; it
+allowlisted draft/media actions such as `npcink-abilities-toolkit/create-draft`,
+`npcink-abilities-toolkit/upload-media-from-url`, `npcink-abilities-toolkit/update-media-details`, and
+`npcink-abilities-toolkit/set-post-featured-image`. Core stores the grouped proposal only; it
 does not search images, import media, set featured images, or execute writes.
 
 The image candidate adoption handoff is separate from article generation and
 media derivative optimization. Core accepts
-`magick-ai-toolbox/build-image-candidate-adoption-plan` only when it is an
+`npcink-toolbox/build-image-candidate-adoption-plan` only when it is an
 `image_candidate_adoption_plan` with a normalized `image_candidate.v1`
-candidate, one `magick-ai/upload-media-from-url` action, one
-`magick-ai/update-media-details` action, and at most one
-`magick-ai/set-post-featured-image` action. Core stores the grouped proposal
+candidate, one `npcink-abilities-toolkit/upload-media-from-url` action, one
+`npcink-abilities-toolkit/update-media-details` action, and at most one
+`npcink-abilities-toolkit/set-post-featured-image` action. Core stores the grouped proposal
 only; it does not search stock providers, generate images, import media, set
 featured images, or execute writes.
 
 The media optimization handoff is the governed shape for the user intent
 "optimize this attachment." Core accepts
-`magick-ai/build-media-optimization-plan` only as an explicit batch proposal
-for exactly one attachment, combining `magick-ai/update-media-details` with a
+`npcink-abilities-toolkit/build-media-optimization-plan` only as an explicit batch proposal
+for exactly one attachment, combining `npcink-abilities-toolkit/update-media-details` with a
 derivative adoption action such as
-`magick-ai/adopt-cloud-media-derivative` or `magick-ai/replace-media-file`.
+`npcink-abilities-toolkit/adopt-cloud-media-derivative` or `npcink-abilities-toolkit/replace-media-file`.
 Post-content media reference repair is part of the derivative adoption ability
-contract and must not be split into a separate `magick-ai/patch-post-content`,
-`magick-ai/update-post`, or `magick-ai/update-post-blocks` action inside the
+contract and must not be split into a separate `npcink-abilities-toolkit/patch-post-content`,
+`npcink-abilities-toolkit/update-post`, or `npcink-abilities-toolkit/update-post-blocks` action inside the
 media optimization batch. Plans may expose the adoption dry-run
 `content_reference_repairs` evidence in the derivative preview for review.
 Cloud may provide derivative artifacts and diagnostics, but approval, adoption,
 and WordPress writes stay local and outside Core execution.
 
 The media rename handoff is the governed shape for the user intent "rename this
-attachment file." Core accepts `magick-ai/build-media-rename-plan` only as a
+attachment file." Core accepts `npcink-abilities-toolkit/build-media-rename-plan` only as a
 single `media_rename_plan` for exactly one attachment and one
-`magick-ai/rename-media-file` action with a reviewed `target_file_name`.
+`npcink-abilities-toolkit/rename-media-file` action with a reviewed `target_file_name`.
 Filename generation rules stay in OpenClaw/local product policy; Core stores
 proposal truth and approval context only.
 
@@ -166,10 +166,10 @@ Generated proposal previews must preserve:
 
 Actions with `requires_input` are reviewable but not committable. Their preview
 must carry `proposal_ready=false`, `needs_input`, and `preflight_blockers`, and
-commit preflight must return `magick_ai_core_proposal_items_blocked`.
+commit preflight must return `npcink_governance_core_proposal_items_blocked`.
 
 Permanent media deletion is blocked by default. A plan action targeting
-`magick-ai/delete-media-permanently` may become a proposal only when
+`npcink-abilities-toolkit/delete-media-permanently` may become a proposal only when
 `include_delete_candidates=true` is explicitly supplied with the plan input,
 and it must remain high risk. The planning ability must still satisfy its own
 destructive-media policy first, such as requiring
@@ -196,7 +196,7 @@ Development mode `dry_run_guarded` may classify trusted cleanup candidates with
 `policy_profile=guarded` while leaving them pending. Development mode
 `local_guarded` may return `auto_approved` only for trusted
 `build-test-content-cleanup-plan` batch proposals whose actions all target
-`magick-ai/trash-post`, have persisted test-content evidence, pass caller
+`npcink-abilities-toolkit/trash-post`, have persisted test-content evidence, pass caller
 authorization, and pass auto-approval quotas. The evaluator does not expose a
 rules DSL and does not add workflow runtime, long-running policy jobs, final
 execution, or a configuration center.

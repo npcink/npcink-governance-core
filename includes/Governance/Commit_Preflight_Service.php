@@ -2,14 +2,14 @@
 /**
  * Commit preflight service.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core\Governance;
+namespace Npcink\GovernanceCore\Governance;
 
-use MagickAI\Core\Audit\Audit_Log_Repository;
-use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
-use MagickAI\Core\Security\Request_Context;
+use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
+use Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter;
+use Npcink\GovernanceCore\Security\Request_Context;
 use WP_Error;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -64,7 +64,7 @@ final class Commit_Preflight_Service {
 	public function preflight( string $proposal_id, array $request_params = array() ) {
 		if ( array_key_exists( 'confirm_token', $request_params ) || array_key_exists( 'write_confirmed', $request_params ) ) {
 			return new WP_Error(
-				'magick_ai_core_legacy_confirmation_rejected',
+				'npcink_governance_core_legacy_confirmation_rejected',
 				__( 'Legacy confirmation parameters are not accepted by Npcink Governance Core.', 'npcink-governance-core' ),
 				array( 'status' => 400 )
 			);
@@ -72,7 +72,7 @@ final class Commit_Preflight_Service {
 
 		if ( ! current_user_can( 'manage_options' ) && ! Request_Context::has_scope( 'commit:preflight' ) ) {
 			return new WP_Error(
-				'magick_ai_core_preflight_forbidden',
+				'npcink_governance_core_preflight_forbidden',
 				__( 'You do not have permission to preflight this proposal.', 'npcink-governance-core' ),
 				array( 'status' => 403 )
 			);
@@ -83,7 +83,7 @@ final class Commit_Preflight_Service {
 
 		if ( null === $proposal ) {
 			return new WP_Error(
-				'magick_ai_core_proposal_not_found',
+				'npcink_governance_core_proposal_not_found',
 				__( 'Proposal was not found.', 'npcink-governance-core' ),
 				array( 'status' => 404 )
 			);
@@ -91,7 +91,7 @@ final class Commit_Preflight_Service {
 
 		if ( 'approved' !== (string) ( $proposal['status'] ?? '' ) ) {
 			return $this->preflight_error(
-				'magick_ai_core_proposal_not_approved',
+				'npcink_governance_core_proposal_not_approved',
 				__( 'Only approved proposals can pass commit preflight.', 'npcink-governance-core' ),
 				409,
 				$proposal_id,
@@ -105,7 +105,7 @@ final class Commit_Preflight_Service {
 		$capability = $this->abilities->find( (string) ( $proposal['ability_id'] ?? '' ) );
 		if ( null === $capability ) {
 			return $this->preflight_error(
-				'magick_ai_core_ability_unavailable',
+				'npcink_governance_core_ability_unavailable',
 				__( 'The proposal target ability is no longer available.', 'npcink-governance-core' ),
 				409,
 				$proposal_id,
@@ -119,7 +119,7 @@ final class Commit_Preflight_Service {
 		$contract_preflight = $this->ability_contract_preflight( $proposal, $capability );
 		if ( false === (bool) ( $contract_preflight['contract_matches'] ?? false ) ) {
 			return $this->preflight_error(
-				'magick_ai_core_ability_contract_changed',
+				'npcink_governance_core_ability_contract_changed',
 				__( 'The proposal target ability contract has changed since approval.', 'npcink-governance-core' ),
 				409,
 				$proposal_id,
@@ -135,7 +135,7 @@ final class Commit_Preflight_Service {
 		$permission_preflight = $this->ability_permission_preflight( $capability );
 		if ( false === (bool) ( $permission_preflight['allowed'] ?? false ) ) {
 			return $this->preflight_error(
-				'magick_ai_core_ability_permission_denied',
+				'npcink_governance_core_ability_permission_denied',
 				__( 'The current caller no longer has permission for this ability.', 'npcink-governance-core' ),
 				403,
 				$proposal_id,
@@ -151,7 +151,7 @@ final class Commit_Preflight_Service {
 		$item_preflight = $this->proposal_item_preflight( $proposal );
 		if ( false === (bool) ( $item_preflight['executable'] ?? false ) ) {
 			return $this->preflight_error(
-				'magick_ai_core_proposal_items_blocked',
+				'npcink_governance_core_proposal_items_blocked',
 				__( 'Proposal contains blocked items or missing required input.', 'npcink-governance-core' ),
 				409,
 				$proposal_id,
@@ -172,7 +172,7 @@ final class Commit_Preflight_Service {
 		$approved_input_hash = $this->payload_hash( $proposal['input'] ?? array() );
 		if ( $this->has_prior_preflight( $proposal_id, $approved_input_hash ) ) {
 			return $this->preflight_error(
-				'magick_ai_core_commit_preflight_already_issued',
+				'npcink_governance_core_commit_preflight_already_issued',
 				__( 'Commit preflight has already issued an execution handoff for this approved proposal.', 'npcink-governance-core' ),
 				409,
 				$proposal_id,
@@ -229,7 +229,7 @@ final class Commit_Preflight_Service {
 
 		if ( '' === $event_id ) {
 			return new WP_Error(
-				'magick_ai_core_preflight_audit_failed',
+				'npcink_governance_core_preflight_audit_failed',
 				__( 'Commit preflight could not be audited.', 'npcink-governance-core' ),
 				array( 'status' => 500 )
 			);

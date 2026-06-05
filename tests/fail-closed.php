@@ -2,7 +2,7 @@
 /**
  * Fail-closed fault injection tests for governance persistence.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -284,12 +284,12 @@ if ( ! function_exists( 'current_user_can' ) ) {
 	 * @return bool
 	 */
 	function current_user_can( string $capability = '' ): bool {
-		global $magick_ai_core_fail_closed_caps;
+		global $npcink_governance_core_fail_closed_caps;
 
-		$magick_ai_core_fail_closed_caps = is_array( $magick_ai_core_fail_closed_caps ?? null ) ? $magick_ai_core_fail_closed_caps : array();
+		$npcink_governance_core_fail_closed_caps = is_array( $npcink_governance_core_fail_closed_caps ?? null ) ? $npcink_governance_core_fail_closed_caps : array();
 		$capability = sanitize_key( $capability );
 
-		return array_key_exists( $capability, $magick_ai_core_fail_closed_caps ) ? (bool) $magick_ai_core_fail_closed_caps[ $capability ] : true;
+		return array_key_exists( $capability, $npcink_governance_core_fail_closed_caps ) ? (bool) $npcink_governance_core_fail_closed_caps[ $capability ] : true;
 	}
 }
 
@@ -314,10 +314,10 @@ if ( ! function_exists( 'do_action' ) ) {
 	 * @return void
 	 */
 	function do_action( string $hook, ...$args ): void {
-		global $magick_ai_core_fail_closed_actions;
+		global $npcink_governance_core_fail_closed_actions;
 
-		$magick_ai_core_fail_closed_actions = is_array( $magick_ai_core_fail_closed_actions ?? null ) ? $magick_ai_core_fail_closed_actions : array();
-		$magick_ai_core_fail_closed_actions[] = array(
+		$npcink_governance_core_fail_closed_actions = is_array( $npcink_governance_core_fail_closed_actions ?? null ) ? $npcink_governance_core_fail_closed_actions : array();
+		$npcink_governance_core_fail_closed_actions[] = array(
 			'hook' => $hook,
 			'args' => $args,
 		);
@@ -357,11 +357,11 @@ if ( ! function_exists( 'get_option' ) ) {
 	 * @return mixed
 	 */
 	function get_option( string $name, $default = false ) {
-		global $magick_ai_core_fail_closed_options;
+		global $npcink_governance_core_fail_closed_options;
 
-		$magick_ai_core_fail_closed_options = is_array( $magick_ai_core_fail_closed_options ?? null ) ? $magick_ai_core_fail_closed_options : array();
+		$npcink_governance_core_fail_closed_options = is_array( $npcink_governance_core_fail_closed_options ?? null ) ? $npcink_governance_core_fail_closed_options : array();
 
-		return $magick_ai_core_fail_closed_options[ $name ] ?? $default;
+		return $npcink_governance_core_fail_closed_options[ $name ] ?? $default;
 	}
 }
 
@@ -374,9 +374,9 @@ if ( ! function_exists( 'update_option' ) ) {
 	 * @return bool
 	 */
 	function update_option( string $name, $value, $autoload = null ): bool {
-		global $magick_ai_core_fail_closed_options;
+		global $npcink_governance_core_fail_closed_options;
 
-		$magick_ai_core_fail_closed_options[ $name ] = $value;
+		$npcink_governance_core_fail_closed_options[ $name ] = $value;
 
 		return true;
 	}
@@ -390,11 +390,11 @@ if ( ! function_exists( 'get_transient' ) ) {
 	 * @return mixed
 	 */
 	function get_transient( string $key ) {
-		global $magick_ai_core_fail_closed_transients;
+		global $npcink_governance_core_fail_closed_transients;
 
-		$magick_ai_core_fail_closed_transients = is_array( $magick_ai_core_fail_closed_transients ?? null ) ? $magick_ai_core_fail_closed_transients : array();
+		$npcink_governance_core_fail_closed_transients = is_array( $npcink_governance_core_fail_closed_transients ?? null ) ? $npcink_governance_core_fail_closed_transients : array();
 
-		return $magick_ai_core_fail_closed_transients[ $key ] ?? false;
+		return $npcink_governance_core_fail_closed_transients[ $key ] ?? false;
 	}
 }
 
@@ -407,30 +407,30 @@ if ( ! function_exists( 'set_transient' ) ) {
 	 * @return bool
 	 */
 	function set_transient( string $key, $value, int $expiration = 0 ): bool {
-		global $magick_ai_core_fail_closed_transients;
+		global $npcink_governance_core_fail_closed_transients;
 
-		$magick_ai_core_fail_closed_transients[ $key ] = $value;
+		$npcink_governance_core_fail_closed_transients[ $key ] = $value;
 
 		return true;
 	}
 }
 
-if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
+if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 	/**
 	 * Ability provider fixture.
 	 *
 	 * @return array<string,array<string,mixed>>
 	 */
-	function magick_ai_abilities_get_registered(): array {
-		global $magick_ai_core_fail_closed_abilities;
+	function npcink_abilities_toolkit_get_registered(): array {
+		global $npcink_governance_core_fail_closed_abilities;
 
-		if ( is_array( $magick_ai_core_fail_closed_abilities ?? null ) ) {
-			return $magick_ai_core_fail_closed_abilities;
+		if ( is_array( $npcink_governance_core_fail_closed_abilities ?? null ) ) {
+			return $npcink_governance_core_fail_closed_abilities;
 		}
 
 		return array(
-			'magick-ai/create-draft' => array(
-				'ability_id'        => 'magick-ai/create-draft',
+			'npcink-abilities-toolkit/create-draft' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/create-draft',
 				'label'             => 'Create Draft',
 				'risk_level'        => 'write',
 				'requires_approval' => true,
@@ -446,8 +446,8 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
-			'magick-ai/update-post' => array(
-				'ability_id'        => 'magick-ai/update-post',
+			'npcink-abilities-toolkit/update-post' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/update-post',
 				'label'             => 'Update Post',
 				'risk_level'        => 'write',
 				'requires_approval' => true,
@@ -456,8 +456,8 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'post_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
-			'magick-ai/set-post-terms' => array(
-				'ability_id'        => 'magick-ai/set-post-terms',
+			'npcink-abilities-toolkit/set-post-terms' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/set-post-terms',
 				'label'             => 'Set Post Terms',
 				'risk_level'        => 'write',
 				'requires_approval' => true,
@@ -466,8 +466,8 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'post_id' => array( 'type' => 'integer' ), 'taxonomy' => array( 'type' => 'string' ), 'term_ids' => array( 'type' => 'array' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
-			'magick-ai/approve-comment' => array(
-				'ability_id'        => 'magick-ai/approve-comment',
+			'npcink-abilities-toolkit/approve-comment' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/approve-comment',
 				'label'             => 'Approve Comment',
 				'risk_level'        => 'write',
 				'requires_approval' => true,
@@ -476,8 +476,8 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'comment_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
-			'magick-ai/trash-post' => array(
-				'ability_id'        => 'magick-ai/trash-post',
+			'npcink-abilities-toolkit/trash-post' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/trash-post',
 				'label'             => 'Trash Post',
 				'risk_level'        => 'destructive',
 				'requires_approval' => true,
@@ -486,8 +486,8 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'post_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
-			'magick-ai/update-media-details' => array(
-				'ability_id'        => 'magick-ai/update-media-details',
+			'npcink-abilities-toolkit/update-media-details' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/update-media-details',
 				'label'             => 'Update Media Details',
 				'risk_level'        => 'write',
 				'requires_approval' => true,
@@ -496,8 +496,8 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'attachment_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
-			'magick-ai/upload-media-from-url' => array(
-				'ability_id'        => 'magick-ai/upload-media-from-url',
+			'npcink-abilities-toolkit/upload-media-from-url' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/upload-media-from-url',
 				'label'             => 'Upload Media From URL',
 				'risk_level'        => 'write',
 				'requires_approval' => true,
@@ -506,8 +506,8 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'url' => array( 'type' => 'string' ), 'attach_to_post_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
-			'magick-ai/set-post-featured-image' => array(
-				'ability_id'        => 'magick-ai/set-post-featured-image',
+			'npcink-abilities-toolkit/set-post-featured-image' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/set-post-featured-image',
 				'label'             => 'Set Post Featured Image',
 				'risk_level'        => 'write',
 				'requires_approval' => true,
@@ -516,8 +516,8 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'post_id' => array( 'type' => 'integer' ), 'attachment_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
-			'magick-ai/adopt-cloud-media-derivative' => array(
-				'ability_id'        => 'magick-ai/adopt-cloud-media-derivative',
+			'npcink-abilities-toolkit/adopt-cloud-media-derivative' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',
 				'label'             => 'Adopt Cloud Media Derivative',
 				'risk_level'        => 'write',
 				'requires_approval' => true,
@@ -526,8 +526,8 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'attachment_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
-			'magick-ai/rename-media-file' => array(
-				'ability_id'        => 'magick-ai/rename-media-file',
+			'npcink-abilities-toolkit/rename-media-file' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/rename-media-file',
 				'label'             => 'Rename Media File',
 				'risk_level'        => 'write',
 				'requires_approval' => true,
@@ -536,8 +536,8 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'attachment_id' => array( 'type' => 'integer' ), 'target_file_name' => array( 'type' => 'string' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
-			'magick-ai-toolbox/build-article-write-plan' => array(
-				'ability_id'        => 'magick-ai-toolbox/build-article-write-plan',
+			'npcink-toolbox/build-article-write-plan' => array(
+				'ability_id'        => 'npcink-toolbox/build-article-write-plan',
 				'label'             => 'Build Article Write Plan',
 				'risk_level'        => 'read',
 				'requires_approval' => false,
@@ -546,8 +546,8 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
-			'magick-ai-toolbox/build-article-batch-write-plan' => array(
-				'ability_id'        => 'magick-ai-toolbox/build-article-batch-write-plan',
+			'npcink-toolbox/build-article-batch-write-plan' => array(
+				'ability_id'        => 'npcink-toolbox/build-article-batch-write-plan',
 				'label'             => 'Build Article Batch Write Plan',
 				'risk_level'        => 'read',
 				'requires_approval' => false,
@@ -556,8 +556,8 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
-			'magick-ai-toolbox/build-article-media-batch-write-plan' => array(
-				'ability_id'        => 'magick-ai-toolbox/build-article-media-batch-write-plan',
+			'npcink-toolbox/build-article-media-batch-write-plan' => array(
+				'ability_id'        => 'npcink-toolbox/build-article-media-batch-write-plan',
 				'label'             => 'Build Article Media Batch Write Plan',
 				'risk_level'        => 'read',
 				'requires_approval' => false,
@@ -566,8 +566,8 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
-			'magick-ai-toolbox/build-image-candidate-adoption-plan' => array(
-				'ability_id'        => 'magick-ai-toolbox/build-image-candidate-adoption-plan',
+			'npcink-toolbox/build-image-candidate-adoption-plan' => array(
+				'ability_id'        => 'npcink-toolbox/build-image-candidate-adoption-plan',
 				'label'             => 'Build Image Candidate Adoption Plan',
 				'risk_level'        => 'read',
 				'requires_approval' => false,
@@ -576,8 +576,8 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
-			'magick-ai/build-media-optimization-plan' => array(
-				'ability_id'        => 'magick-ai/build-media-optimization-plan',
+			'npcink-abilities-toolkit/build-media-optimization-plan' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/build-media-optimization-plan',
 				'label'             => 'Build Media Optimization Plan',
 				'risk_level'        => 'read',
 				'requires_approval' => false,
@@ -586,8 +586,8 @@ if ( ! function_exists( 'magick_ai_abilities_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
-			'magick-ai/build-media-rename-plan' => array(
-				'ability_id'        => 'magick-ai/build-media-rename-plan',
+			'npcink-abilities-toolkit/build-media-rename-plan' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/build-media-rename-plan',
 				'label'             => 'Build Media Rename Plan',
 				'risk_level'        => 'read',
 				'requires_approval' => false,
@@ -664,7 +664,7 @@ final class Magick_AI_Core_Fail_Closed_WPDB {
 		if ( in_array( $table, $this->fail_insert_tables, true ) ) {
 			return false;
 		}
-		if ( false !== strpos( $table, 'magick_ai_core_audit_log' ) && in_array( (string) ( $record['event_name'] ?? '' ), $this->fail_insert_event_names, true ) ) {
+		if ( false !== strpos( $table, 'npcink_governance_core_audit_log' ) && in_array( (string) ( $record['event_name'] ?? '' ), $this->fail_insert_event_names, true ) ) {
 			return false;
 		}
 
@@ -759,12 +759,12 @@ final class Magick_AI_Core_Fail_Closed_WPDB {
 		$sql  = is_array( $query ) ? (string) ( $query['query'] ?? '' ) : (string) $query;
 		$args = is_array( $query ) ? (array) ( $query['args'] ?? array() ) : array();
 
-		if ( false !== strpos( $sql, 'magick_ai_core_proposals' ) && false !== strpos( $sql, 'proposal_id = %s' ) ) {
-			return $this->first_matching( $this->prefix . 'magick_ai_core_proposals', array( 'proposal_id' => (string) ( $args[0] ?? '' ) ) );
+		if ( false !== strpos( $sql, 'npcink_governance_core_proposals' ) && false !== strpos( $sql, 'proposal_id = %s' ) ) {
+			return $this->first_matching( $this->prefix . 'npcink_governance_core_proposals', array( 'proposal_id' => (string) ( $args[0] ?? '' ) ) );
 		}
 
-		if ( false !== strpos( $sql, 'magick_ai_core_app_keys' ) && false !== strpos( $sql, 'key_id = %s' ) ) {
-			return $this->first_matching( $this->prefix . 'magick_ai_core_app_keys', array( 'key_id' => (string) ( $args[0] ?? '' ) ) );
+		if ( false !== strpos( $sql, 'npcink_governance_core_app_keys' ) && false !== strpos( $sql, 'key_id = %s' ) ) {
+			return $this->first_matching( $this->prefix . 'npcink_governance_core_app_keys', array( 'key_id' => (string) ( $args[0] ?? '' ) ) );
 		}
 
 		return null;
@@ -779,7 +779,7 @@ final class Magick_AI_Core_Fail_Closed_WPDB {
 		$sql  = is_array( $query ) ? (string) ( $query['query'] ?? '' ) : (string) $query;
 		$args = is_array( $query ) ? (array) ( $query['args'] ?? array() ) : array();
 
-		if ( false !== strpos( $sql, 'magick_ai_core_audit_log' ) ) {
+		if ( false !== strpos( $sql, 'npcink_governance_core_audit_log' ) ) {
 			return $this->filter_audit_rows( $sql, $args );
 		}
 
@@ -849,7 +849,7 @@ final class Magick_AI_Core_Fail_Closed_WPDB {
 	 * @return array<int,array<string,mixed>>
 	 */
 	private function filter_audit_rows( string $sql, array $args ): array {
-		$rows      = $this->tables[ $this->prefix . 'magick_ai_core_audit_log' ] ?? array();
+		$rows      = $this->tables[ $this->prefix . 'npcink_governance_core_audit_log' ] ?? array();
 		$arg_index = 0;
 
 		if ( false !== strpos( $sql, 'proposal_id = %s' ) ) {
@@ -905,7 +905,7 @@ final class Magick_AI_Core_Fail_Closed_WPDB {
  * @param string $message Message.
  * @return void
  */
-function magick_ai_core_fail_closed_assert( bool $condition, string $message ): void {
+function npcink_governance_core_fail_closed_assert( bool $condition, string $message ): void {
 	if ( ! $condition ) {
 		fwrite( STDERR, '[fail] ' . $message . "\n" );
 		exit( 1 );
@@ -932,16 +932,16 @@ require_once dirname( __DIR__ ) . '/includes/Rest/Proposals_Controller.php';
  *
  * @return Magick_AI_Core_Fail_Closed_WPDB
  */
-function magick_ai_core_fail_closed_reset_db(): Magick_AI_Core_Fail_Closed_WPDB {
-	global $wpdb, $magick_ai_core_fail_closed_options, $magick_ai_core_fail_closed_transients, $magick_ai_core_fail_closed_caps, $magick_ai_core_fail_closed_abilities, $magick_ai_core_fail_closed_actions;
+function npcink_governance_core_fail_closed_reset_db(): Magick_AI_Core_Fail_Closed_WPDB {
+	global $wpdb, $npcink_governance_core_fail_closed_options, $npcink_governance_core_fail_closed_transients, $npcink_governance_core_fail_closed_caps, $npcink_governance_core_fail_closed_abilities, $npcink_governance_core_fail_closed_actions;
 
 	$wpdb = new Magick_AI_Core_Fail_Closed_WPDB();
-	$magick_ai_core_fail_closed_options = array();
-	$magick_ai_core_fail_closed_transients = array();
-	$magick_ai_core_fail_closed_caps = array();
-	$magick_ai_core_fail_closed_abilities = null;
-	$magick_ai_core_fail_closed_actions = array();
-	\MagickAI\Core\Security\Request_Context::clear();
+	$npcink_governance_core_fail_closed_options = array();
+	$npcink_governance_core_fail_closed_transients = array();
+	$npcink_governance_core_fail_closed_caps = array();
+	$npcink_governance_core_fail_closed_abilities = null;
+	$npcink_governance_core_fail_closed_actions = array();
+	\Npcink\GovernanceCore\Security\Request_Context::clear();
 
 	return $wpdb;
 }
@@ -949,15 +949,15 @@ function magick_ai_core_fail_closed_reset_db(): Magick_AI_Core_Fail_Closed_WPDB 
 /**
  * Returns a proposal service and repository.
  *
- * @return array{service:\MagickAI\Core\Governance\Proposal_Service,proposals:\MagickAI\Core\Governance\Proposal_Repository}
+ * @return array{service:\Npcink\GovernanceCore\Governance\Proposal_Service,proposals:\Npcink\GovernanceCore\Governance\Proposal_Repository}
  */
-function magick_ai_core_fail_closed_proposal_stack(): array {
-	$proposals = new \MagickAI\Core\Governance\Proposal_Repository();
-	$service   = new \MagickAI\Core\Governance\Proposal_Service(
+function npcink_governance_core_fail_closed_proposal_stack(): array {
+	$proposals = new \Npcink\GovernanceCore\Governance\Proposal_Repository();
+	$service   = new \Npcink\GovernanceCore\Governance\Proposal_Service(
 		$proposals,
-		new \MagickAI\Core\Capabilities\Ability_Registry_Adapter(),
-		new \MagickAI\Core\Audit\Audit_Log_Repository(),
-		new \MagickAI\Core\Governance\Approval_Policy_Evaluator()
+		new \Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter(),
+		new \Npcink\GovernanceCore\Audit\Audit_Log_Repository(),
+		new \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator()
 	);
 
 	return array(
@@ -969,19 +969,19 @@ function magick_ai_core_fail_closed_proposal_stack(): array {
 /**
  * Returns a proposal/preflight service stack.
  *
- * @return array{service:\MagickAI\Core\Governance\Proposal_Service,preflight:\MagickAI\Core\Governance\Commit_Preflight_Service,proposals:\MagickAI\Core\Governance\Proposal_Repository,audit:\MagickAI\Core\Audit\Audit_Log_Repository}
+ * @return array{service:\Npcink\GovernanceCore\Governance\Proposal_Service,preflight:\Npcink\GovernanceCore\Governance\Commit_Preflight_Service,proposals:\Npcink\GovernanceCore\Governance\Proposal_Repository,audit:\Npcink\GovernanceCore\Audit\Audit_Log_Repository}
  */
-function magick_ai_core_fail_closed_governance_stack(): array {
-	$proposals = new \MagickAI\Core\Governance\Proposal_Repository();
-	$abilities = new \MagickAI\Core\Capabilities\Ability_Registry_Adapter();
-	$audit     = new \MagickAI\Core\Audit\Audit_Log_Repository();
-	$service   = new \MagickAI\Core\Governance\Proposal_Service(
+function npcink_governance_core_fail_closed_governance_stack(): array {
+	$proposals = new \Npcink\GovernanceCore\Governance\Proposal_Repository();
+	$abilities = new \Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter();
+	$audit     = new \Npcink\GovernanceCore\Audit\Audit_Log_Repository();
+	$service   = new \Npcink\GovernanceCore\Governance\Proposal_Service(
 		$proposals,
 		$abilities,
 		$audit,
-		new \MagickAI\Core\Governance\Approval_Policy_Evaluator()
+		new \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator()
 	);
-	$preflight = new \MagickAI\Core\Governance\Commit_Preflight_Service( $proposals, $abilities, $audit );
+	$preflight = new \Npcink\GovernanceCore\Governance\Commit_Preflight_Service( $proposals, $abilities, $audit );
 
 	return array(
 		'service'   => $service,
@@ -994,28 +994,28 @@ function magick_ai_core_fail_closed_governance_stack(): array {
 /**
  * Returns a proposal REST controller stack.
  *
- * @return array{controller:\MagickAI\Core\Rest\Proposals_Controller,service:\MagickAI\Core\Governance\Proposal_Service,preflight:\MagickAI\Core\Governance\Commit_Preflight_Service,proposals:\MagickAI\Core\Governance\Proposal_Repository,audit:\MagickAI\Core\Audit\Audit_Log_Repository}
+ * @return array{controller:\Npcink\GovernanceCore\Rest\Proposals_Controller,service:\Npcink\GovernanceCore\Governance\Proposal_Service,preflight:\Npcink\GovernanceCore\Governance\Commit_Preflight_Service,proposals:\Npcink\GovernanceCore\Governance\Proposal_Repository,audit:\Npcink\GovernanceCore\Audit\Audit_Log_Repository}
  */
-function magick_ai_core_fail_closed_proposals_controller_stack(): array {
-	$proposals = new \MagickAI\Core\Governance\Proposal_Repository();
-	$abilities = new \MagickAI\Core\Capabilities\Ability_Registry_Adapter();
-	$audit     = new \MagickAI\Core\Audit\Audit_Log_Repository();
-	$service   = new \MagickAI\Core\Governance\Proposal_Service(
+function npcink_governance_core_fail_closed_proposals_controller_stack(): array {
+	$proposals = new \Npcink\GovernanceCore\Governance\Proposal_Repository();
+	$abilities = new \Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter();
+	$audit     = new \Npcink\GovernanceCore\Audit\Audit_Log_Repository();
+	$service   = new \Npcink\GovernanceCore\Governance\Proposal_Service(
 		$proposals,
 		$abilities,
 		$audit,
-		new \MagickAI\Core\Governance\Approval_Policy_Evaluator()
+		new \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator()
 	);
-	$preflight = new \MagickAI\Core\Governance\Commit_Preflight_Service( $proposals, $abilities, $audit );
-	$plan      = new \MagickAI\Core\Governance\Plan_Proposal_Service( $abilities, $service, $audit );
-	$auth      = new \MagickAI\Core\Security\App_Authenticator(
-		new \MagickAI\Core\Security\App_Key_Repository(),
-		new \MagickAI\Core\Security\App_Rate_Limiter(),
+	$preflight = new \Npcink\GovernanceCore\Governance\Commit_Preflight_Service( $proposals, $abilities, $audit );
+	$plan      = new \Npcink\GovernanceCore\Governance\Plan_Proposal_Service( $abilities, $service, $audit );
+	$auth      = new \Npcink\GovernanceCore\Security\App_Authenticator(
+		new \Npcink\GovernanceCore\Security\App_Key_Repository(),
+		new \Npcink\GovernanceCore\Security\App_Rate_Limiter(),
 		$audit
 	);
 
 	return array(
-		'controller' => new \MagickAI\Core\Rest\Proposals_Controller( $service, $proposals, $preflight, $plan, $auth ),
+		'controller' => new \Npcink\GovernanceCore\Rest\Proposals_Controller( $service, $proposals, $preflight, $plan, $auth ),
 		'service'    => $service,
 		'preflight'  => $preflight,
 		'proposals'  => $proposals,
@@ -1028,10 +1028,10 @@ function magick_ai_core_fail_closed_proposals_controller_stack(): array {
  *
  * @return void
  */
-function magick_ai_core_fail_closed_reset_observability_events(): void {
-	global $magick_ai_core_fail_closed_actions;
+function npcink_governance_core_fail_closed_reset_observability_events(): void {
+	global $npcink_governance_core_fail_closed_actions;
 
-	$magick_ai_core_fail_closed_actions = array();
+	$npcink_governance_core_fail_closed_actions = array();
 }
 
 /**
@@ -1040,14 +1040,14 @@ function magick_ai_core_fail_closed_reset_observability_events(): void {
  * @param string $event_kind Optional event kind filter.
  * @return array<int,array<string,mixed>>
  */
-function magick_ai_core_fail_closed_observability_events( string $event_kind = '' ): array {
-	global $magick_ai_core_fail_closed_actions;
+function npcink_governance_core_fail_closed_observability_events( string $event_kind = '' ): array {
+	global $npcink_governance_core_fail_closed_actions;
 
-	$actions = is_array( $magick_ai_core_fail_closed_actions ?? null ) ? $magick_ai_core_fail_closed_actions : array();
+	$actions = is_array( $npcink_governance_core_fail_closed_actions ?? null ) ? $npcink_governance_core_fail_closed_actions : array();
 	$events  = array();
 
 	foreach ( $actions as $action ) {
-		if ( 'magick_ai_observability_event' !== (string) ( $action['hook'] ?? '' ) ) {
+		if ( 'npcink_governance_core_observability_event' !== (string) ( $action['hook'] ?? '' ) ) {
 			continue;
 		}
 
@@ -1070,44 +1070,44 @@ function magick_ai_core_fail_closed_observability_events( string $event_kind = '
  * @param string              $message Assertion message prefix.
  * @return void
  */
-function magick_ai_core_fail_closed_assert_observability_metadata_only( array $event, string $message ): void {
+function npcink_governance_core_fail_closed_assert_observability_metadata_only( array $event, string $message ): void {
 	foreach ( array( 'input', 'preview', 'caller', 'proposal', 'policy', 'note', 'payload', 'payload_json', 'raw' ) as $forbidden_key ) {
-		magick_ai_core_fail_closed_assert( ! array_key_exists( $forbidden_key, $event ), $message . ' omits forbidden key ' . $forbidden_key . '.' );
+		npcink_governance_core_fail_closed_assert( ! array_key_exists( $forbidden_key, $event ), $message . ' omits forbidden key ' . $forbidden_key . '.' );
 	}
 
 	foreach ( $event as $key => $value ) {
-		magick_ai_core_fail_closed_assert( ! is_array( $value ), $message . ' keeps field ' . $key . ' bounded to a scalar.' );
+		npcink_governance_core_fail_closed_assert( ! is_array( $value ), $message . ' keeps field ' . $key . ' bounded to a scalar.' );
 	}
 
 	$event_id = (string) ( $event['event_id'] ?? '' );
-	magick_ai_core_fail_closed_assert( '' !== $event_id, $message . ' includes a stable event id.' );
-	magick_ai_core_fail_closed_assert( 1 === preg_match( '/^[a-z0-9_]+$/', $event_id ), $message . ' event id is bounded to safe characters.' );
+	npcink_governance_core_fail_closed_assert( '' !== $event_id, $message . ' includes a stable event id.' );
+	npcink_governance_core_fail_closed_assert( 1 === preg_match( '/^[a-z0-9_]+$/', $event_id ), $message . ' event id is bounded to safe characters.' );
 
 	$json = wp_json_encode( $event );
 	$json = is_string( $json ) ? $json : '';
 	foreach ( array( 'RAW_GENERATED_CONTENT_SENTINEL', 'APPROVAL_NOTE_SENTINEL', 'REJECTION_NOTE_SENTINEL', 'CALLER_SECRET_SENTINEL', 'POLICY_PAYLOAD_SENTINEL' ) as $sentinel ) {
-		magick_ai_core_fail_closed_assert( false === strpos( $json, $sentinel ), $message . ' does not expose ' . $sentinel . '.' );
+		npcink_governance_core_fail_closed_assert( false === strpos( $json, $sentinel ), $message . ' does not expose ' . $sentinel . '.' );
 	}
 }
 
 /**
  * Returns a plan-to-proposal service stack.
  *
- * @return array{service:\MagickAI\Core\Governance\Plan_Proposal_Service,proposals:\MagickAI\Core\Governance\Proposal_Repository}
+ * @return array{service:\Npcink\GovernanceCore\Governance\Plan_Proposal_Service,proposals:\Npcink\GovernanceCore\Governance\Proposal_Repository}
  */
-function magick_ai_core_fail_closed_plan_stack(): array {
-	$proposals = new \MagickAI\Core\Governance\Proposal_Repository();
-	$abilities = new \MagickAI\Core\Capabilities\Ability_Registry_Adapter();
-	$audit     = new \MagickAI\Core\Audit\Audit_Log_Repository();
-	$proposal_service = new \MagickAI\Core\Governance\Proposal_Service(
+function npcink_governance_core_fail_closed_plan_stack(): array {
+	$proposals = new \Npcink\GovernanceCore\Governance\Proposal_Repository();
+	$abilities = new \Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter();
+	$audit     = new \Npcink\GovernanceCore\Audit\Audit_Log_Repository();
+	$proposal_service = new \Npcink\GovernanceCore\Governance\Proposal_Service(
 		$proposals,
 		$abilities,
 		$audit,
-		new \MagickAI\Core\Governance\Approval_Policy_Evaluator()
+		new \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator()
 	);
 
 	return array(
-		'service'   => new \MagickAI\Core\Governance\Plan_Proposal_Service( $abilities, $proposal_service, $audit ),
+		'service'   => new \Npcink\GovernanceCore\Governance\Plan_Proposal_Service( $abilities, $proposal_service, $audit ),
 		'proposals' => $proposals,
 	);
 }
@@ -1117,9 +1117,9 @@ function magick_ai_core_fail_closed_plan_stack(): array {
  *
  * @return array<string,mixed>
  */
-function magick_ai_core_fail_closed_payload(): array {
+function npcink_governance_core_fail_closed_payload(): array {
 	return array(
-		'ability_id' => 'magick-ai/create-draft',
+		'ability_id' => 'npcink-abilities-toolkit/create-draft',
 		'title'      => 'Draft proposal',
 		'summary'    => 'Create a draft.',
 		'input'      => array( 'dry_run' => true ),
@@ -1134,13 +1134,13 @@ function magick_ai_core_fail_closed_payload(): array {
  * @param string $ability_id Ability id.
  * @return array<string,mixed>
  */
-function magick_ai_core_fail_closed_governance_payload( string $ability_id ): array {
+function npcink_governance_core_fail_closed_governance_payload( string $ability_id ): array {
 	$inputs = array(
-		'magick-ai/create-draft'     => array( 'title' => 'Governed draft', 'dry_run' => true, 'commit' => false, 'idempotency_key' => 'draft-1' ),
-		'magick-ai/update-post'      => array( 'post_id' => 101, 'title' => 'Updated title', 'dry_run' => true, 'commit' => false, 'idempotency_key' => 'update-1' ),
-		'magick-ai/set-post-terms'   => array( 'post_id' => 101, 'taxonomy' => 'post_tag', 'term_ids' => array( 7 ), 'dry_run' => true, 'commit' => false, 'idempotency_key' => 'terms-1' ),
-		'magick-ai/approve-comment'  => array( 'comment_id' => 55, 'dry_run' => true, 'commit' => false, 'idempotency_key' => 'comment-1' ),
-		'magick-ai/trash-post'       => array( 'post_id' => 101, 'dry_run' => true, 'commit' => false, 'idempotency_key' => 'trash-1' ),
+		'npcink-abilities-toolkit/create-draft'     => array( 'title' => 'Governed draft', 'dry_run' => true, 'commit' => false, 'idempotency_key' => 'draft-1' ),
+		'npcink-abilities-toolkit/update-post'      => array( 'post_id' => 101, 'title' => 'Updated title', 'dry_run' => true, 'commit' => false, 'idempotency_key' => 'update-1' ),
+		'npcink-abilities-toolkit/set-post-terms'   => array( 'post_id' => 101, 'taxonomy' => 'post_tag', 'term_ids' => array( 7 ), 'dry_run' => true, 'commit' => false, 'idempotency_key' => 'terms-1' ),
+		'npcink-abilities-toolkit/approve-comment'  => array( 'comment_id' => 55, 'dry_run' => true, 'commit' => false, 'idempotency_key' => 'comment-1' ),
+		'npcink-abilities-toolkit/trash-post'       => array( 'post_id' => 101, 'dry_run' => true, 'commit' => false, 'idempotency_key' => 'trash-1' ),
 	);
 
 	return array(
@@ -1163,12 +1163,12 @@ function magick_ai_core_fail_closed_governance_payload( string $ability_id ): ar
  * @param string $event_name Event name.
  * @return array<int,array<string,mixed>>
  */
-function magick_ai_core_fail_closed_audit_rows( string $proposal_id, string $event_name ): array {
+function npcink_governance_core_fail_closed_audit_rows( string $proposal_id, string $event_name ): array {
 	global $wpdb;
 
 	return array_values(
 		array_filter(
-			$wpdb->rows( 'wp_magick_ai_core_audit_log' ),
+			$wpdb->rows( 'wp_npcink_governance_core_audit_log' ),
 			static function ( array $row ) use ( $proposal_id, $event_name ): bool {
 				return $proposal_id === (string) ( $row['proposal_id'] ?? '' ) && $event_name === (string) ( $row['event_name'] ?? '' );
 			}
@@ -1181,16 +1181,16 @@ function magick_ai_core_fail_closed_audit_rows( string $proposal_id, string $eve
  *
  * @return array<string,mixed>
  */
-function magick_ai_core_fail_closed_cleanup_batch_payload(): array {
+function npcink_governance_core_fail_closed_cleanup_batch_payload(): array {
 	return array(
-		'ability_id' => 'magick-ai/trash-post',
+		'ability_id' => 'npcink-abilities-toolkit/trash-post',
 		'title'      => 'Cleanup batch',
 		'summary'    => 'Trash trusted test content.',
 		'input'      => array(
 			'write_actions' => array(
 				array(
 					'action_id'         => 'trash_test_post_101',
-					'target_ability_id' => 'magick-ai/trash-post',
+					'target_ability_id' => 'npcink-abilities-toolkit/trash-post',
 					'input'             => array(
 						'post_id' => 101,
 						'dry_run' => true,
@@ -1206,7 +1206,7 @@ function magick_ai_core_fail_closed_cleanup_batch_payload(): array {
 		'preview'    => array(
 			'source'       => array(
 				'type'            => 'plan_to_proposal_batch',
-				'plan_ability_id' => 'magick-ai/build-test-content-cleanup-plan',
+				'plan_ability_id' => 'npcink-abilities-toolkit/build-test-content-cleanup-plan',
 				'batch_approval'  => true,
 			),
 			'action_count' => 1,
@@ -1222,7 +1222,7 @@ function magick_ai_core_fail_closed_cleanup_batch_payload(): array {
 		),
 		'caller'     => array(
 			'source'          => 'plan_to_proposal_batch',
-			'plan_ability_id' => 'magick-ai/build-test-content-cleanup-plan',
+			'plan_ability_id' => 'npcink-abilities-toolkit/build-test-content-cleanup-plan',
 			'batch_id'        => 'fault_injection_cleanup',
 		),
 	);
@@ -1233,7 +1233,7 @@ function magick_ai_core_fail_closed_cleanup_batch_payload(): array {
  *
  * @return array<string,mixed>
  */
-function magick_ai_core_fail_closed_article_write_plan(): array {
+function npcink_governance_core_fail_closed_article_write_plan(): array {
 	return array(
 		'artifact_type'          => 'article_write_plan',
 		'version'                => 1,
@@ -1277,7 +1277,7 @@ function magick_ai_core_fail_closed_article_write_plan(): array {
 		'write_actions'          => array(
 			array(
 				'action_id'         => 'create_article_draft',
-				'target_ability_id' => 'magick-ai/create-draft',
+				'target_ability_id' => 'npcink-abilities-toolkit/create-draft',
 				'input'             => array(
 					'title'   => 'Governed writing workflow',
 					'content' => 'Draft body.',
@@ -1299,8 +1299,8 @@ function magick_ai_core_fail_closed_article_write_plan(): array {
  *
  * @return array<string,mixed>
  */
-function magick_ai_core_fail_closed_article_batch_write_plan(): array {
-	$single_plan = magick_ai_core_fail_closed_article_write_plan();
+function npcink_governance_core_fail_closed_article_batch_write_plan(): array {
+	$single_plan = npcink_governance_core_fail_closed_article_write_plan();
 	$articles    = array();
 	$actions     = array();
 
@@ -1342,8 +1342,8 @@ function magick_ai_core_fail_closed_article_batch_write_plan(): array {
  *
  * @return array<string,mixed>
  */
-function magick_ai_core_fail_closed_article_media_batch_write_plan(): array {
-	$single_plan = magick_ai_core_fail_closed_article_write_plan();
+function npcink_governance_core_fail_closed_article_media_batch_write_plan(): array {
+	$single_plan = npcink_governance_core_fail_closed_article_write_plan();
 	$article     = $single_plan;
 	unset( $article['artifact_type'], $article['version'], $article['batch_id'], $article['requires_approval'], $article['dry_run'], $article['commit_execution'], $article['proposal_mode'], $article['write_actions'] );
 	$article['featured_image_candidate'] = array(
@@ -1377,7 +1377,7 @@ function magick_ai_core_fail_closed_article_media_batch_write_plan(): array {
 		'write_actions'     => array(
 			array(
 				'action_id'         => 'create_article_draft_1',
-				'target_ability_id' => 'magick-ai/create-draft',
+				'target_ability_id' => 'npcink-abilities-toolkit/create-draft',
 				'input'             => array(
 					'title'   => 'Governed writing workflow',
 					'content' => 'Draft body.',
@@ -1391,7 +1391,7 @@ function magick_ai_core_fail_closed_article_media_batch_write_plan(): array {
 			),
 			array(
 				'action_id'         => 'upload_featured_image_1',
-				'target_ability_id' => 'magick-ai/upload-media-from-url',
+				'target_ability_id' => 'npcink-abilities-toolkit/upload-media-from-url',
 				'depends_on'        => array( 'create_article_draft_1' ),
 				'input'             => array(
 					'url'               => 'https://images.example.test/photo.jpg',
@@ -1410,7 +1410,7 @@ function magick_ai_core_fail_closed_article_media_batch_write_plan(): array {
 			),
 			array(
 				'action_id'         => 'update_featured_image_details_1',
-				'target_ability_id' => 'magick-ai/update-media-details',
+				'target_ability_id' => 'npcink-abilities-toolkit/update-media-details',
 				'depends_on'        => array( 'upload_featured_image_1' ),
 				'input'             => array(
 					'attachment_id'     => '$outputs.upload_featured_image_1.attachment_id',
@@ -1428,7 +1428,7 @@ function magick_ai_core_fail_closed_article_media_batch_write_plan(): array {
 			),
 			array(
 				'action_id'         => 'set_featured_image_1',
-				'target_ability_id' => 'magick-ai/set-post-featured-image',
+				'target_ability_id' => 'npcink-abilities-toolkit/set-post-featured-image',
 				'depends_on'        => array( 'create_article_draft_1', 'upload_featured_image_1' ),
 				'input'             => array(
 					'post_id'       => '$outputs.create_article_draft_1.post_id',
@@ -1453,7 +1453,7 @@ function magick_ai_core_fail_closed_article_media_batch_write_plan(): array {
  *
  * @return array<string,mixed>
  */
-function magick_ai_core_fail_closed_media_optimization_plan(): array {
+function npcink_governance_core_fail_closed_media_optimization_plan(): array {
 	return array(
 		'artifact_type'       => 'media_optimization_plan',
 		'version'             => 1,
@@ -1476,7 +1476,7 @@ function magick_ai_core_fail_closed_media_optimization_plan(): array {
 		'write_actions'       => array(
 			array(
 				'action_id'         => 'update_media_details',
-				'target_ability_id' => 'magick-ai/update-media-details',
+				'target_ability_id' => 'npcink-abilities-toolkit/update-media-details',
 				'input'             => array(
 					'attachment_id'    => 1493,
 					'title'            => 'Optimized AI image',
@@ -1495,7 +1495,7 @@ function magick_ai_core_fail_closed_media_optimization_plan(): array {
 			),
 			array(
 				'action_id'         => 'adopt_webp_derivative',
-				'target_ability_id' => 'magick-ai/adopt-cloud-media-derivative',
+				'target_ability_id' => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',
 				'input'             => array(
 					'attachment_id'                  => 1493,
 					'derivative_artifact'            => 'cloud://artifact/webp-1493',
@@ -1523,7 +1523,7 @@ function magick_ai_core_fail_closed_media_optimization_plan(): array {
  *
  * @return array<string,mixed>
  */
-function magick_ai_core_fail_closed_media_rename_plan(): array {
+function npcink_governance_core_fail_closed_media_rename_plan(): array {
 	return array(
 		'artifact_type'       => 'media_rename_plan',
 		'version'             => 1,
@@ -1554,7 +1554,7 @@ function magick_ai_core_fail_closed_media_rename_plan(): array {
 		'write_actions'       => array(
 			array(
 				'action_id'         => 'rename_media_file_1493',
-				'target_ability_id' => 'magick-ai/rename-media-file',
+				'target_ability_id' => 'npcink-abilities-toolkit/rename-media-file',
 				'input'             => array(
 					'attachment_id'                  => 1493,
 					'target_file_name'               => '1d7ea1565313df58fa0769e93e5310df.webp',
@@ -1583,7 +1583,7 @@ function magick_ai_core_fail_closed_media_rename_plan(): array {
  *
  * @return array<string,mixed>
  */
-function magick_ai_core_fail_closed_image_candidate_adoption_plan(): array {
+function npcink_governance_core_fail_closed_image_candidate_adoption_plan(): array {
 	return array(
 		'artifact_type'              => 'image_candidate_adoption_plan',
 		'version'                    => 1,
@@ -1607,7 +1607,7 @@ function magick_ai_core_fail_closed_image_candidate_adoption_plan(): array {
 		'write_actions'              => array(
 			array(
 				'action_id'         => 'upload_image_candidate',
-				'target_ability_id' => 'magick-ai/upload-media-from-url',
+				'target_ability_id' => 'npcink-abilities-toolkit/upload-media-from-url',
 				'input'             => array(
 					'url'               => 'https://images.example.test/photo.jpg',
 					'title'             => 'Reviewed image candidate',
@@ -1630,7 +1630,7 @@ function magick_ai_core_fail_closed_image_candidate_adoption_plan(): array {
 			),
 			array(
 				'action_id'         => 'update_image_candidate_details',
-				'target_ability_id' => 'magick-ai/update-media-details',
+				'target_ability_id' => 'npcink-abilities-toolkit/update-media-details',
 				'depends_on'        => array( 'upload_image_candidate' ),
 				'input'             => array(
 					'attachment_id'     => '$outputs.upload_image_candidate.attachment_id',
@@ -1653,7 +1653,7 @@ function magick_ai_core_fail_closed_image_candidate_adoption_plan(): array {
 			),
 			array(
 				'action_id'         => 'set_image_candidate_featured_image',
-				'target_ability_id' => 'magick-ai/set-post-featured-image',
+				'target_ability_id' => 'npcink-abilities-toolkit/set-post-featured-image',
 				'depends_on'        => array( 'upload_image_candidate' ),
 				'input'             => array(
 					'post_id'       => 1493,
@@ -1671,30 +1671,30 @@ function magick_ai_core_fail_closed_image_candidate_adoption_plan(): array {
 	);
 }
 
-$proposal_table = 'wp_magick_ai_core_proposals';
-$audit_table    = 'wp_magick_ai_core_audit_log';
-$app_table      = 'wp_magick_ai_core_app_keys';
+$proposal_table = 'wp_npcink_governance_core_proposals';
+$audit_table    = 'wp_npcink_governance_core_audit_log';
+$app_table      = 'wp_npcink_governance_core_app_keys';
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_proposals_controller_stack();
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_proposals_controller_stack();
 $controller = $stack['controller'];
-$create_payload = magick_ai_core_fail_closed_governance_payload( 'magick-ai/create-draft' );
+$create_payload = npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/create-draft' );
 $create_payload['input']['content'] = 'RAW_GENERATED_CONTENT_SENTINEL';
 $create_payload['preview']['policy_payload'] = 'POLICY_PAYLOAD_SENTINEL';
 $create_payload['caller']['secret_hint'] = 'CALLER_SECRET_SENTINEL';
-magick_ai_core_fail_closed_reset_observability_events();
+npcink_governance_core_fail_closed_reset_observability_events();
 $create_response = $controller->create_proposal( new WP_REST_Request( $create_payload ) );
-magick_ai_core_fail_closed_assert( $create_response instanceof WP_REST_Response && 201 === $create_response->get_status(), 'Proposal REST create succeeds for observability smoke.' );
+npcink_governance_core_fail_closed_assert( $create_response instanceof WP_REST_Response && 201 === $create_response->get_status(), 'Proposal REST create succeeds for observability smoke.' );
 $created_proposal = $create_response->get_data();
 $proposal_id      = (string) ( is_array( $created_proposal ) ? ( $created_proposal['proposal_id'] ?? '' ) : '' );
-$create_events    = magick_ai_core_fail_closed_observability_events( 'core.proposal.create' );
-magick_ai_core_fail_closed_assert( 1 === count( $create_events ), 'Proposal create emits one observability event.' );
-magick_ai_core_fail_closed_assert( 'ok' === (string) ( $create_events[0]['status'] ?? '' ), 'Proposal create emits ok status.' );
-magick_ai_core_fail_closed_assert( $proposal_id === (string) ( $create_events[0]['proposal_id'] ?? '' ), 'Proposal create event includes proposal id.' );
-magick_ai_core_fail_closed_assert( 'magick-ai/create-draft' === (string) ( $create_events[0]['ability_id'] ?? '' ), 'Proposal create event includes ability id.' );
-magick_ai_core_fail_closed_assert_observability_metadata_only( $create_events[0], 'Proposal create observability event' );
+$create_events    = npcink_governance_core_fail_closed_observability_events( 'core.proposal.create' );
+npcink_governance_core_fail_closed_assert( 1 === count( $create_events ), 'Proposal create emits one observability event.' );
+npcink_governance_core_fail_closed_assert( 'ok' === (string) ( $create_events[0]['status'] ?? '' ), 'Proposal create emits ok status.' );
+npcink_governance_core_fail_closed_assert( $proposal_id === (string) ( $create_events[0]['proposal_id'] ?? '' ), 'Proposal create event includes proposal id.' );
+npcink_governance_core_fail_closed_assert( 'npcink-abilities-toolkit/create-draft' === (string) ( $create_events[0]['ability_id'] ?? '' ), 'Proposal create event includes ability id.' );
+npcink_governance_core_fail_closed_assert_observability_metadata_only( $create_events[0], 'Proposal create observability event' );
 
-magick_ai_core_fail_closed_reset_observability_events();
+npcink_governance_core_fail_closed_reset_observability_events();
 $approve_response = $controller->approve_proposal(
 	new WP_REST_Request(
 		array(
@@ -1703,30 +1703,30 @@ $approve_response = $controller->approve_proposal(
 		)
 	)
 );
-magick_ai_core_fail_closed_assert( $approve_response instanceof WP_REST_Response && 200 === $approve_response->get_status(), 'Proposal REST approve succeeds for observability smoke.' );
-$approve_events = magick_ai_core_fail_closed_observability_events( 'core.proposal.approve' );
-magick_ai_core_fail_closed_assert( 1 === count( $approve_events ), 'Proposal approve emits one observability event.' );
-magick_ai_core_fail_closed_assert( 'ok' === (string) ( $approve_events[0]['status'] ?? '' ), 'Proposal approve emits ok status.' );
-magick_ai_core_fail_closed_assert( $proposal_id === (string) ( $approve_events[0]['proposal_id'] ?? '' ), 'Proposal approve event includes proposal id.' );
-magick_ai_core_fail_closed_assert_observability_metadata_only( $approve_events[0], 'Proposal approve observability event' );
+npcink_governance_core_fail_closed_assert( $approve_response instanceof WP_REST_Response && 200 === $approve_response->get_status(), 'Proposal REST approve succeeds for observability smoke.' );
+$approve_events = npcink_governance_core_fail_closed_observability_events( 'core.proposal.approve' );
+npcink_governance_core_fail_closed_assert( 1 === count( $approve_events ), 'Proposal approve emits one observability event.' );
+npcink_governance_core_fail_closed_assert( 'ok' === (string) ( $approve_events[0]['status'] ?? '' ), 'Proposal approve emits ok status.' );
+npcink_governance_core_fail_closed_assert( $proposal_id === (string) ( $approve_events[0]['proposal_id'] ?? '' ), 'Proposal approve event includes proposal id.' );
+npcink_governance_core_fail_closed_assert_observability_metadata_only( $approve_events[0], 'Proposal approve observability event' );
 
-magick_ai_core_fail_closed_reset_observability_events();
+npcink_governance_core_fail_closed_reset_observability_events();
 $preflight_response = $controller->commit_preflight( new WP_REST_Request( array( 'proposal_id' => $proposal_id ) ) );
-magick_ai_core_fail_closed_assert( $preflight_response instanceof WP_REST_Response && 200 === $preflight_response->get_status(), 'Proposal REST preflight succeeds for observability smoke.' );
+npcink_governance_core_fail_closed_assert( $preflight_response instanceof WP_REST_Response && 200 === $preflight_response->get_status(), 'Proposal REST preflight succeeds for observability smoke.' );
 $preflight_data   = $preflight_response->get_data();
-$preflight_events = magick_ai_core_fail_closed_observability_events( 'core.commit.preflight' );
-magick_ai_core_fail_closed_assert( 1 === count( $preflight_events ), 'Successful preflight emits one observability event.' );
-magick_ai_core_fail_closed_assert( 'ok' === (string) ( $preflight_events[0]['status'] ?? '' ), 'Successful preflight emits ok status.' );
-magick_ai_core_fail_closed_assert( '' === (string) ( $preflight_events[0]['error_code'] ?? '' ), 'Successful preflight emits empty error code.' );
-magick_ai_core_fail_closed_assert( (string) ( is_array( $preflight_data ) ? ( $preflight_data['correlation_id'] ?? '' ) : '' ) === (string) ( $preflight_events[0]['correlation_id'] ?? '' ), 'Successful preflight event includes correlation id.' );
-magick_ai_core_fail_closed_assert_observability_metadata_only( $preflight_events[0], 'Successful preflight observability event' );
+$preflight_events = npcink_governance_core_fail_closed_observability_events( 'core.commit.preflight' );
+npcink_governance_core_fail_closed_assert( 1 === count( $preflight_events ), 'Successful preflight emits one observability event.' );
+npcink_governance_core_fail_closed_assert( 'ok' === (string) ( $preflight_events[0]['status'] ?? '' ), 'Successful preflight emits ok status.' );
+npcink_governance_core_fail_closed_assert( '' === (string) ( $preflight_events[0]['error_code'] ?? '' ), 'Successful preflight emits empty error code.' );
+npcink_governance_core_fail_closed_assert( (string) ( is_array( $preflight_data ) ? ( $preflight_data['correlation_id'] ?? '' ) : '' ) === (string) ( $preflight_events[0]['correlation_id'] ?? '' ), 'Successful preflight event includes correlation id.' );
+npcink_governance_core_fail_closed_assert_observability_metadata_only( $preflight_events[0], 'Successful preflight observability event' );
 
-$reject_payload = magick_ai_core_fail_closed_governance_payload( 'magick-ai/set-post-terms' );
+$reject_payload = npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/set-post-terms' );
 $reject_response = $controller->create_proposal( new WP_REST_Request( $reject_payload ) );
-magick_ai_core_fail_closed_assert( $reject_response instanceof WP_REST_Response && 201 === $reject_response->get_status(), 'Second proposal REST create succeeds for reject observability smoke.' );
+npcink_governance_core_fail_closed_assert( $reject_response instanceof WP_REST_Response && 201 === $reject_response->get_status(), 'Second proposal REST create succeeds for reject observability smoke.' );
 $reject_proposal = $reject_response->get_data();
 $reject_id       = (string) ( is_array( $reject_proposal ) ? ( $reject_proposal['proposal_id'] ?? '' ) : '' );
-magick_ai_core_fail_closed_reset_observability_events();
+npcink_governance_core_fail_closed_reset_observability_events();
 $reject_result = $controller->reject_proposal(
 	new WP_REST_Request(
 		array(
@@ -1735,14 +1735,14 @@ $reject_result = $controller->reject_proposal(
 		)
 	)
 );
-magick_ai_core_fail_closed_assert( $reject_result instanceof WP_REST_Response && 200 === $reject_result->get_status(), 'Proposal REST reject succeeds for observability smoke.' );
-$reject_events = magick_ai_core_fail_closed_observability_events( 'core.proposal.reject' );
-magick_ai_core_fail_closed_assert( 1 === count( $reject_events ), 'Proposal reject emits one observability event.' );
-magick_ai_core_fail_closed_assert( 'ok' === (string) ( $reject_events[0]['status'] ?? '' ), 'Proposal reject emits ok status.' );
-magick_ai_core_fail_closed_assert( $reject_id === (string) ( $reject_events[0]['proposal_id'] ?? '' ), 'Proposal reject event includes proposal id.' );
-magick_ai_core_fail_closed_assert_observability_metadata_only( $reject_events[0], 'Proposal reject observability event' );
+npcink_governance_core_fail_closed_assert( $reject_result instanceof WP_REST_Response && 200 === $reject_result->get_status(), 'Proposal REST reject succeeds for observability smoke.' );
+$reject_events = npcink_governance_core_fail_closed_observability_events( 'core.proposal.reject' );
+npcink_governance_core_fail_closed_assert( 1 === count( $reject_events ), 'Proposal reject emits one observability event.' );
+npcink_governance_core_fail_closed_assert( 'ok' === (string) ( $reject_events[0]['status'] ?? '' ), 'Proposal reject emits ok status.' );
+npcink_governance_core_fail_closed_assert( $reject_id === (string) ( $reject_events[0]['proposal_id'] ?? '' ), 'Proposal reject event includes proposal id.' );
+npcink_governance_core_fail_closed_assert_observability_metadata_only( $reject_events[0], 'Proposal reject observability event' );
 
-$blocked_payload = magick_ai_core_fail_closed_governance_payload( 'magick-ai/trash-post' );
+$blocked_payload = npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/trash-post' );
 $blocked_payload['preview']['proposal_ready'] = false;
 $blocked_payload['preview']['preflight_blockers'] = array(
 	array(
@@ -1751,161 +1751,161 @@ $blocked_payload['preview']['preflight_blockers'] = array(
 	),
 );
 $blocked_create = $controller->create_proposal( new WP_REST_Request( $blocked_payload ) );
-magick_ai_core_fail_closed_assert( $blocked_create instanceof WP_REST_Response && 201 === $blocked_create->get_status(), 'Blocked proposal REST create succeeds for observability smoke.' );
+npcink_governance_core_fail_closed_assert( $blocked_create instanceof WP_REST_Response && 201 === $blocked_create->get_status(), 'Blocked proposal REST create succeeds for observability smoke.' );
 $blocked_proposal = $blocked_create->get_data();
 $blocked_id       = (string) ( is_array( $blocked_proposal ) ? ( $blocked_proposal['proposal_id'] ?? '' ) : '' );
 $blocked_approve  = $controller->approve_proposal( new WP_REST_Request( array( 'proposal_id' => $blocked_id ) ) );
-magick_ai_core_fail_closed_assert( $blocked_approve instanceof WP_REST_Response && 200 === $blocked_approve->get_status(), 'Blocked proposal REST approve succeeds before preflight block.' );
-magick_ai_core_fail_closed_reset_observability_events();
+npcink_governance_core_fail_closed_assert( $blocked_approve instanceof WP_REST_Response && 200 === $blocked_approve->get_status(), 'Blocked proposal REST approve succeeds before preflight block.' );
+npcink_governance_core_fail_closed_reset_observability_events();
 $blocked_preflight = $controller->commit_preflight( new WP_REST_Request( array( 'proposal_id' => $blocked_id ) ) );
-magick_ai_core_fail_closed_assert( is_wp_error( $blocked_preflight ), 'Blocked proposal REST preflight returns WP_Error.' );
-$blocked_events = magick_ai_core_fail_closed_observability_events( 'core.commit.preflight' );
-magick_ai_core_fail_closed_assert( 1 === count( $blocked_events ), 'Blocked preflight emits one observability event.' );
-magick_ai_core_fail_closed_assert( 'warning' === (string) ( $blocked_events[0]['status'] ?? '' ), 'Blocked preflight emits warning status.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_proposal_items_blocked' === (string) ( $blocked_events[0]['error_code'] ?? '' ), 'Blocked preflight event includes stable error code.' );
-magick_ai_core_fail_closed_assert_observability_metadata_only( $blocked_events[0], 'Blocked preflight observability event' );
+npcink_governance_core_fail_closed_assert( is_wp_error( $blocked_preflight ), 'Blocked proposal REST preflight returns WP_Error.' );
+$blocked_events = npcink_governance_core_fail_closed_observability_events( 'core.commit.preflight' );
+npcink_governance_core_fail_closed_assert( 1 === count( $blocked_events ), 'Blocked preflight emits one observability event.' );
+npcink_governance_core_fail_closed_assert( 'warning' === (string) ( $blocked_events[0]['status'] ?? '' ), 'Blocked preflight emits warning status.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_proposal_items_blocked' === (string) ( $blocked_events[0]['error_code'] ?? '' ), 'Blocked preflight event includes stable error code.' );
+npcink_governance_core_fail_closed_assert_observability_metadata_only( $blocked_events[0], 'Blocked preflight observability event' );
 
 $plan_error_request = new WP_REST_Request(
 	array(
-		'plan_ability_id' => 'magick-ai/not-real-plan',
+		'plan_ability_id' => 'npcink-abilities-toolkit/not-real-plan',
 		'plan'            => array( 'success' => false ),
 		'plan_input'      => array(),
 		'caller'          => array( 'secret_hint' => 'CALLER_SECRET_SENTINEL' ),
 	)
 );
-magick_ai_core_fail_closed_reset_observability_events();
+npcink_governance_core_fail_closed_reset_observability_events();
 $plan_error = $controller->create_proposals_from_plan( $plan_error_request );
-magick_ai_core_fail_closed_assert( is_wp_error( $plan_error ), 'Invalid plan intake returns WP_Error for observability smoke.' );
-$plan_events = magick_ai_core_fail_closed_observability_events( 'core.proposal.plan_ingest' );
-magick_ai_core_fail_closed_assert( 1 === count( $plan_events ), 'Plan intake failure emits one observability event.' );
-magick_ai_core_fail_closed_assert( 'error' === (string) ( $plan_events[0]['status'] ?? '' ), 'Plan intake failure emits error status.' );
-magick_ai_core_fail_closed_assert( '' !== (string) ( $plan_events[0]['error_code'] ?? '' ), 'Plan intake failure emits stable error code.' );
-magick_ai_core_fail_closed_assert_observability_metadata_only( $plan_events[0], 'Plan intake observability event' );
+npcink_governance_core_fail_closed_assert( is_wp_error( $plan_error ), 'Invalid plan intake returns WP_Error for observability smoke.' );
+$plan_events = npcink_governance_core_fail_closed_observability_events( 'core.proposal.plan_ingest' );
+npcink_governance_core_fail_closed_assert( 1 === count( $plan_events ), 'Plan intake failure emits one observability event.' );
+npcink_governance_core_fail_closed_assert( 'error' === (string) ( $plan_events[0]['status'] ?? '' ), 'Plan intake failure emits error status.' );
+npcink_governance_core_fail_closed_assert( '' !== (string) ( $plan_events[0]['error_code'] ?? '' ), 'Plan intake failure emits stable error code.' );
+npcink_governance_core_fail_closed_assert_observability_metadata_only( $plan_events[0], 'Plan intake observability event' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$article_plan = magick_ai_core_fail_closed_article_write_plan();
-$article_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-write-plan', $article_plan, array(), array( 'source' => 'toolbox_article_workflow' ) );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $article_result ), 'Valid Toolbox article write plan creates a Core proposal.' );
-magick_ai_core_fail_closed_assert( 1 === (int) ( $article_result['proposal_count'] ?? 0 ), 'Valid Toolbox article write plan creates exactly one proposal.' );
-magick_ai_core_fail_closed_assert( 'magick-ai/create-draft' === (string) ( $article_result['proposals'][0]['ability_id'] ?? '' ), 'Valid Toolbox article write plan targets create-draft.' );
-magick_ai_core_fail_closed_assert( is_array( $article_result['proposals'][0]['preview']['article_workflow'] ?? null ), 'Valid Toolbox article write plan preserves article workflow preview.' );
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$article_plan = npcink_governance_core_fail_closed_article_write_plan();
+$article_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-article-write-plan', $article_plan, array(), array( 'source' => 'toolbox_article_workflow' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $article_result ), 'Valid Toolbox article write plan creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $article_result['proposal_count'] ?? 0 ), 'Valid Toolbox article write plan creates exactly one proposal.' );
+npcink_governance_core_fail_closed_assert( 'npcink-abilities-toolkit/create-draft' === (string) ( $article_result['proposals'][0]['ability_id'] ?? '' ), 'Valid Toolbox article write plan targets create-draft.' );
+npcink_governance_core_fail_closed_assert( is_array( $article_result['proposals'][0]['preview']['article_workflow'] ?? null ), 'Valid Toolbox article write plan preserves article workflow preview.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$publish_plan = magick_ai_core_fail_closed_article_write_plan();
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$publish_plan = npcink_governance_core_fail_closed_article_write_plan();
 $publish_plan['write_actions'][0]['input']['status'] = 'publish';
-$publish_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-write-plan', $publish_plan );
-magick_ai_core_fail_closed_assert( is_wp_error( $publish_result ), 'Article write plan requesting publish is rejected.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_article_plan_publish_rejected' === $publish_result->get_error_code(), 'Article publish rejection uses stable error code.' );
-magick_ai_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Rejected publish article plan stores no proposal row.' );
+$publish_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-article-write-plan', $publish_plan );
+npcink_governance_core_fail_closed_assert( is_wp_error( $publish_result ), 'Article write plan requesting publish is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_article_plan_publish_rejected' === $publish_result->get_error_code(), 'Article publish rejection uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Rejected publish article plan stores no proposal row.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$blocked_claims_plan = magick_ai_core_fail_closed_article_write_plan();
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$blocked_claims_plan = npcink_governance_core_fail_closed_article_write_plan();
 $blocked_claims_plan['article_risk_report']['blocked_claims'] = array( 'Unverified ranking guarantee.' );
-$blocked_claims_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-write-plan', $blocked_claims_plan );
-magick_ai_core_fail_closed_assert( is_wp_error( $blocked_claims_result ), 'Article write plan with blocked claims is rejected.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_article_plan_blocked_claims' === $blocked_claims_result->get_error_code(), 'Article blocked-claims rejection uses stable error code.' );
-magick_ai_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Rejected blocked-claims article plan stores no proposal row.' );
+$blocked_claims_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-article-write-plan', $blocked_claims_plan );
+npcink_governance_core_fail_closed_assert( is_wp_error( $blocked_claims_result ), 'Article write plan with blocked claims is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_article_plan_blocked_claims' === $blocked_claims_result->get_error_code(), 'Article blocked-claims rejection uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Rejected blocked-claims article plan stores no proposal row.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$high_risk_plan = magick_ai_core_fail_closed_article_write_plan();
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$high_risk_plan = npcink_governance_core_fail_closed_article_write_plan();
 $high_risk_plan['article_risk_report']['risk_level'] = 'high';
-$high_risk_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-write-plan', $high_risk_plan );
-magick_ai_core_fail_closed_assert( is_wp_error( $high_risk_result ), 'High-risk article write plan is rejected.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_article_plan_risk_blocked' === $high_risk_result->get_error_code(), 'Article high-risk rejection uses stable error code.' );
-magick_ai_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Rejected high-risk article plan stores no proposal row.' );
+$high_risk_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-article-write-plan', $high_risk_plan );
+npcink_governance_core_fail_closed_assert( is_wp_error( $high_risk_result ), 'High-risk article write plan is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_article_plan_risk_blocked' === $high_risk_result->get_error_code(), 'Article high-risk rejection uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Rejected high-risk article plan stores no proposal row.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$article_batch_plan = magick_ai_core_fail_closed_article_batch_write_plan();
-$article_batch_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-batch-write-plan', $article_batch_plan, array(), array( 'source' => 'toolbox_article_batch_workflow' ) );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $article_batch_result ), 'Valid Toolbox article batch write plan creates a Core proposal.' );
-magick_ai_core_fail_closed_assert( 1 === (int) ( $article_batch_result['proposal_count'] ?? 0 ), 'Valid Toolbox article batch write plan creates one batch proposal.' );
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$article_batch_plan = npcink_governance_core_fail_closed_article_batch_write_plan();
+$article_batch_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-article-batch-write-plan', $article_batch_plan, array(), array( 'source' => 'toolbox_article_batch_workflow' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $article_batch_result ), 'Valid Toolbox article batch write plan creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $article_batch_result['proposal_count'] ?? 0 ), 'Valid Toolbox article batch write plan creates one batch proposal.' );
 $article_batch_proposal = is_array( $article_batch_result['proposals'][0] ?? null ) ? $article_batch_result['proposals'][0] : array();
-magick_ai_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $article_batch_proposal['preview']['source']['type'] ?? '' ), 'Article batch write plan stores batch proposal source.' );
-magick_ai_core_fail_closed_assert( 3 === count( (array) ( $article_batch_proposal['input']['write_actions'] ?? array() ) ), 'Article batch proposal stores all draft write actions.' );
-magick_ai_core_fail_closed_assert( is_array( $article_batch_proposal['preview']['article_batch_workflow'] ?? null ), 'Article batch proposal preserves batch workflow preview.' );
+npcink_governance_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $article_batch_proposal['preview']['source']['type'] ?? '' ), 'Article batch write plan stores batch proposal source.' );
+npcink_governance_core_fail_closed_assert( 3 === count( (array) ( $article_batch_proposal['input']['write_actions'] ?? array() ) ), 'Article batch proposal stores all draft write actions.' );
+npcink_governance_core_fail_closed_assert( is_array( $article_batch_proposal['preview']['article_batch_workflow'] ?? null ), 'Article batch proposal preserves batch workflow preview.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$article_batch_without_flag = magick_ai_core_fail_closed_article_batch_write_plan();
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$article_batch_without_flag = npcink_governance_core_fail_closed_article_batch_write_plan();
 $article_batch_without_flag['batch_approval'] = false;
 $article_batch_without_flag['proposal_mode'] = 'single';
-$article_batch_without_flag_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-batch-write-plan', $article_batch_without_flag );
-magick_ai_core_fail_closed_assert( is_wp_error( $article_batch_without_flag_result ), 'Article batch write plan without explicit batch mode is rejected.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_article_batch_mode_required' === $article_batch_without_flag_result->get_error_code(), 'Article batch mode rejection uses stable error code.' );
+$article_batch_without_flag_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-article-batch-write-plan', $article_batch_without_flag );
+npcink_governance_core_fail_closed_assert( is_wp_error( $article_batch_without_flag_result ), 'Article batch write plan without explicit batch mode is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_article_batch_mode_required' === $article_batch_without_flag_result->get_error_code(), 'Article batch mode rejection uses stable error code.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$article_batch_publish_plan = magick_ai_core_fail_closed_article_batch_write_plan();
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$article_batch_publish_plan = npcink_governance_core_fail_closed_article_batch_write_plan();
 $article_batch_publish_plan['write_actions'][1]['input']['status'] = 'publish';
-$article_batch_publish_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-batch-write-plan', $article_batch_publish_plan );
-magick_ai_core_fail_closed_assert( is_wp_error( $article_batch_publish_result ), 'Article batch write plan requesting publish is rejected.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_article_batch_publish_rejected' === $article_batch_publish_result->get_error_code(), 'Article batch publish rejection uses stable error code.' );
+$article_batch_publish_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-article-batch-write-plan', $article_batch_publish_plan );
+npcink_governance_core_fail_closed_assert( is_wp_error( $article_batch_publish_result ), 'Article batch write plan requesting publish is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_article_batch_publish_rejected' === $article_batch_publish_result->get_error_code(), 'Article batch publish rejection uses stable error code.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$article_media_batch_plan = magick_ai_core_fail_closed_article_media_batch_write_plan();
-$article_media_batch_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-media-batch-write-plan', $article_media_batch_plan, array(), array( 'source' => 'toolbox_article_media_batch_workflow' ) );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $article_media_batch_result ), 'Valid Toolbox article media batch write plan creates a Core proposal.' );
-magick_ai_core_fail_closed_assert( 1 === (int) ( $article_media_batch_result['proposal_count'] ?? 0 ), 'Valid Toolbox article media batch write plan creates one batch proposal.' );
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$article_media_batch_plan = npcink_governance_core_fail_closed_article_media_batch_write_plan();
+$article_media_batch_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-article-media-batch-write-plan', $article_media_batch_plan, array(), array( 'source' => 'toolbox_article_media_batch_workflow' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $article_media_batch_result ), 'Valid Toolbox article media batch write plan creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $article_media_batch_result['proposal_count'] ?? 0 ), 'Valid Toolbox article media batch write plan creates one batch proposal.' );
 $article_media_batch_proposal = is_array( $article_media_batch_result['proposals'][0] ?? null ) ? $article_media_batch_result['proposals'][0] : array();
-magick_ai_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $article_media_batch_proposal['preview']['source']['type'] ?? '' ), 'Article media batch write plan stores batch proposal source.' );
-magick_ai_core_fail_closed_assert( 4 === count( (array) ( $article_media_batch_proposal['input']['write_actions'] ?? array() ) ), 'Article media batch proposal stores draft and media write actions.' );
-magick_ai_core_fail_closed_assert( is_array( $article_media_batch_proposal['preview']['article_media_batch_workflow'] ?? null ), 'Article media batch proposal preserves media workflow preview.' );
+npcink_governance_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $article_media_batch_proposal['preview']['source']['type'] ?? '' ), 'Article media batch write plan stores batch proposal source.' );
+npcink_governance_core_fail_closed_assert( 4 === count( (array) ( $article_media_batch_proposal['input']['write_actions'] ?? array() ) ), 'Article media batch proposal stores draft and media write actions.' );
+npcink_governance_core_fail_closed_assert( is_array( $article_media_batch_proposal['preview']['article_media_batch_workflow'] ?? null ), 'Article media batch proposal preserves media workflow preview.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$article_media_missing_candidate = magick_ai_core_fail_closed_article_media_batch_write_plan();
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$article_media_missing_candidate = npcink_governance_core_fail_closed_article_media_batch_write_plan();
 unset( $article_media_missing_candidate['articles'][0]['featured_image_candidate'] );
-$article_media_missing_candidate_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-media-batch-write-plan', $article_media_missing_candidate );
-magick_ai_core_fail_closed_assert( is_wp_error( $article_media_missing_candidate_result ), 'Article media batch write plan without image candidate evidence is rejected.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_article_media_batch_candidate_missing' === $article_media_missing_candidate_result->get_error_code(), 'Article media candidate rejection uses stable error code.' );
+$article_media_missing_candidate_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-article-media-batch-write-plan', $article_media_missing_candidate );
+npcink_governance_core_fail_closed_assert( is_wp_error( $article_media_missing_candidate_result ), 'Article media batch write plan without image candidate evidence is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_article_media_batch_candidate_missing' === $article_media_missing_candidate_result->get_error_code(), 'Article media candidate rejection uses stable error code.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$article_media_missing_featured = magick_ai_core_fail_closed_article_media_batch_write_plan();
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$article_media_missing_featured = npcink_governance_core_fail_closed_article_media_batch_write_plan();
 array_pop( $article_media_missing_featured['write_actions'] );
-$article_media_missing_featured_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-article-media-batch-write-plan', $article_media_missing_featured );
-magick_ai_core_fail_closed_assert( is_wp_error( $article_media_missing_featured_result ), 'Article media batch write plan without featured-image action is rejected.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_article_media_batch_actions_missing' === $article_media_missing_featured_result->get_error_code(), 'Article media missing featured action rejection uses stable error code.' );
+$article_media_missing_featured_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-article-media-batch-write-plan', $article_media_missing_featured );
+npcink_governance_core_fail_closed_assert( is_wp_error( $article_media_missing_featured_result ), 'Article media batch write plan without featured-image action is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_article_media_batch_actions_missing' === $article_media_missing_featured_result->get_error_code(), 'Article media missing featured action rejection uses stable error code.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$media_optimization_plan = magick_ai_core_fail_closed_media_optimization_plan();
-$media_optimization_result = $stack['service']->create_from_plan( 'magick-ai/build-media-optimization-plan', $media_optimization_plan, array(), array( 'source' => 'toolbox_media_optimization' ) );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $media_optimization_result ), 'Valid media optimization plan creates a Core proposal.' );
-magick_ai_core_fail_closed_assert( 1 === (int) ( $media_optimization_result['proposal_count'] ?? 0 ), 'Valid media optimization plan creates one batch proposal.' );
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$media_optimization_plan = npcink_governance_core_fail_closed_media_optimization_plan();
+$media_optimization_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-optimization-plan', $media_optimization_plan, array(), array( 'source' => 'toolbox_media_optimization' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $media_optimization_result ), 'Valid media optimization plan creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $media_optimization_result['proposal_count'] ?? 0 ), 'Valid media optimization plan creates one batch proposal.' );
 $media_optimization_proposal = is_array( $media_optimization_result['proposals'][0] ?? null ) ? $media_optimization_result['proposals'][0] : array();
-magick_ai_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $media_optimization_proposal['preview']['source']['type'] ?? '' ), 'Media optimization plan stores batch proposal source.' );
-magick_ai_core_fail_closed_assert( 2 === count( (array) ( $media_optimization_proposal['input']['write_actions'] ?? array() ) ), 'Media optimization proposal stores metadata and derivative actions.' );
-magick_ai_core_fail_closed_assert( is_array( $media_optimization_proposal['preview']['media_optimization'] ?? null ), 'Media optimization proposal preserves optimization preview.' );
+npcink_governance_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $media_optimization_proposal['preview']['source']['type'] ?? '' ), 'Media optimization plan stores batch proposal source.' );
+npcink_governance_core_fail_closed_assert( 2 === count( (array) ( $media_optimization_proposal['input']['write_actions'] ?? array() ) ), 'Media optimization proposal stores metadata and derivative actions.' );
+npcink_governance_core_fail_closed_assert( is_array( $media_optimization_proposal['preview']['media_optimization'] ?? null ), 'Media optimization proposal preserves optimization preview.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$media_optimization_missing_derivative = magick_ai_core_fail_closed_media_optimization_plan();
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$media_optimization_missing_derivative = npcink_governance_core_fail_closed_media_optimization_plan();
 array_pop( $media_optimization_missing_derivative['write_actions'] );
-$media_optimization_missing_result = $stack['service']->create_from_plan( 'magick-ai/build-media-optimization-plan', $media_optimization_missing_derivative );
-magick_ai_core_fail_closed_assert( is_wp_error( $media_optimization_missing_result ), 'Media optimization plan without derivative adoption is rejected.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_media_optimization_actions_missing' === $media_optimization_missing_result->get_error_code(), 'Media optimization missing action rejection uses stable error code.' );
+$media_optimization_missing_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-optimization-plan', $media_optimization_missing_derivative );
+npcink_governance_core_fail_closed_assert( is_wp_error( $media_optimization_missing_result ), 'Media optimization plan without derivative adoption is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_media_optimization_actions_missing' === $media_optimization_missing_result->get_error_code(), 'Media optimization missing action rejection uses stable error code.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$media_optimization_mismatch = magick_ai_core_fail_closed_media_optimization_plan();
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$media_optimization_mismatch = npcink_governance_core_fail_closed_media_optimization_plan();
 $media_optimization_mismatch['write_actions'][1]['input']['attachment_id'] = 1494;
-$media_optimization_mismatch_result = $stack['service']->create_from_plan( 'magick-ai/build-media-optimization-plan', $media_optimization_mismatch );
-magick_ai_core_fail_closed_assert( is_wp_error( $media_optimization_mismatch_result ), 'Media optimization plan spanning multiple attachments is rejected.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_media_optimization_attachment_mismatch' === $media_optimization_mismatch_result->get_error_code(), 'Media optimization attachment mismatch uses stable error code.' );
+$media_optimization_mismatch_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-optimization-plan', $media_optimization_mismatch );
+npcink_governance_core_fail_closed_assert( is_wp_error( $media_optimization_mismatch_result ), 'Media optimization plan spanning multiple attachments is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_media_optimization_attachment_mismatch' === $media_optimization_mismatch_result->get_error_code(), 'Media optimization attachment mismatch uses stable error code.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$media_optimization_split_repair = magick_ai_core_fail_closed_media_optimization_plan();
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$media_optimization_split_repair = npcink_governance_core_fail_closed_media_optimization_plan();
 $media_optimization_split_repair['write_actions'][] = array(
 	'action_id'         => 'repair_inline_media_reference',
-	'target_ability_id' => 'magick-ai/patch-post-content',
+	'target_ability_id' => 'npcink-abilities-toolkit/patch-post-content',
 	'input'             => array(
 		'post_id'          => 8842,
 		'operations'       => array(
@@ -1925,98 +1925,98 @@ $media_optimization_split_repair['write_actions'][] = array(
 	'commit_execution'  => false,
 	'proposal_ready'    => true,
 );
-$media_optimization_split_repair_result = $stack['service']->create_from_plan( 'magick-ai/build-media-optimization-plan', $media_optimization_split_repair );
-magick_ai_core_fail_closed_assert( is_wp_error( $media_optimization_split_repair_result ), 'Media optimization plan with separate post-content repair action is rejected.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_media_optimization_reference_repair_split' === $media_optimization_split_repair_result->get_error_code(), 'Media optimization split repair rejection uses stable error code.' );
+$media_optimization_split_repair_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-optimization-plan', $media_optimization_split_repair );
+npcink_governance_core_fail_closed_assert( is_wp_error( $media_optimization_split_repair_result ), 'Media optimization plan with separate post-content repair action is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_media_optimization_reference_repair_split' === $media_optimization_split_repair_result->get_error_code(), 'Media optimization split repair rejection uses stable error code.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$media_rename_plan = magick_ai_core_fail_closed_media_rename_plan();
-$media_rename_result = $stack['service']->create_from_plan( 'magick-ai/build-media-rename-plan', $media_rename_plan, array(), array( 'source' => 'abilities_media_rename' ) );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $media_rename_result ), 'Valid media rename plan creates a Core proposal.' );
-magick_ai_core_fail_closed_assert( 1 === (int) ( $media_rename_result['proposal_count'] ?? 0 ), 'Valid media rename plan creates one proposal.' );
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$media_rename_plan = npcink_governance_core_fail_closed_media_rename_plan();
+$media_rename_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-rename-plan', $media_rename_plan, array(), array( 'source' => 'abilities_media_rename' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $media_rename_result ), 'Valid media rename plan creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $media_rename_result['proposal_count'] ?? 0 ), 'Valid media rename plan creates one proposal.' );
 $media_rename_proposal = is_array( $media_rename_result['proposals'][0] ?? null ) ? $media_rename_result['proposals'][0] : array();
-magick_ai_core_fail_closed_assert( 'magick-ai/rename-media-file' === (string) ( $media_rename_proposal['ability_id'] ?? '' ), 'Media rename plan creates a rename-media-file proposal.' );
-magick_ai_core_fail_closed_assert( is_array( $media_rename_proposal['preview']['media_rename'] ?? null ), 'Media rename proposal preserves rename preview.' );
+npcink_governance_core_fail_closed_assert( 'npcink-abilities-toolkit/rename-media-file' === (string) ( $media_rename_proposal['ability_id'] ?? '' ), 'Media rename plan creates a rename-media-file proposal.' );
+npcink_governance_core_fail_closed_assert( is_array( $media_rename_proposal['preview']['media_rename'] ?? null ), 'Media rename proposal preserves rename preview.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$media_rename_missing_target = magick_ai_core_fail_closed_media_rename_plan();
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$media_rename_missing_target = npcink_governance_core_fail_closed_media_rename_plan();
 unset( $media_rename_missing_target['write_actions'][0]['input']['target_file_name'] );
-$media_rename_missing_target_result = $stack['service']->create_from_plan( 'magick-ai/build-media-rename-plan', $media_rename_missing_target );
-magick_ai_core_fail_closed_assert( is_wp_error( $media_rename_missing_target_result ), 'Media rename plan without target file name is rejected.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_media_rename_target_file_missing' === $media_rename_missing_target_result->get_error_code(), 'Media rename missing target file rejection uses stable error code.' );
+$media_rename_missing_target_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-rename-plan', $media_rename_missing_target );
+npcink_governance_core_fail_closed_assert( is_wp_error( $media_rename_missing_target_result ), 'Media rename plan without target file name is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_media_rename_target_file_missing' === $media_rename_missing_target_result->get_error_code(), 'Media rename missing target file rejection uses stable error code.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$media_rename_mismatch = magick_ai_core_fail_closed_media_rename_plan();
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$media_rename_mismatch = npcink_governance_core_fail_closed_media_rename_plan();
 $media_rename_mismatch['write_actions'][0]['input']['attachment_id'] = 1494;
-$media_rename_mismatch_result = $stack['service']->create_from_plan( 'magick-ai/build-media-rename-plan', $media_rename_mismatch );
-magick_ai_core_fail_closed_assert( is_wp_error( $media_rename_mismatch_result ), 'Media rename plan spanning multiple attachments is rejected.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_media_rename_attachment_mismatch' === $media_rename_mismatch_result->get_error_code(), 'Media rename attachment mismatch uses stable error code.' );
+$media_rename_mismatch_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-rename-plan', $media_rename_mismatch );
+npcink_governance_core_fail_closed_assert( is_wp_error( $media_rename_mismatch_result ), 'Media rename plan spanning multiple attachments is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_media_rename_attachment_mismatch' === $media_rename_mismatch_result->get_error_code(), 'Media rename attachment mismatch uses stable error code.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$image_candidate_plan = magick_ai_core_fail_closed_image_candidate_adoption_plan();
-$image_candidate_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-image-candidate-adoption-plan', $image_candidate_plan, array(), array( 'source' => 'toolbox_image_candidate_adoption' ) );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $image_candidate_result ), 'Valid image candidate adoption plan creates a Core proposal.' );
-magick_ai_core_fail_closed_assert( 1 === (int) ( $image_candidate_result['proposal_count'] ?? 0 ), 'Valid image candidate adoption plan creates one batch proposal.' );
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$image_candidate_plan = npcink_governance_core_fail_closed_image_candidate_adoption_plan();
+$image_candidate_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-image-candidate-adoption-plan', $image_candidate_plan, array(), array( 'source' => 'toolbox_image_candidate_adoption' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $image_candidate_result ), 'Valid image candidate adoption plan creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $image_candidate_result['proposal_count'] ?? 0 ), 'Valid image candidate adoption plan creates one batch proposal.' );
 $image_candidate_proposal = is_array( $image_candidate_result['proposals'][0] ?? null ) ? $image_candidate_result['proposals'][0] : array();
-magick_ai_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $image_candidate_proposal['preview']['source']['type'] ?? '' ), 'Image candidate adoption plan stores batch proposal source.' );
-magick_ai_core_fail_closed_assert( 3 === count( (array) ( $image_candidate_proposal['input']['write_actions'] ?? array() ) ), 'Image candidate adoption proposal stores media import, metadata, and featured-image actions.' );
+npcink_governance_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $image_candidate_proposal['preview']['source']['type'] ?? '' ), 'Image candidate adoption plan stores batch proposal source.' );
+npcink_governance_core_fail_closed_assert( 3 === count( (array) ( $image_candidate_proposal['input']['write_actions'] ?? array() ) ), 'Image candidate adoption proposal stores media import, metadata, and featured-image actions.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$image_candidate_missing_contract = magick_ai_core_fail_closed_image_candidate_adoption_plan();
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$image_candidate_missing_contract = npcink_governance_core_fail_closed_image_candidate_adoption_plan();
 unset( $image_candidate_missing_contract['candidate_contract_version'] );
 unset( $image_candidate_missing_contract['selected_image_candidate']['contract_version'] );
-$image_candidate_missing_contract_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-image-candidate-adoption-plan', $image_candidate_missing_contract );
-magick_ai_core_fail_closed_assert( is_wp_error( $image_candidate_missing_contract_result ), 'Image candidate adoption plan without candidate contract is rejected.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_image_candidate_contract_missing' === $image_candidate_missing_contract_result->get_error_code(), 'Image candidate missing contract rejection uses stable error code.' );
+$image_candidate_missing_contract_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-image-candidate-adoption-plan', $image_candidate_missing_contract );
+npcink_governance_core_fail_closed_assert( is_wp_error( $image_candidate_missing_contract_result ), 'Image candidate adoption plan without candidate contract is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_image_candidate_contract_missing' === $image_candidate_missing_contract_result->get_error_code(), 'Image candidate missing contract rejection uses stable error code.' );
 
-$wpdb  = magick_ai_core_fail_closed_reset_db();
-$stack = magick_ai_core_fail_closed_plan_stack();
-$image_candidate_bad_source = magick_ai_core_fail_closed_image_candidate_adoption_plan();
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$image_candidate_bad_source = npcink_governance_core_fail_closed_image_candidate_adoption_plan();
 $image_candidate_bad_source['write_actions'][0]['input']['source_type'] = 'unsupported';
-$image_candidate_bad_source_result = $stack['service']->create_from_plan( 'magick-ai-toolbox/build-image-candidate-adoption-plan', $image_candidate_bad_source );
-magick_ai_core_fail_closed_assert( is_wp_error( $image_candidate_bad_source_result ), 'Image candidate adoption plan with invalid source_type is rejected.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_image_candidate_source_type_invalid' === $image_candidate_bad_source_result->get_error_code(), 'Image candidate invalid source type rejection uses stable error code.' );
+$image_candidate_bad_source_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-image-candidate-adoption-plan', $image_candidate_bad_source );
+npcink_governance_core_fail_closed_assert( is_wp_error( $image_candidate_bad_source_result ), 'Image candidate adoption plan with invalid source_type is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_image_candidate_source_type_invalid' === $image_candidate_bad_source_result->get_error_code(), 'Image candidate invalid source type rejection uses stable error code.' );
 
-$wpdb = magick_ai_core_fail_closed_reset_db();
+$wpdb = npcink_governance_core_fail_closed_reset_db();
 $wpdb->fail_insert_tables[] = $proposal_table;
-$repository = new \MagickAI\Core\Governance\Proposal_Repository();
-$result     = $repository->create( magick_ai_core_fail_closed_payload() );
-magick_ai_core_fail_closed_assert( is_wp_error( $result ), 'Proposal insert failure returns WP_Error.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_proposal_insert_failed' === $result->get_error_code(), 'Proposal insert failure uses stable error code.' );
-magick_ai_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Proposal insert failure stores no proposal row.' );
+$repository = new \Npcink\GovernanceCore\Governance\Proposal_Repository();
+$result     = $repository->create( npcink_governance_core_fail_closed_payload() );
+npcink_governance_core_fail_closed_assert( is_wp_error( $result ), 'Proposal insert failure returns WP_Error.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_proposal_insert_failed' === $result->get_error_code(), 'Proposal insert failure uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Proposal insert failure stores no proposal row.' );
 
-$wpdb = magick_ai_core_fail_closed_reset_db();
+$wpdb = npcink_governance_core_fail_closed_reset_db();
 $wpdb->fail_insert_tables[] = $audit_table;
-$stack  = magick_ai_core_fail_closed_proposal_stack();
-$result = $stack['service']->create( magick_ai_core_fail_closed_payload() );
-magick_ai_core_fail_closed_assert( is_wp_error( $result ), 'Proposal creation audit failure returns WP_Error.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_proposal_audit_failed' === $result->get_error_code(), 'Proposal creation audit failure uses stable error code.' );
-magick_ai_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Unaudited proposal creation is deleted.' );
+$stack  = npcink_governance_core_fail_closed_proposal_stack();
+$result = $stack['service']->create( npcink_governance_core_fail_closed_payload() );
+npcink_governance_core_fail_closed_assert( is_wp_error( $result ), 'Proposal creation audit failure returns WP_Error.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_proposal_audit_failed' === $result->get_error_code(), 'Proposal creation audit failure uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Unaudited proposal creation is deleted.' );
 
-$wpdb = magick_ai_core_fail_closed_reset_db();
-$stack    = magick_ai_core_fail_closed_proposal_stack();
-$proposal = $stack['service']->create( magick_ai_core_fail_closed_payload() );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $proposal ) && 'manual_required' === (string) ( $proposal['policy_decision'] ?? '' ), 'Control proposal records the default policy decision.' );
-magick_ai_core_fail_closed_assert( 'manual' === (string) ( $proposal['policy_profile'] ?? '' ), 'Control proposal records the default policy profile.' );
-magick_ai_core_fail_closed_assert( 'core-approval-policy-v1' === (string) ( $proposal['policy_version'] ?? '' ), 'Control proposal records the policy version.' );
-magick_ai_core_fail_closed_assert( in_array( 'default_manual_required', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Control proposal records manual policy reason.' );
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+$stack    = npcink_governance_core_fail_closed_proposal_stack();
+$proposal = $stack['service']->create( npcink_governance_core_fail_closed_payload() );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ) && 'manual_required' === (string) ( $proposal['policy_decision'] ?? '' ), 'Control proposal records the default policy decision.' );
+npcink_governance_core_fail_closed_assert( 'manual' === (string) ( $proposal['policy_profile'] ?? '' ), 'Control proposal records the default policy profile.' );
+npcink_governance_core_fail_closed_assert( 'core-approval-policy-v1' === (string) ( $proposal['policy_version'] ?? '' ), 'Control proposal records the policy version.' );
+npcink_governance_core_fail_closed_assert( in_array( 'default_manual_required', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Control proposal records manual policy reason.' );
 
-$wpdb = magick_ai_core_fail_closed_reset_db();
+$wpdb = npcink_governance_core_fail_closed_reset_db();
 $wpdb->fail_insert_event_names[] = 'proposal.policy_evaluated';
-$stack  = magick_ai_core_fail_closed_proposal_stack();
-$result = $stack['service']->create( magick_ai_core_fail_closed_payload() );
-magick_ai_core_fail_closed_assert( is_wp_error( $result ), 'Policy decision audit failure returns WP_Error.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_policy_decision_audit_failed' === $result->get_error_code(), 'Policy decision audit failure uses stable error code.' );
-magick_ai_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Unaudited policy decision deletes the proposal row.' );
+$stack  = npcink_governance_core_fail_closed_proposal_stack();
+$result = $stack['service']->create( npcink_governance_core_fail_closed_payload() );
+npcink_governance_core_fail_closed_assert( is_wp_error( $result ), 'Policy decision audit failure returns WP_Error.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_policy_decision_audit_failed' === $result->get_error_code(), 'Policy decision audit failure uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Unaudited policy decision deletes the proposal row.' );
 
-$wpdb = magick_ai_core_fail_closed_reset_db();
-update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::MODE_LOCAL_GUARDED, false );
-\MagickAI\Core\Security\Request_Context::set_app(
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_LOCAL_GUARDED, false );
+\Npcink\GovernanceCore\Security\Request_Context::set_app(
 	array(
 		'app_id'       => 'app_auto',
 		'key_id'       => 'key_auto',
@@ -2026,23 +2026,23 @@ update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLIC
 		'route_family' => 'proposals_create',
 	)
 );
-$stack    = magick_ai_core_fail_closed_proposal_stack();
-$proposal = $stack['service']->create( magick_ai_core_fail_closed_cleanup_batch_payload() );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Local guarded cleanup proposal is created.' );
-magick_ai_core_fail_closed_assert( 'approved' === (string) ( $proposal['status'] ?? '' ), 'Local guarded cleanup proposal is auto-approved.' );
-magick_ai_core_fail_closed_assert( 'auto_approved' === (string) ( $proposal['policy_decision'] ?? '' ), 'Local guarded cleanup records auto-approved decision.' );
-magick_ai_core_fail_closed_assert( 'trusted_local' === (string) ( $proposal['policy_profile'] ?? '' ), 'Local guarded cleanup records trusted_local profile.' );
+$stack    = npcink_governance_core_fail_closed_proposal_stack();
+$proposal = $stack['service']->create( npcink_governance_core_fail_closed_cleanup_batch_payload() );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Local guarded cleanup proposal is created.' );
+npcink_governance_core_fail_closed_assert( 'approved' === (string) ( $proposal['status'] ?? '' ), 'Local guarded cleanup proposal is auto-approved.' );
+npcink_governance_core_fail_closed_assert( 'auto_approved' === (string) ( $proposal['policy_decision'] ?? '' ), 'Local guarded cleanup records auto-approved decision.' );
+npcink_governance_core_fail_closed_assert( 'trusted_local' === (string) ( $proposal['policy_profile'] ?? '' ), 'Local guarded cleanup records trusted_local profile.' );
 $auto_approval_events = array_filter(
 	$wpdb->rows( $audit_table ),
 	static function ( array $row ): bool {
 		return 'proposal.auto_approved' === (string) ( $row['event_name'] ?? '' );
 	}
 );
-magick_ai_core_fail_closed_assert( 1 === count( $auto_approval_events ), 'Local guarded cleanup writes proposal.auto_approved audit.' );
+npcink_governance_core_fail_closed_assert( 1 === count( $auto_approval_events ), 'Local guarded cleanup writes proposal.auto_approved audit.' );
 
-$wpdb = magick_ai_core_fail_closed_reset_db();
-update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \MagickAI\Core\Governance\Approval_Policy_Evaluator::MODE_LOCAL_GUARDED, false );
-\MagickAI\Core\Security\Request_Context::set_app(
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_LOCAL_GUARDED, false );
+\Npcink\GovernanceCore\Security\Request_Context::set_app(
 	array(
 		'app_id'       => 'app_auto',
 		'key_id'       => 'key_auto',
@@ -2053,116 +2053,116 @@ update_option( \MagickAI\Core\Governance\Approval_Policy_Evaluator::OPTION_POLIC
 	)
 );
 $wpdb->fail_insert_event_names[] = 'proposal.auto_approved';
-$stack  = magick_ai_core_fail_closed_proposal_stack();
-$result = $stack['service']->create( magick_ai_core_fail_closed_cleanup_batch_payload() );
-magick_ai_core_fail_closed_assert( is_wp_error( $result ), 'Auto approval audit failure returns WP_Error.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_auto_approval_audit_failed' === $result->get_error_code(), 'Auto approval audit failure uses stable error code.' );
+$stack  = npcink_governance_core_fail_closed_proposal_stack();
+$result = $stack['service']->create( npcink_governance_core_fail_closed_cleanup_batch_payload() );
+npcink_governance_core_fail_closed_assert( is_wp_error( $result ), 'Auto approval audit failure returns WP_Error.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_auto_approval_audit_failed' === $result->get_error_code(), 'Auto approval audit failure uses stable error code.' );
 $proposal_rows = $wpdb->rows( $proposal_table );
-magick_ai_core_fail_closed_assert( 1 === count( $proposal_rows ), 'Auto approval audit failure keeps the audited proposal row.' );
-magick_ai_core_fail_closed_assert( 'pending' === (string) $proposal_rows[0]['status'], 'Auto approval audit failure leaves proposal pending, not approved.' );
+npcink_governance_core_fail_closed_assert( 1 === count( $proposal_rows ), 'Auto approval audit failure keeps the audited proposal row.' );
+npcink_governance_core_fail_closed_assert( 'pending' === (string) $proposal_rows[0]['status'], 'Auto approval audit failure leaves proposal pending, not approved.' );
 
-$wpdb = magick_ai_core_fail_closed_reset_db();
-$stack    = magick_ai_core_fail_closed_proposal_stack();
-$proposal = $stack['service']->create( magick_ai_core_fail_closed_payload() );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Control proposal is created before decision failure injection.' );
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+$stack    = npcink_governance_core_fail_closed_proposal_stack();
+$proposal = $stack['service']->create( npcink_governance_core_fail_closed_payload() );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Control proposal is created before decision failure injection.' );
 $wpdb->fail_insert_tables[] = $audit_table;
 $result = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'approve' ) );
-magick_ai_core_fail_closed_assert( is_wp_error( $result ), 'Approve audit failure returns WP_Error.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_proposal_decision_audit_failed' === $result->get_error_code(), 'Approve audit failure uses stable error code.' );
+npcink_governance_core_fail_closed_assert( is_wp_error( $result ), 'Approve audit failure returns WP_Error.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_proposal_decision_audit_failed' === $result->get_error_code(), 'Approve audit failure uses stable error code.' );
 $rolled_back = $stack['proposals']->find( (string) $proposal['proposal_id'] );
-magick_ai_core_fail_closed_assert( is_array( $rolled_back ) && 'pending' === $rolled_back['status'], 'Approve audit failure rolls status back to pending.' );
+npcink_governance_core_fail_closed_assert( is_array( $rolled_back ) && 'pending' === $rolled_back['status'], 'Approve audit failure rolls status back to pending.' );
 
-$wpdb = magick_ai_core_fail_closed_reset_db();
-$stack    = magick_ai_core_fail_closed_proposal_stack();
-$proposal = $stack['service']->create( magick_ai_core_fail_closed_payload() );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Control proposal is created before reject failure injection.' );
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+$stack    = npcink_governance_core_fail_closed_proposal_stack();
+$proposal = $stack['service']->create( npcink_governance_core_fail_closed_payload() );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Control proposal is created before reject failure injection.' );
 $wpdb->fail_insert_tables[] = $audit_table;
 $result = $stack['service']->reject( (string) $proposal['proposal_id'], array( 'reason' => 'reject' ) );
-magick_ai_core_fail_closed_assert( is_wp_error( $result ), 'Reject audit failure returns WP_Error.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_proposal_decision_audit_failed' === $result->get_error_code(), 'Reject audit failure uses stable error code.' );
+npcink_governance_core_fail_closed_assert( is_wp_error( $result ), 'Reject audit failure returns WP_Error.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_proposal_decision_audit_failed' === $result->get_error_code(), 'Reject audit failure uses stable error code.' );
 $rolled_back = $stack['proposals']->find( (string) $proposal['proposal_id'] );
-magick_ai_core_fail_closed_assert( is_array( $rolled_back ) && 'pending' === $rolled_back['status'], 'Reject audit failure rolls status back to pending.' );
+npcink_governance_core_fail_closed_assert( is_array( $rolled_back ) && 'pending' === $rolled_back['status'], 'Reject audit failure rolls status back to pending.' );
 
 $representative_ability_ids = array(
-	'magick-ai/create-draft',
-	'magick-ai/update-post',
-	'magick-ai/set-post-terms',
-	'magick-ai/approve-comment',
-	'magick-ai/trash-post',
+	'npcink-abilities-toolkit/create-draft',
+	'npcink-abilities-toolkit/update-post',
+	'npcink-abilities-toolkit/set-post-terms',
+	'npcink-abilities-toolkit/approve-comment',
+	'npcink-abilities-toolkit/trash-post',
 );
 
 foreach ( $representative_ability_ids as $ability_id ) {
-	$wpdb     = magick_ai_core_fail_closed_reset_db();
-	$stack    = magick_ai_core_fail_closed_governance_stack();
-	$proposal = $stack['service']->create( magick_ai_core_fail_closed_governance_payload( $ability_id ) );
-	magick_ai_core_fail_closed_assert( ! is_wp_error( $proposal ), $ability_id . ' governance proposal is created.' );
+	$wpdb     = npcink_governance_core_fail_closed_reset_db();
+	$stack    = npcink_governance_core_fail_closed_governance_stack();
+	$proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( $ability_id ) );
+	npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), $ability_id . ' governance proposal is created.' );
 
 	$pending_preflight = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
-	magick_ai_core_fail_closed_assert( is_wp_error( $pending_preflight ), $ability_id . ' pending proposal fails commit preflight.' );
-	magick_ai_core_fail_closed_assert( 'magick_ai_core_proposal_not_approved' === $pending_preflight->get_error_code(), $ability_id . ' pending preflight uses stable error code.' );
-	magick_ai_core_fail_closed_assert( 1 === count( magick_ai_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), $ability_id . ' pending preflight failure is audited.' );
+	npcink_governance_core_fail_closed_assert( is_wp_error( $pending_preflight ), $ability_id . ' pending proposal fails commit preflight.' );
+	npcink_governance_core_fail_closed_assert( 'npcink_governance_core_proposal_not_approved' === $pending_preflight->get_error_code(), $ability_id . ' pending preflight uses stable error code.' );
+	npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), $ability_id . ' pending preflight failure is audited.' );
 
 	$approved = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'negative_smoke_approval' ) );
-	magick_ai_core_fail_closed_assert( ! is_wp_error( $approved ) && 'approved' === (string) ( $approved['status'] ?? '' ), $ability_id . ' proposal can be approved.' );
+	npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ) && 'approved' === (string) ( $approved['status'] ?? '' ), $ability_id . ' proposal can be approved.' );
 
 	$preflight = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
-	magick_ai_core_fail_closed_assert( ! is_wp_error( $preflight ), $ability_id . ' approved proposal passes commit preflight.' );
-	magick_ai_core_fail_closed_assert( false === (bool) ( $preflight['commit_execution'] ?? true ), $ability_id . ' preflight does not execute commits.' );
-	magick_ai_core_fail_closed_assert( true === (bool) ( $preflight['idempotency_required'] ?? false ), $ability_id . ' preflight requires idempotency.' );
-	magick_ai_core_fail_closed_assert( true === (bool) ( $preflight['contract_preflight']['contract_matches'] ?? false ), $ability_id . ' preflight confirms ability contract match.' );
-	magick_ai_core_fail_closed_assert( true === (bool) ( $preflight['permission_preflight']['allowed'] ?? false ), $ability_id . ' preflight confirms permission.' );
-	magick_ai_core_fail_closed_assert( 1 === count( magick_ai_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'proposal.created' ) ), $ability_id . ' proposal creation is audited.' );
-	magick_ai_core_fail_closed_assert( 1 === count( magick_ai_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'proposal.policy_evaluated' ) ), $ability_id . ' policy evaluation is audited.' );
-	magick_ai_core_fail_closed_assert( 1 === count( magick_ai_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'proposal.approved' ) ), $ability_id . ' approval is audited.' );
-	magick_ai_core_fail_closed_assert( 1 === count( magick_ai_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflighted' ) ), $ability_id . ' successful preflight is audited.' );
+	npcink_governance_core_fail_closed_assert( ! is_wp_error( $preflight ), $ability_id . ' approved proposal passes commit preflight.' );
+	npcink_governance_core_fail_closed_assert( false === (bool) ( $preflight['commit_execution'] ?? true ), $ability_id . ' preflight does not execute commits.' );
+	npcink_governance_core_fail_closed_assert( true === (bool) ( $preflight['idempotency_required'] ?? false ), $ability_id . ' preflight requires idempotency.' );
+	npcink_governance_core_fail_closed_assert( true === (bool) ( $preflight['contract_preflight']['contract_matches'] ?? false ), $ability_id . ' preflight confirms ability contract match.' );
+	npcink_governance_core_fail_closed_assert( true === (bool) ( $preflight['permission_preflight']['allowed'] ?? false ), $ability_id . ' preflight confirms permission.' );
+	npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'proposal.created' ) ), $ability_id . ' proposal creation is audited.' );
+	npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'proposal.policy_evaluated' ) ), $ability_id . ' policy evaluation is audited.' );
+	npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'proposal.approved' ) ), $ability_id . ' approval is audited.' );
+	npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflighted' ) ), $ability_id . ' successful preflight is audited.' );
 
 	$replay = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
-	magick_ai_core_fail_closed_assert( is_wp_error( $replay ), $ability_id . ' duplicate commit preflight is rejected.' );
-	magick_ai_core_fail_closed_assert( 'magick_ai_core_commit_preflight_already_issued' === $replay->get_error_code(), $ability_id . ' duplicate preflight uses stable error code.' );
+	npcink_governance_core_fail_closed_assert( is_wp_error( $replay ), $ability_id . ' duplicate commit preflight is rejected.' );
+	npcink_governance_core_fail_closed_assert( 'npcink_governance_core_commit_preflight_already_issued' === $replay->get_error_code(), $ability_id . ' duplicate preflight uses stable error code.' );
 }
 
-$wpdb     = magick_ai_core_fail_closed_reset_db();
-$stack    = magick_ai_core_fail_closed_governance_stack();
-$proposal = $stack['service']->create( magick_ai_core_fail_closed_governance_payload( 'magick-ai/update-post' ) );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Contract drift proposal is created.' );
+$wpdb     = npcink_governance_core_fail_closed_reset_db();
+$stack    = npcink_governance_core_fail_closed_governance_stack();
+$proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/update-post' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Contract drift proposal is created.' );
 $approved = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'contract_drift' ) );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $approved ), 'Contract drift proposal is approved.' );
-$magick_ai_core_fail_closed_abilities = magick_ai_abilities_get_registered();
-$magick_ai_core_fail_closed_abilities['magick-ai/update-post']['input_schema']['properties']['unexpected_new_required_control'] = array( 'type' => 'string' );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'Contract drift proposal is approved.' );
+$npcink_governance_core_fail_closed_abilities = npcink_abilities_toolkit_get_registered();
+$npcink_governance_core_fail_closed_abilities['npcink-abilities-toolkit/update-post']['input_schema']['properties']['unexpected_new_required_control'] = array( 'type' => 'string' );
 $drift = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
-magick_ai_core_fail_closed_assert( is_wp_error( $drift ), 'Changed ability contract fails commit preflight.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_ability_contract_changed' === $drift->get_error_code(), 'Changed ability contract uses stable error code.' );
-magick_ai_core_fail_closed_assert( 1 === count( magick_ai_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), 'Contract drift preflight failure is audited.' );
+npcink_governance_core_fail_closed_assert( is_wp_error( $drift ), 'Changed ability contract fails commit preflight.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_ability_contract_changed' === $drift->get_error_code(), 'Changed ability contract uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), 'Contract drift preflight failure is audited.' );
 
-$wpdb     = magick_ai_core_fail_closed_reset_db();
-$stack    = magick_ai_core_fail_closed_governance_stack();
-$proposal = $stack['service']->create( magick_ai_core_fail_closed_governance_payload( 'magick-ai/set-post-terms' ) );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Permission downgrade proposal is created.' );
+$wpdb     = npcink_governance_core_fail_closed_reset_db();
+$stack    = npcink_governance_core_fail_closed_governance_stack();
+$proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/set-post-terms' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Permission downgrade proposal is created.' );
 $approved = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'permission_downgrade' ) );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $approved ), 'Permission downgrade proposal is approved.' );
-$magick_ai_core_fail_closed_caps['edit_posts'] = false;
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'Permission downgrade proposal is approved.' );
+$npcink_governance_core_fail_closed_caps['edit_posts'] = false;
 $permission_denied = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
-magick_ai_core_fail_closed_assert( is_wp_error( $permission_denied ), 'Missing WordPress capability fails commit preflight.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_ability_permission_denied' === $permission_denied->get_error_code(), 'Missing WordPress capability uses stable error code.' );
-magick_ai_core_fail_closed_assert( 1 === count( magick_ai_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), 'Permission preflight failure is audited.' );
+npcink_governance_core_fail_closed_assert( is_wp_error( $permission_denied ), 'Missing WordPress capability fails commit preflight.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_ability_permission_denied' === $permission_denied->get_error_code(), 'Missing WordPress capability uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), 'Permission preflight failure is audited.' );
 
-$wpdb     = magick_ai_core_fail_closed_reset_db();
-$stack    = magick_ai_core_fail_closed_governance_stack();
-$proposal = $stack['service']->create( magick_ai_core_fail_closed_governance_payload( 'magick-ai/approve-comment' ) );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Unavailable ability proposal is created.' );
+$wpdb     = npcink_governance_core_fail_closed_reset_db();
+$stack    = npcink_governance_core_fail_closed_governance_stack();
+$proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/approve-comment' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Unavailable ability proposal is created.' );
 $approved = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'ability_unavailable' ) );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $approved ), 'Unavailable ability proposal is approved.' );
-$magick_ai_core_fail_closed_abilities = array();
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'Unavailable ability proposal is approved.' );
+$npcink_governance_core_fail_closed_abilities = array();
 $unavailable = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
-magick_ai_core_fail_closed_assert( is_wp_error( $unavailable ), 'Unavailable ability fails commit preflight.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_ability_unavailable' === $unavailable->get_error_code(), 'Unavailable ability uses stable error code.' );
-magick_ai_core_fail_closed_assert( 1 === count( magick_ai_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), 'Unavailable ability preflight failure is audited.' );
+npcink_governance_core_fail_closed_assert( is_wp_error( $unavailable ), 'Unavailable ability fails commit preflight.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_ability_unavailable' === $unavailable->get_error_code(), 'Unavailable ability uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), 'Unavailable ability preflight failure is audited.' );
 
-$wpdb     = magick_ai_core_fail_closed_reset_db();
-$stack    = magick_ai_core_fail_closed_governance_stack();
+$wpdb     = npcink_governance_core_fail_closed_reset_db();
+$stack    = npcink_governance_core_fail_closed_governance_stack();
 $proposal = $stack['service']->create(
 	array_merge(
-		magick_ai_core_fail_closed_governance_payload( 'magick-ai/trash-post' ),
+		npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/trash-post' ),
 		array(
 			'preview' => array(
 				'proposal_ready'     => false,
@@ -2176,29 +2176,29 @@ $proposal = $stack['service']->create(
 		)
 	)
 );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Blocked destructive proposal is created.' );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Blocked destructive proposal is created.' );
 $approved = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'blocked_preview' ) );
-magick_ai_core_fail_closed_assert( ! is_wp_error( $approved ), 'Blocked destructive proposal is approved.' );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'Blocked destructive proposal is approved.' );
 $blocked = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
-magick_ai_core_fail_closed_assert( is_wp_error( $blocked ), 'Blocked item fails commit preflight.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_proposal_items_blocked' === $blocked->get_error_code(), 'Blocked item uses stable error code.' );
-magick_ai_core_fail_closed_assert( 1 === count( magick_ai_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), 'Blocked item preflight failure is audited.' );
+npcink_governance_core_fail_closed_assert( is_wp_error( $blocked ), 'Blocked item fails commit preflight.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_proposal_items_blocked' === $blocked->get_error_code(), 'Blocked item uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), 'Blocked item preflight failure is audited.' );
 
-$wpdb = magick_ai_core_fail_closed_reset_db();
+$wpdb = npcink_governance_core_fail_closed_reset_db();
 $wpdb->fail_insert_tables[] = $app_table;
-$apps   = new \MagickAI\Core\Security\App_Key_Repository();
+$apps   = new \Npcink\GovernanceCore\Security\App_Key_Repository();
 $result = $apps->create( array( 'app_label' => 'Adapter Client' ) );
-magick_ai_core_fail_closed_assert( is_wp_error( $result ), 'App-key insert failure returns WP_Error.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_app_insert_failed' === $result->get_error_code(), 'App-key insert failure uses stable error code.' );
-magick_ai_core_fail_closed_assert( 0 === count( $wpdb->rows( $app_table ) ), 'App-key insert failure stores no app row.' );
+npcink_governance_core_fail_closed_assert( is_wp_error( $result ), 'App-key insert failure returns WP_Error.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_app_insert_failed' === $result->get_error_code(), 'App-key insert failure uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $app_table ) ), 'App-key insert failure stores no app row.' );
 
-$wpdb = magick_ai_core_fail_closed_reset_db();
+$wpdb = npcink_governance_core_fail_closed_reset_db();
 $wpdb->fail_insert_tables[] = $audit_table;
-$apps        = new \MagickAI\Core\Security\App_Key_Repository();
-$audit       = new \MagickAI\Core\Audit\Audit_Log_Repository();
-$rate_limiter = new \MagickAI\Core\Security\App_Rate_Limiter();
-$auth        = new \MagickAI\Core\Security\App_Authenticator( $apps, $rate_limiter, $audit );
-$controller  = new \MagickAI\Core\Rest\Apps_Controller( $apps, $audit, $auth );
+$apps        = new \Npcink\GovernanceCore\Security\App_Key_Repository();
+$audit       = new \Npcink\GovernanceCore\Audit\Audit_Log_Repository();
+$rate_limiter = new \Npcink\GovernanceCore\Security\App_Rate_Limiter();
+$auth        = new \Npcink\GovernanceCore\Security\App_Authenticator( $apps, $rate_limiter, $audit );
+$controller  = new \Npcink\GovernanceCore\Rest\Apps_Controller( $apps, $audit, $auth );
 $result      = $controller->create_app(
 	new WP_REST_Request(
 		array(
@@ -2210,11 +2210,11 @@ $result      = $controller->create_app(
 		)
 	)
 );
-magick_ai_core_fail_closed_assert( is_wp_error( $result ), 'App creation audit failure returns WP_Error.' );
-magick_ai_core_fail_closed_assert( 'magick_ai_core_app_audit_failed' === $result->get_error_code(), 'App creation audit failure uses stable error code.' );
+npcink_governance_core_fail_closed_assert( is_wp_error( $result ), 'App creation audit failure returns WP_Error.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_app_audit_failed' === $result->get_error_code(), 'App creation audit failure uses stable error code.' );
 $app_rows = $wpdb->rows( $app_table );
-magick_ai_core_fail_closed_assert( 1 === count( $app_rows ), 'App row is retained for revocation evidence after audit failure.' );
-magick_ai_core_fail_closed_assert( 'revoked' === (string) $app_rows[0]['status'], 'App creation audit failure revokes the new key.' );
-magick_ai_core_fail_closed_assert( ! $result instanceof WP_REST_Response, 'App creation audit failure does not return the one-time token response.' );
+npcink_governance_core_fail_closed_assert( 1 === count( $app_rows ), 'App row is retained for revocation evidence after audit failure.' );
+npcink_governance_core_fail_closed_assert( 'revoked' === (string) $app_rows[0]['status'], 'App creation audit failure revokes the new key.' );
+npcink_governance_core_fail_closed_assert( ! $result instanceof WP_REST_Response, 'App creation audit failure does not return the one-time token response.' );
 
 echo "Fail-closed fault injection: ok\n";

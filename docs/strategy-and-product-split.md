@@ -23,7 +23,7 @@ The planning input included:
 - ADR-001 and ADR-002, which define Core as a governance layer and prohibit
   workflow runtime ownership;
 - the Core governance handoff guide in
-  `/Users/muze/gitee/magick-ai-abilities/docs/core-governance-handoff-guide.md`,
+  `/Users/muze/gitee/npcink-abilities-toolkit/docs/core-governance-handoff-guide.md`,
   which maps ready first-party abilities to Core proposal use without creating
   runtime aliases;
 - WordPress 7.0 research under `/Users/muze/gitee/pdf/原始资料/7.0/`, especially
@@ -41,7 +41,7 @@ quality, vertical workflows, compliance, and auditability.
 | Layer | Project | Responsibility |
 | --- | --- | --- |
 | Governance kernel | `npcink-governance-core` | Ability intake, risk policy, proposal records, human or host approval, approval-commit authorization, audit logs, minimal governance REST/admin UI. |
-| Ability layer | `magick-ai-abilities` and provider plugins | Reusable WordPress Abilities API definitions, schemas, permission callbacks, dry-run previews, and execution callbacks. |
+| Ability layer | `npcink-abilities-toolkit` and provider plugins | Reusable WordPress Abilities API definitions, schemas, permission callbacks, dry-run previews, and execution callbacks. |
 | Product layer | Content Assistant, Toolbox, commerce, SEO, media, agency, or vertical plugins | Domain UX, workflows, configuration wizards, market-specific features, and user-facing product value. |
 | Provider layer | Connector/provider plugins | AI provider registration, model support, credential connection, and provider-specific capability exposure through WordPress platform APIs. |
 
@@ -75,7 +75,7 @@ Core does not own:
 - provider keys, model routing, prompt and preset management, or cloud billing;
 - MCP runtime, Agent Gateway catalogs, workflow definitions, queues, retries,
   leases, or batch consoles;
-- reusable ability definitions that belong in `magick-ai-abilities` or provider
+- reusable ability definitions that belong in `npcink-abilities-toolkit` or provider
   plugins.
 
 ## Recommended Roadmap
@@ -93,7 +93,7 @@ Keep the implementation inside Core.
 
 ### 2-6 Weeks: Harden The Ability Boundary
 
-Coordinate with `magick-ai-abilities`, but do not move ability ownership into
+Coordinate with `npcink-abilities-toolkit`, but do not move ability ownership into
 Core.
 
 - Define read, dry-run, write, and destructive risk levels.
@@ -163,7 +163,7 @@ Use these tests before adding anything to Core:
    idempotency, and audit contracts are covered?
    If yes, do not build it yet.
 4. Does this define reusable WordPress abilities?
-   If yes, put it in `magick-ai-abilities` or a provider plugin.
+   If yes, put it in `npcink-abilities-toolkit` or a provider plugin.
 5. Does this improve a product workflow such as China toolbox operations,
    Content Assistant, SEO, commerce, or media?
    If yes, build it as a product plugin that consumes Core governance.

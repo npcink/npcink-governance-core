@@ -2,27 +2,27 @@
 /**
  * Plugin bootstrap.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core;
+namespace Npcink\GovernanceCore;
 
-use MagickAI\Core\Admin\Admin_Page;
-use MagickAI\Core\Audit\Audit_Log_Repository;
-use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
-use MagickAI\Core\Governance\Approval_Policy_Evaluator;
-use MagickAI\Core\Governance\Commit_Preflight_Service;
-use MagickAI\Core\Governance\Plan_Proposal_Service;
-use MagickAI\Core\Governance\Proposal_Repository;
-use MagickAI\Core\Governance\Proposal_Service;
-use MagickAI\Core\Media\Media_Derivative_Settings;
-use MagickAI\Core\Rest\Apps_Controller;
-use MagickAI\Core\Rest\Audit_Controller;
-use MagickAI\Core\Rest\Capabilities_Controller;
-use MagickAI\Core\Rest\Proposals_Controller;
-use MagickAI\Core\Security\App_Authenticator;
-use MagickAI\Core\Security\App_Key_Repository;
-use MagickAI\Core\Security\App_Rate_Limiter;
+use Npcink\GovernanceCore\Admin\Admin_Page;
+use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
+use Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter;
+use Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator;
+use Npcink\GovernanceCore\Governance\Commit_Preflight_Service;
+use Npcink\GovernanceCore\Governance\Plan_Proposal_Service;
+use Npcink\GovernanceCore\Governance\Proposal_Repository;
+use Npcink\GovernanceCore\Governance\Proposal_Service;
+use Npcink\GovernanceCore\Media\Media_Derivative_Settings;
+use Npcink\GovernanceCore\Rest\Apps_Controller;
+use Npcink\GovernanceCore\Rest\Audit_Controller;
+use Npcink\GovernanceCore\Rest\Capabilities_Controller;
+use Npcink\GovernanceCore\Rest\Proposals_Controller;
+use Npcink\GovernanceCore\Security\App_Authenticator;
+use Npcink\GovernanceCore\Security\App_Key_Repository;
+use Npcink\GovernanceCore\Security\App_Rate_Limiter;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

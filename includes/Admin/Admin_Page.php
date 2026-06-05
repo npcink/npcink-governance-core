@@ -2,18 +2,18 @@
 /**
  * Minimal admin page.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core\Admin;
+namespace Npcink\GovernanceCore\Admin;
 
-use MagickAI\Core\Audit\Audit_Log_Repository;
-use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
-use MagickAI\Core\Governance\Approval_Policy_Evaluator;
-use MagickAI\Core\Governance\Proposal_Repository;
-use MagickAI\Core\Governance\Proposal_Service;
-use MagickAI\Core\Media\Media_Derivative_Settings;
-use MagickAI\Core\Security\App_Key_Repository;
+use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
+use Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter;
+use Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator;
+use Npcink\GovernanceCore\Governance\Proposal_Repository;
+use Npcink\GovernanceCore\Governance\Proposal_Service;
+use Npcink\GovernanceCore\Media\Media_Derivative_Settings;
+use Npcink\GovernanceCore\Security\App_Key_Repository;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -31,8 +31,8 @@ final class Admin_Page {
 	const AUDIT_PAGE_SIZE   = 25;
 	const APP_KEY_PAGE_SIZE = 10;
 	const DATETIME_DISPLAY_FORMAT = 'Y-m-d H:i:s';
-	const ADMIN_REQUEST_ACTION = 'magick_ai_core_admin_request';
-	const ADMIN_REQUEST_NONCE  = 'magick_ai_core_nonce';
+	const ADMIN_REQUEST_ACTION = 'npcink_governance_core_admin_request';
+	const ADMIN_REQUEST_NONCE  = 'npcink_governance_core_nonce';
 
 	/**
 	 * Ability adapter.
@@ -102,14 +102,14 @@ final class Admin_Page {
 	 */
 	public function register(): void {
 		add_action( 'admin_menu', array( $this, 'add_menu' ), 10 );
-		add_action( 'admin_post_magick_ai_core_create_app_key', array( $this, 'handle_create_app_key' ) );
-		add_action( 'admin_post_magick_ai_core_revoke_app_key', array( $this, 'handle_revoke_app_key' ) );
-		add_action( 'admin_post_magick_ai_core_approve_proposal', array( $this, 'handle_approve' ) );
-		add_action( 'admin_post_magick_ai_core_reject_proposal', array( $this, 'handle_reject' ) );
-		add_action( 'admin_post_magick_ai_core_bulk_reject_proposals', array( $this, 'handle_bulk_reject' ) );
-		add_action( 'admin_post_magick_ai_core_archive_proposal', array( $this, 'handle_archive' ) );
-		add_action( 'admin_post_magick_ai_core_reopen_proposal', array( $this, 'handle_reopen' ) );
-		add_action( 'admin_post_magick_ai_core_update_approval_policy', array( $this, 'handle_update_approval_policy' ) );
+		add_action( 'admin_post_npcink_governance_core_create_app_key', array( $this, 'handle_create_app_key' ) );
+		add_action( 'admin_post_npcink_governance_core_revoke_app_key', array( $this, 'handle_revoke_app_key' ) );
+		add_action( 'admin_post_npcink_governance_core_approve_proposal', array( $this, 'handle_approve' ) );
+		add_action( 'admin_post_npcink_governance_core_reject_proposal', array( $this, 'handle_reject' ) );
+		add_action( 'admin_post_npcink_governance_core_bulk_reject_proposals', array( $this, 'handle_bulk_reject' ) );
+		add_action( 'admin_post_npcink_governance_core_archive_proposal', array( $this, 'handle_archive' ) );
+		add_action( 'admin_post_npcink_governance_core_reopen_proposal', array( $this, 'handle_reopen' ) );
+		add_action( 'admin_post_npcink_governance_core_update_approval_policy', array( $this, 'handle_update_approval_policy' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
 
@@ -145,9 +145,9 @@ final class Admin_Page {
 
 		wp_enqueue_style(
 			'npcink-governance-core-admin',
-			plugins_url( 'assets/admin.css', MAGICK_AI_CORE_FILE ),
+			plugins_url( 'assets/admin.css', NPCINK_GOVERNANCE_CORE_FILE ),
 			array(),
-			MAGICK_AI_CORE_VERSION
+			NPCINK_GOVERNANCE_CORE_VERSION
 		);
 	}
 
@@ -217,9 +217,9 @@ final class Admin_Page {
 				<tbody>
 					<?php
 					$this->render_overview_row( __( 'Core', 'npcink-governance-core' ), __( 'Review proposals, approval decisions, commit preflight, audit, and Core app keys.', 'npcink-governance-core' ), self::MENU_SLUG );
-					$this->render_overview_row( __( 'Adapter', 'npcink-governance-core' ), __( 'Connect OpenClaw through the Adapter surface.', 'npcink-governance-core' ), 'magick-ai-adapter' );
-					$this->render_overview_row( __( 'Abilities', 'npcink-governance-core' ), __( 'Verify WordPress Abilities API packages and demo ability controls.', 'npcink-governance-core' ), 'magick-ai-abilities' );
-					$this->render_overview_row( __( 'Cloud Addon', 'npcink-governance-core' ), __( 'Connect this site to cloud services without moving local control-plane truth.', 'npcink-governance-core' ), 'magick-ai-cloud-addon' );
+					$this->render_overview_row( __( 'Adapter', 'npcink-governance-core' ), __( 'Connect OpenClaw through the Adapter surface.', 'npcink-governance-core' ), 'npcink-openclaw-adapter' );
+					$this->render_overview_row( __( 'Abilities', 'npcink-governance-core' ), __( 'Verify WordPress Abilities API packages and demo ability controls.', 'npcink-governance-core' ), 'npcink-abilities-toolkit' );
+					$this->render_overview_row( __( 'Cloud Addon', 'npcink-governance-core' ), __( 'Connect this site to cloud services without moving local control-plane truth.', 'npcink-governance-core' ), 'npcink-cloud-addon' );
 					?>
 				</tbody>
 			</table>
@@ -291,8 +291,8 @@ final class Admin_Page {
 		$selected_id    = $this->admin_query_text( 'proposal_id' );
 		$selected       = '' !== $selected_id ? $this->proposals->find( $selected_id ) : null;
 		$view           = $this->admin_query_key( 'view' );
-		$message        = $this->admin_query_key( 'magick_ai_core_message' );
-		$error          = $this->admin_query_key( 'magick_ai_core_error' );
+		$message        = $this->admin_query_key( 'npcink_governance_core_message' );
+		$error          = $this->admin_query_key( 'npcink_governance_core_error' );
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html__( 'Npcink Governance Core', 'npcink-governance-core' ); ?></h1>
@@ -425,8 +425,8 @@ final class Admin_Page {
 				</span>
 			</summary>
 			<form class="npcink-governance-core-form-spaced" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-				<input type="hidden" name="action" value="magick_ai_core_update_approval_policy" />
-				<?php wp_nonce_field( 'magick_ai_core_update_approval_policy' ); ?>
+				<input type="hidden" name="action" value="npcink_governance_core_update_approval_policy" />
+				<?php wp_nonce_field( 'npcink_governance_core_update_approval_policy' ); ?>
 				<table class="form-table" role="presentation">
 					<tbody>
 						<tr>
@@ -461,7 +461,7 @@ final class Admin_Page {
 		<h2><?php echo esc_html__( 'Media Optimization Policy', 'npcink-governance-core' ); ?></h2>
 		<p class="npcink-governance-core-copy-width"><?php echo esc_html__( 'Core stores the local site policy for optimized media derivatives. Toolbox may use these defaults for one-run handoffs, and Cloud Addon may execute them when available, but final WordPress writes still require local proposal governance.', 'npcink-governance-core' ); ?></p>
 		<form class="npcink-governance-core-form-width" method="post" action="options.php">
-			<?php settings_fields( 'magick_ai_core_media_derivative' ); ?>
+			<?php settings_fields( 'npcink_governance_core_media_derivative' ); ?>
 			<table class="form-table" role="presentation">
 				<tbody>
 					<tr>
@@ -622,8 +622,8 @@ final class Admin_Page {
 		<h2><?php echo esc_html__( 'Needs Review', 'npcink-governance-core' ); ?></h2>
 		<p><?php echo esc_html( $this->pagination_summary( $total, $page, self::REVIEW_PAGE_SIZE ) ); ?></p>
 		<form class="npcink-governance-core-max-wide" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="action" value="magick_ai_core_bulk_reject_proposals" />
-			<?php wp_nonce_field( 'magick_ai_core_bulk_reject_proposals' ); ?>
+			<input type="hidden" name="action" value="npcink_governance_core_bulk_reject_proposals" />
+			<?php wp_nonce_field( 'npcink_governance_core_bulk_reject_proposals' ); ?>
 			<table class="widefat striped">
 				<thead>
 					<tr>
@@ -880,7 +880,7 @@ final class Admin_Page {
 			wp_die( esc_html__( 'You do not have permission to update proposals.', 'npcink-governance-core' ) );
 		}
 
-		check_admin_referer( 'magick_ai_core_bulk_reject_proposals' );
+		check_admin_referer( 'npcink_governance_core_bulk_reject_proposals' );
 
 		$raw_proposal_ids = filter_input( INPUT_POST, 'proposal_ids', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 		$proposal_ids     = is_array( $raw_proposal_ids ) ? array_map( 'wp_unslash', $raw_proposal_ids ) : array();
@@ -892,7 +892,7 @@ final class Admin_Page {
 		}
 
 		if ( empty( $proposal_ids ) ) {
-			wp_safe_redirect( $this->admin_url( array( 'magick_ai_core_error' => 'magick_ai_core_bulk_reject_empty' ) ) );
+			wp_safe_redirect( $this->admin_url( array( 'npcink_governance_core_error' => 'npcink_governance_core_bulk_reject_empty' ) ) );
 			exit;
 		}
 
@@ -915,7 +915,7 @@ final class Admin_Page {
 		}
 
 		$args = array(
-			'magick_ai_core_message' => 'bulk_rejected',
+			'npcink_governance_core_message' => 'bulk_rejected',
 			'bulk_rejected'          => (string) $rejected,
 		);
 		if ( $failed > 0 ) {
@@ -954,7 +954,7 @@ final class Admin_Page {
 			wp_die( esc_html__( 'You do not have permission to update approval policy.', 'npcink-governance-core' ) );
 		}
 
-		check_admin_referer( 'magick_ai_core_update_approval_policy' );
+		check_admin_referer( 'npcink_governance_core_update_approval_policy' );
 
 		$raw_mode = filter_input( INPUT_POST, 'policy_mode', FILTER_UNSAFE_RAW );
 		$mode     = is_string( $raw_mode ) ? Approval_Policy_Evaluator::sanitize_policy_mode( wp_unslash( $raw_mode ) ) : Approval_Policy_Evaluator::MODE_MANUAL;
@@ -968,7 +968,7 @@ final class Admin_Page {
 			)
 		);
 
-		wp_safe_redirect( $this->admin_url( array( 'magick_ai_core_message' => 'approval_policy_updated' ) ) );
+		wp_safe_redirect( $this->admin_url( array( 'npcink_governance_core_message' => 'approval_policy_updated' ) ) );
 		exit;
 	}
 
@@ -982,7 +982,7 @@ final class Admin_Page {
 			wp_die( esc_html__( 'You do not have permission to create app keys.', 'npcink-governance-core' ) );
 		}
 
-		check_admin_referer( 'magick_ai_core_create_app_key' );
+		check_admin_referer( 'npcink_governance_core_create_app_key' );
 
 		$raw_scopes = array();
 		if ( isset( $_POST['scopes'] ) && is_array( $_POST['scopes'] ) ) {
@@ -1005,7 +1005,7 @@ final class Admin_Page {
 		);
 
 		if ( is_wp_error( $app ) ) {
-			wp_safe_redirect( $this->admin_url( array( 'view' => 'app-keys', 'magick_ai_core_error' => $app->get_error_code() ) ) );
+			wp_safe_redirect( $this->admin_url( array( 'view' => 'app-keys', 'npcink_governance_core_error' => $app->get_error_code() ) ) );
 			exit;
 		}
 
@@ -1021,7 +1021,7 @@ final class Admin_Page {
 
 		if ( '' === $event_id ) {
 			$this->apps->revoke_by_key_id( (string) $app['key_id'] );
-			wp_safe_redirect( $this->admin_url( array( 'view' => 'app-keys', 'magick_ai_core_error' => 'magick_ai_core_app_audit_failed' ) ) );
+			wp_safe_redirect( $this->admin_url( array( 'view' => 'app-keys', 'npcink_governance_core_error' => 'npcink_governance_core_app_audit_failed' ) ) );
 			exit;
 		}
 
@@ -1042,16 +1042,16 @@ final class Admin_Page {
 		}
 
 		$key_id = isset( $_POST['key_id'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['key_id'] ) ) : '';
-		check_admin_referer( 'magick_ai_core_revoke_app_key_' . $key_id );
+		check_admin_referer( 'npcink_governance_core_revoke_app_key_' . $key_id );
 
 		$app = '' !== $key_id ? $this->apps->find_by_key_id( $key_id ) : null;
 		if ( null === $app || 'active' !== (string) ( $app['status'] ?? '' ) ) {
-			wp_safe_redirect( $this->admin_url( array( 'view' => 'app-keys', 'magick_ai_core_error' => 'magick_ai_core_app_key_not_active' ) ) );
+			wp_safe_redirect( $this->admin_url( array( 'view' => 'app-keys', 'npcink_governance_core_error' => 'npcink_governance_core_app_key_not_active' ) ) );
 			exit;
 		}
 
 		if ( ! $this->apps->revoke_by_key_id( $key_id ) ) {
-			wp_safe_redirect( $this->admin_url( array( 'view' => 'app-keys', 'magick_ai_core_error' => 'magick_ai_core_app_key_revoke_failed' ) ) );
+			wp_safe_redirect( $this->admin_url( array( 'view' => 'app-keys', 'npcink_governance_core_error' => 'npcink_governance_core_app_key_revoke_failed' ) ) );
 			exit;
 		}
 
@@ -1064,7 +1064,7 @@ final class Admin_Page {
 			)
 		);
 
-		wp_safe_redirect( $this->admin_url( array( 'view' => 'app-keys', 'magick_ai_core_message' => 'app_key_revoked' ) ) );
+		wp_safe_redirect( $this->admin_url( array( 'view' => 'app-keys', 'npcink_governance_core_message' => 'app_key_revoked' ) ) );
 		exit;
 	}
 
@@ -1089,8 +1089,8 @@ final class Admin_Page {
 				<span style="color: #646970;"><?php echo esc_html__( 'Issue a scoped token for a trusted governance client.', 'npcink-governance-core' ); ?></span>
 			</summary>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top: 8px;">
-				<input type="hidden" name="action" value="magick_ai_core_create_app_key" />
-				<?php wp_nonce_field( 'magick_ai_core_create_app_key' ); ?>
+				<input type="hidden" name="action" value="npcink_governance_core_create_app_key" />
+				<?php wp_nonce_field( 'npcink_governance_core_create_app_key' ); ?>
 				<table class="form-table" role="presentation">
 					<tbody>
 						<tr>
@@ -1153,9 +1153,9 @@ final class Admin_Page {
 						<td>
 							<?php if ( 'active' === (string) $app['status'] ) : ?>
 								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-									<input type="hidden" name="action" value="magick_ai_core_revoke_app_key" />
+									<input type="hidden" name="action" value="npcink_governance_core_revoke_app_key" />
 									<input type="hidden" name="key_id" value="<?php echo esc_attr( (string) $app['key_id'] ); ?>" />
-									<?php wp_nonce_field( 'magick_ai_core_revoke_app_key_' . (string) $app['key_id'] ); ?>
+									<?php wp_nonce_field( 'npcink_governance_core_revoke_app_key_' . (string) $app['key_id'] ); ?>
 									<button type="submit" class="button button-link-delete" onclick="return confirm('<?php echo esc_js( __( 'Disable this app key? Existing clients using this token will receive 401.', 'npcink-governance-core' ) ); ?>');"><?php echo esc_html__( 'Disable', 'npcink-governance-core' ); ?></button>
 								</form>
 							<?php else : ?>
@@ -1282,7 +1282,7 @@ final class Admin_Page {
 			<meta name="viewport" content="width=device-width, initial-scale=1" />
 			<title><?php echo esc_html__( 'Core App Key Created', 'npcink-governance-core' ); ?></title>
 			<?php
-			wp_enqueue_style( 'npcink-governance-core-admin', $this->admin_stylesheet_url(), array(), MAGICK_AI_CORE_VERSION );
+			wp_enqueue_style( 'npcink-governance-core-admin', $this->admin_stylesheet_url(), array(), NPCINK_GOVERNANCE_CORE_VERSION );
 			wp_print_styles( 'npcink-governance-core-admin' );
 			?>
 		</head>
@@ -1332,17 +1332,17 @@ final class Admin_Page {
 		}
 
 		$proposal_id = isset( $_POST['proposal_id'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['proposal_id'] ) ) : '';
-		check_admin_referer( 'magick_ai_core_decide_proposal_' . $proposal_id );
+		check_admin_referer( 'npcink_governance_core_decide_proposal_' . $proposal_id );
 
 		$note   = isset( $_POST['note'] ) ? sanitize_textarea_field( wp_unslash( (string) $_POST['note'] ) ) : '';
 		$result = 'approve' === $decision ? $this->service->approve( $proposal_id, array( 'note' => $note ) ) : $this->service->reject( $proposal_id, array( 'note' => $note ) );
 
 		if ( is_wp_error( $result ) ) {
-			wp_safe_redirect( $this->admin_url( array( 'magick_ai_core_error' => $result->get_error_code() ) ) );
+			wp_safe_redirect( $this->admin_url( array( 'npcink_governance_core_error' => $result->get_error_code() ) ) );
 			exit;
 		}
 
-		wp_safe_redirect( $this->admin_url( array( 'magick_ai_core_message' => 'approve' === $decision ? 'approved' : 'rejected' ) ) );
+		wp_safe_redirect( $this->admin_url( array( 'npcink_governance_core_message' => 'approve' === $decision ? 'approved' : 'rejected' ) ) );
 		exit;
 	}
 
@@ -1358,14 +1358,14 @@ final class Admin_Page {
 		}
 
 		$proposal_id = isset( $_POST['proposal_id'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['proposal_id'] ) ) : '';
-		check_admin_referer( 'magick_ai_core_' . $action . '_proposal_' . $proposal_id );
+		check_admin_referer( 'npcink_governance_core_' . $action . '_proposal_' . $proposal_id );
 
 		$result = 'archive' === $action
 			? $this->service->archive( $proposal_id, array( 'source' => 'admin' ) )
 			: $this->service->reopen( $proposal_id, array( 'source' => 'admin' ) );
 
 		if ( is_wp_error( $result ) ) {
-			wp_safe_redirect( $this->admin_url( array( 'view' => 'archive', 'magick_ai_core_error' => $result->get_error_code() ) ) );
+			wp_safe_redirect( $this->admin_url( array( 'view' => 'archive', 'npcink_governance_core_error' => $result->get_error_code() ) ) );
 			exit;
 		}
 
@@ -1373,7 +1373,7 @@ final class Admin_Page {
 			$this->admin_url(
 				array(
 					'view'                   => 'archive',
-					'magick_ai_core_message' => 'archive' === $action ? 'archived' : 'reopened',
+					'npcink_governance_core_message' => 'archive' === $action ? 'archived' : 'reopened',
 				)
 			)
 		);
@@ -1435,16 +1435,16 @@ final class Admin_Page {
 			<h3><?php echo esc_html__( 'Decision', 'npcink-governance-core' ); ?></h3>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="max-width: 760px;">
 				<input type="hidden" name="proposal_id" value="<?php echo esc_attr( $proposal_id ); ?>" />
-				<?php wp_nonce_field( 'magick_ai_core_decide_proposal_' . $proposal_id ); ?>
+				<?php wp_nonce_field( 'npcink_governance_core_decide_proposal_' . $proposal_id ); ?>
 				<p>
 					<label for="npcink-governance-core-note"><?php echo esc_html__( 'Decision note', 'npcink-governance-core' ); ?></label><br />
 					<textarea id="npcink-governance-core-note" name="note" rows="3" class="large-text"></textarea>
 				</p>
 				<p>
-					<button type="submit" class="button button-primary" name="action" value="magick_ai_core_approve_proposal">
+					<button type="submit" class="button button-primary" name="action" value="npcink_governance_core_approve_proposal">
 						<?php echo esc_html__( 'Approve', 'npcink-governance-core' ); ?>
 					</button>
-					<button type="submit" class="button" name="action" value="magick_ai_core_reject_proposal">
+					<button type="submit" class="button" name="action" value="npcink_governance_core_reject_proposal">
 						<?php echo esc_html__( 'Reject', 'npcink-governance-core' ); ?>
 					</button>
 				</p>
@@ -1499,9 +1499,9 @@ final class Admin_Page {
 	private function render_lifecycle_form( string $proposal_id, string $action, string $label, string $class ): void {
 		?>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin: 0;">
-			<input type="hidden" name="action" value="<?php echo esc_attr( 'magick_ai_core_' . $action . '_proposal' ); ?>" />
+			<input type="hidden" name="action" value="<?php echo esc_attr( 'npcink_governance_core_' . $action . '_proposal' ); ?>" />
 			<input type="hidden" name="proposal_id" value="<?php echo esc_attr( $proposal_id ); ?>" />
-			<?php wp_nonce_field( 'magick_ai_core_' . $action . '_proposal_' . $proposal_id ); ?>
+			<?php wp_nonce_field( 'npcink_governance_core_' . $action . '_proposal_' . $proposal_id ); ?>
 			<button type="submit" class="<?php echo esc_attr( $class ); ?>"><?php echo esc_html( $label ); ?></button>
 		</form>
 		<?php
@@ -1762,7 +1762,7 @@ final class Admin_Page {
 						</tr>
 						<tr>
 							<th scope="row"><label for="npcink-governance-core-audit-ability"><?php echo esc_html__( 'Ability ID', 'npcink-governance-core' ); ?></label></th>
-							<td><input id="npcink-governance-core-audit-ability" class="regular-text" type="text" name="audit_ability_id" value="<?php echo esc_attr( (string) $filters['ability_id'] ); ?>" placeholder="magick-ai/create-draft" /></td>
+							<td><input id="npcink-governance-core-audit-ability" class="regular-text" type="text" name="audit_ability_id" value="<?php echo esc_attr( (string) $filters['ability_id'] ); ?>" placeholder="npcink-abilities-toolkit/create-draft" /></td>
 						</tr>
 						<tr>
 							<th scope="row"><label for="npcink-governance-core-audit-app"><?php echo esc_html__( 'App ID', 'npcink-governance-core' ); ?></label></th>
@@ -2384,7 +2384,7 @@ final class Admin_Page {
 	 * @return string
 	 */
 	private function admin_stylesheet_url(): string {
-		return plugins_url( 'assets/admin.css', MAGICK_AI_CORE_FILE );
+		return plugins_url( 'assets/admin.css', NPCINK_GOVERNANCE_CORE_FILE );
 	}
 
 	/**
@@ -2402,15 +2402,15 @@ final class Admin_Page {
 			'reopened'                                      => __( 'Proposal reopened for review.', 'npcink-governance-core' ),
 			'app_key_revoked'                               => __( 'App key disabled.', 'npcink-governance-core' ),
 			'approval_policy_updated'                       => __( 'Approval policy mode updated.', 'npcink-governance-core' ),
-			'magick_ai_core_app_key_not_active'             => __( 'App key is missing or already disabled.', 'npcink-governance-core' ),
-			'magick_ai_core_app_key_revoke_failed'          => __( 'App key could not be disabled.', 'npcink-governance-core' ),
-			'magick_ai_core_proposal_not_found'             => __( 'Proposal was not found.', 'npcink-governance-core' ),
-			'magick_ai_core_proposal_expired'               => __( 'Proposal expired before a decision was made.', 'npcink-governance-core' ),
-			'magick_ai_core_proposal_archive_not_allowed'   => __( 'Only expired proposals can be archived.', 'npcink-governance-core' ),
-			'magick_ai_core_proposal_reopen_not_allowed'    => __( 'Only expired or archived proposals can be reopened.', 'npcink-governance-core' ),
-			'magick_ai_core_proposal_already_decided'       => __( 'Only pending proposals can be approved or rejected.', 'npcink-governance-core' ),
-			'magick_ai_core_proposal_transition_failed'     => __( 'Proposal status could not be updated.', 'npcink-governance-core' ),
-			'magick_ai_core_bulk_reject_empty'              => __( 'Select at least one pending proposal to reject.', 'npcink-governance-core' ),
+			'npcink_governance_core_app_key_not_active'             => __( 'App key is missing or already disabled.', 'npcink-governance-core' ),
+			'npcink_governance_core_app_key_revoke_failed'          => __( 'App key could not be disabled.', 'npcink-governance-core' ),
+			'npcink_governance_core_proposal_not_found'             => __( 'Proposal was not found.', 'npcink-governance-core' ),
+			'npcink_governance_core_proposal_expired'               => __( 'Proposal expired before a decision was made.', 'npcink-governance-core' ),
+			'npcink_governance_core_proposal_archive_not_allowed'   => __( 'Only expired proposals can be archived.', 'npcink-governance-core' ),
+			'npcink_governance_core_proposal_reopen_not_allowed'    => __( 'Only expired or archived proposals can be reopened.', 'npcink-governance-core' ),
+			'npcink_governance_core_proposal_already_decided'       => __( 'Only pending proposals can be approved or rejected.', 'npcink-governance-core' ),
+			'npcink_governance_core_proposal_transition_failed'     => __( 'Proposal status could not be updated.', 'npcink-governance-core' ),
+			'npcink_governance_core_bulk_reject_empty'              => __( 'Select at least one pending proposal to reject.', 'npcink-governance-core' ),
 		);
 
 		return (string) ( $messages[ $code ] ?? __( 'Proposal action could not be completed.', 'npcink-governance-core' ) );

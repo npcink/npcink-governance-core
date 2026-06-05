@@ -170,7 +170,7 @@ Core still does not execute the target WordPress mutation.
 
 ### Local Observability Hook
 
-Core emits a local `magick_ai_observability_event` action for proposal create,
+Core emits a local `npcink_governance_core_observability_event` action for proposal create,
 plan intake, approve, reject, and commit-preflight REST operations. The payload
 is metadata-only and includes stable operation kind, status, error code,
 latency, and safe identifiers such as proposal id, ability id, or correlation
@@ -186,7 +186,7 @@ Canonical Core operation event kinds are:
 
 Successful operations emit `status=ok`. Expected governance preflight blocks,
 such as a pending proposal, blocked proposal items, or duplicate handoff
-request, emit `status=warning` with the stable Core `magick_ai_core_*`
+request, emit `status=warning` with the stable Core `npcink_governance_core_*`
 `error_code`. Failed operation paths emit `status=error`. Event payloads are
 bounded to operational metadata and must not include proposal input, preview,
 caller payloads, approval notes, generated content, or policy payloads.

@@ -11,7 +11,7 @@ Implemented:
 
 - plugin activation;
 - proposal and audit tables;
-- ability intake from `magick-ai-abilities`;
+- ability intake from `npcink-abilities-toolkit`;
 - REST capability list;
 - proposal create/list;
 - proposal approve/reject;
@@ -22,7 +22,7 @@ Implemented:
   attribution.
 - admin UI for Core app-key creation, scoped one-time token display, and key
   disable actions.
-- Core 0.4 consumer readiness for the `magick-ai-abilities` 0.4.0
+- Core 0.4 consumer readiness for the `npcink-abilities-toolkit` 0.4.0
   representative scenarios.
 - capability execution guidance for OpenClaw and adapter clients, without
   adding Core proxy execution.
@@ -54,7 +54,7 @@ Documented but not implemented:
 
 Core can now govern both single dry-run write proposals and supported
 read-only plans that produce multiple `write_actions`. It can also accept the
-P0 Toolbox `article_write_plan` handoff as one governed `magick-ai/create-draft`
+P0 Toolbox `article_write_plan` handoff as one governed `npcink-abilities-toolkit/create-draft`
 proposal while leaving the writing workflow in Toolbox. A separate bounded
 local `article_batch_write_plan` may group 2 to 5 reviewed draft-only actions
 into one batch proposal, and a `media_optimization_plan` may combine one
@@ -90,7 +90,7 @@ research and the current product split both point to the same plan:
 
 - `npcink-governance-core` governs AI-assisted WordPress operations through proposals,
   approval boundaries, commit preflight, and audit.
-- `magick-ai-abilities` and provider plugins define reusable abilities and
+- `npcink-abilities-toolkit` and provider plugins define reusable abilities and
   previews.
 - product plugins own commercial workflows, including Content Assistant and a
   possible China-market toolbox product.
@@ -227,13 +227,13 @@ See [Agent MCP Entry Contract](agent-mcp-entry-contract.md).
 
 Current implementation:
 
-- `magick-ai/create-draft` is the first solidified host-governed write
+- `npcink-abilities-toolkit/create-draft` is the first solidified host-governed write
   scenario;
-- `magick-ai/set-post-seo-meta` is the second solidified host-governed write
+- `npcink-abilities-toolkit/set-post-seo-meta` is the second solidified host-governed write
   scenario, covering field-level updates to an existing post;
-- `magick-ai/approve-comment` is the third solidified host-governed write
+- `npcink-abilities-toolkit/approve-comment` is the third solidified host-governed write
   scenario, covering comment moderation and a non-post resource;
-- `magick-ai/propose-post-taxonomy-terms` -> `magick-ai/set-post-terms` is the
+- `npcink-abilities-toolkit/propose-post-taxonomy-terms` -> `npcink-abilities-toolkit/set-post-terms` is the
   taxonomy terms preview scenario, covering read-helper-to-write-proposal
   handoff for existing taxonomy terms;
 - `composer smoke:wp` verifies discovery, schema controls, proposal creation,
@@ -244,7 +244,7 @@ Current implementation:
   execute writes.
 - the OpenClaw example adapter also includes `create-taxonomy-terms-proposal`,
   which consumes taxonomy helper output or already resolved existing terms
-  before creating the governed `magick-ai/set-post-terms` proposal.
+  before creating the governed `npcink-abilities-toolkit/set-post-terms` proposal.
 - capability rows now tell adapters whether to use direct read execution through
   WordPress Abilities API or proposal-required governance through Core.
 
@@ -372,7 +372,7 @@ Current handoff:
 - Core documentation only cross-references Adapter acceptance so future agents
   do not recreate OpenClaw onboarding inside Core.
 
-See `/Users/muze/gitee/magick-ai-adapter/docs/openclaw-consumer-acceptance.md`
+See `/Users/muze/gitee/npcink-openclaw-adapter/docs/openclaw-consumer-acceptance.md`
 for the productized OpenClaw acceptance checklist.
 
 ### 11. Approval Policy Evaluator Roadmap
@@ -396,7 +396,7 @@ Recommended next slice:
 
 - observe `local_guarded` in development and keep the allowlist limited to
   `build-test-content-cleanup-plan` -> `plan_to_proposal_batch` proposals whose
-  actions all target `magick-ai/trash-post`;
+  actions all target `npcink-abilities-toolkit/trash-post`;
 - do not add create-draft auto approval until cleanup auto approval has been
   stable through local smoke and operator review;
 - do not add a rules DSL, scheduler, workflow runtime, UI configuration center,

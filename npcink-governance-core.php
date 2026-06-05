@@ -9,49 +9,49 @@
  * License: GPL-2.0-or-later
  * Text Domain: npcink-governance-core
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MAGICK_AI_CORE_VERSION', '0.1.0' );
-define( 'MAGICK_AI_CORE_FILE', __FILE__ );
-define( 'MAGICK_AI_CORE_DIR', plugin_dir_path( __FILE__ ) );
+define( 'NPCINK_GOVERNANCE_CORE_VERSION', '0.1.0' );
+define( 'NPCINK_GOVERNANCE_CORE_FILE', __FILE__ );
+define( 'NPCINK_GOVERNANCE_CORE_DIR', plugin_dir_path( __FILE__ ) );
 
-require_once MAGICK_AI_CORE_DIR . 'includes/Autoloader.php';
+require_once NPCINK_GOVERNANCE_CORE_DIR . 'includes/Autoloader.php';
 
-\MagickAI\Core\Autoloader::register();
+\Npcink\GovernanceCore\Autoloader::register();
 
-if ( ! function_exists( 'magick_ai_core_get_media_derivative_settings' ) ) {
+if ( ! function_exists( 'npcink_governance_core_get_media_derivative_settings' ) ) {
 	/**
 	 * Returns the local Core media derivative policy summary.
 	 *
 	 * @return array<string,mixed>
 	 */
-	function magick_ai_core_get_media_derivative_settings(): array {
-		return \MagickAI\Core\Plugin::instance()->media_derivative_settings()->summary();
+	function npcink_governance_core_get_media_derivative_settings(): array {
+		return \Npcink\GovernanceCore\Plugin::instance()->media_derivative_settings()->summary();
 	}
 }
 
-if ( ! function_exists( 'magick_ai_core_build_media_derivative_ability_input' ) ) {
+if ( ! function_exists( 'npcink_governance_core_build_media_derivative_ability_input' ) ) {
 	/**
-	 * Builds one-run input for magick-ai/build-media-derivative-cloud-request.
+	 * Builds one-run input for npcink-abilities-toolkit/build-media-derivative-cloud-request.
 	 *
 	 * @param array<string,mixed> $overrides One-run overrides.
 	 * @return array<string,mixed>
 	 */
-	function magick_ai_core_build_media_derivative_ability_input( array $overrides = array() ): array {
-		return \MagickAI\Core\Plugin::instance()->media_derivative_settings()->ability_input( $overrides );
+	function npcink_governance_core_build_media_derivative_ability_input( array $overrides = array() ): array {
+		return \Npcink\GovernanceCore\Plugin::instance()->media_derivative_settings()->ability_input( $overrides );
 	}
 }
 
-register_activation_hook( __FILE__, array( \MagickAI\Core\Plugin::class, 'activate' ) );
+register_activation_hook( __FILE__, array( \Npcink\GovernanceCore\Plugin::class, 'activate' ) );
 
 add_action(
 	'plugins_loaded',
 	static function (): void {
-		\MagickAI\Core\Plugin::instance()->register();
+		\Npcink\GovernanceCore\Plugin::instance()->register();
 	}
 );

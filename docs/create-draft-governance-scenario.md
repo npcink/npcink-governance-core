@@ -3,7 +3,7 @@
 Status: active Core scenario.
 
 This document records the first practical consumer-side governance loop that
-Core should keep stable: `magick-ai/create-draft`.
+Core should keep stable: `npcink-abilities-toolkit/create-draft`.
 
 The scenario proves a host-governed write can move through Core without making
 Core a content product, workflow runtime, MCP runtime, or final WordPress write
@@ -13,7 +13,7 @@ executor.
 
 Core owns:
 
-- discovering `magick-ai/create-draft` through ability intake;
+- discovering `npcink-abilities-toolkit/create-draft` through ability intake;
 - preserving the real `ability_id` and input schema in capability responses;
 - creating a proposal for the draft intent;
 - letting an administrator approve or reject the proposal;
@@ -31,14 +31,14 @@ Core does not own:
 ## Required Flow
 
 1. A consumer calls `GET /wp-json/npcink-governance-core/v1/capabilities`.
-2. The consumer locates `magick-ai/create-draft` and verifies it is a
+2. The consumer locates `npcink-abilities-toolkit/create-draft` and verifies it is a
    write-risk ability with `requires_approval=true`.
 3. The consumer reads the input schema, especially:
    - `title` is required;
    - `dry_run`, `commit`, and `idempotency_key` are governance controls;
    - default intent remains dry-run / no commit.
 4. The consumer calls `POST /wp-json/npcink-governance-core/v1/proposals` with:
-   - `ability_id=magick-ai/create-draft`;
+   - `ability_id=npcink-abilities-toolkit/create-draft`;
    - structured `input`;
    - a dry-run or handoff `preview`;
    - non-secret caller attribution.
@@ -77,7 +77,7 @@ php examples/openclaw-governance-adapter/openclaw-governance-adapter.php commit-
 
 `composer smoke:wp` locks this scenario by checking that:
 
-- `magick-ai/create-draft` is discoverable from `magick-ai-abilities`;
+- `npcink-abilities-toolkit/create-draft` is discoverable from `npcink-abilities-toolkit`;
 - the ability is write-risk and requires approval;
 - the input schema includes required `title` and governance controls;
 - proposal creation stores the real ability id;
@@ -86,7 +86,7 @@ php examples/openclaw-governance-adapter/openclaw-governance-adapter.php commit-
 - preflight rediscovers the capability and returns `commit_execution=false`;
 - audit filters can retrieve the lifecycle events.
 
-If this scenario fails because `magick-ai-abilities` changed schema or metadata,
+If this scenario fails because `npcink-abilities-toolkit` changed schema or metadata,
 do not patch Core with aliases or fallback definitions. Fix the ability contract
-in `magick-ai-abilities` or update this scenario document after an explicit
+in `npcink-abilities-toolkit` or update this scenario document after an explicit
 contract change.

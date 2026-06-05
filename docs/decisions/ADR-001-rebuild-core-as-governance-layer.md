@@ -72,7 +72,7 @@ Pros:
 Cons:
 
 - repeats the same product/runtime mixing problem;
-- conflicts with `magick-ai-abilities` and Content Assistant ownership;
+- conflicts with `npcink-abilities-toolkit` and Content Assistant ownership;
 - makes Core a workflow engine again.
 
 Rejected because Core should govern operations, not own product workflows.
@@ -82,7 +82,7 @@ Rejected because Core should govern operations, not own product workflows.
 - New Core starts smaller and easier to reason about.
 - Old Magick AI remains useful for contracts, smoke ideas, and boundary lessons.
 - Product features must live in product plugins such as Content Assistant.
-- Reusable WordPress abilities must live in `magick-ai-abilities`.
+- Reusable WordPress abilities must live in `npcink-abilities-toolkit`.
 - Any future expansion of Core must prove it is governance, not product
   workflow ownership.
 

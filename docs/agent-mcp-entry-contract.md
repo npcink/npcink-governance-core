@@ -12,10 +12,10 @@ and how the lifecycle is audited.
 
 This contract is aligned with the current local truth boundaries in:
 
-- `/Users/muze/gitee/magick-ai-root/magick-ai/docs/contracts/channel-delivery-matrix-v1.md`
-- `/Users/muze/gitee/magick-ai-root/magick-ai/docs/contracts/hosted-model-runtime-v1.md`
-- `/Users/muze/gitee/magick-ai-root/magick-ai/docs/contracts/cloud-responsibility-boundary-v1.md`
-- `/Users/muze/gitee/magick-ai-root/magick-ai/docs/contracts/cloud-skill-execution-v1.md`
+- `/Users/muze/gitee/npcink-root/npcink-abilities-toolkit/docs/contracts/channel-delivery-matrix-v1.md`
+- `/Users/muze/gitee/npcink-root/npcink-abilities-toolkit/docs/contracts/hosted-model-runtime-v1.md`
+- `/Users/muze/gitee/npcink-root/npcink-abilities-toolkit/docs/contracts/cloud-responsibility-boundary-v1.md`
+- `/Users/muze/gitee/npcink-root/npcink-abilities-toolkit/docs/contracts/cloud-skill-execution-v1.md`
 
 The useful rule from those contracts is: channel adapters may present abilities
 through MCP, OpenAPI, Agent Gateway, or another client surface, but they must
@@ -31,7 +31,7 @@ WordPress stores final state.
 | Actor | Responsibility |
 | --- | --- |
 | WordPress Abilities API | Canonical ability discovery and execution surface. |
-| `magick-ai-abilities` or provider plugins | Stable `ability_id`, schemas, permission callbacks, risk metadata, read helpers, and host-governed write/destructive abilities. |
+| `npcink-abilities-toolkit` or provider plugins | Stable `ability_id`, schemas, permission callbacks, risk metadata, read helpers, and host-governed write/destructive abilities. |
 | MCP adapter or agent host | Channel transport, tool presentation, agent request validation, and actual WordPress Abilities API calls. |
 | `npcink-governance-core` | Ability intake, proposal records, approval/rejection, commit preflight, app policy, and audit. |
 | Product plugin | Domain workflow, UX, previews, and user-facing orchestration. |

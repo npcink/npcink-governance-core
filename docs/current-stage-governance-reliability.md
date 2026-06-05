@@ -46,21 +46,21 @@ Governance must fail closed when Core cannot persist the record needed to prove
 what happened.
 
 - If proposal row insert fails, return
-  `magick_ai_core_proposal_insert_failed` and report no proposal success.
+  `npcink_governance_core_proposal_insert_failed` and report no proposal success.
 - If proposal creation succeeds but `proposal.created` audit cannot be written,
   delete the unaudited proposal and return
-  `magick_ai_core_proposal_audit_failed`.
+  `npcink_governance_core_proposal_audit_failed`.
 - If approve or reject changes proposal status but the decision audit cannot be
   written, roll the proposal back to its previous status and return
-  `magick_ai_core_proposal_decision_audit_failed`.
+  `npcink_governance_core_proposal_decision_audit_failed`.
 - If archive or reopen changes proposal status but the lifecycle audit cannot
   be written, roll the proposal back to its previous status and return the
   matching stable audit failure error.
-- If app-key row insert fails, return `magick_ai_core_app_insert_failed` and
+- If app-key row insert fails, return `npcink_governance_core_app_insert_failed` and
   report no app-key success.
 - If app-key creation succeeds but `app.created` audit cannot be written,
   revoke the new key, do not return the one-time token, and return
-  `magick_ai_core_app_audit_failed`.
+  `npcink_governance_core_app_audit_failed`.
 
 Read/list audit events may be best-effort. Write-like governance lifecycle
 events must be auditable before Core reports success.
@@ -89,7 +89,7 @@ Current-stage reliability is protected by three gates:
 - `composer test:fail-closed` injects database and audit persistence failures
   against Core repository/service/controller classes.
 - `composer smoke:wp` proves activation, tables, REST behavior, app auth, and
-  `magick-ai-abilities` integration in a real WordPress site when runtime
+  `npcink-abilities-toolkit` integration in a real WordPress site when runtime
   behavior changes.
 
 The fault-injection gate must cover both the returned error code and the local

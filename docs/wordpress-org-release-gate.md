@@ -35,10 +35,9 @@ Use this public identity for the WordPress.org upload:
 - REST namespace: `/wp-json/npcink-governance-core/v1/`;
 - author: `Npcink`.
 
-Internal PHP namespaces, function prefixes, and table prefixes may still use
-legacy `MagickAI` / `magick_ai_core` compatibility identifiers. Do not rename
-those internal identifiers during a release-only pass unless a migration plan is
-also accepted and tested.
+Internal PHP namespaces, function prefixes, table prefixes, hooks, options, and
+error codes use the Npcink Governance Core identity. Do not reintroduce legacy
+Magick AI compatibility identifiers during a release-only pass.
 
 The upload artifact is:
 
@@ -96,7 +95,7 @@ The plugin does not execute final write actions itself. It creates proposals, re
 
 The plugin does not call external services, does not load remote assets, and does not send site data to third parties. App secrets are hashed before storage, and one-time bearer tokens are only shown at creation time.
 
-Some internal PHP namespaces or compatibility identifiers may still use legacy MagickAI-style names, but the public plugin name, slug, text domain, REST namespace, and WordPress.org package identity are Npcink Governance Core / npcink-governance-core.
+Internal PHP namespaces, function prefixes, table prefixes, hooks, options, and error codes use the Npcink Governance Core identity. The public plugin name, slug, text domain, REST namespace, and WordPress.org package identity are Npcink Governance Core / npcink-governance-core.
 ```
 
 If the form field is short, use this condensed version:

@@ -20,7 +20,7 @@ Layer ownership:
 
 | Layer | Owner | Responsibility |
 | --- | --- | --- |
-| Ability layer | `magick-ai-abilities` and provider plugins | Register canonical abilities, schemas, callbacks, permission callbacks, risk metadata, and dry-run previews. |
+| Ability layer | `npcink-abilities-toolkit` and provider plugins | Register canonical abilities, schemas, callbacks, permission callbacks, risk metadata, and dry-run previews. |
 | Governance layer | `npcink-governance-core` | Discover abilities, classify risk, create proposals, record approval/rejection, run commit preflight, provide audit, and return execution guidance. |
 | Channel layer | OpenClaw Adapter, MCP Adapter, or Agent Gateway plugin | Present tools to OpenClaw, call read abilities, and execute approved write abilities only after Core preflight. |
 

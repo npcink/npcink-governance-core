@@ -31,10 +31,10 @@ The safe local path is:
 ```text
 local ability recipe
   -> local/operator-reviewed artifacts
-  -> magick-ai-toolbox/build-article-write-plan
+  -> npcink-toolbox/build-article-write-plan
   -> Core POST /proposals/from-plan
   -> Core approval and commit preflight
-  -> Adapter executes magick-ai/create-draft through WordPress Abilities API
+  -> Adapter executes npcink-abilities-toolkit/create-draft through WordPress Abilities API
 ```
 
 ## Allowed Cloud Role

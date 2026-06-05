@@ -110,7 +110,7 @@ callers may have at most 1000 pending proposals per user. Repeated creation of
 the same `ability_id` with the same sanitized `input` by the same caller
 returns the existing pending proposal with `deduplicated=true` instead of
 creating another row. Quota denials return
-`magick_ai_core_pending_proposal_quota_exceeded` with HTTP `429`.
+`npcink_governance_core_pending_proposal_quota_exceeded` with HTTP `429`.
 
 ## Audit Attribution
 

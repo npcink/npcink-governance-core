@@ -2,10 +2,10 @@
 /**
  * Minimal class autoloader.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core;
+namespace Npcink\GovernanceCore;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -37,7 +37,7 @@ final class Autoloader {
 		}
 
 		$relative = substr( $class, strlen( $prefix ) );
-		$path     = MAGICK_AI_CORE_DIR . 'includes/' . str_replace( '\\', '/', $relative ) . '.php';
+		$path     = NPCINK_GOVERNANCE_CORE_DIR . 'includes/' . str_replace( '\\', '/', $relative ) . '.php';
 
 		if ( is_readable( $path ) ) {
 			require_once $path;

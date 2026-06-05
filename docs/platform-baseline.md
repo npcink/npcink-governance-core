@@ -15,9 +15,9 @@ runtime requirements:
 ## Applies To
 
 - `npcink-governance-core`
-- `magick-ai-abilities`
-- `magick-ai-adapter`
-- `magick-ai-cloud-addon`
+- `npcink-abilities-toolkit`
+- `npcink-openclaw-adapter`
+- `npcink-cloud-addon`
 
 ## Rules
 

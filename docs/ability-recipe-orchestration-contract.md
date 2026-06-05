@@ -32,13 +32,13 @@ For `article_draft_v1`, the current budget is:
 - no batch article queue, scheduler, retry worker, or durable recipe runtime;
 - no Cloud-generated draft body, SEO copy, or article plan;
 - no automatic approval from recipe readiness;
-- no final write except the Core-approved `magick-ai/create-draft` Ability
+- no final write except the Core-approved `npcink-abilities-toolkit/create-draft` Ability
   callback executed outside Core.
 
 `article_batch_draft_v1` is a separate bounded local profile for the same
 Article Assistant Workbench. It may group 2 to 5 locally reviewed draft-only
-`magick-ai/create-draft` actions into one Core `plan_to_proposal_batch`
-proposal through `magick-ai-toolbox/build-article-batch-write-plan`. It must
+`npcink-abilities-toolkit/create-draft` actions into one Core `plan_to_proposal_batch`
+proposal through `npcink-toolbox/build-article-batch-write-plan`. It must
 not add a queue, scheduler, retry worker, Cloud writing generation, automatic
 approval, or direct WordPress write.
 
@@ -63,14 +63,14 @@ A recipe should describe:
 
 Recipe steps must reference real local Ability ids, for example:
 
-- `magick-ai-toolbox/get-content-discoverability-context`
-- `magick-ai-toolbox/web-research`
-- `magick-ai-toolbox/search-image-source`
-- `magick-ai-toolbox/vector-search`
-- `magick-ai-toolbox/build-article-write-plan`
-- `magick-ai-toolbox/build-article-batch-write-plan`
-- `magick-ai-toolbox/build-article-media-batch-write-plan`
-- `magick-ai/create-draft`
+- `npcink-toolbox/get-content-discoverability-context`
+- `npcink-toolbox/web-research`
+- `npcink-toolbox/search-image-source`
+- `npcink-toolbox/vector-search`
+- `npcink-toolbox/build-article-write-plan`
+- `npcink-toolbox/build-article-batch-write-plan`
+- `npcink-toolbox/build-article-media-batch-write-plan`
+- `npcink-abilities-toolkit/create-draft`
 
 ## Article Draft Recipe
 
@@ -83,7 +83,7 @@ Recipe steps must reference real local Ability ids, for example:
 4. build an `article_write_plan`;
 5. submit the plan through Core `POST /proposals/from-plan`;
 6. approve and preflight in Core;
-7. execute only the approved `magick-ai/create-draft` write through WordPress
+7. execute only the approved `npcink-abilities-toolkit/create-draft` write through WordPress
    Abilities API outside Core.
 
 The recipe may use `article_write_plan` as a profile-specific artifact, but
@@ -101,7 +101,7 @@ Core still governs only the resulting `write_actions`.
    `batch_approval=true`;
 5. submit the plan through Core `POST /proposals/from-plan`;
 6. approve and preflight the one batch proposal in Core;
-7. execute each approved `magick-ai/create-draft` action through WordPress
+7. execute each approved `npcink-abilities-toolkit/create-draft` action through WordPress
    Abilities API outside Core.
 
 The batch proposal is an approval grouping. It is not a batch writing job,
@@ -110,7 +110,7 @@ queue, scheduler, or Cloud generation surface.
 `article_media_batch_draft_v1` is a bounded local recipe profile for reviewed
 drafts plus reviewed image-source candidates. It builds an
 `article_media_batch_write_plan` through
-`magick-ai-toolbox/build-article-media-batch-write-plan` with draft creation,
+`npcink-toolbox/build-article-media-batch-write-plan` with draft creation,
 media upload, media metadata, and featured-image write actions, then submits
 that plan through Core proposal intake. The media proposal is an approval
 grouping only; Toolbox does not import media, Core does not execute writes, and
@@ -120,12 +120,12 @@ Cloud must not generate the article or image-source plan.
 
 | Project | Owns | Does not own |
 | --- | --- | --- |
-| `magick-ai-abilities` | Standard Ability definitions, schemas, callbacks, previews, and permissions. | Product workflow state, Cloud writing, approval truth, or recipe runtime ownership. |
-| `magick-ai-toolbox` | Operator-facing recipe UX, fixed recipe buttons, and artifact rendering. | Core proposal truth, approval truth, final writes, or Cloud writing. |
+| `npcink-abilities-toolkit` | Standard Ability definitions, schemas, callbacks, previews, and permissions. | Product workflow state, Cloud writing, approval truth, or recipe runtime ownership. |
+| `npcink-toolbox` | Operator-facing recipe UX, fixed recipe buttons, and artifact rendering. | Core proposal truth, approval truth, final writes, or Cloud writing. |
 | `npcink-governance-core` | Proposal records, approval/rejection, commit preflight, plan intake, and audit. | Recipe execution, article generation, queues, or Ability callbacks. |
-| `magick-ai-adapter` | OpenClaw channel guidance and Core/Abilities relay. | Recipe truth, Cloud writing, approval truth, or arbitrary write proxying. |
-| `magick-ai-cloud-addon` | Cloud connection, health, entitlement, and bounded non-content runtime transport. | Writing generation, recipe truth, proposal truth, or WordPress writes. |
-| `magick-ai-cloud` | Hosted runtime infrastructure for allowed non-writing service tasks. | Article drafting, bulk writing, prompt/preset ownership, publishing, or WordPress write ownership. |
+| `npcink-openclaw-adapter` | OpenClaw channel guidance and Core/Abilities relay. | Recipe truth, Cloud writing, approval truth, or arbitrary write proxying. |
+| `npcink-cloud-addon` | Cloud connection, health, entitlement, and bounded non-content runtime transport. | Writing generation, recipe truth, proposal truth, or WordPress writes. |
+| `npcink-cloud` | Hosted runtime infrastructure for allowed non-writing service tasks. | Article drafting, bulk writing, prompt/preset ownership, publishing, or WordPress write ownership. |
 
 ## Cloud Boundary
 

@@ -7,7 +7,7 @@ Status: MVP architecture.
 | Component | Responsibility |
 | --- | --- |
 | `Plugin` | Bootstrap hooks, activation, REST registration, and shared services. |
-| `Ability_Registry_Adapter` | Read-only intake from `magick-ai-abilities` or WordPress Abilities API. |
+| `Ability_Registry_Adapter` | Read-only intake from `npcink-abilities-toolkit` or WordPress Abilities API. |
 | `Proposal_Repository` | Persistence for proposal records. |
 | `Proposal_Service` | Proposal creation and audit coordination. |
 | `Plan_Proposal_Service` | Converts supported read-only planning ability outputs into pending Core proposals without running abilities or writes. |
@@ -25,10 +25,10 @@ Status: MVP architecture.
 
 MVP custom tables:
 
-- `{prefix}magick_ai_core_proposals`
-- `{prefix}magick_ai_core_audit_log`
-- `{prefix}magick_ai_core_app_keys`
-- `{prefix}magick_ai_core_app_rate_limits`
+- `{prefix}npcink_governance_core_proposals`
+- `{prefix}npcink_governance_core_audit_log`
+- `{prefix}npcink_governance_core_app_keys`
+- `{prefix}npcink_governance_core_app_rate_limits`
 
 The schema is intentionally small. The first version favors clear lifecycle
 records over generalized workflow state.

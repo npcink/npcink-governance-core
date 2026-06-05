@@ -2,10 +2,10 @@
 /**
  * Proposal repository.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core\Governance;
+namespace Npcink\GovernanceCore\Governance;
 
 use WP_Error;
 
@@ -31,7 +31,7 @@ final class Proposal_Repository {
 	public function table_name(): string {
 		global $wpdb;
 
-		return $wpdb->prefix . 'magick_ai_core_proposals';
+		return $wpdb->prefix . 'npcink_governance_core_proposals';
 	}
 
 	/**
@@ -103,7 +103,7 @@ final class Proposal_Repository {
 
 		if ( false === $inserted ) {
 			return new WP_Error(
-				'magick_ai_core_proposal_insert_failed',
+				'npcink_governance_core_proposal_insert_failed',
 				__( 'Proposal could not be stored.', 'npcink-governance-core' ),
 				array( 'status' => 500 )
 			);

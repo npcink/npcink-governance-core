@@ -24,7 +24,7 @@ a duplicate parent.
 
 Host plugins should use stable `admin_menu` priorities so submenu order does
 not depend on plugin activation order: Core at 10, Adapter at 20, Abilities at
-40, and Cloud Addon at 50. `magick-ai-abilities` keeps its standalone
+40, and Cloud Addon at 50. `npcink-abilities-toolkit` keeps its standalone
 `Tools -> Abilities API Packages` fallback when no shared parent menu exists.
 
 The parent page is `Overview`. It must stay shallow: show orientation and point
@@ -36,9 +36,9 @@ OpenClaw handoff, Cloud configuration, or Abilities API test workflows.
 | Position | Menu title | Owner | Responsibility |
 | --- | --- | --- | --- |
 | 10 | `Core` | `npcink-governance-core` | Proposal review, approval/rejection, commit preflight, audit, and advanced Core app keys. |
-| 20 | `Adapter` | `magick-ai-adapter` | OpenClaw handoff, endpoint discovery, health, and client connection material. |
-| 40 | `Abilities` | `magick-ai-abilities` | Abilities API package test surface, route checks, and demo ability controls. |
-| 50 | `Cloud Addon` | `magick-ai-cloud-addon` | Cloud Base URL/API key entry, signed verification, local connection state, and read-only entitlement summary. |
+| 20 | `Adapter` | `npcink-openclaw-adapter` | OpenClaw handoff, endpoint discovery, health, and client connection material. |
+| 40 | `Abilities` | `npcink-abilities-toolkit` | Abilities API package test surface, route checks, and demo ability controls. |
+| 50 | `Cloud Addon` | `npcink-cloud-addon` | Cloud Base URL/API key entry, signed verification, local connection state, and read-only entitlement summary. |
 
 ## Boundary Rules
 

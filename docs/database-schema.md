@@ -5,7 +5,7 @@ Status: active for MVP.
 Npcink Governance Core currently owns four custom tables. They are created during plugin
 activation with `dbDelta()`.
 
-## Table: `{prefix}magick_ai_core_proposals`
+## Table: `{prefix}npcink_governance_core_proposals`
 
 Purpose: stores reviewable operation proposals. Proposal rows are lifecycle
 records; they are not workflow runtime state.
@@ -51,7 +51,7 @@ Status transition rules:
 - `expired` or `archived` proposals may be reopened to `pending` for review;
 - MVP status transitions do not execute the target ability.
 
-## Table: `{prefix}magick_ai_core_audit_log`
+## Table: `{prefix}npcink_governance_core_audit_log`
 
 Purpose: append-only governance events.
 
@@ -114,7 +114,7 @@ Governance operability metadata:
 - audit reads support metadata filters for `ability_id`, `app_id`, `key_id`,
   `caller_type`, and `correlation_id` without adding extra audit columns.
 
-## Table: `{prefix}magick_ai_core_app_keys`
+## Table: `{prefix}npcink_governance_core_app_keys`
 
 Purpose: stores scoped app identities for external governance clients.
 
@@ -143,7 +143,7 @@ Indexes:
 - key: `status`
 - key: `created_at`
 
-## Table: `{prefix}magick_ai_core_app_rate_limits`
+## Table: `{prefix}npcink_governance_core_app_rate_limits`
 
 Purpose: fixed-window rate counters for app-authenticated requests.
 

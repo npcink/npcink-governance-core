@@ -44,14 +44,14 @@ Core does not own:
 - workflow runtime, workflow/task queues, batch execution consoles, MCP
   runtime, or Agent Gateway task catalogs;
 - reusable WordPress ability definitions, which belong in
-  `/Users/muze/gitee/magick-ai-abilities`.
+  `/Users/muze/gitee/npcink-abilities-toolkit`.
 
 ## Hard Blocks
 
 Do not introduce:
 
 - legacy `confirm_token` or `write_confirmed` behavior;
-- copied code from `magick-ai-root/magick-ai/includes/open-platform/**`;
+- copied code from `npcink-root/npcink-abilities-toolkit/includes/open-platform/**`;
 - workflow definition registries or `workflow/*` runtime ownership;
 - Agent Gateway catalogs/projections;
 - MCP runtime;
@@ -76,7 +76,7 @@ implementing it inside Core.
 - Add or update `tests/run.php` static contracts for public behavior.
 - Run `composer test:all` for every code change.
 - Run `composer smoke:wp` when behavior depends on WordPress activation, tables,
-  REST routing, or `magick-ai-abilities`.
+  REST routing, or `npcink-abilities-toolkit`.
 - Stage only files changed for the current task. Do not use `git add -A`.
 
 ## Verification Gates

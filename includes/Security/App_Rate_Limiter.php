@@ -2,10 +2,10 @@
 /**
  * App rate limiter.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core\Security;
+namespace Npcink\GovernanceCore\Security;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -23,7 +23,7 @@ final class App_Rate_Limiter {
 	public function table_name(): string {
 		global $wpdb;
 
-		return $wpdb->prefix . 'magick_ai_core_app_rate_limits';
+		return $wpdb->prefix . 'npcink_governance_core_app_rate_limits';
 	}
 
 	/**

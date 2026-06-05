@@ -2,10 +2,10 @@
 /**
  * REST permission helpers.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core\Rest;
+namespace Npcink\GovernanceCore\Rest;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

@@ -130,9 +130,9 @@ Commit must fail when:
 
 Plan-to-proposal intake can create reviewable proposals that are not yet
 committable. For example, a missing title action may target
-`magick-ai/update-post` but require a human-provided `title`. Core stores that
+`npcink-abilities-toolkit/update-post` but require a human-provided `title`. Core stores that
 proposal as pending review, but commit preflight returns
-`magick_ai_core_proposal_items_blocked` until the host creates a later complete
+`npcink_governance_core_proposal_items_blocked` until the host creates a later complete
 proposal with the missing input resolved.
 
 Each plan action must also preserve the action-level safety contract. Core

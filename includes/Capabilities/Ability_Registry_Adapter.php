@@ -2,10 +2,10 @@
 /**
  * Ability intake adapter.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core\Capabilities;
+namespace Npcink\GovernanceCore\Capabilities;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -91,8 +91,8 @@ final class Ability_Registry_Adapter {
 	 * @return string
 	 */
 	private function detect_source(): string {
-		if ( function_exists( 'magick_ai_abilities_get_registered' ) ) {
-			return 'magick_ai_abilities';
+		if ( function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
+			return 'npcink_abilities_toolkit';
 		}
 
 		if ( function_exists( 'wp_get_abilities' ) ) {
@@ -109,8 +109,8 @@ final class Ability_Registry_Adapter {
 	 * @return array<mixed>
 	 */
 	private function raw_abilities_for_source( string $source ): array {
-		if ( 'magick_ai_abilities' === $source ) {
-			$registered = magick_ai_abilities_get_registered();
+		if ( 'npcink_abilities_toolkit' === $source ) {
+			$registered = npcink_abilities_toolkit_get_registered();
 			return is_array( $registered ) ? $registered : array();
 		}
 
@@ -129,8 +129,8 @@ final class Ability_Registry_Adapter {
 	 * @return string
 	 */
 	private function message_for_source( string $source ): string {
-		if ( 'magick_ai_abilities' === $source ) {
-			return 'Capabilities discovered through magick-ai-abilities public API.';
+		if ( 'npcink_abilities_toolkit' === $source ) {
+			return 'Capabilities discovered through npcink-abilities-toolkit public API.';
 		}
 
 		if ( 'wordpress_abilities_api' === $source ) {

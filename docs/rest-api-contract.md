@@ -48,12 +48,12 @@ App auth error codes:
 
 | Code | HTTP | Meaning |
 | --- | --- | --- |
-| `magick_ai_core_app_auth_missing` | `401` | No WordPress admin session and no app token. |
-| `magick_ai_core_app_auth_malformed` | `400` | Bearer app token does not match the Core token shape. |
-| `magick_ai_core_app_auth_invalid` | `401` | App token is unknown, inactive, or has an invalid secret. |
-| `magick_ai_core_app_scope_forbidden` | `403` | App key does not include the route's required scope. |
-| `magick_ai_core_app_rate_limited` | `429` | App key exceeded its fixed-window route-family limit. |
-| `magick_ai_core_pending_proposal_quota_exceeded` | `429` | Caller already has too many pending proposals. |
+| `npcink_governance_core_app_auth_missing` | `401` | No WordPress admin session and no app token. |
+| `npcink_governance_core_app_auth_malformed` | `400` | Bearer app token does not match the Core token shape. |
+| `npcink_governance_core_app_auth_invalid` | `401` | App token is unknown, inactive, or has an invalid secret. |
+| `npcink_governance_core_app_scope_forbidden` | `403` | App key does not include the route's required scope. |
+| `npcink_governance_core_app_rate_limited` | `429` | App key exceeded its fixed-window route-family limit. |
+| `npcink_governance_core_pending_proposal_quota_exceeded` | `429` | Caller already has too many pending proposals. |
 
 App tokens use:
 
@@ -108,12 +108,12 @@ Response `200`:
 ```json
 {
   "available": true,
-  "source": "magick_ai_abilities",
+  "source": "npcink_abilities_toolkit",
   "count": 1,
-  "message": "Capabilities discovered through magick-ai-abilities public API.",
+  "message": "Capabilities discovered through npcink-abilities-toolkit public API.",
   "items": [
     {
-      "ability_id": "magick-ai/site-info",
+      "ability_id": "npcink-abilities-toolkit/site-info",
       "label": "Site Info",
       "description": "Returns site information.",
       "risk_level": "read",
@@ -128,7 +128,7 @@ Response `200`:
       "read_audit_mode": "adapter_read_envelope",
       "input_schema": { "type": "object" },
       "output_schema": { "type": "object" },
-      "source": "magick_ai_abilities",
+      "source": "npcink_abilities_toolkit",
       "raw": {}
     }
   ]
@@ -192,7 +192,7 @@ Response `200`:
   "items": [
     {
       "proposal_id": "uuid",
-      "ability_id": "magick-ai/create-draft",
+      "ability_id": "npcink-abilities-toolkit/create-draft",
       "status": "pending",
       "title": "Smoke proposal",
       "summary": "Reviewable operation summary.",
@@ -241,7 +241,7 @@ Example shape:
 ```json
 {
   "proposal_id": "uuid",
-  "ability_id": "magick-ai/create-draft",
+  "ability_id": "npcink-abilities-toolkit/create-draft",
   "status": "approved",
   "audit_timeline": [
     {
@@ -250,7 +250,7 @@ Example shape:
       "proposal_id": "uuid",
       "actor_id": 1,
       "metadata": {
-        "ability_id": "magick-ai/create-draft"
+        "ability_id": "npcink-abilities-toolkit/create-draft"
       },
       "created_at": "2026-05-29 00:00:00"
     }
@@ -262,7 +262,7 @@ Errors:
 
 | Code | HTTP | Meaning |
 | --- | --- | --- |
-| `magick_ai_core_proposal_not_found` | `404` | Proposal id does not exist. |
+| `npcink_governance_core_proposal_not_found` | `404` | Proposal id does not exist. |
 
 Audit event:
 
@@ -279,7 +279,7 @@ If the same caller already has a pending proposal with the same `ability_id`
 and sanitized `input`, Core returns that proposal with HTTP `200` and
 `deduplicated=true` instead of storing another row. If the caller's pending
 proposal quota is full, Core returns
-`magick_ai_core_pending_proposal_quota_exceeded` with HTTP `429`.
+`npcink_governance_core_pending_proposal_quota_exceeded` with HTTP `429`.
 
 Request fields:
 
@@ -307,7 +307,7 @@ The policy evaluator stores `caller.core_policy`, promotes the same fields into
 proposal responses, and records `proposal.policy_evaluated`. `manual` remains
 the default and does not auto-approve. `local_guarded` may auto-approve only
 trusted `build-test-content-cleanup-plan` `plan_to_proposal_batch` proposals
-whose actions all target `magick-ai/trash-post`. It does not add a rules DSL,
+whose actions all target `npcink-abilities-toolkit/trash-post`. It does not add a rules DSL,
 workflow runtime, long-running scheduler, final execution path, or policy
 configuration UI.
 
@@ -315,13 +315,13 @@ Errors:
 
 | Code | HTTP | Meaning |
 | --- | --- | --- |
-| `magick_ai_core_invalid_ability_id` | `400` | Missing or invalid namespaced `ability_id`. |
-| `magick_ai_core_ability_not_available` | `404` | Target ability id is not currently discoverable. |
-| `magick_ai_core_proposal_insert_failed` | `500` | Proposal row could not be stored. |
-| `magick_ai_core_proposal_audit_failed` | `500` | Proposal creation could not be audited; Core deletes the created proposal before failing. |
-| `magick_ai_core_policy_decision_audit_failed` | `500` | Policy decision could not be audited; Core deletes the created proposal before failing. |
-| `magick_ai_core_auto_approval_audit_failed` | `500` | Auto approval could not be audited; Core does not leave the proposal approved. |
-| `magick_ai_core_auto_approval_quota_failed` | `500` | Auto approval quota could not be consumed; Core deletes the created proposal before failing. |
+| `npcink_governance_core_invalid_ability_id` | `400` | Missing or invalid namespaced `ability_id`. |
+| `npcink_governance_core_ability_not_available` | `404` | Target ability id is not currently discoverable. |
+| `npcink_governance_core_proposal_insert_failed` | `500` | Proposal row could not be stored. |
+| `npcink_governance_core_proposal_audit_failed` | `500` | Proposal creation could not be audited; Core deletes the created proposal before failing. |
+| `npcink_governance_core_policy_decision_audit_failed` | `500` | Policy decision could not be audited; Core deletes the created proposal before failing. |
+| `npcink_governance_core_auto_approval_audit_failed` | `500` | Auto approval could not be audited; Core does not leave the proposal approved. |
+| `npcink_governance_core_auto_approval_quota_failed` | `500` | Auto approval quota could not be consumed; Core deletes the created proposal before failing. |
 
 Audit event:
 
@@ -342,17 +342,17 @@ proposal records. This route does not run the planning ability and does not
 execute any target write ability. It only accepts the current plan bridge
 abilities:
 
-- `magick-ai/build-content-inventory-fix-plan`
-- `magick-ai/build-test-content-cleanup-plan`
-- `magick-ai/build-media-inventory-fix-plan`
-- `magick-ai/build-media-reference-repair-plan`
-- `magick-ai/build-media-settings-reference-repair-plan`
-- `magick-ai/build-media-optimization-plan`
-- `magick-ai/build-media-rename-plan`
-- `magick-ai-toolbox/build-article-write-plan`
-- `magick-ai-toolbox/build-article-batch-write-plan`
-- `magick-ai-toolbox/build-article-media-batch-write-plan`
-- `magick-ai-toolbox/build-image-candidate-adoption-plan`
+- `npcink-abilities-toolkit/build-content-inventory-fix-plan`
+- `npcink-abilities-toolkit/build-test-content-cleanup-plan`
+- `npcink-abilities-toolkit/build-media-inventory-fix-plan`
+- `npcink-abilities-toolkit/build-media-reference-repair-plan`
+- `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`
+- `npcink-abilities-toolkit/build-media-optimization-plan`
+- `npcink-abilities-toolkit/build-media-rename-plan`
+- `npcink-toolbox/build-article-write-plan`
+- `npcink-toolbox/build-article-batch-write-plan`
+- `npcink-toolbox/build-article-media-batch-write-plan`
+- `npcink-toolbox/build-image-candidate-adoption-plan`
 
 Permission: `manage_options` or app scope `proposals:create`.
 
@@ -365,52 +365,52 @@ Request fields:
 | `plan_input` | object | no | Input originally used to build the plan. Used for safety gates such as `include_delete_candidates=true`; media delete plans may also require source-side flags such as `include_unattached_test_media=true` or `include_trash_parent_media=true` before the plan emits a delete action. |
 | `caller` | object | no | Caller metadata copied into generated proposals. |
 
-For `magick-ai-toolbox/build-article-write-plan`, the plan must declare
+For `npcink-toolbox/build-article-write-plan`, the plan must declare
 `artifact_type=article_write_plan`, `version>=1`, and include
 `article_goal_brief`, `research_evidence_pack`, `article_outline`,
 `article_draft_candidate`, `discoverability_pack`, and `article_risk_report`.
-The P0 action set must contain exactly one `magick-ai/create-draft` action with
+The P0 action set must contain exactly one `npcink-abilities-toolkit/create-draft` action with
 `status=draft` or no explicit status. `publish`, high-risk reports, blocked
 claims, `commit=true`, or `dry_run=false` are rejected before proposal creation.
 
-For `magick-ai-toolbox/build-article-batch-write-plan`, the plan must declare
+For `npcink-toolbox/build-article-batch-write-plan`, the plan must declare
 `artifact_type=article_batch_write_plan`, `proposal_mode=batch`,
 `batch_approval=true`, and include 2 to 5 draft-only
-`magick-ai/create-draft` actions plus one reviewed article artifact set per
+`npcink-abilities-toolkit/create-draft` actions plus one reviewed article artifact set per
 action under `articles[]`. Publish, high-risk reports, blocked claims,
 `commit=true`, or `dry_run=false` are rejected before proposal creation.
 
-For `magick-ai-toolbox/build-article-media-batch-write-plan`, the plan must
+For `npcink-toolbox/build-article-media-batch-write-plan`, the plan must
 declare `artifact_type=article_media_batch_write_plan`,
 `proposal_mode=batch`, `batch_approval=true`, and include 1 to 5 reviewed
 article artifact sets with `featured_image_candidate` evidence. The action set
-must include draft creation, `magick-ai/upload-media-from-url`, and
-`magick-ai/set-post-featured-image` actions for each article, with optional
-`magick-ai/update-media-details` or `magick-ai/patch-post-content` actions.
+must include draft creation, `npcink-abilities-toolkit/upload-media-from-url`, and
+`npcink-abilities-toolkit/set-post-featured-image` actions for each article, with optional
+`npcink-abilities-toolkit/update-media-details` or `npcink-abilities-toolkit/patch-post-content` actions.
 
-For `magick-ai-toolbox/build-image-candidate-adoption-plan`, the plan must
+For `npcink-toolbox/build-image-candidate-adoption-plan`, the plan must
 declare `artifact_type=image_candidate_adoption_plan` and carry a normalized
 `image_candidate.v1` candidate through `candidate_contract_version` or
 `selected_image_candidate.contract_version`. The action set must include
-exactly one `magick-ai/upload-media-from-url` action, exactly one
-`magick-ai/update-media-details` action, and at most one optional
-`magick-ai/set-post-featured-image` action. Every action must be dry-run and
+exactly one `npcink-abilities-toolkit/upload-media-from-url` action, exactly one
+`npcink-abilities-toolkit/update-media-details` action, and at most one optional
+`npcink-abilities-toolkit/set-post-featured-image` action. Every action must be dry-run and
 must not request commit execution.
 
-For `magick-ai/build-media-optimization-plan`, the plan must declare
+For `npcink-abilities-toolkit/build-media-optimization-plan`, the plan must declare
 `artifact_type=media_optimization_plan`, `proposal_mode=batch`,
 `batch_approval=true`, and target exactly one `attachment_id` across all
-actions. It must include `magick-ai/update-media-details` and either
-`magick-ai/adopt-cloud-media-derivative` or
-`magick-ai/replace-media-file`. Post-content media reference repair belongs to
+actions. It must include `npcink-abilities-toolkit/update-media-details` and either
+`npcink-abilities-toolkit/adopt-cloud-media-derivative` or
+`npcink-abilities-toolkit/replace-media-file`. Post-content media reference repair belongs to
 that derivative action's dry-run and commit contract; Core rejects media
 optimization plans that split the repair into a separate
-`magick-ai/patch-post-content`, `magick-ai/update-post`, or
-`magick-ai/update-post-blocks` write action.
+`npcink-abilities-toolkit/patch-post-content`, `npcink-abilities-toolkit/update-post`, or
+`npcink-abilities-toolkit/update-post-blocks` write action.
 
-For `magick-ai/build-media-rename-plan`, the plan must declare
+For `npcink-abilities-toolkit/build-media-rename-plan`, the plan must declare
 `artifact_type=media_rename_plan`, target exactly one `attachment_id`, and
-contain exactly one dry-run `magick-ai/rename-media-file` action with a
+contain exactly one dry-run `npcink-abilities-toolkit/rename-media-file` action with a
 reviewed `target_file_name`. The action may preserve expected current path,
 MIME type, MD5, SHA256, conflict mode, and backup suffix guards for the host
 executor.
@@ -444,7 +444,7 @@ Response `201`:
 
 ```json
 {
-  "plan_ability_id": "magick-ai/build-content-inventory-fix-plan",
+  "plan_ability_id": "npcink-abilities-toolkit/build-content-inventory-fix-plan",
   "batch_id": "content_inventory_fix_...",
   "issue_types": ["seo_title"],
   "requires_approval": true,
@@ -456,7 +456,7 @@ Response `201`:
   "proposals": [
     {
       "proposal_id": "uuid",
-      "ability_id": "magick-ai/set-post-seo-meta",
+      "ability_id": "npcink-abilities-toolkit/set-post-seo-meta",
       "status": "pending",
       "policy_decision": "manual_required",
       "policy_profile": "manual",
@@ -469,7 +469,7 @@ Response `201`:
         "commit": false
       },
       "preview": {
-        "target_ability_id": "magick-ai/set-post-seo-meta",
+        "target_ability_id": "npcink-abilities-toolkit/set-post-seo-meta",
         "before": {},
         "after_suggestion": {},
         "risk": { "level": "medium" },
@@ -500,13 +500,13 @@ Errors:
 
 | Code | HTTP | Meaning |
 | --- | --- | --- |
-| `magick_ai_core_plan_ability_not_allowed` | `400` | Unsupported planning ability id. |
-| `magick_ai_core_plan_ability_unavailable` | `404` | Planning ability is not discoverable. |
-| `magick_ai_core_plan_ability_not_read_only` | `409` | Planning ability is not a direct-read ability. |
-| `magick_ai_core_plan_requires_approval_missing` | `422` | Plan does not require approval. |
-| `magick_ai_core_plan_commit_execution_rejected` | `422` | Plan requested commit execution. |
-| `magick_ai_core_plan_dry_run_required` | `422` | Plan is not dry-run. |
-| `magick_ai_core_plan_write_actions_missing` | `422` | Plan has no `write_actions` array. |
+| `npcink_governance_core_plan_ability_not_allowed` | `400` | Unsupported planning ability id. |
+| `npcink_governance_core_plan_ability_unavailable` | `404` | Planning ability is not discoverable. |
+| `npcink_governance_core_plan_ability_not_read_only` | `409` | Planning ability is not a direct-read ability. |
+| `npcink_governance_core_plan_requires_approval_missing` | `422` | Plan does not require approval. |
+| `npcink_governance_core_plan_commit_execution_rejected` | `422` | Plan requested commit execution. |
+| `npcink_governance_core_plan_dry_run_required` | `422` | Plan is not dry-run. |
+| `npcink_governance_core_plan_write_actions_missing` | `422` | Plan has no `write_actions` array. |
 
 Audit event:
 
@@ -537,11 +537,11 @@ Errors:
 
 | Code | HTTP | Meaning |
 | --- | --- | --- |
-| `magick_ai_core_proposal_not_found` | `404` | Proposal id does not exist. |
-| `magick_ai_core_proposal_expired` | `409` | Proposal expired before a decision was made. |
-| `magick_ai_core_proposal_already_decided` | `409` | Proposal is not pending. |
-| `magick_ai_core_proposal_transition_failed` | `500` | Status update failed. |
-| `magick_ai_core_proposal_decision_audit_failed` | `500` | Approval could not be audited; Core rolls the proposal back to its previous status before failing. |
+| `npcink_governance_core_proposal_not_found` | `404` | Proposal id does not exist. |
+| `npcink_governance_core_proposal_expired` | `409` | Proposal expired before a decision was made. |
+| `npcink_governance_core_proposal_already_decided` | `409` | Proposal is not pending. |
+| `npcink_governance_core_proposal_transition_failed` | `500` | Status update failed. |
+| `npcink_governance_core_proposal_decision_audit_failed` | `500` | Approval could not be audited; Core rolls the proposal back to its previous status before failing. |
 
 Audit event:
 
@@ -657,7 +657,7 @@ Response `200`:
     "approval_commit_authorized": true,
     "confirmation_state": "approved_commit",
     "proposal_id": "uuid",
-    "ability_id": "magick-ai/trash-post",
+    "ability_id": "npcink-abilities-toolkit/trash-post",
     "correlation_id": "uuid",
     "approved_input_hash": "sha256...",
     "approved_preview_hash": "sha256...",
@@ -667,7 +667,7 @@ Response `200`:
   "execution_handoff": {
     "executor": "adapter_after_core_preflight",
     "execution_surface": "wp_abilities_rest",
-    "ability_id": "magick-ai/trash-post",
+    "ability_id": "npcink-abilities-toolkit/trash-post",
     "proposal_id": "uuid",
     "correlation_id": "uuid",
     "approved_input_hash": "sha256...",
@@ -685,16 +685,16 @@ Errors:
 
 | Code | HTTP | Meaning |
 | --- | --- | --- |
-| `magick_ai_core_legacy_confirmation_rejected` | `400` | Request attempted to use `confirm_token` or `write_confirmed`. |
-| `magick_ai_core_proposal_not_found` | `404` | Proposal id does not exist. |
-| `magick_ai_core_proposal_not_approved` | `409` | Proposal is not approved. |
-| `magick_ai_core_proposal_items_blocked` | `409` | Proposal preview has `proposal_ready=false`, `needs_input`, or `preflight_blockers`. |
-| `magick_ai_core_ability_unavailable` | `409` | Target ability is no longer discoverable. |
-| `magick_ai_core_ability_contract_changed` | `409` | Target ability risk, approval, schema, scope, execution guidance, or WordPress capability changed after proposal creation. |
-| `magick_ai_core_commit_preflight_already_issued` | `409` | Core already issued one execution handoff for this approved proposal input. |
-| `magick_ai_core_preflight_forbidden` | `403` | Current user lacks permission. |
-| `magick_ai_core_ability_permission_denied` | `403` | Current WordPress user lacks the target ability's declared WordPress capability. |
-| `magick_ai_core_preflight_audit_failed` | `500` | Preflight could not be audited. |
+| `npcink_governance_core_legacy_confirmation_rejected` | `400` | Request attempted to use `confirm_token` or `write_confirmed`. |
+| `npcink_governance_core_proposal_not_found` | `404` | Proposal id does not exist. |
+| `npcink_governance_core_proposal_not_approved` | `409` | Proposal is not approved. |
+| `npcink_governance_core_proposal_items_blocked` | `409` | Proposal preview has `proposal_ready=false`, `needs_input`, or `preflight_blockers`. |
+| `npcink_governance_core_ability_unavailable` | `409` | Target ability is no longer discoverable. |
+| `npcink_governance_core_ability_contract_changed` | `409` | Target ability risk, approval, schema, scope, execution guidance, or WordPress capability changed after proposal creation. |
+| `npcink_governance_core_commit_preflight_already_issued` | `409` | Core already issued one execution handoff for this approved proposal input. |
+| `npcink_governance_core_preflight_forbidden` | `403` | Current user lacks permission. |
+| `npcink_governance_core_ability_permission_denied` | `403` | Current WordPress user lacks the target ability's declared WordPress capability. |
+| `npcink_governance_core_preflight_audit_failed` | `500` | Preflight could not be audited. |
 
 Audit event:
 
@@ -707,9 +707,9 @@ Local observability event:
 
 Successful preflight emits `status=ok` with `proposal_id`, `ability_id`,
 `correlation_id`, `latency_ms`, and an empty `error_code`. Expected governance
-blocks such as `magick_ai_core_proposal_not_approved`,
-`magick_ai_core_proposal_items_blocked`, and
-`magick_ai_core_commit_preflight_already_issued` emit `status=warning` with the
+blocks such as `npcink_governance_core_proposal_not_approved`,
+`npcink_governance_core_proposal_items_blocked`, and
+`npcink_governance_core_commit_preflight_already_issued` emit `status=warning` with the
 stable `error_code`. Other preflight failures emit `status=error`.
 Observability events are metadata-only and must not include proposal input,
 preview, caller payloads, approval notes, generated content, or policy payloads.
@@ -739,7 +739,7 @@ Execution handoff:
 The handoff object is routing guidance for Adapter. It is not an execution
 token and does not make Core execute the target ability. Core issues at most one
 successful handoff per approved proposal input; replay attempts fail with
-`magick_ai_core_commit_preflight_already_issued`.
+`npcink_governance_core_commit_preflight_already_issued`.
 
 ## Planned Routes
 

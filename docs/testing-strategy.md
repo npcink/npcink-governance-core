@@ -12,7 +12,7 @@ Npcink Governance Core starts with a small but strict test pyramid.
 | Static contracts | `composer test:contracts` | Freeze product boundary, REST routes, public lifecycle, and forbidden legacy terms. |
 | Fail-closed fault injection | `composer test:fail-closed` | Inject database and audit persistence failures against Core classes and assert rollback or cleanup. |
 | Full local suite | `composer test:all` | Run lint, static contracts, and fault injection together. |
-| Real WordPress smoke | `composer smoke:wp` | Prove activation, schema creation, REST behavior, and `magick-ai-abilities` integration. |
+| Real WordPress smoke | `composer smoke:wp` | Prove activation, schema creation, REST behavior, and `npcink-abilities-toolkit` integration. |
 | Plugin Check release scan | `wp plugin check npcink-governance-core --ignore-warnings` | Catch WordPress.org packaging and runtime security blockers before release. |
 
 ## Static Contract Rules
@@ -65,35 +65,35 @@ Use it for behavior that requires real WordPress:
 - custom tables;
 - REST dispatch;
 - current user permissions;
-- integration with `magick-ai-abilities`;
+- integration with `npcink-abilities-toolkit`;
 - runtime workflow definition discovery through
-  `magick_ai_abilities_get_workflow_definitions()`, with fixture fallback from
-  `magick-ai-abilities/tests/fixtures/agent-workflow-replay.json`;
-- the primary `magick-ai/create-draft` governance scenario, including schema
+  `npcink_abilities_toolkit_get_workflow_definitions()`, with fixture fallback from
+  `npcink-abilities-toolkit/tests/fixtures/agent-workflow-replay.json`;
+- the primary `npcink-abilities-toolkit/create-draft` governance scenario, including schema
   controls, proposal creation, approval, and commit preflight;
-- the second `magick-ai/set-post-seo-meta` governance scenario, including
+- the second `npcink-abilities-toolkit/set-post-seo-meta` governance scenario, including
   field-level update input and commit preflight without final execution;
-- the third `magick-ai/approve-comment` governance scenario, including pending
+- the third `npcink-abilities-toolkit/approve-comment` governance scenario, including pending
   comment setup, moderation preview input, and commit preflight without final
   execution;
 - the taxonomy terms preview governance scenario, including
-  `magick-ai/propose-post-taxonomy-terms` helper execution through WordPress
-  Abilities API, `magick-ai/set-post-terms` proposal creation, approval,
+  `npcink-abilities-toolkit/propose-post-taxonomy-terms` helper execution through WordPress
+  Abilities API, `npcink-abilities-toolkit/set-post-terms` proposal creation, approval,
   commit preflight, audit correlation, and no post term mutation;
 - the plan-to-proposal bridge for
-  `magick-ai/build-content-inventory-fix-plan`,
-  `magick-ai/build-test-content-cleanup-plan`, and
-  `magick-ai/build-media-inventory-fix-plan`, plus media reference repair
+  `npcink-abilities-toolkit/build-content-inventory-fix-plan`,
+  `npcink-abilities-toolkit/build-test-content-cleanup-plan`, and
+  `npcink-abilities-toolkit/build-media-inventory-fix-plan`, plus media reference repair
   planning for post content and setting/theme-mod URL patches, including generated proposals,
   destructive media delete exclusion by default, and `requires_input`
   preflight blocking;
 - bounded batch plan contracts for
-  `magick-ai-toolbox/build-article-batch-write-plan` and
-  `magick-ai/build-media-optimization-plan`, including explicit batch approval
+  `npcink-toolbox/build-article-batch-write-plan` and
+  `npcink-abilities-toolkit/build-media-optimization-plan`, including explicit batch approval
   and fail-closed rejection of publish, missing derivative, or multi-attachment
   cases;
-- bounded media rename plan contracts for `magick-ai/build-media-rename-plan`,
-  including one reviewed `magick-ai/rename-media-file` action and fail-closed
+- bounded media rename plan contracts for `npcink-abilities-toolkit/build-media-rename-plan`,
+  including one reviewed `npcink-abilities-toolkit/rename-media-file` action and fail-closed
   rejection of missing target filename or multi-attachment cases;
 - governance operability coverage, including proposal `audit_timeline`,
   commit-preflight `correlation_id`, app `scope_decision`, and audit filters
@@ -107,7 +107,7 @@ The smoke test should clean up transient WordPress content fixtures on shutdown,
 including posts, comments, terms, and media attachments, and should revoke app
 keys created for the run. Proposal and audit rows remain persistent by default
 to preserve the governance evidence checked by the smoke gate. Local-only runs
-may set `MAGICK_AI_CORE_SMOKE_PURGE=1` to purge tracked proposal, app-key,
+may set `NPCINK_GOVERNANCE_CORE_SMOKE_PURGE=1` to purge tracked proposal, app-key,
 rate-limit, and audit rows for the current run after assertions complete.
 
 The smoke test should stay small. It is a confidence gate, not a full end-to-end

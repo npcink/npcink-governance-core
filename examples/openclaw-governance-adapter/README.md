@@ -73,7 +73,7 @@ php examples/openclaw-governance-adapter/openclaw-governance-adapter.php capabil
 ```
 
 Create the primary host-governed draft scenario. This command discovers
-capabilities first, verifies `magick-ai/create-draft` is still a write-risk
+capabilities first, verifies `npcink-abilities-toolkit/create-draft` is still a write-risk
 ability requiring approval, checks the schema governance controls, and then
 creates a proposal:
 
@@ -84,7 +84,7 @@ php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-
 ```
 
 Create the second host-governed field update scenario. This command discovers
-capabilities first, verifies `magick-ai/set-post-seo-meta` is still a
+capabilities first, verifies `npcink-abilities-toolkit/set-post-seo-meta` is still a
 write-risk ability requiring approval, checks the field-level schema, and then
 creates a proposal:
 
@@ -96,7 +96,7 @@ php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-
 ```
 
 Create the third host-governed comment moderation scenario. This command
-discovers capabilities first, verifies `magick-ai/approve-comment` is still a
+discovers capabilities first, verifies `npcink-abilities-toolkit/approve-comment` is still a
 write-risk ability requiring approval, checks the moderation schema, and then
 creates a proposal:
 
@@ -108,10 +108,10 @@ php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-
 ```
 
 Create the taxonomy terms preview handoff scenario. Product adapters should
-first run `magick-ai/propose-post-taxonomy-terms` through WordPress Abilities
+first run `npcink-abilities-toolkit/propose-post-taxonomy-terms` through WordPress Abilities
 API, then pass that helper output to this command. The command discovers
 capabilities first, verifies the helper is direct-read, verifies
-`magick-ai/set-post-terms` is still a write-risk ability requiring approval,
+`npcink-abilities-toolkit/set-post-terms` is still a write-risk ability requiring approval,
 and then creates a dry-run proposal:
 
 ```bash
@@ -133,7 +133,7 @@ Create a proposal with a real, discoverable `ability_id`:
 
 ```bash
 php examples/openclaw-governance-adapter/openclaw-governance-adapter.php create-proposal \
-  --ability=magick-ai/create-draft \
+  --ability=npcink-abilities-toolkit/create-draft \
   --title="OpenClaw draft proposal" \
   --summary="Review before creating a draft." \
   --input='{"title":"Draft title","content":"<p>Draft body.</p>","dry_run":true}' \

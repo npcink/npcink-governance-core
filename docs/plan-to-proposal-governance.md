@@ -8,20 +8,20 @@ an execution bridge.
 
 ## Supported Plan Abilities
 
-- `magick-ai/build-content-inventory-fix-plan`
-- `magick-ai/build-test-content-cleanup-plan`
-- `magick-ai/build-media-inventory-fix-plan`
-- `magick-ai/build-media-reference-repair-plan`
-- `magick-ai/build-media-settings-reference-repair-plan`
-- `magick-ai/build-media-optimization-plan`
-- `magick-ai/build-media-rename-plan`
-- `magick-ai-toolbox/build-article-write-plan`
-- `magick-ai-toolbox/build-article-batch-write-plan`
-- `magick-ai-toolbox/build-article-media-batch-write-plan`
-- `magick-ai-toolbox/build-image-candidate-adoption-plan`
+- `npcink-abilities-toolkit/build-content-inventory-fix-plan`
+- `npcink-abilities-toolkit/build-test-content-cleanup-plan`
+- `npcink-abilities-toolkit/build-media-inventory-fix-plan`
+- `npcink-abilities-toolkit/build-media-reference-repair-plan`
+- `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`
+- `npcink-abilities-toolkit/build-media-optimization-plan`
+- `npcink-abilities-toolkit/build-media-rename-plan`
+- `npcink-toolbox/build-article-write-plan`
+- `npcink-toolbox/build-article-batch-write-plan`
+- `npcink-toolbox/build-article-media-batch-write-plan`
+- `npcink-toolbox/build-image-candidate-adoption-plan`
 
-The `magick-ai/*` planning abilities belong to `magick-ai-abilities`; the
-Toolbox article and image candidate handoffs belong to `magick-ai-toolbox`. They are executed
+The `npcink-abilities-toolkit/*` planning abilities belong to `npcink-abilities-toolkit`; the
+Toolbox article and image candidate handoffs belong to `npcink-toolbox`. They are executed
 through the WordPress Abilities API by the host or adapter. Core only receives
 their output. The Toolbox plan is included here because Core can govern its
 write plan without owning Toolbox workflow UX, content generation, image
@@ -71,7 +71,7 @@ route.
 
 ## Article Writing Handoff
 
-`magick-ai-toolbox/build-article-write-plan` is the P0 AI-assisted writing
+`npcink-toolbox/build-article-write-plan` is the P0 AI-assisted writing
 handoff. It must return `artifact_type=article_write_plan`, `version>=1`,
 `requires_approval=true`, `dry_run=true`, `commit_execution=false`, and the
 standard article artifacts documented in
@@ -80,7 +80,7 @@ standard article artifacts documented in
 Core accepts that plan only when `article_risk_report.ready_for_proposal=true`,
 `article_risk_report.risk_level` is not `high`,
 `article_risk_report.blocked_claims` is empty, and the plan contains exactly
-one draft-only `magick-ai/create-draft` write action. The generated proposal
+one draft-only `npcink-abilities-toolkit/create-draft` write action. The generated proposal
 preserves `preview.article_workflow` for review. Core does not generate the
 article, run Toolbox tools, call Cloud, approve the proposal, or execute the
 draft write.
@@ -89,17 +89,17 @@ Article writing is a local Ability recipe, not a Cloud writing feature. Cloud
 must not produce article drafts, `article_write_plan` candidates, or bulk
 article artifacts for Core intake. If a local host runs the
 `article_draft_v1` recipe, Core still receives only the same
-`magick-ai-toolbox/build-article-write-plan` output and applies the same
+`npcink-toolbox/build-article-write-plan` output and applies the same
 single-draft acceptance rules. See
 [Ability Recipe Orchestration Contract](ability-recipe-orchestration-contract.md)
 and [Cloud Bulk Article Run Contract](cloud-bulk-article-run-contract.md).
 
-`magick-ai-toolbox/build-article-batch-write-plan` is the bounded local batch
+`npcink-toolbox/build-article-batch-write-plan` is the bounded local batch
 draft handoff for the same Article Assistant Workbench. It is not a Cloud
 writing feature. Core accepts it only when it declares
 `artifact_type=article_batch_write_plan`, `proposal_mode=batch`,
 `batch_approval=true`, includes 2 to 5 draft-only
-`magick-ai/create-draft` actions, and carries one reviewed article artifact set
+`npcink-abilities-toolkit/create-draft` actions, and carries one reviewed article artifact set
 per action. Publish requests, high-risk article artifacts, blocked claims,
 `commit=true`, `dry_run=false`, or missing per-article review artifacts are
 rejected before proposal creation. Core stores one `plan_to_proposal_batch`
@@ -107,20 +107,20 @@ proposal so the user can approve the related draft writes once, while Adapter
 still performs per-action allowlist, schema, idempotency, and execution checks
 outside Core.
 
-`magick-ai-toolbox/build-article-media-batch-write-plan` is the media-enabled
+`npcink-toolbox/build-article-media-batch-write-plan` is the media-enabled
 local batch handoff for reviewed drafts with reviewed image-source candidates.
 It is not a Cloud writing feature and not an image generation/import runtime.
 Core accepts it only when it declares
 `artifact_type=article_media_batch_write_plan`, `proposal_mode=batch`,
 `batch_approval=true`, includes 1 to 5 reviewed article artifact sets,
 preserves selected image-source candidate evidence, and uses only allowlisted
-draft/media actions such as `magick-ai/create-draft`,
-`magick-ai/upload-media-from-url`, `magick-ai/update-media-details`, and
-`magick-ai/set-post-featured-image`.
+draft/media actions such as `npcink-abilities-toolkit/create-draft`,
+`npcink-abilities-toolkit/upload-media-from-url`, `npcink-abilities-toolkit/update-media-details`, and
+`npcink-abilities-toolkit/set-post-featured-image`.
 
 ## Image Candidate Adoption Handoff
 
-`magick-ai-toolbox/build-image-candidate-adoption-plan` is the bounded local
+`npcink-toolbox/build-image-candidate-adoption-plan` is the bounded local
 handoff for adopting one reviewed image candidate from stock, AI-generated,
 owned, external, or manual-upload sources. It is not a Cloud image registry,
 not an image generation runtime, and not a media import executor.
@@ -130,9 +130,9 @@ Core accepts it only when it declares
 `candidate_contract_version=image_candidate.v1` or a selected candidate with
 `contract_version=image_candidate.v1`, and contains dry-run write actions for:
 
-- exactly one `magick-ai/upload-media-from-url` action;
-- exactly one `magick-ai/update-media-details` action;
-- at most one `magick-ai/set-post-featured-image` action.
+- exactly one `npcink-abilities-toolkit/upload-media-from-url` action;
+- exactly one `npcink-abilities-toolkit/update-media-details` action;
+- at most one `npcink-abilities-toolkit/set-post-featured-image` action.
 
 Each action must keep `dry_run=true` and `commit=false`. Core stores one
 `plan_to_proposal_batch` proposal so the user can approve the reviewed import,
@@ -143,7 +143,7 @@ image, upload media, set featured images, or persist provider candidate truth.
 
 ## Media Optimization Handoff
 
-`magick-ai/build-media-optimization-plan` is the bounded local plan for the user
+`npcink-abilities-toolkit/build-media-optimization-plan` is the bounded local plan for the user
 intent "optimize this media item." It must declare
 `artifact_type=media_optimization_plan`, `proposal_mode=batch`,
 `batch_approval=true`, and target exactly one attachment across all write
@@ -151,17 +151,17 @@ actions.
 
 The plan must include:
 
-- one `magick-ai/update-media-details` action for title, alt, caption,
+- one `npcink-abilities-toolkit/update-media-details` action for title, alt, caption,
   description, or source metadata;
 - one derivative adoption action, currently
-  `magick-ai/adopt-cloud-media-derivative` or `magick-ai/replace-media-file`;
+  `npcink-abilities-toolkit/adopt-cloud-media-derivative` or `npcink-abilities-toolkit/replace-media-file`;
 - dry-run preview evidence for the metadata change and derivative change.
 
 If derivative adoption will also update old inline media URLs in post content,
 that repair evidence must stay inside the derivative action preview as
 `content_reference_repairs`. A media optimization plan must not add a separate
-`magick-ai/patch-post-content`, `magick-ai/update-post`, or
-`magick-ai/update-post-blocks` write action for the same user intent.
+`npcink-abilities-toolkit/patch-post-content`, `npcink-abilities-toolkit/update-post`, or
+`npcink-abilities-toolkit/update-post-blocks` write action for the same user intent.
 
 Cloud may create or return a derivative artifact, checksum, mime type, size
 preview, or processing diagnostics through the local Cloud Addon path, but
@@ -171,13 +171,13 @@ automatically.
 
 ## Media Rename Handoff
 
-`magick-ai/build-media-rename-plan` is the bounded local plan for renaming one
+`npcink-abilities-toolkit/build-media-rename-plan` is the bounded local plan for renaming one
 attachment main file after the operator has reviewed the filename. It is not a
 filename policy engine and does not compute hashes inside Core.
 
 Core accepts it only when it declares `artifact_type=media_rename_plan`, targets
 exactly one `attachment_id`, and contains exactly one dry-run
-`magick-ai/rename-media-file` action with a non-empty `target_file_name`.
+`npcink-abilities-toolkit/rename-media-file` action with a non-empty `target_file_name`.
 Optional expected current path, MIME type, MD5, SHA256, conflict mode, and
 backup suffix guards may be preserved in action input for Adapter/host
 execution after Core approval and commit preflight.
@@ -234,7 +234,7 @@ Plan intake fails closed when:
 `manual_review` and `skipped_destructive_candidates` are never dropped. They
 are copied into generated proposal warnings and blocked item context.
 
-Permanent media deletion is stricter: `magick-ai/delete-media-permanently`
+Permanent media deletion is stricter: `npcink-abilities-toolkit/delete-media-permanently`
 actions are blocked unless the submitted `plan_input` explicitly contains
 `include_delete_candidates=true`. The media planning ability still decides
 whether a delete action can be emitted at all; current destructive-media plans
@@ -266,7 +266,7 @@ Commit preflight now evaluates proposal item readiness:
 - `proposal_ready=true`, no `needs_input`, and no `preflight_blockers` can pass
   after approval.
 - `proposal_ready=false` or non-empty `needs_input`/`preflight_blockers` returns
-  `magick_ai_core_proposal_items_blocked` with HTTP `409`.
+  `npcink_governance_core_proposal_items_blocked` with HTTP `409`.
 
 This means a human may review an incomplete plan action, but the host cannot
 treat it as committable until the required input is resolved in a later

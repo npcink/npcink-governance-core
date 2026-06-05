@@ -2,14 +2,14 @@
 /**
  * Apps REST controller.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core\Rest;
+namespace Npcink\GovernanceCore\Rest;
 
-use MagickAI\Core\Audit\Audit_Log_Repository;
-use MagickAI\Core\Security\App_Key_Repository;
-use MagickAI\Core\Security\App_Authenticator;
+use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
+use Npcink\GovernanceCore\Security\App_Key_Repository;
+use Npcink\GovernanceCore\Security\App_Authenticator;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -167,7 +167,7 @@ final class Apps_Controller {
 		if ( '' === $event_id ) {
 			$this->apps->revoke_by_key_id( (string) $app['key_id'] );
 			return new WP_Error(
-				'magick_ai_core_app_audit_failed',
+				'npcink_governance_core_app_audit_failed',
 				__( 'App key creation could not be audited.', 'npcink-governance-core' ),
 				array( 'status' => 500 )
 			);

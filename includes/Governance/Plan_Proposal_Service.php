@@ -2,13 +2,13 @@
 /**
  * Plan-to-proposal governance bridge.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core\Governance;
+namespace Npcink\GovernanceCore\Governance;
 
-use MagickAI\Core\Audit\Audit_Log_Repository;
-use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
+use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
+use Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter;
 use WP_Error;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -25,17 +25,17 @@ final class Plan_Proposal_Service {
 	 * @var array<string,bool>
 	 */
 	private $allowed_plan_abilities = array(
-		'magick-ai/build-content-inventory-fix-plan'                  => true,
-		'magick-ai/build-test-content-cleanup-plan'                   => true,
-		'magick-ai/build-media-inventory-fix-plan'                    => true,
-		'magick-ai/build-media-reference-repair-plan'                 => true,
-		'magick-ai/build-media-settings-reference-repair-plan'        => true,
-		'magick-ai/build-media-optimization-plan'                     => true,
-		'magick-ai/build-media-rename-plan'                           => true,
-		'magick-ai-toolbox/build-article-write-plan'                  => true,
-		'magick-ai-toolbox/build-article-batch-write-plan'            => true,
-		'magick-ai-toolbox/build-article-media-batch-write-plan'      => true,
-		'magick-ai-toolbox/build-image-candidate-adoption-plan'       => true,
+		'npcink-abilities-toolkit/build-content-inventory-fix-plan'           => true,
+		'npcink-abilities-toolkit/build-test-content-cleanup-plan'            => true,
+		'npcink-abilities-toolkit/build-media-inventory-fix-plan'             => true,
+		'npcink-abilities-toolkit/build-media-reference-repair-plan'          => true,
+		'npcink-abilities-toolkit/build-media-settings-reference-repair-plan' => true,
+		'npcink-abilities-toolkit/build-media-optimization-plan'              => true,
+		'npcink-abilities-toolkit/build-media-rename-plan'                    => true,
+		'npcink-toolbox/build-article-write-plan'                            => true,
+		'npcink-toolbox/build-article-batch-write-plan'                      => true,
+		'npcink-toolbox/build-article-media-batch-write-plan'                => true,
+		'npcink-toolbox/build-image-candidate-adoption-plan'                 => true,
 	);
 
 	private const ARTICLE_BATCH_MAX_ACTIONS = 5;
@@ -89,7 +89,7 @@ final class Plan_Proposal_Service {
 		$plan_ability_id = sanitize_text_field( $plan_ability_id );
 		if ( ! isset( $this->allowed_plan_abilities[ $plan_ability_id ] ) ) {
 			return new WP_Error(
-				'magick_ai_core_plan_ability_not_allowed',
+				'npcink_governance_core_plan_ability_not_allowed',
 				__( 'This planning ability is not accepted by the Core plan-to-proposal bridge.', 'npcink-governance-core' ),
 				array( 'status' => 400 )
 			);
@@ -98,7 +98,7 @@ final class Plan_Proposal_Service {
 		$plan_capability = $this->abilities->find( $plan_ability_id );
 		if ( null === $plan_capability ) {
 			return new WP_Error(
-				'magick_ai_core_plan_ability_unavailable',
+				'npcink_governance_core_plan_ability_unavailable',
 				__( 'The planning ability is not currently discoverable.', 'npcink-governance-core' ),
 				array( 'status' => 404 )
 			);
@@ -106,7 +106,7 @@ final class Plan_Proposal_Service {
 
 		if ( 'direct_read' !== (string) ( $plan_capability['governance_mode'] ?? '' ) || 'wp_abilities_rest' !== (string) ( $plan_capability['execution_surface'] ?? '' ) ) {
 			return new WP_Error(
-				'magick_ai_core_plan_ability_not_read_only',
+				'npcink_governance_core_plan_ability_not_read_only',
 				__( 'Plan-to-proposal intake accepts only direct-read planning abilities.', 'npcink-governance-core' ),
 				array( 'status' => 409 )
 			);
@@ -122,42 +122,42 @@ final class Plan_Proposal_Service {
 			return $contract_error;
 		}
 
-		if ( 'magick-ai-toolbox/build-article-write-plan' === $plan_ability_id ) {
+		if ( 'npcink-toolbox/build-article-write-plan' === $plan_ability_id ) {
 			$article_contract_error = $this->validate_article_write_plan_contract( $plan );
 			if ( is_wp_error( $article_contract_error ) ) {
 				return $article_contract_error;
 			}
 		}
 
-		if ( 'magick-ai-toolbox/build-article-batch-write-plan' === $plan_ability_id ) {
+		if ( 'npcink-toolbox/build-article-batch-write-plan' === $plan_ability_id ) {
 			$article_batch_contract_error = $this->validate_article_batch_write_plan_contract( $plan );
 			if ( is_wp_error( $article_batch_contract_error ) ) {
 				return $article_batch_contract_error;
 			}
 		}
 
-		if ( 'magick-ai-toolbox/build-article-media-batch-write-plan' === $plan_ability_id ) {
+		if ( 'npcink-toolbox/build-article-media-batch-write-plan' === $plan_ability_id ) {
 			$article_media_batch_contract_error = $this->validate_article_media_batch_write_plan_contract( $plan );
 			if ( is_wp_error( $article_media_batch_contract_error ) ) {
 				return $article_media_batch_contract_error;
 			}
 		}
 
-		if ( 'magick-ai-toolbox/build-image-candidate-adoption-plan' === $plan_ability_id ) {
+		if ( 'npcink-toolbox/build-image-candidate-adoption-plan' === $plan_ability_id ) {
 			$image_candidate_contract_error = $this->validate_image_candidate_adoption_plan_contract( $plan );
 			if ( is_wp_error( $image_candidate_contract_error ) ) {
 				return $image_candidate_contract_error;
 			}
 		}
 
-		if ( 'magick-ai/build-media-optimization-plan' === $plan_ability_id ) {
+		if ( 'npcink-abilities-toolkit/build-media-optimization-plan' === $plan_ability_id ) {
 			$media_optimization_contract_error = $this->validate_media_optimization_plan_contract( $plan );
 			if ( is_wp_error( $media_optimization_contract_error ) ) {
 				return $media_optimization_contract_error;
 			}
 		}
 
-		if ( 'magick-ai/build-media-rename-plan' === $plan_ability_id ) {
+		if ( 'npcink-abilities-toolkit/build-media-rename-plan' === $plan_ability_id ) {
 			$media_rename_contract_error = $this->validate_media_rename_plan_contract( $plan );
 			if ( is_wp_error( $media_rename_contract_error ) ) {
 				return $media_rename_contract_error;
@@ -307,7 +307,7 @@ final class Plan_Proposal_Service {
 	private function unwrap_plan_payload( array $payload ) {
 		if ( array_key_exists( 'success', $payload ) && true !== (bool) $payload['success'] ) {
 			return new WP_Error(
-				'magick_ai_core_plan_unsuccessful',
+				'npcink_governance_core_plan_unsuccessful',
 				__( 'Only successful plan outputs can be converted into proposals.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -316,7 +316,7 @@ final class Plan_Proposal_Service {
 		$data = is_array( $payload['data'] ?? null ) ? $payload['data'] : $payload;
 		if ( ! is_array( $data ) ) {
 			return new WP_Error(
-				'magick_ai_core_plan_invalid',
+				'npcink_governance_core_plan_invalid',
 				__( 'Plan payload must be an object.', 'npcink-governance-core' ),
 				array( 'status' => 400 )
 			);
@@ -334,7 +334,7 @@ final class Plan_Proposal_Service {
 	private function validate_plan_contract( array $plan ) {
 		if ( true !== (bool) ( $plan['requires_approval'] ?? false ) ) {
 			return new WP_Error(
-				'magick_ai_core_plan_requires_approval_missing',
+				'npcink_governance_core_plan_requires_approval_missing',
 				__( 'Plan output must require approval.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -342,7 +342,7 @@ final class Plan_Proposal_Service {
 
 		if ( false !== (bool) ( $plan['commit_execution'] ?? true ) ) {
 			return new WP_Error(
-				'magick_ai_core_plan_commit_execution_rejected',
+				'npcink_governance_core_plan_commit_execution_rejected',
 				__( 'Plan output must not execute commits.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -350,7 +350,7 @@ final class Plan_Proposal_Service {
 
 		if ( true !== (bool) ( $plan['dry_run'] ?? false ) ) {
 			return new WP_Error(
-				'magick_ai_core_plan_dry_run_required',
+				'npcink_governance_core_plan_dry_run_required',
 				__( 'Plan output must be dry-run only.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -358,7 +358,7 @@ final class Plan_Proposal_Service {
 
 		if ( ! is_array( $plan['write_actions'] ?? null ) ) {
 			return new WP_Error(
-				'magick_ai_core_plan_write_actions_missing',
+				'npcink_governance_core_plan_write_actions_missing',
 				__( 'Plan output must include write_actions.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -377,7 +377,7 @@ final class Plan_Proposal_Service {
 		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
 		if ( 'article_batch_write_plan' !== $artifact_type ) {
 			return new WP_Error(
-				'magick_ai_core_article_batch_plan_invalid',
+				'npcink_governance_core_article_batch_plan_invalid',
 				__( 'Article batch write plans must declare artifact_type=article_batch_write_plan.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -385,7 +385,7 @@ final class Plan_Proposal_Service {
 
 		if ( true !== (bool) ( $plan['batch_approval'] ?? false ) || 'batch' !== sanitize_key( (string) ( $plan['proposal_mode'] ?? '' ) ) ) {
 			return new WP_Error(
-				'magick_ai_core_article_batch_mode_required',
+				'npcink_governance_core_article_batch_mode_required',
 				__( 'Article batch write plans must explicitly request batch proposal approval.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -394,7 +394,7 @@ final class Plan_Proposal_Service {
 		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
 		if ( count( $write_actions ) < 2 || count( $write_actions ) > self::ARTICLE_BATCH_MAX_ACTIONS ) {
 			return new WP_Error(
-				'magick_ai_core_article_batch_size_rejected',
+				'npcink_governance_core_article_batch_size_rejected',
 				__( 'Article batch write plans must contain a bounded group of draft actions.', 'npcink-governance-core' ),
 				array(
 					'status'      => 422,
@@ -406,7 +406,7 @@ final class Plan_Proposal_Service {
 		$articles = is_array( $plan['articles'] ?? null ) ? array_values( $plan['articles'] ) : array();
 		if ( count( $articles ) !== count( $write_actions ) ) {
 			return new WP_Error(
-				'magick_ai_core_article_batch_artifacts_missing',
+				'npcink_governance_core_article_batch_artifacts_missing',
 				__( 'Article batch write plans must include one reviewed article artifact set per draft action.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -415,7 +415,7 @@ final class Plan_Proposal_Service {
 		foreach ( $articles as $article_index => $article ) {
 			if ( ! is_array( $article ) ) {
 				return new WP_Error(
-					'magick_ai_core_article_batch_artifacts_missing',
+					'npcink_governance_core_article_batch_artifacts_missing',
 					__( 'Article batch entries must be objects.', 'npcink-governance-core' ),
 					array(
 						'status'        => 422,
@@ -423,7 +423,7 @@ final class Plan_Proposal_Service {
 					)
 				);
 			}
-			$artifact_error = $this->validate_article_artifacts( $article, 'magick_ai_core_article_batch_' );
+			$artifact_error = $this->validate_article_artifacts( $article, 'npcink_governance_core_article_batch_' );
 			if ( is_wp_error( $artifact_error ) ) {
 				return $artifact_error;
 			}
@@ -432,7 +432,7 @@ final class Plan_Proposal_Service {
 		foreach ( $write_actions as $action_index => $action ) {
 			if ( ! is_array( $action ) ) {
 				return new WP_Error(
-					'magick_ai_core_article_batch_action_invalid',
+					'npcink_governance_core_article_batch_action_invalid',
 					__( 'Article batch write actions must be objects.', 'npcink-governance-core' ),
 					array(
 						'status'       => 422,
@@ -440,7 +440,7 @@ final class Plan_Proposal_Service {
 					)
 				);
 			}
-			$draft_error = $this->validate_article_draft_action( $action, 'magick_ai_core_article_batch_' );
+			$draft_error = $this->validate_article_draft_action( $action, 'npcink_governance_core_article_batch_' );
 			if ( is_wp_error( $draft_error ) ) {
 				return $draft_error;
 			}
@@ -459,7 +459,7 @@ final class Plan_Proposal_Service {
 		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
 		if ( 'article_media_batch_write_plan' !== $artifact_type ) {
 			return new WP_Error(
-				'magick_ai_core_article_media_batch_plan_invalid',
+				'npcink_governance_core_article_media_batch_plan_invalid',
 				__( 'Article media batch write plans must declare artifact_type=article_media_batch_write_plan.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -467,7 +467,7 @@ final class Plan_Proposal_Service {
 
 		if ( true !== (bool) ( $plan['batch_approval'] ?? false ) || 'batch' !== sanitize_key( (string) ( $plan['proposal_mode'] ?? '' ) ) ) {
 			return new WP_Error(
-				'magick_ai_core_article_media_batch_mode_required',
+				'npcink_governance_core_article_media_batch_mode_required',
 				__( 'Article media batch write plans must explicitly request batch proposal approval.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -476,7 +476,7 @@ final class Plan_Proposal_Service {
 		$articles = is_array( $plan['articles'] ?? null ) ? array_values( $plan['articles'] ) : array();
 		if ( count( $articles ) < 1 || count( $articles ) > self::ARTICLE_MEDIA_BATCH_MAX_ARTICLES ) {
 			return new WP_Error(
-				'magick_ai_core_article_media_batch_size_rejected',
+				'npcink_governance_core_article_media_batch_size_rejected',
 				__( 'Article media batch write plans must include 1 to 5 reviewed articles.', 'npcink-governance-core' ),
 				array(
 					'status'       => 422,
@@ -488,7 +488,7 @@ final class Plan_Proposal_Service {
 		foreach ( $articles as $article_index => $article ) {
 			if ( ! is_array( $article ) ) {
 				return new WP_Error(
-					'magick_ai_core_article_media_batch_artifacts_missing',
+					'npcink_governance_core_article_media_batch_artifacts_missing',
 					__( 'Article media batch entries must be objects.', 'npcink-governance-core' ),
 					array(
 						'status'        => 422,
@@ -496,13 +496,13 @@ final class Plan_Proposal_Service {
 					)
 				);
 			}
-			$artifact_error = $this->validate_article_artifacts( $article, 'magick_ai_core_article_media_batch_' );
+			$artifact_error = $this->validate_article_artifacts( $article, 'npcink_governance_core_article_media_batch_' );
 			if ( is_wp_error( $artifact_error ) ) {
 				return $artifact_error;
 			}
 			if ( ! is_array( $article['featured_image_candidate'] ?? null ) ) {
 				return new WP_Error(
-					'magick_ai_core_article_media_batch_candidate_missing',
+					'npcink_governance_core_article_media_batch_candidate_missing',
 					__( 'Article media batch entries must preserve the selected image-source candidate.', 'npcink-governance-core' ),
 					array(
 						'status'        => 422,
@@ -515,7 +515,7 @@ final class Plan_Proposal_Service {
 		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
 		if ( count( $write_actions ) < count( $articles ) * 3 || count( $write_actions ) > self::ARTICLE_MEDIA_BATCH_MAX_ACTIONS ) {
 			return new WP_Error(
-				'magick_ai_core_article_media_batch_actions_rejected',
+				'npcink_governance_core_article_media_batch_actions_rejected',
 				__( 'Article media batch write plans must contain a bounded group of draft, media upload, and featured-image actions.', 'npcink-governance-core' ),
 				array(
 					'status'      => 422,
@@ -525,22 +525,22 @@ final class Plan_Proposal_Service {
 		}
 
 		$target_counts = array(
-			'magick-ai/create-draft'             => 0,
-			'magick-ai/upload-media-from-url'    => 0,
-			'magick-ai/set-post-featured-image'  => 0,
+			'npcink-abilities-toolkit/create-draft'             => 0,
+			'npcink-abilities-toolkit/upload-media-from-url'    => 0,
+			'npcink-abilities-toolkit/set-post-featured-image'  => 0,
 		);
 		$allowed_targets = array(
-			'magick-ai/create-draft'             => true,
-			'magick-ai/upload-media-from-url'    => true,
-			'magick-ai/update-media-details'     => true,
-			'magick-ai/set-post-featured-image'  => true,
-			'magick-ai/patch-post-content'       => true,
+			'npcink-abilities-toolkit/create-draft'             => true,
+			'npcink-abilities-toolkit/upload-media-from-url'    => true,
+			'npcink-abilities-toolkit/update-media-details'     => true,
+			'npcink-abilities-toolkit/set-post-featured-image'  => true,
+			'npcink-abilities-toolkit/patch-post-content'       => true,
 		);
 
 		foreach ( $write_actions as $action_index => $action ) {
 			if ( ! is_array( $action ) ) {
 				return new WP_Error(
-					'magick_ai_core_article_media_batch_action_invalid',
+					'npcink_governance_core_article_media_batch_action_invalid',
 					__( 'Article media batch write actions must be objects.', 'npcink-governance-core' ),
 					array(
 						'status'       => 422,
@@ -552,7 +552,7 @@ final class Plan_Proposal_Service {
 			$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
 			if ( ! isset( $allowed_targets[ $target_ability_id ] ) ) {
 				return new WP_Error(
-					'magick_ai_core_article_media_batch_target_rejected',
+					'npcink_governance_core_article_media_batch_target_rejected',
 					__( 'Article media batch plans may target only draft and allowlisted media actions.', 'npcink-governance-core' ),
 					array(
 						'status'            => 422,
@@ -574,7 +574,7 @@ final class Plan_Proposal_Service {
 		foreach ( $target_counts as $target => $count ) {
 			if ( $count < count( $articles ) ) {
 				return new WP_Error(
-					'magick_ai_core_article_media_batch_actions_missing',
+					'npcink_governance_core_article_media_batch_actions_missing',
 					__( 'Article media batch plans must include create, upload, and featured-image actions for every article.', 'npcink-governance-core' ),
 					array(
 						'status'            => 422,
@@ -597,7 +597,7 @@ final class Plan_Proposal_Service {
 		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
 		if ( 'image_candidate_adoption_plan' !== $artifact_type ) {
 			return new WP_Error(
-				'magick_ai_core_image_candidate_adoption_plan_invalid',
+				'npcink_governance_core_image_candidate_adoption_plan_invalid',
 				__( 'Image candidate adoption plans must declare artifact_type=image_candidate_adoption_plan.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -606,7 +606,7 @@ final class Plan_Proposal_Service {
 		$candidate = is_array( $plan['selected_image_candidate'] ?? null ) ? $plan['selected_image_candidate'] : array();
 		if ( empty( $candidate ) || 'image_candidate.v1' !== (string) ( $candidate['contract_version'] ?? $plan['candidate_contract_version'] ?? '' ) ) {
 			return new WP_Error(
-				'magick_ai_core_image_candidate_contract_missing',
+				'npcink_governance_core_image_candidate_contract_missing',
 				__( 'Image candidate adoption plans must preserve a selected image_candidate.v1 candidate.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -615,22 +615,22 @@ final class Plan_Proposal_Service {
 		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
 		if ( count( $write_actions ) < 2 || count( $write_actions ) > 3 ) {
 			return new WP_Error(
-				'magick_ai_core_image_candidate_actions_rejected',
+				'npcink_governance_core_image_candidate_actions_rejected',
 				__( 'Image candidate adoption plans must contain upload, metadata, and optional featured-image actions only.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
 		}
 
 		$target_counts = array(
-			'magick-ai/upload-media-from-url'   => 0,
-			'magick-ai/update-media-details'    => 0,
-			'magick-ai/set-post-featured-image' => 0,
+			'npcink-abilities-toolkit/upload-media-from-url'   => 0,
+			'npcink-abilities-toolkit/update-media-details'    => 0,
+			'npcink-abilities-toolkit/set-post-featured-image' => 0,
 		);
 
 		foreach ( $write_actions as $action_index => $action ) {
 			if ( ! is_array( $action ) ) {
 				return new WP_Error(
-					'magick_ai_core_image_candidate_action_invalid',
+					'npcink_governance_core_image_candidate_action_invalid',
 					__( 'Image candidate adoption actions must be objects.', 'npcink-governance-core' ),
 					array(
 						'status'       => 422,
@@ -641,7 +641,7 @@ final class Plan_Proposal_Service {
 			$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
 			if ( ! isset( $target_counts[ $target_ability_id ] ) ) {
 				return new WP_Error(
-					'magick_ai_core_image_candidate_target_rejected',
+					'npcink_governance_core_image_candidate_target_rejected',
 					__( 'Image candidate adoption plans may target only media import, metadata, and featured-image abilities.', 'npcink-governance-core' ),
 					array(
 						'status'            => 422,
@@ -658,9 +658,9 @@ final class Plan_Proposal_Service {
 			}
 		}
 
-		if ( 1 !== $target_counts['magick-ai/upload-media-from-url'] || 1 !== $target_counts['magick-ai/update-media-details'] || $target_counts['magick-ai/set-post-featured-image'] > 1 ) {
+		if ( 1 !== $target_counts['npcink-abilities-toolkit/upload-media-from-url'] || 1 !== $target_counts['npcink-abilities-toolkit/update-media-details'] || $target_counts['npcink-abilities-toolkit/set-post-featured-image'] > 1 ) {
 			return new WP_Error(
-				'magick_ai_core_image_candidate_actions_missing',
+				'npcink_governance_core_image_candidate_actions_missing',
 				__( 'Image candidate adoption plans must include exactly one media upload and one metadata action, plus at most one featured-image action.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -680,7 +680,7 @@ final class Plan_Proposal_Service {
 		$input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
 		if ( true === (bool) ( $input['commit'] ?? false ) || false === (bool) ( $input['dry_run'] ?? true ) ) {
 			return new WP_Error(
-				'magick_ai_core_image_candidate_commit_rejected',
+				'npcink_governance_core_image_candidate_commit_rejected',
 				__( 'Image candidate adoption action input must remain dry-run and must not request commit.', 'npcink-governance-core' ),
 				array(
 					'status'       => 422,
@@ -690,10 +690,10 @@ final class Plan_Proposal_Service {
 		}
 
 		$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
-		if ( 'magick-ai/upload-media-from-url' === $target_ability_id ) {
+		if ( 'npcink-abilities-toolkit/upload-media-from-url' === $target_ability_id ) {
 			if ( ! $this->is_valid_absolute_url( $input['url'] ?? null ) ) {
 				return new WP_Error(
-					'magick_ai_core_image_candidate_url_missing',
+					'npcink_governance_core_image_candidate_url_missing',
 					__( 'Image candidate upload actions must include a reviewed candidate URL.', 'npcink-governance-core' ),
 					array(
 						'status'       => 422,
@@ -704,7 +704,7 @@ final class Plan_Proposal_Service {
 			$source_type = sanitize_key( (string) ( $input['source_type'] ?? '' ) );
 			if ( '' !== $source_type && ! in_array( $source_type, array( 'owned', 'ai_generated', 'stock', 'external', 'test' ), true ) ) {
 				return new WP_Error(
-					'magick_ai_core_image_candidate_source_type_invalid',
+					'npcink_governance_core_image_candidate_source_type_invalid',
 					__( 'Image candidate source_type must be owned, ai_generated, stock, external, or test.', 'npcink-governance-core' ),
 					array(
 						'status'       => 422,
@@ -715,10 +715,10 @@ final class Plan_Proposal_Service {
 			return true;
 		}
 
-		if ( 'magick-ai/update-media-details' === $target_ability_id ) {
+		if ( 'npcink-abilities-toolkit/update-media-details' === $target_ability_id ) {
 			if ( ! $this->is_exact_output_reference( $input['attachment_id'] ?? null ) && absint( $input['attachment_id'] ?? 0 ) <= 0 ) {
 				return new WP_Error(
-					'magick_ai_core_image_candidate_attachment_missing',
+					'npcink_governance_core_image_candidate_attachment_missing',
 					__( 'Image candidate metadata actions must include attachment_id or an approved output reference.', 'npcink-governance-core' ),
 					array(
 						'status'       => 422,
@@ -729,10 +729,10 @@ final class Plan_Proposal_Service {
 			return true;
 		}
 
-		if ( 'magick-ai/set-post-featured-image' === $target_ability_id ) {
+		if ( 'npcink-abilities-toolkit/set-post-featured-image' === $target_ability_id ) {
 			if ( ! $this->is_exact_output_reference( $input['attachment_id'] ?? null ) && absint( $input['attachment_id'] ?? 0 ) <= 0 ) {
 				return new WP_Error(
-					'magick_ai_core_image_candidate_featured_attachment_missing',
+					'npcink_governance_core_image_candidate_featured_attachment_missing',
 					__( 'Image candidate featured-image actions must include attachment_id or an approved output reference.', 'npcink-governance-core' ),
 					array(
 						'status'       => 422,
@@ -742,7 +742,7 @@ final class Plan_Proposal_Service {
 			}
 			if ( absint( $input['post_id'] ?? 0 ) <= 0 && ! $this->is_exact_output_reference( $input['post_id'] ?? null ) ) {
 				return new WP_Error(
-					'magick_ai_core_image_candidate_featured_post_missing',
+					'npcink_governance_core_image_candidate_featured_post_missing',
 					__( 'Image candidate featured-image actions must include post_id or an approved output reference.', 'npcink-governance-core' ),
 					array(
 						'status'       => 422,
@@ -765,7 +765,7 @@ final class Plan_Proposal_Service {
 		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
 		if ( 'media_optimization_plan' !== $artifact_type ) {
 			return new WP_Error(
-				'magick_ai_core_media_optimization_plan_invalid',
+				'npcink_governance_core_media_optimization_plan_invalid',
 				__( 'Media optimization plans must declare artifact_type=media_optimization_plan.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -773,7 +773,7 @@ final class Plan_Proposal_Service {
 
 		if ( true !== (bool) ( $plan['batch_approval'] ?? false ) || 'batch' !== sanitize_key( (string) ( $plan['proposal_mode'] ?? '' ) ) ) {
 			return new WP_Error(
-				'magick_ai_core_media_optimization_batch_required',
+				'npcink_governance_core_media_optimization_batch_required',
 				__( 'Media optimization plans must explicitly request one batch proposal approval.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -782,7 +782,7 @@ final class Plan_Proposal_Service {
 		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
 		if ( count( $write_actions ) < 2 ) {
 			return new WP_Error(
-				'magick_ai_core_media_optimization_actions_missing',
+				'npcink_governance_core_media_optimization_actions_missing',
 				__( 'Media optimization plans must include metadata and derivative adoption actions.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -795,33 +795,33 @@ final class Plan_Proposal_Service {
 			}
 		}
 
-		if ( ! in_array( 'magick-ai/update-media-details', $targets, true ) ) {
+		if ( ! in_array( 'npcink-abilities-toolkit/update-media-details', $targets, true ) ) {
 			return new WP_Error(
-				'magick_ai_core_media_optimization_metadata_missing',
-				__( 'Media optimization plans must include magick-ai/update-media-details.', 'npcink-governance-core' ),
+				'npcink_governance_core_media_optimization_metadata_missing',
+				__( 'Media optimization plans must include npcink-abilities-toolkit/update-media-details.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
 		}
 
 		$derivative_targets = array(
-			'magick-ai/adopt-cloud-media-derivative',
-			'magick-ai/replace-media-file',
+			'npcink-abilities-toolkit/adopt-cloud-media-derivative',
+			'npcink-abilities-toolkit/replace-media-file',
 		);
 		$separate_reference_repair_targets = array(
-			'magick-ai/patch-post-content',
-			'magick-ai/update-post',
-			'magick-ai/update-post-blocks',
+			'npcink-abilities-toolkit/patch-post-content',
+			'npcink-abilities-toolkit/update-post',
+			'npcink-abilities-toolkit/update-post-blocks',
 		);
 		if ( empty( array_intersect( $targets, $derivative_targets ) ) ) {
 			return new WP_Error(
-				'magick_ai_core_media_optimization_derivative_missing',
+				'npcink_governance_core_media_optimization_derivative_missing',
 				__( 'Media optimization plans must include a governed derivative adoption action.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
 		}
 		if ( ! empty( array_intersect( $targets, $separate_reference_repair_targets ) ) ) {
 			return new WP_Error(
-				'magick_ai_core_media_optimization_reference_repair_split',
+				'npcink_governance_core_media_optimization_reference_repair_split',
 				__( 'Media optimization plans must not split post-content media reference repair into a separate write action.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -838,7 +838,7 @@ final class Plan_Proposal_Service {
 		$attachment_ids = array_values( array_unique( $attachment_ids ) );
 		if ( 1 !== count( $attachment_ids ) ) {
 			return new WP_Error(
-				'magick_ai_core_media_optimization_attachment_mismatch',
+				'npcink_governance_core_media_optimization_attachment_mismatch',
 				__( 'Media optimization plans must target exactly one attachment across all write actions.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -857,7 +857,7 @@ final class Plan_Proposal_Service {
 		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
 		if ( 'media_rename_plan' !== $artifact_type ) {
 			return new WP_Error(
-				'magick_ai_core_media_rename_plan_invalid',
+				'npcink_governance_core_media_rename_plan_invalid',
 				__( 'Media rename plans must declare artifact_type=media_rename_plan.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -866,17 +866,17 @@ final class Plan_Proposal_Service {
 		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
 		if ( 1 !== count( $write_actions ) || ! is_array( $write_actions[0] ?? null ) ) {
 			return new WP_Error(
-				'magick_ai_core_media_rename_actions_missing',
+				'npcink_governance_core_media_rename_actions_missing',
 				__( 'Media rename plans must include exactly one rename-media-file action.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
 		}
 
 		$action = $write_actions[0];
-		if ( 'magick-ai/rename-media-file' !== sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) ) ) {
+		if ( 'npcink-abilities-toolkit/rename-media-file' !== sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) ) ) {
 			return new WP_Error(
-				'magick_ai_core_media_rename_target_rejected',
-				__( 'Media rename plans may target only magick-ai/rename-media-file.', 'npcink-governance-core' ),
+				'npcink_governance_core_media_rename_target_rejected',
+				__( 'Media rename plans may target only npcink-abilities-toolkit/rename-media-file.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
 		}
@@ -885,7 +885,7 @@ final class Plan_Proposal_Service {
 		$attachment_id = absint( $plan['attachment_id'] ?? ( $input['attachment_id'] ?? 0 ) );
 		if ( $attachment_id <= 0 || absint( $input['attachment_id'] ?? 0 ) !== $attachment_id ) {
 			return new WP_Error(
-				'magick_ai_core_media_rename_attachment_mismatch',
+				'npcink_governance_core_media_rename_attachment_mismatch',
 				__( 'Media rename plans must target exactly one attachment.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -893,7 +893,7 @@ final class Plan_Proposal_Service {
 
 		if ( '' === trim( sanitize_text_field( (string) ( $input['target_file_name'] ?? '' ) ) ) ) {
 			return new WP_Error(
-				'magick_ai_core_media_rename_target_file_missing',
+				'npcink_governance_core_media_rename_target_file_missing',
 				__( 'Media rename plans must include a reviewed target_file_name.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -901,7 +901,7 @@ final class Plan_Proposal_Service {
 
 		if ( true === (bool) ( $input['commit'] ?? false ) || false === (bool) ( $input['dry_run'] ?? true ) ) {
 			return new WP_Error(
-				'magick_ai_core_media_rename_commit_rejected',
+				'npcink_governance_core_media_rename_commit_rejected',
 				__( 'Media rename action input must remain dry-run and must not request commit.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -920,7 +920,7 @@ final class Plan_Proposal_Service {
 		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
 		if ( 'article_write_plan' !== $artifact_type ) {
 			return new WP_Error(
-				'magick_ai_core_article_plan_invalid',
+				'npcink_governance_core_article_plan_invalid',
 				__( 'Article write plans must declare artifact_type=article_write_plan.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
@@ -928,13 +928,13 @@ final class Plan_Proposal_Service {
 
 		if ( absint( $plan['version'] ?? 0 ) < 1 ) {
 			return new WP_Error(
-				'magick_ai_core_article_plan_invalid',
+				'npcink_governance_core_article_plan_invalid',
 				__( 'Article write plans must declare version 1 or newer.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
 		}
 
-		$artifact_error = $this->validate_article_artifacts( $plan, 'magick_ai_core_article_plan_' );
+		$artifact_error = $this->validate_article_artifacts( $plan, 'npcink_governance_core_article_plan_' );
 		if ( is_wp_error( $artifact_error ) ) {
 			return $artifact_error;
 		}
@@ -942,14 +942,14 @@ final class Plan_Proposal_Service {
 		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
 		if ( 1 !== count( $write_actions ) || ! is_array( $write_actions[0] ?? null ) ) {
 			return new WP_Error(
-				'magick_ai_core_article_plan_action_count_rejected',
+				'npcink_governance_core_article_plan_action_count_rejected',
 				__( 'P0 article write plans must contain exactly one create-draft action.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
 		}
 
 		$action = $write_actions[0];
-		$draft_error = $this->validate_article_draft_action( $action, 'magick_ai_core_article_plan_' );
+		$draft_error = $this->validate_article_draft_action( $action, 'npcink_governance_core_article_plan_' );
 		if ( is_wp_error( $draft_error ) ) {
 			return $draft_error;
 		}
@@ -1014,10 +1014,10 @@ final class Plan_Proposal_Service {
 	 * @return true|WP_Error
 	 */
 	private function validate_article_draft_action( array $action, string $error_prefix ) {
-		if ( 'magick-ai/create-draft' !== sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) ) ) {
+		if ( 'npcink-abilities-toolkit/create-draft' !== sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) ) ) {
 			return new WP_Error(
 				$error_prefix . 'target_rejected',
-				__( 'P0 article write plans may target only magick-ai/create-draft.', 'npcink-governance-core' ),
+				__( 'P0 article write plans may target only npcink-abilities-toolkit/create-draft.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
 		}
@@ -1052,14 +1052,14 @@ final class Plan_Proposal_Service {
 	 */
 	private function validate_article_media_batch_action( array $action, int $action_index ) {
 		$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
-		if ( 'magick-ai/create-draft' === $target_ability_id ) {
-			return $this->validate_article_draft_action( $action, 'magick_ai_core_article_media_batch_' );
+		if ( 'npcink-abilities-toolkit/create-draft' === $target_ability_id ) {
+			return $this->validate_article_draft_action( $action, 'npcink_governance_core_article_media_batch_' );
 		}
 
 		$input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
 		if ( true === (bool) ( $input['commit'] ?? false ) || false === (bool) ( $input['dry_run'] ?? true ) ) {
 			return new WP_Error(
-				'magick_ai_core_article_media_batch_commit_rejected',
+				'npcink_governance_core_article_media_batch_commit_rejected',
 				__( 'Article media batch action input must remain dry-run and must not request commit.', 'npcink-governance-core' ),
 				array(
 					'status'       => 422,
@@ -1068,10 +1068,10 @@ final class Plan_Proposal_Service {
 			);
 		}
 
-		if ( 'magick-ai/upload-media-from-url' === $target_ability_id ) {
+		if ( 'npcink-abilities-toolkit/upload-media-from-url' === $target_ability_id ) {
 			if ( ! $this->is_valid_absolute_url( $input['url'] ?? null ) ) {
 				return new WP_Error(
-					'magick_ai_core_article_media_batch_media_url_missing',
+					'npcink_governance_core_article_media_batch_media_url_missing',
 					__( 'Article media upload actions must include a reviewed media URL.', 'npcink-governance-core' ),
 					array(
 						'status'       => 422,
@@ -1082,10 +1082,10 @@ final class Plan_Proposal_Service {
 			return true;
 		}
 
-		if ( 'magick-ai/update-media-details' === $target_ability_id ) {
+		if ( 'npcink-abilities-toolkit/update-media-details' === $target_ability_id ) {
 			if ( ! $this->is_exact_output_reference( $input['attachment_id'] ?? null ) && absint( $input['attachment_id'] ?? 0 ) <= 0 ) {
 				return new WP_Error(
-					'magick_ai_core_article_media_batch_attachment_missing',
+					'npcink_governance_core_article_media_batch_attachment_missing',
 					__( 'Article media metadata actions must include attachment_id or an approved output reference.', 'npcink-governance-core' ),
 					array(
 						'status'       => 422,
@@ -1096,10 +1096,10 @@ final class Plan_Proposal_Service {
 			return true;
 		}
 
-		if ( 'magick-ai/set-post-featured-image' === $target_ability_id ) {
+		if ( 'npcink-abilities-toolkit/set-post-featured-image' === $target_ability_id ) {
 			if ( ! $this->is_exact_output_reference( $input['post_id'] ?? null ) && absint( $input['post_id'] ?? 0 ) <= 0 ) {
 				return new WP_Error(
-					'magick_ai_core_article_media_batch_post_missing',
+					'npcink_governance_core_article_media_batch_post_missing',
 					__( 'Article featured-image actions must include post_id or an approved output reference.', 'npcink-governance-core' ),
 					array(
 						'status'       => 422,
@@ -1109,7 +1109,7 @@ final class Plan_Proposal_Service {
 			}
 			if ( ! $this->is_exact_output_reference( $input['attachment_id'] ?? null ) && absint( $input['attachment_id'] ?? 0 ) <= 0 && ! $this->is_valid_absolute_url( $input['media_url'] ?? null ) ) {
 				return new WP_Error(
-					'magick_ai_core_article_media_batch_featured_image_missing',
+					'npcink_governance_core_article_media_batch_featured_image_missing',
 					__( 'Article featured-image actions must include attachment_id, media_url, or an approved output reference.', 'npcink-governance-core' ),
 					array(
 						'status'       => 422,
@@ -1120,10 +1120,10 @@ final class Plan_Proposal_Service {
 			return true;
 		}
 
-		if ( 'magick-ai/patch-post-content' === $target_ability_id ) {
+		if ( 'npcink-abilities-toolkit/patch-post-content' === $target_ability_id ) {
 			if ( ! $this->is_exact_output_reference( $input['post_id'] ?? null ) && absint( $input['post_id'] ?? 0 ) <= 0 ) {
 				return new WP_Error(
-					'magick_ai_core_article_media_batch_post_missing',
+					'npcink_governance_core_article_media_batch_post_missing',
 					__( 'Article inline-image patch actions must include post_id or an approved output reference.', 'npcink-governance-core' ),
 					array(
 						'status'       => 422,
@@ -1133,7 +1133,7 @@ final class Plan_Proposal_Service {
 			}
 			if ( ! is_array( $input['operations'] ?? null ) ) {
 				return new WP_Error(
-					'magick_ai_core_article_media_batch_patch_missing',
+					'npcink_governance_core_article_media_batch_patch_missing',
 					__( 'Article inline-image patch actions must include operations.', 'npcink-governance-core' ),
 					array(
 						'status'       => 422,
@@ -1345,7 +1345,7 @@ final class Plan_Proposal_Service {
 		$input['dry_run'] = true;
 		$input['commit']  = false;
 
-		if ( 'magick-ai/delete-media-permanently' === $target_ability_id && ! $this->include_delete_candidates( $plan, $plan_input ) ) {
+		if ( 'npcink-abilities-toolkit/delete-media-permanently' === $target_ability_id && ! $this->include_delete_candidates( $plan, $plan_input ) ) {
 			return $this->blocked_error( 'destructive_media_delete_not_explicitly_included', 'Permanent media deletion is excluded unless include_delete_candidates=true is present in the plan input.', array( 'target_ability_id' => $target_ability_id ) );
 		}
 
@@ -1405,19 +1405,19 @@ final class Plan_Proposal_Service {
 			'plan_preview_row'    => $matched_preview,
 		);
 
-		if ( 'magick-ai-toolbox/build-article-write-plan' === $plan_ability_id ) {
+		if ( 'npcink-toolbox/build-article-write-plan' === $plan_ability_id ) {
 			$preview['article_workflow'] = $this->article_workflow_preview( $plan );
 		}
-		if ( 'magick-ai-toolbox/build-article-batch-write-plan' === $plan_ability_id ) {
+		if ( 'npcink-toolbox/build-article-batch-write-plan' === $plan_ability_id ) {
 			$preview['article_batch_workflow'] = $this->article_batch_workflow_preview( $plan );
 		}
-		if ( 'magick-ai-toolbox/build-article-media-batch-write-plan' === $plan_ability_id ) {
+		if ( 'npcink-toolbox/build-article-media-batch-write-plan' === $plan_ability_id ) {
 			$preview['article_media_batch_workflow'] = $this->article_media_batch_workflow_preview( $plan );
 		}
-		if ( 'magick-ai/build-media-optimization-plan' === $plan_ability_id ) {
+		if ( 'npcink-abilities-toolkit/build-media-optimization-plan' === $plan_ability_id ) {
 			$preview['media_optimization'] = $this->media_optimization_preview( $plan );
 		}
-		if ( 'magick-ai/build-media-rename-plan' === $plan_ability_id ) {
+		if ( 'npcink-abilities-toolkit/build-media-rename-plan' === $plan_ability_id ) {
 			$preview['media_rename'] = $this->media_rename_preview( $plan );
 		}
 
@@ -1604,16 +1604,16 @@ final class Plan_Proposal_Service {
 			'preflight_blockers' => $preflight_blockers,
 		);
 
-		if ( 'magick-ai-toolbox/build-article-batch-write-plan' === $plan_ability_id ) {
+		if ( 'npcink-toolbox/build-article-batch-write-plan' === $plan_ability_id ) {
 			$preview['article_batch_workflow'] = $this->article_batch_workflow_preview( $plan );
 		}
-		if ( 'magick-ai-toolbox/build-article-media-batch-write-plan' === $plan_ability_id ) {
+		if ( 'npcink-toolbox/build-article-media-batch-write-plan' === $plan_ability_id ) {
 			$preview['article_media_batch_workflow'] = $this->article_media_batch_workflow_preview( $plan );
 		}
-		if ( 'magick-ai/build-media-optimization-plan' === $plan_ability_id ) {
+		if ( 'npcink-abilities-toolkit/build-media-optimization-plan' === $plan_ability_id ) {
 			$preview['media_optimization'] = $this->media_optimization_preview( $plan );
 		}
-		if ( 'magick-ai/build-media-rename-plan' === $plan_ability_id ) {
+		if ( 'npcink-abilities-toolkit/build-media-rename-plan' === $plan_ability_id ) {
 			$preview['media_rename'] = $this->media_rename_preview( $plan );
 		}
 
@@ -1659,7 +1659,7 @@ final class Plan_Proposal_Service {
 	 */
 	private function blocked_error( string $code, string $reason, array $extra = array() ): WP_Error {
 		return new WP_Error(
-			'magick_ai_core_plan_action_blocked',
+			'npcink_governance_core_plan_action_blocked',
 			$reason,
 			array_merge(
 				array(

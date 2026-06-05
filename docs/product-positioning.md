@@ -35,8 +35,8 @@ Npcink Governance Core does not own:
 | Project | Owns |
 | --- | --- |
 | `npcink-governance-core` | Governance, proposal records, approval boundaries, audit logs, and host policy. |
-| `magick-ai-abilities` | Reusable WordPress Abilities API definitions, schemas, callbacks, and dry-run previews. |
-| `magick-ai-content-assistant` | Article, media, and comment product UX that consumes Core governance. |
+| `npcink-abilities-toolkit` | Reusable WordPress Abilities API definitions, schemas, callbacks, and dry-run previews. |
+| `npcink-content-assistant` | Article, media, and comment product UX that consumes Core governance. |
 | Toolbox or market-specific product plugins | Domestic environment fixes, search/index operations, WeChat integrations, CDN/storage workflows, compliance helpers, and other product UX that consumes Core governance. |
 | Connector plugins | Provider credentials and WordPress AI Client provider registration. |
 

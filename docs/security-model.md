@@ -37,7 +37,7 @@ Planned layers include:
 - idempotency keys;
 
 These must be documented before implementation. They must not be inferred from
-provider plugins or moved into `magick-ai-abilities`.
+provider plugins or moved into `npcink-abilities-toolkit`.
 
 MCP adapters, Agent Gateway bridges, hosted runtimes, and product plugins are
 callers of Core governance routes. They are not allowed to move MCP sessions,
@@ -155,13 +155,13 @@ array(
 
 Core may call public provider APIs such as:
 
-- `magick_ai_abilities_get_registered()`
+- `npcink_abilities_toolkit_get_registered()`
 - `wp_get_abilities()`
 
 Core must not:
 
 - require provider plugin internal files;
-- copy ability definitions from `magick-ai-abilities`;
+- copy ability definitions from `npcink-abilities-toolkit`;
 - store provider credentials;
 - own product workflow runtime.
 
@@ -197,7 +197,7 @@ Proposal creation also has a pending-queue guardrail. Core reuses an existing
 pending proposal when the same caller submits the same `ability_id` and
 sanitized `input` again. If a caller already has too many pending proposals,
 Core rejects additional proposal creation with
-`magick_ai_core_pending_proposal_quota_exceeded` before storing a new row.
+`npcink_governance_core_pending_proposal_quota_exceeded` before storing a new row.
 
 Successful app-authenticated governance events include sanitized app attribution
 in `metadata.auth`, including `scope_decision=allowed`. Scope denials record

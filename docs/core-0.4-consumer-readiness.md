@@ -1,6 +1,6 @@
 # Core 0.4 Consumer Readiness
 
-Status: complete for the `magick-ai-abilities` 0.4.0 handoff.
+Status: complete for the `npcink-abilities-toolkit` 0.4.0 handoff.
 
 This document summarizes the consumer-side governance readiness now proven in
 Core. It is the roll-up entry point for future humans and AI agents that need
@@ -8,15 +8,15 @@ to understand what the 0.4 representative scenarios validated.
 
 ## Dependency Version
 
-- `magick-ai-abilities`: 0.4.0
+- `npcink-abilities-toolkit`: 0.4.0
 
 ## Verified Representative Scenarios
 
 | Scenario | Ability | Commit | Coverage |
 | --- | --- | --- | --- |
-| create-draft | `magick-ai/create-draft` | `3d94af7` | New post draft proposal governed by Core before any host write. |
-| set-post-seo-meta | `magick-ai/set-post-seo-meta` | `2c28a27` | Field-level update proposal for an existing post resource. |
-| approve-comment | `magick-ai/approve-comment` | `0f44ee0` | Comment moderation proposal for a non-post resource. |
+| create-draft | `npcink-abilities-toolkit/create-draft` | `3d94af7` | New post draft proposal governed by Core before any host write. |
+| set-post-seo-meta | `npcink-abilities-toolkit/set-post-seo-meta` | `2c28a27` | Field-level update proposal for an existing post resource. |
+| approve-comment | `npcink-abilities-toolkit/approve-comment` | `0f44ee0` | Comment moderation proposal for a non-post resource. |
 
 ## Unified Governance Chain
 
@@ -47,12 +47,12 @@ The 0.4 readiness loop is backed by these verification gates:
 
 ## Ability Contract Conclusion
 
-No current finding requires `magick-ai-abilities` to add or change schema,
+No current finding requires `npcink-abilities-toolkit` to add or change schema,
 metadata, or ability contract fields for the three representative 0.4
 scenarios.
 
 If a future consumer finds a missing field, the fix should be proposed in
-`magick-ai-abilities`; Core should not patch around missing ability contracts
+`npcink-abilities-toolkit`; Core should not patch around missing ability contracts
 with aliases, local schema fallbacks, or product-specific defaults.
 
 ## Next Stage Candidate
@@ -67,7 +67,7 @@ proposal, approve/reject, commit preflight, and audit.
 ## Post-0.4 Extension
 
 Core also has a taxonomy terms preview consumer proof for
-`magick-ai/propose-post-taxonomy-terms` -> `magick-ai/set-post-terms`. This
+`npcink-abilities-toolkit/propose-post-taxonomy-terms` -> `npcink-abilities-toolkit/set-post-terms`. This
 validates a read-helper-to-write-proposal handoff for existing taxonomy terms:
 the helper is executed through WordPress Abilities API, Core governs the
 generated `set-post-terms` dry-run proposal, and commit preflight still returns

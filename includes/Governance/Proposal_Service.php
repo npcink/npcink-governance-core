@@ -2,14 +2,14 @@
 /**
  * Proposal service.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core\Governance;
+namespace Npcink\GovernanceCore\Governance;
 
-use MagickAI\Core\Audit\Audit_Log_Repository;
-use MagickAI\Core\Capabilities\Ability_Registry_Adapter;
-use MagickAI\Core\Security\Request_Context;
+use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
+use Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter;
+use Npcink\GovernanceCore\Security\Request_Context;
 use WP_Error;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -89,7 +89,7 @@ final class Proposal_Service {
 		$ability_id = sanitize_text_field( (string) ( $payload['ability_id'] ?? '' ) );
 		if ( '' === $ability_id || false === strpos( $ability_id, '/' ) ) {
 			return new WP_Error(
-				'magick_ai_core_invalid_ability_id',
+				'npcink_governance_core_invalid_ability_id',
 				__( 'A namespaced ability_id is required.', 'npcink-governance-core' ),
 				array( 'status' => 400 )
 			);
@@ -98,7 +98,7 @@ final class Proposal_Service {
 		$capability = $this->abilities->find( $ability_id );
 		if ( null === $capability ) {
 			return new WP_Error(
-				'magick_ai_core_ability_not_available',
+				'npcink_governance_core_ability_not_available',
 				__( 'Proposal target ability is not available.', 'npcink-governance-core' ),
 				array( 'status' => 404 )
 			);
@@ -157,7 +157,7 @@ final class Proposal_Service {
 			);
 
 			return new WP_Error(
-				'magick_ai_core_pending_proposal_quota_exceeded',
+				'npcink_governance_core_pending_proposal_quota_exceeded',
 				__( 'Too many pending proposals exist for this caller.', 'npcink-governance-core' ),
 				array(
 					'status'        => 429,
@@ -191,7 +191,7 @@ final class Proposal_Service {
 
 		if ( '' === $event_id ) {
 			$this->proposals->delete_by_proposal_id( (string) $proposal['proposal_id'] );
-			return $this->audit_failed_error( 'magick_ai_core_proposal_audit_failed' );
+			return $this->audit_failed_error( 'npcink_governance_core_proposal_audit_failed' );
 		}
 
 		$policy_event_id = $this->audit->record(
@@ -202,7 +202,7 @@ final class Proposal_Service {
 
 		if ( '' === $policy_event_id ) {
 			$this->proposals->delete_by_proposal_id( (string) $proposal['proposal_id'] );
-			return $this->audit_failed_error( 'magick_ai_core_policy_decision_audit_failed' );
+			return $this->audit_failed_error( 'npcink_governance_core_policy_decision_audit_failed' );
 		}
 
 		$auto_approved = $this->maybe_auto_approve_created_proposal( $proposal, $policy );
@@ -259,7 +259,7 @@ final class Proposal_Service {
 		if ( ! $this->policy_evaluator->consume_auto_approval_quota( $policy ) ) {
 			$this->proposals->delete_by_proposal_id( $proposal_id );
 			return new WP_Error(
-				'magick_ai_core_auto_approval_quota_failed',
+				'npcink_governance_core_auto_approval_quota_failed',
 				__( 'Auto approval quota could not be consumed.', 'npcink-governance-core' ),
 				array( 'status' => 500 )
 			);
@@ -279,7 +279,7 @@ final class Proposal_Service {
 
 		if ( '' === $event_id ) {
 			$this->proposals->update_status( $proposal_id, Proposal_Repository::STATUS_PENDING );
-			return $this->audit_failed_error( 'magick_ai_core_auto_approval_audit_failed' );
+			return $this->audit_failed_error( 'npcink_governance_core_auto_approval_audit_failed' );
 		}
 
 		return $approved;
@@ -342,7 +342,7 @@ final class Proposal_Service {
 
 		if ( Proposal_Repository::STATUS_EXPIRED !== (string) ( $existing['status'] ?? '' ) ) {
 			return new WP_Error(
-				'magick_ai_core_proposal_archive_not_allowed',
+				'npcink_governance_core_proposal_archive_not_allowed',
 				__( 'Only expired proposals can be archived.', 'npcink-governance-core' ),
 				array( 'status' => 409 )
 			);
@@ -369,7 +369,7 @@ final class Proposal_Service {
 
 		if ( '' === $event_id ) {
 			$this->proposals->update_status( $proposal_id, Proposal_Repository::STATUS_EXPIRED );
-			return $this->audit_failed_error( 'magick_ai_core_proposal_archive_audit_failed' );
+			return $this->audit_failed_error( 'npcink_governance_core_proposal_archive_audit_failed' );
 		}
 
 		return $proposal;
@@ -393,7 +393,7 @@ final class Proposal_Service {
 		$previous_status = (string) ( $existing['status'] ?? '' );
 		if ( ! in_array( $previous_status, array( Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_ARCHIVED ), true ) ) {
 			return new WP_Error(
-				'magick_ai_core_proposal_reopen_not_allowed',
+				'npcink_governance_core_proposal_reopen_not_allowed',
 				__( 'Only expired or archived proposals can be reopened.', 'npcink-governance-core' ),
 				array( 'status' => 409 )
 			);
@@ -419,7 +419,7 @@ final class Proposal_Service {
 
 		if ( '' === $event_id ) {
 			$this->proposals->update_status( $proposal_id, $previous_status );
-			return $this->audit_failed_error( 'magick_ai_core_proposal_reopen_audit_failed' );
+			return $this->audit_failed_error( 'npcink_governance_core_proposal_reopen_audit_failed' );
 		}
 
 		return $proposal;
@@ -758,7 +758,7 @@ final class Proposal_Service {
 	 */
 	public function not_found_error(): WP_Error {
 		return new WP_Error(
-			'magick_ai_core_proposal_not_found',
+			'npcink_governance_core_proposal_not_found',
 			__( 'Proposal was not found.', 'npcink-governance-core' ),
 			array( 'status' => 404 )
 		);
@@ -784,7 +784,7 @@ final class Proposal_Service {
 		if ( $this->is_stale_pending( $existing ) ) {
 			$this->expire_one( $existing, 'decision_attempt_after_ttl' );
 			return new WP_Error(
-				'magick_ai_core_proposal_expired',
+				'npcink_governance_core_proposal_expired',
 				__( 'Proposal expired before a decision was made.', 'npcink-governance-core' ),
 				array( 'status' => 409 )
 			);
@@ -792,7 +792,7 @@ final class Proposal_Service {
 
 		if ( 'pending' !== (string) ( $existing['status'] ?? '' ) ) {
 			return new WP_Error(
-				'magick_ai_core_proposal_already_decided',
+				'npcink_governance_core_proposal_already_decided',
 				__( 'Only pending proposals can be approved or rejected.', 'npcink-governance-core' ),
 				array( 'status' => 409 )
 			);
@@ -817,7 +817,7 @@ final class Proposal_Service {
 
 		if ( '' === $event_id ) {
 			$this->proposals->update_status( $proposal_id, (string) $existing['status'] );
-			return $this->audit_failed_error( 'magick_ai_core_proposal_decision_audit_failed' );
+			return $this->audit_failed_error( 'npcink_governance_core_proposal_decision_audit_failed' );
 		}
 
 		return $proposal;
@@ -868,7 +868,7 @@ final class Proposal_Service {
 	 */
 	private function transition_failed_error(): WP_Error {
 		return new WP_Error(
-			'magick_ai_core_proposal_transition_failed',
+			'npcink_governance_core_proposal_transition_failed',
 			__( 'Proposal status could not be updated.', 'npcink-governance-core' ),
 			array( 'status' => 500 )
 		);

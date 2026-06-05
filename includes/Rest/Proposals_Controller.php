@@ -2,17 +2,17 @@
 /**
  * Proposals REST controller.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core\Rest;
+namespace Npcink\GovernanceCore\Rest;
 
-use MagickAI\Core\Governance\Commit_Preflight_Service;
-use MagickAI\Core\Governance\Plan_Proposal_Service;
-use MagickAI\Core\Governance\Proposal_Repository;
-use MagickAI\Core\Governance\Proposal_Service;
-use MagickAI\Core\Observability;
-use MagickAI\Core\Security\App_Authenticator;
+use Npcink\GovernanceCore\Governance\Commit_Preflight_Service;
+use Npcink\GovernanceCore\Governance\Plan_Proposal_Service;
+use Npcink\GovernanceCore\Governance\Proposal_Repository;
+use Npcink\GovernanceCore\Governance\Proposal_Service;
+use Npcink\GovernanceCore\Observability;
+use Npcink\GovernanceCore\Security\App_Authenticator;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -514,9 +514,9 @@ final class Proposals_Controller {
 		}
 
 		$warning_codes = array(
-			'magick_ai_core_proposal_not_approved',
-			'magick_ai_core_proposal_items_blocked',
-			'magick_ai_core_commit_preflight_already_issued',
+			'npcink_governance_core_proposal_not_approved',
+			'npcink_governance_core_proposal_items_blocked',
+			'npcink_governance_core_commit_preflight_already_issued',
 		);
 
 		return in_array( (string) $error->get_error_code(), $warning_codes, true ) ? 'warning' : 'error';

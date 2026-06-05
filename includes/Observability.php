@@ -2,10 +2,10 @@
 /**
  * Local observability event bridge.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core;
+namespace Npcink\GovernanceCore;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -30,14 +30,14 @@ final class Observability {
 		$base = array(
 			'schema_version' => '2026-06-01',
 			'plugin_slug'    => 'npcink-governance-core',
-			'plugin_version' => defined( 'MAGICK_AI_CORE_VERSION' ) ? MAGICK_AI_CORE_VERSION : '',
+			'plugin_version' => defined( 'NPCINK_GOVERNANCE_CORE_VERSION' ) ? NPCINK_GOVERNANCE_CORE_VERSION : '',
 			'source'         => 'local',
 			'event_kind'     => $event_kind,
 			'emitted_at'     => gmdate( 'c' ),
 		);
 
 		do_action(
-			'magick_ai_observability_event',
+			'npcink_governance_core_observability_event',
 			array_merge(
 				self::sanitize_payload( $payload ),
 				$base

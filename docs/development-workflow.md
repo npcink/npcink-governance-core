@@ -29,10 +29,10 @@ Plugin symlink:
 Atomic ability provider:
 
 ```text
-/Users/muze/gitee/magick-ai-abilities
+/Users/muze/gitee/npcink-abilities-toolkit
 ```
 
-`magick-ai-abilities` is responsible for reusable WordPress atomic abilities.
+`npcink-abilities-toolkit` is responsible for reusable WordPress atomic abilities.
 Core consumes those abilities; it must not copy their definitions.
 
 ## Local WordPress Access
@@ -62,7 +62,7 @@ shared ability provider explicitly:
 
 ```bash
 WP_PATH="/path/to/site/app/public" \
-MAGICK_AI_ABILITIES_PATH="/Users/muze/gitee/magick-ai-abilities" \
+NPCINK_ABILITIES_TOOLKIT_PATH="/Users/muze/gitee/npcink-abilities-toolkit" \
 composer smoke:wp
 ```
 
@@ -88,12 +88,12 @@ composer validate --no-check-publish
 
 - plugin activation;
 - proposal and audit table creation;
-- ability listing from `magick-ai-abilities`;
-- the primary `magick-ai/create-draft` scenario, including discovered schema
+- ability listing from `npcink-abilities-toolkit`;
+- the primary `npcink-abilities-toolkit/create-draft` scenario, including discovered schema
   controls and commit preflight without final execution;
-- the second `magick-ai/set-post-seo-meta` scenario, including field-level
+- the second `npcink-abilities-toolkit/set-post-seo-meta` scenario, including field-level
   update input and commit preflight without final execution;
-- the third `magick-ai/approve-comment` scenario, including pending comment
+- the third `npcink-abilities-toolkit/approve-comment` scenario, including pending comment
   setup, moderation preview input, and commit preflight without final execution;
 - proposal creation;
 - proposal approval;
@@ -105,7 +105,7 @@ composer validate --no-check-publish
 The smoke test deletes its local WordPress content fixtures, including posts,
 comments, terms, and media attachments, and revokes app keys created during the
 run. It creates local proposal and audit records by default. That is expected.
-For local cleanup-only runs, set `MAGICK_AI_CORE_SMOKE_PURGE=1` to purge the
+For local cleanup-only runs, set `NPCINK_GOVERNANCE_CORE_SMOKE_PURGE=1` to purge the
 tracked proposal, app-key, rate-limit, and audit rows for the current smoke run
 after assertions have completed.
 

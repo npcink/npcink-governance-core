@@ -2,10 +2,10 @@
 /**
  * Local media derivative policy settings.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core\Media;
+namespace Npcink\GovernanceCore\Media;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Stores the local WordPress media derivative policy truth.
  */
 final class Media_Derivative_Settings {
-	public const OPTION_NAME = 'magick_ai_core_media_derivative_settings';
+	public const OPTION_NAME = 'npcink_governance_core_media_derivative_settings';
 
 	/**
 	 * Registers the option.
@@ -24,7 +24,7 @@ final class Media_Derivative_Settings {
 	 */
 	public function register(): void {
 		register_setting(
-			'magick_ai_core_media_derivative',
+			'npcink_governance_core_media_derivative',
 			self::OPTION_NAME,
 			array(
 				'type'              => 'array',
@@ -166,7 +166,7 @@ final class Media_Derivative_Settings {
 			'watermark_scale'         => (int) $settings['watermark_scale'],
 			'watermark_margin'        => (int) $settings['watermark_margin'],
 			'use_cloud_when_available' => (bool) $settings['use_cloud_when_available'],
-			'policy_owner'            => 'magick_ai_core',
+			'policy_owner'            => 'npcink_governance_core',
 			'final_write_owner'       => 'local_wordpress_host',
 		);
 	}

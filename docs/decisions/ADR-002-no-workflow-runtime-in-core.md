@@ -17,7 +17,7 @@ batch operations through workflow definitions and skill manifests.
 The rebuilt Core has a different responsibility: it governs AI-assisted
 WordPress operations requested by agents, tools, and product plugins.
 
-`magick-ai-abilities` owns reusable WordPress atomic abilities. Product plugins
+`npcink-abilities-toolkit` owns reusable WordPress atomic abilities. Product plugins
 such as Content Assistant own domain UX and host workflows.
 
 ## Decision
@@ -68,7 +68,7 @@ Cons:
 - recipes may be mistaken for runtime ownership.
 
 Rejected for Core. Documentation-only recipes belong in
-`magick-ai-abilities` when they describe ability composition, or product plugin
+`npcink-abilities-toolkit` when they describe ability composition, or product plugin
 docs when they describe product UX.
 
 ## Consequences

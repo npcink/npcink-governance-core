@@ -67,7 +67,7 @@ Recommended nested context:
   "ai_provider": "ollama",
   "ai_model": "qwen3.5:0.8b",
   "governance_source": "npcink-governance-core",
-  "magick_ai_core": {
+  "npcink_governance_core": {
     "proposal_id": "<core proposal id>",
     "correlation_id": "<core commit-preflight correlation id>"
   }

@@ -2,12 +2,12 @@
 /**
  * Approval policy evaluator.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core\Governance;
+namespace Npcink\GovernanceCore\Governance;
 
-use MagickAI\Core\Security\Request_Context;
+use Npcink\GovernanceCore\Security\Request_Context;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -27,7 +27,7 @@ final class Approval_Policy_Evaluator {
 	const PROFILE_BREAK_GLASS   = 'break_glass';
 
 	const VERSION                    = 'core-approval-policy-v1';
-	const OPTION_POLICY_MODE         = 'magick_ai_core_approval_policy_mode';
+	const OPTION_POLICY_MODE         = 'npcink_governance_core_approval_policy_mode';
 	const MODE_MANUAL                = 'manual';
 	const MODE_DRY_RUN_GUARDED       = 'dry_run_guarded';
 	const MODE_LOCAL_GUARDED         = 'local_guarded';
@@ -116,7 +116,7 @@ final class Approval_Policy_Evaluator {
 			}
 		}
 
-		if ( 'magick-ai/create-draft' === $ability_id ) {
+		if ( 'npcink-abilities-toolkit/create-draft' === $ability_id ) {
 			$reasons[] = 'create_draft_auto_approval_deferred';
 		}
 
@@ -176,7 +176,7 @@ final class Approval_Policy_Evaluator {
 	 */
 	private function cleanup_batch_evaluation( string $ability_id, array $input, array $preview, array $caller ): array {
 		$reasons = array();
-		if ( 'magick-ai/trash-post' !== $ability_id ) {
+		if ( 'npcink-abilities-toolkit/trash-post' !== $ability_id ) {
 			return array( 'allowed' => false, 'reasons' => array() );
 		}
 
@@ -184,7 +184,7 @@ final class Approval_Policy_Evaluator {
 			return array( 'allowed' => false, 'reasons' => array( 'guarded_cleanup_rejected_source' ) );
 		}
 
-		if ( 'magick-ai/build-test-content-cleanup-plan' !== (string) ( $caller['plan_ability_id'] ?? '' ) ) {
+		if ( 'npcink-abilities-toolkit/build-test-content-cleanup-plan' !== (string) ( $caller['plan_ability_id'] ?? '' ) ) {
 			return array( 'allowed' => false, 'reasons' => array( 'guarded_cleanup_rejected_plan_ability' ) );
 		}
 
@@ -203,7 +203,7 @@ final class Approval_Policy_Evaluator {
 
 		$evidence = $this->test_content_post_evidence( $preview );
 		foreach ( $actions as $action ) {
-			if ( ! is_array( $action ) || 'magick-ai/trash-post' !== (string) ( $action['target_ability_id'] ?? '' ) ) {
+			if ( ! is_array( $action ) || 'npcink-abilities-toolkit/trash-post' !== (string) ( $action['target_ability_id'] ?? '' ) ) {
 				return array( 'allowed' => false, 'reasons' => array( 'guarded_cleanup_rejected_mixed_target' ) );
 			}
 			if ( true !== (bool) ( $action['requires_approval'] ?? false ) || true === (bool) ( $action['commit_execution'] ?? false ) ) {
@@ -283,7 +283,7 @@ final class Approval_Policy_Evaluator {
 			$subject = 'app:' . sanitize_key( (string) $auth['app_id'] );
 		}
 
-		$base = 'magick_ai_core_auto_approval_' . sanitize_key( $mode ) . '_' . sanitize_key( str_replace( ':', '_', $subject ) );
+		$base = 'npcink_governance_core_auto_approval_' . sanitize_key( $mode ) . '_' . sanitize_key( str_replace( ':', '_', $subject ) );
 
 		return array(
 			'subject'    => $subject,

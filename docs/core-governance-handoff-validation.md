@@ -2,7 +2,7 @@
 
 Status: active MVP validation target.
 
-This document turns the `magick-ai-abilities` handoff guide into concrete Core
+This document turns the `npcink-abilities-toolkit` handoff guide into concrete Core
 verification rules.
 
 ## Runtime ID Rule
@@ -22,18 +22,18 @@ The WordPress smoke test validates these ready handoff surfaces:
 
 | Surface | Read/intake role | Proposal target |
 | --- | --- | --- |
-| Site context | `magick-ai/site-info` and diagnostics abilities are discoverable read context. | No proposal is required for read-only intake. |
-| Draft creation | Provider supplies dry-run preview or caller intent. | `magick-ai/create-draft` |
-| SEO metadata | Planning/read helpers can prepare metadata context. | `magick-ai/set-post-seo-meta` |
-| Comment moderation | Handoff/suggestion helpers provide read-side context. | `magick-ai/approve-comment` |
+| Site context | `npcink-abilities-toolkit/site-info` and diagnostics abilities are discoverable read context. | No proposal is required for read-only intake. |
+| Draft creation | Provider supplies dry-run preview or caller intent. | `npcink-abilities-toolkit/create-draft` |
+| SEO metadata | Planning/read helpers can prepare metadata context. | `npcink-abilities-toolkit/set-post-seo-meta` |
+| Comment moderation | Handoff/suggestion helpers provide read-side context. | `npcink-abilities-toolkit/approve-comment` |
 
 Each proposal target must be write-like, require approval, support approval and
 rejection, and pass commit preflight without executing the ability.
 
 ## Primary Scenario
 
-The first practical consumer-side loop is `magick-ai/create-draft`. Core must
-discover the real ability id and schema from `magick-ai-abilities`, create a
+The first practical consumer-side loop is `npcink-abilities-toolkit/create-draft`. Core must
+discover the real ability id and schema from `npcink-abilities-toolkit`, create a
 proposal with dry-run input, let an administrator approve or reject it, and
 return approval context from commit preflight with `commit_execution=false`.
 
@@ -42,8 +42,8 @@ The dedicated scenario is documented in
 OpenClaw example adapter exposes `create-draft-proposal` for this path, but it
 still does not approve proposals or execute the final write.
 
-The second practical consumer-side loop is `magick-ai/set-post-seo-meta`. Core
-must discover the real ability id and schema from `magick-ai-abilities`, create
+The second practical consumer-side loop is `npcink-abilities-toolkit/set-post-seo-meta`. Core
+must discover the real ability id and schema from `npcink-abilities-toolkit`, create
 a field-level proposal for `post_id`, `seo_title`, and/or `seo_description`,
 let an administrator approve or reject it, and return approval context from
 commit preflight with `commit_execution=false`.
@@ -53,8 +53,8 @@ The dedicated scenario is documented in
 The OpenClaw example adapter exposes `create-seo-meta-proposal` for this path,
 but it still does not approve proposals or execute the final write.
 
-The third practical consumer-side loop is `magick-ai/approve-comment`. Core
-must discover the real ability id and schema from `magick-ai-abilities`, create
+The third practical consumer-side loop is `npcink-abilities-toolkit/approve-comment`. Core
+must discover the real ability id and schema from `npcink-abilities-toolkit`, create
 a moderation proposal for `comment_id`, current status, and target action,
 let an administrator approve or reject it, and return approval context from
 commit preflight with `commit_execution=false`.

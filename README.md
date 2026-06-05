@@ -25,7 +25,7 @@ This plugin does not own:
   runtime, or Agent Gateway task catalogs;
 - model routing, provider keys, prompt/preset management, or cloud billing;
 - reusable WordPress ability definitions, which belong in
-  `magick-ai-abilities` or other provider plugins.
+  `npcink-abilities-toolkit` or other provider plugins.
 
 ## Requirements
 
@@ -99,34 +99,34 @@ External agent clients can start from the
 That example calls Core REST governance routes only; it is not an MCP runtime
 or final write executor.
 
-Core 0.4 consumer readiness is complete for `magick-ai-abilities` 0.4.0 across
-the `magick-ai/create-draft`, `magick-ai/set-post-seo-meta`, and
-`magick-ai/approve-comment` representative scenarios. See
+Core 0.4 consumer readiness is complete for `npcink-abilities-toolkit` 0.4.0 across
+the `npcink-abilities-toolkit/create-draft`, `npcink-abilities-toolkit/set-post-seo-meta`, and
+`npcink-abilities-toolkit/approve-comment` representative scenarios. See
 [Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md). ADR-003
 keeps final WordPress execution outside Core for the current stage; Core
 hardens approval context and commit preflight while Adapter/product plugins
 execute approved abilities through WordPress Abilities API.
 
 The taxonomy terms preview extension proves the same boundary for
-`magick-ai/propose-post-taxonomy-terms` -> `magick-ai/set-post-terms`: adapters
+`npcink-abilities-toolkit/propose-post-taxonomy-terms` -> `npcink-abilities-toolkit/set-post-terms`: adapters
 run the read helper through WordPress Abilities API, then submit the generated
 dry-run write proposal to Core for approval and commit preflight.
 
 The plan-to-proposal bridge extends that pattern to read-only planning
-abilities such as `magick-ai/build-content-inventory-fix-plan`,
-`magick-ai/build-test-content-cleanup-plan`, and
-`magick-ai/build-media-inventory-fix-plan`,
-`magick-ai/build-media-reference-repair-plan`, and
-`magick-ai/build-media-settings-reference-repair-plan`. It also accepts
-`magick-ai/build-media-optimization-plan` only as one attachment-level media
-optimization batch, `magick-ai/build-media-rename-plan` only as one reviewed
+abilities such as `npcink-abilities-toolkit/build-content-inventory-fix-plan`,
+`npcink-abilities-toolkit/build-test-content-cleanup-plan`, and
+`npcink-abilities-toolkit/build-media-inventory-fix-plan`,
+`npcink-abilities-toolkit/build-media-reference-repair-plan`, and
+`npcink-abilities-toolkit/build-media-settings-reference-repair-plan`. It also accepts
+`npcink-abilities-toolkit/build-media-optimization-plan` only as one attachment-level media
+optimization batch, `npcink-abilities-toolkit/build-media-rename-plan` only as one reviewed
 attachment rename proposal, and accepts the P0 Toolbox article handoff
-`magick-ai-toolbox/build-article-write-plan` only as a single reviewed
-`magick-ai/create-draft` proposal. The bounded local article batch handoff
-`magick-ai-toolbox/build-article-batch-write-plan` may create one reviewed
-batch of 2 to 5 draft-only `magick-ai/create-draft` actions. Core accepts the
+`npcink-toolbox/build-article-write-plan` only as a single reviewed
+`npcink-abilities-toolkit/create-draft` proposal. The bounded local article batch handoff
+`npcink-toolbox/build-article-batch-write-plan` may create one reviewed
+batch of 2 to 5 draft-only `npcink-abilities-toolkit/create-draft` actions. Core accepts the
 media-enabled local article batch handoff
-`magick-ai-toolbox/build-article-media-batch-write-plan` only as one
+`npcink-toolbox/build-article-media-batch-write-plan` only as one
 reviewed `article_media_batch_write_plan` with draft creation, media upload,
 media metadata, and featured-image actions grouped in a Core batch proposal.
 plan output, validates each target ability, stores either one pending proposal

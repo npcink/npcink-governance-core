@@ -50,18 +50,18 @@ language aligned.
 
 | Project | Owns | Does not own |
 | --- | --- | --- |
-| `magick-ai-toolbox` | Operator-facing workflow UI, fixed writing flow artifacts, research/image/vector tool UX, content discoverability context, `magick-ai-toolbox/build-article-write-plan`, and bounded local `magick-ai-toolbox/build-article-batch-write-plan`. | Final WordPress writes, Core proposal records, approval truth, audit truth, OpenClaw channel truth, hosted runtime ownership, or Cloud writing. |
-| `magick-ai-abilities` | Standard WordPress abilities, schemas, callbacks, permissions, dry-run previews, and reusable deterministic helpers such as context, risk, compose, and write callbacks. | Product workflow state, model routing, cloud execution, approval truth, audit truth, or final governance. |
+| `npcink-toolbox` | Operator-facing workflow UI, fixed writing flow artifacts, research/image/vector tool UX, content discoverability context, `npcink-toolbox/build-article-write-plan`, and bounded local `npcink-toolbox/build-article-batch-write-plan`. | Final WordPress writes, Core proposal records, approval truth, audit truth, OpenClaw channel truth, hosted runtime ownership, or Cloud writing. |
+| `npcink-abilities-toolkit` | Standard WordPress abilities, schemas, callbacks, permissions, dry-run previews, and reusable deterministic helpers such as context, risk, compose, and write callbacks. | Product workflow state, model routing, cloud execution, approval truth, audit truth, or final governance. |
 | `npcink-governance-core` | Plan intake, proposal records, approval/rejection, commit preflight, fail-closed policy checks, and audit. | Article generation, Toolbox workflow state, ability execution, final writes, workflow runtime, queues, model routing, or provider credentials. |
-| `magick-ai-adapter` | OpenClaw channel routes, capability guidance, direct-read Ability API calls, proposal relay, commit-preflight relay, and allowlisted execution after Core approval and preflight. | Article generation, SEO/GEO/AEO judgment, workflow state, approval truth, or generic write proxying. |
-| `magick-ai-cloud-addon` | Cloud connection, health, stats, and entitlement detail for non-writing service surfaces. | Article generation, local control plane, proposal truth, approval truth, workflow truth, ability registry, prompt/router/preset ownership, or WordPress writes. |
+| `npcink-openclaw-adapter` | OpenClaw channel routes, capability guidance, direct-read Ability API calls, proposal relay, commit-preflight relay, and allowlisted execution after Core approval and preflight. | Article generation, SEO/GEO/AEO judgment, workflow state, approval truth, or generic write proxying. |
+| `npcink-cloud-addon` | Cloud connection, health, stats, and entitlement detail for non-writing service surfaces. | Article generation, local control plane, proposal truth, approval truth, workflow truth, ability registry, prompt/router/preset ownership, or WordPress writes. |
 
 ## P0 Flow
 
 The first slice supports one article and one draft write proposal:
 
 1. Toolbox collects the operator's topic, intent, audience, and context.
-2. Toolbox reads `magick-ai-toolbox/get-content-discoverability-context`.
+2. Toolbox reads `npcink-toolbox/get-content-discoverability-context`.
 3. Toolbox runs bounded research, image-source, and vector-search actions when
    configured.
 4. Toolbox, local/provider Abilities, or the operator produce the standard
@@ -75,12 +75,12 @@ The first slice supports one article and one draft write proposal:
    - `article_write_plan`
 5. Toolbox submits the plan to Core through
    `POST /wp-json/npcink-governance-core/v1/proposals/from-plan` with
-   `plan_ability_id=magick-ai-toolbox/build-article-write-plan`.
-6. Core validates the plan and creates a pending `magick-ai/create-draft`
+   `plan_ability_id=npcink-toolbox/build-article-write-plan`.
+6. Core validates the plan and creates a pending `npcink-abilities-toolkit/create-draft`
    proposal only when the plan is ready.
 7. Adapter may approve and execute the proposal only after Core approval and
    successful commit preflight.
-8. The WordPress Abilities API executes the approved `magick-ai/create-draft`
+8. The WordPress Abilities API executes the approved `npcink-abilities-toolkit/create-draft`
    callback outside Core.
 
 ## Article Write Plan Shape
@@ -117,7 +117,7 @@ The Toolbox planning ability must return a direct-read plan payload:
   "write_actions": [
     {
       "action_id": "create_article_draft",
-      "target_ability_id": "magick-ai/create-draft",
+      "target_ability_id": "npcink-abilities-toolkit/create-draft",
       "input": {
         "title": "Draft title",
         "content": "Draft body",
@@ -140,7 +140,7 @@ after the single draft loop is stable.
 
 ## Article Batch Draft Plan Shape
 
-`magick-ai-toolbox/build-article-batch-write-plan` is the bounded local batch
+`npcink-toolbox/build-article-batch-write-plan` is the bounded local batch
 profile for "draft these reviewed articles." It is not the P0 single-article
 path and not a Cloud writing feature. The planning ability must return:
 
@@ -171,7 +171,7 @@ path and not a Cloud writing feature. The planning ability must return:
   "write_actions": [
     {
       "action_id": "create_article_draft_1",
-      "target_ability_id": "magick-ai/create-draft",
+      "target_ability_id": "npcink-abilities-toolkit/create-draft",
       "input": {
         "title": "Draft title",
         "content": "Draft body",
@@ -188,7 +188,7 @@ path and not a Cloud writing feature. The planning ability must return:
 }
 ```
 
-Core accepts only 2 to 5 actions, all targeting `magick-ai/create-draft`, all
+Core accepts only 2 to 5 actions, all targeting `npcink-abilities-toolkit/create-draft`, all
 draft-only, all dry-run, and all backed by a matching reviewed artifact entry.
 The generated proposal is one `plan_to_proposal_batch` record. Adapter must
 still execute each action individually through its allowlisted execution
@@ -196,14 +196,14 @@ profile after Core approval and commit preflight.
 
 ## Article Media Batch Plan Shape
 
-`magick-ai-toolbox/build-article-media-batch-write-plan` is the bounded local
+`npcink-toolbox/build-article-media-batch-write-plan` is the bounded local
 media-enabled batch profile for reviewed drafts with reviewed image-source
 candidates. It must return `artifact_type=article_media_batch_write_plan`,
 `proposal_mode=batch`, `batch_approval=true`, one reviewed article artifact set
 per article, `featured_image_candidate` evidence for every article, and
-allowlisted write actions for `magick-ai/create-draft`,
-`magick-ai/upload-media-from-url`, `magick-ai/update-media-details`, and
-`magick-ai/set-post-featured-image`. It is not a Cloud writing feature, image
+allowlisted write actions for `npcink-abilities-toolkit/create-draft`,
+`npcink-abilities-toolkit/upload-media-from-url`, `npcink-abilities-toolkit/update-media-details`, and
+`npcink-abilities-toolkit/set-post-featured-image`. It is not a Cloud writing feature, image
 generation runtime, media import runtime, approval store, or final write
 executor.
 
@@ -227,7 +227,7 @@ short version is:
 
 ## Core Acceptance Rules
 
-Core accepts `magick-ai-toolbox/build-article-write-plan` only when the
+Core accepts `npcink-toolbox/build-article-write-plan` only when the
 planning ability is discoverable as `governance_mode=direct_read` and
 `execution_surface=wp_abilities_rest`.
 
@@ -240,7 +240,7 @@ Core fails closed when:
 - `article_risk_report.risk_level` is `high`;
 - `article_risk_report.blocked_claims` is not empty;
 - the plan does not contain exactly one `write_action`;
-- the action target is not `magick-ai/create-draft`;
+- the action target is not `npcink-abilities-toolkit/create-draft`;
 - the draft input requests `status` or `post_status` other than `draft`;
 - the action or input claims commit execution already happened;
 - the action input requests `commit=true` or `dry_run=false`;
@@ -252,12 +252,12 @@ preflight, and audit correlation. Core still returns `commit_execution=false`.
 
 ## Expansion Order
 
-1. P0: single `magick-ai/create-draft` proposal.
+1. P0: single `npcink-abilities-toolkit/create-draft` proposal.
 2. P1: bounded local article batch draft proposal through
-   `magick-ai-toolbox/build-article-batch-write-plan`.
-3. P1: separate governed proposals for `magick-ai/set-post-seo-meta`,
-   `magick-ai/set-post-terms`, `magick-ai/update-media-details`, and
-   `magick-ai/set-post-featured-image` when the target abilities and Adapter
+   `npcink-toolbox/build-article-batch-write-plan`.
+3. P1: separate governed proposals for `npcink-abilities-toolkit/set-post-seo-meta`,
+   `npcink-abilities-toolkit/set-post-terms`, `npcink-abilities-toolkit/update-media-details`, and
+   `npcink-abilities-toolkit/set-post-featured-image` when the target abilities and Adapter
    execution profiles are ready.
 4. P2: additional local recipe profiles for topic clusters or editorial
    calendars may be documented, but they must remain local Ability recipes and

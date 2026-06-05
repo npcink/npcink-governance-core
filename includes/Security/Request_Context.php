@@ -2,10 +2,10 @@
 /**
  * Request-scoped auth context.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
-namespace MagickAI\Core\Security;
+namespace Npcink\GovernanceCore\Security;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

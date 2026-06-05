@@ -2,7 +2,7 @@
 /**
  * PHP syntax lint runner.
  *
- * @package MagickAICore
+ * @package NpcinkGovernanceCore
  */
 
 $root = dirname( __DIR__ );
@@ -13,7 +13,7 @@ $root = dirname( __DIR__ );
  * @param string $root Project root.
  * @return array<int,string>
  */
-function magick_ai_core_lint_files( string $root ): array {
+function npcink_governance_core_lint_files( string $root ): array {
 	$files = array( $root . '/npcink-governance-core.php' );
 
 	foreach ( array( 'includes', 'tests', 'examples' ) as $directory ) {
@@ -42,7 +42,7 @@ function magick_ai_core_lint_files( string $root ): array {
 }
 
 $failures = array();
-foreach ( magick_ai_core_lint_files( $root ) as $file ) {
+foreach ( npcink_governance_core_lint_files( $root ) as $file ) {
 	$command = escapeshellarg( PHP_BINARY ) . ' -l ' . escapeshellarg( $file ) . ' 2>&1';
 	$output  = array();
 	$status  = 0;
