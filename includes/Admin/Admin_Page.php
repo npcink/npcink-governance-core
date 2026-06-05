@@ -31,6 +31,8 @@ final class Admin_Page {
 	const AUDIT_PAGE_SIZE   = 25;
 	const APP_KEY_PAGE_SIZE = 10;
 	const DATETIME_DISPLAY_FORMAT = 'Y-m-d H:i:s';
+	const ADMIN_REQUEST_ACTION = 'magick_ai_core_admin_request';
+	const ADMIN_REQUEST_NONCE  = 'magick_ai_core_nonce';
 
 	/**
 	 * Ability adapter.
@@ -108,6 +110,7 @@ final class Admin_Page {
 		add_action( 'admin_post_magick_ai_core_archive_proposal', array( $this, 'handle_archive' ) );
 		add_action( 'admin_post_magick_ai_core_reopen_proposal', array( $this, 'handle_reopen' ) );
 		add_action( 'admin_post_magick_ai_core_update_approval_policy', array( $this, 'handle_update_approval_policy' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
 
 	/**
@@ -126,6 +129,25 @@ final class Admin_Page {
 			self::MENU_SLUG,
 			array( $this, 'render' ),
 			10
+		);
+	}
+
+	/**
+	 * Enqueues Core admin assets on Core-owned pages.
+	 *
+	 * @param string $hook_suffix Current admin hook suffix.
+	 * @return void
+	 */
+	public function enqueue_assets( string $hook_suffix ): void {
+		if ( false === strpos( $hook_suffix, self::PARENT_MENU_SLUG ) && false === strpos( $hook_suffix, self::MENU_SLUG ) ) {
+			return;
+		}
+
+		wp_enqueue_style(
+			'magick-ai-core-admin',
+			plugins_url( 'assets/admin.css', MAGICK_AI_CORE_FILE ),
+			array(),
+			MAGICK_AI_CORE_VERSION
 		);
 	}
 
@@ -191,7 +213,7 @@ final class Admin_Page {
 			<h1><?php echo esc_html__( 'Magick AI', 'magick-ai-core' ); ?></h1>
 			<p><?php echo esc_html__( 'Local WordPress entry points for Magick AI governance, connections, cloud access, and ability packages.', 'magick-ai-core' ); ?></p>
 			<h2><?php echo esc_html__( 'Installed Surfaces', 'magick-ai-core' ); ?></h2>
-			<table class="widefat striped" style="max-width: 860px;">
+			<table class="widefat striped magick-ai-core-table-narrow">
 				<tbody>
 					<?php
 					$this->render_overview_row( __( 'Core', 'magick-ai-core' ), __( 'Review proposals, approval decisions, commit preflight, audit, and Core app keys.', 'magick-ai-core' ), self::MENU_SLUG );
@@ -222,7 +244,7 @@ final class Admin_Page {
 				<?php if ( $this->is_submenu_registered( $slug ) ) : ?>
 					<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=' . $slug ) ); ?>"><?php echo esc_html__( 'Open', 'magick-ai-core' ); ?></a>
 				<?php else : ?>
-					<span style="color: #646970;"><?php echo esc_html__( 'Not installed', 'magick-ai-core' ); ?></span>
+					<span class="magick-ai-core-muted"><?php echo esc_html__( 'Not installed', 'magick-ai-core' ); ?></span>
 				<?php endif; ?>
 			</td>
 		</tr>
@@ -266,11 +288,11 @@ final class Admin_Page {
 		$pending        = $this->proposals->list_recent( self::REVIEW_PAGE_SIZE, Proposal_Repository::STATUS_PENDING, $this->offset_for_page( $review_page, self::REVIEW_PAGE_SIZE ) );
 		$expired_count  = $this->proposals->count_by_status( Proposal_Repository::STATUS_EXPIRED );
 		$archived_count = $this->proposals->count_by_status( Proposal_Repository::STATUS_ARCHIVED );
-		$selected_id    = isset( $_GET['proposal_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['proposal_id'] ) ) : '';
+		$selected_id    = $this->admin_query_text( 'proposal_id' );
 		$selected       = '' !== $selected_id ? $this->proposals->find( $selected_id ) : null;
-		$view           = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( (string) $_GET['view'] ) ) : '';
-		$message        = isset( $_GET['magick_ai_core_message'] ) ? sanitize_key( wp_unslash( (string) $_GET['magick_ai_core_message'] ) ) : '';
-		$error          = isset( $_GET['magick_ai_core_error'] ) ? sanitize_key( wp_unslash( (string) $_GET['magick_ai_core_error'] ) ) : '';
+		$view           = $this->admin_query_key( 'view' );
+		$message        = $this->admin_query_key( 'magick_ai_core_message' );
+		$error          = $this->admin_query_key( 'magick_ai_core_error' );
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html__( 'Magick AI Core', 'magick-ai-core' ); ?></h1>
@@ -345,7 +367,7 @@ final class Admin_Page {
 			),
 		);
 		?>
-		<nav class="nav-tab-wrapper" aria-label="<?php echo esc_attr__( 'Core admin sections', 'magick-ai-core' ); ?>" style="margin-bottom: 16px;">
+		<nav class="nav-tab-wrapper magick-ai-core-tabs" aria-label="<?php echo esc_attr__( 'Core admin sections', 'magick-ai-core' ); ?>">
 			<?php foreach ( $tabs as $key => $tab ) : ?>
 				<a class="nav-tab <?php echo $active === $key ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( (string) $tab['url'] ); ?>" <?php echo $active === $key ? 'aria-current="page"' : ''; ?>>
 					<?php echo esc_html( (string) $tab['label'] ); ?>
@@ -389,10 +411,10 @@ final class Admin_Page {
 			Approval_Policy_Evaluator::MODE_LOCAL_GUARDED   => __( 'Local guarded', 'magick-ai-core' ),
 		);
 		?>
-		<details style="max-width: 1100px; margin: 0 0 16px;">
-			<summary style="cursor: pointer;">
+		<details class="magick-ai-core-disclosure magick-ai-core-max-wide">
+			<summary>
 				<strong><?php echo esc_html__( 'Development Approval Policy', 'magick-ai-core' ); ?></strong>
-				<span style="color: #646970;">
+				<span class="magick-ai-core-muted">
 					<?php
 					printf(
 						/* translators: %s: current policy mode. */
@@ -402,7 +424,7 @@ final class Admin_Page {
 					?>
 				</span>
 			</summary>
-			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top: 8px;">
+			<form class="magick-ai-core-form-spaced" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<input type="hidden" name="action" value="magick_ai_core_update_approval_policy" />
 				<?php wp_nonce_field( 'magick_ai_core_update_approval_policy' ); ?>
 				<table class="form-table" role="presentation">
@@ -437,8 +459,8 @@ final class Admin_Page {
 		$settings = $this->media_settings->get_all();
 		?>
 		<h2><?php echo esc_html__( 'Media Optimization Policy', 'magick-ai-core' ); ?></h2>
-		<p style="max-width: 820px;"><?php echo esc_html__( 'Core stores the local site policy for optimized media derivatives. Toolbox may use these defaults for one-run handoffs, and Cloud Addon may execute them when available, but final WordPress writes still require local proposal governance.', 'magick-ai-core' ); ?></p>
-		<form method="post" action="options.php" style="max-width: 960px;">
+		<p class="magick-ai-core-copy-width"><?php echo esc_html__( 'Core stores the local site policy for optimized media derivatives. Toolbox may use these defaults for one-run handoffs, and Cloud Addon may execute them when available, but final WordPress writes still require local proposal governance.', 'magick-ai-core' ); ?></p>
+		<form class="magick-ai-core-form-width" method="post" action="options.php">
 			<?php settings_fields( 'magick_ai_core_media_derivative' ); ?>
 			<table class="form-table" role="presentation">
 				<tbody>
@@ -547,7 +569,7 @@ final class Admin_Page {
 	private function render_summary_strip( array $summary, int $pending_count, int $expired_count, int $archived_count ): void {
 		?>
 		<h2><?php echo esc_html__( 'Review Queue', 'magick-ai-core' ); ?></h2>
-		<div class="magick-ai-core-status-strip" style="display: flex; flex-wrap: wrap; gap: 10px; max-width: 1100px; margin: 0 0 16px;">
+		<div class="magick-ai-core-status-strip">
 			<?php $this->render_status_metric( __( 'Needs review', 'magick-ai-core' ), (string) $pending_count, true ); ?>
 			<?php $this->render_status_metric( __( 'Expired', 'magick-ai-core' ), (string) $expired_count, false, false, $this->view_url( 'archive' ) ); ?>
 			<?php $this->render_status_metric( __( 'Archived', 'magick-ai-core' ), (string) $archived_count, false, false, $this->view_url( 'archive' ) ); ?>
@@ -568,11 +590,11 @@ final class Admin_Page {
 	 */
 	private function render_status_metric( string $label, string $value, bool $primary = false, bool $code = false, string $url = '' ): void {
 		?>
-		<div style="box-sizing: border-box; min-width: <?php echo $primary ? '190px' : '150px'; ?>; padding: 10px 12px; background: #fff; border: 1px solid #c3c4c7; border-left: 4px solid <?php echo $primary ? '#2271b1' : '#dcdcde'; ?>;">
-			<div style="color: #646970; font-size: 12px; line-height: 1.4;"><?php echo esc_html( $label ); ?></div>
-			<div style="font-size: <?php echo $primary ? '22px' : '16px'; ?>; font-weight: 600; line-height: 1.4;">
+		<div class="<?php echo esc_attr( $primary ? 'magick-ai-core-metric magick-ai-core-metric-primary' : 'magick-ai-core-metric' ); ?>">
+			<div class="magick-ai-core-metric-label"><?php echo esc_html( $label ); ?></div>
+			<div class="<?php echo esc_attr( $primary ? 'magick-ai-core-metric-value magick-ai-core-metric-value-primary' : 'magick-ai-core-metric-value' ); ?>">
 				<?php if ( '' !== $url ) : ?>
-					<a href="<?php echo esc_url( $url ); ?>" style="text-decoration: none;">
+					<a class="magick-ai-core-plain-link" href="<?php echo esc_url( $url ); ?>">
 				<?php endif; ?>
 				<?php if ( $code ) : ?>
 					<code><?php echo esc_html( $value ); ?></code>
@@ -599,7 +621,7 @@ final class Admin_Page {
 		?>
 		<h2><?php echo esc_html__( 'Needs Review', 'magick-ai-core' ); ?></h2>
 		<p><?php echo esc_html( $this->pagination_summary( $total, $page, self::REVIEW_PAGE_SIZE ) ); ?></p>
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="max-width: 1100px;">
+		<form class="magick-ai-core-max-wide" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="magick_ai_core_bulk_reject_proposals" />
 			<?php wp_nonce_field( 'magick_ai_core_bulk_reject_proposals' ); ?>
 			<table class="widefat striped">
@@ -625,11 +647,11 @@ final class Admin_Page {
 							</th>
 							<td>
 								<strong><?php echo esc_html( (string) ( $proposal['title'] ?: $proposal_id ) ); ?></strong><br />
-								<span style="color: #50575e;">
+								<span class="magick-ai-core-subtle">
 									<?php echo esc_html__( 'Proposal ID:', 'magick-ai-core' ); ?>
 									<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
 								</span><br />
-								<span style="color: #50575e;">
+								<span class="magick-ai-core-subtle">
 									<?php echo esc_html__( 'Ability:', 'magick-ai-core' ); ?>
 									<code><?php echo esc_html( (string) $proposal['ability_id'] ); ?></code>
 								</span>
@@ -646,8 +668,8 @@ final class Admin_Page {
 				</tbody>
 			</table>
 			<?php if ( ! empty( $pending ) ) : ?>
-				<p style="display: flex; gap: 8px; align-items: end; flex-wrap: wrap;">
-					<label style="min-width: 360px; max-width: 620px; flex: 1;">
+				<p class="magick-ai-core-inline-actions">
+					<label class="magick-ai-core-flex-field">
 						<?php echo esc_html__( 'Bulk rejection note', 'magick-ai-core' ); ?><br />
 						<input type="text" class="large-text" name="note" value="<?php echo esc_attr__( 'Superseded by batch cleanup proposal.', 'magick-ai-core' ); ?>" />
 					</label>
@@ -675,7 +697,7 @@ final class Admin_Page {
 		}
 		?>
 		<br />
-		<span style="color: #646970;">
+		<span class="magick-ai-core-muted">
 			<?php echo esc_html__( 'Source:', 'magick-ai-core' ); ?>
 			<?php echo esc_html( implode( ' · ', $trace ) ); ?>
 		</span>
@@ -754,12 +776,12 @@ final class Admin_Page {
 	private function render_recent_activity(): void {
 		$events = $this->audit->list_recent( 10 );
 		?>
-		<details style="max-width: 1100px; margin-top: 16px;">
-			<summary style="cursor: pointer;">
+		<details class="magick-ai-core-disclosure magick-ai-core-max-wide magick-ai-core-disclosure-top">
+			<summary>
 				<strong><?php echo esc_html__( 'Recent Activity', 'magick-ai-core' ); ?></strong>
-				<span style="color: #646970;"><?php echo esc_html__( 'Latest Core governance events. Full audit is in its own tab.', 'magick-ai-core' ); ?></span>
+				<span class="magick-ai-core-muted"><?php echo esc_html__( 'Latest Core governance events. Full audit is in its own tab.', 'magick-ai-core' ); ?></span>
 			</summary>
-			<table class="widefat striped" style="margin-top: 8px;">
+			<table class="widefat striped magick-ai-core-table-spaced">
 				<thead>
 					<tr>
 						<th scope="col"><?php echo esc_html__( 'Time', 'magick-ai-core' ); ?></th>
@@ -805,12 +827,12 @@ final class Admin_Page {
 		$active_count = $this->apps->count( 'active' );
 		$last_used    = $this->apps->latest_last_used_at();
 		?>
-		<details style="max-width: 1100px; margin-top: 16px;">
-			<summary style="cursor: pointer;">
+		<details class="magick-ai-core-disclosure magick-ai-core-max-wide magick-ai-core-disclosure-top">
+			<summary>
 				<strong><?php echo esc_html__( 'Advanced Access', 'magick-ai-core' ); ?></strong>
-				<span style="color: #646970;"><?php echo esc_html__( 'Core app keys for trusted governance clients.', 'magick-ai-core' ); ?></span>
+				<span class="magick-ai-core-muted"><?php echo esc_html__( 'Core app keys for trusted governance clients.', 'magick-ai-core' ); ?></span>
 			</summary>
-			<table class="widefat striped" style="margin-top: 8px;">
+			<table class="widefat striped magick-ai-core-table-spaced">
 				<tbody>
 					<tr>
 						<th scope="row"><?php echo esc_html__( 'Active app keys', 'magick-ai-core' ); ?></th>
@@ -860,7 +882,8 @@ final class Admin_Page {
 
 		check_admin_referer( 'magick_ai_core_bulk_reject_proposals' );
 
-		$proposal_ids = isset( $_POST['proposal_ids'] ) ? (array) wp_unslash( $_POST['proposal_ids'] ) : array();
+		$raw_proposal_ids = filter_input( INPUT_POST, 'proposal_ids', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+		$proposal_ids     = is_array( $raw_proposal_ids ) ? array_map( 'wp_unslash', $raw_proposal_ids ) : array();
 		$proposal_ids = array_values( array_unique( array_filter( array_map( 'sanitize_text_field', $proposal_ids ) ) ) );
 		$proposal_ids = array_slice( $proposal_ids, 0, 50 );
 		$note         = isset( $_POST['note'] ) ? sanitize_textarea_field( wp_unslash( (string) $_POST['note'] ) ) : '';
@@ -933,7 +956,8 @@ final class Admin_Page {
 
 		check_admin_referer( 'magick_ai_core_update_approval_policy' );
 
-		$mode = isset( $_POST['policy_mode'] ) ? Approval_Policy_Evaluator::sanitize_policy_mode( wp_unslash( (string) $_POST['policy_mode'] ) ) : Approval_Policy_Evaluator::MODE_MANUAL;
+		$raw_mode = filter_input( INPUT_POST, 'policy_mode', FILTER_UNSAFE_RAW );
+		$mode     = is_string( $raw_mode ) ? Approval_Policy_Evaluator::sanitize_policy_mode( wp_unslash( $raw_mode ) ) : Approval_Policy_Evaluator::MODE_MANUAL;
 		update_option( Approval_Policy_Evaluator::OPTION_POLICY_MODE, $mode, false );
 
 		$this->audit->record(
@@ -1153,7 +1177,7 @@ final class Admin_Page {
 	 */
 	private function render_archive_view(): void {
 		$page           = $this->page_from_request( 'archive_page' );
-		$status_filter = isset( $_GET['archive_status'] ) ? sanitize_key( wp_unslash( (string) $_GET['archive_status'] ) ) : 'all';
+		$status_filter = $this->admin_query_key( 'archive_status', 'all' );
 		$status_filter = in_array( $status_filter, array( 'all', Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_ARCHIVED ), true ) ? $status_filter : 'all';
 		$statuses      = 'all' === $status_filter
 			? array( Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_ARCHIVED )
@@ -1257,19 +1281,10 @@ final class Admin_Page {
 			<meta charset="<?php echo esc_attr( get_bloginfo( 'charset' ) ); ?>" />
 			<meta name="viewport" content="width=device-width, initial-scale=1" />
 			<title><?php echo esc_html__( 'Core App Key Created', 'magick-ai-core' ); ?></title>
-			<style>
-				body { margin: 0; background: #f0f0f1; color: #1d2327; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-				main { max-width: 960px; margin: 32px auto; padding: 0 24px; }
-				h1 { font-size: 24px; margin: 0 0 16px; }
-				.notice { background: #fff8e5; border-left: 4px solid #dba617; margin: 0 0 20px; padding: 12px 16px; }
-				table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #c3c4c7; }
-				th, td { border-bottom: 1px solid #dcdcde; padding: 12px; text-align: left; vertical-align: top; }
-				th { width: 160px; font-weight: 600; }
-				code, textarea { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-				textarea { box-sizing: border-box; width: 100%; min-height: 96px; padding: 10px; border: 1px solid #8c8f94; background: #fff; color: #1d2327; }
-				.actions { margin-top: 20px; }
-				.button { display: inline-block; background: #2271b1; border: 1px solid #2271b1; border-radius: 3px; color: #fff; padding: 8px 14px; text-decoration: none; }
-			</style>
+			<?php
+			wp_enqueue_style( 'magick-ai-core-admin', $this->admin_stylesheet_url(), array(), MAGICK_AI_CORE_VERSION );
+			wp_print_styles( 'magick-ai-core-admin' );
+			?>
 		</head>
 		<body>
 			<main>
@@ -1734,6 +1749,7 @@ final class Admin_Page {
 			<form method="get" style="margin-top: 8px;">
 				<input type="hidden" name="page" value="magick-ai-core" />
 				<input type="hidden" name="view" value="audit" />
+				<input type="hidden" name="<?php echo esc_attr( self::ADMIN_REQUEST_NONCE ); ?>" value="<?php echo esc_attr( wp_create_nonce( self::ADMIN_REQUEST_ACTION ) ); ?>" />
 				<table class="form-table" role="presentation">
 					<tbody>
 						<tr>
@@ -1905,16 +1921,16 @@ final class Admin_Page {
 	 * @return array<string,mixed>
 	 */
 	private function audit_filters_from_request(): array {
-		$include_read_events = ! empty( $_GET['audit_include_read_events'] );
+		$include_read_events = $this->admin_query_bool( 'audit_include_read_events' );
 		$page                = $this->page_from_request( 'audit_page' );
-		$limit               = isset( $_GET['audit_limit'] ) ? max( 1, min( 200, absint( wp_unslash( (string) $_GET['audit_limit'] ) ) ) ) : self::AUDIT_PAGE_SIZE;
+		$limit               = max( 1, min( 200, $this->admin_query_absint( 'audit_limit', self::AUDIT_PAGE_SIZE ) ) );
 		$filters             = array(
-			'proposal_id'    => isset( $_GET['audit_proposal_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_proposal_id'] ) ) : '',
-			'event_name'     => isset( $_GET['audit_event_name'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_event_name'] ) ) : '',
-			'ability_id'     => isset( $_GET['audit_ability_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_ability_id'] ) ) : '',
-			'app_id'         => isset( $_GET['audit_app_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_app_id'] ) ) : '',
-			'caller_type'    => isset( $_GET['audit_caller_type'] ) ? sanitize_key( wp_unslash( (string) $_GET['audit_caller_type'] ) ) : '',
-			'correlation_id' => isset( $_GET['audit_correlation_id'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['audit_correlation_id'] ) ) : '',
+			'proposal_id'    => $this->admin_query_text( 'audit_proposal_id' ),
+			'event_name'     => $this->admin_query_text( 'audit_event_name' ),
+			'ability_id'     => $this->admin_query_text( 'audit_ability_id' ),
+			'app_id'         => $this->admin_query_text( 'audit_app_id' ),
+			'caller_type'    => $this->admin_query_key( 'audit_caller_type' ),
+			'correlation_id' => $this->admin_query_text( 'audit_correlation_id' ),
 			'limit'          => $limit,
 			'page'           => $page,
 			'offset'         => $this->offset_for_page( $page, $limit ),
@@ -2014,7 +2030,7 @@ final class Admin_Page {
 	 * @return int
 	 */
 	private function page_from_request( string $query_key ): int {
-		return isset( $_GET[ $query_key ] ) ? max( 1, absint( wp_unslash( (string) $_GET[ $query_key ] ) ) ) : 1;
+		return max( 1, $this->admin_query_absint( $query_key, 1 ) );
 	}
 
 	/**
@@ -2278,7 +2294,97 @@ final class Admin_Page {
 	 * @return string
 	 */
 	private function admin_url( array $args = array() ): string {
-		return add_query_arg( array_merge( array( 'page' => self::MENU_SLUG ), $args ), admin_url( 'admin.php' ) );
+		return add_query_arg(
+			array_merge(
+				array(
+					'page'                    => self::MENU_SLUG,
+					self::ADMIN_REQUEST_NONCE => wp_create_nonce( self::ADMIN_REQUEST_ACTION ),
+				),
+				$args
+			),
+			admin_url( 'admin.php' )
+		);
+	}
+
+	/**
+	 * Returns whether the current admin query nonce is valid.
+	 *
+	 * @return bool
+	 */
+	private function has_valid_admin_request_nonce(): bool {
+		$nonce = filter_input( INPUT_GET, self::ADMIN_REQUEST_NONCE, FILTER_UNSAFE_RAW );
+		if ( ! is_string( $nonce ) || '' === $nonce ) {
+			return false;
+		}
+
+		return (bool) wp_verify_nonce( sanitize_text_field( $nonce ), self::ADMIN_REQUEST_ACTION );
+	}
+
+	/**
+	 * Returns sanitized text from a nonce-verified admin query arg.
+	 *
+	 * @param string $key Query arg key.
+	 * @param string $default Default value.
+	 * @return string
+	 */
+	private function admin_query_text( string $key, string $default = '' ): string {
+		if ( ! $this->has_valid_admin_request_nonce() ) {
+			return $default;
+		}
+
+		$value = filter_input( INPUT_GET, $key, FILTER_UNSAFE_RAW );
+		return is_string( $value ) ? sanitize_text_field( $value ) : $default;
+	}
+
+	/**
+	 * Returns sanitized key text from a nonce-verified admin query arg.
+	 *
+	 * @param string $key Query arg key.
+	 * @param string $default Default value.
+	 * @return string
+	 */
+	private function admin_query_key( string $key, string $default = '' ): string {
+		if ( ! $this->has_valid_admin_request_nonce() ) {
+			return $default;
+		}
+
+		$value = filter_input( INPUT_GET, $key, FILTER_UNSAFE_RAW );
+		return is_string( $value ) ? sanitize_key( $value ) : $default;
+	}
+
+	/**
+	 * Returns an absolute integer from a nonce-verified admin query arg.
+	 *
+	 * @param string $key Query arg key.
+	 * @param int    $default Default value.
+	 * @return int
+	 */
+	private function admin_query_absint( string $key, int $default = 0 ): int {
+		if ( ! $this->has_valid_admin_request_nonce() ) {
+			return $default;
+		}
+
+		$value = filter_input( INPUT_GET, $key, FILTER_UNSAFE_RAW );
+		return is_string( $value ) ? absint( $value ) : $default;
+	}
+
+	/**
+	 * Returns a boolean from a nonce-verified admin query arg.
+	 *
+	 * @param string $key Query arg key.
+	 * @return bool
+	 */
+	private function admin_query_bool( string $key ): bool {
+		return $this->has_valid_admin_request_nonce() && '' !== $this->admin_query_text( $key );
+	}
+
+	/**
+	 * Returns the Core admin stylesheet URL.
+	 *
+	 * @return string
+	 */
+	private function admin_stylesheet_url(): string {
+		return plugins_url( 'assets/admin.css', MAGICK_AI_CORE_FILE );
 	}
 
 	/**

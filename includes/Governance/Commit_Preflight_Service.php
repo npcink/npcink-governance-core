@@ -92,7 +92,7 @@ final class Commit_Preflight_Service {
 		if ( 'approved' !== (string) ( $proposal['status'] ?? '' ) ) {
 			return $this->preflight_error(
 				'magick_ai_core_proposal_not_approved',
-				'Only approved proposals can pass commit preflight.',
+				__( 'Only approved proposals can pass commit preflight.', 'magick-ai-core' ),
 				409,
 				$proposal_id,
 				array(
@@ -106,7 +106,7 @@ final class Commit_Preflight_Service {
 		if ( null === $capability ) {
 			return $this->preflight_error(
 				'magick_ai_core_ability_unavailable',
-				'The proposal target ability is no longer available.',
+				__( 'The proposal target ability is no longer available.', 'magick-ai-core' ),
 				409,
 				$proposal_id,
 				array(
@@ -120,7 +120,7 @@ final class Commit_Preflight_Service {
 		if ( false === (bool) ( $contract_preflight['contract_matches'] ?? false ) ) {
 			return $this->preflight_error(
 				'magick_ai_core_ability_contract_changed',
-				'The proposal target ability contract has changed since approval.',
+				__( 'The proposal target ability contract has changed since approval.', 'magick-ai-core' ),
 				409,
 				$proposal_id,
 				array(
@@ -136,7 +136,7 @@ final class Commit_Preflight_Service {
 		if ( false === (bool) ( $permission_preflight['allowed'] ?? false ) ) {
 			return $this->preflight_error(
 				'magick_ai_core_ability_permission_denied',
-				'The current caller no longer has permission for this ability.',
+				__( 'The current caller no longer has permission for this ability.', 'magick-ai-core' ),
 				403,
 				$proposal_id,
 				array(
@@ -152,7 +152,7 @@ final class Commit_Preflight_Service {
 		if ( false === (bool) ( $item_preflight['executable'] ?? false ) ) {
 			return $this->preflight_error(
 				'magick_ai_core_proposal_items_blocked',
-				'Proposal contains blocked items or missing required input.',
+				__( 'Proposal contains blocked items or missing required input.', 'magick-ai-core' ),
 				409,
 				$proposal_id,
 				array(
@@ -173,7 +173,7 @@ final class Commit_Preflight_Service {
 		if ( $this->has_prior_preflight( $proposal_id, $approved_input_hash ) ) {
 			return $this->preflight_error(
 				'magick_ai_core_commit_preflight_already_issued',
-				'Commit preflight has already issued an execution handoff for this approved proposal.',
+				__( 'Commit preflight has already issued an execution handoff for this approved proposal.', 'magick-ai-core' ),
 				409,
 				$proposal_id,
 				array(
@@ -396,9 +396,9 @@ final class Commit_Preflight_Service {
 			);
 		}
 
-		return new WP_Error(
-			$code,
-			__( $message, 'magick-ai-core' ),
+			return new WP_Error(
+				$code,
+				$message,
 			array_merge(
 				array(
 					'status'           => $status,

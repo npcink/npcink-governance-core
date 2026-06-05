@@ -1172,7 +1172,7 @@ final class Plan_Proposal_Service {
 			return false;
 		}
 
-		$scheme = strtolower( (string) parse_url( $url, PHP_URL_SCHEME ) );
+		$scheme = preg_match( '/^([a-z][a-z0-9+.-]*):/i', $url, $matches ) ? strtolower( (string) $matches[1] ) : '';
 		return in_array( $scheme, array( 'http', 'https' ), true );
 	}
 

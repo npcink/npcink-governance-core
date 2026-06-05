@@ -12,6 +12,7 @@ composer.lock
 docs
 examples
 sj
+scripts
 tests
 vendor
 node_modules

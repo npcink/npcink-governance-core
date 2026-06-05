@@ -186,15 +186,15 @@ final class Proposal_Repository {
 		$args[]       = $limit;
 		$args[]       = $offset;
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL uses fixed clauses, generated placeholders, and a table name from the WordPress prefix.
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL uses fixed clauses, generated placeholders, and a table name from the WordPress prefix.
 		$rows = $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name() . ' WHERE status IN (' . $placeholders . ') ORDER BY id DESC LIMIT %d OFFSET %d',
-				$args
-			),
+				$wpdb->prepare(
+					'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name() . ' WHERE status IN (' . $placeholders . ') ORDER BY id DESC LIMIT %d OFFSET %d',
+					...$args
+				),
 			ARRAY_A
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
 	}
@@ -273,7 +273,7 @@ final class Proposal_Repository {
 		$where[] = '(' . implode( ' OR ', $identity_where ) . ')';
 		$args[]  = $limit;
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL uses fixed clauses, generated placeholders, and a table name from the WordPress prefix.
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL uses fixed clauses, generated placeholders, and a table name from the WordPress prefix.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name() . ' WHERE ' . implode( ' AND ', $where ) . ' ORDER BY id DESC LIMIT %d',
@@ -281,7 +281,7 @@ final class Proposal_Repository {
 			),
 			ARRAY_A
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
 	}
@@ -411,11 +411,11 @@ final class Proposal_Repository {
 
 		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL uses fixed clauses, generated placeholders, and a table name from the WordPress prefix.
 		return (int) $wpdb->get_var(
-			$wpdb->prepare(
-				'SELECT COUNT(*) FROM ' . $this->table_name() . ' WHERE status IN (' . $placeholders . ')',
-				$statuses
-			)
-		);
+				$wpdb->prepare(
+					'SELECT COUNT(*) FROM ' . $this->table_name() . ' WHERE status IN (' . $placeholders . ')',
+					...$statuses
+				)
+			);
 		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
 	}
 
