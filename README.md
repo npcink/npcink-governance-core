@@ -172,7 +172,10 @@ approval, adoption, and WordPress writes stay local.
 When a local media optimization plan combines SEO metadata with derivative
 adoption, Core governs it as one `plan_to_proposal_batch` for a single
 attachment so the user approves the optimization intent once while Adapter
-still validates and executes each write action outside Core.
+still validates and executes each write action outside Core. Inline post-content
+media reference repair is not a separate batch action in that flow; it belongs
+to the local derivative adoption ability's dry-run/commit contract and may be
+shown as `content_reference_repairs` evidence in the derivative preview.
 
 The approval policy evaluator defaults to `manual`, records
 `proposal.policy_evaluated` for every created proposal, and supports two

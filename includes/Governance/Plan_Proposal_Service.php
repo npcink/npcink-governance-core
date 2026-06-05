@@ -807,10 +807,22 @@ final class Plan_Proposal_Service {
 			'magick-ai/adopt-cloud-media-derivative',
 			'magick-ai/replace-media-file',
 		);
+		$separate_reference_repair_targets = array(
+			'magick-ai/patch-post-content',
+			'magick-ai/update-post',
+			'magick-ai/update-post-blocks',
+		);
 		if ( empty( array_intersect( $targets, $derivative_targets ) ) ) {
 			return new WP_Error(
 				'magick_ai_core_media_optimization_derivative_missing',
 				__( 'Media optimization plans must include a governed derivative adoption action.', 'magick-ai-core' ),
+				array( 'status' => 422 )
+			);
+		}
+		if ( ! empty( array_intersect( $targets, $separate_reference_repair_targets ) ) ) {
+			return new WP_Error(
+				'magick_ai_core_media_optimization_reference_repair_split',
+				__( 'Media optimization plans must not split post-content media reference repair into a separate write action.', 'magick-ai-core' ),
 				array( 'status' => 422 )
 			);
 		}

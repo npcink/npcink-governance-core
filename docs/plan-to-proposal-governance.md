@@ -157,6 +157,12 @@ The plan must include:
   `magick-ai/adopt-cloud-media-derivative` or `magick-ai/replace-media-file`;
 - dry-run preview evidence for the metadata change and derivative change.
 
+If derivative adoption will also update old inline media URLs in post content,
+that repair evidence must stay inside the derivative action preview as
+`content_reference_repairs`. A media optimization plan must not add a separate
+`magick-ai/patch-post-content`, `magick-ai/update-post`, or
+`magick-ai/update-post-blocks` write action for the same user intent.
+
 Cloud may create or return a derivative artifact, checksum, mime type, size
 preview, or processing diagnostics through the local Cloud Addon path, but
 final proposal, approval, adoption, and WordPress writes stay local. Core does

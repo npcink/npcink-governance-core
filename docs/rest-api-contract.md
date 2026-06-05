@@ -402,7 +402,11 @@ For `magick-ai/build-media-optimization-plan`, the plan must declare
 `batch_approval=true`, and target exactly one `attachment_id` across all
 actions. It must include `magick-ai/update-media-details` and either
 `magick-ai/adopt-cloud-media-derivative` or
-`magick-ai/replace-media-file`.
+`magick-ai/replace-media-file`. Post-content media reference repair belongs to
+that derivative action's dry-run and commit contract; Core rejects media
+optimization plans that split the repair into a separate
+`magick-ai/patch-post-content`, `magick-ai/update-post`, or
+`magick-ai/update-post-blocks` write action.
 
 For `magick-ai/build-media-rename-plan`, the plan must declare
 `artifact_type=media_rename_plan`, target exactly one `attachment_id`, and

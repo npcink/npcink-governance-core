@@ -1902,6 +1902,35 @@ magick_ai_core_fail_closed_assert( 'magick_ai_core_media_optimization_attachment
 
 $wpdb  = magick_ai_core_fail_closed_reset_db();
 $stack = magick_ai_core_fail_closed_plan_stack();
+$media_optimization_split_repair = magick_ai_core_fail_closed_media_optimization_plan();
+$media_optimization_split_repair['write_actions'][] = array(
+	'action_id'         => 'repair_inline_media_reference',
+	'target_ability_id' => 'magick-ai/patch-post-content',
+	'input'             => array(
+		'post_id'          => 8842,
+		'operations'       => array(
+			array(
+				'op'      => 'replace',
+				'find'    => 'https://example.test/wp-content/uploads/2026/06/workflow-diagram-image-300x162.jpg',
+				'replace' => 'https://example.test/wp-content/uploads/2026/06/customer-approved-diagram.webp',
+				'limit'   => 1,
+			),
+		),
+		'dry_run'          => true,
+		'commit'           => false,
+		'idempotency_key'  => 'media-optimize-reference-repair-1493',
+	),
+	'risk'              => 'medium',
+	'requires_approval' => true,
+	'commit_execution'  => false,
+	'proposal_ready'    => true,
+);
+$media_optimization_split_repair_result = $stack['service']->create_from_plan( 'magick-ai/build-media-optimization-plan', $media_optimization_split_repair );
+magick_ai_core_fail_closed_assert( is_wp_error( $media_optimization_split_repair_result ), 'Media optimization plan with separate post-content repair action is rejected.' );
+magick_ai_core_fail_closed_assert( 'magick_ai_core_media_optimization_reference_repair_split' === $media_optimization_split_repair_result->get_error_code(), 'Media optimization split repair rejection uses stable error code.' );
+
+$wpdb  = magick_ai_core_fail_closed_reset_db();
+$stack = magick_ai_core_fail_closed_plan_stack();
 $media_rename_plan = magick_ai_core_fail_closed_media_rename_plan();
 $media_rename_result = $stack['service']->create_from_plan( 'magick-ai/build-media-rename-plan', $media_rename_plan, array(), array( 'source' => 'abilities_media_rename' ) );
 magick_ai_core_fail_closed_assert( ! is_wp_error( $media_rename_result ), 'Valid media rename plan creates a Core proposal.' );

@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-06-05 — Media optimization reference repair contract tightened
+
+- **Module**: Core media optimization plan-to-proposal contract.
+- **Status**: Core now rejects media optimization plans that split inline
+  post-content media reference repair into a separate post-content write
+  action.
+- **Completed**:
+  - Kept `magick-ai/build-media-optimization-plan` as one single-attachment
+    `plan_to_proposal_batch` with metadata and derivative adoption actions.
+  - Added a fail-closed guard against separate `magick-ai/patch-post-content`,
+    `magick-ai/update-post`, or `magick-ai/update-post-blocks` repair actions
+    in the same media optimization user intent.
+  - Documented that `content_reference_repairs` evidence belongs inside the
+    derivative adoption ability preview/commit contract.
+- **Verification**:
+  - `composer test:all`
+  - `WP_CLI_PHP="$HOME/Library/Application Support/Local/lightning-services/php-8.2.29+0/bin/darwin-arm64/bin/php" composer smoke:wp`
+  - `git diff --check`
+- **Boundary**:
+  - Core still only creates and governs proposal records. Cloud may provide
+    derivative artifacts, but final approval, adoption, inline reference
+    repair, and WordPress writes remain local and outside Core execution.
+
 ## 2026-06-04 — User-intent batch proposal contracts added
 
 - **Module**: Core plan-to-proposal governance contracts.

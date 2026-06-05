@@ -125,6 +125,11 @@ The media optimization handoff is the governed shape for the user intent
 for exactly one attachment, combining `magick-ai/update-media-details` with a
 derivative adoption action such as
 `magick-ai/adopt-cloud-media-derivative` or `magick-ai/replace-media-file`.
+Post-content media reference repair is part of the derivative adoption ability
+contract and must not be split into a separate `magick-ai/patch-post-content`,
+`magick-ai/update-post`, or `magick-ai/update-post-blocks` action inside the
+media optimization batch. Plans may expose the adoption dry-run
+`content_reference_repairs` evidence in the derivative preview for review.
 Cloud may provide derivative artifacts and diagnostics, but approval, adoption,
 and WordPress writes stay local and outside Core execution.
 
