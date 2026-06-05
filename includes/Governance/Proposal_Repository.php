@@ -409,14 +409,14 @@ final class Proposal_Repository {
 
 		$placeholders = implode( ', ', array_fill( 0, count( $statuses ), '%s' ) );
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL uses fixed clauses, generated placeholders, and a table name from the WordPress prefix.
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL uses fixed clauses, generated placeholders, and a table name from the WordPress prefix.
 		return (int) $wpdb->get_var(
 				$wpdb->prepare(
 					'SELECT COUNT(*) FROM ' . $this->table_name() . ' WHERE status IN (' . $placeholders . ')',
 					...$statuses
 				)
 			);
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,PluginCheck.Security.DirectDB.UnescapedDBParameter
 	}
 
 	/**
