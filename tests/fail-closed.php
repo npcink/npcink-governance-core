@@ -576,6 +576,16 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
+			'npcink-toolbox/build-site-knowledge-review-plan' => array(
+				'ability_id'        => 'npcink-toolbox/build-site-knowledge-review-plan',
+				'label'             => 'Build Site Knowledge Review Plan',
+				'risk_level'        => 'read',
+				'requires_approval' => false,
+				'capability'        => 'manage_options',
+				'required_scopes'   => array( 'cap.toolbox.workflow_suggest' ),
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
 			'npcink-abilities-toolkit/build-media-optimization-plan' => array(
 				'ability_id'        => 'npcink-abilities-toolkit/build-media-optimization-plan',
 				'label'             => 'Build Media Optimization Plan',
@@ -1690,6 +1700,67 @@ function npcink_governance_core_fail_closed_image_candidate_adoption_plan(): arr
 	);
 }
 
+/**
+ * Creates a representative Site Knowledge review plan.
+ *
+ * @return array<string,mixed>
+ */
+function npcink_governance_core_fail_closed_site_knowledge_review_plan(): array {
+	return array(
+		'artifact_type'          => 'site_knowledge_review_plan',
+		'version'                => 1,
+		'batch_id'               => 'site_knowledge_review_fault_injection',
+		'requires_approval'      => true,
+		'dry_run'                => true,
+		'commit_execution'       => false,
+		'proposal_mode'          => 'single',
+		'write_posture'          => 'core_proposal_handoff',
+		'direct_wordpress_write' => false,
+		'agent_id'               => 'site_knowledge_suggestion_agent',
+		'agent_version'          => 'site_knowledge_agent.v1',
+		'workflow'               => 'site_knowledge',
+		'intent'                 => 'content_gap',
+		'cloud_output'           => 'proposal_candidate',
+		'local_next_action'      => 'operator_review',
+		'evidence_gate_status'   => 'passed',
+		'evidence_refs'          => array(
+			array(
+				'title'          => 'Existing site article',
+				'url'            => 'https://example.test/existing-article',
+				'post_id'        => 1493,
+				'source_type'    => 'post',
+				'suggested_use'  => 'supporting_evidence',
+			),
+		),
+		'blocked_outputs'        => array( 'direct_wordpress_write' ),
+		'preview'                => array(
+			array(
+				'action_id'      => 'review_site_knowledge_gap',
+				'proposal_ready' => false,
+			),
+		),
+		'write_actions'          => array(
+			array(
+				'action_id'         => 'review_site_knowledge_gap',
+				'target_ability_id' => 'npcink-abilities-toolkit/create-draft',
+				'input'             => array(
+					'title'           => '',
+					'content'         => '',
+					'status'          => 'draft',
+					'dry_run'         => true,
+					'commit'          => false,
+					'idempotency_key' => 'site-knowledge-review-fixture',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => false,
+				'requires_input'    => array( 'title', 'content' ),
+			),
+		),
+	);
+}
+
 $proposal_table = 'wp_npcink_governance_core_proposals';
 $audit_table    = 'wp_npcink_governance_core_audit_log';
 $app_table      = 'wp_npcink_governance_core_app_keys';
@@ -2000,6 +2071,35 @@ $image_candidate_bad_source['write_actions'][0]['input']['source_type'] = 'unsup
 $image_candidate_bad_source_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-image-candidate-adoption-plan', $image_candidate_bad_source );
 npcink_governance_core_fail_closed_assert( is_wp_error( $image_candidate_bad_source_result ), 'Image candidate adoption plan with invalid source_type is rejected.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_image_candidate_source_type_invalid' === $image_candidate_bad_source_result->get_error_code(), 'Image candidate invalid source type rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$site_knowledge_plan = npcink_governance_core_fail_closed_site_knowledge_review_plan();
+$site_knowledge_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-site-knowledge-review-plan', $site_knowledge_plan, array(), array( 'source' => 'toolbox_site_knowledge_review' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $site_knowledge_result ), 'Valid Site Knowledge review plan creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $site_knowledge_result['proposal_count'] ?? 0 ), 'Valid Site Knowledge review plan creates one blocked proposal.' );
+npcink_governance_core_fail_closed_assert( 0 === (int) ( $site_knowledge_result['proposal_ready_count'] ?? 0 ), 'Site Knowledge review proposal is not proposal-ready before human draft input.' );
+$site_knowledge_proposal = is_array( $site_knowledge_result['proposals'][0] ?? null ) ? $site_knowledge_result['proposals'][0] : array();
+npcink_governance_core_fail_closed_assert( 'npcink-abilities-toolkit/create-draft' === (string) ( $site_knowledge_proposal['ability_id'] ?? '' ), 'Site Knowledge review plan targets the governed create-draft ability.' );
+npcink_governance_core_fail_closed_assert( false === (bool) ( $site_knowledge_proposal['preview']['proposal_ready'] ?? true ), 'Site Knowledge review proposal stores proposal_ready=false.' );
+npcink_governance_core_fail_closed_assert( in_array( 'title', (array) ( $site_knowledge_proposal['preview']['needs_input'] ?? array() ), true ), 'Site Knowledge review proposal requires title input.' );
+npcink_governance_core_fail_closed_assert( isset( $site_knowledge_proposal['preview']['site_knowledge_review'] ), 'Site Knowledge review preview is preserved in the proposal.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$site_knowledge_ready = npcink_governance_core_fail_closed_site_knowledge_review_plan();
+$site_knowledge_ready['write_actions'][0]['proposal_ready'] = true;
+$site_knowledge_ready_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-site-knowledge-review-plan', $site_knowledge_ready );
+npcink_governance_core_fail_closed_assert( is_wp_error( $site_knowledge_ready_result ), 'Site Knowledge review plan marked ready is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_site_knowledge_ready_rejected' === $site_knowledge_ready_result->get_error_code(), 'Site Knowledge ready rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$site_knowledge_missing_evidence = npcink_governance_core_fail_closed_site_knowledge_review_plan();
+$site_knowledge_missing_evidence['evidence_refs'] = array();
+$site_knowledge_missing_evidence_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-site-knowledge-review-plan', $site_knowledge_missing_evidence );
+npcink_governance_core_fail_closed_assert( is_wp_error( $site_knowledge_missing_evidence_result ), 'Site Knowledge review plan without evidence is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_site_knowledge_evidence_missing' === $site_knowledge_missing_evidence_result->get_error_code(), 'Site Knowledge missing evidence rejection uses stable error code.' );
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();
 $wpdb->fail_insert_tables[] = $proposal_table;

@@ -58,6 +58,7 @@ abilities:
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
 - `npcink-toolbox/build-image-candidate-adoption-plan`
+- `npcink-toolbox/build-site-knowledge-review-plan`
 
 They must remain discoverable as `governance_mode=direct_read` with
 `execution_surface=wp_abilities_rest`. Core does not execute them. A host or
@@ -96,6 +97,13 @@ candidate and dry-run actions for `npcink-abilities-toolkit/upload-media-from-ur
 `npcink-abilities-toolkit/set-post-featured-image`. It does not move stock search, AI image
 generation, media import, featured-image setting, workflow state, or Cloud
 writing into Core.
+
+`npcink-toolbox/build-site-knowledge-review-plan` is the review-only Site
+Knowledge agent handoff owned by Toolbox. Core accepts it only as a
+`site_knowledge_review_plan` with preserved evidence refs and one blocked
+`npcink-abilities-toolkit/create-draft` review action that requires human
+`title` and `content` input. It does not move Cloud Site Knowledge into a
+write owner, article generator, approval store, or preflight bypass.
 
 `npcink-abilities-toolkit/build-media-optimization-plan` is the bounded local media
 optimization handoff owned by `npcink-abilities-toolkit` or a local product plugin.

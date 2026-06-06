@@ -36,6 +36,7 @@ final class Plan_Proposal_Service {
 		'npcink-toolbox/build-article-batch-write-plan'                      => true,
 		'npcink-toolbox/build-article-media-batch-write-plan'                => true,
 		'npcink-toolbox/build-image-candidate-adoption-plan'                 => true,
+		'npcink-toolbox/build-site-knowledge-review-plan'                    => true,
 	);
 
 	private const ARTICLE_BATCH_MAX_ACTIONS = 5;
@@ -147,6 +148,13 @@ final class Plan_Proposal_Service {
 			$image_candidate_contract_error = $this->validate_image_candidate_adoption_plan_contract( $plan );
 			if ( is_wp_error( $image_candidate_contract_error ) ) {
 				return $image_candidate_contract_error;
+			}
+		}
+
+		if ( 'npcink-toolbox/build-site-knowledge-review-plan' === $plan_ability_id ) {
+			$site_knowledge_contract_error = $this->validate_site_knowledge_review_plan_contract( $plan );
+			if ( is_wp_error( $site_knowledge_contract_error ) ) {
+				return $site_knowledge_contract_error;
 			}
 		}
 
@@ -756,6 +764,100 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Validates a Site Knowledge review plan from the Toolbox agent handoff.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_site_knowledge_review_plan_contract( array $plan ) {
+		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
+		if ( 'site_knowledge_review_plan' !== $artifact_type ) {
+			return new WP_Error(
+				'npcink_governance_core_site_knowledge_review_plan_invalid',
+				__( 'Site Knowledge review plans must declare artifact_type=site_knowledge_review_plan.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true === (bool) ( $plan['direct_wordpress_write'] ?? false ) ) {
+			return new WP_Error(
+				'npcink_governance_core_site_knowledge_direct_write_rejected',
+				__( 'Site Knowledge review plans must not claim direct WordPress write authority.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$evidence_refs = is_array( $plan['evidence_refs'] ?? null ) ? array_values( $plan['evidence_refs'] ) : array();
+		if ( empty( $evidence_refs ) ) {
+			return new WP_Error(
+				'npcink_governance_core_site_knowledge_evidence_missing',
+				__( 'Site Knowledge review plans must preserve evidence_refs from the Cloud handoff.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( 1 !== count( $write_actions ) || ! is_array( $write_actions[0] ?? null ) ) {
+			return new WP_Error(
+				'npcink_governance_core_site_knowledge_action_count_rejected',
+				__( 'Site Knowledge review plans must contain exactly one blocked create-draft review action.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$action = $write_actions[0];
+		if ( 'npcink-abilities-toolkit/create-draft' !== sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_site_knowledge_target_rejected',
+				__( 'Site Knowledge review plans may target only create-draft as a non-ready review proposal.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true === (bool) ( $action['proposal_ready'] ?? true ) ) {
+			return new WP_Error(
+				'npcink_governance_core_site_knowledge_ready_rejected',
+				__( 'Site Knowledge review plans must remain not ready until a human supplies the draft fields.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$requires_input = array_values( array_map( 'sanitize_key', (array) ( $action['requires_input'] ?? array() ) ) );
+		foreach ( array( 'title', 'content' ) as $field ) {
+			if ( ! in_array( $field, $requires_input, true ) ) {
+				return new WP_Error(
+					'npcink_governance_core_site_knowledge_required_input_missing',
+					__( 'Site Knowledge review plans must require human title and content input.', 'npcink-governance-core' ),
+					array(
+						'status' => 422,
+						'field'  => $field,
+					)
+				);
+			}
+		}
+
+		$input  = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+		$status = sanitize_key( (string) ( $input['status'] ?? ( $input['post_status'] ?? 'draft' ) ) );
+		if ( '' !== $status && 'draft' !== $status ) {
+			return new WP_Error(
+				'npcink_governance_core_site_knowledge_publish_rejected',
+				__( 'Site Knowledge review plans may prepare draft proposals only.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true === (bool) ( $input['commit'] ?? false ) || false === (bool) ( $input['dry_run'] ?? true ) ) {
+			return new WP_Error(
+				'npcink_governance_core_site_knowledge_commit_rejected',
+				__( 'Site Knowledge review action input must remain dry-run and must not request commit.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		return true;
+	}
+
+	/**
 	 * Validates a media optimization plan for one user-intent approval.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -1293,6 +1395,29 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Builds preview context for Site Knowledge review plans.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function site_knowledge_review_preview( array $plan ): array {
+		return array(
+			'artifact_type'          => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
+			'version'                => absint( $plan['version'] ?? 0 ),
+			'agent_id'               => sanitize_key( (string) ( $plan['agent_id'] ?? '' ) ),
+			'agent_version'          => sanitize_text_field( (string) ( $plan['agent_version'] ?? '' ) ),
+			'workflow'               => sanitize_key( (string) ( $plan['workflow'] ?? '' ) ),
+			'intent'                 => sanitize_key( (string) ( $plan['intent'] ?? '' ) ),
+			'local_next_action'      => sanitize_key( (string) ( $plan['local_next_action'] ?? '' ) ),
+			'evidence_gate_status'   => sanitize_key( (string) ( $plan['evidence_gate_status'] ?? '' ) ),
+			'evidence_refs'          => $this->sanitize_payload( $plan['evidence_refs'] ?? array() ),
+			'blocked_outputs'        => $this->sanitize_payload( $plan['blocked_outputs'] ?? array() ),
+			'final_write_path'       => 'core_proposal_required',
+			'direct_wordpress_write' => false,
+		);
+	}
+
+	/**
 	 * Builds one Proposal_Service payload for a write action.
 	 *
 	 * @param string              $plan_ability_id Plan ability id.
@@ -1419,6 +1544,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'npcink-abilities-toolkit/build-media-rename-plan' === $plan_ability_id ) {
 			$preview['media_rename'] = $this->media_rename_preview( $plan );
+		}
+		if ( 'npcink-toolbox/build-site-knowledge-review-plan' === $plan_ability_id ) {
+			$preview['site_knowledge_review'] = $this->site_knowledge_review_preview( $plan );
 		}
 
 		$title = sprintf(

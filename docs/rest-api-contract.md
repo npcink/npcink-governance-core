@@ -353,6 +353,7 @@ abilities:
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
 - `npcink-toolbox/build-image-candidate-adoption-plan`
+- `npcink-toolbox/build-site-knowledge-review-plan`
 
 Permission: `manage_options` or app scope `proposals:create`.
 
@@ -396,6 +397,16 @@ exactly one `npcink-abilities-toolkit/upload-media-from-url` action, exactly one
 `npcink-abilities-toolkit/update-media-details` action, and at most one optional
 `npcink-abilities-toolkit/set-post-featured-image` action. Every action must be dry-run and
 must not request commit execution.
+
+For `npcink-toolbox/build-site-knowledge-review-plan`, the plan must declare
+`artifact_type=site_knowledge_review_plan`, preserve non-empty
+`evidence_refs`, and contain exactly one blocked
+`npcink-abilities-toolkit/create-draft` review action. The action must remain
+`proposal_ready=false`, require human `title` and `content` input, stay
+`status=draft`, and keep `dry_run=true`, `commit=false`, and
+`direct_wordpress_write=false`. This creates a Core review proposal only; it
+does not generate article content, approve the proposal, pass commit preflight,
+or execute WordPress writes.
 
 For `npcink-abilities-toolkit/build-media-optimization-plan`, the plan must declare
 `artifact_type=media_optimization_plan`, `proposal_mode=batch`,

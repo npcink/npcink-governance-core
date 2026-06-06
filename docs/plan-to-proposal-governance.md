@@ -19,6 +19,7 @@ an execution bridge.
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
 - `npcink-toolbox/build-image-candidate-adoption-plan`
+- `npcink-toolbox/build-site-knowledge-review-plan`
 
 The `npcink-abilities-toolkit/*` planning abilities belong to `npcink-abilities-toolkit`; the
 Toolbox article and image candidate handoffs belong to `npcink-toolbox`. They are executed
@@ -26,6 +27,12 @@ through the WordPress Abilities API by the host or adapter. Core only receives
 their output. The Toolbox plan is included here because Core can govern its
 write plan without owning Toolbox workflow UX, content generation, image
 search, or image generation.
+
+`npcink-toolbox/build-site-knowledge-review-plan` is a narrow bridge from the
+Cloud Site Knowledge agent handoff into local Core review. The plan must carry
+evidence refs and create only a blocked draft-review proposal with human
+`title` and `content` input still required. It is not an autonomous article
+writer, Cloud write path, or approval/preflight bypass.
 
 ## Boundary
 

@@ -78,6 +78,7 @@ Core may consume these read-only planning ability outputs:
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
 - `npcink-toolbox/build-image-candidate-adoption-plan`
+- `npcink-toolbox/build-site-knowledge-review-plan`
 
 Plan intake does not execute the plan ability and does not execute target write
 abilities. It accepts a successful plan payload, validates that the planning
@@ -118,6 +119,14 @@ candidate, one `npcink-abilities-toolkit/upload-media-from-url` action, one
 `npcink-abilities-toolkit/set-post-featured-image` action. Core stores the grouped proposal
 only; it does not search stock providers, generate images, import media, set
 featured images, or execute writes.
+
+The Site Knowledge agent handoff is a review-only bridge. Core accepts
+`npcink-toolbox/build-site-knowledge-review-plan` only when it is a
+`site_knowledge_review_plan` with preserved `evidence_refs` and one
+non-ready `npcink-abilities-toolkit/create-draft` action requiring human
+`title` and `content` input. Core stores a blocked review proposal only; it
+does not generate drafts, approve proposals, pass commit preflight, or execute
+WordPress writes from Cloud Site Knowledge output.
 
 The media optimization handoff is the governed shape for the user intent
 "optimize this attachment." Core accepts
