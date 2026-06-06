@@ -1,5 +1,37 @@
 # Session Breadcrumb
 
+## 2026-06-07 — Media optimization execution closure tightened
+
+- **Module**: Core/Adapter/Abilities media optimization governance closure.
+- **Status**: Media optimization proposals now expose clearer review,
+  readiness, execution, and verification signals while keeping Core out of
+  final WordPress writes.
+- **Completed**:
+  - Added Adapter-derived proposal detail fields for execution status,
+    executability, non-executable reason, cached/audited preflight state, and
+    media optimization readiness checks.
+  - Added Abilities media replacement/adoption/restore verification summaries,
+    separated reference repair rule counts from actual replacements, and made
+    restore-media-backup apply reverse post-content reference repairs.
+  - Improved Core media optimization batch proposal summaries with
+    attachment, derivative, metadata, reference repair, one-approval, and
+    rollback details for reviewers.
+  - Synced Adapter stale smoke contracts from old site-summary/test-cleanup
+    ability names to current site-info/nonproduction cleanup contracts.
+- **Verification**:
+  - `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+  - `/Users/muze/gitee/magick-ai-core`: `composer smoke:wp`
+  - `/Users/muze/gitee/magick-ai-adapter`: `composer test:all`
+  - `/Users/muze/gitee/magick-ai-adapter`: `composer smoke:wp`
+  - `/Users/muze/gitee/npcink-abilities-toolkit`: `composer test:all`
+  - `/Users/muze/gitee/npcink-abilities-toolkit`: `WP_CLI=/tmp/wp-cli.phar WP_CLI_PHP="$HOME/Library/Application Support/Local/lightning-services/php-8.2.29+0/bin/darwin-arm64/bin/php" WP_CLI_ERROR_REPORTING=8191 WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" composer smoke:wp`
+- **Boundary**:
+  - Core remains proposal, approval, preflight, and audit truth only.
+    Adapter owns derived execution/readiness status because it performs the
+    post-Core execution handoff. Abilities owns local write verification and
+    media reference repair behavior. Cloud Addon remains runtime/detail and is
+    not used as a second artifact or approval truth.
+
 ## 2026-06-07 — Media defaults moved to Toolbox
 
 - **Module**: Core/Toolbox media optimization boundary.

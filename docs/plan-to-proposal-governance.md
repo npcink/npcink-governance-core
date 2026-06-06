@@ -169,6 +169,12 @@ that repair evidence must stay inside the derivative action preview as
 `content_reference_repairs`. A media optimization plan must not add a separate
 `npcink-abilities-toolkit/patch-post-content`, `npcink-abilities-toolkit/update-post`, or
 `npcink-abilities-toolkit/update-post-blocks` write action for the same user intent.
+For review, Core turns this plan into a human-readable proposal summary that
+highlights the attachment id, MIME/file replacement, reviewed derivative
+filename or dimensions when present, metadata update intent, expected inline
+reference repairs, one Core approval for the ordered actions, and local backup
+rollback availability. The summary is review copy only; final writes and
+verification still belong to Adapter and the local write abilities.
 
 Cloud may create or return a derivative artifact, checksum, mime type, size
 preview, or processing diagnostics through the local Cloud Addon path, but

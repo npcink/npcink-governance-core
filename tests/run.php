@@ -1047,6 +1047,7 @@ foreach (
 		'article_batch_workflow_preview',
 		'article_media_batch_workflow_preview',
 		'media_optimization_preview',
+		'media_optimization_proposal_summary',
 		'media_rename_preview',
 		'site_knowledge_review_preview',
 		'article_workflow_artifact_keys',
@@ -1100,6 +1101,8 @@ foreach (
 		'manual_review',
 		'commit_execution',
 		'dry_run',
+		'Repair inline references',
+		'Preserve the original file as a local backup for rollback',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $plan_proposal_service, $required ), 'Plan-to-proposal service contains required text: ' . $required );

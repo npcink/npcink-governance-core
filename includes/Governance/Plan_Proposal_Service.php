@@ -1744,6 +1744,15 @@ final class Plan_Proposal_Service {
 		if ( 'npcink-abilities-toolkit/build-media-rename-plan' === $plan_ability_id ) {
 			$preview['media_rename'] = $this->media_rename_preview( $plan );
 		}
+		$summary = sprintf(
+			/* translators: 1: plan ability id, 2: action count. */
+			__( 'Created from %1$s as an ordered batch with %2$d actions. Final execution remains outside Core.', 'npcink-governance-core' ),
+			$plan_ability_id,
+			count( $batch_actions )
+		);
+		if ( 'npcink-abilities-toolkit/build-media-optimization-plan' === $plan_ability_id ) {
+			$summary = $this->media_optimization_proposal_summary( $plan, count( $batch_actions ), $summary );
+		}
 
 		return array(
 			'ability_id' => sanitize_text_field( (string) ( $first['ability_id'] ?? ( $first_preview['target_ability_id'] ?? '' ) ) ),
@@ -1753,12 +1762,7 @@ final class Plan_Proposal_Service {
 				$plan_ability_id,
 				$batch_id
 			),
-			'summary'    => sprintf(
-				/* translators: 1: plan ability id, 2: action count. */
-				__( 'Created from %1$s as an ordered batch with %2$d actions. Final execution remains outside Core.', 'npcink-governance-core' ),
-				$plan_ability_id,
-				count( $batch_actions )
-			),
+			'summary'    => $summary,
 			'input'      => array(
 				'write_actions' => $batch_actions,
 				'dry_run'       => true,
@@ -1775,6 +1779,98 @@ final class Plan_Proposal_Service {
 				)
 			),
 		);
+	}
+
+	/**
+	 * Builds a human-readable approval summary for media optimization batches.
+	 *
+	 * @param array<string,mixed> $plan Plan payload.
+	 * @param int                 $action_count Batch action count.
+	 * @param string              $fallback Fallback summary.
+	 * @return string
+	 */
+	private function media_optimization_proposal_summary( array $plan, int $action_count, string $fallback ): string {
+		$attachment_id = absint( $plan['attachment_id'] ?? 0 );
+		$derivative_preview = is_array( $plan['derivative_preview'] ?? null ) ? $plan['derivative_preview'] : array();
+		$before = is_array( $derivative_preview['before'] ?? null ) ? $derivative_preview['before'] : array();
+		$after  = is_array( $derivative_preview['after'] ?? null ) ? $derivative_preview['after'] : array();
+		$metadata_preview = is_array( $plan['metadata_preview'] ?? null ) ? $plan['metadata_preview'] : array();
+		$metadata_after   = is_array( $metadata_preview['after'] ?? null ) ? $metadata_preview['after'] : array();
+		$repairs = is_array( $derivative_preview['content_reference_repairs'] ?? null ) ? $derivative_preview['content_reference_repairs'] : array();
+
+		if ( $attachment_id <= 0 || empty( $derivative_preview ) ) {
+			return $fallback;
+		}
+
+		$reviewed_file = '';
+		foreach ( (array) ( $plan['write_actions'] ?? array() ) as $action ) {
+			if ( ! is_array( $action ) || 'npcink-abilities-toolkit/adopt-cloud-media-derivative' !== (string) ( $action['target_ability_id'] ?? '' ) ) {
+				continue;
+			}
+			$input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+			$reviewed_file = sanitize_text_field( basename( str_replace( '\\', '/', (string) ( $input['file_name'] ?? '' ) ) ) );
+			break;
+		}
+
+		$lines = array();
+		$from_mime = sanitize_text_field( (string) ( $before['mime_type'] ?? '' ) );
+		$to_mime   = sanitize_text_field( (string) ( $after['mime_type'] ?? '' ) );
+		if ( '' !== $from_mime || '' !== $to_mime ) {
+			$lines[] = sprintf(
+				/* translators: 1: attachment id, 2: source MIME type, 3: target MIME type. */
+				__( 'Optimize attachment %1$d: replace %2$s with %3$s.', 'npcink-governance-core' ),
+				$attachment_id,
+				'' !== $from_mime ? $from_mime : __( 'the current file', 'npcink-governance-core' ),
+				'' !== $to_mime ? $to_mime : __( 'the reviewed derivative', 'npcink-governance-core' )
+			);
+		} else {
+			$lines[] = sprintf(
+				/* translators: %d: attachment id. */
+				__( 'Optimize attachment %d with the reviewed media derivative.', 'npcink-governance-core' ),
+				$attachment_id
+			);
+		}
+
+		$width  = absint( $after['width'] ?? 0 );
+		$height = absint( $after['height'] ?? 0 );
+		if ( $width > 0 && $height > 0 ) {
+			$lines[] = sprintf(
+				/* translators: 1: width, 2: height. */
+				__( 'Reviewed derivative dimensions: %1$d x %2$d.', 'npcink-governance-core' ),
+				$width,
+				$height
+			);
+		}
+		if ( '' !== $reviewed_file ) {
+			$lines[] = sprintf(
+				/* translators: %s: reviewed file basename. */
+				__( 'Reviewed derivative filename: %s.', 'npcink-governance-core' ),
+				$reviewed_file
+			);
+		}
+		if ( ! empty( $metadata_after ) ) {
+			$lines[] = __( 'Update reviewed media title, alt text, caption, description, or source metadata.', 'npcink-governance-core' );
+		}
+
+		$post_count = absint( $repairs['post_count'] ?? 0 );
+		$actual_replacement_count = absint( $repairs['actual_replacement_count'] ?? ( $repairs['replacement_count'] ?? 0 ) );
+		if ( $post_count > 0 || $actual_replacement_count > 0 ) {
+			$lines[] = sprintf(
+				/* translators: 1: post count, 2: replacement count. */
+				__( 'Repair inline references in %1$d post(s), with %2$d actual replacement(s) expected.', 'npcink-governance-core' ),
+				$post_count,
+				$actual_replacement_count
+			);
+		}
+
+		$lines[] = sprintf(
+			/* translators: %d: action count. */
+			__( 'Create one Core approval for %d ordered action(s); final execution remains outside Core.', 'npcink-governance-core' ),
+			$action_count
+		);
+		$lines[] = __( 'Preserve the original file as a local backup for rollback.', 'npcink-governance-core' );
+
+		return implode( "\n", array_values( array_filter( $lines ) ) );
 	}
 
 	/**
