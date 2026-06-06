@@ -13,7 +13,7 @@ runtime, settings, data, and capability boundary.
 All Npcink operator surfaces should use:
 
 - top-level menu title: `Npcink`
-- top-level slug: `npcink`
+- top-level slug: `npcink-ai`
 - capability: `manage_options`
 - icon: `dashicons-superhero`
 - position: `58`

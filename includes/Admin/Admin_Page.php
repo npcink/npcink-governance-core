@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Renders a compact governance overview.
  */
 final class Admin_Page {
-	const PARENT_MENU_SLUG  = 'npcink';
+	const PARENT_MENU_SLUG  = 'npcink-ai';
 	const MENU_SLUG         = 'npcink-governance-core';
 	const MENU_CAPABILITY   = 'manage_options';
 	const REVIEW_PAGE_SIZE  = 20;

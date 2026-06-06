@@ -1,5 +1,20 @@
 # Session Breadcrumb
 
+## 2026-06-06 — Release gate passed for shared admin slug
+
+- **Module**: Core admin menu release readiness.
+- **Status**: Core now targets the shared `npcink-ai` parent menu slug for the
+  local admin surface and documents the same slug in the admin menu standard.
+- **Completed**:
+  - Updated the Core admin page parent slug.
+  - Updated the admin menu standard and static contract assertion.
+- **Verification**:
+  - `composer release:verify`
+  - `WP_CLI_PHP="$HOME/Library/Application Support/Local/lightning-services/php-8.2.29+0/bin/darwin-arm64/bin/php" composer smoke:wp`
+- **Boundary**:
+  - Admin surface routing only. No governance lifecycle, REST contract,
+    execution, workflow runtime, provider, or ability ownership changes.
+
 ## 2026-06-06 — Third-party ability provider boundary clarified
 
 - **Module**: Core ability intake and public integration contracts.
