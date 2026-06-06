@@ -37,6 +37,8 @@ Use this public identity for the WordPress.org upload:
 
 - plugin display name: `Npcink Governance Core`;
 - package slug and text domain: `npcink-governance-core`;
+- top-level menu and product suite: `Npcink AI`;
+- reviewer-facing description: `Npcink AI governance layer for WordPress operations`;
 - main package file: `npcink-governance-core/npcink-governance-core.php`;
 - REST namespace: `/wp-json/npcink-governance-core/v1/`;
 - author: `Npcink`.
@@ -93,7 +95,7 @@ Use the Additional Information field to help reviewers understand the plugin's
 technical boundary. Prefer this reviewer-facing text over marketing copy:
 
 ```text
-Npcink Governance Core is a WordPress governance layer for reviewing and approving AI-initiated WordPress actions before execution.
+Npcink Governance Core is the Npcink AI governance layer for WordPress operations, reviewing and approving AI-initiated WordPress actions before execution.
 
 The plugin registers REST endpoints under /wp-json/npcink-governance-core/v1/ and stores proposals, audit events, app keys, and rate-limit state in custom WordPress database tables. These direct database queries are intentional because the plugin owns those tables.
 

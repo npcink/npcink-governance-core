@@ -2,13 +2,15 @@
 
 Status: active for the new Npcink Governance Core rebuild.
 
-Npcink Governance Core is the WordPress AI operation governance layer: it lets agents,
+Npcink Governance Core is the Npcink AI governance layer for WordPress operations: it lets agents,
 tools, and product plugins safely request, review, approve, and audit WordPress
 changes.
 
 ## One-Sentence Positioning
 
 Npcink Governance Core governs AI-assisted WordPress operations.
+
+External explanation: Npcink AI governance layer for WordPress operations.
 
 ## Core Jobs
 

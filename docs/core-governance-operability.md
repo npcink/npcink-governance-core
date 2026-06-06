@@ -9,7 +9,7 @@ make an approval decision with enough context?
 
 ## Positioning
 
-Core remains the WordPress AI operation governance layer. This operability work
+Core remains the Npcink AI governance layer for WordPress operations. This operability work
 does not make Core an ability executor, workflow runtime, MCP runtime, product
 console, or general observability platform.
 
@@ -79,7 +79,7 @@ ability or final WordPress mutation.
 
 ### Governance Audit Admin View
 
-`Npcink -> Core` keeps recent activity on the default review workbench and
+`Npcink AI -> Core` keeps recent activity on the default review workbench and
 links to a dedicated `Governance Audit` view for full inspection. It is an
 operator view over Core audit records, not an AI request log viewer.
 

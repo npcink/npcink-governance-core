@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Npcink Governance Core
- * Description: WordPress AI operation governance layer for ability intake, proposals, approval boundaries, and audit logs.
+ * Description: Npcink AI governance layer for WordPress operations.
  * Version: 0.1.0
  * Requires at least: 7.0
  * Requires PHP: 8.0

@@ -1,6 +1,6 @@
 # Npcink Governance Core
 
-Npcink Governance Core is the WordPress AI operation governance layer.
+Npcink Governance Core is the Npcink AI governance layer for WordPress operations.
 
 It does not generate content, own product workflows, route models, or replace
 the WordPress Abilities API. It discovers agent-callable abilities from
@@ -204,7 +204,7 @@ not store prompts, responses, token metrics, provider credentials, or provider
 request logs.
 
 For Core governance credentials, WordPress administrators can open the
-collapsed `Advanced Access` entry from `Npcink -> Core` to create a scoped
+collapsed `Advanced Access` entry from `Npcink AI -> Core` to create a scoped
 one-time app token and disable leaked or obsolete keys. This screen is a
 governance fallback, not an OpenClaw onboarding surface. Productized OpenClaw
 setup, local TLS client configuration, agent rules, and handoff instructions

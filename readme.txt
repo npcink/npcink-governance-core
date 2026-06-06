@@ -8,11 +8,11 @@ Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-WordPress AI operation governance layer for ability intake, proposals, approval boundaries, and audit logs.
+Npcink AI governance layer for WordPress operations.
 
 == Description ==
 
-Npcink Governance Core is the governance layer for AI-assisted WordPress operations. It discovers ability metadata, records proposals, supports approval and rejection, performs commit preflight, and writes audit evidence.
+Npcink Governance Core is the Npcink AI governance layer for WordPress operations. It discovers ability metadata, records proposals, supports approval and rejection, performs commit preflight, and writes audit evidence.
 
 Core does not generate content, route models, run MCP or workflow runtimes, store provider credentials, proxy ability execution, or perform final WordPress mutations.
 
@@ -20,7 +20,7 @@ Core does not generate content, route models, run MCP or workflow runtimes, stor
 
 1. Upload the plugin to `wp-content/plugins/npcink-governance-core`.
 2. Activate Npcink Governance Core in WordPress.
-3. Open Npcink > Core to review governance status, proposals, audit entries, and advanced Core app-key controls.
+3. Open Npcink AI > Core to review governance status, proposals, audit entries, and advanced Core app-key controls.
 
 == Frequently Asked Questions ==
 

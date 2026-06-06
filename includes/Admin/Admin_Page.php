@@ -162,8 +162,8 @@ final class Admin_Page {
 		}
 
 		add_menu_page(
-			__( 'Npcink', 'npcink-governance-core' ),
-			__( 'Npcink', 'npcink-governance-core' ),
+			__( 'Npcink AI', 'npcink-governance-core' ),
+			__( 'Npcink AI', 'npcink-governance-core' ),
 			self::MENU_CAPABILITY,
 			self::PARENT_MENU_SLUG,
 			array( $this, 'render_overview' ),
@@ -173,7 +173,7 @@ final class Admin_Page {
 
 		add_submenu_page(
 			self::PARENT_MENU_SLUG,
-			__( 'Npcink Overview', 'npcink-governance-core' ),
+			__( 'Npcink AI Overview', 'npcink-governance-core' ),
 			__( 'Overview', 'npcink-governance-core' ),
 			self::MENU_CAPABILITY,
 			self::PARENT_MENU_SLUG,
@@ -210,7 +210,7 @@ final class Admin_Page {
 		}
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html__( 'Npcink', 'npcink-governance-core' ); ?></h1>
+			<h1><?php echo esc_html__( 'Npcink AI', 'npcink-governance-core' ); ?></h1>
 			<p><?php echo esc_html__( 'Local WordPress entry points for Npcink governance, connections, cloud access, and ability packages.', 'npcink-governance-core' ); ?></p>
 			<h2><?php echo esc_html__( 'Installed Surfaces', 'npcink-governance-core' ); ?></h2>
 			<table class="widefat striped npcink-governance-core-table-narrow">

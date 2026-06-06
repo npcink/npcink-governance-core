@@ -1,6 +1,6 @@
 # Core Admin Surface Standard
 
-Status: active for `Npcink -> Core`.
+Status: active for `Npcink AI -> Core`.
 
 ## Purpose
 

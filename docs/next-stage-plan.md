@@ -161,7 +161,7 @@ Goal: let humans review pending proposals inside WordPress.
 
 Screen:
 
-- Npcink -> Core
+- Npcink AI -> Core
 
 Acceptance:
 
@@ -186,7 +186,7 @@ Acceptance:
 Current implementation:
 
 - app keys are created by admin-only `POST /apps`;
-- app keys can also be created from `Npcink -> Core` under the collapsed
+- app keys can also be created from `Npcink AI -> Core` under the collapsed
   `Advanced Access` entry;
 - the admin UI keeps Core app-key management out of first-level Core tabs while
   preserving one-time token display on the creation result page and paginated

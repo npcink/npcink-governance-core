@@ -178,7 +178,7 @@ stored only as `secret_hash`. `GET /apps`, proposals, and audit rows must not
 return raw app secrets or secret hashes.
 
 Administrators can also create the same scoped app token from the `Core App
-Keys` view under `Npcink -> Core`. The default admin view stays focused on
+Keys` view under `Npcink AI -> Core`. The default admin view stays focused on
 status, pending proposals, and recent activity; app-key creation and revocation
 are low-frequency fallback actions. The raw token and minimal Core environment
 variables are displayed only on the creation result screen. Productized

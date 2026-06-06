@@ -12,7 +12,7 @@ runtime, settings, data, and capability boundary.
 
 All Npcink operator surfaces should use:
 
-- top-level menu title: `Npcink`
+- top-level menu title: `Npcink AI`
 - top-level slug: `npcink-ai`
 - capability: `manage_options`
 - icon: `dashicons-superhero`
@@ -56,10 +56,10 @@ OpenClaw handoff, Cloud configuration, or Abilities API test workflows.
 
 User-facing docs should refer to these admin paths:
 
-- `Npcink -> Core`
-- `Npcink -> Adapter`
-- `Npcink -> Abilities`
-- `Npcink -> Cloud Addon`
+- `Npcink AI -> Core`
+- `Npcink AI -> Adapter`
+- `Npcink AI -> Abilities`
+- `Npcink AI -> Cloud Addon`
 
 Only the standalone Abilities fallback should mention
 `Tools -> Abilities API Packages`.

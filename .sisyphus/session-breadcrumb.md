@@ -1,5 +1,27 @@
 # Session Breadcrumb
 
+## 2026-06-06 — Public naming contract aligned
+
+- **Module**: Core naming and release identity.
+- **Status**: Core keeps the WordPress.org plugin identity
+  `Npcink Governance Core` / `npcink-governance-core`, while the shared admin
+  suite displays as `Npcink AI` and the public explanation reads
+  `Npcink AI governance layer for WordPress operations`.
+- **Completed**:
+  - Updated the plugin header, WordPress readme, README, product positioning,
+    WordPress.org release copy, admin menu standard, and Core admin parent
+    labels.
+  - Kept the submenu label `Core` and slug/text-domain
+    `npcink-governance-core` unchanged.
+- **Verification**:
+  - `composer test:all`
+  - `composer check:wporg`
+  - `composer release:verify`
+  - `WP_CLI_PHP="$HOME/Library/Application Support/Local/lightning-services/php-8.2.29+0/bin/darwin-arm64/bin/php" composer smoke:wp`
+- **Boundary**:
+  - Naming and release identity only. No governance lifecycle, REST contract,
+    execution, workflow runtime, provider, or ability ownership changes.
+
 ## 2026-06-06 — Release gate passed for shared admin slug
 
 - **Module**: Core admin menu release readiness.

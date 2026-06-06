@@ -144,7 +144,7 @@ The same token may be sent as `X-Magick-AI-Core-App-Token` for clients that
 cannot set the `Authorization` header.
 
 WordPress administrators can issue tokens from either admin-only
-`POST /wp-json/npcink-governance-core/v1/apps` or the `Npcink -> Core`
+`POST /wp-json/npcink-governance-core/v1/apps` or the `Npcink AI -> Core`
 `Advanced Access` entry. Both paths use the same app identity store, default
 scope policy, and one-time raw-token display rule. The admin panel keeps app
 keys behind a low-frequency disclosure because it is a Core credential

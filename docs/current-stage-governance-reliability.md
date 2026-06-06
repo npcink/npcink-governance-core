@@ -8,7 +8,7 @@ fail-closed behavior that protects proposal, app-key, and audit integrity.
 
 ## Current Product Position
 
-Core is the WordPress AI operation governance layer. In the current stage Core
+Core is the Npcink AI governance layer for WordPress operations. In the current stage Core
 owns:
 
 - ability intake and target validation;

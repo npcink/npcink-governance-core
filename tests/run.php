@@ -64,6 +64,8 @@ function npcink_governance_core_project_files( string $root ): array {
 
 $main_plugin = npcink_governance_core_read( $root . '/npcink-governance-core.php' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Plugin Name: Npcink Governance Core' ), 'Main plugin file declares plugin header.' );
+npcink_governance_core_assert( false !== strpos( $main_plugin, 'Description: Npcink AI governance layer for WordPress operations.' ), 'Main plugin file declares the public positioning.' );
+npcink_governance_core_assert( false !== strpos( $main_plugin, 'Text Domain: npcink-governance-core' ), 'Main plugin file keeps the canonical text domain.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'register_activation_hook' ), 'Main plugin file registers activation hook.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'plugins_loaded' ), 'Main plugin file boots after plugins_loaded.' );
 npcink_governance_core_assert( false === strpos( $main_plugin, 'example.com' ), 'Main plugin header does not use placeholder Plugin URI.' );
@@ -71,7 +73,7 @@ npcink_governance_core_assert( false === strpos( $main_plugin, 'example.com' ), 
 $readme = npcink_governance_core_read( $root . '/README.md' );
 foreach (
 	array(
-		'WordPress AI operation governance layer',
+		'Npcink AI governance layer for WordPress operations',
 		'It does not generate content',
 		'Current Stage Governance Reliability',
 		'Approval Policy Evaluator Standard',
@@ -101,6 +103,8 @@ foreach (
 	array(
 		'=== Npcink Governance Core ===',
 		'Stable tag: 0.1.0',
+		'Npcink AI governance layer for WordPress operations.',
+		'Open Npcink AI > Core',
 		'Requires at least: 7.0',
 		'Tested up to: 7.0',
 		'Requires PHP: 8.0',
@@ -123,13 +127,14 @@ foreach ( array( 'tests', 'examples', 'docs', 'AGENTS.md', '.sisyphus', '.workbu
 
 $positioning = npcink_governance_core_read( $root . '/docs/product-positioning.md' );
 npcink_governance_core_assert( false !== strpos( $positioning, 'Npcink Governance Core governs AI-assisted WordPress operations.' ), 'Positioning keeps one-sentence product truth.' );
+npcink_governance_core_assert( false !== strpos( $positioning, 'External explanation: Npcink AI governance layer for WordPress operations.' ), 'Positioning keeps public explanation.' );
 npcink_governance_core_assert( false !== strpos( $positioning, '`npcink-abilities-toolkit`' ), 'Positioning names npcink-abilities-toolkit as ability owner.' );
 npcink_governance_core_assert( false !== strpos( $positioning, 'Third-party ability providers' ), 'Positioning names third-party ability providers.' );
 npcink_governance_core_assert( false !== strpos( $positioning, 'provider-neutral at the base proposal layer' ), 'Positioning keeps base proposals provider-neutral.' );
 npcink_governance_core_assert( false !== strpos( $positioning, '`npcink-content-assistant`' ), 'Positioning names Content Assistant as product UX owner.' );
 
 $admin_menu_standard = npcink_governance_core_read( $root . '/docs/admin-menu-standard.md' );
-foreach ( array( '`Npcink`', '`Core`', '`Adapter`', '`Abilities`', '`Cloud Addon`' ) as $required ) {
+foreach ( array( '`Npcink AI`', '`npcink-ai`', '`Core`', '`Adapter`', '`Abilities`', '`Cloud Addon`', '`Npcink AI -> Core`' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $admin_menu_standard, $required ), 'Admin menu standard documents required entry: ' . $required );
 }
 
@@ -138,6 +143,8 @@ foreach ( array( 'PARENT_MENU_SLUG', 'add_menu_page', 'add_submenu_page', 'Core'
 	npcink_governance_core_assert( false !== strpos( $admin_page, $required ), 'Admin page implements shared menu contract: ' . $required );
 }
 npcink_governance_core_assert( false !== strpos( $admin_page, "const PARENT_MENU_SLUG  = 'npcink-ai';" ), 'Admin page targets the shared Npcink AI parent menu slug.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Npcink AI', 'npcink-governance-core' )" ), 'Admin parent menu title is Npcink AI.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Npcink AI Overview', 'npcink-governance-core' )" ), 'Admin parent overview title is Npcink AI Overview.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Core', 'npcink-governance-core' ),\n\t\t\tself::MENU_CAPABILITY" ), 'Admin submenu title is Core.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'npcink-cloud-addon'" ), 'Admin overview links to the canonical Cloud Addon slug.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Cloud Addon', 'npcink-governance-core' )" ), 'Admin overview labels the Cloud Addon surface.' );
@@ -413,7 +420,7 @@ $core_operability = npcink_governance_core_read( $root . '/docs/core-governance-
 foreach (
 	array(
 		'minimal implementation active',
-		'Core remains the WordPress AI operation governance layer',
+		'Core remains the Npcink AI governance layer for WordPress operations',
 		'proposal audit timelines',
 		'audit filters',
 		'scope_decision',
@@ -812,7 +819,7 @@ npcink_governance_core_assert( false !== strpos( $testing_strategy, 'Allowed gov
 $reliability_standard = npcink_governance_core_read( $root . '/docs/current-stage-governance-reliability.md' );
 foreach (
 	array(
-		'Core is the WordPress AI operation governance layer',
+		'Core is the Npcink AI governance layer for WordPress operations',
 		'Core does not own final execution',
 		'app-key rotation and expiry automation are deferred',
 		'Adapter or another real external client',
