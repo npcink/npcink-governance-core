@@ -166,42 +166,11 @@ npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Core', 'npci
 npcink_governance_core_assert( false !== strpos( $admin_page, "'npcink-cloud-addon'" ), 'Admin overview links to the canonical Cloud Addon slug.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Cloud Addon', 'npcink-governance-core' )" ), 'Admin overview labels the Cloud Addon surface.' );
 
-$media_settings = npcink_governance_core_read( $root . '/includes/Media/Media_Derivative_Settings.php' );
-foreach (
-	array(
-		'Media_Derivative_Settings',
-		'npcink_governance_core_media_derivative_settings',
-		"'target_format'           => 'webp'",
-		"'max_width'               => 1600",
-		"'quality'                 => 82",
-		"'watermark_enabled'       => false",
-		"'watermark_attachment_id' => 0",
-		"'watermark_opacity'       => 80",
-		"'watermark_scale'         => 20",
-		"'watermark_margin'        => 24",
-		"'use_cloud_when_available' => true",
-		'preferred_format',
-		'target_max_width',
-		'target_format',
-		'max_width',
-		'sanitize_watermark_plan',
-		'sanitize_watermark_color',
-		'watermark',
-		"'type'       => 'text'",
-		'policy_owner',
-		'final_write_owner',
-	) as $required
-) {
-	npcink_governance_core_assert( false !== strpos( $media_settings, $required ), 'Media derivative settings implement local policy contract: ' . $required );
-}
-foreach ( array( 'update_attached_file', 'wp_update_attachment_metadata', 'wp_update_post', 'update_post_meta' ) as $forbidden ) {
-	npcink_governance_core_assert( false === strpos( $media_settings, $forbidden ), 'Media derivative settings do not perform WordPress media writes: ' . $forbidden );
-}
-npcink_governance_core_assert( false !== strpos( $main_plugin, 'npcink_governance_core_get_media_derivative_settings' ), 'Core exposes a media derivative settings helper for local surfaces.' );
-npcink_governance_core_assert( false !== strpos( $main_plugin, 'npcink_governance_core_build_media_derivative_ability_input' ), 'Core exposes a media derivative ability-input helper for one-run handoffs.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "'media-policy'" ) && false !== strpos( $admin_page, 'render_media_policy_settings' ), 'Admin page exposes a lightweight local Media Policy tab.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Core stores the local site policy for optimized media derivatives' ), 'Media Policy tab describes Core as local policy owner.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Cloud remains an optional runtime' ), 'Media Policy tab keeps Cloud as optional runtime detail.' );
+npcink_governance_core_assert( ! file_exists( $root . '/includes/Media/Media_Derivative_Settings.php' ), 'Core no longer owns media derivative product defaults.' );
+npcink_governance_core_assert( false === strpos( $main_plugin, 'npcink_governance_core_get_media_derivative_settings' ), 'Core no longer exposes a media derivative settings helper for local product surfaces.' );
+npcink_governance_core_assert( false === strpos( $main_plugin, 'npcink_governance_core_build_media_derivative_ability_input' ), 'Core no longer builds media derivative ability input for Toolbox handoffs.' );
+npcink_governance_core_assert( false === strpos( $admin_page, "'media-policy'" ) && false === strpos( $admin_page, 'render_media_policy_settings' ), 'Core admin no longer exposes a Media Policy tab.' );
+npcink_governance_core_assert( false !== strpos( $readme, 'Toolbox stores local media derivative defaults' ), 'README documents Toolbox as the media defaults owner.' );
 foreach (
 	array(
 		$root . '/README.md',

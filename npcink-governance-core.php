@@ -40,29 +40,6 @@ if ( ! function_exists( 'npcink_governance_core_load_textdomain' ) ) {
 	}
 }
 
-if ( ! function_exists( 'npcink_governance_core_get_media_derivative_settings' ) ) {
-	/**
-	 * Returns the local Core media derivative policy summary.
-	 *
-	 * @return array<string,mixed>
-	 */
-	function npcink_governance_core_get_media_derivative_settings(): array {
-		return \Npcink\GovernanceCore\Plugin::instance()->media_derivative_settings()->summary();
-	}
-}
-
-if ( ! function_exists( 'npcink_governance_core_build_media_derivative_ability_input' ) ) {
-	/**
-	 * Builds one-run input for npcink-abilities-toolkit/build-media-derivative-cloud-request.
-	 *
-	 * @param array<string,mixed> $overrides One-run overrides.
-	 * @return array<string,mixed>
-	 */
-	function npcink_governance_core_build_media_derivative_ability_input( array $overrides = array() ): array {
-		return \Npcink\GovernanceCore\Plugin::instance()->media_derivative_settings()->ability_input( $overrides );
-	}
-}
-
 register_activation_hook( __FILE__, array( \Npcink\GovernanceCore\Plugin::class, 'activate' ) );
 
 add_action(

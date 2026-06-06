@@ -173,12 +173,12 @@ attribution, and commit-preflight correlation ids. See
 the Core loop easier to review and debug without adding ability execution or a
 workflow runtime.
 
-Core also stores the local media derivative defaults: output format, max width,
-quality, watermark attachment and placement, and whether Cloud execution should
-be used when available. These settings are local WordPress policy truth. Toolbox
-may read them for one-run operator handoffs, Cloud Addon may sign and dispatch
-the request, and Cloud may process the derivative artifact, but final proposal,
-approval, adoption, and WordPress writes stay local.
+Toolbox stores local media derivative defaults such as output format, max
+width, quality, watermark placement, and whether Cloud execution should be used
+when available. Core does not own those product settings. It governs the
+reviewed media optimization plan that returns from Toolbox/Adapter, while Cloud
+Addon may sign and dispatch the request and Cloud may process the derivative
+artifact. Final proposal, approval, adoption, and WordPress writes stay local.
 When a local media optimization plan combines SEO metadata with derivative
 adoption, Core governs it as one `plan_to_proposal_batch` for a single
 attachment so the user approves the optimization intent once while Adapter

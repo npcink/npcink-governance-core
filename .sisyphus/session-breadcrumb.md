@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-07 — Media defaults moved to Toolbox
+
+- **Module**: Core/Toolbox media optimization boundary.
+- **Status**: Media derivative defaults now belong to Toolbox's Optimize
+  Existing Image surface. Core no longer exposes a Media Policy admin tab,
+  media derivative settings helper, or media derivative ability-input helper.
+- **Completed**:
+  - Added Toolbox-owned media optimization defaults, sanitization, one-time
+    import from the old Core option, admin editing, and handoff input building.
+  - Updated Toolbox media derivative handoff output to carry Toolbox policy
+    context instead of Core policy helper/fallback state.
+  - Removed Core media derivative settings storage, helper functions, and admin
+    Media Policy tab.
+  - Updated Core/Toolbox docs and static contracts so Core remains proposal,
+    approval, preflight, and audit truth only.
+- **Verification**:
+  - `/Users/muze/gitee/magick-ai-toolbox`: `composer test:all`
+  - `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+- **Boundary**:
+  - Toolbox owns product settings, operator UI defaults, one-run overrides, and
+    Core proposal handoff. Core still owns media optimization plan intake,
+    proposal records, approval, commit preflight, and audit. Cloud remains
+    runtime/detail only; final WordPress writes stay local through Abilities
+    and Core governance.
+
 ## 2026-06-07 — Simplified Chinese translation baseline added
 
 - **Module**: Core translation and localization packaging.

@@ -15,7 +15,6 @@ use Npcink\GovernanceCore\Governance\Commit_Preflight_Service;
 use Npcink\GovernanceCore\Governance\Plan_Proposal_Service;
 use Npcink\GovernanceCore\Governance\Proposal_Repository;
 use Npcink\GovernanceCore\Governance\Proposal_Service;
-use Npcink\GovernanceCore\Media\Media_Derivative_Settings;
 use Npcink\GovernanceCore\Rest\Apps_Controller;
 use Npcink\GovernanceCore\Rest\Audit_Controller;
 use Npcink\GovernanceCore\Rest\Capabilities_Controller;
@@ -110,13 +109,6 @@ final class Plugin {
 	private $app_authenticator = null;
 
 	/**
-	 * Media derivative settings.
-	 *
-	 * @var Media_Derivative_Settings|null
-	 */
-	private $media_derivative_settings = null;
-
-	/**
 	 * Returns the singleton.
 	 *
 	 * @return self
@@ -147,11 +139,10 @@ final class Plugin {
 	 * @return void
 	 */
 	public function register(): void {
-		add_action( 'admin_init', array( $this->media_derivative_settings(), 'register' ) );
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 
 		if ( is_admin() ) {
-			( new Admin_Page( $this->ability_adapter(), $this->proposal_repository(), $this->audit_repository(), $this->proposal_service(), $this->app_key_repository(), $this->media_derivative_settings() ) )->register();
+			( new Admin_Page( $this->ability_adapter(), $this->proposal_repository(), $this->audit_repository(), $this->proposal_service(), $this->app_key_repository() ) )->register();
 		}
 	}
 
@@ -308,16 +299,4 @@ final class Plugin {
 		return $this->app_authenticator;
 	}
 
-	/**
-	 * Returns media derivative settings.
-	 *
-	 * @return Media_Derivative_Settings
-	 */
-	public function media_derivative_settings(): Media_Derivative_Settings {
-		if ( null === $this->media_derivative_settings ) {
-			$this->media_derivative_settings = new Media_Derivative_Settings();
-		}
-
-		return $this->media_derivative_settings;
-	}
 }
