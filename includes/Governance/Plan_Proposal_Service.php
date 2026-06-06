@@ -26,7 +26,7 @@ final class Plan_Proposal_Service {
 	 */
 	private $allowed_plan_abilities = array(
 		'npcink-abilities-toolkit/build-content-inventory-fix-plan'           => true,
-		'npcink-abilities-toolkit/build-test-content-cleanup-plan'            => true,
+		'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan'            => true,
 		'npcink-abilities-toolkit/build-media-inventory-fix-plan'             => true,
 		'npcink-abilities-toolkit/build-media-reference-repair-plan'          => true,
 		'npcink-abilities-toolkit/build-media-settings-reference-repair-plan' => true,

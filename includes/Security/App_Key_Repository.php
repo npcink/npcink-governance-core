@@ -19,6 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class App_Key_Repository {
 	const DEFAULT_RATE_LIMIT = 60;
 	const DEFAULT_RATE_WINDOW = 3600;
+	const TOKEN_PREFIX = 'npcink_governance_core';
 
 	/**
 	 * Returns table name.
@@ -158,7 +159,7 @@ final class App_Key_Repository {
 
 		$row             = $this->normalize_row( $record );
 		$row['secret']   = $secret;
-		$row['token']    = 'mai_core.' . $key_id . '.' . $secret;
+			$row['token']    = self::TOKEN_PREFIX . '.' . $key_id . '.' . $secret;
 		$row['shown_once'] = true;
 
 		return $row;
@@ -176,16 +177,17 @@ final class App_Key_Repository {
 
 		$limit  = max( 1, min( 200, $limit ) );
 		$offset = max( 0, $offset );
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from the WordPress table prefix; query values use placeholders.
-		$rows  = $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, created_by, created_at, updated_at, last_used_at FROM ' . $this->table_name() . ' ORDER BY id DESC LIMIT %d OFFSET %d',
-				$limit,
-				$offset
-			),
-			ARRAY_A
-		);
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+			$rows  = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, created_by, created_at, updated_at, last_used_at FROM %i ORDER BY id DESC LIMIT %d OFFSET %d',
+					$this->table_name(),
+					$limit,
+					$offset
+				),
+				ARRAY_A
+			);
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
 	}
@@ -200,17 +202,27 @@ final class App_Key_Repository {
 		global $wpdb;
 
 		$status = sanitize_key( $status );
-		$sql    = 'SELECT COUNT(*) FROM ' . $this->table_name();
-		$args   = array();
+			if ( '' !== $status ) {
+				// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+				$count = (int) $wpdb->get_var(
+					$wpdb->prepare(
+						'SELECT COUNT(*) FROM %i WHERE status = %s',
+						$this->table_name(),
+						$status
+					)
+				);
+				// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+				return $count;
+			}
 
-		if ( '' !== $status ) {
-			$sql   .= ' WHERE status = %s';
-			$args[] = $status;
-		}
-
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from the WordPress table prefix; query values use placeholders.
-		$count = empty( $args ) ? (int) $wpdb->get_var( $sql ) : (int) $wpdb->get_var( $wpdb->prepare( $sql, $args ) );
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+			$count = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT COUNT(*) FROM %i',
+					$this->table_name()
+				)
+			);
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $count;
 	}
@@ -223,9 +235,14 @@ final class App_Key_Repository {
 	public function latest_last_used_at(): string {
 		global $wpdb;
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from the WordPress table prefix and no user values are interpolated.
-		$value = $wpdb->get_var( 'SELECT MAX(last_used_at) FROM ' . $this->table_name() . ' WHERE last_used_at IS NOT NULL' );
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+			$value = $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT MAX(last_used_at) FROM %i WHERE last_used_at IS NOT NULL',
+					$this->table_name()
+				)
+			);
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return sanitize_text_field( (string) $value );
 	}
@@ -239,15 +256,16 @@ final class App_Key_Repository {
 	public function find_by_key_id( string $key_id ): ?array {
 		global $wpdb;
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from the WordPress table prefix; query values use placeholders.
-		$row = $wpdb->get_row(
-			$wpdb->prepare(
-				'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, created_by, created_at, updated_at, last_used_at FROM ' . $this->table_name() . ' WHERE key_id = %s LIMIT 1',
-				sanitize_text_field( $key_id )
-			),
-			ARRAY_A
-		);
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+			$row = $wpdb->get_row(
+				$wpdb->prepare(
+					'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, created_by, created_at, updated_at, last_used_at FROM %i WHERE key_id = %s LIMIT 1',
+					$this->table_name(),
+					sanitize_text_field( $key_id )
+				),
+				ARRAY_A
+			);
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return is_array( $row ) ? $this->normalize_row( $row, true ) : null;
 	}

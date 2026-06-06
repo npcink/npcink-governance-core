@@ -137,7 +137,7 @@ commit-preflight response without exposing raw app secrets.
 The current implementation uses a bearer app token:
 
 ```text
-Authorization: Bearer mai_core.<key_id>.<secret>
+Authorization: Bearer npcink_governance_core.<key_id>.<secret>
 ```
 
 The same token may be sent as `X-Magick-AI-Core-App-Token` for clients that

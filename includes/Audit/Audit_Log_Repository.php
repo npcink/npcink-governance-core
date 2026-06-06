@@ -70,7 +70,7 @@ final class Audit_Log_Repository {
 	public function record( string $event_name, array $metadata = array(), string $proposal_id = '' ): string {
 		global $wpdb;
 
-		$event_id = function_exists( 'wp_generate_uuid4' ) ? wp_generate_uuid4() : uniqid( 'mai_', true );
+		$event_id = function_exists( 'wp_generate_uuid4' ) ? wp_generate_uuid4() : uniqid( 'npcink_governance_core_audit_', true );
 		$now      = current_time( 'mysql', true );
 		$auth     = Request_Context::audit_metadata();
 		if ( ! empty( $auth ) ) {
@@ -119,19 +119,20 @@ final class Audit_Log_Repository {
 		$where          = $parts['where'];
 		$args           = $parts['args'];
 
-		$sql = 'SELECT event_id, event_name, proposal_id, actor_id, metadata_json, created_at FROM ' . $this->table_name();
+		$sql = 'SELECT event_id, event_name, proposal_id, actor_id, metadata_json, created_at FROM %i';
+		array_unshift( $args, $this->table_name() );
 
 		if ( ! empty( $where ) ) {
-			$sql .= ' WHERE ' . implode( ' AND ', $where );
+			$sql .= ' WHERE ' . $this->join_where_clauses( $where );
 		}
 
 		$sql   .= ' ORDER BY id ' . $order . ' LIMIT %d OFFSET %d';
 		$args[] = $limit;
 		$args[] = $offset;
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL is assembled from fixed clauses, whitelisted sort order, and placeholder values.
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- SQL is assembled from fixed clauses, whitelisted sort order, and placeholder values for a custom governance table.
 		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $args ), ARRAY_A );
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
 	}
@@ -148,15 +149,16 @@ final class Audit_Log_Repository {
 		$parts = $this->filtered_query_parts( $filters );
 		$where = $parts['where'];
 		$args  = $parts['args'];
-		$sql   = 'SELECT COUNT(*) FROM ' . $this->table_name();
+		$sql   = 'SELECT COUNT(*) FROM %i';
+		array_unshift( $args, $this->table_name() );
 
 		if ( ! empty( $where ) ) {
-			$sql .= ' WHERE ' . implode( ' AND ', $where );
+			$sql .= ' WHERE ' . $this->join_where_clauses( $where );
 		}
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL is assembled from fixed clauses and placeholder values.
-		$count = empty( $args ) ? (int) $wpdb->get_var( $sql ) : (int) $wpdb->get_var( $wpdb->prepare( $sql, $args ) );
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- SQL is assembled from fixed clauses and placeholder values for a custom governance table.
+		$count = (int) $wpdb->get_var( $wpdb->prepare( $sql, $args ) );
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $count;
 	}
@@ -169,9 +171,14 @@ final class Audit_Log_Repository {
 	public function count(): int {
 		global $wpdb;
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from the WordPress table prefix and no user values are interpolated.
-		$count = (int) $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $this->table_name() );
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		$count = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %i',
+				$this->table_name()
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $count;
 	}
@@ -282,6 +289,16 @@ final class Audit_Log_Repository {
 		}
 
 		return array_values( array_unique( $clean ) );
+	}
+
+	/**
+	 * Joins query clauses that were built from fixed repository templates.
+	 *
+	 * @param array<int,string> $clauses WHERE clauses.
+	 * @return string
+	 */
+	private function join_where_clauses( array $clauses ): string {
+		return implode( ' AND ', array_filter( array_map( 'trim', $clauses ) ) );
 	}
 
 	/**

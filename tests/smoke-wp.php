@@ -642,7 +642,7 @@ function npcink_governance_core_smoke_assert_plan_bridge_contract( array $items_
 	foreach (
 		array(
 			'npcink-abilities-toolkit/build-content-inventory-fix-plan',
-			'npcink-abilities-toolkit/build-test-content-cleanup-plan',
+			'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan',
 			'npcink-abilities-toolkit/build-media-inventory-fix-plan',
 		) as $ability_id
 	) {
@@ -1407,8 +1407,8 @@ $cleanup_plan_input = array(
 	'patterns'    => array( $cleanup_pattern ),
 	'max_actions' => 5,
 );
-$cleanup_plan       = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-test-content-cleanup-plan', $cleanup_plan_input );
-$cleanup_plan_result = npcink_governance_core_smoke_create_proposals_from_plan( 'npcink-abilities-toolkit/build-test-content-cleanup-plan', $cleanup_plan, $cleanup_plan_input );
+$cleanup_plan       = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan', $cleanup_plan_input );
+$cleanup_plan_result = npcink_governance_core_smoke_create_proposals_from_plan( 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan', $cleanup_plan, $cleanup_plan_input );
 npcink_governance_core_smoke_assert( 1 === (int) ( $cleanup_plan_result['proposal_count'] ?? 0 ), 'test content cleanup plan generates one batch Core proposal' );
 $cleanup_plan_proposal = is_array( $cleanup_plan_result['proposals'][0] ?? null ) ? $cleanup_plan_result['proposals'][0] : array();
 $cleanup_plan_input_payload = is_array( $cleanup_plan_proposal['input'] ?? null ) ? $cleanup_plan_proposal['input'] : array();
@@ -1438,8 +1438,8 @@ $dry_guarded_plan_input = array(
 	'patterns'    => array( $dry_guarded_pattern ),
 	'max_actions' => 5,
 );
-$dry_guarded_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-test-content-cleanup-plan', $dry_guarded_plan_input );
-$dry_guarded_result = npcink_governance_core_smoke_create_proposals_from_plan( 'npcink-abilities-toolkit/build-test-content-cleanup-plan', $dry_guarded_plan, $dry_guarded_plan_input );
+$dry_guarded_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan', $dry_guarded_plan_input );
+$dry_guarded_result = npcink_governance_core_smoke_create_proposals_from_plan( 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan', $dry_guarded_plan, $dry_guarded_plan_input );
 npcink_governance_core_smoke_assert( 1 === (int) ( $dry_guarded_result['proposal_count'] ?? 0 ), 'dry-run guarded cleanup plan generates one batch Core proposal' );
 $dry_guarded_proposal = is_array( $dry_guarded_result['proposals'][0] ?? null ) ? $dry_guarded_result['proposals'][0] : array();
 npcink_governance_core_smoke_assert( 'pending' === (string) ( $dry_guarded_proposal['status'] ?? '' ), 'dry-run guarded cleanup remains pending' );
@@ -1480,8 +1480,8 @@ $local_guarded_plan_input = array(
 	'patterns'    => array( $local_guarded_pattern ),
 	'max_actions' => 5,
 );
-$local_guarded_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-test-content-cleanup-plan', $local_guarded_plan_input );
-$local_guarded_result = npcink_governance_core_smoke_create_proposals_from_plan_as_app( 'npcink-abilities-toolkit/build-test-content-cleanup-plan', $local_guarded_plan, $local_guarded_plan_input, $local_guarded_token );
+$local_guarded_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan', $local_guarded_plan_input );
+$local_guarded_result = npcink_governance_core_smoke_create_proposals_from_plan_as_app( 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan', $local_guarded_plan, $local_guarded_plan_input, $local_guarded_token );
 npcink_governance_core_smoke_assert( 1 === (int) ( $local_guarded_result['proposal_count'] ?? 0 ), 'local guarded cleanup plan generates one batch Core proposal' );
 $local_guarded_proposal = is_array( $local_guarded_result['proposals'][0] ?? null ) ? $local_guarded_result['proposals'][0] : array();
 $local_guarded_proposal_id = (string) ( $local_guarded_proposal['proposal_id'] ?? '' );
@@ -1553,7 +1553,7 @@ $media_delete_plan_input = array(
 	'attachment_ids'                  => array( (int) $plan_attachment_id ),
 	'issue_types'                     => array( 'possibly_unattached' ),
 	'include_delete_candidates'       => true,
-	'include_unattached_test_media'   => true,
+	'include_unattached_nonproduction_media'   => true,
 	'max_actions'                     => 5,
 );
 $media_delete_plan       = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-media-inventory-fix-plan', $media_delete_plan_input );

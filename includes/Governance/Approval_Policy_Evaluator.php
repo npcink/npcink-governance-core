@@ -34,6 +34,7 @@ final class Approval_Policy_Evaluator {
 	const CLEANUP_BATCH_MAX_ACTIONS  = 10;
 	const AUTO_APPROVAL_HOURLY_LIMIT = 20;
 	const AUTO_APPROVAL_DAILY_LIMIT  = 100;
+	const AUTO_APPROVAL_TRANSIENT_PREFIX = 'npcink_governance_core_auto_approval_';
 
 	/**
 	 * Returns allowed policy mode option values.
@@ -147,17 +148,17 @@ final class Approval_Policy_Evaluator {
 
 		$quota = is_array( $policy['auto_approval_quota'] ?? null ) ? $policy['auto_approval_quota'] : array();
 		foreach ( array( 'hour', 'day' ) as $window ) {
-			$key   = sanitize_key( (string) ( $quota[ $window . '_key' ] ?? '' ) );
-			$limit = absint( $quota[ $window . '_limit' ] ?? 0 );
-			$ttl   = absint( $quota[ $window . '_ttl' ] ?? 0 );
-			if ( '' === $key || $limit <= 0 || $ttl <= 0 ) {
+			$prefixed_key = sanitize_key( (string) ( $quota[ $window . '_key' ] ?? '' ) );
+			$limit        = absint( $quota[ $window . '_limit' ] ?? 0 );
+			$ttl          = absint( $quota[ $window . '_ttl' ] ?? 0 );
+			if ( ! $this->is_auto_approval_transient_key( $prefixed_key ) || $limit <= 0 || $ttl <= 0 ) {
 				return false;
 			}
-			$current = function_exists( 'get_transient' ) ? absint( get_transient( $key ) ) : 0;
+			$current = function_exists( 'get_transient' ) ? absint( get_transient( $prefixed_key ) ) : 0;
 			if ( $current >= $limit ) {
 				return false;
 			}
-			if ( function_exists( 'set_transient' ) && false === set_transient( $key, $current + 1, $ttl ) ) {
+			if ( function_exists( 'set_transient' ) && false === set_transient( $prefixed_key, $current + 1, $ttl ) ) {
 				return false;
 			}
 		}
@@ -184,7 +185,7 @@ final class Approval_Policy_Evaluator {
 			return array( 'allowed' => false, 'reasons' => array( 'guarded_cleanup_rejected_source' ) );
 		}
 
-		if ( 'npcink-abilities-toolkit/build-test-content-cleanup-plan' !== (string) ( $caller['plan_ability_id'] ?? '' ) ) {
+		if ( 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan' !== (string) ( $caller['plan_ability_id'] ?? '' ) ) {
 			return array( 'allowed' => false, 'reasons' => array( 'guarded_cleanup_rejected_plan_ability' ) );
 		}
 
@@ -283,7 +284,7 @@ final class Approval_Policy_Evaluator {
 			$subject = 'app:' . sanitize_key( (string) $auth['app_id'] );
 		}
 
-		$base = 'npcink_governance_core_auto_approval_' . sanitize_key( $mode ) . '_' . sanitize_key( str_replace( ':', '_', $subject ) );
+		$base = self::AUTO_APPROVAL_TRANSIENT_PREFIX . sanitize_key( $mode ) . '_' . sanitize_key( str_replace( ':', '_', $subject ) );
 
 		return array(
 			'subject'    => $subject,
@@ -304,17 +305,27 @@ final class Approval_Policy_Evaluator {
 	 */
 	private function auto_approval_quota_available( array $quota ): bool {
 		foreach ( array( 'hour', 'day' ) as $window ) {
-			$key   = sanitize_key( (string) ( $quota[ $window . '_key' ] ?? '' ) );
-			$limit = absint( $quota[ $window . '_limit' ] ?? 0 );
-			if ( '' === $key || $limit <= 0 ) {
+			$prefixed_key = sanitize_key( (string) ( $quota[ $window . '_key' ] ?? '' ) );
+			$limit        = absint( $quota[ $window . '_limit' ] ?? 0 );
+			if ( ! $this->is_auto_approval_transient_key( $prefixed_key ) || $limit <= 0 ) {
 				return false;
 			}
-			$current = function_exists( 'get_transient' ) ? absint( get_transient( $key ) ) : 0;
+			$current = function_exists( 'get_transient' ) ? absint( get_transient( $prefixed_key ) ) : 0;
 			if ( $current >= $limit ) {
 				return false;
 			}
 		}
 
 		return true;
+	}
+
+	/**
+	 * Returns whether a transient key belongs to Core auto-approval quota.
+	 *
+	 * @param string $key Transient key.
+	 * @return bool
+	 */
+	private function is_auto_approval_transient_key( string $key ): bool {
+		return 0 === strpos( $key, self::AUTO_APPROVAL_TRANSIENT_PREFIX );
 	}
 }

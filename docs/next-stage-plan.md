@@ -395,7 +395,7 @@ Current rule:
 Recommended next slice:
 
 - observe `local_guarded` in development and keep the allowlist limited to
-  `build-test-content-cleanup-plan` -> `plan_to_proposal_batch` proposals whose
+  `build-nonproduction-content-cleanup-plan` -> `plan_to_proposal_batch` proposals whose
   actions all target `npcink-abilities-toolkit/trash-post`;
 - do not add create-draft auto approval until cleanup auto approval has been
   stable through local smoke and operator review;

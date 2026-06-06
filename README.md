@@ -114,7 +114,7 @@ dry-run write proposal to Core for approval and commit preflight.
 
 The plan-to-proposal bridge extends that pattern to read-only planning
 abilities such as `npcink-abilities-toolkit/build-content-inventory-fix-plan`,
-`npcink-abilities-toolkit/build-test-content-cleanup-plan`, and
+`npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan`, and
 `npcink-abilities-toolkit/build-media-inventory-fix-plan`,
 `npcink-abilities-toolkit/build-media-reference-repair-plan`, and
 `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`. It also accepts
@@ -182,7 +182,7 @@ The approval policy evaluator defaults to `manual`, records
 `proposal.policy_evaluated` for every created proposal, and supports two
 development-only guarded modes. `dry_run_guarded` records cleanup candidates
 without approval. `local_guarded` can auto-approve only trusted
-`build-test-content-cleanup-plan` trash-post batches when explicit
+`build-nonproduction-content-cleanup-plan` trash-post batches when explicit
 authorization, test-content evidence, quotas, and audit all pass. See
 [Approval Policy Evaluator Standard](docs/approval-policy-evaluator-standard.md).
 

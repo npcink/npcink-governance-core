@@ -33,7 +33,7 @@ Required environment variables:
 
 ```bash
 export NPCINK_GOVERNANCE_CORE_BASE_URL="https://example.test"
-export NPCINK_GOVERNANCE_CORE_APP_TOKEN="mai_core.key_xxx.secret_xxx"
+export NPCINK_GOVERNANCE_CORE_APP_TOKEN="npcink_governance_core.key_xxx.secret_xxx"
 ```
 
 ## Local TLS

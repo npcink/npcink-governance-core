@@ -154,7 +154,7 @@ This is the only implemented auto-approval scenario.
 
 Required properties:
 
-- source must be `build-test-content-cleanup-plan` through
+- source must be `build-nonproduction-content-cleanup-plan` through
   `plan_to_proposal_batch`;
 - every action target must be `npcink-abilities-toolkit/trash-post`;
 - every post/title must match trusted test-content patterns, or the plan
@@ -209,7 +209,7 @@ a later accepted standard replaces this one.
 
 For media-derived plans, Core's own destructive gate is not enough to prove
 source safety. Media planning abilities may require upstream flags such as
-`include_unattached_test_media=true` or `include_trash_parent_media=true` before
+`include_unattached_nonproduction_media=true` or `include_trash_parent_media=true` before
 they emit delete actions at all. The evaluator must treat those flags as
 source-policy evidence only, not as permission to bypass manual approval.
 

@@ -9,7 +9,7 @@ an execution bridge.
 ## Supported Plan Abilities
 
 - `npcink-abilities-toolkit/build-content-inventory-fix-plan`
-- `npcink-abilities-toolkit/build-test-content-cleanup-plan`
+- `npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan`
 - `npcink-abilities-toolkit/build-media-inventory-fix-plan`
 - `npcink-abilities-toolkit/build-media-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`
@@ -239,7 +239,7 @@ actions are blocked unless the submitted `plan_input` explicitly contains
 `include_delete_candidates=true`. The media planning ability still decides
 whether a delete action can be emitted at all; current destructive-media plans
 also require a narrow source-side flag such as
-`include_unattached_test_media=true` or `include_trash_parent_media=true`.
+`include_unattached_nonproduction_media=true` or `include_trash_parent_media=true`.
 Allowed delete proposals remain high risk.
 
 ## Batch Approval

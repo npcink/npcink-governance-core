@@ -68,7 +68,7 @@ to review them again.
 Core may consume these read-only planning ability outputs:
 
 - `npcink-abilities-toolkit/build-content-inventory-fix-plan`
-- `npcink-abilities-toolkit/build-test-content-cleanup-plan`
+- `npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan`
 - `npcink-abilities-toolkit/build-media-inventory-fix-plan`
 - `npcink-abilities-toolkit/build-media-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`
@@ -173,7 +173,7 @@ Permanent media deletion is blocked by default. A plan action targeting
 `include_delete_candidates=true` is explicitly supplied with the plan input,
 and it must remain high risk. The planning ability must still satisfy its own
 destructive-media policy first, such as requiring
-`include_unattached_test_media=true` for unattached test media or
+`include_unattached_nonproduction_media=true` for unattached test media or
 `include_trash_parent_media=true` for media attached to trash-parent content.
 
 ## Approval Boundary
@@ -195,7 +195,7 @@ The default `manual` mode records `manual_required` for every proposal with
 Development mode `dry_run_guarded` may classify trusted cleanup candidates with
 `policy_profile=guarded` while leaving them pending. Development mode
 `local_guarded` may return `auto_approved` only for trusted
-`build-test-content-cleanup-plan` batch proposals whose actions all target
+`build-nonproduction-content-cleanup-plan` batch proposals whose actions all target
 `npcink-abilities-toolkit/trash-post`, have persisted test-content evidence, pass caller
 authorization, and pass auto-approval quotas. The evaluator does not expose a
 rules DSL and does not add workflow runtime, long-running policy jobs, final

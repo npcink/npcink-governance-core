@@ -220,11 +220,11 @@ foreach (
 		'caller.core_policy',
 		'proposal.policy_evaluated',
 		'proposal.auto_approved',
-		'build-test-content-cleanup-plan',
+		'build-nonproduction-content-cleanup-plan',
 		'plan_to_proposal_batch',
 		'npcink-abilities-toolkit/trash-post',
 		'trusted test-content',
-		'include_unattached_test_media',
+		'include_unattached_nonproduction_media',
 		'npcink-abilities-toolkit/delete-media-permanently',
 		'npcink-abilities-toolkit/set-post-terms',
 		'hourly and daily auto-approval quotas',
@@ -249,7 +249,7 @@ foreach (
 		'POST /proposals/{proposal_id}/commit-preflight',
 		'GET /audit',
 		'POST /apps',
-		'Authorization: Bearer mai_core.<key_id>.<secret>',
+		'Authorization: Bearer npcink_governance_core.<key_id>.<secret>',
 		'governance_mode',
 		'execution_surface',
 		'core_proxy_execute=false',
@@ -355,7 +355,7 @@ foreach (
 		'write_confirmed',
 		'npcink_abilities_toolkit_get_registered()',
 		'App Auth Scope Policy',
-		'Authorization: Bearer mai_core.<key_id>.<secret>',
+		'Authorization: Bearer npcink_governance_core.<key_id>.<secret>',
 		'raw app secrets',
 		'local_guarded',
 		'trusted test cleanup trash-post batches',
@@ -389,7 +389,7 @@ foreach (
 		'minimal implementation active',
 		'app_id',
 		'secret_hash',
-		'Authorization: Bearer mai_core.<key_id>.<secret>',
+		'Authorization: Bearer npcink_governance_core.<key_id>.<secret>',
 		'app.rate_limited',
 		'capabilities:read',
 		'proposals:create',
@@ -693,7 +693,8 @@ foreach (
 		'capabilities:read',
 		'proposals:create',
 		'commit:preflight',
-		'mai_core.',
+		'TOKEN_PREFIX',
+		'npcink_governance_core',
 		'npcink_governance_core_app_insert_failed',
 		'npcink_governance_core_app_secret_hash_failed',
 	) as $required
@@ -701,6 +702,7 @@ foreach (
 	npcink_governance_core_assert( false !== strpos( $app_key_repository, $required ), 'App key repository contains required text: ' . $required );
 }
 npcink_governance_core_assert( false === strpos( $app_key_repository, "'secret' => " . '$secret' ), 'App key repository does not persist raw app secret in DB record.' );
+npcink_governance_core_assert( false === strpos( $app_key_repository, 'mai_core.' ), 'App key repository does not generate legacy Magick AI token prefixes.' );
 
 $app_rate_limiter = npcink_governance_core_read( $root . '/includes/Security/App_Rate_Limiter.php' );
 npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'npcink_governance_core_app_rate_limits' ), 'App rate limiter stores fixed-window counters.' );
@@ -869,7 +871,7 @@ npcink_governance_core_assert( false !== strpos( $smoke_wp, 'app-authenticated a
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'app rate limit returns 429 after fixed window is exhausted' ), 'WordPress smoke validates app rate limiting.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'revoked app key returns 401' ), 'WordPress smoke validates revoked app key denial.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink-abilities-toolkit/build-content-inventory-fix-plan' ), 'WordPress smoke validates content plan-to-proposal intake.' );
-npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink-abilities-toolkit/build-test-content-cleanup-plan' ), 'WordPress smoke validates cleanup plan-to-proposal intake.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan' ), 'WordPress smoke validates cleanup plan-to-proposal intake.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink-abilities-toolkit/build-media-inventory-fix-plan' ), 'WordPress smoke validates media plan-to-proposal intake.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'media delete candidates do not enter executable proposals by default' ), 'WordPress smoke validates default destructive media delete guard.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'requires-input proposal cannot enter committable state' ), 'WordPress smoke validates requires_input preflight blocking.' );
@@ -925,7 +927,7 @@ foreach (
 		'auto_approval_dry_run_only',
 		'local_guarded_cleanup_auto_approved',
 		'guarded_cleanup_rejected_missing_test_content_evidence',
-		'build-test-content-cleanup-plan',
+		'build-nonproduction-content-cleanup-plan',
 		'npcink-abilities-toolkit/trash-post',
 		'consume_auto_approval_quota',
 	) as $required
@@ -1000,7 +1002,7 @@ foreach (
 	array(
 		'Plan_Proposal_Service',
 		'npcink-abilities-toolkit/build-content-inventory-fix-plan',
-		'npcink-abilities-toolkit/build-test-content-cleanup-plan',
+		'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan',
 		'npcink-abilities-toolkit/build-media-inventory-fix-plan',
 		'npcink-abilities-toolkit/build-media-reference-repair-plan',
 		'npcink-abilities-toolkit/build-media-settings-reference-repair-plan',
@@ -1078,7 +1080,7 @@ foreach (
 }
 
 $smoke_wp = npcink_governance_core_read( $root . '/tests/smoke-wp.php' );
-npcink_governance_core_assert( false !== strpos( $smoke_wp, 'include_unattached_test_media' ), 'Smoke test media delete fixture opts into abilities-side test media delete policy.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp, 'include_unattached_nonproduction_media' ), 'Smoke test media delete fixture opts into abilities-side test media delete policy.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink_governance_core_smoke_register_post_fixture' ), 'Smoke test registers post fixtures for cleanup.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink_governance_core_smoke_register_comment_fixture' ), 'Smoke test registers comment fixtures for cleanup.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink_governance_core_smoke_register_attachment_fixture' ), 'Smoke test registers media attachment fixtures for cleanup.' );
@@ -1095,7 +1097,7 @@ npcink_governance_core_assert( false !== strpos( $testing_strategy, 'Proposal an
 npcink_governance_core_assert( false !== strpos( $development_workflow, 'NPCINK_GOVERNANCE_CORE_SMOKE_PURGE=1' ), 'Development workflow documents optional smoke purge.' );
 
 $plan_to_proposal_docs = npcink_governance_core_read( $root . '/docs/plan-to-proposal-governance.md' );
-npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_unattached_test_media' ), 'Plan-to-proposal docs mention abilities-side unattached test media delete gate.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_unattached_nonproduction_media' ), 'Plan-to-proposal docs mention abilities-side unattached test media delete gate.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_trash_parent_media' ), 'Plan-to-proposal docs mention abilities-side trash-parent media delete gate.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-article-write-plan' ), 'Plan-to-proposal docs include the Toolbox article writing handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-article-batch-write-plan' ), 'Plan-to-proposal docs include the Toolbox article batch writing handoff.' );

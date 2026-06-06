@@ -144,21 +144,33 @@ final class Proposal_Repository {
 		$limit  = max( 1, min( 200, $limit ) );
 		$offset = max( 0, $offset );
 		$status = sanitize_key( $status );
-		$sql    = 'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name();
-		$args   = array();
-
 		if ( '' !== $status ) {
-			$sql   .= ' WHERE status = %s';
-			$args[] = $status;
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM %i WHERE status = %s ORDER BY id DESC LIMIT %d OFFSET %d',
+					$this->table_name(),
+					$status,
+					$limit,
+					$offset
+				),
+				ARRAY_A
+			);
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+			return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
 		}
 
-		$sql   .= ' ORDER BY id DESC LIMIT %d OFFSET %d';
-		$args[] = $limit;
-		$args[] = $offset;
-
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL is assembled from fixed clauses and placeholder values; table name is generated from the WordPress table prefix.
-		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $args ), ARRAY_A );
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM %i ORDER BY id DESC LIMIT %d OFFSET %d',
+				$this->table_name(),
+				$limit,
+				$offset
+			),
+			ARRAY_A
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
 	}
@@ -186,15 +198,17 @@ final class Proposal_Repository {
 		$args[]       = $limit;
 		$args[]       = $offset;
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL uses fixed clauses, generated placeholders, and a table name from the WordPress prefix.
+		array_unshift( $args, $this->table_name() );
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- SQL uses fixed clauses, generated placeholders, and Core's custom governance table.
 		$rows = $wpdb->get_results(
-				$wpdb->prepare(
-					'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name() . ' WHERE status IN (' . $placeholders . ') ORDER BY id DESC LIMIT %d OFFSET %d',
-					...$args
-				),
-			ARRAY_A
-		);
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,PluginCheck.Security.DirectDB.UnescapedDBParameter
+					$wpdb->prepare(
+						'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM %i WHERE status IN (' . $placeholders . ') ORDER BY id DESC LIMIT %d OFFSET %d',
+						...$args
+					),
+				ARRAY_A
+			);
+			// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
 	}
@@ -213,17 +227,18 @@ final class Proposal_Repository {
 		$limit       = max( 1, min( 200, $limit ) );
 		$cutoff      = gmdate( 'Y-m-d H:i:s', time() - $ttl_seconds );
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name is generated from the WordPress table prefix; query values use placeholders.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name() . ' WHERE status = %s AND created_at < %s ORDER BY id ASC LIMIT %d',
+				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM %i WHERE status = %s AND created_at < %s ORDER BY id ASC LIMIT %d',
+				$this->table_name(),
 				self::STATUS_PENDING,
 				$cutoff,
 				$limit
 			),
 			ARRAY_A
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
 	}
@@ -247,7 +262,7 @@ final class Proposal_Repository {
 		$ability_id = sanitize_text_field( $ability_id );
 		$limit      = max( 1, min( 1000, $limit ) );
 		$where      = array( 'status = %s' );
-		$args       = array( self::STATUS_PENDING );
+		$args       = array( $this->table_name(), self::STATUS_PENDING );
 
 		if ( '' !== $ability_id ) {
 			$where[] = 'ability_id = %s';
@@ -273,15 +288,15 @@ final class Proposal_Repository {
 		$where[] = '(' . implode( ' OR ', $identity_where ) . ')';
 		$args[]  = $limit;
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL uses fixed clauses, generated placeholders, and a table name from the WordPress prefix.
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,PluginCheck.Security.DirectDB.UnescapedDBParameter,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- SQL uses fixed clauses, generated placeholders, and Core's custom governance table.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name() . ' WHERE ' . implode( ' AND ', $where ) . ' ORDER BY id DESC LIMIT %d',
-				$args
+				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM %i WHERE ' . $this->join_where_clauses( $where ) . ' ORDER BY id DESC LIMIT %d',
+				...$args
 			),
 			ARRAY_A
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,PluginCheck.Security.DirectDB.UnescapedDBParameter
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,PluginCheck.Security.DirectDB.UnescapedDBParameter,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
 	}
@@ -295,15 +310,16 @@ final class Proposal_Repository {
 	public function find( string $proposal_id ): ?array {
 		global $wpdb;
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from the WordPress table prefix; query values use placeholders.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
-				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM ' . $this->table_name() . ' WHERE proposal_id = %s LIMIT 1',
+				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM %i WHERE proposal_id = %s LIMIT 1',
+				$this->table_name(),
 				sanitize_text_field( $proposal_id )
 			),
 			ARRAY_A
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return is_array( $row ) ? $this->normalize_row( $row ) : null;
 	}
@@ -376,9 +392,14 @@ final class Proposal_Repository {
 	public function count(): int {
 		global $wpdb;
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from the WordPress table prefix and no user values are interpolated.
-		$count = (int) $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $this->table_name() );
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		$count = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %i',
+				$this->table_name()
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $count;
 	}
@@ -409,14 +430,16 @@ final class Proposal_Repository {
 
 		$placeholders = implode( ', ', array_fill( 0, count( $statuses ), '%s' ) );
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,PluginCheck.Security.DirectDB.UnescapedDBParameter -- SQL uses fixed clauses, generated placeholders, and a table name from the WordPress prefix.
+		array_unshift( $statuses, $this->table_name() );
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- SQL uses fixed clauses, generated placeholders, and Core's custom governance table.
 		return (int) $wpdb->get_var(
 				$wpdb->prepare(
-					'SELECT COUNT(*) FROM ' . $this->table_name() . ' WHERE status IN (' . $placeholders . ')',
+					'SELECT COUNT(*) FROM %i WHERE status IN (' . $placeholders . ')',
 					...$statuses
 				)
 			);
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,PluginCheck.Security.DirectDB.UnescapedDBParameter
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**
@@ -529,6 +552,16 @@ final class Proposal_Repository {
 		}
 
 		return array_values( array_unique( array_filter( array_map( 'sanitize_text_field', $terms ) ) ) );
+	}
+
+	/**
+	 * Joins query clauses that were built from fixed repository templates.
+	 *
+	 * @param array<int,string> $clauses WHERE clauses.
+	 * @return string
+	 */
+	private function join_where_clauses( array $clauses ): string {
+		return implode( ' AND ', array_filter( array_map( 'trim', $clauses ) ) );
 	}
 
 	/**

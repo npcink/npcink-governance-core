@@ -743,9 +743,28 @@ final class Magick_AI_Core_Fail_Closed_WPDB {
 			$args = $args[0];
 		}
 
+		$kept_args = array();
+		$index     = 0;
+		$query     = preg_replace_callback(
+			'/%[isdFf]/',
+			static function ( array $matches ) use ( $args, &$kept_args, &$index ): string {
+				$placeholder = (string) $matches[0];
+				$value       = $args[ $index ] ?? null;
+				++$index;
+
+				if ( '%i' === $placeholder ) {
+					return (string) $value;
+				}
+
+				$kept_args[] = $value;
+				return $placeholder;
+			},
+			$query
+		);
+
 		return array(
-			'query' => $query,
-			'args'  => $args,
+			'query' => is_string( $query ) ? $query : '',
+			'args'  => $kept_args,
 		);
 	}
 
@@ -1206,7 +1225,7 @@ function npcink_governance_core_fail_closed_cleanup_batch_payload(): array {
 		'preview'    => array(
 			'source'       => array(
 				'type'            => 'plan_to_proposal_batch',
-				'plan_ability_id' => 'npcink-abilities-toolkit/build-test-content-cleanup-plan',
+				'plan_ability_id' => 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan',
 				'batch_approval'  => true,
 			),
 			'action_count' => 1,
@@ -1222,7 +1241,7 @@ function npcink_governance_core_fail_closed_cleanup_batch_payload(): array {
 		),
 		'caller'     => array(
 			'source'          => 'plan_to_proposal_batch',
-			'plan_ability_id' => 'npcink-abilities-toolkit/build-test-content-cleanup-plan',
+			'plan_ability_id' => 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan',
 			'batch_id'        => 'fault_injection_cleanup',
 		),
 	);

@@ -284,7 +284,7 @@ final class Commit_Preflight_Service {
 	 * @return string
 	 */
 	private function new_correlation_id(): string {
-		return function_exists( 'wp_generate_uuid4' ) ? wp_generate_uuid4() : uniqid( 'mai_corr_', true );
+		return function_exists( 'wp_generate_uuid4' ) ? wp_generate_uuid4() : uniqid( 'npcink_governance_core_corr_', true );
 	}
 
 	/**

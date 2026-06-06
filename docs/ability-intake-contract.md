@@ -42,7 +42,7 @@ Ability intake is read-only. It must not:
 Core may accept output from these read-only planning abilities:
 
 - `npcink-abilities-toolkit/build-content-inventory-fix-plan`
-- `npcink-abilities-toolkit/build-test-content-cleanup-plan`
+- `npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan`
 - `npcink-abilities-toolkit/build-media-inventory-fix-plan`
 - `npcink-abilities-toolkit/build-media-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`

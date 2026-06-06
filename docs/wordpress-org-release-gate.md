@@ -19,7 +19,13 @@ The local `check:wporg` guard blocks recurring review problems:
   `upgrade.php` activation helper for `dbDelta()`;
 - admin request parameters read directly from `$_GET`;
 - inline admin CSS or JS emitted from PHP;
-- raw `<script>` or `<style>` tags in PHP admin views.
+- raw `<script>` or `<style>` tags in PHP admin views;
+- missing `permission_callback` entries on REST routes;
+- legacy `mai_core` / `mai_` Magick AI token or id prefixes in release PHP;
+- raw `SELECT` strings passed directly to `$wpdb->get_var()`;
+- inline SQL `WHERE` assembly with `implode()`;
+- dynamic transient keys without an auditable
+  `npcink_governance_core` prefix guard.
 
 When WordPress.org sends a review email, decode the current top-level message,
 extract every cited file and line, fix the whole pattern class, and add a local

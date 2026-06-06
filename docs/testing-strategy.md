@@ -82,7 +82,7 @@ Use it for behavior that requires real WordPress:
   commit preflight, audit correlation, and no post term mutation;
 - the plan-to-proposal bridge for
   `npcink-abilities-toolkit/build-content-inventory-fix-plan`,
-  `npcink-abilities-toolkit/build-test-content-cleanup-plan`, and
+  `npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan`, and
   `npcink-abilities-toolkit/build-media-inventory-fix-plan`, plus media reference repair
   planning for post content and setting/theme-mod URL patches, including generated proposals,
   destructive media delete exclusion by default, and `requires_input`

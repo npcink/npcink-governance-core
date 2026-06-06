@@ -155,7 +155,7 @@ final class App_Authenticator {
 		}
 
 		$parts = explode( '.', $token, 3 );
-		if ( 3 !== count( $parts ) || 'mai_core' !== $parts[0] ) {
+		if ( 3 !== count( $parts ) || App_Key_Repository::TOKEN_PREFIX !== $parts[0] ) {
 			return $this->error( 'npcink_governance_core_app_auth_malformed', __( 'App authentication token is malformed.', 'npcink-governance-core' ), 400 );
 		}
 

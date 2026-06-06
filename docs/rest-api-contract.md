@@ -58,7 +58,7 @@ App auth error codes:
 App tokens use:
 
 ```text
-Authorization: Bearer mai_core.<key_id>.<secret>
+Authorization: Bearer npcink_governance_core.<key_id>.<secret>
 ```
 
 The raw secret is returned only by `POST /apps`.
@@ -306,7 +306,7 @@ Proposal rows include policy fields:
 The policy evaluator stores `caller.core_policy`, promotes the same fields into
 proposal responses, and records `proposal.policy_evaluated`. `manual` remains
 the default and does not auto-approve. `local_guarded` may auto-approve only
-trusted `build-test-content-cleanup-plan` `plan_to_proposal_batch` proposals
+trusted `build-nonproduction-content-cleanup-plan` `plan_to_proposal_batch` proposals
 whose actions all target `npcink-abilities-toolkit/trash-post`. It does not add a rules DSL,
 workflow runtime, long-running scheduler, final execution path, or policy
 configuration UI.
@@ -343,7 +343,7 @@ execute any target write ability. It only accepts the current plan bridge
 abilities:
 
 - `npcink-abilities-toolkit/build-content-inventory-fix-plan`
-- `npcink-abilities-toolkit/build-test-content-cleanup-plan`
+- `npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan`
 - `npcink-abilities-toolkit/build-media-inventory-fix-plan`
 - `npcink-abilities-toolkit/build-media-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`
@@ -362,7 +362,7 @@ Request fields:
 | --- | --- | --- | --- |
 | `plan_ability_id` | string | yes | Must be one of the supported read-only planning ability ids and currently discoverable as `governance_mode=direct_read`. |
 | `plan` | object | yes | Ability success envelope or its `data` object. Must include `requires_approval=true`, `dry_run=true`, `commit_execution=false`, and `write_actions`. |
-| `plan_input` | object | no | Input originally used to build the plan. Used for safety gates such as `include_delete_candidates=true`; media delete plans may also require source-side flags such as `include_unattached_test_media=true` or `include_trash_parent_media=true` before the plan emits a delete action. |
+| `plan_input` | object | no | Input originally used to build the plan. Used for safety gates such as `include_delete_candidates=true`; media delete plans may also require source-side flags such as `include_unattached_nonproduction_media=true` or `include_trash_parent_media=true` before the plan emits a delete action. |
 | `caller` | object | no | Caller metadata copied into generated proposals. |
 
 For `npcink-toolbox/build-article-write-plan`, the plan must declare
@@ -490,7 +490,7 @@ Response `201`:
 Destructive media deletion is excluded unless `include_delete_candidates=true`
 is present in the plan input supplied to this route. The media planning ability
 must also have accepted its own narrow destructive flag, such as
-`include_unattached_test_media=true` or `include_trash_parent_media=true`, before
+`include_unattached_nonproduction_media=true` or `include_trash_parent_media=true`, before
 Core has a delete action to review. Actions with `requires_input` still become
 reviewable proposals, but their preview carries `proposal_ready=false`,
 `needs_input`, and `preflight_blockers`; commit preflight must return `409`

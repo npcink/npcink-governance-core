@@ -142,4 +142,4 @@ Permanent media deletion may only enter generated proposals when the host
 request's `plan_input.include_delete_candidates` is true; a same-named flag
 inside the plan output is not trusted for that destructive gate. This Core gate
 is in addition to the media planning ability's own destructive delete policy,
-such as `include_unattached_test_media` or `include_trash_parent_media`.
+such as `include_unattached_nonproduction_media` or `include_trash_parent_media`.

@@ -80,17 +80,18 @@ final class App_Rate_Limiter {
 		$window_end     = gmdate( 'Y-m-d H:i:s', $window_end_ts );
 		$now            = current_time( 'mysql', true );
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from the WordPress table prefix; query values use placeholders.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
-				'SELECT id, request_count FROM ' . $this->table_name() . ' WHERE app_id = %s AND route_family = %s AND window_start = %s LIMIT 1',
+				'SELECT id, request_count FROM %i WHERE app_id = %s AND route_family = %s AND window_start = %s LIMIT 1',
+				$this->table_name(),
 				$app_id,
 				$route_family,
 				$window_start
 			),
 			ARRAY_A
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		if ( is_array( $row ) ) {
 			$count = (int) ( $row['request_count'] ?? 0 );

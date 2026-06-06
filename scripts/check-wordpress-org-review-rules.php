@@ -59,6 +59,9 @@ $rules = array(
 	'Do not output raw script tags from PHP admin views; enqueue scripts.' => '/<\s*\/?\s*script\b/i',
 	'Do not output raw style tags from PHP admin views; enqueue styles.' => '/<\s*\/?\s*style\b/i',
 	'Do not read $_GET directly in plugin views; route reads through nonce-verified helpers.' => '/\$_GET\s*\[/',
+	'Do not ship legacy Magick AI token or id prefixes in Core release PHP.' => '/\bmai_core\b|uniqid\s*\(\s*[\'"]mai(?:_|_corr_)/',
+	'Do not pass raw SELECT strings directly into $wpdb->get_var(); prepare the query.' => '/->get_var\s*\(\s*[\'"]\s*SELECT\b/i',
+	'Do not assemble SQL WHERE clauses inline with implode(); use fixed whitelisted clauses and prepare().' => '/WHERE\s+[\'"]\s*\.\s*implode\s*\(/i',
 );
 
 foreach ( npcink_governance_core_wporg_php_files() as $file ) {
@@ -69,6 +72,18 @@ foreach ( npcink_governance_core_wporg_php_files() as $file ) {
 		if ( preg_match( $pattern, $contents ) ) {
 			npcink_governance_core_wporg_fail( $relative . ': ' . $message );
 		}
+	}
+
+	if ( false !== strpos( $contents, 'register_rest_route(' ) ) {
+		$route_count      = substr_count( $contents, 'register_rest_route(' );
+		$permission_count = substr_count( $contents, "'permission_callback'" ) + substr_count( $contents, '"permission_callback"' );
+		if ( $permission_count < $route_count ) {
+			npcink_governance_core_wporg_fail( $relative . ': Every register_rest_route() call must declare permission_callback.' );
+		}
+	}
+
+	if ( false !== strpos( $contents, 'set_transient(' ) && false === strpos( $contents, 'AUTO_APPROVAL_TRANSIENT_PREFIX' ) ) {
+		npcink_governance_core_wporg_fail( $relative . ': Dynamic transient keys must have an auditable npcink_governance_core prefix guard.' );
 	}
 }
 

@@ -1,5 +1,33 @@
 # Session Breadcrumb
 
+## 2026-06-06 — WordPress.org review blockers repaired
+
+- **Module**: Core WordPress.org release/readiness gate.
+- **Status**: Core now addresses the Plugin Directory review feedback for REST
+  permission callbacks, transient/key naming, and prepared SQL review patterns.
+- **Completed**:
+  - Kept every Core REST route behind explicit permission callbacks and added a
+    local release guard for missing route permissions.
+  - Replaced legacy `mai_core`/`mai_` token and fallback id prefixes with the
+    `npcink_governance_core` identity.
+  - Changed custom-table read queries to use `$wpdb->prepare()` with identifier
+    placeholders and fixed-clause WHERE assembly.
+  - Added a visible auto-approval transient prefix guard.
+  - Extended `check:wporg` to catch the review patterns before upload.
+  - Synced Core smoke/contracts with the current
+    `npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan` and
+    `include_unattached_nonproduction_media` Abilities Toolkit contracts.
+- **Verification**:
+  - `composer test:all`
+  - `composer check:wporg`
+  - `composer release:verify`
+  - `WP_CLI_PHP="$HOME/Library/Application Support/Local/lightning-services/php-8.2.29+0/bin/darwin-arm64/bin/php" composer smoke:wp`
+  - `git diff --check`
+- **Boundary**:
+  - This is release-hardening and contract alignment only. Core still owns
+    proposal records, review, preflight, audit, and app-key governance; final
+    WordPress writes remain outside Core.
+
 ## 2026-06-05 — Media optimization reference repair contract tightened
 
 - **Module**: Core media optimization plan-to-proposal contract.
