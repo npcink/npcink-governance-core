@@ -74,14 +74,17 @@ foreach (
 		'WordPress AI operation governance layer',
 		'It does not generate content',
 		'Current Stage Governance Reliability',
-			'Approval Policy Evaluator Standard',
-			'Ability Recipe Orchestration Contract',
-			'Article Writing Workflow Contract',
-			'Cloud Bulk Article Run Contract',
-			'workflow/task queues, batch execution consoles',
-			'Review Queue, pending proposal queue',
-			'Those terms do not permit workflow/task queue ownership',
-			'GET /wp-json/npcink-governance-core/v1/capabilities',
+		'Approval Policy Evaluator Standard',
+		'Third-Party Ability Provider Guide',
+		'Third-party ability providers can integrate without adopting',
+		'allowlisted read-only planning',
+		'Ability Recipe Orchestration Contract',
+		'Article Writing Workflow Contract',
+		'Cloud Bulk Article Run Contract',
+		'workflow/task queues, batch execution consoles',
+		'Review Queue, pending proposal queue',
+		'Those terms do not permit workflow/task queue ownership',
+		'GET /wp-json/npcink-governance-core/v1/capabilities',
 		'POST /wp-json/npcink-governance-core/v1/apps',
 		'POST /wp-json/npcink-governance-core/v1/proposals',
 		'POST /wp-json/npcink-governance-core/v1/proposals/from-plan',
@@ -121,6 +124,8 @@ foreach ( array( 'tests', 'examples', 'docs', 'AGENTS.md', '.sisyphus', '.workbu
 $positioning = npcink_governance_core_read( $root . '/docs/product-positioning.md' );
 npcink_governance_core_assert( false !== strpos( $positioning, 'Npcink Governance Core governs AI-assisted WordPress operations.' ), 'Positioning keeps one-sentence product truth.' );
 npcink_governance_core_assert( false !== strpos( $positioning, '`npcink-abilities-toolkit`' ), 'Positioning names npcink-abilities-toolkit as ability owner.' );
+npcink_governance_core_assert( false !== strpos( $positioning, 'Third-party ability providers' ), 'Positioning names third-party ability providers.' );
+npcink_governance_core_assert( false !== strpos( $positioning, 'provider-neutral at the base proposal layer' ), 'Positioning keeps base proposals provider-neutral.' );
 npcink_governance_core_assert( false !== strpos( $positioning, '`npcink-content-assistant`' ), 'Positioning names Content Assistant as product UX owner.' );
 
 $admin_menu_standard = npcink_governance_core_read( $root . '/docs/admin-menu-standard.md' );
@@ -489,6 +494,24 @@ npcink_governance_core_assert( false !== strpos( $readme, 'Taxonomy Terms Previe
 npcink_governance_core_assert( false !== strpos( $readme, 'Article writing is now treated as local Ability recipe orchestration' ), 'README documents local Ability recipe orchestration boundary.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Cloud must not generate article drafts' ), 'README prohibits Cloud writing generation.' );
 
+$third_party_provider_guide = npcink_governance_core_read( $root . '/docs/third-party-ability-provider-guide.md' );
+foreach (
+	array(
+		'Third-Party Ability Provider Guide',
+		'currently discoverable WordPress ability id',
+		'permission callbacks',
+		'dry-run previews',
+		'POST /wp-json/npcink-governance-core/v1/proposals',
+		'not a generic workflow runtime',
+		'capabilities:read',
+		'proposals:create',
+		'commit:preflight',
+		'provider or adapter, not through',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $third_party_provider_guide, $required ), 'Third-party provider guide contains required text: ' . $required );
+}
+
 $openclaw_execution_guidance = npcink_governance_core_read( $root . '/docs/openclaw-execution-guidance.md' );
 foreach (
 	array(
@@ -756,6 +779,9 @@ npcink_governance_core_assert( false !== strpos( $ability_adapter, "'redaction_r
 npcink_governance_core_assert( false !== strpos( $ability_adapter, 'infer_read_sensitivity' ), 'Ability intake infers read sensitivity when providers omit it.' );
 
 $ability_intake = npcink_governance_core_read( $root . '/docs/ability-intake-contract.md' );
+npcink_governance_core_assert( false !== strpos( $ability_intake, 'reference provider and smoke-test' ), 'Ability intake contract treats npcink-abilities-toolkit as the reference provider.' );
+npcink_governance_core_assert( false !== strpos( $ability_intake, 'not a generic third-party workflow runtime' ), 'Ability intake contract keeps third-party plan fan-out allowlisted.' );
+npcink_governance_core_assert( false !== strpos( $ability_intake, 'Third-Party Ability Provider Guide' ), 'Ability intake contract links third-party provider guidance.' );
 npcink_governance_core_assert( false !== strpos( $ability_intake, 'npcink_abilities_toolkit_get_workflow_definitions()' ), 'Ability intake contract prefers runtime workflow definition discovery.' );
 npcink_governance_core_assert( false !== strpos( $ability_intake, 'agent-workflow-replay.json' ), 'Ability intake contract points to the shared replay fixture.' );
 npcink_governance_core_assert( false !== strpos( $ability_intake, 'does not copy the fixture into a workflow runtime' ), 'Ability intake contract keeps replay consumption out of runtime ownership.' );

@@ -7,11 +7,16 @@ Npcink Governance Core consumes abilities. It does not define product abilities.
 ## Discovery Order
 
 1. Prefer `npcink_abilities_toolkit_get_registered()` when the
-   `npcink-abilities-toolkit` package is active.
+   `npcink-abilities-toolkit` reference package is active.
 2. Fall back to WordPress Abilities API discovery with `wp_get_abilities()` when
    available.
 3. Return an empty list with a diagnostic status when no ability source is
    available.
+
+The `npcink-abilities-toolkit` package is the reference provider and smoke-test
+baseline, not the only valid source. Core's base intake can normalize any
+currently discoverable WordPress Abilities API row from a provider plugin. See
+[Third-Party Ability Provider Guide](third-party-ability-provider-guide.md).
 
 ## Normalized Capability Row
 
@@ -39,7 +44,8 @@ Ability intake is read-only. It must not:
 
 ## Plan-To-Proposal Bridge Inputs
 
-Core may accept output from these read-only planning abilities:
+Core may accept output from these explicitly allowlisted read-only planning
+abilities:
 
 - `npcink-abilities-toolkit/build-content-inventory-fix-plan`
 - `npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan`
@@ -57,6 +63,12 @@ They must remain discoverable as `governance_mode=direct_read` with
 `execution_surface=wp_abilities_rest`. Core does not execute them. A host or
 adapter runs the plan through WordPress Abilities API and submits the resulting
 plan payload to Core.
+
+This bridge is intentionally narrower than ordinary proposal creation. It is
+not a generic third-party workflow runtime. Providers outside this list should
+submit direct single-action proposals until Core documents their planning
+ability id, `plan_type`, bounds, allowed target abilities, and dry-run evidence
+requirements.
 
 `npcink-toolbox/build-article-write-plan` is the P0 AI-assisted writing
 handoff owned by Toolbox. Core accepts it only as a reviewed

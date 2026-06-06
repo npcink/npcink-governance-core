@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-06 — Third-party ability provider boundary clarified
+
+- **Module**: Core ability intake and public integration contracts.
+- **Status**: Core now documents that `npcink-abilities-toolkit` is the
+  reference provider, while the base proposal lifecycle can govern any
+  currently discoverable WordPress Abilities API provider with stable ids,
+  schemas, permission callbacks, risk metadata, and dry-run previews.
+- **Completed**:
+  - Added a third-party Ability Provider guide for direct proposals, dry-run
+    previews, app-key scopes, and final execution outside Core.
+  - Clarified that `POST /proposals/from-plan` remains explicitly allowlisted
+    and is not a generic workflow runtime for third-party fan-out.
+  - Linked the provider-neutral guidance from README, product positioning,
+    ability intake, and WordPress.org reviewer copy.
+- **Verification**:
+  - `composer test:all`
+  - `composer check:wporg`
+  - `git diff --check`
+- **Boundary**:
+  - Documentation/static-contract update only. Core still owns proposal
+    records, review, preflight, audit, and app-key governance; providers and
+    adapters still own abilities, dry-run execution, final writes, credentials,
+    model routing, and product workflows.
+
 ## 2026-06-06 — WordPress.org review blockers repaired
 
 - **Module**: Core WordPress.org release/readiness gate.

@@ -64,6 +64,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Database Schema](docs/database-schema.md)
 - [Security Model](docs/security-model.md)
 - [Ability Intake Contract](docs/ability-intake-contract.md)
+- [Third-Party Ability Provider Guide](docs/third-party-ability-provider-guide.md)
 - [Approval Commit Contract](docs/approval-commit-contract.md)
 - [Agent MCP Entry Contract](docs/agent-mcp-entry-contract.md)
 - [App Auth Scope Policy](docs/app-auth-scope-policy.md)
@@ -99,8 +100,16 @@ External agent clients can start from the
 That example calls Core REST governance routes only; it is not an MCP runtime
 or final write executor.
 
-Core 0.4 consumer readiness is complete for `npcink-abilities-toolkit` 0.4.0 across
-the `npcink-abilities-toolkit/create-draft`, `npcink-abilities-toolkit/set-post-seo-meta`, and
+Third-party ability providers can integrate without adopting
+`npcink-abilities-toolkit`: register real WordPress Abilities API ids with
+schemas, permission callbacks, risk metadata, and dry-run previews, then submit
+write or destructive operations to Core as proposals. See
+[Third-Party Ability Provider Guide](docs/third-party-ability-provider-guide.md).
+
+Core 0.4 consumer readiness is complete for the reference
+`npcink-abilities-toolkit` 0.4.0 provider across
+the `npcink-abilities-toolkit/create-draft`,
+`npcink-abilities-toolkit/set-post-seo-meta`, and
 `npcink-abilities-toolkit/approve-comment` representative scenarios. See
 [Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md). ADR-003
 keeps final WordPress execution outside Core for the current stage; Core
@@ -112,7 +121,7 @@ The taxonomy terms preview extension proves the same boundary for
 run the read helper through WordPress Abilities API, then submit the generated
 dry-run write proposal to Core for approval and commit preflight.
 
-The plan-to-proposal bridge extends that pattern to read-only planning
+The plan-to-proposal bridge extends that pattern to allowlisted read-only planning
 abilities such as `npcink-abilities-toolkit/build-content-inventory-fix-plan`,
 `npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan`, and
 `npcink-abilities-toolkit/build-media-inventory-fix-plan`,

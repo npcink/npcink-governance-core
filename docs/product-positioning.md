@@ -35,7 +35,8 @@ Npcink Governance Core does not own:
 | Project | Owns |
 | --- | --- |
 | `npcink-governance-core` | Governance, proposal records, approval boundaries, audit logs, and host policy. |
-| `npcink-abilities-toolkit` | Reusable WordPress Abilities API definitions, schemas, callbacks, and dry-run previews. |
+| `npcink-abilities-toolkit` | Reference reusable WordPress Abilities API definitions, schemas, callbacks, and dry-run previews. |
+| Third-party ability providers | Vendor-scoped WordPress Abilities API definitions, schemas, callbacks, dry-run previews, and final execution outside Core. |
 | `npcink-content-assistant` | Article, media, and comment product UX that consumes Core governance. |
 | Toolbox or market-specific product plugins | Domestic environment fixes, search/index operations, WeChat integrations, CDN/storage workflows, compliance helpers, and other product UX that consumes Core governance. |
 | Connector plugins | Provider credentials and WordPress AI Client provider registration. |
@@ -50,3 +51,10 @@ it may belong in Core.
 
 If a feature creates content, chooses a model, schedules batch work, or owns a
 domain workflow, it belongs outside Core.
+
+The default first-party provider is `npcink-abilities-toolkit`, but Core should
+stay provider-neutral at the base proposal layer: any currently discoverable
+WordPress Abilities API provider can submit real write or destructive
+`ability_id` targets for Core governance. Provider-specific plan fan-out is
+only supported after an explicit Core contract documents the plan shape and
+bounds.

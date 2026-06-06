@@ -99,6 +99,8 @@ The plugin registers REST endpoints under /wp-json/npcink-governance-core/v1/ an
 
 The plugin does not execute final write actions itself. It creates proposals, records approvals/rejections, exposes commit-preflight context, and keeps final execution disabled for a trusted downstream adapter or human-reviewed workflow.
 
+The bundled examples use Npcink ability ids, but the base governance proposal lifecycle is not limited to that provider. Other WordPress Abilities API provider plugins can expose stable ability ids, schemas, permission callbacks, risk metadata, and dry-run previews, then submit write/destructive actions for Core review.
+
 The plugin does not call external services, does not load remote assets, and does not send site data to third parties. App secrets are hashed before storage, and one-time bearer tokens are only shown at creation time.
 
 Internal PHP namespaces, function prefixes, table prefixes, hooks, options, and error codes use the Npcink Governance Core identity. The public plugin name, slug, text domain, REST namespace, and WordPress.org package identity are Npcink Governance Core / npcink-governance-core.
@@ -107,7 +109,7 @@ Internal PHP namespaces, function prefixes, table prefixes, hooks, options, and 
 If the form field is short, use this condensed version:
 
 ```text
-This plugin provides a local WordPress governance layer for AI-initiated actions. It creates reviewable proposals, records audit events, manages app keys, and exposes commit-preflight context under /wp-json/npcink-governance-core/v1/. It does not execute final write actions itself, does not call external services, and does not send site data to third parties. Direct database queries are intentional because the plugin owns its custom proposal, audit, app key, and rate-limit tables.
+This plugin provides a local WordPress governance layer for AI-initiated actions. It creates reviewable proposals for WordPress Abilities API providers, records audit events, manages app keys, and exposes commit-preflight context under /wp-json/npcink-governance-core/v1/. It does not execute final write actions itself, does not call external services, and does not send site data to third parties. Direct database queries are intentional because the plugin owns its custom proposal, audit, app key, and rate-limit tables.
 ```
 
 ## Handoff Checklist For Agents
