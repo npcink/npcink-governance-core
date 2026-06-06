@@ -66,9 +66,26 @@ $main_plugin = npcink_governance_core_read( $root . '/npcink-governance-core.php
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Plugin Name: Npcink Governance Core' ), 'Main plugin file declares plugin header.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Description: Npcink AI governance layer for WordPress operations.' ), 'Main plugin file declares the public positioning.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Text Domain: npcink-governance-core' ), 'Main plugin file keeps the canonical text domain.' );
+npcink_governance_core_assert( false !== strpos( $main_plugin, 'Domain Path: /languages' ), 'Main plugin file declares the bundled languages path.' );
+npcink_governance_core_assert( false !== strpos( $main_plugin, 'load_plugin_textdomain' ), 'Main plugin file loads bundled translations.' );
+npcink_governance_core_assert( false !== strpos( $main_plugin, "dirname( plugin_basename( NPCINK_GOVERNANCE_CORE_FILE ) ) . '/languages'" ), 'Main plugin file resolves bundled translations from the plugin languages directory.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'register_activation_hook' ), 'Main plugin file registers activation hook.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'plugins_loaded' ), 'Main plugin file boots after plugins_loaded.' );
 npcink_governance_core_assert( false === strpos( $main_plugin, 'example.com' ), 'Main plugin header does not use placeholder Plugin URI.' );
+
+$translation_glossary = npcink_governance_core_read( $root . '/docs/translation-glossary-zh.md' );
+foreach ( array( 'Governance', 'Proposal', 'Commit preflight', 'Ability', 'Audit', 'App key' ) as $required ) {
+	npcink_governance_core_assert( false !== strpos( $translation_glossary, $required ), 'Chinese translation glossary contains required term: ' . $required );
+}
+
+$translation_pot = npcink_governance_core_read( $root . '/languages/npcink-governance-core.pot' );
+$translation_po  = npcink_governance_core_read( $root . '/languages/npcink-governance-core-zh_CN.po' );
+npcink_governance_core_assert( '' !== $translation_pot, 'Bundled POT template exists.' );
+npcink_governance_core_assert( '' !== $translation_po, 'Bundled zh_CN PO file exists.' );
+npcink_governance_core_assert( is_readable( $root . '/languages/npcink-governance-core-zh_CN.mo' ), 'Bundled zh_CN MO file exists.' );
+npcink_governance_core_assert( false !== strpos( $translation_po, '"Language: zh_CN\\n"' ), 'Bundled zh_CN PO declares zh_CN language.' );
+npcink_governance_core_assert( false !== strpos( $translation_po, 'msgid "Review Queue"' ) && false !== strpos( $translation_po, 'msgstr "审核队列"' ), 'Bundled zh_CN PO translates Review Queue.' );
+npcink_governance_core_assert( false !== strpos( $translation_po, 'msgid "Commit preflight has already issued an execution handoff for this approved proposal."' ), 'Bundled zh_CN PO keeps commit preflight source strings.' );
 
 $readme = npcink_governance_core_read( $root . '/README.md' );
 foreach (

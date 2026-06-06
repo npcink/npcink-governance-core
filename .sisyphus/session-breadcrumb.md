@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-07 — Simplified Chinese translation baseline added
+
+- **Module**: Core translation and localization packaging.
+- **Status**: Core now ships a bundled `zh_CN` translation baseline while
+  keeping English source strings, the `npcink-governance-core` text domain,
+  public slugs, REST namespace, ability ids, and governance contracts unchanged.
+- **Completed**:
+  - Added the plugin `Domain Path: /languages` header and explicit bundled
+    translation loading.
+  - Generated `languages/npcink-governance-core.pot`.
+  - Added and compiled `languages/npcink-governance-core-zh_CN.po` and `.mo`.
+  - Added a Chinese translation glossary for stable governance terminology.
+  - Updated bilingual publishing notes and static contracts for the bundled
+    translation baseline.
+- **Verification**:
+  - `msgfmt --check --check-format -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - PO empty-translation and placeholder checks.
+  - `git diff --check`
+  - `composer test:all`
+  - `composer check:wporg`
+- **Boundary**:
+  - Translation and packaging only. No naming migration, REST contract,
+    database schema, governance lifecycle, ability intake, execution, workflow
+    runtime, provider, credential, or product workflow changes.
+
 ## 2026-06-06 — Public naming contract aligned
 
 - **Module**: Core naming and release identity.

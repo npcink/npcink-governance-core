@@ -1,0 +1,1374 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Npcink Governance Core 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/npcink-governance-core\n"
+"Last-Translator: Npcink <translate@npcink.local>\n"
+"Language-Team: Chinese (Simplified) <translate@npcink.local>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2026-06-07 00:00+0800\n"
+"X-Generator: Codex + WP-CLI 2.12.0\n"
+"X-Domain: npcink-governance-core\n"
+
+#. Plugin Name of the plugin
+#: npcink-governance-core.php
+#: includes/Admin/Admin_Page.php:126
+#: includes/Admin/Admin_Page.php:298
+msgid "Npcink Governance Core"
+msgstr "Npcink Governance Core"
+
+#. Description of the plugin
+#: npcink-governance-core.php
+msgid "Npcink AI governance layer for WordPress operations."
+msgstr "用于 WordPress 操作的 Npcink AI 治理层。"
+
+#. Author of the plugin
+#: npcink-governance-core.php
+msgid "Npcink"
+msgstr "Npcink"
+
+#: includes/Admin/Admin_Page.php:127
+#: includes/Admin/Admin_Page.php:219
+msgid "Core"
+msgstr "Core"
+
+#: includes/Admin/Admin_Page.php:165
+#: includes/Admin/Admin_Page.php:166
+#: includes/Admin/Admin_Page.php:213
+msgid "Npcink AI"
+msgstr "Npcink AI"
+
+#: includes/Admin/Admin_Page.php:176
+msgid "Npcink AI Overview"
+msgstr "Npcink AI 概览"
+
+#: includes/Admin/Admin_Page.php:177
+msgid "Overview"
+msgstr "概览"
+
+#: includes/Admin/Admin_Page.php:209
+#: includes/Admin/Admin_Page.php:279
+msgid "You do not have permission to access this page."
+msgstr "您没有权限访问此页面。"
+
+#: includes/Admin/Admin_Page.php:214
+msgid "Local WordPress entry points for Npcink governance, connections, cloud access, and ability packages."
+msgstr "Npcink 治理、连接、云访问和能力包的本地 WordPress 入口。"
+
+#: includes/Admin/Admin_Page.php:215
+msgid "Installed Surfaces"
+msgstr "已安装界面"
+
+#: includes/Admin/Admin_Page.php:219
+msgid "Review proposals, approval decisions, commit preflight, audit, and Core app keys."
+msgstr "审核提案、批准决策、提交前检查、审计和 Core 应用密钥。"
+
+#: includes/Admin/Admin_Page.php:220
+msgid "Adapter"
+msgstr "Adapter"
+
+#: includes/Admin/Admin_Page.php:220
+msgid "Connect OpenClaw through the Adapter surface."
+msgstr "通过 Adapter 界面连接 OpenClaw。"
+
+#: includes/Admin/Admin_Page.php:221
+msgid "Abilities"
+msgstr "能力"
+
+#: includes/Admin/Admin_Page.php:221
+msgid "Verify WordPress Abilities API packages and demo ability controls."
+msgstr "验证 WordPress Abilities API 包和演示能力控件。"
+
+#: includes/Admin/Admin_Page.php:222
+msgid "Cloud Addon"
+msgstr "Cloud Addon"
+
+#: includes/Admin/Admin_Page.php:222
+msgid "Connect this site to cloud services without moving local control-plane truth."
+msgstr "将此站点连接到云服务，同时不迁移本地控制面事实。"
+
+#: includes/Admin/Admin_Page.php:245
+msgid "Open"
+msgstr "打开"
+
+#: includes/Admin/Admin_Page.php:247
+msgid "Not installed"
+msgstr "未安装"
+
+#: includes/Admin/Admin_Page.php:299
+msgid "Governance review and audit for WordPress ability proposals."
+msgstr "WordPress 能力提案的治理审核和审计。"
+
+#: includes/Admin/Admin_Page.php:317
+msgid "Selected proposal was not found."
+msgstr "未找到所选提案。"
+
+#: includes/Admin/Admin_Page.php:353
+#: includes/Admin/Admin_Page.php:571
+msgid "Review Queue"
+msgstr "审核队列"
+
+#: includes/Admin/Admin_Page.php:357
+#: includes/Admin/Admin_Page.php:1741
+msgid "Governance Audit"
+msgstr "治理审计"
+
+#: includes/Admin/Admin_Page.php:361
+#: includes/Admin/Admin_Page.php:1193
+msgid "Expired / Archived"
+msgstr "已过期 / 已归档"
+
+#: includes/Admin/Admin_Page.php:365
+msgid "Media Policy"
+msgstr "媒体策略"
+
+#: includes/Admin/Admin_Page.php:370
+msgid "Core admin sections"
+msgstr "Core 管理区段"
+
+#: includes/Admin/Admin_Page.php:409
+msgid "Manual"
+msgstr "手动"
+
+#: includes/Admin/Admin_Page.php:410
+msgid "Dry-run guarded"
+msgstr "试运行保护"
+
+#: includes/Admin/Admin_Page.php:411
+msgid "Local guarded"
+msgstr "本地保护"
+
+#: includes/Admin/Admin_Page.php:416
+msgid "Development Approval Policy"
+msgstr "开发批准策略"
+
+#. translators: %s: current policy mode.
+#: includes/Admin/Admin_Page.php:421
+#, php-format
+msgid "Current mode: %s"
+msgstr "当前模式：%s"
+
+#: includes/Admin/Admin_Page.php:433
+msgid "Policy mode"
+msgstr "策略模式"
+
+#: includes/Admin/Admin_Page.php:442
+msgid "Local guarded only auto-approves trusted test-content cleanup trash batches. Destructive deletes, comments, terms, and published content updates remain manual."
+msgstr "本地保护模式只会自动批准受信任的测试内容清理回收站批次。破坏性删除、评论、术语和已发布内容更新仍需手动处理。"
+
+#: includes/Admin/Admin_Page.php:447
+msgid "Save approval policy"
+msgstr "保存批准策略"
+
+#: includes/Admin/Admin_Page.php:461
+msgid "Media Optimization Policy"
+msgstr "媒体优化策略"
+
+#: includes/Admin/Admin_Page.php:462
+msgid "Core stores the local site policy for optimized media derivatives. Toolbox may use these defaults for one-run handoffs, and Cloud Addon may execute them when available, but final WordPress writes still require local proposal governance."
+msgstr "Core 保存优化媒体衍生文件的本地站点策略。Toolbox 可在单次交接中使用这些默认值，Cloud Addon 可在可用时执行它们，但最终 WordPress 写入仍需要本地提案治理。"
+
+#: includes/Admin/Admin_Page.php:468
+msgid "Media optimization"
+msgstr "媒体优化"
+
+#: includes/Admin/Admin_Page.php:472
+msgid "Enable local media derivative policy"
+msgstr "启用本地媒体衍生策略"
+
+#: includes/Admin/Admin_Page.php:474
+msgid "This stores defaults only. It does not optimize files, approve proposals, or write attachment metadata."
+msgstr "这里只保存默认值。它不会优化文件、批准提案或写入附件元数据。"
+
+#: includes/Admin/Admin_Page.php:478
+msgid "Output format"
+msgstr "输出格式"
+
+#: includes/Admin/Admin_Page.php:490
+msgid "Maximum width"
+msgstr "最大宽度"
+
+#: includes/Admin/Admin_Page.php:493
+#: includes/Admin/Admin_Page.php:538
+msgid "px"
+msgstr "px"
+
+#: includes/Admin/Admin_Page.php:497
+msgid "Quality"
+msgstr "质量"
+
+#: includes/Admin/Admin_Page.php:503
+msgid "Watermark"
+msgstr "水印"
+
+#: includes/Admin/Admin_Page.php:507
+msgid "Use image watermark when a logo attachment is configured"
+msgstr "配置徽标附件后使用图片水印"
+
+#: includes/Admin/Admin_Page.php:510
+msgid "Logo attachment ID"
+msgstr "徽标附件 ID"
+
+#: includes/Admin/Admin_Page.php:514
+msgid "Watermark placement"
+msgstr "水印位置"
+
+#: includes/Admin/Admin_Page.php:516
+msgid "Position"
+msgstr "位置"
+
+#: includes/Admin/Admin_Page.php:526
+msgid "Opacity"
+msgstr "不透明度"
+
+#: includes/Admin/Admin_Page.php:528
+#: includes/Admin/Admin_Page.php:533
+msgid "%"
+msgstr "%"
+
+#: includes/Admin/Admin_Page.php:531
+msgid "Scale"
+msgstr "缩放"
+
+#: includes/Admin/Admin_Page.php:536
+msgid "Margin"
+msgstr "边距"
+
+#: includes/Admin/Admin_Page.php:544
+msgid "Execution preference"
+msgstr "执行偏好"
+
+#: includes/Admin/Admin_Page.php:548
+msgid "Use Cloud execution when Cloud Addon is installed and verified"
+msgstr "安装并验证 Cloud Addon 后使用云执行"
+
+#: includes/Admin/Admin_Page.php:550
+msgid "Cloud remains an optional runtime. Core keeps the policy and final local write decision."
+msgstr "Cloud 仍是可选运行时。Core 保留策略和最终本地写入决策。"
+
+#: includes/Admin/Admin_Page.php:555
+msgid "Save media policy"
+msgstr "保存媒体策略"
+
+#: includes/Admin/Admin_Page.php:573
+#: includes/Admin/Admin_Page.php:2150
+msgid "Needs review"
+msgstr "待审核"
+
+#: includes/Admin/Admin_Page.php:574
+#: includes/Admin/Admin_Page.php:1986
+#: includes/Admin/Admin_Page.php:2153
+#: includes/Admin/Admin_Page.php:2220
+#: includes/Admin/Admin_Page.php:2230
+msgid "Expired"
+msgstr "已过期"
+
+#: includes/Admin/Admin_Page.php:575
+#: includes/Admin/Admin_Page.php:1987
+#: includes/Admin/Admin_Page.php:2154
+msgid "Archived"
+msgstr "已归档"
+
+#: includes/Admin/Admin_Page.php:576
+msgid "Available abilities"
+msgstr "可用能力"
+
+#: includes/Admin/Admin_Page.php:622
+msgid "Needs Review"
+msgstr "待审核"
+
+#: includes/Admin/Admin_Page.php:630
+#: includes/Admin/Admin_Page.php:646
+msgid "Select proposal"
+msgstr "选择提案"
+
+#: includes/Admin/Admin_Page.php:631
+#: includes/Admin/Admin_Page.php:789
+#: includes/Admin/Admin_Page.php:1208
+#: includes/Admin/Admin_Page.php:1805
+msgid "Proposal"
+msgstr "提案"
+
+#: includes/Admin/Admin_Page.php:632
+msgid "Created"
+msgstr "已创建"
+
+#: includes/Admin/Admin_Page.php:633
+#: includes/Admin/Admin_Page.php:846
+#: includes/Admin/Admin_Page.php:1138
+#: includes/Admin/Admin_Page.php:1212
+msgid "Action"
+msgstr "操作"
+
+#: includes/Admin/Admin_Page.php:639
+msgid "No active proposals. Expired items are moved out of the review queue automatically."
+msgstr "没有活动提案。过期项目会自动移出审核队列。"
+
+#: includes/Admin/Admin_Page.php:651
+msgid "Proposal ID:"
+msgstr "提案 ID："
+
+#: includes/Admin/Admin_Page.php:655
+msgid "Ability:"
+msgstr "能力："
+
+#: includes/Admin/Admin_Page.php:663
+msgid "Review"
+msgstr "审核"
+
+#: includes/Admin/Admin_Page.php:673
+msgid "Bulk rejection note"
+msgstr "批量拒绝备注"
+
+#: includes/Admin/Admin_Page.php:674
+#: includes/Admin/Admin_Page.php:891
+msgid "Superseded by batch cleanup proposal."
+msgstr "已被批量清理提案取代。"
+
+#: includes/Admin/Admin_Page.php:677
+msgid "Reject selected"
+msgstr "拒绝所选项"
+
+#: includes/Admin/Admin_Page.php:701
+msgid "Source:"
+msgstr "来源："
+
+#. translators: %s: plan ability id.
+#: includes/Admin/Admin_Page.php:727
+#, php-format
+msgid "plan %s"
+msgstr "计划 %s"
+
+#. translators: %s: batch id.
+#: includes/Admin/Admin_Page.php:736
+#, php-format
+msgid "batch %s"
+msgstr "批次 %s"
+
+#. translators: %s: action id.
+#: includes/Admin/Admin_Page.php:745
+#, php-format
+msgid "action %s"
+msgstr "操作 %s"
+
+#. translators: %s: caller type.
+#: includes/Admin/Admin_Page.php:754
+#, php-format
+msgid "caller %s"
+msgstr "调用方 %s"
+
+#. translators: %s: app id.
+#: includes/Admin/Admin_Page.php:763
+#, php-format
+msgid "app %s"
+msgstr "应用 %s"
+
+#: includes/Admin/Admin_Page.php:781
+msgid "Recent Activity"
+msgstr "最近活动"
+
+#: includes/Admin/Admin_Page.php:782
+msgid "Latest Core governance events. Full audit is in its own tab."
+msgstr "最新 Core 治理事件。完整审计位于单独标签页。"
+
+#: includes/Admin/Admin_Page.php:787
+#: includes/Admin/Admin_Page.php:1706
+#: includes/Admin/Admin_Page.php:1803
+msgid "Time"
+msgstr "时间"
+
+#: includes/Admin/Admin_Page.php:788
+#: includes/Admin/Admin_Page.php:1707
+#: includes/Admin/Admin_Page.php:1760
+#: includes/Admin/Admin_Page.php:1804
+msgid "Event"
+msgstr "事件"
+
+#: includes/Admin/Admin_Page.php:790
+#: includes/Admin/Admin_Page.php:1708
+#: includes/Admin/Admin_Page.php:1806
+msgid "Actor"
+msgstr "操作者"
+
+#: includes/Admin/Admin_Page.php:796
+msgid "No recent governance activity."
+msgstr "没有最近的治理活动。"
+
+#: includes/Admin/Admin_Page.php:808
+#: includes/Admin/Admin_Page.php:1830
+msgid "System"
+msgstr "系统"
+
+#: includes/Admin/Admin_Page.php:816
+msgid "Open full audit"
+msgstr "打开完整审计"
+
+#: includes/Admin/Admin_Page.php:832
+#: includes/Admin/Admin_Page.php:1083
+msgid "Advanced Access"
+msgstr "高级访问"
+
+#: includes/Admin/Admin_Page.php:833
+msgid "Core app keys for trusted governance clients."
+msgstr "用于受信任治理客户端的 Core 应用密钥。"
+
+#: includes/Admin/Admin_Page.php:838
+msgid "Active app keys"
+msgstr "活动应用密钥"
+
+#: includes/Admin/Admin_Page.php:842
+#: includes/Admin/Admin_Page.php:1137
+msgid "Last used"
+msgstr "上次使用"
+
+#: includes/Admin/Admin_Page.php:843
+#: includes/Admin/Admin_Page.php:1152
+msgid "Never"
+msgstr "从未"
+
+#: includes/Admin/Admin_Page.php:847
+msgid "Manage Core app keys"
+msgstr "管理 Core 应用密钥"
+
+#: includes/Admin/Admin_Page.php:880
+#: includes/Admin/Admin_Page.php:1331
+#: includes/Admin/Admin_Page.php:1357
+msgid "You do not have permission to update proposals."
+msgstr "您没有权限更新提案。"
+
+#: includes/Admin/Admin_Page.php:954
+msgid "You do not have permission to update approval policy."
+msgstr "您没有权限更新批准策略。"
+
+#: includes/Admin/Admin_Page.php:982
+msgid "You do not have permission to create app keys."
+msgstr "您没有权限创建应用密钥。"
+
+#: includes/Admin/Admin_Page.php:1041
+msgid "You do not have permission to revoke app keys."
+msgstr "您没有权限吊销应用密钥。"
+
+#: includes/Admin/Admin_Page.php:1082
+#: includes/Admin/Admin_Page.php:1400
+msgid "Back to review queue"
+msgstr "返回审核队列"
+
+#: includes/Admin/Admin_Page.php:1084
+msgid "Use this only for trusted Core governance clients. Productized OpenClaw setup belongs in a trusted adapter."
+msgstr "仅将此用于受信任的 Core 治理客户端。产品化 OpenClaw 设置属于受信任的 adapter。"
+
+#: includes/Admin/Admin_Page.php:1088
+#: includes/Admin/Admin_Page.php:1123
+msgid "Create Core App Key"
+msgstr "创建 Core 应用密钥"
+
+#: includes/Admin/Admin_Page.php:1089
+msgid "Issue a scoped token for a trusted governance client."
+msgstr "为受信任的治理客户端签发限定范围的令牌。"
+
+#: includes/Admin/Admin_Page.php:1097
+msgid "App label"
+msgstr "应用标签"
+
+#: includes/Admin/Admin_Page.php:1101
+#: includes/Admin/Admin_Page.php:1772
+msgid "Caller type"
+msgstr "调用方类型"
+
+#: includes/Admin/Admin_Page.php:1105
+#: includes/Admin/Admin_Page.php:1136
+msgid "Scopes"
+msgstr "权限范围"
+
+#: includes/Admin/Admin_Page.php:1109
+msgid "Rate limit"
+msgstr "速率限制"
+
+#: includes/Admin/Admin_Page.php:1112
+msgid "Requests"
+msgstr "请求数"
+
+#: includes/Admin/Admin_Page.php:1116
+msgid "Window seconds"
+msgstr "窗口秒数"
+
+#: includes/Admin/Admin_Page.php:1127
+msgid "Core App Keys"
+msgstr "Core 应用密钥"
+
+#: includes/Admin/Admin_Page.php:1132
+msgid "Label"
+msgstr "标签"
+
+#: includes/Admin/Admin_Page.php:1133
+#: includes/Admin/Admin_Page.php:1299
+#: includes/Admin/Admin_Page.php:1768
+msgid "App ID"
+msgstr "应用 ID"
+
+#: includes/Admin/Admin_Page.php:1134
+#: includes/Admin/Admin_Page.php:1303
+msgid "Key ID"
+msgstr "密钥 ID"
+
+#: includes/Admin/Admin_Page.php:1135
+#: includes/Admin/Admin_Page.php:1209
+#: includes/Admin/Admin_Page.php:1409
+msgid "Status"
+msgstr "状态"
+
+#: includes/Admin/Admin_Page.php:1143
+msgid "No app keys yet."
+msgstr "尚无应用密钥。"
+
+#: includes/Admin/Admin_Page.php:1159
+msgid "Disable this app key? Existing clients using this token will receive 401."
+msgstr "要禁用此应用密钥吗？使用此令牌的现有客户端将收到 401。"
+
+#: includes/Admin/Admin_Page.php:1159
+msgid "Disable"
+msgstr "禁用"
+
+#: includes/Admin/Admin_Page.php:1162
+msgid "Disabled"
+msgstr "已禁用"
+
+#: includes/Admin/Admin_Page.php:1194
+msgid "Stale requests are kept for audit but removed from the active review queue."
+msgstr "陈旧请求会保留用于审计，但会从活动审核队列中移除。"
+
+#: includes/Admin/Admin_Page.php:1210
+#: includes/Admin/Admin_Page.php:1413
+msgid "Age"
+msgstr "时间"
+
+#: includes/Admin/Admin_Page.php:1211
+msgid "Updated"
+msgstr "已更新"
+
+#: includes/Admin/Admin_Page.php:1218
+msgid "No expired or archived proposals."
+msgstr "没有已过期或已归档的提案。"
+
+#: includes/Admin/Admin_Page.php:1249
+msgid "Read capabilities"
+msgstr "读取能力"
+
+#: includes/Admin/Admin_Page.php:1250
+msgid "Create proposals"
+msgstr "创建提案"
+
+#: includes/Admin/Admin_Page.php:1251
+msgid "Read proposals"
+msgstr "读取提案"
+
+#: includes/Admin/Admin_Page.php:1252
+msgid "Commit preflight"
+msgstr "提交前检查"
+
+#: includes/Admin/Admin_Page.php:1253
+msgid "Approve proposals"
+msgstr "批准提案"
+
+#: includes/Admin/Admin_Page.php:1254
+msgid "Reject proposals"
+msgstr "拒绝提案"
+
+#: includes/Admin/Admin_Page.php:1255
+msgid "Read audit log"
+msgstr "读取审计日志"
+
+#: includes/Admin/Admin_Page.php:1283
+#: includes/Admin/Admin_Page.php:1291
+msgid "Core App Key Created"
+msgstr "Core 应用密钥已创建"
+
+#: includes/Admin/Admin_Page.php:1293
+msgid "Copy this token now. It is shown only once and is not stored in raw form."
+msgstr "请立即复制此令牌。它只显示一次，且不会以原始形式保存。"
+
+#: includes/Admin/Admin_Page.php:1294
+msgid "Use this token only in a trusted adapter or internal governance client secret store."
+msgstr "仅在受信任的 adapter 或内部治理客户端密钥存储中使用此令牌。"
+
+#: includes/Admin/Admin_Page.php:1307
+msgid "App token"
+msgstr "应用令牌"
+
+#: includes/Admin/Admin_Page.php:1311
+msgid "Core env"
+msgstr "Core 环境变量"
+
+#: includes/Admin/Admin_Page.php:1316
+msgid "Back to Advanced Access"
+msgstr "返回高级访问"
+
+#: includes/Admin/Admin_Page.php:1401
+msgid "Proposal Detail"
+msgstr "提案详情"
+
+#: includes/Admin/Admin_Page.php:1405
+#: includes/Admin/Admin_Page.php:1756
+msgid "Proposal ID"
+msgstr "提案 ID"
+
+#: includes/Admin/Admin_Page.php:1417
+msgid "Expiry"
+msgstr "过期时间"
+
+#: includes/Admin/Admin_Page.php:1421
+#: includes/Admin/Admin_Page.php:1807
+msgid "Ability"
+msgstr "能力"
+
+#: includes/Admin/Admin_Page.php:1425
+msgid "Summary"
+msgstr "摘要"
+
+#: includes/Admin/Admin_Page.php:1435
+msgid "Decision"
+msgstr "决策"
+
+#: includes/Admin/Admin_Page.php:1440
+msgid "Decision note"
+msgstr "决策备注"
+
+#: includes/Admin/Admin_Page.php:1445
+msgid "Approve"
+msgstr "批准"
+
+#: includes/Admin/Admin_Page.php:1448
+msgid "Reject"
+msgstr "拒绝"
+
+#: includes/Admin/Admin_Page.php:1476
+msgid "Lifecycle"
+msgstr "生命周期"
+
+#: includes/Admin/Admin_Page.php:1477
+msgid "Expired and archived proposals are not eligible for approval until reopened."
+msgstr "过期和已归档的提案重新打开前不能批准。"
+
+#: includes/Admin/Admin_Page.php:1483
+msgid "Archive"
+msgstr "归档"
+
+#: includes/Admin/Admin_Page.php:1485
+msgid "Reopen for review"
+msgstr "重新打开以审核"
+
+#: includes/Admin/Admin_Page.php:1525
+#: includes/Admin/Admin_Page.php:1550
+#: includes/Admin/Admin_Page.php:1609
+#: includes/Admin/Admin_Page.php:1614
+msgid "yes"
+msgstr "是"
+
+#: includes/Admin/Admin_Page.php:1525
+#: includes/Admin/Admin_Page.php:1550
+#: includes/Admin/Admin_Page.php:1609
+#: includes/Admin/Admin_Page.php:1614
+msgid "no"
+msgstr "否"
+
+#: includes/Admin/Admin_Page.php:1526
+msgid "not declared"
+msgstr "未声明"
+
+#: includes/Admin/Admin_Page.php:1532
+msgid "Review Context"
+msgstr "审核上下文"
+
+#: includes/Admin/Admin_Page.php:1537
+msgid "The target ability is not currently discoverable. Commit preflight will fail closed until the provider exposes it again."
+msgstr "当前无法发现目标能力。在提供方再次公开该能力前，提交前检查将以关闭方式失败。"
+
+#: includes/Admin/Admin_Page.php:1541
+msgid "Target ability"
+msgstr "目标能力"
+
+#: includes/Admin/Admin_Page.php:1545
+msgid "Risk"
+msgstr "风险"
+
+#: includes/Admin/Admin_Page.php:1549
+msgid "Requires approval"
+msgstr "需要批准"
+
+#: includes/Admin/Admin_Page.php:1553
+msgid "Proposal ready"
+msgstr "提案就绪"
+
+#: includes/Admin/Admin_Page.php:1558
+msgid "Reason"
+msgstr "原因"
+
+#: includes/Admin/Admin_Page.php:1564
+msgid "Before"
+msgstr "之前"
+
+#: includes/Admin/Admin_Page.php:1567
+msgid "After suggestion"
+msgstr "建议后"
+
+#: includes/Admin/Admin_Page.php:1570
+msgid "Needs input"
+msgstr "需要输入"
+
+#: includes/Admin/Admin_Page.php:1573
+msgid "Blocked items"
+msgstr "被阻止项目"
+
+#: includes/Admin/Admin_Page.php:1603
+msgid "Article workflow"
+msgstr "文章工作流"
+
+#: includes/Admin/Admin_Page.php:1629
+msgid "included"
+msgstr "已包含"
+
+#: includes/Admin/Admin_Page.php:1629
+msgid "missing"
+msgstr "缺失"
+
+#: includes/Admin/Admin_Page.php:1632
+msgid "Article artifacts"
+msgstr "文章工件"
+
+#: includes/Admin/Admin_Page.php:1635
+msgid "Blocked claims"
+msgstr "被阻止声明"
+
+#: includes/Admin/Admin_Page.php:1671
+msgid "Raw proposal payload"
+msgstr "原始提案载荷"
+
+#: includes/Admin/Admin_Page.php:1672
+msgid "Caller, input, and preview JSON."
+msgstr "调用方、输入和预览 JSON。"
+
+#: includes/Admin/Admin_Page.php:1677
+msgid "Caller"
+msgstr "调用方"
+
+#: includes/Admin/Admin_Page.php:1681
+msgid "Input"
+msgstr "输入"
+
+#: includes/Admin/Admin_Page.php:1685
+msgid "Preview"
+msgstr "预览"
+
+#: includes/Admin/Admin_Page.php:1702
+msgid "Audit Timeline"
+msgstr "审计时间线"
+
+#: includes/Admin/Admin_Page.php:1709
+#: includes/Admin/Admin_Page.php:1808
+msgid "Detail"
+msgstr "详情"
+
+#: includes/Admin/Admin_Page.php:1715
+msgid "No audit events recorded for this proposal yet."
+msgstr "此提案尚无审计事件记录。"
+
+#: includes/Admin/Admin_Page.php:1742
+msgid "Recent Core governance events. AI Request Logs remain separate; correlate them with proposal_id or correlation_id."
+msgstr "最近的 Core 治理事件。AI Request Logs 保持独立；可用 proposal_id 或 correlation_id 进行关联。"
+
+#: includes/Admin/Admin_Page.php:1746
+msgid "Advanced audit filters"
+msgstr "高级审计筛选"
+
+#: includes/Admin/Admin_Page.php:1747
+msgid "Narrow by proposal, event, ability, app, caller, or correlation."
+msgstr "按提案、事件、能力、应用、调用方或关联 ID 缩小范围。"
+
+#: includes/Admin/Admin_Page.php:1764
+msgid "Ability ID"
+msgstr "能力 ID"
+
+#: includes/Admin/Admin_Page.php:1776
+msgid "Correlation ID"
+msgstr "关联 ID"
+
+#: includes/Admin/Admin_Page.php:1780
+msgid "Per page"
+msgstr "每页"
+
+#: includes/Admin/Admin_Page.php:1784
+msgid "Read events"
+msgstr "读取事件"
+
+#: includes/Admin/Admin_Page.php:1788
+msgid "Include list/view noise events"
+msgstr "包含列表/查看噪声事件"
+
+#: includes/Admin/Admin_Page.php:1795
+msgid "Filter Audit"
+msgstr "筛选审计"
+
+#: includes/Admin/Admin_Page.php:1796
+msgid "Clear"
+msgstr "清除"
+
+#: includes/Admin/Admin_Page.php:1814
+msgid "No governance audit events match the current filters."
+msgstr "没有治理审计事件匹配当前筛选条件。"
+
+#: includes/Admin/Admin_Page.php:1834
+msgid "Core event"
+msgstr "Core 事件"
+
+#: includes/Admin/Admin_Page.php:1862
+msgid "System event"
+msgstr "系统事件"
+
+#. translators: 1: app id, 2: caller type.
+#: includes/Admin/Admin_Page.php:1870
+#, php-format
+msgid "App: %1$s / %2$s"
+msgstr "应用：%1$s / %2$s"
+
+#: includes/Admin/Admin_Page.php:1871
+#: includes/Admin/Admin_Page.php:1872
+#: includes/Admin/Admin_Page.php:1883
+#: includes/Admin/Admin_Page.php:1884
+msgid "unknown"
+msgstr "未知"
+
+#. translators: 1: scope, 2: scope decision.
+#: includes/Admin/Admin_Page.php:1882
+#, php-format
+msgid "Scope: %1$s / %2$s"
+msgstr "权限范围：%1$s / %2$s"
+
+#. translators: %s: correlation id.
+#: includes/Admin/Admin_Page.php:1894
+#, php-format
+msgid "Correlation: %s"
+msgstr "关联：%s"
+
+#: includes/Admin/Admin_Page.php:1902
+msgid "No extra context"
+msgstr "没有额外上下文"
+
+#: includes/Admin/Admin_Page.php:1985
+msgid "All"
+msgstr "全部"
+
+#: includes/Admin/Admin_Page.php:2090
+msgid "No matching records."
+msgstr "没有匹配记录。"
+
+#. translators: 1: first row number, 2: last row number, 3: total row count.
+#: includes/Admin/Admin_Page.php:2098
+#, php-format
+msgid "Showing %1$d-%2$d of %3$d."
+msgstr "显示第 %1$d-%2$d 条，共 %3$d 条。"
+
+#: includes/Admin/Admin_Page.php:2128
+msgid "Previous"
+msgstr "上一页"
+
+#: includes/Admin/Admin_Page.php:2129
+msgid "Next"
+msgstr "下一页"
+
+#: includes/Admin/Admin_Page.php:2151
+msgid "Approved"
+msgstr "已批准"
+
+#: includes/Admin/Admin_Page.php:2152
+msgid "Rejected"
+msgstr "已拒绝"
+
+#: includes/Admin/Admin_Page.php:2198
+#: includes/Admin/Admin_Page.php:2215
+msgid "Unknown"
+msgstr "未知"
+
+#: includes/Admin/Admin_Page.php:2223
+msgid "Not applicable"
+msgstr "不适用"
+
+#. translators: %s: remaining duration.
+#: includes/Admin/Admin_Page.php:2235
+#, php-format
+msgid "Expires in %s"
+msgstr "%s 后过期"
+
+#. translators: %d: minutes.
+#: includes/Admin/Admin_Page.php:2250
+#, php-format
+msgid "%d min"
+msgstr "%d 分钟"
+
+#. translators: %d: hours.
+#: includes/Admin/Admin_Page.php:2258
+#, php-format
+msgid "%d hr"
+msgstr "%d 小时"
+
+#. translators: %d: days.
+#: includes/Admin/Admin_Page.php:2265
+#, php-format
+msgid "%d days"
+msgstr "%d 天"
+
+#: includes/Admin/Admin_Page.php:2398
+msgid "Proposal approved."
+msgstr "提案已批准。"
+
+#: includes/Admin/Admin_Page.php:2399
+msgid "Proposal rejected."
+msgstr "提案已拒绝。"
+
+#: includes/Admin/Admin_Page.php:2400
+msgid "Selected proposals rejected."
+msgstr "所选提案已拒绝。"
+
+#: includes/Admin/Admin_Page.php:2401
+msgid "Proposal archived."
+msgstr "提案已归档。"
+
+#: includes/Admin/Admin_Page.php:2402
+msgid "Proposal reopened for review."
+msgstr "提案已重新打开以审核。"
+
+#: includes/Admin/Admin_Page.php:2403
+msgid "App key disabled."
+msgstr "应用密钥已禁用。"
+
+#: includes/Admin/Admin_Page.php:2404
+msgid "Approval policy mode updated."
+msgstr "批准策略模式已更新。"
+
+#: includes/Admin/Admin_Page.php:2405
+msgid "App key is missing or already disabled."
+msgstr "应用密钥缺失或已禁用。"
+
+#: includes/Admin/Admin_Page.php:2406
+msgid "App key could not be disabled."
+msgstr "无法禁用应用密钥。"
+
+#: includes/Admin/Admin_Page.php:2407
+#: includes/Governance/Commit_Preflight_Service.php:87
+#: includes/Governance/Proposal_Service.php:762
+msgid "Proposal was not found."
+msgstr "未找到提案。"
+
+#: includes/Admin/Admin_Page.php:2408
+#: includes/Governance/Proposal_Service.php:788
+msgid "Proposal expired before a decision was made."
+msgstr "提案在作出决策前已过期。"
+
+#: includes/Admin/Admin_Page.php:2409
+#: includes/Governance/Proposal_Service.php:346
+msgid "Only expired proposals can be archived."
+msgstr "只有已过期的提案可以归档。"
+
+#: includes/Admin/Admin_Page.php:2410
+#: includes/Governance/Proposal_Service.php:397
+msgid "Only expired or archived proposals can be reopened."
+msgstr "只有已过期或已归档的提案可以重新打开。"
+
+#: includes/Admin/Admin_Page.php:2411
+#: includes/Governance/Proposal_Service.php:796
+msgid "Only pending proposals can be approved or rejected."
+msgstr "只有待处理提案可以批准或拒绝。"
+
+#: includes/Admin/Admin_Page.php:2412
+#: includes/Governance/Proposal_Service.php:872
+msgid "Proposal status could not be updated."
+msgstr "无法更新提案状态。"
+
+#: includes/Admin/Admin_Page.php:2413
+msgid "Select at least one pending proposal to reject."
+msgstr "请至少选择一个待处理提案进行拒绝。"
+
+#: includes/Admin/Admin_Page.php:2416
+msgid "Proposal action could not be completed."
+msgstr "无法完成提案操作。"
+
+#: includes/Governance/Commit_Preflight_Service.php:68
+msgid "Legacy confirmation parameters are not accepted by Npcink Governance Core."
+msgstr "Npcink Governance Core 不接受旧版确认参数。"
+
+#: includes/Governance/Commit_Preflight_Service.php:76
+msgid "You do not have permission to preflight this proposal."
+msgstr "您没有权限对此提案执行提交前检查。"
+
+#: includes/Governance/Commit_Preflight_Service.php:95
+msgid "Only approved proposals can pass commit preflight."
+msgstr "只有已批准的提案可以通过提交前检查。"
+
+#: includes/Governance/Commit_Preflight_Service.php:109
+msgid "The proposal target ability is no longer available."
+msgstr "提案目标能力已不再可用。"
+
+#: includes/Governance/Commit_Preflight_Service.php:123
+msgid "The proposal target ability contract has changed since approval."
+msgstr "批准后，提案目标能力契约已发生变化。"
+
+#: includes/Governance/Commit_Preflight_Service.php:139
+msgid "The current caller no longer has permission for this ability."
+msgstr "当前调用方不再拥有此能力的权限。"
+
+#: includes/Governance/Commit_Preflight_Service.php:155
+msgid "Proposal contains blocked items or missing required input."
+msgstr "提案包含被阻止项目或缺少必需输入。"
+
+#: includes/Governance/Commit_Preflight_Service.php:176
+msgid "Commit preflight has already issued an execution handoff for this approved proposal."
+msgstr "提交前检查已为此已批准提案签发执行交接。"
+
+#: includes/Governance/Commit_Preflight_Service.php:233
+msgid "Commit preflight could not be audited."
+msgstr "无法审计提交前检查。"
+
+#: includes/Governance/Plan_Proposal_Service.php:93
+msgid "This planning ability is not accepted by the Core plan-to-proposal bridge."
+msgstr "Core 计划到提案桥接不接受此计划能力。"
+
+#: includes/Governance/Plan_Proposal_Service.php:102
+msgid "The planning ability is not currently discoverable."
+msgstr "当前无法发现此计划能力。"
+
+#: includes/Governance/Plan_Proposal_Service.php:110
+msgid "Plan-to-proposal intake accepts only direct-read planning abilities."
+msgstr "计划到提案接收只接受直接读取的计划能力。"
+
+#: includes/Governance/Plan_Proposal_Service.php:311
+msgid "Only successful plan outputs can be converted into proposals."
+msgstr "只有成功的计划输出可以转换为提案。"
+
+#: includes/Governance/Plan_Proposal_Service.php:320
+msgid "Plan payload must be an object."
+msgstr "计划载荷必须是对象。"
+
+#: includes/Governance/Plan_Proposal_Service.php:338
+msgid "Plan output must require approval."
+msgstr "计划输出必须要求批准。"
+
+#: includes/Governance/Plan_Proposal_Service.php:346
+msgid "Plan output must not execute commits."
+msgstr "计划输出不得执行提交。"
+
+#: includes/Governance/Plan_Proposal_Service.php:354
+msgid "Plan output must be dry-run only."
+msgstr "计划输出必须仅为试运行。"
+
+#: includes/Governance/Plan_Proposal_Service.php:362
+msgid "Plan output must include write_actions."
+msgstr "计划输出必须包含 write_actions。"
+
+#: includes/Governance/Plan_Proposal_Service.php:381
+msgid "Article batch write plans must declare artifact_type=article_batch_write_plan."
+msgstr "文章批量写入计划必须声明 artifact_type=article_batch_write_plan。"
+
+#: includes/Governance/Plan_Proposal_Service.php:389
+msgid "Article batch write plans must explicitly request batch proposal approval."
+msgstr "文章批量写入计划必须明确请求批量提案批准。"
+
+#: includes/Governance/Plan_Proposal_Service.php:398
+msgid "Article batch write plans must contain a bounded group of draft actions."
+msgstr "文章批量写入计划必须包含有界的草稿操作组。"
+
+#: includes/Governance/Plan_Proposal_Service.php:410
+msgid "Article batch write plans must include one reviewed article artifact set per draft action."
+msgstr "文章批量写入计划必须为每个草稿操作包含一组已审核文章工件。"
+
+#: includes/Governance/Plan_Proposal_Service.php:419
+msgid "Article batch entries must be objects."
+msgstr "文章批量条目必须是对象。"
+
+#: includes/Governance/Plan_Proposal_Service.php:436
+msgid "Article batch write actions must be objects."
+msgstr "文章批量写入操作必须是对象。"
+
+#: includes/Governance/Plan_Proposal_Service.php:463
+msgid "Article media batch write plans must declare artifact_type=article_media_batch_write_plan."
+msgstr "文章媒体批量写入计划必须声明 artifact_type=article_media_batch_write_plan。"
+
+#: includes/Governance/Plan_Proposal_Service.php:471
+msgid "Article media batch write plans must explicitly request batch proposal approval."
+msgstr "文章媒体批量写入计划必须明确请求批量提案批准。"
+
+#: includes/Governance/Plan_Proposal_Service.php:480
+msgid "Article media batch write plans must include 1 to 5 reviewed articles."
+msgstr "文章媒体批量写入计划必须包含 1 到 5 篇已审核文章。"
+
+#: includes/Governance/Plan_Proposal_Service.php:492
+msgid "Article media batch entries must be objects."
+msgstr "文章媒体批量条目必须是对象。"
+
+#: includes/Governance/Plan_Proposal_Service.php:506
+msgid "Article media batch entries must preserve the selected image-source candidate."
+msgstr "文章媒体批量条目必须保留所选 image-source 候选项。"
+
+#: includes/Governance/Plan_Proposal_Service.php:519
+msgid "Article media batch write plans must contain a bounded group of draft, media upload, and featured-image actions."
+msgstr "文章媒体批量写入计划必须包含有界的草稿、媒体上传和特色图片操作组。"
+
+#: includes/Governance/Plan_Proposal_Service.php:544
+msgid "Article media batch write actions must be objects."
+msgstr "文章媒体批量写入操作必须是对象。"
+
+#: includes/Governance/Plan_Proposal_Service.php:556
+msgid "Article media batch plans may target only draft and allowlisted media actions."
+msgstr "文章媒体批量计划只能面向草稿和允许列表中的媒体操作。"
+
+#: includes/Governance/Plan_Proposal_Service.php:578
+msgid "Article media batch plans must include create, upload, and featured-image actions for every article."
+msgstr "文章媒体批量计划必须为每篇文章包含创建、上传和特色图片操作。"
+
+#: includes/Governance/Plan_Proposal_Service.php:601
+msgid "Image candidate adoption plans must declare artifact_type=image_candidate_adoption_plan."
+msgstr "图片候选采用计划必须声明 artifact_type=image_candidate_adoption_plan。"
+
+#: includes/Governance/Plan_Proposal_Service.php:610
+msgid "Image candidate adoption plans must preserve a selected image_candidate.v1 candidate."
+msgstr "图片候选采用计划必须保留一个所选 image_candidate.v1 候选项。"
+
+#: includes/Governance/Plan_Proposal_Service.php:619
+msgid "Image candidate adoption plans must contain upload, metadata, and optional featured-image actions only."
+msgstr "图片候选采用计划只能包含上传、元数据和可选特色图片操作。"
+
+#: includes/Governance/Plan_Proposal_Service.php:634
+msgid "Image candidate adoption actions must be objects."
+msgstr "图片候选采用操作必须是对象。"
+
+#: includes/Governance/Plan_Proposal_Service.php:645
+msgid "Image candidate adoption plans may target only media import, metadata, and featured-image abilities."
+msgstr "图片候选采用计划只能面向媒体导入、元数据和特色图片能力。"
+
+#: includes/Governance/Plan_Proposal_Service.php:664
+msgid "Image candidate adoption plans must include exactly one media upload and one metadata action, plus at most one featured-image action."
+msgstr "图片候选采用计划必须正好包含一个媒体上传和一个元数据操作，并最多包含一个特色图片操作。"
+
+#: includes/Governance/Plan_Proposal_Service.php:684
+msgid "Image candidate adoption action input must remain dry-run and must not request commit."
+msgstr "图片候选采用操作输入必须保持试运行，且不得请求提交。"
+
+#: includes/Governance/Plan_Proposal_Service.php:697
+msgid "Image candidate upload actions must include a reviewed candidate URL."
+msgstr "图片候选上传操作必须包含已审核的候选 URL。"
+
+#: includes/Governance/Plan_Proposal_Service.php:708
+msgid "Image candidate source_type must be owned, ai_generated, stock, external, or test."
+msgstr "图片候选 source_type 必须是 owned、ai_generated、stock、external 或 test。"
+
+#: includes/Governance/Plan_Proposal_Service.php:722
+msgid "Image candidate metadata actions must include attachment_id or an approved output reference."
+msgstr "图片候选元数据操作必须包含 attachment_id 或已批准的输出引用。"
+
+#: includes/Governance/Plan_Proposal_Service.php:736
+msgid "Image candidate featured-image actions must include attachment_id or an approved output reference."
+msgstr "图片候选特色图片操作必须包含 attachment_id 或已批准的输出引用。"
+
+#: includes/Governance/Plan_Proposal_Service.php:746
+msgid "Image candidate featured-image actions must include post_id or an approved output reference."
+msgstr "图片候选特色图片操作必须包含 post_id 或已批准的输出引用。"
+
+#: includes/Governance/Plan_Proposal_Service.php:769
+msgid "Media optimization plans must declare artifact_type=media_optimization_plan."
+msgstr "媒体优化计划必须声明 artifact_type=media_optimization_plan。"
+
+#: includes/Governance/Plan_Proposal_Service.php:777
+msgid "Media optimization plans must explicitly request one batch proposal approval."
+msgstr "媒体优化计划必须明确请求一个批量提案批准。"
+
+#: includes/Governance/Plan_Proposal_Service.php:786
+msgid "Media optimization plans must include metadata and derivative adoption actions."
+msgstr "媒体优化计划必须包含元数据和衍生文件采用操作。"
+
+#: includes/Governance/Plan_Proposal_Service.php:801
+msgid "Media optimization plans must include npcink-abilities-toolkit/update-media-details."
+msgstr "媒体优化计划必须包含 npcink-abilities-toolkit/update-media-details。"
+
+#: includes/Governance/Plan_Proposal_Service.php:818
+msgid "Media optimization plans must include a governed derivative adoption action."
+msgstr "媒体优化计划必须包含一个受治理的衍生文件采用操作。"
+
+#: includes/Governance/Plan_Proposal_Service.php:825
+msgid "Media optimization plans must not split post-content media reference repair into a separate write action."
+msgstr "媒体优化计划不得将文章内容媒体引用修复拆分为单独的写入操作。"
+
+#: includes/Governance/Plan_Proposal_Service.php:842
+msgid "Media optimization plans must target exactly one attachment across all write actions."
+msgstr "媒体优化计划的所有写入操作必须正好面向一个附件。"
+
+#: includes/Governance/Plan_Proposal_Service.php:861
+msgid "Media rename plans must declare artifact_type=media_rename_plan."
+msgstr "媒体重命名计划必须声明 artifact_type=media_rename_plan。"
+
+#: includes/Governance/Plan_Proposal_Service.php:870
+msgid "Media rename plans must include exactly one rename-media-file action."
+msgstr "媒体重命名计划必须正好包含一个 rename-media-file 操作。"
+
+#: includes/Governance/Plan_Proposal_Service.php:879
+msgid "Media rename plans may target only npcink-abilities-toolkit/rename-media-file."
+msgstr "媒体重命名计划只能面向 npcink-abilities-toolkit/rename-media-file。"
+
+#: includes/Governance/Plan_Proposal_Service.php:889
+msgid "Media rename plans must target exactly one attachment."
+msgstr "媒体重命名计划必须正好面向一个附件。"
+
+#: includes/Governance/Plan_Proposal_Service.php:897
+msgid "Media rename plans must include a reviewed target_file_name."
+msgstr "媒体重命名计划必须包含已审核的 target_file_name。"
+
+#: includes/Governance/Plan_Proposal_Service.php:905
+msgid "Media rename action input must remain dry-run and must not request commit."
+msgstr "媒体重命名操作输入必须保持试运行，且不得请求提交。"
+
+#: includes/Governance/Plan_Proposal_Service.php:924
+msgid "Article write plans must declare artifact_type=article_write_plan."
+msgstr "文章写入计划必须声明 artifact_type=article_write_plan。"
+
+#: includes/Governance/Plan_Proposal_Service.php:932
+msgid "Article write plans must declare version 1 or newer."
+msgstr "文章写入计划必须声明版本 1 或更高版本。"
+
+#: includes/Governance/Plan_Proposal_Service.php:946
+msgid "P0 article write plans must contain exactly one create-draft action."
+msgstr "P0 文章写入计划必须正好包含一个 create-draft 操作。"
+
+#: includes/Governance/Plan_Proposal_Service.php:972
+msgid "Article write plans must include every required workflow artifact."
+msgstr "文章写入计划必须包含每个必需的工作流工件。"
+
+#: includes/Governance/Plan_Proposal_Service.php:985
+msgid "Article write plans must pass risk review before proposal intake."
+msgstr "文章写入计划必须先通过风险审核，才能进入提案接收。"
+
+#: includes/Governance/Plan_Proposal_Service.php:993
+msgid "High-risk article plans must be revised before draft proposal intake."
+msgstr "高风险文章计划必须先修订，才能进入草稿提案接收。"
+
+#: includes/Governance/Plan_Proposal_Service.php:1001
+msgid "Article write plans with blocked claims cannot create proposals."
+msgstr "包含被阻止声明的文章写入计划不能创建提案。"
+
+#: includes/Governance/Plan_Proposal_Service.php:1020
+msgid "P0 article write plans may target only npcink-abilities-toolkit/create-draft."
+msgstr "P0 文章写入计划只能面向 npcink-abilities-toolkit/create-draft。"
+
+#: includes/Governance/Plan_Proposal_Service.php:1030
+msgid "Article write plans may create drafts only."
+msgstr "文章写入计划只能创建草稿。"
+
+#: includes/Governance/Plan_Proposal_Service.php:1038
+msgid "Article write plan input must remain dry-run and must not request commit."
+msgstr "文章写入计划输入必须保持试运行，且不得请求提交。"
+
+#: includes/Governance/Plan_Proposal_Service.php:1063
+msgid "Article media batch action input must remain dry-run and must not request commit."
+msgstr "文章媒体批量操作输入必须保持试运行，且不得请求提交。"
+
+#: includes/Governance/Plan_Proposal_Service.php:1075
+msgid "Article media upload actions must include a reviewed media URL."
+msgstr "文章媒体上传操作必须包含已审核的媒体 URL。"
+
+#: includes/Governance/Plan_Proposal_Service.php:1089
+msgid "Article media metadata actions must include attachment_id or an approved output reference."
+msgstr "文章媒体元数据操作必须包含 attachment_id 或已批准的输出引用。"
+
+#: includes/Governance/Plan_Proposal_Service.php:1103
+msgid "Article featured-image actions must include post_id or an approved output reference."
+msgstr "文章特色图片操作必须包含 post_id 或已批准的输出引用。"
+
+#: includes/Governance/Plan_Proposal_Service.php:1113
+msgid "Article featured-image actions must include attachment_id, media_url, or an approved output reference."
+msgstr "文章特色图片操作必须包含 attachment_id、media_url 或已批准的输出引用。"
+
+#: includes/Governance/Plan_Proposal_Service.php:1127
+msgid "Article inline-image patch actions must include post_id or an approved output reference."
+msgstr "文章内联图片补丁操作必须包含 post_id 或已批准的输出引用。"
+
+#: includes/Governance/Plan_Proposal_Service.php:1137
+msgid "Article inline-image patch actions must include operations."
+msgstr "文章内联图片补丁操作必须包含 operations。"
+
+#. translators: 1: target ability id, 2: action id.
+#: includes/Governance/Plan_Proposal_Service.php:1426
+#, php-format
+msgid "Plan proposal: %1$s (%2$s)"
+msgstr "计划提案：%1$s（%2$s）"
+
+#. translators: 1: plan ability id, 2: batch id.
+#: includes/Governance/Plan_Proposal_Service.php:1436
+#, php-format
+msgid "Created from %1$s batch %2$s. Final execution remains outside Core."
+msgstr "由 %1$s 批次 %2$s 创建。最终执行仍在 Core 之外。"
+
+#. translators: 1: plan ability id, 2: batch id.
+#: includes/Governance/Plan_Proposal_Service.php:1624
+#, php-format
+msgid "Plan batch proposal: %1$s (%2$s)"
+msgstr "计划批量提案：%1$s（%2$s）"
+
+#. translators: 1: plan ability id, 2: action count.
+#: includes/Governance/Plan_Proposal_Service.php:1630
+#, php-format
+msgid "Created from %1$s as an ordered batch with %2$d actions. Final execution remains outside Core."
+msgstr "由 %1$s 创建为包含 %2$d 个操作的有序批次。最终执行仍在 Core 之外。"
+
+#: includes/Governance/Proposal_Repository.php:107
+msgid "Proposal could not be stored."
+msgstr "无法存储提案。"
+
+#: includes/Governance/Proposal_Service.php:93
+msgid "A namespaced ability_id is required."
+msgstr "必须提供带命名空间的 ability_id。"
+
+#: includes/Governance/Proposal_Service.php:102
+msgid "Proposal target ability is not available."
+msgstr "提案目标能力不可用。"
+
+#: includes/Governance/Proposal_Service.php:161
+msgid "Too many pending proposals exist for this caller."
+msgstr "此调用方已有过多待处理提案。"
+
+#: includes/Governance/Proposal_Service.php:263
+msgid "Auto approval quota could not be consumed."
+msgstr "无法消耗自动批准配额。"
+
+#: includes/Governance/Proposal_Service.php:886
+msgid "Proposal lifecycle could not be audited."
+msgstr "无法审计提案生命周期。"
+
+#: includes/Rest/Apps_Controller.php:171
+msgid "App key creation could not be audited."
+msgstr "无法审计应用密钥创建。"
+
+#: includes/Security/App_Authenticator.php:154
+msgid "App authentication is required."
+msgstr "需要应用认证。"
+
+#: includes/Security/App_Authenticator.php:159
+msgid "App authentication token is malformed."
+msgstr "应用认证令牌格式错误。"
+
+#: includes/Security/App_Authenticator.php:167
+msgid "App authentication token is invalid."
+msgstr "应用认证令牌无效。"
+
+#: includes/Security/App_Authenticator.php:180
+msgid "App key does not have the required scope."
+msgstr "应用密钥没有必需的权限范围。"
+
+#: includes/Security/App_Authenticator.php:198
+msgid "App key rate limit exceeded."
+msgstr "应用密钥已超过速率限制。"
+
+#: includes/Security/App_Key_Repository.php:125
+msgid "App key secret could not be protected."
+msgstr "无法保护应用密钥 secret。"
+
+#: includes/Security/App_Key_Repository.php:155
+msgid "App key could not be stored."
+msgstr "无法存储应用密钥。"

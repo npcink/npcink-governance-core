@@ -8,6 +8,7 @@
  * Author: Npcink
  * License: GPL-2.0-or-later
  * Text Domain: npcink-governance-core
+ * Domain Path: /languages
  *
  * @package NpcinkGovernanceCore
  */
@@ -23,6 +24,21 @@ define( 'NPCINK_GOVERNANCE_CORE_DIR', plugin_dir_path( __FILE__ ) );
 require_once NPCINK_GOVERNANCE_CORE_DIR . 'includes/Autoloader.php';
 
 \Npcink\GovernanceCore\Autoloader::register();
+
+if ( ! function_exists( 'npcink_governance_core_load_textdomain' ) ) {
+	/**
+	 * Loads bundled translation files.
+	 *
+	 * @return void
+	 */
+	function npcink_governance_core_load_textdomain(): void {
+		load_plugin_textdomain(
+			'npcink-governance-core',
+			false,
+			dirname( plugin_basename( NPCINK_GOVERNANCE_CORE_FILE ) ) . '/languages'
+		);
+	}
+}
 
 if ( ! function_exists( 'npcink_governance_core_get_media_derivative_settings' ) ) {
 	/**
@@ -52,6 +68,7 @@ register_activation_hook( __FILE__, array( \Npcink\GovernanceCore\Plugin::class,
 add_action(
 	'plugins_loaded',
 	static function (): void {
+		npcink_governance_core_load_textdomain();
 		\Npcink\GovernanceCore\Plugin::instance()->register();
 	}
 );
