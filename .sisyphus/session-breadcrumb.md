@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-07 — Core review queue scan hierarchy tightened
+
+- **Module**: Core admin review queue.
+- **Status**: The default pending review list now keeps proposal lookup
+  identity visible while hiding lower-frequency machine trace fields.
+- **Completed**:
+  - Kept the top statistics strip removed from the review surface.
+  - Made each pending row lead with a user-facing request label and default
+    visible `Proposal ID`.
+  - Kept target ability and source/caller/app trace metadata behind per-row
+    technical details.
+  - Removed repeated generic row instructions and stopped pre-filling bulk
+    rejection with technical cleanup copy.
+  - Synced admin surface docs, static contracts, and Chinese translation
+    catalogs.
+- **Verification**:
+  - `msgfmt --check --check-format -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `composer test:all`
+  - `composer smoke:wp`
+- **Boundary**:
+  - Admin presentation and review ergonomics only. Core remains proposal,
+    approval/rejection, preflight, and audit truth; no ability execution,
+    workflow runtime, provider settings, or product workflow ownership was
+    added.
+
 ## 2026-06-07 — Workflow replay consumer proof tightened
 
 - **Module**: Core/Abilities workflow recipe consumption boundary.
