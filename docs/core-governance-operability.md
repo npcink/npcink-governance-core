@@ -83,9 +83,10 @@ ability or final WordPress mutation.
 links to a dedicated `Governance Audit` view for full inspection. It is an
 operator view over Core audit records, not an AI request log viewer.
 
-The default view shows a short recent activity disclosure. The full audit view
-keeps low-value read/list events hidden by default and keeps the advanced audit
-filter disclosure for:
+The default view shows one latest recent activity row and links to the full
+audit instead of rendering another audit table on the review workbench. The
+full audit view keeps low-value read/list events hidden by default and keeps
+the advanced audit filter disclosure for:
 
 - proposal id;
 - event name;
@@ -105,11 +106,11 @@ WordPress `ai` plugin; operators should correlate the two systems with
 ### Core App Keys
 
 The default review workbench keeps Core app-key management behind a collapsed
-`Advanced Access` disclosure. The advanced access page handles app-key creation
-and paginated key disable actions. This preserves the Core credential fallback
-without turning Core's first-level tabs into OpenClaw onboarding or adapter
-configuration. Productized OpenClaw connection copy, TLS switches, and handoff
-instructions remain Adapter-owned.
+`Advanced Access` disclosure for client access keys. The advanced access page
+handles app-key creation and paginated key disable actions. This preserves the
+Core credential fallback without turning Core's first-level tabs into OpenClaw
+onboarding or adapter configuration. Productized OpenClaw connection copy, TLS
+switches, and handoff instructions remain Adapter-owned.
 
 For real AI provider requests, Adapter should inject Core `proposal_id` and
 commit-preflight `correlation_id` into the `ai` plugin request log context.

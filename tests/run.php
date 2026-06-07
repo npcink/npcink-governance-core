@@ -1342,6 +1342,7 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'nav-tab-wrapper' 
 npcink_governance_core_assert( false === strpos( $admin_page, "'app-keys' => array" ), 'Admin page does not expose Core App Keys as a first-level tab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Review Queue' ), 'Admin page defaults to the review queue tab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Expired / Archived' ), 'Admin page exposes stale proposal archive tab.' );
+npcink_governance_core_assert( false === strpos( $admin_page, "render_status_metric( __( 'Archived'" ), 'Admin default status strip keeps archived counts out of the primary review surface.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_pagination' ), 'Admin page paginates long governance lists.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'review_page' ), 'Admin page paginates review queue.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'archive_page' ), 'Admin page paginates expired and archived proposals.' );
@@ -1351,7 +1352,9 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'archive_status' )
 npcink_governance_core_assert( false !== strpos( $admin_page, 'No active proposals. Expired items are moved out of the review queue automatically.' ), 'Admin page provides a clear active queue empty state.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'render_advanced_entries' ), 'Admin default page no longer renders low-frequency administration links inline.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Recent Activity' ), 'Admin default page exposes a compact recent activity section.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Latest Core governance events. Full audit is in its own tab.' ), 'Admin default page folds recent activity into a disclosure.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-secondary-row' ), 'Admin default page renders recent activity as a one-line secondary row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, '$events = $this->audit->list_recent( 1 );' ), 'Admin default page limits recent activity to the latest event.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Latest Core governance events. Full audit is in its own tab.' ), 'Admin default page points detailed activity to the audit tab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Governance Audit' ), 'Admin page exposes a full governance audit view.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'Advanced: Core App Keys' ), 'Admin default page no longer folds app-key management inline.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Manage Core app keys' ), 'Admin default page exposes app-key management as a low-frequency action.' );
@@ -1395,6 +1398,9 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'array_map' ) && f
 npcink_governance_core_assert( false !== strpos( $admin_page, 'app.revoked' ), 'Admin page audits app-key revocation.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'button-link-delete' ), 'Admin page exposes a key disable action.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Review Context' ), 'Admin proposal detail renders summary-first review context.' );
+$decision_call_position = strpos( $admin_page, '$this->render_decision_controls( $proposal );' );
+$context_call_position  = strpos( $admin_page, '$this->render_review_context( $proposal, $capability );' );
+npcink_governance_core_assert( false !== $decision_call_position && false !== $context_call_position && $decision_call_position < $context_call_position, 'Admin proposal detail places approve/reject controls before secondary review context.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_article_workflow_review_context' ), 'Admin proposal detail renders article workflow review context.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Article workflow' ), 'Admin proposal detail labels article workflow summary.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'final_write_ability' ), 'Admin proposal detail shows article final write ability.' );
@@ -1403,6 +1409,7 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'article_goal_brie
 npcink_governance_core_assert( false !== strpos( $admin_page, 'article_risk_report' ), 'Admin proposal detail shows article risk artifact availability.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Raw proposal payload' ), 'Admin proposal detail folds raw JSON payload behind a disclosure.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Audit Timeline' ), 'Admin proposal detail renders audit timeline.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Proposal event history.' ), 'Admin proposal detail folds audit timeline behind a secondary disclosure.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'scope_decision' ), 'Admin proposal detail shows scope decision attribution.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'correlation_id' ), 'Admin proposal detail shows correlation id attribution.' );
 npcink_governance_core_assert( false !== strpos( $core_operability, 'article workflow summary' ), 'Core governance operability documents article workflow summary.' );

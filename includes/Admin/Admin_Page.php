@@ -374,9 +374,9 @@ final class Admin_Page {
 	private function render_review_workbench( array $summary, int $pending_count, int $expired_count, int $archived_count, array $pending, int $page ): void {
 		?>
 		<?php $this->render_summary_strip( $summary, $pending_count, $expired_count, $archived_count ); ?>
-		<?php $this->render_approval_policy_entry(); ?>
 		<?php $this->render_pending_proposals( $pending, $pending_count, $page ); ?>
 		<?php $this->render_recent_activity(); ?>
+		<?php $this->render_approval_policy_entry(); ?>
 		<?php $this->render_advanced_access_entry(); ?>
 		<?php
 	}
@@ -444,11 +444,9 @@ final class Admin_Page {
 	 */
 	private function render_summary_strip( array $summary, int $pending_count, int $expired_count, int $archived_count ): void {
 		?>
-		<h2><?php echo esc_html__( 'Review Queue', 'npcink-governance-core' ); ?></h2>
 		<div class="npcink-governance-core-status-strip">
 			<?php $this->render_status_metric( __( 'Needs review', 'npcink-governance-core' ), (string) $pending_count, true ); ?>
 			<?php $this->render_status_metric( __( 'Expired', 'npcink-governance-core' ), (string) $expired_count, false, false, $this->view_url( 'archive' ) ); ?>
-			<?php $this->render_status_metric( __( 'Archived', 'npcink-governance-core' ), (string) $archived_count, false, false, $this->view_url( 'archive' ) ); ?>
 			<?php $this->render_status_metric( __( 'Available abilities', 'npcink-governance-core' ), (string) $summary['count'] ); ?>
 		</div>
 		<?php
@@ -650,47 +648,30 @@ final class Admin_Page {
 	 * @return void
 	 */
 	private function render_recent_activity(): void {
-		$events = $this->audit->list_recent( 10 );
+		$events = $this->audit->list_recent( 1 );
+		$event  = $events[0] ?? null;
 		?>
-		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide npcink-governance-core-disclosure-top">
-			<summary>
+		<div class="npcink-governance-core-secondary-row npcink-governance-core-max-wide">
+			<div>
 				<strong><?php echo esc_html__( 'Recent Activity', 'npcink-governance-core' ); ?></strong>
 				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Latest Core governance events. Full audit is in its own tab.', 'npcink-governance-core' ); ?></span>
-			</summary>
-			<table class="widefat striped npcink-governance-core-table-spaced">
-				<thead>
-					<tr>
-						<th scope="col"><?php echo esc_html__( 'Time', 'npcink-governance-core' ); ?></th>
-						<th scope="col"><?php echo esc_html__( 'Event', 'npcink-governance-core' ); ?></th>
-						<th scope="col"><?php echo esc_html__( 'Proposal', 'npcink-governance-core' ); ?></th>
-						<th scope="col"><?php echo esc_html__( 'Actor', 'npcink-governance-core' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php if ( empty( $events ) ) : ?>
-						<tr>
-							<td colspan="4"><?php echo esc_html__( 'No recent governance activity.', 'npcink-governance-core' ); ?></td>
-						</tr>
+			</div>
+			<div class="npcink-governance-core-secondary-row-main">
+				<?php if ( null === $event ) : ?>
+					<?php echo esc_html__( 'No recent governance activity.', 'npcink-governance-core' ); ?>
+				<?php else : ?>
+					<?php $proposal_id = (string) ( $event['proposal_id'] ?? '' ); ?>
+					<?php echo esc_html( $this->display_datetime( (string) $event['created_at'] ) ); ?>
+					<code><?php echo esc_html( (string) $event['event_name'] ); ?></code>
+					<?php if ( '' !== $proposal_id ) : ?>
+						<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
+					<?php else : ?>
+						<?php echo esc_html__( 'System', 'npcink-governance-core' ); ?>
 					<?php endif; ?>
-					<?php foreach ( $events as $event ) : ?>
-						<?php $proposal_id = (string) ( $event['proposal_id'] ?? '' ); ?>
-						<tr>
-							<td><?php echo esc_html( $this->display_datetime( (string) $event['created_at'] ) ); ?></td>
-							<td><code><?php echo esc_html( (string) $event['event_name'] ); ?></code></td>
-							<td>
-								<?php if ( '' !== $proposal_id ) : ?>
-									<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
-								<?php else : ?>
-									<?php echo esc_html__( 'System', 'npcink-governance-core' ); ?>
-								<?php endif; ?>
-							</td>
-							<td><?php echo esc_html( (string) $event['actor_id'] ); ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-			<p><a href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Open full audit', 'npcink-governance-core' ); ?></a></p>
-		</details>
+				<?php endif; ?>
+			</div>
+			<a href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Open full audit', 'npcink-governance-core' ); ?></a>
+		</div>
 		<?php
 	}
 
@@ -706,7 +687,7 @@ final class Admin_Page {
 		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide npcink-governance-core-disclosure-top">
 			<summary>
 				<strong><?php echo esc_html__( 'Advanced Access', 'npcink-governance-core' ); ?></strong>
-				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Core app keys for trusted governance clients.', 'npcink-governance-core' ); ?></span>
+				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Client access keys for trusted governance clients.', 'npcink-governance-core' ); ?></span>
 			</summary>
 			<table class="widefat striped npcink-governance-core-table-spaced">
 				<tbody>
@@ -1305,30 +1286,44 @@ final class Admin_Page {
 		</table>
 
 		<?php $this->render_lifecycle_actions( $proposal ); ?>
-		<?php $this->render_review_context( $proposal, $capability ); ?>
+		<?php $this->render_decision_controls( $proposal ); ?>
 
-		<?php if ( Proposal_Repository::STATUS_PENDING === (string) $proposal['status'] ) : ?>
-			<h3><?php echo esc_html__( 'Decision', 'npcink-governance-core' ); ?></h3>
-			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="max-width: 760px;">
-				<input type="hidden" name="proposal_id" value="<?php echo esc_attr( $proposal_id ); ?>" />
-				<?php wp_nonce_field( 'npcink_governance_core_decide_proposal_' . $proposal_id ); ?>
-				<p>
-					<label for="npcink-governance-core-note"><?php echo esc_html__( 'Decision note', 'npcink-governance-core' ); ?></label><br />
-					<textarea id="npcink-governance-core-note" name="note" rows="3" class="large-text"></textarea>
-				</p>
-				<p>
-					<button type="submit" class="button button-primary" name="action" value="npcink_governance_core_approve_proposal">
-						<?php echo esc_html__( 'Approve', 'npcink-governance-core' ); ?>
-					</button>
-					<button type="submit" class="button" name="action" value="npcink_governance_core_reject_proposal">
-						<?php echo esc_html__( 'Reject', 'npcink-governance-core' ); ?>
-					</button>
-				</p>
-			</form>
-		<?php endif; ?>
+		<?php $this->render_review_context( $proposal, $capability ); ?>
 
 		<?php $this->render_raw_proposal_payload( $proposal ); ?>
 		<?php $this->render_audit_timeline( $timeline ); ?>
+		<?php
+	}
+
+	/**
+	 * Renders approve/reject controls near the top of pending proposal detail.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return void
+	 */
+	private function render_decision_controls( array $proposal ): void {
+		$proposal_id = (string) $proposal['proposal_id'];
+		if ( Proposal_Repository::STATUS_PENDING !== (string) $proposal['status'] ) {
+			return;
+		}
+		?>
+		<h3><?php echo esc_html__( 'Decision', 'npcink-governance-core' ); ?></h3>
+		<form class="npcink-governance-core-form-width" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<input type="hidden" name="proposal_id" value="<?php echo esc_attr( $proposal_id ); ?>" />
+			<?php wp_nonce_field( 'npcink_governance_core_decide_proposal_' . $proposal_id ); ?>
+			<p>
+				<label for="npcink-governance-core-note"><?php echo esc_html__( 'Decision note', 'npcink-governance-core' ); ?></label><br />
+				<textarea id="npcink-governance-core-note" name="note" rows="3" class="large-text"></textarea>
+			</p>
+			<p>
+				<button type="submit" class="button button-primary" name="action" value="npcink_governance_core_approve_proposal">
+					<?php echo esc_html__( 'Approve', 'npcink-governance-core' ); ?>
+				</button>
+				<button type="submit" class="button" name="action" value="npcink_governance_core_reject_proposal">
+					<?php echo esc_html__( 'Reject', 'npcink-governance-core' ); ?>
+				</button>
+			</p>
+		</form>
 		<?php
 	}
 
@@ -1575,32 +1570,37 @@ final class Admin_Page {
 	 */
 	private function render_audit_timeline( array $events ): void {
 		?>
-		<h3><?php echo esc_html__( 'Audit Timeline', 'npcink-governance-core' ); ?></h3>
-		<table class="widefat striped" style="max-width: 1100px;">
-			<thead>
-				<tr>
-					<th scope="col"><?php echo esc_html__( 'Time', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Event', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Actor', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Detail', 'npcink-governance-core' ); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php if ( empty( $events ) ) : ?>
+		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide npcink-governance-core-disclosure-top">
+			<summary>
+				<strong><?php echo esc_html__( 'Audit Timeline', 'npcink-governance-core' ); ?></strong>
+				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Proposal event history.', 'npcink-governance-core' ); ?></span>
+			</summary>
+			<table class="widefat striped npcink-governance-core-table-spaced">
+				<thead>
 					<tr>
-						<td colspan="4"><?php echo esc_html__( 'No audit events recorded for this proposal yet.', 'npcink-governance-core' ); ?></td>
+						<th scope="col"><?php echo esc_html__( 'Time', 'npcink-governance-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Event', 'npcink-governance-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Actor', 'npcink-governance-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Detail', 'npcink-governance-core' ); ?></th>
 					</tr>
-				<?php endif; ?>
-				<?php foreach ( $events as $event ) : ?>
-					<tr>
-						<td><?php echo esc_html( $this->display_datetime( (string) $event['created_at'] ) ); ?></td>
-						<td><code><?php echo esc_html( (string) $event['event_name'] ); ?></code></td>
-						<td><?php echo esc_html( (string) $event['actor_id'] ); ?></td>
-						<td><?php $this->render_audit_detail( $event ); ?></td>
-					</tr>
-				<?php endforeach; ?>
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					<?php if ( empty( $events ) ) : ?>
+						<tr>
+							<td colspan="4"><?php echo esc_html__( 'No audit events recorded for this proposal yet.', 'npcink-governance-core' ); ?></td>
+						</tr>
+					<?php endif; ?>
+					<?php foreach ( $events as $event ) : ?>
+						<tr>
+							<td><?php echo esc_html( $this->display_datetime( (string) $event['created_at'] ) ); ?></td>
+							<td><code><?php echo esc_html( (string) $event['event_name'] ); ?></code></td>
+							<td><?php echo esc_html( (string) $event['actor_id'] ); ?></td>
+							<td><?php $this->render_audit_detail( $event ); ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</details>
 		<?php
 	}
 

@@ -26,18 +26,18 @@ queue:
 - stale proposal counts that link operators to the expired/archive tab;
 - `Development Approval Policy` disclosure for the lightweight manual,
   dry-run guarded, and local guarded policy modes;
-- short recent activity disclosure, collapsed by default;
-- `Advanced Access` disclosure for low-frequency Core app-key management.
+- one-line recent activity summary with a link to the full audit;
+- `Advanced Access` disclosure for low-frequency client access key management.
 
 ## Detail Views
 
 Proposal detail should be a focused review surface:
 
 - proposal identity and status;
-- review context from ability intake and preview metadata;
 - approve/reject decision controls for pending proposals;
+- review context from ability intake and preview metadata;
 - raw proposal payload behind a disclosure;
-- proposal audit timeline.
+- proposal audit timeline behind a disclosure.
 - lifecycle controls for expired or archived proposals.
 
 Full `Governance Audit` and `Expired / Archived` belong in dedicated tabs, not
