@@ -412,8 +412,8 @@ msgstr ""
 msgid "Advanced Access"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:833
-msgid "Core app keys for trusted governance clients."
+#: includes/Admin/Admin_Page.php:690
+msgid "Client access keys for trusted governance clients."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:838
@@ -765,6 +765,10 @@ msgstr ""
 
 #: includes/Admin/Admin_Page.php:1702
 msgid "Audit Timeline"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1576
+msgid "Proposal event history."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:1709

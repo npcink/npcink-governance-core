@@ -410,9 +410,9 @@ msgstr "打开完整审计"
 msgid "Advanced Access"
 msgstr "高级访问"
 
-#: includes/Admin/Admin_Page.php:833
-msgid "Core app keys for trusted governance clients."
-msgstr "用于受信任治理客户端的 Core 应用密钥。"
+#: includes/Admin/Admin_Page.php:690
+msgid "Client access keys for trusted governance clients."
+msgstr "用于受信任治理客户端的访问密钥。"
 
 #: includes/Admin/Admin_Page.php:838
 msgid "Active app keys"
@@ -764,6 +764,10 @@ msgstr "预览"
 #: includes/Admin/Admin_Page.php:1702
 msgid "Audit Timeline"
 msgstr "审计时间线"
+
+#: includes/Admin/Admin_Page.php:1576
+msgid "Proposal event history."
+msgstr "提案事件历史。"
 
 #: includes/Admin/Admin_Page.php:1709
 #: includes/Admin/Admin_Page.php:1808
