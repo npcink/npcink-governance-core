@@ -99,8 +99,8 @@ msgstr ""
 msgid "Not installed"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:299
-msgid "Governance review and audit for WordPress ability proposals."
+#: includes/Admin/Admin_Page.php:288
+msgid "Review WordPress requests before they run."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:317
@@ -281,9 +281,17 @@ msgstr ""
 msgid "Needs Review"
 msgstr ""
 
+#: includes/Admin/Admin_Page.php:477
+msgid "Pending requests"
+msgstr ""
+
 #: includes/Admin/Admin_Page.php:630
 #: includes/Admin/Admin_Page.php:646
 msgid "Select proposal"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:486
+msgid "Request"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:631
@@ -304,12 +312,24 @@ msgstr ""
 msgid "Action"
 msgstr ""
 
+#: includes/Admin/Admin_Page.php:488
+msgid "Decide"
+msgstr ""
+
 #: includes/Admin/Admin_Page.php:639
 msgid "No active proposals. Expired items are moved out of the review queue automatically."
 msgstr ""
 
+#: includes/Admin/Admin_Page.php:506
+msgid "Review this WordPress change before it can run."
+msgstr ""
+
 #: includes/Admin/Admin_Page.php:651
 msgid "Proposal ID:"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:519
+msgid "Target ability:"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:655
@@ -320,8 +340,24 @@ msgstr ""
 msgid "Review"
 msgstr ""
 
+#: includes/Admin/Admin_Page.php:511
+msgid "View and decide"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:525
+msgid "Bulk actions"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:526
+msgid "Reject selected requests when they are no longer needed."
+msgstr ""
+
 #: includes/Admin/Admin_Page.php:673
 msgid "Bulk rejection note"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:531
+msgid "Rejection note"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:674
@@ -335,6 +371,58 @@ msgstr ""
 
 #: includes/Admin/Admin_Page.php:701
 msgid "Source:"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:512
+msgid "Technical details"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:553
+msgid "Create draft"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:554
+msgid "Update SEO fields"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:555
+msgid "Approve comment"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:556
+msgid "Update taxonomy terms"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:557
+msgid "Update post"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:558
+msgid "Update media details"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:559
+msgid "Rename media file"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:560
+msgid "Delete media permanently"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:561
+msgid "Import media"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:562
+msgid "Set featured image"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:563
+msgid "Update post content"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:575
+msgid "Review WordPress change"
 msgstr ""
 
 #. translators: %s: plan ability id.
