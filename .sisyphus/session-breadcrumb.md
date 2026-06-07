@@ -1,5 +1,27 @@
 # Session Breadcrumb
 
+## 2026-06-07 — Review queue UI reapplied to active local branch
+
+- **Module**: Core admin review queue.
+- **Status**: The simplified pending review surface is now present on the
+  currently active local WordPress branch.
+- **Completed**:
+  - Reapplied the queue-first admin changes from
+    `codex/core-workflow-replay-proof` onto
+    `codex/article-optimization-core-handoff`, which is the branch currently
+    loaded by the local WordPress plugin symlink.
+  - Removed the top review metrics strip from the active branch.
+  - Kept `Proposal ID` visible by default and moved target ability/source trace
+    fields behind per-row technical details.
+  - Preserved user-facing request labels, decision-oriented row actions, and
+    non-prefilled bulk rejection notes.
+- **Verification**:
+  - `msgfmt --check --check-format -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `composer test:all`
+- **Boundary**:
+  - Admin presentation only. No workflow runtime, ability execution, provider
+    settings, credential storage, or product workflow ownership was added.
+
 ## 2026-06-07 — Media optimization execution closure tightened
 
 - **Module**: Core/Adapter/Abilities media optimization governance closure.
