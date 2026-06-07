@@ -279,10 +279,18 @@ msgstr "可用能力"
 msgid "Needs Review"
 msgstr "待审核"
 
+#: includes/Admin/Admin_Page.php:477
+msgid "Pending requests"
+msgstr "待处理请求"
+
 #: includes/Admin/Admin_Page.php:630
 #: includes/Admin/Admin_Page.php:646
 msgid "Select proposal"
 msgstr "选择提案"
+
+#: includes/Admin/Admin_Page.php:486
+msgid "Request"
+msgstr "请求"
 
 #: includes/Admin/Admin_Page.php:631
 #: includes/Admin/Admin_Page.php:789
@@ -302,13 +310,25 @@ msgstr "已创建"
 msgid "Action"
 msgstr "操作"
 
+#: includes/Admin/Admin_Page.php:488
+msgid "Decide"
+msgstr "决定"
+
 #: includes/Admin/Admin_Page.php:639
 msgid "No active proposals. Expired items are moved out of the review queue automatically."
 msgstr "没有活动提案。过期项目会自动移出审核队列。"
 
+#: includes/Admin/Admin_Page.php:506
+msgid "Review this WordPress change before it can run."
+msgstr "请在这项 WordPress 更改执行前进行审核。"
+
 #: includes/Admin/Admin_Page.php:651
 msgid "Proposal ID:"
 msgstr "提案 ID："
+
+#: includes/Admin/Admin_Page.php:519
+msgid "Target ability:"
+msgstr "目标能力："
 
 #: includes/Admin/Admin_Page.php:655
 msgid "Ability:"
@@ -318,9 +338,25 @@ msgstr "能力："
 msgid "Review"
 msgstr "审核"
 
+#: includes/Admin/Admin_Page.php:511
+msgid "View and decide"
+msgstr "查看并决定"
+
+#: includes/Admin/Admin_Page.php:525
+msgid "Bulk actions"
+msgstr "批量操作"
+
+#: includes/Admin/Admin_Page.php:526
+msgid "Reject selected requests when they are no longer needed."
+msgstr "当所选请求不再需要时批量拒绝。"
+
 #: includes/Admin/Admin_Page.php:673
 msgid "Bulk rejection note"
 msgstr "批量拒绝备注"
+
+#: includes/Admin/Admin_Page.php:531
+msgid "Rejection note"
+msgstr "拒绝备注"
 
 #: includes/Admin/Admin_Page.php:674
 #: includes/Admin/Admin_Page.php:891
@@ -334,6 +370,58 @@ msgstr "拒绝所选项"
 #: includes/Admin/Admin_Page.php:701
 msgid "Source:"
 msgstr "来源："
+
+#: includes/Admin/Admin_Page.php:512
+msgid "Technical details"
+msgstr "技术详情"
+
+#: includes/Admin/Admin_Page.php:553
+msgid "Create draft"
+msgstr "创建草稿"
+
+#: includes/Admin/Admin_Page.php:554
+msgid "Update SEO fields"
+msgstr "更新 SEO 字段"
+
+#: includes/Admin/Admin_Page.php:555
+msgid "Approve comment"
+msgstr "批准评论"
+
+#: includes/Admin/Admin_Page.php:556
+msgid "Update taxonomy terms"
+msgstr "更新分类项"
+
+#: includes/Admin/Admin_Page.php:557
+msgid "Update post"
+msgstr "更新文章"
+
+#: includes/Admin/Admin_Page.php:558
+msgid "Update media details"
+msgstr "更新媒体详情"
+
+#: includes/Admin/Admin_Page.php:559
+msgid "Rename media file"
+msgstr "重命名媒体文件"
+
+#: includes/Admin/Admin_Page.php:560
+msgid "Delete media permanently"
+msgstr "永久删除媒体"
+
+#: includes/Admin/Admin_Page.php:561
+msgid "Import media"
+msgstr "导入媒体"
+
+#: includes/Admin/Admin_Page.php:562
+msgid "Set featured image"
+msgstr "设置特色图片"
+
+#: includes/Admin/Admin_Page.php:563
+msgid "Update post content"
+msgstr "更新文章内容"
+
+#: includes/Admin/Admin_Page.php:575
+msgid "Review WordPress change"
+msgstr "审核 WordPress 更改"
 
 #. translators: %s: plan ability id.
 #: includes/Admin/Admin_Page.php:727
