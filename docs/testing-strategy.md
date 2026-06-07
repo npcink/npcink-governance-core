@@ -72,7 +72,8 @@ Use it for behavior that requires real WordPress:
   `npcink_abilities_toolkit_get_workflow_definitions()`, with fixture fallback from
   `npcink-abilities-toolkit/tests/fixtures/agent-workflow-replay.json`;
 - the primary `npcink-abilities-toolkit/create-draft` governance scenario, including schema
-  controls, proposal creation, approval, and commit preflight;
+  controls, safe HTML preservation for `content_format=html`, proposal
+  creation, approval, and commit preflight;
 - the second `npcink-abilities-toolkit/set-post-seo-meta` governance scenario, including
   field-level update input and commit preflight without final execution;
 - the third `npcink-abilities-toolkit/approve-comment` governance scenario, including pending

@@ -1066,6 +1066,11 @@ npcink_governance_core_assert( false !== strpos( $proposal_repository, 'delete_b
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'policy_fields_from_caller' ), 'Proposal repository promotes stored policy fields into responses.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'policy_decision' ), 'Proposal repository returns policy_decision.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'policy_reasons' ), 'Proposal repository returns policy_reasons.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'sanitize_input_for_ability' ), 'Proposal repository sanitizes proposal input with ability-aware context.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'is_create_draft_html_input' ), 'Proposal repository detects create-draft HTML content input narrowly.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'wp_kses_post( $content )' ), 'Proposal repository preserves create-draft HTML only through WordPress safe post KSES.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, "\$input['content_format'] ?? ''" ), 'Proposal repository requires content_format before preserving create-draft HTML.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, "\$clean['write_actions'][ \$index ]['input']['content']" ), 'Proposal repository preserves safe create-draft HTML inside batch write actions.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.created' ), 'Proposal service records proposal.created audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.policy_evaluated' ), 'Proposal service records policy evaluation audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.auto_approved' ), 'Proposal service records auto approval audit event.' );
@@ -1088,6 +1093,8 @@ npcink_governance_core_assert( false !== strpos( $proposal_service, 'core_guardr
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'core_policy' ), 'Proposal service stores non-secret policy decision metadata.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_policy_decision_audit_failed' ), 'Proposal service fails closed when policy decision audit fails.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'deduplicated' ), 'Proposal service returns existing pending duplicates.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'stable_input_hash' ), 'Proposal service hashes proposal input after ability-aware persistence sanitization.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, '$this->proposals->sanitize_input_for_ability' ), 'Proposal service input hashes match repository persistence sanitization.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.listed' ), 'Proposal service records proposal.listed audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.viewed' ), 'Proposal service records proposal.viewed audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'audit_timeline' ), 'Proposal service exposes proposal audit timeline.' );

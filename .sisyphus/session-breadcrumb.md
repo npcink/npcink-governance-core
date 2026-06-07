@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-07 — Create-draft HTML proposal input preserved safely
+
+- **Module**: Core proposal persistence and create-draft governance contract.
+- **Status**: `npcink-abilities-toolkit/create-draft` proposal input now keeps
+  reviewed safe post HTML when `content_format=html`.
+- **Completed**:
+  - Added ability-aware proposal input sanitization so default structured
+    payloads remain plain-text sanitized while create-draft `content` uses
+    WordPress safe post HTML filtering only when explicitly marked as HTML.
+  - Applied the same safe HTML preservation to create-draft actions nested in
+    plan-to-proposal batch `write_actions[]`.
+  - Aligned pending proposal dedupe/input hashes with the persistence sanitizer
+    so HTML-bearing inputs are not compared after accidental tag stripping.
+  - Updated create-draft, REST, security, and testing contracts.
+  - Added WordPress smoke coverage for safe HTML preservation and unsafe tag
+    removal.
+- **Verification**:
+  - `git diff --check`
+  - `composer test:all`
+  - `composer smoke:wp`
+- **Boundary**:
+  - Core still does not generate content, execute create-draft, own article UX,
+    or store raw unsanitized HTML. Existing pending proposals that were already
+    stored as plain text must be regenerated to carry HTML.
+
 ## 2026-06-07 — Release-facing admin activity log tightened
 
 - **Module**: Core admin activity log and navigation URLs.

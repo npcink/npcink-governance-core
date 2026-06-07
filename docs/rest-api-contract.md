@@ -280,6 +280,10 @@ and sanitized `input`, Core returns that proposal with HTTP `200` and
 `deduplicated=true` instead of storing another row. If the caller's pending
 proposal quota is full, Core returns
 `npcink_governance_core_pending_proposal_quota_exceeded` with HTTP `429`.
+For `npcink-abilities-toolkit/create-draft`, `input.content` may remain
+WordPress safe post HTML only when the input explicitly sets
+`content_format=html`; unsafe HTML is stripped before persistence. The same
+rule applies to nested create-draft actions in plan-to-proposal batch input.
 
 Request fields:
 
@@ -374,6 +378,9 @@ For `npcink-toolbox/build-article-write-plan`, the plan must declare
 The P0 action set must contain exactly one `npcink-abilities-toolkit/create-draft` action with
 `status=draft` or no explicit status. `publish`, high-risk reports, blocked
 claims, `commit=true`, or `dry_run=false` are rejected before proposal creation.
+When that action sets `content_format=html`, Core stores the action
+`input.content` as WordPress safe post HTML instead of flattening it to plain
+text.
 
 For `npcink-toolbox/build-article-batch-write-plan`, the plan must declare
 `artifact_type=article_batch_write_plan`, `proposal_mode=batch`,

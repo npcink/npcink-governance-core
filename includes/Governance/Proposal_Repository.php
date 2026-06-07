@@ -81,13 +81,15 @@ final class Proposal_Repository {
 
 		$proposal_id = function_exists( 'wp_generate_uuid4' ) ? wp_generate_uuid4() : uniqid( 'proposal_', true );
 		$now         = current_time( 'mysql', true );
+		$ability_id  = sanitize_text_field( (string) ( $data['ability_id'] ?? '' ) );
+		$input       = is_array( $data['input'] ?? null ) ? $data['input'] : array();
 		$record      = array(
 			'proposal_id'  => $proposal_id,
-			'ability_id'   => sanitize_text_field( (string) ( $data['ability_id'] ?? '' ) ),
+			'ability_id'   => $ability_id,
 			'status'       => self::STATUS_PENDING,
 			'title'        => sanitize_text_field( (string) ( $data['title'] ?? '' ) ),
 			'summary'      => sanitize_textarea_field( (string) ( $data['summary'] ?? '' ) ),
-			'input_json'   => wp_json_encode( $this->sanitize_payload( $data['input'] ?? array() ) ),
+			'input_json'   => wp_json_encode( $this->sanitize_input_for_ability( $ability_id, $input ) ),
 			'preview_json' => wp_json_encode( $this->sanitize_payload( $data['preview'] ?? array() ) ),
 			'caller_json'  => wp_json_encode( $this->sanitize_payload( $data['caller'] ?? array() ) ),
 			'created_by'   => get_current_user_id(),
@@ -458,6 +460,48 @@ final class Proposal_Repository {
 	}
 
 	/**
+	 * Sanitizes proposal input for a target ability before persistence or hashing.
+	 *
+	 * Most structured proposal input remains plain-text sanitized. The create-draft
+	 * content field is a reviewed WordPress post-content field, so explicit
+	 * content_format=html uses WordPress safe post HTML filtering instead.
+	 *
+	 * @param string              $ability_id Target ability id.
+	 * @param array<string,mixed> $input Raw proposal input.
+	 * @return array<string,mixed>
+	 */
+	public function sanitize_input_for_ability( string $ability_id, array $input ): array {
+		$ability_id = sanitize_text_field( $ability_id );
+		$clean      = $this->sanitize_payload( $input );
+		$clean      = is_array( $clean ) ? $clean : array();
+
+		if ( $this->is_create_draft_html_input( $ability_id, $input ) ) {
+			$clean['content'] = $this->sanitize_post_content_html( (string) ( $input['content'] ?? '' ) );
+		}
+
+		if ( is_array( $input['write_actions'] ?? null ) && is_array( $clean['write_actions'] ?? null ) ) {
+			foreach ( array_values( $input['write_actions'] ) as $index => $action ) {
+				if ( ! is_array( $action ) || ! is_array( $action['input'] ?? null ) ) {
+					continue;
+				}
+				if ( ! isset( $clean['write_actions'][ $index ] ) || ! is_array( $clean['write_actions'][ $index ] ) ) {
+					continue;
+				}
+				if ( ! isset( $clean['write_actions'][ $index ]['input'] ) || ! is_array( $clean['write_actions'][ $index ]['input'] ) ) {
+					continue;
+				}
+				$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
+				if ( ! $this->is_create_draft_html_input( $target_ability_id, $action['input'] ) ) {
+					continue;
+				}
+				$clean['write_actions'][ $index ]['input']['content'] = $this->sanitize_post_content_html( (string) ( $action['input']['content'] ?? '' ) );
+			}
+		}
+
+		return $clean;
+	}
+
+	/**
 	 * Normalizes row.
 	 *
 	 * @param array<string,mixed> $row DB row.
@@ -513,6 +557,33 @@ final class Proposal_Repository {
 		$decoded = json_decode( (string) $json, true );
 
 		return null === $decoded ? array() : $decoded;
+	}
+
+	/**
+	 * Returns whether a create-draft input explicitly requests HTML post content.
+	 *
+	 * @param string              $ability_id Target ability id.
+	 * @param array<string,mixed> $input Raw input.
+	 * @return bool
+	 */
+	private function is_create_draft_html_input( string $ability_id, array $input ): bool {
+		return 'npcink-abilities-toolkit/create-draft' === sanitize_text_field( $ability_id )
+			&& array_key_exists( 'content', $input )
+			&& 'html' === sanitize_key( (string) ( $input['content_format'] ?? '' ) );
+	}
+
+	/**
+	 * Sanitizes reviewed draft HTML through WordPress post-content KSES rules.
+	 *
+	 * @param string $content Raw HTML content.
+	 * @return string
+	 */
+	private function sanitize_post_content_html( string $content ): string {
+		if ( function_exists( 'wp_kses_post' ) ) {
+			return wp_kses_post( $content );
+		}
+
+		return sanitize_textarea_field( $content );
 	}
 
 	/**

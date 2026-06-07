@@ -35,6 +35,7 @@ Core does not own:
    write-risk ability with `requires_approval=true`.
 3. The consumer reads the input schema, especially:
    - `title` is required;
+   - `content_format=html` allows reviewed WordPress post-content HTML;
    - `dry_run`, `commit`, and `idempotency_key` are governance controls;
    - default intent remains dry-run / no commit.
 4. The consumer calls `POST /wp-json/npcink-governance-core/v1/proposals` with:
@@ -66,6 +67,12 @@ The command discovers capabilities first, validates the `create-draft` contract,
 then creates a proposal with `dry_run=true` and `commit=false`. It does not
 approve the proposal or execute the write.
 
+When the submitted input uses `content_format=html`, Core preserves the
+reviewed `input.content` as WordPress safe post HTML instead of converting it
+to plain text. Unsafe tags and attributes are still stripped before persistence.
+This applies to direct `create-draft` proposals and create-draft actions carried
+inside plan-to-proposal batch input.
+
 After a human approves the proposal in WordPress:
 
 ```bash
@@ -80,6 +87,7 @@ php examples/openclaw-governance-adapter/openclaw-governance-adapter.php commit-
 - `npcink-abilities-toolkit/create-draft` is discoverable from `npcink-abilities-toolkit`;
 - the ability is write-risk and requires approval;
 - the input schema includes required `title` and governance controls;
+- `content_format=html` proposal input preserves safe HTML after persistence;
 - proposal creation stores the real ability id;
 - pending proposals fail commit preflight;
 - approved proposals return approval context;

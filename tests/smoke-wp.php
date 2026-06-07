@@ -1019,6 +1019,10 @@ function npcink_governance_core_smoke_run_governance_proposal( string $ability_i
 	npcink_governance_core_smoke_assert( $proposal_id === (string) ( $detail['proposal_id'] ?? '' ), $ability_id . ' proposal detail endpoint returns created proposal' );
 	$detail_timeline = (array) ( $detail['audit_timeline'] ?? array() );
 	npcink_governance_core_smoke_assert( count( $detail_timeline ) >= 1, $ability_id . ' proposal detail includes audit timeline' );
+	if ( 'npcink-abilities-toolkit/create-draft' === $ability_id && 'html' === (string) ( $input['content_format'] ?? '' ) ) {
+		npcink_governance_core_smoke_assert( false !== strpos( (string) ( $detail['input']['content'] ?? '' ), '<p>' ), 'create-draft proposal preserves safe HTML content for review and execution handoff' );
+		npcink_governance_core_smoke_assert( false === strpos( (string) ( $detail['input']['content'] ?? '' ), '<script' ), 'create-draft proposal strips unsafe HTML content before persistence' );
+	}
 
 	$pending_preflight = npcink_governance_core_smoke_rest_result( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( $proposal_id ) . '/commit-preflight' );
 	npcink_governance_core_smoke_assert( 409 === (int) $pending_preflight['status'], $ability_id . ' commit preflight fails for pending proposal' );
@@ -1040,6 +1044,9 @@ function npcink_governance_core_smoke_run_governance_proposal( string $ability_i
 	npcink_governance_core_smoke_assert( $ability_id === (string) ( $preflight['proposal']['ability_id'] ?? '' ), $ability_id . ' preflight proposal keeps the real ability id' );
 	npcink_governance_core_smoke_assert( true === (bool) ( $preflight['proposal']['input']['dry_run'] ?? false ), $ability_id . ' preflight returns the dry-run proposal input without committing' );
 	npcink_governance_core_smoke_assert( false === (bool) ( $preflight['proposal']['input']['commit'] ?? false ), $ability_id . ' preflight does not turn proposal input into a commit request' );
+	if ( 'npcink-abilities-toolkit/create-draft' === $ability_id && 'html' === (string) ( $input['content_format'] ?? '' ) ) {
+		npcink_governance_core_smoke_assert( false !== strpos( (string) ( $preflight['proposal']['input']['content'] ?? '' ), '<p>' ), 'create-draft preflight preserves safe HTML content in approved input' );
+	}
 	npcink_governance_core_smoke_assert( $ability_id === (string) ( $preflight['capability']['ability_id'] ?? '' ), $ability_id . ' preflight capability is rediscovered from ability intake' );
 	$correlation_id = (string) ( $preflight['correlation_id'] ?? '' );
 	npcink_governance_core_smoke_assert( '' !== $correlation_id, $ability_id . ' commit preflight returns correlation id' );
@@ -1255,11 +1262,12 @@ $proposal_id = npcink_governance_core_smoke_run_governance_proposal(
 	$items_by_id,
 	'Smoke draft proposal',
 	array(
-		'title'   => 'Core Governance Smoke Draft ' . $npcink_governance_core_smoke_run_id,
-		'content' => '<p>Smoke draft content.</p>',
-		'status'  => 'draft',
-		'dry_run' => true,
-		'commit'  => false,
+		'title'          => 'Core Governance Smoke Draft ' . $npcink_governance_core_smoke_run_id,
+		'content'        => '<p>Smoke draft content.</p><script>alert("unsafe")</script>',
+		'content_format' => 'html',
+		'status'         => 'draft',
+		'dry_run'        => true,
+		'commit'         => false,
 	),
 	array(
 		'dry_run'       => true,

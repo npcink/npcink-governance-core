@@ -480,7 +480,7 @@ final class Proposal_Service {
 			}
 		}
 
-		$input_hash  = $this->stable_payload_hash( $input );
+		$input_hash  = $this->stable_input_hash( $ability_id, $input );
 		$dedupe_hash = $this->stable_payload_hash(
 			array(
 				'ability_id' => $ability_id,
@@ -618,7 +618,20 @@ final class Proposal_Service {
 		$guardrails = is_array( $caller['core_guardrails'] ?? null ) ? $caller['core_guardrails'] : array();
 		$stored     = sanitize_text_field( (string) ( $guardrails['input_hash'] ?? '' ) );
 
-		return '' !== $stored ? $stored : $this->stable_payload_hash( $proposal['input'] ?? array() );
+		return '' !== $stored ? $stored : $this->stable_input_hash( (string) ( $proposal['ability_id'] ?? '' ), is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array() );
+	}
+
+	/**
+	 * Returns a stable hash for target ability input after persistence-equivalent sanitization.
+	 *
+	 * @param string              $ability_id Target ability id.
+	 * @param array<string,mixed> $input Proposal input.
+	 * @return string
+	 */
+	private function stable_input_hash( string $ability_id, array $input ): string {
+		$json = wp_json_encode( $this->normalize_payload_for_hash( $this->proposals->sanitize_input_for_ability( $ability_id, $input ) ) );
+
+		return hash( 'sha256', is_string( $json ) ? $json : '' );
 	}
 
 	/**
