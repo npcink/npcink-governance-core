@@ -26,6 +26,8 @@ Use them to assert:
 - allowed statuses;
 - product boundaries;
 - forbidden legacy behavior;
+- shared `npcink-abilities-toolkit` workflow replay fixture structure and
+  host-owned write boundary semantics;
 - docs and code stay aligned.
 
 Do not use static contracts to test implementation details that may legitimately

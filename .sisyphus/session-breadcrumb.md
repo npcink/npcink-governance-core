@@ -1,5 +1,32 @@
 # Session Breadcrumb
 
+## 2026-06-07 — Workflow replay consumer proof tightened
+
+- **Module**: Core/Abilities workflow recipe consumption boundary.
+- **Status**: Core now has a cheap static proof for the shared
+  `npcink-abilities-toolkit` workflow replay fixture, in addition to the real
+  WordPress smoke proof.
+- **Completed**:
+  - Strengthened `npcink-abilities-toolkit` workflow consumer proof so natural
+    task examples route unambiguously to read-only recipe entrypoints and write
+    targets stay out of expanded read chains.
+  - Added Core static contract coverage that reads the sibling Toolkit
+    `agent-workflow-replay.json`, rejects runtime/governance ownership fields,
+    checks declarative recipe shape, and verifies write targets remain
+    proposal handoff targets instead of entrypoints.
+  - Updated Core testing strategy to record shared replay fixture structure and
+    host-owned write boundary semantics as static contract coverage.
+- **Verification**:
+  - `/Users/muze/gitee/npcink-abilities-toolkit`: `composer test:all`
+  - `/Users/muze/gitee/magick-ai-core`: `composer test:contracts`
+  - `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+  - `/Users/muze/gitee/magick-ai-core`: `composer smoke:wp`
+- **Boundary**:
+  - Toolkit still owns declarative workflow recipe definitions and reusable
+    WordPress abilities. Core consumes the shared replay/definition shape for
+    proposal governance proof only; it does not route natural-language tasks,
+    create a workflow registry, execute abilities, or own final writes.
+
 ## 2026-06-07 — Media optimization execution closure tightened
 
 - **Module**: Core/Adapter/Abilities media optimization governance closure.
