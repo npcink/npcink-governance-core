@@ -97,9 +97,9 @@ msgstr "打开"
 msgid "Not installed"
 msgstr "未安装"
 
-#: includes/Admin/Admin_Page.php:299
-msgid "Governance review and audit for WordPress ability proposals."
-msgstr "WordPress 能力提案的治理审核和审计。"
+#: includes/Admin/Admin_Page.php:288
+msgid "Review WordPress requests before they run."
+msgstr "在 WordPress 请求执行前进行审核。"
 
 #: includes/Admin/Admin_Page.php:317
 msgid "Selected proposal was not found."
