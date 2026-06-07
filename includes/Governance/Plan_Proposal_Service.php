@@ -32,6 +32,7 @@ final class Plan_Proposal_Service {
 		'npcink-abilities-toolkit/build-media-settings-reference-repair-plan' => true,
 		'npcink-abilities-toolkit/build-media-optimization-plan'              => true,
 		'npcink-abilities-toolkit/build-media-rename-plan'                    => true,
+		'npcink-abilities-toolkit/build-article-optimization-apply-plan'      => true,
 		'npcink-toolbox/build-article-write-plan'                            => true,
 		'npcink-toolbox/build-article-batch-write-plan'                      => true,
 		'npcink-toolbox/build-article-media-batch-write-plan'                => true,
@@ -169,6 +170,13 @@ final class Plan_Proposal_Service {
 			$media_rename_contract_error = $this->validate_media_rename_plan_contract( $plan );
 			if ( is_wp_error( $media_rename_contract_error ) ) {
 				return $media_rename_contract_error;
+			}
+		}
+
+		if ( 'npcink-abilities-toolkit/build-article-optimization-apply-plan' === $plan_ability_id ) {
+			$article_optimization_contract_error = $this->validate_article_optimization_apply_plan_contract( $plan );
+			if ( is_wp_error( $article_optimization_contract_error ) ) {
+				return $article_optimization_contract_error;
 			}
 		}
 
@@ -1013,6 +1021,99 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Validates the governed existing-article optimization apply plan contract.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_article_optimization_apply_plan_contract( array $plan ) {
+		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
+		if ( 'article_optimization_apply_plan' !== $artifact_type ) {
+			return new WP_Error(
+				'npcink_governance_core_article_optimization_plan_invalid',
+				__( 'Article optimization apply plans must declare artifact_type=article_optimization_apply_plan.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$post_id = absint( $plan['post']['post_id'] ?? 0 );
+		if ( $post_id <= 0 ) {
+			return new WP_Error(
+				'npcink_governance_core_article_optimization_post_missing',
+				__( 'Article optimization apply plans must target one post.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( count( $write_actions ) < 1 || count( $write_actions ) > 4 ) {
+			return new WP_Error(
+				'npcink_governance_core_article_optimization_actions_rejected',
+				__( 'Article optimization apply plans must include a bounded set of reviewed write actions.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$allowed_targets = array(
+			'npcink-abilities-toolkit/update-post'          => true,
+			'npcink-abilities-toolkit/set-post-seo-meta'   => true,
+			'npcink-abilities-toolkit/patch-post-content'  => true,
+			'npcink-abilities-toolkit/update-post-blocks'  => true,
+		);
+
+		foreach ( $write_actions as $action_index => $action ) {
+			if ( ! is_array( $action ) ) {
+				return new WP_Error(
+					'npcink_governance_core_article_optimization_action_invalid',
+					__( 'Article optimization write actions must be objects.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+
+			$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
+			if ( ! isset( $allowed_targets[ $target_ability_id ] ) ) {
+				return new WP_Error(
+					'npcink_governance_core_article_optimization_target_rejected',
+					__( 'Article optimization apply plans may target only reviewed post update actions.', 'npcink-governance-core' ),
+					array(
+						'status'            => 422,
+						'action_index'      => $action_index,
+						'target_ability_id' => $target_ability_id,
+					)
+				);
+			}
+
+			$input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+			if ( absint( $input['post_id'] ?? 0 ) !== $post_id ) {
+				return new WP_Error(
+					'npcink_governance_core_article_optimization_post_mismatch',
+					__( 'Article optimization write actions must target the plan post.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+
+			if ( true === (bool) ( $input['commit'] ?? false ) || false === (bool) ( $input['dry_run'] ?? true ) ) {
+				return new WP_Error(
+					'npcink_governance_core_article_optimization_commit_rejected',
+					__( 'Article optimization write actions must remain dry-run and must not request commit.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Validates the P0 article writing plan contract.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -1395,6 +1496,28 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Builds preview context for existing article optimization apply plans.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function article_optimization_preview( array $plan ): array {
+		$post    = is_array( $plan['post'] ?? null ) ? $plan['post'] : array();
+		$summary = is_array( $plan['summary'] ?? null ) ? $plan['summary'] : array();
+
+		return array(
+			'artifact_type'          => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
+			'version'                => absint( $plan['version'] ?? 0 ),
+			'post_id'                => absint( $post['post_id'] ?? 0 ),
+			'source_recipe_ref'      => sanitize_text_field( (string) ( $plan['source_recipe_ref'] ?? '' ) ),
+			'safe_apply_supported'   => array_values( array_map( 'sanitize_key', (array) ( $summary['safe_apply_supported'] ?? array() ) ) ),
+			'advisory_sections'      => array_values( array_map( 'sanitize_key', (array) ( $summary['advisory_sections'] ?? array() ) ) ),
+			'final_write_path'       => 'core_proposal_required',
+			'direct_wordpress_write' => false,
+		);
+	}
+
+	/**
 	 * Builds preview context for Site Knowledge review plans.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -1544,6 +1667,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'npcink-abilities-toolkit/build-media-rename-plan' === $plan_ability_id ) {
 			$preview['media_rename'] = $this->media_rename_preview( $plan );
+		}
+		if ( 'npcink-abilities-toolkit/build-article-optimization-apply-plan' === $plan_ability_id ) {
+			$preview['article_optimization'] = $this->article_optimization_preview( $plan );
 		}
 		if ( 'npcink-toolbox/build-site-knowledge-review-plan' === $plan_ability_id ) {
 			$preview['site_knowledge_review'] = $this->site_knowledge_review_preview( $plan );

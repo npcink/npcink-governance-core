@@ -15,6 +15,7 @@ an execution bridge.
 - `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-optimization-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
+- `npcink-abilities-toolkit/build-article-optimization-apply-plan`
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
@@ -91,6 +92,26 @@ one draft-only `npcink-abilities-toolkit/create-draft` write action. The generat
 preserves `preview.article_workflow` for review. Core does not generate the
 article, run Toolbox tools, call Cloud, approve the proposal, or execute the
 draft write.
+
+`npcink-abilities-toolkit/build-article-optimization-apply-plan` is the bounded
+local handoff for the user intent "optimize this existing article" after a
+reviewed article optimization report already exists. It must return
+`artifact_type=article_optimization_apply_plan`, `requires_approval=true`,
+`dry_run=true`, `commit_execution=false`, `direct_wordpress_write=false`, and a
+small set of reviewed `write_actions` for the same target post. Core currently
+accepts only allowlisted post update targets such as
+`npcink-abilities-toolkit/update-post`, `npcink-abilities-toolkit/set-post-seo-meta`,
+`npcink-abilities-toolkit/patch-post-content`, and
+`npcink-abilities-toolkit/update-post-blocks`; each action must keep
+`dry_run=true`, `commit=false`, and the same `post_id` as the plan.
+
+The generated proposal preserves `preview.article_optimization` with the source
+recipe ref, safe apply summary, advisory sections, and
+`direct_wordpress_write=false`. Core does not produce optimization
+recommendations, rewrite article content, approve the proposal, or execute the
+post update. Adapter or the local host still performs final per-action
+allowlist, schema, idempotency, and execution checks after Core approval and
+commit preflight.
 
 Article writing is a local Ability recipe, not a Cloud writing feature. Cloud
 must not produce article drafts, `article_write_plan` candidates, or bulk

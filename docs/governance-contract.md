@@ -74,6 +74,7 @@ Core may consume these read-only planning ability outputs:
 - `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-optimization-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
+- `npcink-abilities-toolkit/build-article-optimization-apply-plan`
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
@@ -148,6 +149,16 @@ single `media_rename_plan` for exactly one attachment and one
 `npcink-abilities-toolkit/rename-media-file` action with a reviewed `target_file_name`.
 Filename generation rules stay in OpenClaw/local product policy; Core stores
 proposal truth and approval context only.
+
+The article optimization apply handoff is the governed shape for the user
+intent "optimize this existing article" after the local Toolkit has produced a
+reviewed optimization plan. Core accepts
+`npcink-abilities-toolkit/build-article-optimization-apply-plan` only as an
+`article_optimization_apply_plan` for exactly one post, with a bounded set of
+dry-run, non-commit post update actions that all target that same post. Core
+stores proposal truth and `preview.article_optimization` only; it does not
+generate recommendations, rewrite content, approve proposals, or execute
+WordPress writes.
 
 Plans may request one review item for a group of generated actions with either
 `batch_approval=true` or `proposal_mode=batch`. Core then creates one

@@ -349,6 +349,7 @@ abilities:
 - `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-optimization-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
+- `npcink-abilities-toolkit/build-article-optimization-apply-plan`
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
@@ -425,6 +426,17 @@ contain exactly one dry-run `npcink-abilities-toolkit/rename-media-file` action 
 reviewed `target_file_name`. The action may preserve expected current path,
 MIME type, MD5, SHA256, conflict mode, and backup suffix guards for the host
 executor.
+
+For `npcink-abilities-toolkit/build-article-optimization-apply-plan`, the plan
+must declare `artifact_type=article_optimization_apply_plan`, target exactly one
+post through `post.post_id`, and contain a bounded set of reviewed post update
+actions for that same post. Core accepts only dry-run, non-commit actions
+targeting `npcink-abilities-toolkit/update-post`,
+`npcink-abilities-toolkit/set-post-seo-meta`,
+`npcink-abilities-toolkit/patch-post-content`, or
+`npcink-abilities-toolkit/update-post-blocks`. The route creates pending Core
+proposals only; it does not optimize the article, approve the proposal, execute
+the write, or mutate WordPress content.
 
 Each accepted independent `write_action` becomes a separate pending proposal by
 default. If the plan declares `batch_approval=true` or

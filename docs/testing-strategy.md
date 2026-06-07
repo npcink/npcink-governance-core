@@ -95,6 +95,10 @@ Use it for behavior that requires real WordPress:
 - bounded media rename plan contracts for `npcink-abilities-toolkit/build-media-rename-plan`,
   including one reviewed `npcink-abilities-toolkit/rename-media-file` action and fail-closed
   rejection of missing target filename or multi-attachment cases;
+- existing article optimization plan intake for
+  `npcink-abilities-toolkit/build-article-optimization-apply-plan`, including a reviewed
+  excerpt proposal, `preview.article_optimization`, approval/preflight, and no
+  post excerpt mutation;
 - governance operability coverage, including proposal `audit_timeline`,
   commit-preflight `correlation_id`, app `scope_decision`, and audit filters
   for ability, app, key, caller type, and correlation id;

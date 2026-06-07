@@ -1028,6 +1028,7 @@ foreach (
 		'npcink-abilities-toolkit/build-media-settings-reference-repair-plan',
 		'npcink-abilities-toolkit/build-media-optimization-plan',
 		'npcink-abilities-toolkit/build-media-rename-plan',
+		'npcink-abilities-toolkit/build-article-optimization-apply-plan',
 		'npcink-toolbox/build-article-write-plan',
 		'npcink-toolbox/build-article-batch-write-plan',
 		'npcink-toolbox/build-article-media-batch-write-plan',
@@ -1043,17 +1044,20 @@ foreach (
 		'validate_site_knowledge_review_plan_contract',
 		'validate_media_optimization_plan_contract',
 		'validate_media_rename_plan_contract',
+		'validate_article_optimization_apply_plan_contract',
 		'article_workflow_preview',
 		'article_batch_workflow_preview',
 		'article_media_batch_workflow_preview',
 		'media_optimization_preview',
 		'media_optimization_proposal_summary',
 		'media_rename_preview',
+		'article_optimization_preview',
 		'site_knowledge_review_preview',
 		'article_workflow_artifact_keys',
 		'article_write_plan',
 		'article_batch_write_plan',
 		'article_media_batch_write_plan',
+		'article_optimization_apply_plan',
 		'image_candidate_adoption_plan',
 		'site_knowledge_review_plan',
 		'image_candidate.v1',
@@ -1135,9 +1139,12 @@ npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'blocked draft-review proposal' ), 'Plan-to-proposal docs keep Site Knowledge review non-executable before human input.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-media-optimization-plan' ), 'Plan-to-proposal docs include the media optimization handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-media-rename-plan' ), 'Plan-to-proposal docs include the media rename handoff.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-article-optimization-apply-plan' ), 'Plan-to-proposal docs include the article optimization apply handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_workflow' ), 'Plan-to-proposal docs require article workflow preview evidence.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_optimization' ), 'Plan-to-proposal docs require article optimization preview evidence.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'proposal_mode=batch' ), 'Plan-to-proposal docs require explicit batch proposal mode where needed.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'optimize this media item' ), 'Plan-to-proposal docs define media optimization as a user intent.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'optimize this existing article' ), 'Plan-to-proposal docs define article optimization as an existing-content intent.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'target_file_name' ), 'Plan-to-proposal docs require reviewed media rename target filename.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'Article writing is a local Ability recipe' ), 'Plan-to-proposal docs treat article writing as local Ability recipe.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'must not produce article drafts' ), 'Plan-to-proposal docs prohibit Cloud draft generation.' );

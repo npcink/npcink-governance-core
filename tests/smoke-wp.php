@@ -644,6 +644,7 @@ function npcink_governance_core_smoke_assert_plan_bridge_contract( array $items_
 			'npcink-abilities-toolkit/build-content-inventory-fix-plan',
 			'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan',
 			'npcink-abilities-toolkit/build-media-inventory-fix-plan',
+			'npcink-abilities-toolkit/build-article-optimization-apply-plan',
 		) as $ability_id
 	) {
 		npcink_governance_core_smoke_assert( isset( $items_by_id[ $ability_id ] ), $ability_id . ' is discoverable for plan-to-proposal intake' );
@@ -1378,6 +1379,61 @@ npcink_governance_core_smoke_assert_plan_proposal_shape( $content_plan_proposal,
 npcink_governance_core_smoke_assert( isset( $content_plan_proposal['preview']['before'] ), 'content fix plan proposal preview includes before' );
 npcink_governance_core_smoke_assert( isset( $content_plan_proposal['preview']['after_suggestion'] ), 'content fix plan proposal preview includes after_suggestion' );
 npcink_governance_core_smoke_approve_and_preflight_plan_proposal( (string) ( $content_plan_proposal['proposal_id'] ?? '' ) );
+
+$article_optimization_title = 'Core Article Optimization Candidate ' . $npcink_governance_core_smoke_run_id;
+$article_optimization_post_id = wp_insert_post(
+	array(
+		'post_title'   => $article_optimization_title,
+		'post_content' => 'This draft article has enough context for a governed excerpt optimization smoke test.',
+		'post_excerpt' => 'Original smoke excerpt.',
+		'post_status'  => 'draft',
+		'post_type'    => 'post',
+	),
+	true
+);
+npcink_governance_core_smoke_assert( ! is_wp_error( $article_optimization_post_id ) && (int) $article_optimization_post_id > 0, 'article optimization fixture post is created' );
+npcink_governance_core_smoke_register_post_fixture( (int) $article_optimization_post_id );
+$article_optimization_excerpt = 'Reviewed smoke excerpt for Core proposal intake.';
+$article_optimization_plan_input = array(
+	'post'              => array(
+		'post_id' => (int) $article_optimization_post_id,
+		'title'   => $article_optimization_title,
+		'status'  => 'draft',
+		'excerpt' => 'Original smoke excerpt.',
+	),
+	'report'            => array(
+		'summary' => array(
+			'status'                => 'needs_attention',
+			'high_priority_count'   => 1,
+			'total_recommendations' => 2,
+		),
+		'geo'     => array(
+			'summary' => array(
+				'faq_candidate_count' => 1,
+			),
+		),
+	),
+	'optimization_plan' => array(
+		'excerpt_mode' => 'apply',
+		'seo_mode'     => 'suggest',
+	),
+	'generated_excerpt' => array(
+		'proposal_text' => $article_optimization_excerpt,
+	),
+);
+$article_optimization_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-article-optimization-apply-plan', $article_optimization_plan_input );
+$article_optimization_result = npcink_governance_core_smoke_create_proposals_from_plan( 'npcink-abilities-toolkit/build-article-optimization-apply-plan', $article_optimization_plan, $article_optimization_plan_input );
+npcink_governance_core_smoke_assert( 1 === (int) ( $article_optimization_result['proposal_count'] ?? 0 ), 'article optimization apply plan generates one Core proposal' );
+$article_optimization_proposal = is_array( $article_optimization_result['proposals'][0] ?? null ) ? $article_optimization_result['proposals'][0] : array();
+npcink_governance_core_smoke_assert_plan_proposal_shape( $article_optimization_proposal, 'npcink-abilities-toolkit/update-post', true );
+npcink_governance_core_smoke_assert( $article_optimization_excerpt === (string) ( $article_optimization_proposal['input']['excerpt'] ?? '' ), 'article optimization proposal preserves reviewed excerpt' );
+npcink_governance_core_smoke_assert( is_array( $article_optimization_proposal['preview']['article_optimization'] ?? null ), 'article optimization proposal preserves optimization preview context' );
+npcink_governance_core_smoke_assert( 'workflow/wordpress_article_optimization' === (string) ( $article_optimization_proposal['preview']['article_optimization']['source_recipe_ref'] ?? '' ), 'article optimization preview preserves recipe ref' );
+npcink_governance_core_smoke_assert( in_array( 'update_excerpt', (array) ( $article_optimization_proposal['preview']['article_optimization']['safe_apply_supported'] ?? array() ), true ), 'article optimization preview records safe excerpt apply support' );
+npcink_governance_core_smoke_assert( false === (bool) ( $article_optimization_proposal['preview']['article_optimization']['direct_wordpress_write'] ?? true ), 'article optimization preview keeps direct WordPress writes disabled' );
+npcink_governance_core_smoke_assert( 'Original smoke excerpt.' === (string) get_post_field( 'post_excerpt', (int) $article_optimization_post_id ), 'article optimization from-plan intake does not mutate the post excerpt' );
+npcink_governance_core_smoke_approve_and_preflight_plan_proposal( (string) ( $article_optimization_proposal['proposal_id'] ?? '' ) );
+npcink_governance_core_smoke_assert( 'Original smoke excerpt.' === (string) get_post_field( 'post_excerpt', (int) $article_optimization_post_id ), 'article optimization preflight does not mutate the post excerpt' );
 
 $cleanup_pattern = 'Core Plan Bridge Test Cleanup Candidate ' . $npcink_governance_core_smoke_run_id;
 $cleanup_post_id = wp_insert_post(
