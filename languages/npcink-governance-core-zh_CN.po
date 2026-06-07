@@ -318,10 +318,6 @@ msgstr "决定"
 msgid "No active proposals. Expired items are moved out of the review queue automatically."
 msgstr "没有活动提案。过期项目会自动移出审核队列。"
 
-#: includes/Admin/Admin_Page.php:506
-msgid "Review this WordPress change before it can run."
-msgstr "请在这项 WordPress 更改执行前进行审核。"
-
 #: includes/Admin/Admin_Page.php:651
 msgid "Proposal ID:"
 msgstr "提案 ID："
@@ -358,10 +354,13 @@ msgstr "批量拒绝备注"
 msgid "Rejection note"
 msgstr "拒绝备注"
 
-#: includes/Admin/Admin_Page.php:674
-#: includes/Admin/Admin_Page.php:891
-msgid "Superseded by batch cleanup proposal."
-msgstr "已被批量清理提案取代。"
+#: includes/Admin/Admin_Page.php:492
+msgid "Describe why these requests should be rejected."
+msgstr "填写拒绝这些请求的原因。"
+
+#: includes/Admin/Admin_Page.php:731
+msgid "Rejected from bulk review."
+msgstr "已从批量审核中拒绝。"
 
 #: includes/Admin/Admin_Page.php:677
 msgid "Reject selected"
