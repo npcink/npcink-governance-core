@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-06-07 — Release-facing admin activity log tightened
+
+- **Module**: Core admin activity log and navigation URLs.
+- **Status**: The audit/admin surface now uses release-facing labels and short
+  read-only admin URLs.
+- **Completed**:
+  - Renamed the full audit tab surface to `Activity Log`.
+  - Removed automatic nonce parameters from read-only admin GET navigation,
+    including tab, detail, pagination, archive, and filter links.
+  - Kept nonces on POST forms that change approval, lifecycle, policy, or
+    app-key state.
+  - Reworked the activity table to lead with user-facing activity labels,
+    request ID, and compact context instead of raw event/ability columns.
+  - Moved event, ability, client, caller, and correlation lookup into a
+    collapsed technical filter section.
+  - Synced admin docs, static contracts, and Chinese translation catalogs.
+- **Verification**:
+  - `msgfmt --check --check-format -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `composer test:all`
+  - `composer smoke:wp`
+- **Boundary**:
+  - Admin presentation and read-only navigation only. Core remains proposal,
+    approval/rejection, preflight, and audit truth; no ability execution,
+    workflow runtime, provider settings, or product workflow ownership was
+    added.
+
 ## 2026-06-07 — Review queue UI reapplied to active local branch
 
 - **Module**: Core admin review queue.

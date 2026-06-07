@@ -79,16 +79,17 @@ request still needs a decision. Reopening records `proposal.reopened`; archiving
 records `proposal.archived`. None of these lifecycle transitions execute an
 ability or final WordPress mutation.
 
-### Governance Audit Admin View
+### Activity Log Admin View
 
 `Npcink AI -> Core` keeps recent activity on the default review workbench and
-links to a dedicated `Governance Audit` view for full inspection. It is an
-operator view over Core audit records, not an AI request log viewer.
+links to a dedicated `Activity Log` view for full inspection. It is an operator
+view over Core audit records, not an AI request log viewer.
 
 The default view shows one latest recent activity row and links to the full
-audit instead of rendering another audit table on the review workbench. The
-full audit view keeps low-value read/list events hidden by default and keeps
-the advanced audit filter disclosure for:
+activity log instead of rendering another audit table on the review workbench.
+The full activity view keeps low-value read/list events hidden by default,
+shows user-facing activity labels in the main table, and keeps technical
+filters collapsed for:
 
 - proposal id;
 - event name;
@@ -98,6 +99,10 @@ the advanced audit filter disclosure for:
 - correlation id;
 - limit.
 - include read events.
+
+Read-only admin navigation uses short GET URLs without nonce parameters.
+Nonces stay on POST forms that change approval, lifecycle, policy, or app-key
+state.
 
 The result table shows time, event, proposal link, actor, ability, and compact
 detail metadata. Empty app, scope, and correlation fields are omitted instead

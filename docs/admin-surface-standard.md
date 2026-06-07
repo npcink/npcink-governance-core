@@ -13,7 +13,7 @@ decisions, inspect commit-preflight readiness, and trace Core audit evidence.
 The page is split into focused admin tabs:
 
 - `Review Queue`;
-- `Governance Audit`;
+- `Activity Log`;
 - `Expired / Archived`.
 
 The default `Review Queue` tab must stay focused on the current governance
@@ -28,7 +28,7 @@ queue:
 - stale proposals available from the expired/archive tab;
 - `Development Approval Policy` disclosure for the lightweight manual,
   dry-run guarded, and local guarded policy modes;
-- one-line recent activity summary with a link to the full audit;
+- one-line recent activity summary with a link to the activity log;
 - `Advanced Access` disclosure for low-frequency client access key management.
 
 ## Detail Views
@@ -42,10 +42,9 @@ Proposal detail should be a focused review surface:
 - proposal audit timeline behind a disclosure.
 - lifecycle controls for expired or archived proposals.
 
-Full `Governance Audit` and `Expired / Archived` belong in dedicated tabs, not
-inline on the default workbench. Long lists in `Review Queue`,
-`Governance Audit`, `Expired / Archived`, and advanced app-key management must
-be paginated.
+Full `Activity Log` and `Expired / Archived` belong in dedicated tabs, not
+inline on the default workbench. Long lists in `Review Queue`, `Activity Log`,
+`Expired / Archived`, and advanced app-key management must be paginated.
 
 Core app-key creation is a low-frequency fallback action. It should stay behind
 the default workbench's `Advanced Access` disclosure and then behind an
@@ -60,10 +59,16 @@ Adapter/OpenClaw task status, provider request logs, audit filters, and
 proposal detail links. OpenClaw onboarding, client export, and single
 approve-and-execute product flow still belong in Magick AI Adapter.
 
-The full audit table should suppress low-value read/list events by default and
-must not render placeholder-only columns such as `- / -`. Optional app, scope,
-and correlation metadata belongs in a compact detail cell and should appear
-only when it exists.
+The full activity table should suppress low-value read/list events by default,
+use user-facing activity labels instead of raw event names in the main column,
+and must not render placeholder-only columns such as `- / -`. Optional actor,
+ability, app, scope, and correlation metadata belongs in a compact context cell
+or technical filter disclosure and should appear only when it exists.
+
+Admin tab, pagination, detail, archive, and filter links are read-only GET
+navigation and must not append a nonce to the URL. Nonces belong on POST forms
+that change state, such as approval, rejection, lifecycle actions, policy
+updates, app-key creation, and app-key revocation.
 
 ## Time Display
 

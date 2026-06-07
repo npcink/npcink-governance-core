@@ -110,10 +110,10 @@ msgstr "未找到所选提案。"
 msgid "Review Queue"
 msgstr "审核队列"
 
-#: includes/Admin/Admin_Page.php:357
-#: includes/Admin/Admin_Page.php:1741
-msgid "Governance Audit"
-msgstr "治理审计"
+#: includes/Admin/Admin_Page.php:339
+#: includes/Admin/Admin_Page.php:1598
+msgid "Activity Log"
+msgstr "活动记录"
 
 #: includes/Admin/Admin_Page.php:361
 #: includes/Admin/Admin_Page.php:1193
@@ -865,17 +865,17 @@ msgstr "详情"
 msgid "No audit events recorded for this proposal yet."
 msgstr "此提案尚无审计事件记录。"
 
-#: includes/Admin/Admin_Page.php:1742
-msgid "Recent Core governance events. AI Request Logs remain separate; correlate them with proposal_id or correlation_id."
-msgstr "最近的 Core 治理事件。AI Request Logs 保持独立；可用 proposal_id 或 correlation_id 进行关联。"
+#: includes/Admin/Admin_Page.php:1599
+msgid "Recent approval and access activity. Technical filters are available when you need to trace a specific request."
+msgstr "最近的审批和访问活动。需要追踪特定请求时，可展开技术筛选。"
 
-#: includes/Admin/Admin_Page.php:1746
-msgid "Advanced audit filters"
-msgstr "高级审计筛选"
+#: includes/Admin/Admin_Page.php:1603
+msgid "Technical filters"
+msgstr "技术筛选"
 
-#: includes/Admin/Admin_Page.php:1747
-msgid "Narrow by proposal, event, ability, app, caller, or correlation."
-msgstr "按提案、事件、能力、应用、调用方或关联 ID 缩小范围。"
+#: includes/Admin/Admin_Page.php:1604
+msgid "Find a request by ID, event name, ability, client, or correlation ID."
+msgstr "按请求 ID、事件名、能力、客户端或关联 ID 查找。"
 
 #: includes/Admin/Admin_Page.php:1764
 msgid "Ability ID"
@@ -897,25 +897,101 @@ msgstr "读取事件"
 msgid "Include list/view noise events"
 msgstr "包含列表/查看噪声事件"
 
-#: includes/Admin/Admin_Page.php:1795
-msgid "Filter Audit"
-msgstr "筛选审计"
+#: includes/Admin/Admin_Page.php:1651
+msgid "Apply filters"
+msgstr "应用筛选"
 
-#: includes/Admin/Admin_Page.php:1796
-msgid "Clear"
-msgstr "清除"
+#: includes/Admin/Admin_Page.php:1652
+msgid "Reset"
+msgstr "重置"
 
-#: includes/Admin/Admin_Page.php:1814
-msgid "No governance audit events match the current filters."
-msgstr "没有治理审计事件匹配当前筛选条件。"
+#: includes/Admin/Admin_Page.php:1663
+msgid "Activity"
+msgstr "活动"
 
-#: includes/Admin/Admin_Page.php:1834
-msgid "Core event"
-msgstr "Core 事件"
+#: includes/Admin/Admin_Page.php:1665
+msgid "Context"
+msgstr "上下文"
+
+#: includes/Admin/Admin_Page.php:1668
+msgid "No activity matches the current filters."
+msgstr "没有活动匹配当前筛选条件。"
+
+#. translators: %s: actor id.
+#: includes/Admin/Admin_Page.php:1723
+#, php-format
+msgid "Actor: %s"
+msgstr "执行者：%s"
+
+#. translators: %s: ability id.
+#: includes/Admin/Admin_Page.php:1734
+#, php-format
+msgid "Ability: %s"
+msgstr "能力：%s"
 
 #: includes/Admin/Admin_Page.php:1862
 msgid "System event"
 msgstr "系统事件"
+
+#: includes/Admin/Admin_Page.php:1801
+msgid "Request created"
+msgstr "请求已创建"
+
+#: includes/Admin/Admin_Page.php:1802
+msgid "Policy checked"
+msgstr "策略已检查"
+
+#: includes/Admin/Admin_Page.php:1803
+msgid "Request auto-approved"
+msgstr "请求已自动批准"
+
+#: includes/Admin/Admin_Page.php:1804
+msgid "Request approved"
+msgstr "请求已批准"
+
+#: includes/Admin/Admin_Page.php:1805
+msgid "Request rejected"
+msgstr "请求已拒绝"
+
+#: includes/Admin/Admin_Page.php:1806
+msgid "Request expired"
+msgstr "请求已过期"
+
+#: includes/Admin/Admin_Page.php:1807
+msgid "Request archived"
+msgstr "请求已归档"
+
+#: includes/Admin/Admin_Page.php:1808
+msgid "Request reopened"
+msgstr "请求已重新打开"
+
+#: includes/Admin/Admin_Page.php:1809
+msgid "Duplicate request reused"
+msgstr "已复用重复请求"
+
+#: includes/Admin/Admin_Page.php:1810
+msgid "Request quota blocked"
+msgstr "请求因配额被阻止"
+
+#: includes/Admin/Admin_Page.php:1811
+msgid "Commit preflight checked"
+msgstr "提交预检已检查"
+
+#: includes/Admin/Admin_Page.php:1812
+msgid "Client access created"
+msgstr "客户端访问已创建"
+
+#: includes/Admin/Admin_Page.php:1813
+msgid "Client access revoked"
+msgstr "客户端访问已撤销"
+
+#: includes/Admin/Admin_Page.php:1814
+msgid "Client access denied"
+msgstr "客户端访问被拒绝"
+
+#: includes/Admin/Admin_Page.php:1815
+msgid "Client rate limited"
+msgstr "客户端已被限流"
 
 #. translators: 1: app id, 2: caller type.
 #: includes/Admin/Admin_Page.php:1870

@@ -112,9 +112,9 @@ msgstr ""
 msgid "Review Queue"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:357
-#: includes/Admin/Admin_Page.php:1741
-msgid "Governance Audit"
+#: includes/Admin/Admin_Page.php:339
+#: includes/Admin/Admin_Page.php:1598
+msgid "Activity Log"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:361
@@ -867,16 +867,16 @@ msgstr ""
 msgid "No audit events recorded for this proposal yet."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1742
-msgid "Recent Core governance events. AI Request Logs remain separate; correlate them with proposal_id or correlation_id."
+#: includes/Admin/Admin_Page.php:1599
+msgid "Recent approval and access activity. Technical filters are available when you need to trace a specific request."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1746
-msgid "Advanced audit filters"
+#: includes/Admin/Admin_Page.php:1603
+msgid "Technical filters"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1747
-msgid "Narrow by proposal, event, ability, app, caller, or correlation."
+#: includes/Admin/Admin_Page.php:1604
+msgid "Find a request by ID, event name, ability, client, or correlation ID."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:1764
@@ -899,24 +899,100 @@ msgstr ""
 msgid "Include list/view noise events"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1795
-msgid "Filter Audit"
+#: includes/Admin/Admin_Page.php:1651
+msgid "Apply filters"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1796
-msgid "Clear"
+#: includes/Admin/Admin_Page.php:1652
+msgid "Reset"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1814
-msgid "No governance audit events match the current filters."
+#: includes/Admin/Admin_Page.php:1663
+msgid "Activity"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1834
-msgid "Core event"
+#: includes/Admin/Admin_Page.php:1665
+msgid "Context"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1668
+msgid "No activity matches the current filters."
+msgstr ""
+
+#. translators: %s: actor id.
+#: includes/Admin/Admin_Page.php:1723
+#, php-format
+msgid "Actor: %s"
+msgstr ""
+
+#. translators: %s: ability id.
+#: includes/Admin/Admin_Page.php:1734
+#, php-format
+msgid "Ability: %s"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:1862
 msgid "System event"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1801
+msgid "Request created"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1802
+msgid "Policy checked"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1803
+msgid "Request auto-approved"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1804
+msgid "Request approved"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1805
+msgid "Request rejected"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1806
+msgid "Request expired"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1807
+msgid "Request archived"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1808
+msgid "Request reopened"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1809
+msgid "Duplicate request reused"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1810
+msgid "Request quota blocked"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1811
+msgid "Commit preflight checked"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1812
+msgid "Client access created"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1813
+msgid "Client access revoked"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1814
+msgid "Client access denied"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1815
+msgid "Client rate limited"
 msgstr ""
 
 #. translators: 1: app id, 2: caller type.

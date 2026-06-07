@@ -465,7 +465,7 @@ foreach (
 		'proposal audit timelines',
 		'audit filters',
 		'scope_decision',
-		'Governance Audit',
+		'Activity Log',
 		'Core App Keys',
 		'AI Request Logs remain owned by the',
 		'`proposal_id` or `correlation_id`',
@@ -1394,7 +1394,7 @@ foreach (
 		'Review Queue',
 		'pending request list',
 		'technical details',
-		'Governance Audit',
+		'Activity Log',
 		'Expired / Archived',
 		'Development Approval Policy',
 		'Advanced Access',
@@ -1408,6 +1408,7 @@ foreach (
 		'WordPress site timezone',
 		'Y-m-d H:i:s',
 		'Do not print raw UTC strings',
+		'must not append a nonce to the URL',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $admin_surface_standard, $required ), 'Admin surface standard documents Core page boundary: ' . $required );
@@ -1421,6 +1422,8 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'admin_post_npcink
 npcink_governance_core_assert( false !== strpos( $admin_page, 'admin_post_npcink_governance_core_create_app_key' ), 'Admin page registers app-key creation handler.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'admin_post_npcink_governance_core_revoke_app_key' ), 'Admin page registers app-key revocation handler.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'check_admin_referer' ), 'Admin proposal actions enforce nonce.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'ADMIN_REQUEST_NONCE' ), 'Admin read-only GET navigation does not add nonce parameters to release URLs.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'has_valid_admin_request_nonce' ), 'Admin GET filters rely on capability checks and sanitization instead of URL nonce gating.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "current_user_can( 'manage_options' )" ), 'Admin proposal actions enforce capability.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "DATETIME_DISPLAY_FORMAT = 'Y-m-d H:i:s'" ), 'Admin page standardizes visible datetime format.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'display_datetime' ), 'Admin page centralizes visible datetime formatting.' );
@@ -1468,16 +1471,17 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Recent Activity' 
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-secondary-row' ), 'Admin default page renders recent activity as a one-line secondary row.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, '$events = $this->audit->list_recent( 1 );' ), 'Admin default page limits recent activity to the latest event.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Latest Core governance events. Full audit is in its own tab.' ), 'Admin default page points detailed activity to the audit tab.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Governance Audit' ), 'Admin page exposes a full governance audit view.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Activity Log' ), 'Admin page exposes a release-facing activity log view.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'Advanced: Core App Keys' ), 'Admin default page no longer folds app-key management inline.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Manage Core app keys' ), 'Admin default page exposes app-key management as a low-frequency action.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Advanced audit filters' ), 'Admin page folds detailed audit filters into an advanced disclosure.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Technical filters' ), 'Admin page folds detailed audit filters into a technical disclosure.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_include_read_events' ), 'Admin audit hides read noise by default with an opt-in filter.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_detail' ), 'Admin audit combines optional app/scope/correlation metadata into a detail cell.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_event_label' ), 'Admin audit renders user-facing activity labels instead of leading with raw event names.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_filters_from_request' ), 'Admin page reads governance audit filters.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_proposal_id' ), 'Admin page exposes proposal audit filter.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_correlation_id' ), 'Admin page exposes correlation audit filter.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'AI Request Logs remain separate' ), 'Admin page separates Core audit from AI Request Logs.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'AI Request Logs remain separate' ), 'Admin activity log does not lead with developer log-correlation copy.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Productized OpenClaw setup belongs in a trusted adapter' ), 'Admin page avoids presenting Core as the OpenClaw product entry point.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'Environment template' ), 'Admin default page no longer exposes an env template.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Create Core App Key' ), 'Admin page labels key creation as Core credential management.' );

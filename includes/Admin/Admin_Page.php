@@ -30,8 +30,6 @@ final class Admin_Page {
 	const AUDIT_PAGE_SIZE   = 25;
 	const APP_KEY_PAGE_SIZE = 10;
 	const DATETIME_DISPLAY_FORMAT = 'Y-m-d H:i:s';
-	const ADMIN_REQUEST_ACTION = 'npcink_governance_core_admin_request';
-	const ADMIN_REQUEST_NONCE  = 'npcink_governance_core_nonce';
 
 	/**
 	 * Ability adapter.
@@ -338,7 +336,7 @@ final class Admin_Page {
 				'url'   => $this->admin_url(),
 			),
 			'audit'    => array(
-				'label' => __( 'Governance Audit', 'npcink-governance-core' ),
+				'label' => __( 'Activity Log', 'npcink-governance-core' ),
 				'url'   => $this->view_url( 'audit' ),
 			),
 			'archive'  => array(
@@ -1597,18 +1595,17 @@ final class Admin_Page {
 	 */
 	private function render_governance_audit( array $events, array $filters, int $total ): void {
 		?>
-		<h2><?php echo esc_html__( 'Governance Audit', 'npcink-governance-core' ); ?></h2>
-		<p><?php echo esc_html__( 'Recent Core governance events. AI Request Logs remain separate; correlate them with proposal_id or correlation_id.', 'npcink-governance-core' ); ?></p>
+		<h2><?php echo esc_html__( 'Activity Log', 'npcink-governance-core' ); ?></h2>
+		<p><?php echo esc_html__( 'Recent approval and access activity. Technical filters are available when you need to trace a specific request.', 'npcink-governance-core' ); ?></p>
 		<p><?php echo esc_html( $this->pagination_summary( $total, (int) $filters['page'], (int) $filters['limit'] ) ); ?></p>
-		<details style="max-width: 1100px; margin: 0 0 12px;" <?php echo $this->has_active_audit_filters( $filters ) ? 'open' : ''; ?>>
-			<summary style="cursor: pointer;">
-				<strong><?php echo esc_html__( 'Advanced audit filters', 'npcink-governance-core' ); ?></strong>
-				<span style="color: #646970;"><?php echo esc_html__( 'Narrow by proposal, event, ability, app, caller, or correlation.', 'npcink-governance-core' ); ?></span>
+		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide" <?php echo $this->has_active_audit_filters( $filters ) ? 'open' : ''; ?>>
+			<summary>
+				<strong><?php echo esc_html__( 'Technical filters', 'npcink-governance-core' ); ?></strong>
+				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Find a request by ID, event name, ability, client, or correlation ID.', 'npcink-governance-core' ); ?></span>
 			</summary>
-			<form method="get" style="margin-top: 8px;">
+			<form class="npcink-governance-core-form-spaced" method="get">
 				<input type="hidden" name="page" value="npcink-governance-core" />
 				<input type="hidden" name="view" value="audit" />
-				<input type="hidden" name="<?php echo esc_attr( self::ADMIN_REQUEST_NONCE ); ?>" value="<?php echo esc_attr( wp_create_nonce( self::ADMIN_REQUEST_ACTION ) ); ?>" />
 				<table class="form-table" role="presentation">
 					<tbody>
 						<tr>
@@ -1651,8 +1648,8 @@ final class Admin_Page {
 					</tbody>
 				</table>
 				<p>
-					<button type="submit" class="button"><?php echo esc_html__( 'Filter Audit', 'npcink-governance-core' ); ?></button>
-					<a class="button button-link" href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Clear', 'npcink-governance-core' ); ?></a>
+					<button type="submit" class="button"><?php echo esc_html__( 'Apply filters', 'npcink-governance-core' ); ?></button>
+					<a class="button button-link" href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Reset', 'npcink-governance-core' ); ?></a>
 				</p>
 			</form>
 		</details>
@@ -1660,28 +1657,25 @@ final class Admin_Page {
 			<thead>
 				<tr>
 					<th scope="col"><?php echo esc_html__( 'Time', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Event', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Proposal', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Actor', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Ability', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Detail', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Activity', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Request', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Context', 'npcink-governance-core' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php if ( empty( $events ) ) : ?>
 					<tr>
-						<td colspan="6"><?php echo esc_html__( 'No governance audit events match the current filters.', 'npcink-governance-core' ); ?></td>
+						<td colspan="4"><?php echo esc_html__( 'No activity matches the current filters.', 'npcink-governance-core' ); ?></td>
 					</tr>
 				<?php endif; ?>
 				<?php foreach ( $events as $event ) : ?>
 					<?php
 					$metadata       = is_array( $event['metadata'] ?? null ) ? $event['metadata'] : array();
 					$proposal_id    = (string) ( $event['proposal_id'] ?? '' );
-					$ability_id     = (string) ( $metadata['ability_id'] ?? '' );
 					?>
 					<tr>
 						<td><?php echo esc_html( $this->display_datetime( (string) $event['created_at'] ) ); ?></td>
-						<td><code><?php echo esc_html( (string) $event['event_name'] ); ?></code></td>
+						<td><?php echo esc_html( $this->audit_event_label( (string) $event['event_name'] ) ); ?></td>
 						<td>
 							<?php if ( '' !== $proposal_id ) : ?>
 								<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
@@ -1689,8 +1683,6 @@ final class Admin_Page {
 								<?php echo esc_html__( 'System', 'npcink-governance-core' ); ?>
 							<?php endif; ?>
 						</td>
-						<td><?php echo esc_html( (string) $event['actor_id'] ); ?></td>
-						<td><?php echo '' !== $ability_id ? '<code>' . esc_html( $ability_id ) . '</code>' : esc_html__( 'Core event', 'npcink-governance-core' ); ?></td>
 						<td><?php $this->render_audit_detail( $event ); ?></td>
 					</tr>
 				<?php endforeach; ?>
@@ -1710,6 +1702,8 @@ final class Admin_Page {
 		$metadata       = is_array( $event['metadata'] ?? null ) ? $event['metadata'] : array();
 		$auth           = is_array( $metadata['auth'] ?? null ) ? $metadata['auth'] : array();
 		$proposal_id    = (string) ( $event['proposal_id'] ?? '' );
+		$actor_id       = (string) ( $event['actor_id'] ?? '' );
+		$ability_id     = (string) ( $metadata['ability_id'] ?? '' );
 		$app_id         = (string) ( $auth['app_id'] ?? '' );
 		$caller_type    = (string) ( $auth['caller_type'] ?? '' );
 		$scope          = (string) ( $auth['scope'] ?? '' );
@@ -1719,6 +1713,28 @@ final class Admin_Page {
 
 		if ( '' === $proposal_id ) {
 			$this->render_audit_badge( __( 'System event', 'npcink-governance-core' ) );
+			$has_detail = true;
+		}
+
+		if ( '' !== $actor_id ) {
+			$this->render_audit_badge(
+				sprintf(
+					/* translators: %s: actor id. */
+					__( 'Actor: %s', 'npcink-governance-core' ),
+					$actor_id
+				)
+			);
+			$has_detail = true;
+		}
+
+		if ( '' !== $ability_id ) {
+			$this->render_audit_badge(
+				sprintf(
+					/* translators: %s: ability id. */
+					__( 'Ability: %s', 'npcink-governance-core' ),
+					$ability_id
+				)
+			);
 			$has_detail = true;
 		}
 
@@ -1772,6 +1788,34 @@ final class Admin_Page {
 		?>
 		<code style="display: inline-block; margin: 0 4px 4px 0;"><?php echo esc_html( $label ); ?></code>
 		<?php
+	}
+
+	/**
+	 * Returns a user-facing audit event label.
+	 *
+	 * @param string $event_name Raw event name.
+	 * @return string
+	 */
+	private function audit_event_label( string $event_name ): string {
+		$labels = array(
+			'proposal.created'        => __( 'Request created', 'npcink-governance-core' ),
+			'proposal.policy_evaluated' => __( 'Policy checked', 'npcink-governance-core' ),
+			'proposal.auto_approved'  => __( 'Request auto-approved', 'npcink-governance-core' ),
+			'proposal.approved'       => __( 'Request approved', 'npcink-governance-core' ),
+			'proposal.rejected'       => __( 'Request rejected', 'npcink-governance-core' ),
+			'proposal.expired'        => __( 'Request expired', 'npcink-governance-core' ),
+			'proposal.archived'       => __( 'Request archived', 'npcink-governance-core' ),
+			'proposal.reopened'       => __( 'Request reopened', 'npcink-governance-core' ),
+			'proposal.deduplicated'   => __( 'Duplicate request reused', 'npcink-governance-core' ),
+			'proposal.quota_blocked'  => __( 'Request quota blocked', 'npcink-governance-core' ),
+			'commit.preflighted'      => __( 'Commit preflight checked', 'npcink-governance-core' ),
+			'app.created'             => __( 'Client access created', 'npcink-governance-core' ),
+			'app.revoked'             => __( 'Client access revoked', 'npcink-governance-core' ),
+			'app.scope_denied'        => __( 'Client access denied', 'npcink-governance-core' ),
+			'app.rate_limited'        => __( 'Client rate limited', 'npcink-governance-core' ),
+		);
+
+		return (string) ( $labels[ $event_name ] ?? $event_name );
 	}
 
 	/**
@@ -2156,8 +2200,7 @@ final class Admin_Page {
 		return add_query_arg(
 			array_merge(
 				array(
-					'page'                    => self::MENU_SLUG,
-					self::ADMIN_REQUEST_NONCE => wp_create_nonce( self::ADMIN_REQUEST_ACTION ),
+					'page' => self::MENU_SLUG,
 				),
 				$args
 			),
@@ -2166,63 +2209,37 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Returns whether the current admin query nonce is valid.
-	 *
-	 * @return bool
-	 */
-	private function has_valid_admin_request_nonce(): bool {
-		$nonce = filter_input( INPUT_GET, self::ADMIN_REQUEST_NONCE, FILTER_UNSAFE_RAW );
-		if ( ! is_string( $nonce ) || '' === $nonce ) {
-			return false;
-		}
-
-		return (bool) wp_verify_nonce( sanitize_text_field( $nonce ), self::ADMIN_REQUEST_ACTION );
-	}
-
-	/**
-	 * Returns sanitized text from a nonce-verified admin query arg.
+	 * Returns sanitized text from an admin query arg.
 	 *
 	 * @param string $key Query arg key.
 	 * @param string $default Default value.
 	 * @return string
 	 */
 	private function admin_query_text( string $key, string $default = '' ): string {
-		if ( ! $this->has_valid_admin_request_nonce() ) {
-			return $default;
-		}
-
 		$value = filter_input( INPUT_GET, $key, FILTER_UNSAFE_RAW );
 		return is_string( $value ) ? sanitize_text_field( $value ) : $default;
 	}
 
 	/**
-	 * Returns sanitized key text from a nonce-verified admin query arg.
+	 * Returns sanitized key text from an admin query arg.
 	 *
 	 * @param string $key Query arg key.
 	 * @param string $default Default value.
 	 * @return string
 	 */
 	private function admin_query_key( string $key, string $default = '' ): string {
-		if ( ! $this->has_valid_admin_request_nonce() ) {
-			return $default;
-		}
-
 		$value = filter_input( INPUT_GET, $key, FILTER_UNSAFE_RAW );
 		return is_string( $value ) ? sanitize_key( $value ) : $default;
 	}
 
 	/**
-	 * Returns an absolute integer from a nonce-verified admin query arg.
+	 * Returns an absolute integer from an admin query arg.
 	 *
 	 * @param string $key Query arg key.
 	 * @param int    $default Default value.
 	 * @return int
 	 */
 	private function admin_query_absint( string $key, int $default = 0 ): int {
-		if ( ! $this->has_valid_admin_request_nonce() ) {
-			return $default;
-		}
-
 		$value = filter_input( INPUT_GET, $key, FILTER_UNSAFE_RAW );
 		return is_string( $value ) ? absint( $value ) : $default;
 	}
@@ -2234,7 +2251,7 @@ final class Admin_Page {
 	 * @return bool
 	 */
 	private function admin_query_bool( string $key ): bool {
-		return $this->has_valid_admin_request_nonce() && '' !== $this->admin_query_text( $key );
+		return '' !== $this->admin_query_text( $key );
 	}
 
 	/**
