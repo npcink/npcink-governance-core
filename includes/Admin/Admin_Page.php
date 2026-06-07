@@ -464,7 +464,10 @@ final class Admin_Page {
 							</th>
 							<td>
 								<strong><?php echo esc_html( $this->proposal_request_label( $proposal ) ); ?></strong><br />
-								<span class="npcink-governance-core-subtle"><?php echo esc_html__( 'Review this WordPress change before it can run.', 'npcink-governance-core' ); ?></span>
+								<span class="npcink-governance-core-subtle">
+									<?php echo esc_html__( 'Proposal ID:', 'npcink-governance-core' ); ?>
+									<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
+								</span>
 								<?php $this->render_pending_proposal_technical_details( $proposal ); ?>
 							</td>
 							<td><?php echo esc_html( $this->display_datetime( (string) $proposal['created_at'] ) ); ?></td>
@@ -486,7 +489,7 @@ final class Admin_Page {
 					<p class="npcink-governance-core-inline-actions">
 						<label class="npcink-governance-core-flex-field">
 							<?php echo esc_html__( 'Rejection note', 'npcink-governance-core' ); ?><br />
-							<input type="text" class="large-text" name="note" value="<?php echo esc_attr__( 'Superseded by batch cleanup proposal.', 'npcink-governance-core' ); ?>" />
+							<input type="text" class="large-text" name="note" value="" placeholder="<?php echo esc_attr__( 'Describe why these requests should be rejected.', 'npcink-governance-core' ); ?>" />
 						</label>
 						<button type="submit" class="button">
 							<?php echo esc_html__( 'Reject selected', 'npcink-governance-core' ); ?>
@@ -506,15 +509,10 @@ final class Admin_Page {
 	 * @return void
 	 */
 	private function render_pending_proposal_technical_details( array $proposal ): void {
-		$proposal_id = (string) $proposal['proposal_id'];
 		$trace = $this->pending_proposal_trace_parts( $proposal );
 		?>
 		<details class="npcink-governance-core-row-details">
 			<summary><?php echo esc_html__( 'Technical details', 'npcink-governance-core' ); ?></summary>
-			<div>
-				<?php echo esc_html__( 'Proposal ID:', 'npcink-governance-core' ); ?>
-				<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
-			</div>
 			<div>
 				<?php echo esc_html__( 'Target ability:', 'npcink-governance-core' ); ?>
 				<code><?php echo esc_html( (string) $proposal['ability_id'] ); ?></code>
@@ -730,7 +728,7 @@ final class Admin_Page {
 		$proposal_ids = array_slice( $proposal_ids, 0, 50 );
 		$note         = isset( $_POST['note'] ) ? sanitize_textarea_field( wp_unslash( (string) $_POST['note'] ) ) : '';
 		if ( '' === $note ) {
-			$note = __( 'Superseded by batch cleanup proposal.', 'npcink-governance-core' );
+			$note = __( 'Rejected from bulk review.', 'npcink-governance-core' );
 		}
 
 		if ( empty( $proposal_ids ) ) {
