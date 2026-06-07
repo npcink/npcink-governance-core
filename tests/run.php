@@ -62,6 +62,61 @@ function npcink_governance_core_project_files( string $root ): array {
 	return $files;
 }
 
+/**
+ * Locates the sibling npcink-abilities-toolkit replay fixture.
+ *
+ * @param string $root Current project root.
+ * @return string
+ */
+function npcink_governance_core_shared_replay_fixture_path( string $root ): string {
+	$env_path = getenv( 'NPCINK_ABILITIES_TOOLKIT_PATH' );
+	$roots    = array();
+
+	if ( is_string( $env_path ) && '' !== trim( $env_path ) ) {
+		$roots[] = rtrim( $env_path, '/' );
+	}
+
+	$roots[] = dirname( $root ) . '/npcink-abilities-toolkit';
+	$roots[] = '/Users/muze/gitee/npcink-abilities-toolkit';
+
+	foreach ( $roots as $toolkit_root ) {
+		$fixture = $toolkit_root . '/tests/fixtures/agent-workflow-replay.json';
+		if ( is_readable( $fixture ) ) {
+			return $fixture;
+		}
+	}
+
+	return '';
+}
+
+/**
+ * Finds a forbidden key in a nested array.
+ *
+ * @param mixed         $value Value to inspect.
+ * @param array<int,string> $forbidden_keys Forbidden key names.
+ * @param string        $path Current path.
+ * @return string
+ */
+function npcink_governance_core_find_forbidden_key( $value, array $forbidden_keys, string $path = '$' ): string {
+	if ( ! is_array( $value ) ) {
+		return '';
+	}
+
+	foreach ( $value as $key => $child ) {
+		if ( is_string( $key ) && in_array( $key, $forbidden_keys, true ) ) {
+			return $path . '.' . $key;
+		}
+
+		$child_path = is_string( $key ) ? $path . '.' . $key : $path . '[]';
+		$found      = npcink_governance_core_find_forbidden_key( $child, $forbidden_keys, $child_path );
+		if ( '' !== $found ) {
+			return $found;
+		}
+	}
+
+	return '';
+}
+
 $main_plugin = npcink_governance_core_read( $root . '/npcink-governance-core.php' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Plugin Name: Npcink Governance Core' ), 'Main plugin file declares plugin header.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Description: Npcink AI governance layer for WordPress operations.' ), 'Main plugin file declares the public positioning.' );
@@ -784,6 +839,52 @@ npcink_governance_core_assert( false !== strpos( $ability_intake, 'Create Draft 
 npcink_governance_core_assert( false !== strpos( $ability_intake, 'Set Post SEO Meta Governance Scenario' ), 'Ability intake contract points to the set-post-seo-meta scenario.' );
 npcink_governance_core_assert( false !== strpos( $ability_intake, 'Approve Comment Governance Scenario' ), 'Ability intake contract points to the approve-comment scenario.' );
 npcink_governance_core_assert( false !== strpos( $ability_intake, 'Taxonomy Terms Preview Governance Scenario' ), 'Ability intake contract points to the taxonomy terms preview scenario.' );
+
+$shared_replay_path = npcink_governance_core_shared_replay_fixture_path( $root );
+npcink_governance_core_assert( '' !== $shared_replay_path, 'Shared npcink-abilities-toolkit replay fixture is available for Core static proof.' );
+$shared_replay_json = npcink_governance_core_read( $shared_replay_path );
+$shared_replay      = json_decode( $shared_replay_json, true );
+npcink_governance_core_assert( is_array( $shared_replay ), 'Shared replay fixture decodes as JSON.' );
+npcink_governance_core_assert( 'v1' === (string) ( $shared_replay['schema_version'] ?? '' ), 'Shared replay fixture uses schema v1.' );
+npcink_governance_core_assert( is_array( $shared_replay['cases'] ?? null ) && count( $shared_replay['cases'] ) >= 5, 'Shared replay fixture exposes stabilization recipe cases.' );
+$shared_replay_forbidden_fields = array(
+	'workflow_state',
+	'execution_state',
+	'schedule',
+	'scheduler',
+	'retry_policy',
+	'queue',
+	'lease',
+	'model',
+	'model_routing',
+	'prompt',
+	'prompt_registry',
+	'approval_store',
+	'approval_policy',
+	'audit_log',
+	'quota',
+	'commit_policy',
+	'final_write_authority',
+);
+npcink_governance_core_assert( '' === npcink_governance_core_find_forbidden_key( $shared_replay, $shared_replay_forbidden_fields ), 'Shared replay fixture does not contain host-runtime or governance ownership fields.' );
+foreach ( (array) ( $shared_replay['cases'] ?? array() ) as $case_id => $case ) {
+	$case = is_array( $case ) ? $case : array();
+	npcink_governance_core_assert( 'workflow_recipe' === (string) ( $case['definition_kind'] ?? '' ), 'Shared replay case ' . $case_id . ' remains a declarative workflow recipe.' );
+	npcink_governance_core_assert( '' !== (string) ( $case['recipe_id'] ?? '' ), 'Shared replay case ' . $case_id . ' exposes a recipe id.' );
+	npcink_governance_core_assert( (string) ( $case['preferred_ability_id'] ?? '' ) === (string) ( $case['entrypoint_ability_id'] ?? '' ), 'Shared replay case ' . $case_id . ' selects its preferred bundle as entrypoint.' );
+	npcink_governance_core_assert( 0 === strpos( (string) ( $case['entrypoint_ability_id'] ?? '' ), 'npcink-abilities-toolkit/' ), 'Shared replay case ' . $case_id . ' entrypoint is a real Toolkit ability id.' );
+	npcink_governance_core_assert( ! empty( $case['natural_tasks'] ) && is_array( $case['natural_tasks'] ), 'Shared replay case ' . $case_id . ' provides host-side routing examples.' );
+	npcink_governance_core_assert( is_array( $case['expanded_ability_ids'] ?? null ), 'Shared replay case ' . $case_id . ' exposes expanded read-chain ids.' );
+	npcink_governance_core_assert( is_array( $case['disallowed_default_ability_ids'] ?? null ) && ! empty( $case['disallowed_default_ability_ids'] ), 'Shared replay case ' . $case_id . ' names write defaults Core must govern.' );
+	npcink_governance_core_assert( 'host' === (string) ( $case['handoff']['owner'] ?? '' ), 'Shared replay case ' . $case_id . ' keeps handoff ownership in the host.' );
+	npcink_governance_core_assert( false !== strpos( (string) ( $case['failure_policy'] ?? '' ), 'fail_closed' ), 'Shared replay case ' . $case_id . ' fails closed.' );
+	foreach ( (array) ( $case['disallowed_default_ability_ids'] ?? array() ) as $disallowed_ability_id ) {
+		$disallowed_ability_id = (string) $disallowed_ability_id;
+		npcink_governance_core_assert( false !== strpos( $disallowed_ability_id, '/' ) && 0 !== strpos( $disallowed_ability_id, 'workflow/' ), 'Shared replay case ' . $case_id . ' disallowed default is a real ability id, not a workflow label.' );
+		npcink_governance_core_assert( $disallowed_ability_id !== (string) ( $case['entrypoint_ability_id'] ?? '' ), 'Shared replay case ' . $case_id . ' does not select a write target as entrypoint.' );
+		npcink_governance_core_assert( ! in_array( $disallowed_ability_id, (array) ( $case['expanded_ability_ids'] ?? array() ), true ), 'Shared replay case ' . $case_id . ' keeps write targets out of the expanded read chain.' );
+	}
+}
 
 $testing_strategy = npcink_governance_core_read( $root . '/docs/testing-strategy.md' );
 npcink_governance_core_assert( false !== strpos( $testing_strategy, 'agent-workflow-replay.json' ), 'Testing strategy records shared replay fixture smoke coverage.' );

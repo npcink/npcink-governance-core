@@ -22,6 +22,58 @@
   - Admin presentation only. No workflow runtime, ability execution, provider
     settings, credential storage, or product workflow ownership was added.
 
+## 2026-06-07 — Core review queue scan hierarchy tightened
+
+- **Module**: Core admin review queue.
+- **Status**: The default pending review list now keeps proposal lookup
+  identity visible while hiding lower-frequency machine trace fields.
+- **Completed**:
+  - Kept the top statistics strip removed from the review surface.
+  - Made each pending row lead with a user-facing request label and default
+    visible `Proposal ID`.
+  - Kept target ability and source/caller/app trace metadata behind per-row
+    technical details.
+  - Removed repeated generic row instructions and stopped pre-filling bulk
+    rejection with technical cleanup copy.
+  - Synced admin surface docs, static contracts, and Chinese translation
+    catalogs.
+- **Verification**:
+  - `msgfmt --check --check-format -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `composer test:all`
+  - `composer smoke:wp`
+- **Boundary**:
+  - Admin presentation and review ergonomics only. Core remains proposal,
+    approval/rejection, preflight, and audit truth; no ability execution,
+    workflow runtime, provider settings, or product workflow ownership was
+    added.
+
+## 2026-06-07 — Workflow replay consumer proof tightened
+
+- **Module**: Core/Abilities workflow recipe consumption boundary.
+- **Status**: Core now has a cheap static proof for the shared
+  `npcink-abilities-toolkit` workflow replay fixture, in addition to the real
+  WordPress smoke proof.
+- **Completed**:
+  - Strengthened `npcink-abilities-toolkit` workflow consumer proof so natural
+    task examples route unambiguously to read-only recipe entrypoints and write
+    targets stay out of expanded read chains.
+  - Added Core static contract coverage that reads the sibling Toolkit
+    `agent-workflow-replay.json`, rejects runtime/governance ownership fields,
+    checks declarative recipe shape, and verifies write targets remain
+    proposal handoff targets instead of entrypoints.
+  - Updated Core testing strategy to record shared replay fixture structure and
+    host-owned write boundary semantics as static contract coverage.
+- **Verification**:
+  - `/Users/muze/gitee/npcink-abilities-toolkit`: `composer test:all`
+  - `/Users/muze/gitee/magick-ai-core`: `composer test:contracts`
+  - `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+  - `/Users/muze/gitee/magick-ai-core`: `composer smoke:wp`
+- **Boundary**:
+  - Toolkit still owns declarative workflow recipe definitions and reusable
+    WordPress abilities. Core consumes the shared replay/definition shape for
+    proposal governance proof only; it does not route natural-language tasks,
+    create a workflow registry, execute abilities, or own final writes.
+
 ## 2026-06-07 — Media optimization execution closure tightened
 
 - **Module**: Core/Adapter/Abilities media optimization governance closure.
