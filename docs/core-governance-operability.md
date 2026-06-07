@@ -54,11 +54,12 @@ The WordPress admin proposal detail also shows:
 
 The default review queue keeps each pending proposal traceable without leading
 with machine details. Every row shows a user-facing request label, created time,
-and a clear decision entry. `Proposal ID`, target ability, and source trace
-metadata such as plan-to-proposal source, batch id, action id, caller type, or
-app id stay available behind per-row technical details. This lets operators
-match Core approval items back to Adapter/OpenClaw tasks, AI Request Logs, and
-audit filters without making the first scan feel like a protocol log.
+the `Proposal ID` lookup handle, and a clear decision entry. Target ability and
+source trace metadata such as plan-to-proposal source, batch id, action id,
+caller type, or app id stay available behind per-row technical details. This
+lets operators match Core approval items back to Adapter/OpenClaw tasks, AI
+Request Logs, and audit filters without making the first scan feel like a
+protocol log.
 
 The review queue also supports bounded bulk rejection for selected pending
 proposals. Bulk rejection reuses the normal reject transition for each row so

@@ -1333,10 +1333,14 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'array_slice( $pro
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Pending requests' ), 'Admin review queue uses user-facing pending request copy.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'View and decide' ), 'Admin review queue uses a decision-oriented row action.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Technical details' ), 'Admin review queue folds machine identifiers behind technical details.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Proposal ID:' ), 'Admin review queue keeps proposal ids available in technical details.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Proposal ID:' ), 'Admin review queue keeps proposal ids visible in the default row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Describe why these requests should be rejected.' ), 'Admin bulk rejection asks for a user-entered reason without prefilled technical copy.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Rejected from bulk review.' ), 'Admin bulk rejection fallback note uses neutral governance copy.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Target ability:' ), 'Admin review queue keeps ability ids available in technical details.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_request_label' ), 'Admin review queue maps ability ids to user-facing request labels.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'pending_proposal_trace_parts' ), 'Admin review queue summarizes source trace metadata.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'Review this WordPress change before it can run.' ), 'Admin review queue avoids repeating generic instructions on every row.' );
+npcink_governance_core_assert( false === strpos( $admin_page, "name=\"note\" value=\"<?php echo esc_attr__( 'Superseded by batch cleanup proposal.'" ), 'Admin review queue does not prefill bulk rejection with technical cleanup copy.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'plan_ability_id' ), 'Admin review queue can show plan-to-proposal source metadata.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Advanced Access' ), 'Admin page folds Core app-key management behind advanced access.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Development Approval Policy' ), 'Admin page exposes lightweight development approval policy mode.' );
