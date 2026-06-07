@@ -320,10 +320,6 @@ msgstr ""
 msgid "No active proposals. Expired items are moved out of the review queue automatically."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:506
-msgid "Review this WordPress change before it can run."
-msgstr ""
-
 #: includes/Admin/Admin_Page.php:651
 msgid "Proposal ID:"
 msgstr ""
@@ -360,9 +356,12 @@ msgstr ""
 msgid "Rejection note"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:674
-#: includes/Admin/Admin_Page.php:891
-msgid "Superseded by batch cleanup proposal."
+#: includes/Admin/Admin_Page.php:492
+msgid "Describe why these requests should be rejected."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:731
+msgid "Rejected from bulk review."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:677
