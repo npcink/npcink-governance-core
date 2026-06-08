@@ -148,10 +148,59 @@ final class Plugin {
 	 */
 	public function register(): void {
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
+		add_filter( 'npcink_governance_core_record_local_admin_consent', array( $this, 'record_local_admin_consent_audit' ), 10, 3 );
 
 		if ( is_admin() ) {
 			( new Admin_Page( $this->ability_adapter(), $this->proposal_repository(), $this->audit_repository(), $this->proposal_service(), $this->app_key_repository() ) )->register();
 		}
+	}
+
+	/**
+	 * Records a local-admin-consent audit event for a local product module.
+	 *
+	 * This is intentionally an audit-only integration point. It does not create
+	 * proposals, approve proposals, preflight commits, or execute abilities.
+	 *
+	 * @param mixed               $result Existing filter result.
+	 * @param string              $event_name Audit event name.
+	 * @param array<string,mixed> $metadata Audit metadata.
+	 * @return array<string,string>|\WP_Error
+	 */
+	public function record_local_admin_consent_audit( $result, string $event_name, array $metadata ) {
+		if ( null !== $result ) {
+			return $result;
+		}
+
+		$allowed_events = array(
+			'local_admin_consent.requested' => true,
+			'local_admin_consent.completed' => true,
+			'local_admin_consent.failed'    => true,
+		);
+		if ( ! isset( $allowed_events[ $event_name ] ) ) {
+			return new \WP_Error(
+				'npcink_governance_core_local_consent_audit_event_rejected',
+				__( 'Unsupported local admin consent audit event.', 'npcink-governance-core' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		$metadata['governance_record_type'] = 'local_admin_consent_audit';
+		$metadata['proposal_created']       = false;
+		$metadata['core_execution']         = false;
+
+		$event_id = $this->audit_repository()->record( $event_name, $metadata );
+		if ( '' === $event_id ) {
+			return new \WP_Error(
+				'npcink_governance_core_local_consent_audit_failed',
+				__( 'Local admin consent could not be audited.', 'npcink-governance-core' ),
+				array( 'status' => 500 )
+			);
+		}
+
+		return array(
+			'event_id'   => $event_id,
+			'event_name' => $event_name,
+		);
 	}
 
 	/**

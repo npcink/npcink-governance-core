@@ -112,9 +112,10 @@ into Core while executing this plan.
 The next product-boundary implementation should use the
 [Operation Classification Contract](operation-classification-contract.md):
 
-1. Prove `local_admin_consent` with one low-risk Toolbox scenario, such as
-   selecting one displayed image candidate as the featured image for one post.
-2. Prove `core_proposal_required` with one high-risk contrast scenario, such as
+1. Completed: prove `local_admin_consent` with the narrow Toolbox scenario of
+   setting one displayed existing image attachment as the current post's
+   featured image, with Core-owned audit and no proposal.
+2. Next: prove `core_proposal_required` with one high-risk contrast scenario, such as
    batch image selection, batch SEO updates, or batch article edits.
 
 Those scenario proofs are required, but they should validate the shared

@@ -838,7 +838,7 @@ foreach (
 		'local_admin_consent',
 		'strong_local_confirmation',
 		'core_proposal_required',
-		'set one displayed image candidate as the featured image',
+		'set one displayed existing WordPress image attachment as',
 		'batch image selection',
 		'batch SEO updates',
 		'batch article edits',
@@ -863,7 +863,11 @@ foreach (
 npcink_governance_core_assert( false !== strpos( $operation_classifier, 'operation-classification-v1' ), 'Operation classifier returns a stable policy version.' );
 npcink_governance_core_assert( false !== strpos( $operation_classifier, 'target_ability_id' ), 'Operation classifier requires Core proposal evidence for high-risk writes.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'includes/Autoloader.php' ), 'Main plugin uses the class autoloader for operation classifier loading.' );
-npcink_governance_core_assert( false !== strpos( npcink_governance_core_read( $root . '/includes/Plugin.php' ), 'operation_classifier' ), 'Plugin container exposes the operation classifier.' );
+$plugin_container = npcink_governance_core_read( $root . '/includes/Plugin.php' );
+npcink_governance_core_assert( false !== strpos( $plugin_container, 'operation_classifier' ), 'Plugin container exposes the operation classifier.' );
+npcink_governance_core_assert( false !== strpos( $plugin_container, 'npcink_governance_core_record_local_admin_consent' ) && false !== strpos( $plugin_container, 'record_local_admin_consent_audit' ), 'Plugin container exposes a Core-owned local admin consent audit filter.' );
+npcink_governance_core_assert( false !== strpos( $plugin_container, 'local_admin_consent.requested' ) && false !== strpos( $plugin_container, 'local_admin_consent.completed' ) && false !== strpos( $plugin_container, 'local_admin_consent.failed' ), 'Local admin consent audit accepts only bounded lifecycle events.' );
+npcink_governance_core_assert( false !== strpos( $plugin_container, "proposal_created']" ) && false !== strpos( $plugin_container, "core_execution']" ), 'Local admin consent audit does not create proposals or execute Core writes.' );
 
 require_once $root . '/includes/Governance/Operation_Classifier.php';
 $classifier = new \Npcink\GovernanceCore\Governance\Operation_Classifier();

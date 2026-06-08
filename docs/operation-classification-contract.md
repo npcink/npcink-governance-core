@@ -75,7 +75,10 @@ Return `core_proposal_required` when any of these are true:
 
 ## Required Evidence
 
-For `local_admin_consent`, record at least:
+For `local_admin_consent`, Core records audit evidence through the
+`npcink_governance_core_record_local_admin_consent` filter. This is an
+audit-only integration point: it does not create proposals, approve proposals,
+preflight commits, or execute abilities. Record at least:
 
 - actor user id;
 - source module and route/action id;
@@ -98,8 +101,8 @@ For `core_proposal_required`, the proposal preview should preserve:
 
 ### Low-Risk Toolbox Proof
 
-Candidate scenario: set one displayed image candidate as the featured image for
-one post.
+Implemented scenario: set one displayed existing WordPress image attachment as
+the featured image for one post.
 
 Expected classification: `local_admin_consent`.
 
@@ -109,8 +112,11 @@ Acceptance:
 - the target post and image candidate are visible before execution;
 - the user clicks one explicit apply action;
 - only one post's featured image changes;
-- the action records audit/activity evidence;
+- the action records Core-owned `local_admin_consent.requested` and
+  `local_admin_consent.completed` audit evidence;
 - no Core proposal is created.
+- external URLs, media import, media metadata writes, generated image adoption,
+  and batch image selection remain Core proposal paths.
 
 ### High-Risk Core Proof
 

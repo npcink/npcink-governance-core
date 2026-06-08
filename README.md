@@ -130,6 +130,10 @@ Low-risk, single-object, fully previewed actions taken by a present WordPress
 administrator may use local admin consent with audit instead of Core proposal
 approval. External, automated, batch, destructive, high-impact, or
 insufficiently previewed AI writes must still go through Core proposal review.
+Core exposes only an audit hook for this path:
+`npcink_governance_core_record_local_admin_consent` records bounded
+`local_admin_consent.*` events without creating proposals, approving proposals,
+preflighting commits, or executing abilities.
 ADR-005 makes the current implementation sequence explicit: do not merge Core
 into today's OpenClaw Adapter yet. Keep Core independent, treat OpenClaw
 Adapter as the first channel adapter, standardize the shared channel adapter

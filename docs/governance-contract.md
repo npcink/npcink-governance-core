@@ -88,6 +88,16 @@ ability is direct-read, validates each `write_action.target_ability_id` against
 current ability intake, then creates one pending proposal per accepted action
 unless the plan explicitly requests batch approval.
 
+Local Admin Consent is not plan intake. Core may record
+`local_admin_consent.requested`, `local_admin_consent.completed`, and
+`local_admin_consent.failed` audit events through the
+`npcink_governance_core_record_local_admin_consent` filter for a local product
+module's already-authorized single-object action. That filter is audit-only:
+it must not create proposals, approve proposals, preflight commits, or execute
+abilities. If a local product module cannot record required Core audit, it
+should fail closed instead of treating Local Admin Consent as an unaudited
+write path.
+
 The P0 article writing handoff is stricter: Toolbox owns the workflow artifact,
 and Core accepts `npcink-toolbox/build-article-write-plan` only when it is an
 `article_write_plan` containing the required article artifacts, a passing risk

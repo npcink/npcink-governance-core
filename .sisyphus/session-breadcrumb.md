@@ -1,5 +1,36 @@
 # Session Breadcrumb
 
+## 2026-06-09 — Local Admin Consent featured-image proof implemented
+
+- **Module**: Core audit hook and Toolbox editor featured-image local consent.
+- **Status**: One low-risk Local Admin Consent proof now sets an existing
+  WordPress image attachment as the current post featured image with
+  Core-owned audit and no proposal.
+- **Completed**:
+  - Added Core audit-only
+    `npcink_governance_core_record_local_admin_consent` filter support for
+    requested/completed/failed local consent events.
+  - Added Toolbox `/local-admin-consent/featured-image`, restricted to one
+    existing image attachment and one target post.
+  - Wired the editor image inspector to use local consent only when the
+    selected image already has an attachment id; external URLs still use
+    Adapter/Core adoption.
+  - Added static and WordPress smoke coverage.
+- **Verification**:
+  - In `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+  - In `/Users/muze/gitee/magick-ai-core`: `composer smoke:wp`
+  - In `/Users/muze/gitee/magick-ai-toolbox`: `composer test:all`
+  - In `/Users/muze/gitee/magick-ai-toolbox`:
+    `composer smoke:local-featured-image`
+- **Next steps**:
+  - Prove the high-risk contrast path, for example batch image selection,
+    batch SEO, or batch article edits, remains `core_proposal_required`.
+- **Boundary**:
+  - Existing attachment featured-image write only. No media import, metadata
+    update, generated/external URL adoption, proposal creation, approval,
+    preflight, batch action, or Core execution was added to the local-consent
+    path.
+
 ## 2026-06-09 — Content Metadata Delta governed handoff implemented
 
 - **Module**: Core plan-to-proposal intake for accepted Toolbox content metadata
