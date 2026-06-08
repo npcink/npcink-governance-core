@@ -1,5 +1,34 @@
 # Session Breadcrumb
 
+## 2026-06-09 — Content Metadata Delta ranking quality advanced in Toolbox
+
+- **Module**: Toolbox editor Content Metadata Delta P0 recommendation quality.
+- **Status**: The current-stage implementation now treats related Site
+  Knowledge results as real ranking context for summary/category/tag
+  suggestions while preserving suggestion-only behavior.
+- **Completed**:
+  - Kept Core as governance truth only; no vector search, recommendation
+    generation, feedback persistence, or WordPress writes were added to Core.
+  - Updated Toolbox so `summary_terms_optimization` first collects related Site
+    Knowledge, passes bounded related context into hosted AI summary support,
+    and boosts existing WordPress categories/tags that appear on related local
+    posts.
+  - Marked related terms as ranking evidence only: no term creation, term
+    assignment, excerpt write, learning-store persistence, or index lifecycle
+    ownership.
+  - Added static and local smoke coverage for the new ranking contract.
+- **Verification**:
+  - In `/Users/muze/gitee/magick-ai-toolbox`: `composer test:all`
+  - In `/Users/muze/gitee/magick-ai-toolbox`: `composer smoke:metadata-delta`
+- **Next steps**:
+  - After recommendation quality stabilizes, implement the governed handoff
+    path for accepted metadata choices through Core/Adapter/Abilities.
+  - Defer persistent feedback and self-learning until real usage data exists.
+- **Boundary**:
+  - Recommendation quality only. Toolbox still returns reviewable artifacts and
+    does not persist feedback, approve proposals, execute writes, own taxonomy
+    governance, or own Site Knowledge indexing.
+
 ## 2026-06-09 — Operation classifier policy helper implemented
 
 - **Module**: Core governance operation classification.
