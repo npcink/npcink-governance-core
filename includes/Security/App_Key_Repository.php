@@ -143,11 +143,13 @@ final class App_Key_Repository {
 			'last_used_at'        => null,
 		);
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$inserted = $wpdb->insert(
 			$this->table_name(),
 			$record,
 			array( '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%d', '%s', '%s', '%s' )
 		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		if ( false === $inserted ) {
 			return new WP_Error(
@@ -291,6 +293,7 @@ final class App_Key_Repository {
 	public function touch_last_used( string $key_id ): void {
 		global $wpdb;
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$wpdb->update(
 			$this->table_name(),
 			array(
@@ -301,6 +304,7 @@ final class App_Key_Repository {
 			array( '%s', '%s' ),
 			array( '%s' )
 		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**
@@ -312,6 +316,7 @@ final class App_Key_Repository {
 	public function revoke_by_key_id( string $key_id ): bool {
 		global $wpdb;
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$updated = $wpdb->update(
 			$this->table_name(),
 			array(
@@ -325,6 +330,7 @@ final class App_Key_Repository {
 			array( '%s', '%s' ),
 			array( '%s', '%s' )
 		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return false !== $updated && $updated > 0;
 	}

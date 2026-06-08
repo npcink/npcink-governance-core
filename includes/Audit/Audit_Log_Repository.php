@@ -77,6 +77,7 @@ final class Audit_Log_Repository {
 			$metadata['auth'] = $auth;
 		}
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$inserted = $wpdb->insert(
 			$this->table_name(),
 			array(
@@ -89,6 +90,7 @@ final class Audit_Log_Repository {
 			),
 			array( '%s', '%s', '%s', '%d', '%s', '%s' )
 		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return false === $inserted ? '' : $event_id;
 	}

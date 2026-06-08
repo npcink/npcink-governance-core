@@ -14,7 +14,7 @@ Npcink Governance Core starts with a small but strict test pyramid.
 | Full local suite | `composer test:all` | Run lint, static contracts, and fault injection together. |
 | Real WordPress smoke | `composer smoke:wp` | Prove activation, schema creation, REST behavior, and `npcink-abilities-toolkit` integration. |
 | WordPress.org review guard | `composer check:wporg` | Catch locally reproducible reviewer policy patterns that Plugin Check may miss. |
-| Plugin Check release scan | `wp plugin check npcink-governance-core --ignore-warnings` | Catch WordPress.org packaging and runtime security blockers before release. |
+| Plugin Check release scan | `composer plugin-check:release` | Catch WordPress.org packaging and runtime security blockers before release. |
 
 ## Static Contract Rules
 
@@ -185,9 +185,7 @@ examples that are excluded from release packages by `.distignore`; use explicit
 exclusions when scanning the symlinked development checkout:
 
 ```bash
-wp plugin check npcink-governance-core --ignore-warnings \
-  --exclude-directories=tests,examples,docs,.sisyphus \
-  --exclude-files=README.md,AGENTS.md,.gitignore
+composer plugin-check:release
 ```
 
 Also run `composer check:wporg` for reviewer-policy patterns that may not

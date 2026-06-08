@@ -122,8 +122,7 @@ npcink_governance_core_assert( false !== strpos( $main_plugin, 'Plugin Name: Npc
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Description: Npcink AI governance layer for WordPress operations.' ), 'Main plugin file declares the public positioning.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Text Domain: npcink-governance-core' ), 'Main plugin file keeps the canonical text domain.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Domain Path: /languages' ), 'Main plugin file declares the bundled languages path.' );
-npcink_governance_core_assert( false !== strpos( $main_plugin, 'load_plugin_textdomain' ), 'Main plugin file loads bundled translations.' );
-npcink_governance_core_assert( false !== strpos( $main_plugin, "dirname( plugin_basename( NPCINK_GOVERNANCE_CORE_FILE ) ) . '/languages'" ), 'Main plugin file resolves bundled translations from the plugin languages directory.' );
+npcink_governance_core_assert( false === strpos( $main_plugin, 'load_plugin_textdomain' ), 'Main plugin file lets WordPress.org load translations automatically.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'register_activation_hook' ), 'Main plugin file registers activation hook.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'plugins_loaded' ), 'Main plugin file boots after plugins_loaded.' );
 npcink_governance_core_assert( false === strpos( $main_plugin, 'example.com' ), 'Main plugin header does not use placeholder Plugin URI.' );

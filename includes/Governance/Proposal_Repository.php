@@ -97,11 +97,13 @@ final class Proposal_Repository {
 			'updated_at'   => $now,
 		);
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$inserted = $wpdb->insert(
 			$this->table_name(),
 			$record,
 			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s' )
 		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		if ( false === $inserted ) {
 			return new WP_Error(
@@ -123,11 +125,13 @@ final class Proposal_Repository {
 	public function delete_by_proposal_id( string $proposal_id ): bool {
 		global $wpdb;
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$deleted = $wpdb->delete(
 			$this->table_name(),
 			array( 'proposal_id' => sanitize_text_field( $proposal_id ) ),
 			array( '%s' )
 		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return false !== $deleted && $deleted > 0;
 	}
@@ -344,6 +348,7 @@ final class Proposal_Repository {
 			return null;
 		}
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$wpdb->update(
 			$this->table_name(),
 			array(
@@ -354,6 +359,7 @@ final class Proposal_Repository {
 			array( '%s', '%s' ),
 			array( '%s' )
 		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $this->find( $proposal_id );
 	}
@@ -370,6 +376,7 @@ final class Proposal_Repository {
 		$proposal_id = sanitize_text_field( $proposal_id );
 		$now         = current_time( 'mysql', true );
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$wpdb->update(
 			$this->table_name(),
 			array(
@@ -381,6 +388,7 @@ final class Proposal_Repository {
 			array( '%s', '%s', '%s' ),
 			array( '%s' )
 		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $this->find( $proposal_id );
 	}

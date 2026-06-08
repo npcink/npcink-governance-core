@@ -25,27 +25,11 @@ require_once NPCINK_GOVERNANCE_CORE_DIR . 'includes/Autoloader.php';
 
 \Npcink\GovernanceCore\Autoloader::register();
 
-if ( ! function_exists( 'npcink_governance_core_load_textdomain' ) ) {
-	/**
-	 * Loads bundled translation files.
-	 *
-	 * @return void
-	 */
-	function npcink_governance_core_load_textdomain(): void {
-		load_plugin_textdomain(
-			'npcink-governance-core',
-			false,
-			dirname( plugin_basename( NPCINK_GOVERNANCE_CORE_FILE ) ) . '/languages'
-		);
-	}
-}
-
 register_activation_hook( __FILE__, array( \Npcink\GovernanceCore\Plugin::class, 'activate' ) );
 
 add_action(
 	'plugins_loaded',
 	static function (): void {
-		npcink_governance_core_load_textdomain();
 		\Npcink\GovernanceCore\Plugin::instance()->register();
 	}
 );

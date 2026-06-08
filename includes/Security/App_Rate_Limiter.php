@@ -106,6 +106,7 @@ final class App_Rate_Limiter {
 			}
 
 			$count++;
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 			$updated = $wpdb->update(
 				$this->table_name(),
 				array(
@@ -116,6 +117,7 @@ final class App_Rate_Limiter {
 				array( '%d', '%s' ),
 				array( '%d' )
 			);
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 			return array(
 				'allowed'       => false !== $updated,
@@ -126,6 +128,7 @@ final class App_Rate_Limiter {
 			);
 		}
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$inserted = $wpdb->insert(
 			$this->table_name(),
 			array(
@@ -140,6 +143,7 @@ final class App_Rate_Limiter {
 			),
 			array( '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s' )
 		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return array(
 			'allowed'       => false !== $inserted,

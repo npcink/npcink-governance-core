@@ -78,23 +78,25 @@ release gate:
 composer plugin-check:release
 ```
 
-The current expected Plugin Check result is exit code `0` with warnings only.
-Warnings around `WordPress.DB.DirectDatabaseQuery.DirectQuery` and
-`WordPress.DB.DirectDatabaseQuery.NoCaching` are expected in these repository
-classes because Core owns custom WordPress database tables for governance
-state:
+The current expected Plugin Check result is exit code `0` with no errors or
+warnings.
+
+Core owns custom WordPress database tables for governance state in these
+repository classes:
 
 - `includes/Governance/Proposal_Repository.php`;
 - `includes/Audit/Audit_Log_Repository.php`;
 - `includes/Security/App_Key_Repository.php`;
 - `includes/Security/App_Rate_Limiter.php`.
 
-Do not hide these warnings globally. If a warning is a narrow false positive,
-use a local `phpcs:disable` with a reason next to the affected query.
+Direct database calls against those tables must use narrow local
+`phpcs:disable` comments with a reason next to the affected query. Do not hide
+database warnings globally, and do not suppress direct database warnings for
+queries outside Core-owned governance tables.
 
-If Plugin Check reports any `ERROR`, treat it as a release blocker. If it
-reports text-domain, slug, readme, or remote asset issues, fix those before
-uploading a new zip.
+If Plugin Check reports any `ERROR` or `WARNING`, treat it as a release
+blocker until the issue is fixed or the local suppression is narrow,
+reviewable, and documented next to the specific custom-table query.
 
 ## WordPress.org Additional Information
 

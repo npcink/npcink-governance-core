@@ -1,5 +1,23 @@
 # Session Breadcrumb
 
+## 2026-06-08 — Plugin Check warnings cleared before upload
+
+- **Module**: WordPress.org release package hygiene.
+- **Status**: The release Plugin Check gate now completes with no errors or
+  warnings before packaging.
+- **Completed**:
+  - Removed the manual `load_plugin_textdomain()` call so WordPress.org can
+    load hosted translations automatically.
+  - Added narrow PHPCS suppressions with custom-table ownership reasons around
+    Core-owned proposal, audit, app-key, and rate-limit table writes.
+  - Updated release/testing docs so Plugin Check warnings are treated as
+    blockers unless they have a narrow, local, documented suppression.
+- **Verification**:
+  - `composer plugin-check:release`
+- **Boundary**:
+  - Release hygiene only. Core custom table ownership remains unchanged, and no
+    final ability execution or workflow runtime behavior was added.
+
 ## 2026-06-08 — Governed AI feedback loop strategy recorded
 
 - **Module**: Product strategy and implementation handoff documentation.
