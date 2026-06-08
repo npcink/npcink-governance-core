@@ -48,6 +48,14 @@ quality, vertical workflows, compliance, and auditability.
 Core can discover, classify, gate, approve, and audit operations from the other
 layers. Core must not absorb those layers.
 
+Product packaging may still consolidate those layers into one Npcink AI plugin
+or one suite entry when that reduces installation and onboarding friction. The
+package boundary is not the trust boundary. If modules are co-located, the
+Governance module still owns proposal, approval, preflight, and audit truth;
+Adapter still owns external channel behavior; Toolbox and other product modules
+still own WordPress admin product UX. See
+[ADR-004: Suite Consolidation And Local Admin Consent](decisions/ADR-004-suite-consolidation-and-local-admin-consent.md).
+
 ## Core Position
 
 Core sells trust, not content generation.
@@ -170,6 +178,12 @@ Use these tests before adding anything to Core:
 6. Does this add a short-name ability alias or planning-label router?
    If yes, keep it out of runtime code and document the real `ability_id`
    handoff instead.
+7. Is this a low-risk, single-object, fully previewed action initiated by a
+   present WordPress administrator inside the admin UI?
+   If yes, it may use local admin consent with audit instead of a Core proposal.
+8. Is this external, automated, batch, destructive, high-impact, or not fully
+   previewed before the user acts?
+   If yes, keep or move it behind Core proposal review.
 
 ## Stop Conditions
 

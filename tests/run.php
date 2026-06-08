@@ -165,6 +165,8 @@ foreach (
 		'GET /wp-json/npcink-governance-core/v1/proposals/{proposal_id}',
 		'POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/approve',
 		'POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight',
+		'ADR-004: Suite Consolidation And Local Admin Consent',
+		'local admin consent with audit',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $readme, $required ), 'README contains required phrase: ' . $required );
@@ -204,6 +206,7 @@ npcink_governance_core_assert( false !== strpos( $positioning, '`npcink-abilitie
 npcink_governance_core_assert( false !== strpos( $positioning, 'Third-party ability providers' ), 'Positioning names third-party ability providers.' );
 npcink_governance_core_assert( false !== strpos( $positioning, 'provider-neutral at the base proposal layer' ), 'Positioning keeps base proposals provider-neutral.' );
 npcink_governance_core_assert( false !== strpos( $positioning, '`npcink-content-assistant`' ), 'Positioning names Content Assistant as product UX owner.' );
+npcink_governance_core_assert( false !== strpos( $positioning, 'local admin consent with audit' ), 'Positioning documents local admin consent with audit.' );
 
 $admin_menu_standard = npcink_governance_core_read( $root . '/docs/admin-menu-standard.md' );
 foreach ( array( '`Npcink AI`', '`npcink-ai`', '`Core`', '`Adapter`', '`Abilities`', '`Cloud Addon`', '`Npcink AI -> Core`' ) as $required ) {
@@ -806,11 +809,16 @@ npcink_governance_core_assert( false !== strpos( $apps_controller, 'npcink_gover
 $adr_001 = npcink_governance_core_read( $root . '/docs/decisions/ADR-001-rebuild-core-as-governance-layer.md' );
 $adr_002 = npcink_governance_core_read( $root . '/docs/decisions/ADR-002-no-workflow-runtime-in-core.md' );
 $adr_003 = npcink_governance_core_read( $root . '/docs/decisions/ADR-003-keep-final-execution-outside-core.md' );
+$adr_004 = npcink_governance_core_read( $root . '/docs/decisions/ADR-004-suite-consolidation-and-local-admin-consent.md' );
 npcink_governance_core_assert( false !== strpos( $adr_001, 'Create a new standalone `npcink-governance-core` plugin' ), 'ADR-001 records rebuild decision.' );
 npcink_governance_core_assert( false !== strpos( $adr_002, '`npcink-governance-core` must not implement a workflow runtime' ), 'ADR-002 bans workflow runtime ownership.' );
 npcink_governance_core_assert( false !== strpos( $adr_003, 'Core remains governance-only' ), 'ADR-003 keeps Core governance-only for the current stage.' );
 npcink_governance_core_assert( false !== strpos( $adr_003, 'adapter_after_core_preflight' ), 'ADR-003 keeps final execution in Adapter/product plugins.' );
 npcink_governance_core_assert( false !== strpos( $adr_003, 'no Core `/execute`, `/proxy-execute`' ) && false !== strpos( $adr_003, 'commit route' ), 'ADR-003 blocks accidental Core execution routes.' );
+npcink_governance_core_assert( false !== strpos( $adr_004, 'Local Admin Consent Model' ), 'ADR-004 documents local admin consent.' );
+npcink_governance_core_assert( false !== strpos( $adr_004, 'The same plugin package may contain those modules' ), 'ADR-004 permits package consolidation without authority collapse.' );
+npcink_governance_core_assert( false !== strpos( $adr_004, 'External, automated, batch, destructive, high-impact' ) && false !== strpos( $adr_004, 'previewed AI writes must not use local admin consent' ), 'ADR-004 keeps risky writes behind Core review.' );
+npcink_governance_core_assert( false !== strpos( $adr_004, 'ADR-001, ADR-002, and ADR-003 remain active' ), 'ADR-004 preserves earlier governance ADRs.' );
 
 $ability_adapter = npcink_governance_core_read( $root . '/includes/Capabilities/Ability_Registry_Adapter.php' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, 'npcink_abilities_toolkit_get_registered' ), 'Ability intake prefers npcink-abilities-toolkit public API.' );

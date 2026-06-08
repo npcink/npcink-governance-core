@@ -45,6 +45,12 @@ Npcink Governance Core does not own:
 
 See [Strategy And Product Split](strategy-and-product-split.md) for the
 current planning conclusion from the WordPress 7.0 and China-market research.
+See
+[ADR-004: Suite Consolidation And Local Admin Consent](decisions/ADR-004-suite-consolidation-and-local-admin-consent.md)
+for the product packaging direction: Core, Adapter, and Toolbox may be shipped
+through one Npcink AI plugin or suite entry, but proposal, approval,
+commit-preflight, and audit truth must remain a distinct Governance module
+boundary.
 
 ## Design Rule
 
@@ -53,6 +59,12 @@ it may belong in Core.
 
 If a feature creates content, chooses a model, schedules batch work, or owns a
 domain workflow, it belongs outside Core.
+
+If a WordPress administrator is present, sees one bounded AI-generated result,
+and intentionally applies a low-risk single-object change from the admin UI,
+the product surface may use local admin consent with audit instead of a Core
+proposal. External, automated, batch, destructive, high-impact, or
+insufficiently previewed writes still require Core governance review.
 
 The default first-party provider is `npcink-abilities-toolkit`, but Core should
 stay provider-neutral at the base proposal layer: any currently discoverable

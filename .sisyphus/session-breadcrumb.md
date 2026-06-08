@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-08 — Suite consolidation and local admin consent boundary accepted
+
+- **Module**: Core/Adapter/Toolbox product packaging and governance boundary.
+- **Status**: Product direction now allows one Npcink AI plugin or suite entry
+  while keeping proposal, approval, preflight, and audit truth inside a
+  distinct Governance module.
+- **Completed**:
+  - Added ADR-004 to record suite consolidation and local admin consent.
+  - Defined the risk ladder: suggestion-only, single visible local write,
+    single high-impact write, and batch/external/automated/destructive writes.
+  - Documented that low-risk, single-object, fully previewed WordPress admin
+    actions may use local admin consent with audit instead of Core proposal
+    approval.
+  - Preserved Core proposal review for external, automated, batch,
+    destructive, high-impact, or insufficiently previewed AI writes.
+- **Next steps**:
+  - Add a shared operation-classification helper before migrating write flows
+    across modules.
+  - Draft the concrete plugin/suite consolidation plan, including namespaces,
+    module boot order, compatibility redirects, and migration strategy.
+- **Boundary**:
+  - Packaging can consolidate; authority cannot. Co-location does not permit
+    Adapter, Toolbox, or product modules to bypass Governance for high-risk
+    operations.
+
 ## 2026-06-07 — Create-draft HTML proposal input preserved safely
 
 - **Module**: Core proposal persistence and create-draft governance contract.
