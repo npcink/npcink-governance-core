@@ -7,6 +7,10 @@
 
 $root = dirname( __DIR__ );
 
+if ( ! defined( 'ABSPATH' ) ) {
+	define( 'ABSPATH', $root . '/tests/wp-stub/' );
+}
+
 /**
  * Assertion helper.
  *
@@ -827,6 +831,7 @@ npcink_governance_core_assert( false !== strpos( $adr_005, 'shared operation cla
 npcink_governance_core_assert( false !== strpos( $adr_005, 'Future MCP, browser' ) && false !== strpos( $adr_005, 'cloud, or local automation adapters' ), 'ADR-005 preserves future adapter optionality.' );
 
 $operation_classification = npcink_governance_core_read( $root . '/docs/operation-classification-contract.md' );
+$operation_classifier = npcink_governance_core_read( $root . '/includes/Governance/Operation_Classifier.php' );
 foreach (
 	array(
 		'suggestion_only',
@@ -841,6 +846,73 @@ foreach (
 ) {
 	npcink_governance_core_assert( false !== strpos( $operation_classification, $required ), 'Operation classification contract contains required text: ' . $required );
 }
+foreach (
+	array(
+		'suggestion_only',
+		'local_admin_consent',
+		'strong_local_confirmation',
+		'core_proposal_required',
+		'set_featured_image',
+		'batch_plan',
+		'external_adapter',
+		'present_click',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $operation_classifier, $required ), 'Operation classifier contains required text: ' . $required );
+}
+npcink_governance_core_assert( false !== strpos( $operation_classifier, 'operation-classification-v1' ), 'Operation classifier returns a stable policy version.' );
+npcink_governance_core_assert( false !== strpos( $operation_classifier, 'target_ability_id' ), 'Operation classifier requires Core proposal evidence for high-risk writes.' );
+npcink_governance_core_assert( false !== strpos( $main_plugin, 'includes/Autoloader.php' ), 'Main plugin uses the class autoloader for operation classifier loading.' );
+npcink_governance_core_assert( false !== strpos( npcink_governance_core_read( $root . '/includes/Plugin.php' ), 'operation_classifier' ), 'Plugin container exposes the operation classifier.' );
+
+require_once $root . '/includes/Governance/Operation_Classifier.php';
+$classifier = new \Npcink\GovernanceCore\Governance\Operation_Classifier();
+
+$suggestion_classification = $classifier->classify(
+	array(
+		'operation_kind'          => 'suggest',
+		'writes_wordpress_state' => false,
+	)
+);
+npcink_governance_core_assert( 'suggestion_only' === (string) ( $suggestion_classification['classification'] ?? '' ), 'Operation classifier returns suggestion_only for no-write suggestions.' );
+
+$local_consent_classification = $classifier->classify(
+	array(
+		'request_source'       => 'wp_admin_ui',
+		'actor_presence'      => 'present_click',
+		'preview_completeness' => 'exact_final',
+		'scope'                => 'one_object',
+		'reversibility'        => 'easy_undo',
+		'operation_kind'       => 'set_featured_image',
+	)
+);
+npcink_governance_core_assert( 'local_admin_consent' === (string) ( $local_consent_classification['classification'] ?? '' ), 'Operation classifier allows single visible low-risk admin writes.' );
+npcink_governance_core_assert( in_array( 'actor_user_id', (array) ( $local_consent_classification['required_evidence'] ?? array() ), true ), 'Local admin consent requires actor evidence.' );
+
+$strong_confirmation_classification = $classifier->classify(
+	array(
+		'request_source'       => 'wp_admin_ui',
+		'actor_presence'      => 'present_click',
+		'preview_completeness' => 'sufficient',
+		'scope'                => 'one_object',
+		'reversibility'        => 'backup_restore',
+		'operation_kind'       => 'replace_file',
+	)
+);
+npcink_governance_core_assert( 'strong_local_confirmation' === (string) ( $strong_confirmation_classification['classification'] ?? '' ), 'Operation classifier escalates high-impact single-object writes.' );
+
+$batch_classification = $classifier->classify(
+	array(
+		'request_source'       => 'external_adapter',
+		'actor_presence'      => 'delegated',
+		'preview_completeness' => 'partial',
+		'scope'                => 'multiple_objects',
+		'reversibility'        => 'hard_restore',
+		'operation_kind'       => 'batch_plan',
+	)
+);
+npcink_governance_core_assert( 'core_proposal_required' === (string) ( $batch_classification['classification'] ?? '' ), 'Operation classifier requires Core proposal for external batch writes.' );
+npcink_governance_core_assert( in_array( 'target_ability_id', (array) ( $batch_classification['required_evidence'] ?? array() ), true ), 'Core proposal classification requires target ability evidence.' );
 
 $ability_adapter = npcink_governance_core_read( $root . '/includes/Capabilities/Ability_Registry_Adapter.php' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, 'npcink_abilities_toolkit_get_registered' ), 'Ability intake prefers npcink-abilities-toolkit public API.' );

@@ -1,6 +1,7 @@
 # Operation Classification Contract
 
-Status: planning contract.
+Status: contract implemented as the Core `Operation_Classifier` policy helper;
+the first Toolbox and high-risk scenario proofs are not implemented yet.
 
 This contract defines how Npcink modules decide whether an AI-assisted action
 is suggestion-only, eligible for local admin consent, needs strong local
@@ -8,6 +9,14 @@ confirmation, or must enter Core proposal review.
 
 It applies to Core consumers such as Adapter, Toolbox, future MCP adapters,
 browser-agent adapters, cloud-agent adapters, and other product modules.
+
+Core implementation:
+
+- `Npcink\GovernanceCore\Governance\Operation_Classifier`
+- policy version: `operation-classification-v1`
+
+The classifier is intentionally a pure policy helper. It does not create
+proposals, execute writes, record audit events, or decide product UI copy.
 
 ## Classification Values
 

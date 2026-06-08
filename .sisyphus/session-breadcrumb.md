@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-09 — Operation classifier policy helper implemented
+
+- **Module**: Core governance operation classification.
+- **Status**: Core now has a pure `Operation_Classifier` policy helper for
+  deciding between suggestion-only, local admin consent, strong local
+  confirmation, and Core proposal review.
+- **Completed**:
+  - Added `Npcink\GovernanceCore\Governance\Operation_Classifier` with stable
+    `operation-classification-v1` results.
+  - Exposed the classifier through the plugin container without wiring it into
+    REST, proposal creation, or final execution paths.
+  - Added static and executable contract coverage for suggestion-only, low-risk
+    admin-visible single writes, high-impact single writes, and external batch
+    writes.
+  - Updated the operation classification and next-stage docs to mark the policy
+    helper as implemented while leaving scenario proofs for Toolbox/Adapter.
+- **Next steps**:
+  - Prove `local_admin_consent` in Toolbox with single image candidate ->
+    featured image.
+  - Prove `core_proposal_required` with a high-risk batch contrast scenario.
+- **Boundary**:
+  - Classification only. Core still does not execute writes, own Toolbox UX, or
+    replace Adapter/product-module authorization flows.
+
 ## 2026-06-08 — Plugin Check warnings cleared before upload
 
 - **Module**: WordPress.org release package hygiene.

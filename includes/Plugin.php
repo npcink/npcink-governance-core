@@ -12,6 +12,7 @@ use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
 use Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter;
 use Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator;
 use Npcink\GovernanceCore\Governance\Commit_Preflight_Service;
+use Npcink\GovernanceCore\Governance\Operation_Classifier;
 use Npcink\GovernanceCore\Governance\Plan_Proposal_Service;
 use Npcink\GovernanceCore\Governance\Proposal_Repository;
 use Npcink\GovernanceCore\Governance\Proposal_Service;
@@ -72,6 +73,13 @@ final class Plugin {
 	 * @var Approval_Policy_Evaluator|null
 	 */
 	private $approval_policy_evaluator = null;
+
+	/**
+	 * Operation classifier.
+	 *
+	 * @var Operation_Classifier|null
+	 */
+	private $operation_classifier = null;
 
 	/**
 	 * Commit preflight service.
@@ -232,6 +240,19 @@ final class Plugin {
 		}
 
 		return $this->approval_policy_evaluator;
+	}
+
+	/**
+	 * Returns operation classifier.
+	 *
+	 * @return Operation_Classifier
+	 */
+	public function operation_classifier(): Operation_Classifier {
+		if ( null === $this->operation_classifier ) {
+			$this->operation_classifier = new Operation_Classifier();
+		}
+
+		return $this->operation_classifier;
 	}
 
 	/**
