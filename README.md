@@ -78,6 +78,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Admin Menu Standard](docs/admin-menu-standard.md)
 - [Admin Surface Standard](docs/admin-surface-standard.md)
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
+- [Operation Classification Contract](docs/operation-classification-contract.md)
 - [Plan To Proposal Governance](docs/plan-to-proposal-governance.md)
 - [Ability Recipe Orchestration Contract](docs/ability-recipe-orchestration-contract.md)
 - [Article Writing Workflow Contract](docs/article-writing-workflow-contract.md)
@@ -95,6 +96,7 @@ Read the project handoff docs before starting a new implementation session:
 - [ADR-002: No Workflow Runtime In Core](docs/decisions/ADR-002-no-workflow-runtime-in-core.md)
 - [ADR-003: Keep Final Execution Outside Core For The Current Stage](docs/decisions/ADR-003-keep-final-execution-outside-core.md)
 - [ADR-004: Suite Consolidation And Local Admin Consent](docs/decisions/ADR-004-suite-consolidation-and-local-admin-consent.md)
+- [ADR-005: Keep Core Independent And Standardize Channel Adapters](docs/decisions/ADR-005-keep-core-independent-and-standardize-channel-adapters.md)
 
 External agent clients can start from the
 [OpenClaw governance adapter example](examples/openclaw-governance-adapter/README.md).
@@ -126,6 +128,11 @@ Low-risk, single-object, fully previewed actions taken by a present WordPress
 administrator may use local admin consent with audit instead of Core proposal
 approval. External, automated, batch, destructive, high-impact, or
 insufficiently previewed AI writes must still go through Core proposal review.
+ADR-005 makes the current implementation sequence explicit: do not merge Core
+into today's OpenClaw Adapter yet. Keep Core independent, treat OpenClaw
+Adapter as the first channel adapter, standardize the shared channel adapter
+contract, and use the Operation Classification Contract before moving Toolbox
+or adapter flows to local admin consent or Core proposal paths.
 
 The taxonomy terms preview extension proves the same boundary for
 `npcink-abilities-toolkit/propose-post-taxonomy-terms` -> `npcink-abilities-toolkit/set-post-terms`: adapters

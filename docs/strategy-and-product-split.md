@@ -55,6 +55,8 @@ Governance module still owns proposal, approval, preflight, and audit truth;
 Adapter still owns external channel behavior; Toolbox and other product modules
 still own WordPress admin product UX. See
 [ADR-004: Suite Consolidation And Local Admin Consent](decisions/ADR-004-suite-consolidation-and-local-admin-consent.md).
+For the current implementation stage, ADR-005 keeps Core independent while the
+adapter family and operation classification contract stabilize.
 
 ## Core Position
 

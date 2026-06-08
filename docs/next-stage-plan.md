@@ -49,6 +49,10 @@ Not implemented:
 Documented but not implemented:
 
 - Agent/MCP governance entry contract;
+- operation classification contract for local admin consent versus Core
+  proposal review;
+- ADR-005 current-stage decision to keep Core independent while standardizing
+  channel adapters.
 
 ## Current Execution Decision
 
@@ -74,6 +78,11 @@ The current-stage reliability baseline is documented in
 The next implementation priority is fail-closed governance behavior, not
 app-key rotation or expiry automation.
 
+ADR-005 keeps Core independent for the current stage. OpenClaw Adapter remains
+the first channel adapter, but future MCP, browser-agent, cloud-agent, local
+automation, or agency adapters should consume the same Core governance
+contracts instead of inheriting OpenClaw-specific assumptions.
+
 The next article workflow priority is simplification. Article drafting should
 be treated as the local `article_draft_v1` Ability recipe documented in
 [Ability Recipe Orchestration Contract](ability-recipe-orchestration-contract.md),
@@ -98,6 +107,18 @@ research and the current product split both point to the same plan:
 See [Strategy And Product Split](strategy-and-product-split.md). Do not move
 toolbox modules, content generation, provider configuration, or workflow runtime
 into Core while executing this plan.
+
+The next product-boundary implementation should follow the
+[Operation Classification Contract](operation-classification-contract.md):
+
+1. Implement a shared classifier before moving individual write flows.
+2. Prove `local_admin_consent` with one low-risk Toolbox scenario, such as
+   selecting one displayed image candidate as the featured image for one post.
+3. Prove `core_proposal_required` with one high-risk contrast scenario, such as
+   batch image selection, batch SEO updates, or batch article edits.
+
+Those scenario proofs are required, but they should validate the shared
+classification contract instead of becoming private one-off bypasses.
 
 ## Recommended Order
 

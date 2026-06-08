@@ -68,6 +68,21 @@ Core must not implement:
 - final WordPress write execution before idempotency and failure contracts are
   documented, implemented, and tested.
 
+## Channel Adapter Family
+
+OpenClaw Adapter is the first concrete channel adapter, not the only expected
+shape. Future MCP adapters, browser-agent adapters, cloud-agent adapters, local
+automation adapters, or agency adapters should implement the same governance
+contract instead of forking Core behavior.
+
+Core therefore stays independent from any one adapter. Adapter-specific product
+packaging may improve setup, but the governance source of truth remains Core.
+
+All adapters should consult the
+[Operation Classification Contract](operation-classification-contract.md) before
+deciding whether a flow is read-only, local-admin-consent eligible through a
+WordPress admin product surface, or Core-proposal required.
+
 ## Adapter Call Flow
 
 For read-only abilities:

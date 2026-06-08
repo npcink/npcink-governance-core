@@ -166,6 +166,8 @@ foreach (
 		'POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/approve',
 		'POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight',
 		'ADR-004: Suite Consolidation And Local Admin Consent',
+		'ADR-005: Keep Core Independent And Standardize Channel Adapters',
+		'Operation Classification Contract',
 		'local admin consent with audit',
 	) as $required
 ) {
@@ -810,6 +812,7 @@ $adr_001 = npcink_governance_core_read( $root . '/docs/decisions/ADR-001-rebuild
 $adr_002 = npcink_governance_core_read( $root . '/docs/decisions/ADR-002-no-workflow-runtime-in-core.md' );
 $adr_003 = npcink_governance_core_read( $root . '/docs/decisions/ADR-003-keep-final-execution-outside-core.md' );
 $adr_004 = npcink_governance_core_read( $root . '/docs/decisions/ADR-004-suite-consolidation-and-local-admin-consent.md' );
+$adr_005 = npcink_governance_core_read( $root . '/docs/decisions/ADR-005-keep-core-independent-and-standardize-channel-adapters.md' );
 npcink_governance_core_assert( false !== strpos( $adr_001, 'Create a new standalone `npcink-governance-core` plugin' ), 'ADR-001 records rebuild decision.' );
 npcink_governance_core_assert( false !== strpos( $adr_002, '`npcink-governance-core` must not implement a workflow runtime' ), 'ADR-002 bans workflow runtime ownership.' );
 npcink_governance_core_assert( false !== strpos( $adr_003, 'Core remains governance-only' ), 'ADR-003 keeps Core governance-only for the current stage.' );
@@ -819,6 +822,26 @@ npcink_governance_core_assert( false !== strpos( $adr_004, 'Local Admin Consent 
 npcink_governance_core_assert( false !== strpos( $adr_004, 'The same plugin package may contain those modules' ), 'ADR-004 permits package consolidation without authority collapse.' );
 npcink_governance_core_assert( false !== strpos( $adr_004, 'External, automated, batch, destructive, high-impact' ) && false !== strpos( $adr_004, 'previewed AI writes must not use local admin consent' ), 'ADR-004 keeps risky writes behind Core review.' );
 npcink_governance_core_assert( false !== strpos( $adr_004, 'ADR-001, ADR-002, and ADR-003 remain active' ), 'ADR-004 preserves earlier governance ADRs.' );
+npcink_governance_core_assert( false !== strpos( $adr_005, 'Do not merge Core and Adapter as the next implementation step' ), 'ADR-005 defers Core and Adapter merge.' );
+npcink_governance_core_assert( false !== strpos( $adr_005, 'OpenClaw Adapter as the first channel adapter' ), 'ADR-005 treats OpenClaw Adapter as one channel adapter.' );
+npcink_governance_core_assert( false !== strpos( $adr_005, 'shared operation classification contract' ), 'ADR-005 requires shared operation classification.' );
+npcink_governance_core_assert( false !== strpos( $adr_005, 'Future MCP, browser' ) && false !== strpos( $adr_005, 'cloud, or local automation adapters' ), 'ADR-005 preserves future adapter optionality.' );
+
+$operation_classification = npcink_governance_core_read( $root . '/docs/operation-classification-contract.md' );
+foreach (
+	array(
+		'suggestion_only',
+		'local_admin_consent',
+		'strong_local_confirmation',
+		'core_proposal_required',
+		'set one displayed image candidate as the featured image',
+		'batch image selection',
+		'batch SEO updates',
+		'batch article edits',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $operation_classification, $required ), 'Operation classification contract contains required text: ' . $required );
+}
 
 $ability_adapter = npcink_governance_core_read( $root . '/includes/Capabilities/Ability_Registry_Adapter.php' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, 'npcink_abilities_toolkit_get_registered' ), 'Ability intake prefers npcink-abilities-toolkit public API.' );

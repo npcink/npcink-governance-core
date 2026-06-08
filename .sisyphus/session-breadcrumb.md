@@ -1,5 +1,32 @@
 # Session Breadcrumb
 
+## 2026-06-08 — Core independence and operation classification sequence accepted
+
+- **Module**: Core/channel adapter boundary and local consent classification.
+- **Status**: Current implementation direction is not to merge Core into
+  today's OpenClaw Adapter. Core remains the independent governance kernel while
+  adapters standardize against a shared contract.
+- **Completed**:
+  - Added ADR-005 to keep Core independent and standardize channel adapters.
+  - Added the Operation Classification Contract with `suggestion_only`,
+    `local_admin_consent`, `strong_local_confirmation`, and
+    `core_proposal_required`.
+  - Recorded the required proof sequence: first implement the classifier, then
+    prove one low-risk Toolbox local consent scenario and one high-risk Core
+    proposal scenario.
+  - Updated README, Agent/MCP entry, strategy, next-stage, and static
+    contracts so future adapter types do not inherit OpenClaw-specific
+    assumptions.
+- **Next steps**:
+  - Implement the shared classifier before changing individual write flows.
+  - Use single image candidate -> featured image as the first low-risk
+    `local_admin_consent` proof.
+  - Use batch image selection, batch SEO, or batch article edits as the first
+    `core_proposal_required` proof.
+- **Boundary**:
+  - ADR-004 remains a future packaging option. ADR-005 controls the current
+    implementation sequence: contract-first, classifier-first, not merge-first.
+
 ## 2026-06-08 — Gutenberg block proposal keys preserved
 
 - **Module**: Core proposal persistence for `update-post-blocks` governance
