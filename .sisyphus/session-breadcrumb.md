@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-06-08 — Governed AI feedback loop strategy recorded
+
+- **Module**: Product strategy and implementation handoff documentation.
+- **Status**: The first-principles product model now treats WordPress as an
+  observable business interface and AI as a reasoning layer that turns vague
+  site pain into diagnosed, governed, measured deltas.
+- **Completed**:
+  - Added the Governed AI Feedback Loop planning guide with the ladder from
+    article writing to signal-driven closed loops.
+  - Defined Issue Record, Outcome Contract, and Learning Store artifacts so
+    diagnosis can become execution, measurement, and structured improvement.
+  - Identified Content Metadata Delta as the first narrow closed-loop proof:
+    one post, related-content vector context, excerpt/tag/category
+    recommendations, correct authorization path, measurement, and learning.
+  - Added a paste-ready implementation prompt for another AI agent to execute
+    the P0 while preserving Core/Product/Abilities boundaries.
+- **Verification**:
+  - `git diff --check`
+- **Boundary**:
+  - Documentation only. Core remains proposal, approval, preflight, and audit
+    truth; it does not own vector search, metadata recommendation generation,
+    product workbench UX, learning-store behavior, or final WordPress writes.
+
 ## 2026-06-08 — WordPress.org transient prefix review gate tightened
 
 - **Module**: Core approval policy evaluator and WordPress.org release gate.

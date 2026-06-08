@@ -120,6 +120,15 @@ The next product-boundary implementation should follow the
 Those scenario proofs are required, but they should validate the shared
 classification contract instead of becoming private one-off bypasses.
 
+The next product strategy proof can use the
+[Governed AI Feedback Loop](governed-ai-feedback-loop.md) model. A practical P0
+is Content Metadata Delta: one selected post, related-content vector context,
+existing taxonomy inventory, AI recommendations for excerpt/tags/categories,
+human review, the correct authorization path, post-apply checks, and structured
+learning. This proves the loop without treating Core as a content product or
+letting AI create taxonomy terms, batch edit posts, or publish content
+unattended.
+
 ## Recommended Order
 
 ### 1. Proposal Detail Endpoint

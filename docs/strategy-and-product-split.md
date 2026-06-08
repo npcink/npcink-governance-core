@@ -36,6 +36,14 @@ and agent access more platform-native. That lowers the value of simple API
 proxy plugins and raises the value of safe operation governance, ability
 quality, vertical workflows, compliance, and auditability.
 
+The broader product lens is the
+[Governed AI Feedback Loop](governed-ai-feedback-loop.md): product modules
+should turn vague site pain and observed signals into framed problems,
+diagnosed deltas, governed proposals or local consent actions, measured
+outcomes, and structured learning. Core participates as the governance kernel
+for risky WordPress state changes; it does not own the diagnosis workbench,
+vector search, recommendation generation, product workflow, or learning store.
+
 ## Product Layers
 
 | Layer | Project | Responsibility |
@@ -134,6 +142,15 @@ Recommended first product direction:
 High-risk toolbox actions should submit proposals to Core instead of executing
 directly. Examples include CDN purge, restore from backup, destructive cleanup,
 bulk content changes, and external account configuration changes.
+
+A narrow first feedback-loop slice may be the Content Metadata Delta described
+in [Governed AI Feedback Loop](governed-ai-feedback-loop.md): for one existing
+post, use article context, related-content vector evidence, and existing site
+taxonomy to recommend a better excerpt, tags, and categories. This belongs in a
+product or ability-provider layer, not in Core. Existing-term single-post
+updates can use local admin consent only when the operation classifier permits
+it; new term creation, batch updates, external sources, or incomplete previews
+must use stronger review or Core proposal governance.
 
 ## AI And MCP Strategy
 
