@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-06-08 — WordPress.org transient prefix review gate tightened
+
+- **Module**: Core approval policy evaluator and WordPress.org release gate.
+- **Status**: Auto-approval quota transients now expose the
+  `npcink_governance_core` prefix directly at each `get_transient()` and
+  `set_transient()` call site, matching WordPress.org review expectations.
+- **Completed**:
+  - Reworked auto-approval quota metadata to store sanitized suffixes while
+    composing the full transient key at the WordPress API call.
+  - Tightened `composer check:wporg` so variable-only transient keys fail even
+    when the file contains a prefix guard elsewhere.
+  - Updated release/testing docs to record that Plugin Check can miss this
+    reviewer-policy pattern and that transient prefixes must be visible at the
+    call site.
+- **Verification**:
+  - `git diff --check`
+  - `composer test:all`
+  - `composer release:verify`
+  - `composer smoke:wp`
+- **Boundary**:
+  - Release compliance and quota key hygiene only. Core still does not execute
+    final ability writes or own workflow/runtime behavior.
+
 ## 2026-06-08 — Core independence and operation classification sequence accepted
 
 - **Module**: Core/channel adapter boundary and local consent classification.

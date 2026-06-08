@@ -13,6 +13,7 @@ Npcink Governance Core starts with a small but strict test pyramid.
 | Fail-closed fault injection | `composer test:fail-closed` | Inject database and audit persistence failures against Core classes and assert rollback or cleanup. |
 | Full local suite | `composer test:all` | Run lint, static contracts, and fault injection together. |
 | Real WordPress smoke | `composer smoke:wp` | Prove activation, schema creation, REST behavior, and `npcink-abilities-toolkit` integration. |
+| WordPress.org review guard | `composer check:wporg` | Catch locally reproducible reviewer policy patterns that Plugin Check may miss. |
 | Plugin Check release scan | `wp plugin check npcink-governance-core --ignore-warnings` | Catch WordPress.org packaging and runtime security blockers before release. |
 
 ## Static Contract Rules
@@ -26,6 +27,7 @@ Use them to assert:
 - allowed statuses;
 - product boundaries;
 - forbidden legacy behavior;
+- WordPress.org review guard coverage for recurring release-policy issues;
 - shared `npcink-abilities-toolkit` workflow replay fixture structure and
   host-owned write boundary semantics;
 - docs and code stay aligned.
@@ -187,6 +189,12 @@ wp plugin check npcink-governance-core --ignore-warnings \
   --exclude-directories=tests,examples,docs,.sisyphus \
   --exclude-files=README.md,AGENTS.md,.gitignore
 ```
+
+Also run `composer check:wporg` for reviewer-policy patterns that may not
+surface as Plugin Check errors. In particular, option and transient names must
+show the `npcink_governance_core` prefix at the WordPress API call site; a
+variable-only call such as `set_transient( $prefixed_key, ... )` is not enough
+for release review even when runtime code validates the prefix earlier.
 
 ## Forbidden Regression Targets
 

@@ -52,6 +52,38 @@ function npcink_governance_core_wporg_php_files() {
 	return $files;
 }
 
+/**
+ * Asserts option-table transient keys expose the plugin prefix at call sites.
+ *
+ * @param string $relative Relative file path.
+ * @param string $contents File contents.
+ * @return void
+ */
+function npcink_governance_core_wporg_assert_prefixed_transient_calls( $relative, $contents ) {
+	if ( ! preg_match_all( '/\b(get|set)_transient\s*\(\s*([^,\)\r\n]+)/', $contents, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ) {
+		return;
+	}
+
+	foreach ( $matches as $match ) {
+		$function = $match[1][0];
+		$argument = trim( $match[2][0] );
+		$line     = substr_count( substr( $contents, 0, $match[0][1] ), "\n" ) + 1;
+
+		if ( preg_match( '/^\$[A-Za-z_][A-Za-z0-9_]*$/', $argument ) ) {
+			npcink_governance_core_wporg_fail(
+				$relative . ':' . $line . ': Do not pass a variable-only key to ' . $function . '(); make the npcink_governance_core prefix visible at the call site.'
+			);
+			continue;
+		}
+
+		if ( false === strpos( $argument, 'AUTO_APPROVAL_TRANSIENT_PREFIX' ) && ! preg_match( '/[\'"]npcink_governance_core/', $argument ) ) {
+			npcink_governance_core_wporg_fail(
+				$relative . ':' . $line . ': Transient keys must expose an auditable npcink_governance_core prefix at the call site.'
+			);
+		}
+	}
+}
+
 $rules = array(
 	'Do not build paths into wp-admin/includes except the dbDelta upgrade.php activation helper.' => '/wp-admin\/includes\/(?!upgrade\.php)/',
 	'Do not ship inline admin styles through wp_add_inline_style(); use assets/*.css.' => '/wp_add_inline_style\s*\(/',
@@ -82,9 +114,7 @@ foreach ( npcink_governance_core_wporg_php_files() as $file ) {
 		}
 	}
 
-	if ( false !== strpos( $contents, 'set_transient(' ) && false === strpos( $contents, 'AUTO_APPROVAL_TRANSIENT_PREFIX' ) ) {
-		npcink_governance_core_wporg_fail( $relative . ': Dynamic transient keys must have an auditable npcink_governance_core prefix guard.' );
-	}
+	npcink_governance_core_wporg_assert_prefixed_transient_calls( $relative, $contents );
 }
 
 if ( ! empty( $failures ) ) {

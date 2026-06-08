@@ -1059,6 +1059,7 @@ npcink_governance_core_assert( false !== strpos( $proposals_controller, 'expire_
 $proposal_service = npcink_governance_core_read( $root . '/includes/Governance/Proposal_Service.php' );
 $proposal_repository = npcink_governance_core_read( $root . '/includes/Governance/Proposal_Repository.php' );
 $approval_policy_evaluator = npcink_governance_core_read( $root . '/includes/Governance/Approval_Policy_Evaluator.php' );
+$wporg_guard = npcink_governance_core_read( $root . '/scripts/check-wordpress-org-review-rules.php' );
 foreach (
 	array(
 		'Approval_Policy_Evaluator',
@@ -1082,10 +1083,14 @@ foreach (
 		'build-nonproduction-content-cleanup-plan',
 		'npcink-abilities-toolkit/trash-post',
 		'consume_auto_approval_quota',
+		'AUTO_APPROVAL_TRANSIENT_PREFIX . $key_suffix',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $approval_policy_evaluator, $required ), 'Approval policy evaluator contains required text: ' . $required );
 }
+npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'set_transient( $prefixed_key' ), 'Approval policy evaluator does not pass variable-only transient keys.' );
+npcink_governance_core_assert( false !== strpos( $wporg_guard, 'variable-only key' ), 'WordPress.org guard rejects variable-only transient keys.' );
+npcink_governance_core_assert( false !== strpos( $wporg_guard, 'prefix visible at the call site' ), 'WordPress.org guard requires transient prefixes at the call site.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'STATUS_EXPIRED' ), 'Proposal repository defines expired status.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'STATUS_ARCHIVED' ), 'Proposal repository defines archived status.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'list_stale_pending' ), 'Proposal repository can list stale pending proposals.' );

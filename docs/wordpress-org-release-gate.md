@@ -24,12 +24,19 @@ The local `check:wporg` guard blocks recurring review problems:
 - legacy `mai_core` / `mai_` Magick AI token or id prefixes in release PHP;
 - raw `SELECT` strings passed directly to `$wpdb->get_var()`;
 - inline SQL `WHERE` assembly with `implode()`;
-- dynamic transient keys without an auditable
-  `npcink_governance_core` prefix guard.
+- dynamic transient keys whose `get_transient()` or `set_transient()` call site
+  does not visibly include the `npcink_governance_core` prefix.
 
 When WordPress.org sends a review email, decode the current top-level message,
 extract every cited file and line, fix the whole pattern class, and add a local
 guard when the pattern is statically checkable.
+
+For option and transient names, do not rely on cross-function proof such as
+"this variable was already prefix-checked." WordPress.org review may flag a
+variable-only call like `set_transient( $prefixed_key, ... )` even when the key
+is safe at runtime. Build the key so the prefix is visible at the WordPress API
+call site, for example `set_transient( PREFIX . $suffix, ... )`, and keep
+`composer check:wporg` strict enough to reject variable-only transient keys.
 
 ## Current Submission Identity
 

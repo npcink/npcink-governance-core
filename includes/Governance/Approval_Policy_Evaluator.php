@@ -148,17 +148,17 @@ final class Approval_Policy_Evaluator {
 
 		$quota = is_array( $policy['auto_approval_quota'] ?? null ) ? $policy['auto_approval_quota'] : array();
 		foreach ( array( 'hour', 'day' ) as $window ) {
-			$prefixed_key = sanitize_key( (string) ( $quota[ $window . '_key' ] ?? '' ) );
-			$limit        = absint( $quota[ $window . '_limit' ] ?? 0 );
-			$ttl          = absint( $quota[ $window . '_ttl' ] ?? 0 );
-			if ( ! $this->is_auto_approval_transient_key( $prefixed_key ) || $limit <= 0 || $ttl <= 0 ) {
+			$key_suffix = $this->auto_approval_transient_key_suffix( $quota, $window );
+			$limit      = absint( $quota[ $window . '_limit' ] ?? 0 );
+			$ttl        = absint( $quota[ $window . '_ttl' ] ?? 0 );
+			if ( '' === $key_suffix || $limit <= 0 || $ttl <= 0 ) {
 				return false;
 			}
-			$current = function_exists( 'get_transient' ) ? absint( get_transient( $prefixed_key ) ) : 0;
+			$current = function_exists( 'get_transient' ) ? absint( get_transient( self::AUTO_APPROVAL_TRANSIENT_PREFIX . $key_suffix ) ) : 0;
 			if ( $current >= $limit ) {
 				return false;
 			}
-			if ( function_exists( 'set_transient' ) && false === set_transient( $prefixed_key, $current + 1, $ttl ) ) {
+			if ( function_exists( 'set_transient' ) && false === set_transient( self::AUTO_APPROVAL_TRANSIENT_PREFIX . $key_suffix, $current + 1, $ttl ) ) {
 				return false;
 			}
 		}
@@ -284,16 +284,16 @@ final class Approval_Policy_Evaluator {
 			$subject = 'app:' . sanitize_key( (string) $auth['app_id'] );
 		}
 
-		$base = self::AUTO_APPROVAL_TRANSIENT_PREFIX . sanitize_key( $mode ) . '_' . sanitize_key( str_replace( ':', '_', $subject ) );
+		$base_suffix = sanitize_key( $mode ) . '_' . sanitize_key( str_replace( ':', '_', $subject ) );
 
 		return array(
-			'subject'    => $subject,
-			'hour_key'   => $base . '_hour_' . gmdate( 'YmdH' ),
-			'hour_limit' => self::AUTO_APPROVAL_HOURLY_LIMIT,
-			'hour_ttl'   => defined( 'HOUR_IN_SECONDS' ) ? HOUR_IN_SECONDS : 3600,
-			'day_key'    => $base . '_day_' . gmdate( 'Ymd' ),
-			'day_limit'  => self::AUTO_APPROVAL_DAILY_LIMIT,
-			'day_ttl'    => defined( 'DAY_IN_SECONDS' ) ? DAY_IN_SECONDS : 86400,
+			'subject'     => $subject,
+			'hour_suffix' => $base_suffix . '_hour_' . gmdate( 'YmdH' ),
+			'hour_limit'  => self::AUTO_APPROVAL_HOURLY_LIMIT,
+			'hour_ttl'    => defined( 'HOUR_IN_SECONDS' ) ? HOUR_IN_SECONDS : 3600,
+			'day_suffix'  => $base_suffix . '_day_' . gmdate( 'Ymd' ),
+			'day_limit'   => self::AUTO_APPROVAL_DAILY_LIMIT,
+			'day_ttl'     => defined( 'DAY_IN_SECONDS' ) ? DAY_IN_SECONDS : 86400,
 		);
 	}
 
@@ -305,12 +305,12 @@ final class Approval_Policy_Evaluator {
 	 */
 	private function auto_approval_quota_available( array $quota ): bool {
 		foreach ( array( 'hour', 'day' ) as $window ) {
-			$prefixed_key = sanitize_key( (string) ( $quota[ $window . '_key' ] ?? '' ) );
-			$limit        = absint( $quota[ $window . '_limit' ] ?? 0 );
-			if ( ! $this->is_auto_approval_transient_key( $prefixed_key ) || $limit <= 0 ) {
+			$key_suffix = $this->auto_approval_transient_key_suffix( $quota, $window );
+			$limit      = absint( $quota[ $window . '_limit' ] ?? 0 );
+			if ( '' === $key_suffix || $limit <= 0 ) {
 				return false;
 			}
-			$current = function_exists( 'get_transient' ) ? absint( get_transient( $prefixed_key ) ) : 0;
+			$current = function_exists( 'get_transient' ) ? absint( get_transient( self::AUTO_APPROVAL_TRANSIENT_PREFIX . $key_suffix ) ) : 0;
 			if ( $current >= $limit ) {
 				return false;
 			}
@@ -320,12 +320,23 @@ final class Approval_Policy_Evaluator {
 	}
 
 	/**
-	 * Returns whether a transient key belongs to Core auto-approval quota.
+	 * Returns a sanitized transient key suffix for one quota window.
 	 *
-	 * @param string $key Transient key.
-	 * @return bool
+	 * @param array<string,mixed> $quota Quota metadata.
+	 * @param string              $window Quota window.
+	 * @return string
 	 */
-	private function is_auto_approval_transient_key( string $key ): bool {
-		return 0 === strpos( $key, self::AUTO_APPROVAL_TRANSIENT_PREFIX );
+	private function auto_approval_transient_key_suffix( array $quota, string $window ): string {
+		$suffix = sanitize_key( (string) ( $quota[ $window . '_suffix' ] ?? '' ) );
+		if ( '' !== $suffix ) {
+			return $suffix;
+		}
+
+		$prefixed_key = sanitize_key( (string) ( $quota[ $window . '_key' ] ?? '' ) );
+		if ( 0 === strpos( $prefixed_key, self::AUTO_APPROVAL_TRANSIENT_PREFIX ) ) {
+			return substr( $prefixed_key, strlen( self::AUTO_APPROVAL_TRANSIENT_PREFIX ) );
+		}
+
+		return '';
 	}
 }
