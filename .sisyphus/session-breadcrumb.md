@@ -1,5 +1,36 @@
 # Session Breadcrumb
 
+## 2026-06-09 — High-risk article/media batch Core proof implemented
+
+- **Module**: Core operation classification contract and Toolbox article/media
+  batch handoff verification.
+- **Status**: The high-risk contrast proof is now implemented: reviewed
+  article/media batch plans remain `core_proposal_required` and become one
+  Core `plan_to_proposal_batch`, not Local Admin Consent.
+- **Completed**:
+  - Added Core classifier coverage showing a wp-admin batch image plan still
+    routes to Core proposal review because it touches multiple objects.
+  - Documented the article/media batch proof in Core README, governance
+    contract, operation classification contract, and next-stage plan.
+  - Added Toolbox smoke coverage for
+    `npcink-toolbox/build-article-media-batch-write-plan` through Core
+    `/proposals/from-plan`.
+  - Verified the high-risk batch proof does not create posts, upload
+    attachments, or emit `local_admin_consent.*` audit events during proposal
+    intake.
+- **Verification**:
+  - In `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+  - In `/Users/muze/gitee/magick-ai-toolbox`: `composer validate --no-check-publish`
+  - In `/Users/muze/gitee/magick-ai-toolbox`: `composer test:all`
+  - In `/Users/muze/gitee/magick-ai-toolbox`:
+    `composer smoke:article-media-batch-core`
+- **Next steps**:
+  - Use the same classifier contract for any future single high-impact write
+    proof before considering strong local confirmation UX.
+- **Boundary**:
+  - No direct batch write, media import, metadata update, featured-image
+    setting, proposal approval, preflight, or Core execution was added.
+
 ## 2026-06-09 — Local Admin Consent featured-image proof implemented
 
 - **Module**: Core audit hook and Toolbox editor featured-image local consent.

@@ -839,9 +839,8 @@ foreach (
 		'strong_local_confirmation',
 		'core_proposal_required',
 		'set one displayed existing WordPress image attachment as',
-		'batch image selection',
-		'batch SEO updates',
-		'batch article edits',
+		'reviewed article plus image batch handoff',
+		'plan_to_proposal_batch',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $operation_classification, $required ), 'Operation classification contract contains required text: ' . $required );
@@ -892,6 +891,19 @@ $local_consent_classification = $classifier->classify(
 );
 npcink_governance_core_assert( 'local_admin_consent' === (string) ( $local_consent_classification['classification'] ?? '' ), 'Operation classifier allows single visible low-risk admin writes.' );
 npcink_governance_core_assert( in_array( 'actor_user_id', (array) ( $local_consent_classification['required_evidence'] ?? array() ), true ), 'Local admin consent requires actor evidence.' );
+
+$batch_featured_images_classification = $classifier->classify(
+	array(
+		'request_source'       => 'wp_admin_ui',
+		'actor_presence'      => 'present_click',
+		'preview_completeness' => 'partial',
+		'scope'                => 'multiple_objects',
+		'reversibility'        => 'backup_restore',
+		'operation_kind'       => 'batch_plan',
+	)
+);
+npcink_governance_core_assert( 'core_proposal_required' === (string) ( $batch_featured_images_classification['classification'] ?? '' ), 'Operation classifier sends batch image selection to Core proposal review even from wp-admin.' );
+npcink_governance_core_assert( in_array( 'scope_not_single_object', (array) ( $batch_featured_images_classification['reasons'] ?? array() ), true ), 'Batch image selection is rejected from local consent because it touches multiple objects.' );
 
 $strong_confirmation_classification = $classifier->classify(
 	array(

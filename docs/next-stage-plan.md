@@ -115,8 +115,10 @@ The next product-boundary implementation should use the
 1. Completed: prove `local_admin_consent` with the narrow Toolbox scenario of
    setting one displayed existing image attachment as the current post's
    featured image, with Core-owned audit and no proposal.
-2. Next: prove `core_proposal_required` with one high-risk contrast scenario, such as
-   batch image selection, batch SEO updates, or batch article edits.
+2. Completed: prove `core_proposal_required` with the high-risk Toolbox
+   scenario of a reviewed article plus image batch handoff. That proof groups
+   draft creation, media upload, media metadata, and featured-image actions
+   into one Core batch proposal and does not use Local Admin Consent.
 
 Those scenario proofs are required, but they should validate the shared
 classification contract instead of becoming private one-off bypasses.

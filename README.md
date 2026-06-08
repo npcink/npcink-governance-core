@@ -134,6 +134,10 @@ Core exposes only an audit hook for this path:
 `npcink_governance_core_record_local_admin_consent` records bounded
 `local_admin_consent.*` events without creating proposals, approving proposals,
 preflighting commits, or executing abilities.
+The high-risk contrast is still Core proposal review: reviewed article/media
+batch plans with draft creation, media upload, media metadata, and
+featured-image actions are admitted only as a `plan_to_proposal_batch` through
+`POST /proposals/from-plan`; they do not use Local Admin Consent.
 ADR-005 makes the current implementation sequence explicit: do not merge Core
 into today's OpenClaw Adapter yet. Keep Core independent, treat OpenClaw
 Adapter as the first channel adapter, standardize the shared channel adapter

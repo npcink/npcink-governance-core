@@ -120,20 +120,22 @@ Acceptance:
 
 ### High-Risk Core Proof
 
-Candidate scenarios:
-
-- batch image selection;
-- batch SEO updates;
-- batch article edits.
+Implemented scenario: reviewed article plus image batch handoff, where one
+operator-reviewed batch creates draft actions, media upload actions, media
+metadata actions, and featured-image actions for article/image pairs.
 
 Expected classification: `core_proposal_required`.
 
 Acceptance:
 
-- the plan creates a Core proposal;
+- the operation affects more than one target or action;
+- the operation includes media import, media metadata, and featured-image
+  actions rather than one existing attachment assignment;
+- Core stores one reviewable `plan_to_proposal_batch` proposal;
 - preview evidence is preserved for each affected object or write action;
-- approval and commit preflight are required;
+- proposal input and preview remain dry-run and non-commit;
 - Adapter or a product module executes only after approved preflight;
+- no local admin consent audit event or bypass is available;
 - Core remains proposal, approval, preflight, and audit truth.
 
 ## Non-Goals

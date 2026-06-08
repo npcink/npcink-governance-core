@@ -121,6 +121,10 @@ allowlisted draft/media actions such as `npcink-abilities-toolkit/create-draft`,
 `npcink-abilities-toolkit/upload-media-from-url`, `npcink-abilities-toolkit/update-media-details`, and
 `npcink-abilities-toolkit/set-post-featured-image`. Core stores the grouped proposal only; it
 does not search images, import media, set featured images, or execute writes.
+This handoff is the high-risk contrast for Local Admin Consent: because it
+combines multiple article/media actions and includes media import plus
+featured-image writes, it must stay `core_proposal_required` and be stored as
+one reviewable `plan_to_proposal_batch`.
 
 The image candidate adoption handoff is separate from article generation and
 media derivative optimization. Core accepts
