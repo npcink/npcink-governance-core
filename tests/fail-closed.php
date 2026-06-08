@@ -601,6 +601,16 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
+			'npcink-toolbox/build-content-metadata-apply-plan' => array(
+				'ability_id'        => 'npcink-toolbox/build-content-metadata-apply-plan',
+				'label'             => 'Build Content Metadata Apply Plan',
+				'risk_level'        => 'read',
+				'requires_approval' => false,
+				'capability'        => 'manage_options',
+				'required_scopes'   => array( 'cap.toolbox.workflow_suggest' ),
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
 			'npcink-abilities-toolkit/build-media-optimization-plan' => array(
 				'ability_id'        => 'npcink-abilities-toolkit/build-media-optimization-plan',
 				'label'             => 'Build Media Optimization Plan',
@@ -1822,6 +1832,132 @@ function npcink_governance_core_fail_closed_site_knowledge_review_plan(): array 
 	);
 }
 
+/**
+ * Creates a representative content metadata apply plan.
+ *
+ * @return array<string,mixed>
+ */
+function npcink_governance_core_fail_closed_content_metadata_apply_plan(): array {
+	return array(
+		'artifact_type'          => 'content_metadata_apply_plan',
+		'composition_role'       => 'core_content_metadata_apply_plan',
+		'version'                => 1,
+		'batch_id'               => 'content_metadata_apply_fault_injection',
+		'requires_approval'      => true,
+		'dry_run'                => true,
+		'commit_execution'       => false,
+		'proposal_mode'          => 'batch',
+		'batch_approval'         => true,
+		'write_posture'          => 'core_proposal_handoff',
+		'direct_wordpress_write' => false,
+		'post'                   => array(
+			'post_id'     => 1493,
+			'post_type'   => 'post',
+			'post_status' => 'draft',
+			'title'       => 'Metadata review target',
+		),
+		'accepted_choices'       => array(
+			'excerpt_selected' => true,
+			'category_ids'     => array( 31 ),
+			'tag_ids'          => array( 41, 42 ),
+			'new_term_policy'  => 'manual_review_only_no_create_term_action',
+		),
+		'evidence_refs'          => array(
+			array(
+				'id'      => 'target-post',
+				'type'    => 'target_post',
+				'post_id' => 1493,
+			),
+		),
+		'new_term_candidates'    => array(
+			array(
+				'name'   => 'Review Only Term',
+				'status' => 'review_only_vocabulary_gap',
+			),
+		),
+		'preview'                => array(
+			array(
+				'action_id' => 'content_metadata_apply',
+				'post_id'   => 1493,
+				'before'    => array(
+					'excerpt'      => '',
+					'category_ids' => array(),
+					'tag_ids'      => array(),
+				),
+				'after_suggestion' => array(
+					'excerpt'       => 'Reviewed metadata excerpt.',
+					'category_ids'  => array( 31 ),
+					'category_mode' => 'append',
+					'tag_ids'       => array( 41, 42 ),
+					'tag_mode'      => 'append',
+				),
+			),
+		),
+		'manual_review'          => array(
+			array(
+				'code'   => 'new_term_candidates_not_applied',
+				'fields' => array( 'new_term_candidates' ),
+			),
+		),
+		'write_actions'          => array(
+			array(
+				'action_id'         => 'apply_selected_excerpt',
+				'target_ability_id' => 'npcink-abilities-toolkit/update-post',
+				'input'             => array(
+					'post_id'         => 1493,
+					'excerpt'         => 'Reviewed metadata excerpt.',
+					'dry_run'         => true,
+					'commit'          => false,
+					'idempotency_key' => 'metadata-excerpt-fixture',
+				),
+				'risk'              => 'low',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+			array(
+				'action_id'         => 'assign_existing_categories',
+				'target_ability_id' => 'npcink-abilities-toolkit/set-post-terms',
+				'input'             => array(
+					'post_id'         => 1493,
+					'taxonomy'        => 'category',
+					'mode'            => 'append',
+					'term_ids'        => array( 31 ),
+					'create_missing'  => false,
+					'dry_run'         => true,
+					'commit'          => false,
+					'idempotency_key' => 'metadata-categories-fixture',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+			array(
+				'action_id'         => 'assign_existing_tags',
+				'target_ability_id' => 'npcink-abilities-toolkit/set-post-terms',
+				'input'             => array(
+					'post_id'         => 1493,
+					'taxonomy'        => 'post_tag',
+					'mode'            => 'append',
+					'term_ids'        => array( 41, 42 ),
+					'create_missing'  => false,
+					'dry_run'         => true,
+					'commit'          => false,
+					'idempotency_key' => 'metadata-tags-fixture',
+				),
+				'risk'              => 'low',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+		),
+		'risk'                   => array(
+			'level' => 'medium',
+		),
+	);
+}
+
 $proposal_table = 'wp_npcink_governance_core_proposals';
 $audit_table    = 'wp_npcink_governance_core_audit_log';
 $app_table      = 'wp_npcink_governance_core_app_keys';
@@ -2161,6 +2297,66 @@ $site_knowledge_missing_evidence['evidence_refs'] = array();
 $site_knowledge_missing_evidence_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-site-knowledge-review-plan', $site_knowledge_missing_evidence );
 npcink_governance_core_fail_closed_assert( is_wp_error( $site_knowledge_missing_evidence_result ), 'Site Knowledge review plan without evidence is rejected.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_site_knowledge_evidence_missing' === $site_knowledge_missing_evidence_result->get_error_code(), 'Site Knowledge missing evidence rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$content_metadata_plan = npcink_governance_core_fail_closed_content_metadata_apply_plan();
+$content_metadata_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-content-metadata-apply-plan', $content_metadata_plan, array(), array( 'source' => 'toolbox_content_metadata_apply' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $content_metadata_result ), 'Valid content metadata apply plan creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $content_metadata_result['proposal_count'] ?? 0 ), 'Valid content metadata apply plan creates one batch proposal.' );
+$content_metadata_proposal = is_array( $content_metadata_result['proposals'][0] ?? null ) ? $content_metadata_result['proposals'][0] : array();
+npcink_governance_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $content_metadata_proposal['preview']['source']['type'] ?? '' ), 'Content metadata apply plan stores batch proposal source.' );
+npcink_governance_core_fail_closed_assert( 3 === count( (array) ( $content_metadata_proposal['input']['write_actions'] ?? array() ) ), 'Content metadata apply proposal stores excerpt, category, and tag actions.' );
+npcink_governance_core_fail_closed_assert( isset( $content_metadata_proposal['preview']['content_metadata_apply'] ), 'Content metadata apply preview is preserved in the proposal.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$content_metadata_title_update = npcink_governance_core_fail_closed_content_metadata_apply_plan();
+$content_metadata_title_update['write_actions'][0]['input']['title'] = 'Unexpected title write';
+$content_metadata_title_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-content-metadata-apply-plan', $content_metadata_title_update );
+npcink_governance_core_fail_closed_assert( is_wp_error( $content_metadata_title_result ), 'Content metadata apply plan with title update is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_content_metadata_update_field_rejected' === $content_metadata_title_result->get_error_code(), 'Content metadata title update rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$content_metadata_create_missing = npcink_governance_core_fail_closed_content_metadata_apply_plan();
+$content_metadata_create_missing['write_actions'][2]['input']['create_missing'] = true;
+$content_metadata_create_missing['write_actions'][2]['input']['terms'] = array( 'New Review Term' );
+$content_metadata_create_missing_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-content-metadata-apply-plan', $content_metadata_create_missing );
+npcink_governance_core_fail_closed_assert( is_wp_error( $content_metadata_create_missing_result ), 'Content metadata apply plan with create_missing terms is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_content_metadata_create_missing_rejected' === $content_metadata_create_missing_result->get_error_code(), 'Content metadata create_missing rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$content_metadata_taxonomy = npcink_governance_core_fail_closed_content_metadata_apply_plan();
+$content_metadata_taxonomy['write_actions'][1]['input']['taxonomy'] = 'product_cat';
+$content_metadata_taxonomy_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-content-metadata-apply-plan', $content_metadata_taxonomy );
+npcink_governance_core_fail_closed_assert( is_wp_error( $content_metadata_taxonomy_result ), 'Content metadata apply plan with unsupported taxonomy is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_content_metadata_taxonomy_rejected' === $content_metadata_taxonomy_result->get_error_code(), 'Content metadata taxonomy rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$content_metadata_missing_controls = npcink_governance_core_fail_closed_content_metadata_apply_plan();
+unset( $content_metadata_missing_controls['write_actions'][1]['input']['dry_run'], $content_metadata_missing_controls['write_actions'][1]['input']['commit'] );
+$content_metadata_missing_controls_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-content-metadata-apply-plan', $content_metadata_missing_controls );
+npcink_governance_core_fail_closed_assert( is_wp_error( $content_metadata_missing_controls_result ), 'Content metadata apply plan without explicit dry_run/commit controls is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_content_metadata_commit_rejected' === $content_metadata_missing_controls_result->get_error_code(), 'Content metadata missing control rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$content_metadata_term_extra = npcink_governance_core_fail_closed_content_metadata_apply_plan();
+$content_metadata_term_extra['write_actions'][1]['input']['status'] = 'publish';
+$content_metadata_term_extra_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-content-metadata-apply-plan', $content_metadata_term_extra );
+npcink_governance_core_fail_closed_assert( is_wp_error( $content_metadata_term_extra_result ), 'Content metadata apply plan with extra term action fields is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_content_metadata_term_field_rejected' === $content_metadata_term_extra_result->get_error_code(), 'Content metadata term field rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$content_metadata_term_ids_string = npcink_governance_core_fail_closed_content_metadata_apply_plan();
+$content_metadata_term_ids_string['write_actions'][2]['input']['term_ids'] = '41,42';
+$content_metadata_term_ids_string_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-content-metadata-apply-plan', $content_metadata_term_ids_string );
+npcink_governance_core_fail_closed_assert( is_wp_error( $content_metadata_term_ids_string_result ), 'Content metadata apply plan with non-array term_ids is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_content_metadata_term_ids_missing' === $content_metadata_term_ids_string_result->get_error_code(), 'Content metadata term_ids type rejection uses stable error code.' );
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();
 $wpdb->fail_insert_tables[] = $proposal_table;

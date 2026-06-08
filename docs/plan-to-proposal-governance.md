@@ -21,6 +21,7 @@ an execution bridge.
 - `npcink-toolbox/build-article-media-batch-write-plan`
 - `npcink-toolbox/build-image-candidate-adoption-plan`
 - `npcink-toolbox/build-site-knowledge-review-plan`
+- `npcink-toolbox/build-content-metadata-apply-plan`
 
 The `npcink-abilities-toolkit/*` planning abilities belong to `npcink-abilities-toolkit`; the
 Toolbox article and image candidate handoffs belong to `npcink-toolbox`. They are executed
@@ -34,6 +35,12 @@ Cloud Site Knowledge agent handoff into local Core review. The plan must carry
 evidence refs and create only a blocked draft-review proposal with human
 `title` and `content` input still required. It is not an autonomous article
 writer, Cloud write path, or approval/preflight bypass.
+
+`npcink-toolbox/build-content-metadata-apply-plan` is the reviewed metadata
+choice handoff from the Toolbox editor. It may package accepted excerpt,
+existing category, and existing tag choices into dry-run `write_actions`, but it
+must not create terms, mutate SEO fields, rewrite content, or claim Toolbox
+direct write authority.
 
 ## Boundary
 
@@ -115,6 +122,25 @@ recommendations, rewrite article content, approve the proposal, or execute the
 post update. Adapter or the local host still performs final per-action
 allowlist, schema, idempotency, and execution checks after Core approval and
 commit preflight.
+
+`npcink-toolbox/build-content-metadata-apply-plan` is the bounded local handoff
+for the user intent "apply these reviewed article metadata choices" after
+Toolbox has produced a `content_metadata_delta` and the operator has accepted
+specific choices. It must return `artifact_type=content_metadata_apply_plan`,
+`proposal_mode=batch`, `batch_approval=true`, `requires_approval=true`,
+`dry_run=true`, `commit_execution=false`, `direct_wordpress_write=false`, and a
+small set of reviewed actions for one target post. Core accepts only
+`npcink-abilities-toolkit/update-post` actions that update `excerpt`, and
+`npcink-abilities-toolkit/set-post-terms` actions that target `category` or
+`post_tag` with existing `term_ids`, `create_missing=false`, `dry_run=true`, and
+`commit=false`. Core rejects title/content updates, SEO writes, missing-term
+creation, named `terms`, unsupported taxonomies, and remove-mode term changes.
+
+The generated batch proposal preserves `preview.content_metadata_apply` with the
+target post id, accepted choices, evidence refs, new-term candidate count, and
+`direct_wordpress_write=false`. Core does not generate metadata suggestions,
+approve the proposal, execute the write, create taxonomy terms, store feedback,
+or maintain a learning loop.
 
 Article writing is a local Ability recipe, not a Cloud writing feature. Cloud
 must not produce article drafts, `article_write_plan` candidates, or bulk

@@ -38,6 +38,7 @@ final class Plan_Proposal_Service {
 		'npcink-toolbox/build-article-media-batch-write-plan'                => true,
 		'npcink-toolbox/build-image-candidate-adoption-plan'                 => true,
 		'npcink-toolbox/build-site-knowledge-review-plan'                    => true,
+		'npcink-toolbox/build-content-metadata-apply-plan'                   => true,
 	);
 
 	private const ARTICLE_BATCH_MAX_ACTIONS = 5;
@@ -156,6 +157,13 @@ final class Plan_Proposal_Service {
 			$site_knowledge_contract_error = $this->validate_site_knowledge_review_plan_contract( $plan );
 			if ( is_wp_error( $site_knowledge_contract_error ) ) {
 				return $site_knowledge_contract_error;
+			}
+		}
+
+		if ( 'npcink-toolbox/build-content-metadata-apply-plan' === $plan_ability_id ) {
+			$content_metadata_contract_error = $this->validate_content_metadata_apply_plan_contract( $plan );
+			if ( is_wp_error( $content_metadata_contract_error ) ) {
+				return $content_metadata_contract_error;
 			}
 		}
 
@@ -866,6 +874,224 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Validates a Toolbox content metadata apply plan from reviewed editor choices.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_content_metadata_apply_plan_contract( array $plan ) {
+		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
+		if ( 'content_metadata_apply_plan' !== $artifact_type ) {
+			return new WP_Error(
+				'npcink_governance_core_content_metadata_plan_invalid',
+				__( 'Content metadata apply plans must declare artifact_type=content_metadata_apply_plan.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true === (bool) ( $plan['direct_wordpress_write'] ?? false ) ) {
+			return new WP_Error(
+				'npcink_governance_core_content_metadata_direct_write_rejected',
+				__( 'Content metadata apply plans must not claim direct WordPress write authority.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true !== (bool) ( $plan['batch_approval'] ?? false ) || 'batch' !== sanitize_key( (string) ( $plan['proposal_mode'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_content_metadata_batch_required',
+				__( 'Content metadata apply plans must explicitly request one batch proposal approval.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$post = is_array( $plan['post'] ?? null ) ? $plan['post'] : array();
+		$post_id = absint( $post['post_id'] ?? ( $plan['target_post_id'] ?? 0 ) );
+		if ( $post_id <= 0 ) {
+			return new WP_Error(
+				'npcink_governance_core_content_metadata_post_missing',
+				__( 'Content metadata apply plans must target one post.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( count( $write_actions ) < 1 || count( $write_actions ) > 3 ) {
+			return new WP_Error(
+				'npcink_governance_core_content_metadata_actions_rejected',
+				__( 'Content metadata apply plans must include one to three reviewed metadata actions.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$allowed_targets = array(
+			'npcink-abilities-toolkit/update-post'      => true,
+			'npcink-abilities-toolkit/set-post-terms'  => true,
+		);
+
+		foreach ( $write_actions as $action_index => $action ) {
+			if ( ! is_array( $action ) ) {
+				return new WP_Error(
+					'npcink_governance_core_content_metadata_action_invalid',
+					__( 'Content metadata apply actions must be objects.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+
+			$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
+			if ( ! isset( $allowed_targets[ $target_ability_id ] ) ) {
+				return new WP_Error(
+					'npcink_governance_core_content_metadata_target_rejected',
+					__( 'Content metadata apply plans may target only excerpt updates and existing taxonomy term assignment.', 'npcink-governance-core' ),
+					array(
+						'status'            => 422,
+						'action_index'      => $action_index,
+						'target_ability_id' => $target_ability_id,
+					)
+				);
+			}
+
+			$input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+			if ( absint( $input['post_id'] ?? 0 ) !== $post_id ) {
+				return new WP_Error(
+					'npcink_governance_core_content_metadata_post_mismatch',
+					__( 'Content metadata apply actions must target the plan post.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+
+			if ( ! array_key_exists( 'dry_run', $input ) || true !== $input['dry_run'] || ! array_key_exists( 'commit', $input ) || false !== $input['commit'] ) {
+				return new WP_Error(
+					'npcink_governance_core_content_metadata_commit_rejected',
+					__( 'Content metadata apply actions must remain dry-run and must not request commit.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+
+			if ( 'npcink-abilities-toolkit/update-post' === $target_ability_id ) {
+				$allowed_input_keys = array(
+					'post_id'          => true,
+					'excerpt'          => true,
+					'dry_run'          => true,
+					'commit'           => true,
+					'idempotency_key'  => true,
+				);
+				foreach ( array_keys( $input ) as $input_key ) {
+					if ( ! isset( $allowed_input_keys[ (string) $input_key ] ) ) {
+						return new WP_Error(
+							'npcink_governance_core_content_metadata_update_field_rejected',
+							__( 'Content metadata update-post actions may update only the excerpt.', 'npcink-governance-core' ),
+							array(
+								'status'       => 422,
+								'action_index' => $action_index,
+								'field'        => sanitize_key( (string) $input_key ),
+							)
+						);
+					}
+				}
+				if ( '' === trim( sanitize_textarea_field( (string) ( $input['excerpt'] ?? '' ) ) ) ) {
+					return new WP_Error(
+						'npcink_governance_core_content_metadata_excerpt_missing',
+						__( 'Content metadata update-post actions must include a reviewed excerpt.', 'npcink-governance-core' ),
+						array(
+							'status'       => 422,
+							'action_index' => $action_index,
+						)
+					);
+				}
+				continue;
+			}
+
+			$allowed_input_keys = array(
+				'post_id'          => true,
+				'taxonomy'         => true,
+				'mode'             => true,
+				'term_ids'         => true,
+				'terms'            => true,
+				'create_missing'   => true,
+				'dry_run'          => true,
+				'commit'           => true,
+				'idempotency_key'  => true,
+			);
+			foreach ( array_keys( $input ) as $input_key ) {
+				if ( ! isset( $allowed_input_keys[ (string) $input_key ] ) ) {
+					return new WP_Error(
+						'npcink_governance_core_content_metadata_term_field_rejected',
+						__( 'Content metadata term actions may assign only reviewed existing term ids.', 'npcink-governance-core' ),
+						array(
+							'status'       => 422,
+							'action_index' => $action_index,
+							'field'        => sanitize_key( (string) $input_key ),
+						)
+					);
+				}
+			}
+
+			$taxonomy = sanitize_key( (string) ( $input['taxonomy'] ?? '' ) );
+			if ( ! in_array( $taxonomy, array( 'category', 'post_tag' ), true ) ) {
+				return new WP_Error(
+					'npcink_governance_core_content_metadata_taxonomy_rejected',
+					__( 'Content metadata term actions may target only category or post_tag.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+						'taxonomy'     => $taxonomy,
+					)
+				);
+			}
+
+			$mode = sanitize_key( (string) ( $input['mode'] ?? 'append' ) );
+			if ( ! in_array( $mode, array( 'append', 'replace' ), true ) ) {
+				return new WP_Error(
+					'npcink_governance_core_content_metadata_mode_rejected',
+					__( 'Content metadata term actions may append or replace existing terms only.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+						'mode'         => $mode,
+					)
+				);
+			}
+
+			$term_ids = is_array( $input['term_ids'] ?? null )
+				? array_values( array_filter( array_map( 'absint', $input['term_ids'] ) ) )
+				: array();
+			if ( empty( $term_ids ) ) {
+				return new WP_Error(
+					'npcink_governance_core_content_metadata_term_ids_missing',
+					__( 'Content metadata term actions must include reviewed existing term_ids.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+
+			if ( ! array_key_exists( 'create_missing', $input ) || false !== $input['create_missing'] || ! empty( $input['terms'] ?? array() ) ) {
+				return new WP_Error(
+					'npcink_governance_core_content_metadata_create_missing_rejected',
+					__( 'Content metadata term actions must not create or name missing terms.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Validates a media optimization plan for one user-intent approval.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -1541,6 +1767,27 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Builds preview context for content metadata apply plans.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function content_metadata_apply_preview( array $plan ): array {
+		$post = is_array( $plan['post'] ?? null ) ? $plan['post'] : array();
+
+		return array(
+			'artifact_type'          => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
+			'version'                => absint( $plan['version'] ?? 0 ),
+			'post_id'                => absint( $post['post_id'] ?? ( $plan['target_post_id'] ?? 0 ) ),
+			'accepted_choices'       => $this->sanitize_payload( $plan['accepted_choices'] ?? array() ),
+			'evidence_refs'          => $this->sanitize_payload( $plan['evidence_refs'] ?? array() ),
+			'new_term_candidate_count' => count( is_array( $plan['new_term_candidates'] ?? null ) ? $plan['new_term_candidates'] : array() ),
+			'final_write_path'       => 'core_batch_proposal_required',
+			'direct_wordpress_write' => false,
+		);
+	}
+
+	/**
 	 * Builds one Proposal_Service payload for a write action.
 	 *
 	 * @param string              $plan_ability_id Plan ability id.
@@ -1673,6 +1920,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'npcink-toolbox/build-site-knowledge-review-plan' === $plan_ability_id ) {
 			$preview['site_knowledge_review'] = $this->site_knowledge_review_preview( $plan );
+		}
+		if ( 'npcink-toolbox/build-content-metadata-apply-plan' === $plan_ability_id ) {
+			$preview['content_metadata_apply'] = $this->content_metadata_apply_preview( $plan );
 		}
 
 		$title = sprintf(
@@ -1869,6 +2119,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'npcink-abilities-toolkit/build-media-rename-plan' === $plan_ability_id ) {
 			$preview['media_rename'] = $this->media_rename_preview( $plan );
+		}
+		if ( 'npcink-toolbox/build-content-metadata-apply-plan' === $plan_ability_id ) {
+			$preview['content_metadata_apply'] = $this->content_metadata_apply_preview( $plan );
 		}
 		$summary = sprintf(
 			/* translators: 1: plan ability id, 2: action count. */

@@ -366,6 +366,7 @@ abilities:
 - `npcink-toolbox/build-article-media-batch-write-plan`
 - `npcink-toolbox/build-image-candidate-adoption-plan`
 - `npcink-toolbox/build-site-knowledge-review-plan`
+- `npcink-toolbox/build-content-metadata-apply-plan`
 
 Permission: `manage_options` or app scope `proposals:create`.
 
@@ -422,6 +423,17 @@ For `npcink-toolbox/build-site-knowledge-review-plan`, the plan must declare
 `direct_wordpress_write=false`. This creates a Core review proposal only; it
 does not generate article content, approve the proposal, pass commit preflight,
 or execute WordPress writes.
+
+For `npcink-toolbox/build-content-metadata-apply-plan`, the plan must declare
+`artifact_type=content_metadata_apply_plan`, `proposal_mode=batch`,
+`batch_approval=true`, target exactly one post, and keep
+`direct_wordpress_write=false`. Core accepts only dry-run, non-commit
+`npcink-abilities-toolkit/update-post` actions that update `excerpt`, and
+`npcink-abilities-toolkit/set-post-terms` actions for `category` or `post_tag`
+using existing `term_ids` with `create_missing=false`. Title/content updates,
+SEO writes, named missing terms, unsupported taxonomies, remove-mode term
+changes, `commit=true`, or `dry_run=false` are rejected before proposal
+creation.
 
 For `npcink-abilities-toolkit/build-media-optimization-plan`, the plan must declare
 `artifact_type=media_optimization_plan`, `proposal_mode=batch`,

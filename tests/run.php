@@ -1254,18 +1254,20 @@ foreach (
 		'npcink-abilities-toolkit/build-article-optimization-apply-plan',
 		'npcink-toolbox/build-article-write-plan',
 		'npcink-toolbox/build-article-batch-write-plan',
-		'npcink-toolbox/build-article-media-batch-write-plan',
-		'npcink-toolbox/build-image-candidate-adoption-plan',
-		'npcink-toolbox/build-site-knowledge-review-plan',
-		'proposal.plan_ingested',
+			'npcink-toolbox/build-article-media-batch-write-plan',
+			'npcink-toolbox/build-image-candidate-adoption-plan',
+			'npcink-toolbox/build-site-knowledge-review-plan',
+			'npcink-toolbox/build-content-metadata-apply-plan',
+			'proposal.plan_ingested',
 		'npcink-abilities-toolkit/delete-media-permanently',
 		'destructive_media_delete_not_explicitly_included',
 		'validate_article_write_plan_contract',
 		'validate_article_batch_write_plan_contract',
 		'validate_article_media_batch_write_plan_contract',
-		'validate_image_candidate_adoption_plan_contract',
-		'validate_site_knowledge_review_plan_contract',
-		'validate_media_optimization_plan_contract',
+			'validate_image_candidate_adoption_plan_contract',
+			'validate_site_knowledge_review_plan_contract',
+			'validate_content_metadata_apply_plan_contract',
+			'validate_media_optimization_plan_contract',
 		'validate_media_rename_plan_contract',
 		'validate_article_optimization_apply_plan_contract',
 		'article_workflow_preview',
@@ -1274,19 +1276,24 @@ foreach (
 		'media_optimization_preview',
 		'media_optimization_proposal_summary',
 		'media_rename_preview',
-		'article_optimization_preview',
-		'site_knowledge_review_preview',
+			'article_optimization_preview',
+			'site_knowledge_review_preview',
+			'content_metadata_apply_preview',
 		'article_workflow_artifact_keys',
 		'article_write_plan',
 		'article_batch_write_plan',
 		'article_media_batch_write_plan',
 		'article_optimization_apply_plan',
-		'image_candidate_adoption_plan',
-		'site_knowledge_review_plan',
-		'image_candidate.v1',
-		'npcink_governance_core_site_knowledge_ready_rejected',
-		'npcink_governance_core_site_knowledge_evidence_missing',
-		'media_optimization_plan',
+			'image_candidate_adoption_plan',
+			'site_knowledge_review_plan',
+			'content_metadata_apply_plan',
+			'image_candidate.v1',
+			'npcink_governance_core_site_knowledge_ready_rejected',
+			'npcink_governance_core_site_knowledge_evidence_missing',
+			'npcink_governance_core_content_metadata_create_missing_rejected',
+			'npcink_governance_core_content_metadata_update_field_rejected',
+			'npcink_governance_core_content_metadata_term_field_rejected',
+			'media_optimization_plan',
 		'media_rename_plan',
 		'article_goal_brief',
 		'research_evidence_pack',
@@ -1357,14 +1364,16 @@ npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'includ
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_trash_parent_media' ), 'Plan-to-proposal docs mention abilities-side trash-parent media delete gate.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-article-write-plan' ), 'Plan-to-proposal docs include the Toolbox article writing handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-article-batch-write-plan' ), 'Plan-to-proposal docs include the Toolbox article batch writing handoff.' );
-npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-article-media-batch-write-plan' ), 'Plan-to-proposal docs include the Toolbox article media batch handoff.' );
-npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-site-knowledge-review-plan' ), 'Plan-to-proposal docs include the Toolbox Site Knowledge review handoff.' );
-npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'blocked draft-review proposal' ), 'Plan-to-proposal docs keep Site Knowledge review non-executable before human input.' );
+	npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-article-media-batch-write-plan' ), 'Plan-to-proposal docs include the Toolbox article media batch handoff.' );
+	npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-site-knowledge-review-plan' ), 'Plan-to-proposal docs include the Toolbox Site Knowledge review handoff.' );
+	npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-content-metadata-apply-plan' ), 'Plan-to-proposal docs include the Toolbox content metadata apply handoff.' );
+	npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'blocked draft-review proposal' ), 'Plan-to-proposal docs keep Site Knowledge review non-executable before human input.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-media-optimization-plan' ), 'Plan-to-proposal docs include the media optimization handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-media-rename-plan' ), 'Plan-to-proposal docs include the media rename handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-article-optimization-apply-plan' ), 'Plan-to-proposal docs include the article optimization apply handoff.' );
-npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_workflow' ), 'Plan-to-proposal docs require article workflow preview evidence.' );
-npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_optimization' ), 'Plan-to-proposal docs require article optimization preview evidence.' );
+	npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_workflow' ), 'Plan-to-proposal docs require article workflow preview evidence.' );
+	npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_optimization' ), 'Plan-to-proposal docs require article optimization preview evidence.' );
+	npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.content_metadata_apply' ), 'Plan-to-proposal docs require content metadata apply preview evidence.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'proposal_mode=batch' ), 'Plan-to-proposal docs require explicit batch proposal mode where needed.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'optimize this media item' ), 'Plan-to-proposal docs define media optimization as a user intent.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'optimize this existing article' ), 'Plan-to-proposal docs define article optimization as an existing-content intent.' );

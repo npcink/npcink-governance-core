@@ -80,6 +80,7 @@ Core may consume these read-only planning ability outputs:
 - `npcink-toolbox/build-article-media-batch-write-plan`
 - `npcink-toolbox/build-image-candidate-adoption-plan`
 - `npcink-toolbox/build-site-knowledge-review-plan`
+- `npcink-toolbox/build-content-metadata-apply-plan`
 
 Plan intake does not execute the plan ability and does not execute target write
 abilities. It accepts a successful plan payload, validates that the planning
@@ -128,6 +129,14 @@ non-ready `npcink-abilities-toolkit/create-draft` action requiring human
 `title` and `content` input. Core stores a blocked review proposal only; it
 does not generate drafts, approve proposals, pass commit preflight, or execute
 WordPress writes from Cloud Site Knowledge output.
+
+The content metadata apply handoff is a reviewed-choice bridge. Core accepts
+`npcink-toolbox/build-content-metadata-apply-plan` only when it is a
+`content_metadata_apply_plan` for one post, with explicit batch approval and
+dry-run actions limited to excerpt updates and existing category or post-tag
+assignment. Core stores proposal truth and `preview.content_metadata_apply`
+only; it does not generate summaries, create terms, approve proposals, store
+feedback/learning truth, or execute WordPress writes.
 
 The media optimization handoff is the governed shape for the user intent
 "optimize this attachment." Core accepts

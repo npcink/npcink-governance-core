@@ -1,5 +1,38 @@
 # Session Breadcrumb
 
+## 2026-06-09 — Content Metadata Delta governed handoff implemented
+
+- **Module**: Core plan-to-proposal intake for accepted Toolbox content metadata
+  choices.
+- **Status**: Accepted excerpt/category/tag choices can now travel from
+  Toolbox as a dry-run apply plan and be admitted by Core as one reviewable
+  batch proposal without Toolbox directly writing WordPress.
+- **Completed**:
+  - Added the `npcink-toolbox/build-content-metadata-apply-plan` handoff
+    ability contract in Toolbox.
+  - Added a Toolbox apply-plan REST flow that turns reviewed excerpt and
+    existing category/tag selections into dry-run `update-post` and
+    `set-post-terms` write actions.
+  - Added Core fail-closed validation for the apply plan: same target post,
+    batch approval, dry-run/no-commit actions, excerpt-only post updates, and
+    existing category/tag assignment only.
+  - Kept proposed new categories/tags as manual-review notes; no term creation
+    or direct WordPress writes were introduced.
+- **Verification**:
+  - In `/Users/muze/gitee/magick-ai-toolbox`: `composer test:all`
+  - In `/Users/muze/gitee/magick-ai-toolbox`: `composer smoke:metadata-delta`
+  - In `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+  - In `/Users/muze/gitee/magick-ai-core`: `composer smoke:wp`
+- **Next steps**:
+  - Clean up any leftover direct-proposal editor helper code once the new
+    apply-plan UI path is settled.
+  - Defer persistent feedback, measurement, and self-learning until real usage
+    data exists.
+- **Boundary**:
+  - Governed handoff only. Core still owns proposal intake, approval,
+    preflight, and audit; Toolbox still owns editor recommendation UX; neither
+    module executes the final WordPress write in this phase.
+
 ## 2026-06-09 — Content Metadata Delta ranking quality advanced in Toolbox
 
 - **Module**: Toolbox editor Content Metadata Delta P0 recommendation quality.
