@@ -231,6 +231,21 @@ if ( ! function_exists( 'sanitize_textarea_field' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_kses_post' ) ) {
+	/**
+	 * Safe post HTML sanitizer stub.
+	 *
+	 * @param mixed $value Value.
+	 * @return string
+	 */
+	function wp_kses_post( $value ): string {
+		$value = preg_replace( '#<script\b[^>]*>.*?</script>#is', '', (string) $value );
+		$value = preg_replace( '#<style\b[^>]*>.*?</style>#is', '', is_string( $value ) ? $value : '' );
+
+		return trim( is_string( $value ) ? $value : '' );
+	}
+}
+
 if ( ! function_exists( 'sanitize_key' ) ) {
 	/**
 	 * Key sanitizer stub.
@@ -1186,6 +1201,52 @@ function npcink_governance_core_fail_closed_governance_payload( string $ability_
 }
 
 /**
+ * Creates a representative Gutenberg block input.
+ *
+ * @return array<string,mixed>
+ */
+function npcink_governance_core_fail_closed_update_post_blocks_input(): array {
+	return array(
+		'post_id'            => 5791,
+		'mode'               => 'replace',
+		'validate_roundtrip' => true,
+		'dry_run'            => true,
+		'commit'             => false,
+		'blocks'             => array(
+			array(
+				'blockName'    => 'core/group',
+				'attrs'        => array(
+					'layout'     => array(
+						'type'        => 'constrained',
+						'contentSize' => '1120px',
+					),
+					'style'      => array(
+						'typography' => array(
+							'fontSize'      => '18px',
+							'letterSpacing' => '0',
+							'textTransform' => 'none',
+						),
+					),
+					'className'  => 'wp-ai-section',
+					'anchorName' => 'hero',
+				),
+				'innerBlocks'  => array(
+					array(
+						'blockName'    => 'core/paragraph',
+						'attrs'        => array( 'fontSize' => 'large' ),
+						'innerHTML'    => '<p>Reviewed block body<script>alert(1)</script></p>',
+						'innerBlocks'  => array(),
+						'innerContent' => array( '<p>Reviewed block body<script>alert(1)</script></p>' ),
+					),
+				),
+				'innerHTML'    => '<div class="wp-block-group"><p>Reviewed group</p><script>alert(1)</script></div>',
+				'innerContent' => array( '<div class="wp-block-group">', null, '</div>' ),
+			),
+		),
+	);
+}
+
+/**
  * Returns audit rows for a proposal id and event name.
  *
  * @param string $proposal_id Proposal id.
@@ -2124,6 +2185,59 @@ npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ) && 'manual
 npcink_governance_core_fail_closed_assert( 'manual' === (string) ( $proposal['policy_profile'] ?? '' ), 'Control proposal records the default policy profile.' );
 npcink_governance_core_fail_closed_assert( 'core-approval-policy-v1' === (string) ( $proposal['policy_version'] ?? '' ), 'Control proposal records the policy version.' );
 npcink_governance_core_fail_closed_assert( in_array( 'default_manual_required', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Control proposal records manual policy reason.' );
+
+$wpdb        = npcink_governance_core_fail_closed_reset_db();
+$repository  = new \Npcink\GovernanceCore\Governance\Proposal_Repository();
+$blocks_input = npcink_governance_core_fail_closed_update_post_blocks_input();
+$proposal    = $repository->create(
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/update-post-blocks',
+		'title'      => 'Update Gutenberg blocks',
+		'summary'    => 'Preserve Gutenberg block structure.',
+		'input'      => $blocks_input,
+		'preview'    => array(),
+		'caller'     => array( 'source' => 'fault_injection' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'update-post-blocks proposal is created.' );
+$stored_block = $proposal['input']['blocks'][0] ?? array();
+npcink_governance_core_fail_closed_assert( isset( $stored_block['blockName'] ) && ! isset( $stored_block['blockname'] ), 'update-post-blocks preserves blockName key case.' );
+npcink_governance_core_fail_closed_assert( isset( $stored_block['innerBlocks'] ) && ! isset( $stored_block['innerblocks'] ), 'update-post-blocks preserves innerBlocks key case.' );
+npcink_governance_core_fail_closed_assert( isset( $stored_block['innerHTML'] ) && ! isset( $stored_block['innerhtml'] ), 'update-post-blocks preserves innerHTML key case.' );
+npcink_governance_core_fail_closed_assert( isset( $stored_block['innerContent'] ) && ! isset( $stored_block['innercontent'] ), 'update-post-blocks preserves innerContent key case.' );
+npcink_governance_core_fail_closed_assert( '1120px' === (string) ( $stored_block['attrs']['layout']['contentSize'] ?? '' ), 'update-post-blocks preserves attrs contentSize key case.' );
+npcink_governance_core_fail_closed_assert( '18px' === (string) ( $stored_block['attrs']['style']['typography']['fontSize'] ?? '' ), 'update-post-blocks preserves attrs fontSize key case.' );
+npcink_governance_core_fail_closed_assert( '0' === (string) ( $stored_block['attrs']['style']['typography']['letterSpacing'] ?? '' ), 'update-post-blocks preserves attrs letterSpacing key case.' );
+npcink_governance_core_fail_closed_assert( 'none' === (string) ( $stored_block['attrs']['style']['typography']['textTransform'] ?? '' ), 'update-post-blocks preserves attrs textTransform key case.' );
+npcink_governance_core_fail_closed_assert( false !== strpos( (string) ( $stored_block['innerHTML'] ?? '' ), '<div' ), 'update-post-blocks preserves safe block innerHTML tags.' );
+npcink_governance_core_fail_closed_assert( false === strpos( (string) ( $stored_block['innerHTML'] ?? '' ), '<script' ), 'update-post-blocks strips unsafe block innerHTML tags.' );
+npcink_governance_core_fail_closed_assert( false !== strpos( (string) ( $stored_block['innerContent'][0] ?? '' ), '<div' ), 'update-post-blocks preserves safe block innerContent tags.' );
+npcink_governance_core_fail_closed_assert( false === strpos( (string) ( $stored_block['innerContent'][0] ?? '' ), '<script' ), 'update-post-blocks strips unsafe block innerContent tags.' );
+
+$batch_proposal = $repository->create(
+	array(
+		'ability_id' => 'plan_to_proposal_batch',
+		'title'      => 'Batch update Gutenberg blocks',
+		'summary'    => 'Preserve nested Gutenberg block structure.',
+		'input'      => array(
+			'write_actions' => array(
+				array(
+					'action_id'         => 'update_blocks',
+					'target_ability_id' => 'npcink-abilities-toolkit/update-post-blocks',
+					'input'             => $blocks_input,
+				),
+			),
+			'dry_run'       => true,
+			'commit'        => false,
+		),
+		'preview'    => array(),
+		'caller'     => array( 'source' => 'fault_injection' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $batch_proposal ), 'batch update-post-blocks proposal is created.' );
+$batch_block = $batch_proposal['input']['write_actions'][0]['input']['blocks'][0] ?? array();
+npcink_governance_core_fail_closed_assert( isset( $batch_block['blockName'] ) && ! isset( $batch_block['blockname'] ), 'batch update-post-blocks preserves blockName key case.' );
+npcink_governance_core_fail_closed_assert( '1120px' === (string) ( $batch_block['attrs']['layout']['contentSize'] ?? '' ), 'batch update-post-blocks preserves nested attrs key case.' );
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();
 $wpdb->fail_insert_event_names[] = 'proposal.policy_evaluated';

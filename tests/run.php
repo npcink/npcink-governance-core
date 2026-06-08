@@ -1079,6 +1079,14 @@ npcink_governance_core_assert( false !== strpos( $proposal_repository, 'is_creat
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'wp_kses_post( $content )' ), 'Proposal repository preserves create-draft HTML only through WordPress safe post KSES.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, "\$input['content_format'] ?? ''" ), 'Proposal repository requires content_format before preserving create-draft HTML.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, "\$clean['write_actions'][ \$index ]['input']['content']" ), 'Proposal repository preserves safe create-draft HTML inside batch write actions.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'is_update_post_blocks_input' ), 'Proposal repository detects update-post-blocks input narrowly.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'sanitize_update_post_blocks_input' ), 'Proposal repository preserves update-post-blocks input through ability-aware sanitization.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'sanitize_block_payload_key' ), 'Proposal repository preserves Gutenberg block object key case safely.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, '/[^A-Za-z0-9_-]/' ), 'Proposal repository block key sanitizer does not lowercase camelCase Gutenberg keys.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, "\$clean['write_actions'][ \$index ]['input'] = \$this->sanitize_update_post_blocks_input" ), 'Proposal repository preserves update-post-blocks keys inside batch write actions.' );
+npcink_governance_core_assert( false !== strpos( $fail_closed_test, 'update-post-blocks preserves blockName key case' ), 'Fail-closed tests assert update-post-blocks blockName is not lowercased.' );
+npcink_governance_core_assert( false !== strpos( $fail_closed_test, 'update-post-blocks preserves attrs contentSize key case' ), 'Fail-closed tests assert update-post-blocks attrs camelCase is not lowercased.' );
+npcink_governance_core_assert( false !== strpos( $fail_closed_test, 'batch update-post-blocks preserves blockName key case' ), 'Fail-closed tests assert batch update-post-blocks blockName is not lowercased.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.created' ), 'Proposal service records proposal.created audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.policy_evaluated' ), 'Proposal service records policy evaluation audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.auto_approved' ), 'Proposal service records auto approval audit event.' );

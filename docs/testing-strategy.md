@@ -45,6 +45,9 @@ evidence would be unsafe:
   cannot be written;
 - proposal creation deletes the row when `proposal.policy_evaluated` cannot be
   written;
+- proposal creation preserves reviewed `npcink-abilities-toolkit/update-post-blocks`
+  Gutenberg block key case, including nested batch `write_actions[]`, while
+  still sanitizing unsafe block HTML;
 - local guarded auto approval writes `proposal.auto_approved`, and audit
   failure must not leave the proposal approved;
 - approval and rejection roll back to the previous proposal status when

@@ -104,6 +104,9 @@ accepts only allowlisted post update targets such as
 `npcink-abilities-toolkit/patch-post-content`, and
 `npcink-abilities-toolkit/update-post-blocks`; each action must keep
 `dry_run=true`, `commit=false`, and the same `post_id` as the plan.
+For update-post-blocks actions, Core preserves the case-sensitive Gutenberg
+block tree under `input.blocks` through proposal persistence, including
+`blockName`, `innerBlocks`, `innerHTML`, `innerContent`, and attrs camelCase.
 
 The generated proposal preserves `preview.article_optimization` with the source
 recipe ref, safe apply summary, advisory sections, and

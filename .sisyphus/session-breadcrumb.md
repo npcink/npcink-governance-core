@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-08 — Gutenberg block proposal keys preserved
+
+- **Module**: Core proposal persistence for `update-post-blocks` governance
+  handoff.
+- **Status**: New `npcink-abilities-toolkit/update-post-blocks` proposals keep
+  case-sensitive Gutenberg block object keys through storage and preflight
+  hashing.
+- **Completed**:
+  - Added ability-aware proposal input sanitization for direct
+    `update-post-blocks` input and nested `plan_to_proposal_batch`
+    `write_actions[]`.
+  - Preserved `blockName`, `innerBlocks`, `innerHTML`, `innerContent`, and
+    attrs camelCase such as `contentSize`, `fontSize`, `letterSpacing`, and
+    `textTransform` while still sanitizing block values.
+  - Routed block `innerHTML` and `innerContent` strings through WordPress safe
+    post HTML filtering.
+  - Updated REST, security, plan-to-proposal, and testing contracts.
+- **Verification**:
+  - `composer test:all`
+  - `composer smoke:wp`
+- **Boundary**:
+  - Core still records proposal truth only. Existing proposals that were already
+    stored with lowercased block keys must be regenerated before Adapter
+    execution.
+
 ## 2026-06-08 — Suite consolidation and local admin consent boundary accepted
 
 - **Module**: Core/Adapter/Toolbox product packaging and governance boundary.

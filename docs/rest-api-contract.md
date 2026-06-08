@@ -284,6 +284,13 @@ For `npcink-abilities-toolkit/create-draft`, `input.content` may remain
 WordPress safe post HTML only when the input explicitly sets
 `content_format=html`; unsafe HTML is stripped before persistence. The same
 rule applies to nested create-draft actions in plan-to-proposal batch input.
+For `npcink-abilities-toolkit/update-post-blocks`, Core preserves the
+case-sensitive Gutenberg block tree keys under `input.blocks`, including
+`blockName`, `innerBlocks`, `innerHTML`, `innerContent`, and attrs camelCase
+such as `contentSize`, `fontSize`, `letterSpacing`, and `textTransform`.
+Block values are still sanitized recursively, and `innerHTML` / `innerContent`
+strings are filtered as WordPress safe post HTML. The same rule applies to
+nested update-post-blocks actions in plan-to-proposal batch input.
 
 Request fields:
 
@@ -443,7 +450,10 @@ targeting `npcink-abilities-toolkit/update-post`,
 `npcink-abilities-toolkit/patch-post-content`, or
 `npcink-abilities-toolkit/update-post-blocks`. The route creates pending Core
 proposals only; it does not optimize the article, approve the proposal, execute
-the write, or mutate WordPress content.
+the write, or mutate WordPress content. Generated update-post-blocks proposals
+preserve the case-sensitive Gutenberg block tree under action `input.blocks` so
+Adapter-side execution can pass valid block objects to the WordPress Abilities
+API after approval and commit preflight.
 
 Each accepted independent `write_action` becomes a separate pending proposal by
 default. If the plan declares `batch_approval=true` or

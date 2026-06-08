@@ -465,6 +465,8 @@ final class Proposal_Repository {
 	 * Most structured proposal input remains plain-text sanitized. The create-draft
 	 * content field is a reviewed WordPress post-content field, so explicit
 	 * content_format=html uses WordPress safe post HTML filtering instead.
+	 * Gutenberg block object keys are also case-sensitive, so update-post-blocks
+	 * preserves reviewed block-tree keys while still sanitizing values.
 	 *
 	 * @param string              $ability_id Target ability id.
 	 * @param array<string,mixed> $input Raw proposal input.
@@ -477,6 +479,10 @@ final class Proposal_Repository {
 
 		if ( $this->is_create_draft_html_input( $ability_id, $input ) ) {
 			$clean['content'] = $this->sanitize_post_content_html( (string) ( $input['content'] ?? '' ) );
+		}
+
+		if ( $this->is_update_post_blocks_input( $ability_id, $input ) ) {
+			$clean = $this->sanitize_update_post_blocks_input( $input, $clean );
 		}
 
 		if ( is_array( $input['write_actions'] ?? null ) && is_array( $clean['write_actions'] ?? null ) ) {
@@ -492,6 +498,9 @@ final class Proposal_Repository {
 				}
 				$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
 				if ( ! $this->is_create_draft_html_input( $target_ability_id, $action['input'] ) ) {
+					if ( $this->is_update_post_blocks_input( $target_ability_id, $action['input'] ) ) {
+						$clean['write_actions'][ $index ]['input'] = $this->sanitize_update_post_blocks_input( $action['input'], $clean['write_actions'][ $index ]['input'] );
+					}
 					continue;
 				}
 				$clean['write_actions'][ $index ]['input']['content'] = $this->sanitize_post_content_html( (string) ( $action['input']['content'] ?? '' ) );
@@ -573,6 +582,31 @@ final class Proposal_Repository {
 	}
 
 	/**
+	 * Returns whether an input contains Gutenberg block objects for update-post-blocks.
+	 *
+	 * @param string              $ability_id Target ability id.
+	 * @param array<string,mixed> $input Raw input.
+	 * @return bool
+	 */
+	private function is_update_post_blocks_input( string $ability_id, array $input ): bool {
+		return 'npcink-abilities-toolkit/update-post-blocks' === sanitize_text_field( $ability_id )
+			&& is_array( $input['blocks'] ?? null );
+	}
+
+	/**
+	 * Preserves update-post-blocks block tree keys while sanitizing block values.
+	 *
+	 * @param array<string,mixed> $input Raw update-post-blocks input.
+	 * @param array<string,mixed> $clean Plain sanitized input.
+	 * @return array<string,mixed>
+	 */
+	private function sanitize_update_post_blocks_input( array $input, array $clean ): array {
+		$clean['blocks'] = $this->sanitize_block_payload( $input['blocks'] ?? array(), 'blocks' );
+
+		return $clean;
+	}
+
+	/**
 	 * Sanitizes reviewed draft HTML through WordPress post-content KSES rules.
 	 *
 	 * @param string $content Raw HTML content.
@@ -584,6 +618,53 @@ final class Proposal_Repository {
 		}
 
 		return sanitize_textarea_field( $content );
+	}
+
+	/**
+	 * Sanitizes a Gutenberg block payload without lowercasing object keys.
+	 *
+	 * @param mixed  $value Raw block payload value.
+	 * @param string $parent_key Parent object key.
+	 * @return mixed
+	 */
+	private function sanitize_block_payload( $value, string $parent_key = '' ) {
+		if ( is_array( $value ) ) {
+			$clean = array();
+			foreach ( $value as $key => $item ) {
+				$clean_key = is_int( $key ) ? $key : $this->sanitize_block_payload_key( (string) $key );
+				if ( '' === $clean_key ) {
+					continue;
+				}
+				$child_parent_key    = is_int( $key ) && 'innerContent' === $parent_key ? $parent_key : (string) $clean_key;
+				$clean[ $clean_key ] = $this->sanitize_block_payload( $item, $child_parent_key );
+			}
+			return $clean;
+		}
+
+		if ( is_string( $value ) ) {
+			if ( 'innerHTML' === $parent_key || 'innerContent' === $parent_key ) {
+				return $this->sanitize_post_content_html( $value );
+			}
+			return sanitize_textarea_field( $value );
+		}
+
+		if ( is_bool( $value ) || is_int( $value ) || is_float( $value ) || null === $value ) {
+			return $value;
+		}
+
+		return sanitize_text_field( (string) $value );
+	}
+
+	/**
+	 * Sanitizes a Gutenberg block object key while preserving camelCase.
+	 *
+	 * @param string $key Raw key.
+	 * @return string
+	 */
+	private function sanitize_block_payload_key( string $key ): string {
+		$key = preg_replace( '/[^A-Za-z0-9_-]/', '', $key );
+
+		return is_string( $key ) ? $key : '';
 	}
 
 	/**
