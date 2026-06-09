@@ -5,8 +5,9 @@
 - **Module**: Core operation classification and media optimization governance
   regression contracts.
 - **Status**: Media optimization is now documented as a cross-repo regression
-  path rather than a new Core feature line, and one-attachment media
-  optimization batch plans are explicitly kept on the Core proposal path.
+  path rather than a new Core feature line, and the stage plan now records the
+  stop decision: continue only with regression fixes, not new Core media
+  optimization implementation.
 - **Completed**:
   - Added an Operation Classification regression rule that distinguishes
     single-object media file replacement strong confirmation from media
@@ -17,6 +18,9 @@
     proposal/preflight/audit, Adapter keeps derived readiness and execution
     state, Abilities keeps verification/replacement counts/restore behavior,
     and Cloud Addon stays runtime/detail only.
+  - Recorded the stop/continue decision in the next-stage plan: stop expanding
+    media optimization in Core and redirect new product energy to
+    classifier-driven authorization paths.
 - **Verification**:
   - `composer test:all`
 - **Boundary**:

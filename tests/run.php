@@ -1420,6 +1420,8 @@ npcink_governance_core_assert( false !== strpos( $operation_classification, 'Med
 npcink_governance_core_assert( false !== strpos( $operation_classification, 'Adapter owns derived readiness and execution state' ), 'Operation classification docs keep Adapter ownership for media execution state.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'regression-owned cross-repo path' ), 'Next stage plan treats media optimization as a cross-repo regression path.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'replacement rule counts versus actual replacements' ), 'Next stage plan keeps media replacement count verification in Abilities.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'stop expanding the media optimization implementation in Core' ), 'Next stage plan records the media optimization stop decision.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'classifier-driven authorization paths' ), 'Next stage plan redirects new product energy to classifier-driven authorization paths.' );
 
 $article_writing_contract = npcink_governance_core_read( $root . '/docs/article-writing-workflow-contract.md' );
 foreach (

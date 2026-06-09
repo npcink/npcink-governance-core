@@ -144,6 +144,15 @@ new Core execution or health routes: Core `composer test:all` and
 Abilities `composer test:all` plus its local WordPress smoke gate when media
 replacement or restore behavior changes.
 
+Conclusion: stop expanding the media optimization implementation in Core at
+this stage. The route is already productized enough for the current boundary:
+one reviewed intent becomes one Core proposal, execution readiness is visible
+through Adapter, local abilities verify the write and restore path, and Cloud
+Addon remains only a runtime/detail helper. Further work should be limited to
+regression fixes when those contracts fail. New product energy should instead
+go to classifier-driven authorization paths and the next narrow product proof,
+such as Content Metadata Delta.
+
 The next product strategy proof can use the
 [Governed AI Feedback Loop](governed-ai-feedback-loop.md) model. A practical P0
 is Content Metadata Delta: one selected post, related-content vector context,
