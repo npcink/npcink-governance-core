@@ -1,5 +1,25 @@
 # Session Breadcrumb
 
+## 2026-06-09 — Draft block batch validator helper extracted
+
+- **Module**: Core plan-to-proposal intake contract validators.
+- **Status**: The repeated draft-create plus `update-post-blocks` batch action
+  shape used by article block and pattern page plans now lives behind one
+  internal helper.
+- **Completed**:
+  - Extracted the shared ordered two-action validation for `create-draft` and
+    `update-post-blocks`, including draft-only status, reviewed title,
+    dry-run/no-commit guards, output-reference binding, and non-empty block
+    trees.
+  - Kept article block and pattern page validators responsible for their own
+    artifact/template/style gates and CSS class policy.
+- **Verification**:
+  - In `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+- **Boundary**:
+  - Internal consolidation only. No new planning ability, REST field,
+    proposal status, auto-approval behavior, Core execution path, workflow
+    runtime, or WordPress mutation was added.
+
 ## 2026-06-09 — Article block from-plan Core bridge aligned
 
 - **Module**: Core plan-to-proposal intake for Toolkit Gutenberg article block

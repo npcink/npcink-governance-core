@@ -1455,79 +1455,35 @@ final class Plan_Proposal_Service {
 			);
 		}
 
-		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
-		if ( 2 !== count( $write_actions ) || ! is_array( $write_actions[0] ?? null ) || ! is_array( $write_actions[1] ?? null ) ) {
-			return new WP_Error(
-				'npcink_governance_core_article_block_actions_rejected',
-				__( 'Article block plans must contain create-draft and update-post-blocks actions.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
+		$validated_actions = $this->validate_draft_blocks_batch_actions(
+			$plan,
+			array(
+				'actions_error_code'          => 'npcink_governance_core_article_block_actions_rejected',
+				'actions_error_message'       => __( 'Article block plans must contain create-draft and update-post-blocks actions.', 'npcink-governance-core' ),
+				'create_target_error_code'    => 'npcink_governance_core_article_block_create_action_invalid',
+				'create_target_error_message' => __( 'Article block plans must first create a post draft.', 'npcink-governance-core' ),
+				'update_target_error_code'    => 'npcink_governance_core_article_block_update_action_invalid',
+				'update_target_error_message' => __( 'Article block plans must then update Gutenberg blocks.', 'npcink-governance-core' ),
+				'post_type'                   => 'post',
+				'post_type_error_code'        => 'npcink_governance_core_article_block_create_action_invalid',
+				'post_type_error_message'     => __( 'Article block create action must create only a draft post.', 'npcink-governance-core' ),
+				'title_error_code'            => 'npcink_governance_core_article_block_title_missing',
+				'title_error_message'         => __( 'Article block create action must include a reviewed title.', 'npcink-governance-core' ),
+				'commit_error_code'           => 'npcink_governance_core_article_block_commit_rejected',
+				'create_commit_message'       => __( 'Article block create action must remain dry-run and must not request commit.', 'npcink-governance-core' ),
+				'output_reference'            => '$outputs.create-article-draft.post_id',
+				'output_error_code'           => 'npcink_governance_core_article_block_output_reference_required',
+				'output_error_message'        => __( 'Article block update action must use the draft post output reference.', 'npcink-governance-core' ),
+				'update_commit_message'       => __( 'Article block update action must remain dry-run and must not request commit.', 'npcink-governance-core' ),
+				'blocks_error_code'           => 'npcink_governance_core_article_block_blocks_missing',
+				'blocks_error_message'        => __( 'Article block update action must include Gutenberg blocks.', 'npcink-governance-core' ),
+			)
+		);
+		if ( is_wp_error( $validated_actions ) ) {
+			return $validated_actions;
 		}
 
-		$create_action = $write_actions[0];
-		$update_action = $write_actions[1];
-		if ( 'npcink-abilities-toolkit/create-draft' !== sanitize_text_field( (string) ( $create_action['target_ability_id'] ?? '' ) ) ) {
-			return new WP_Error(
-				'npcink_governance_core_article_block_create_action_invalid',
-				__( 'Article block plans must first create a post draft.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
-		if ( 'npcink-abilities-toolkit/update-post-blocks' !== sanitize_text_field( (string) ( $update_action['target_ability_id'] ?? '' ) ) ) {
-			return new WP_Error(
-				'npcink_governance_core_article_block_update_action_invalid',
-				__( 'Article block plans must then update Gutenberg blocks.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
-
-		$create_input = is_array( $create_action['input'] ?? null ) ? $create_action['input'] : array();
-		if ( 'post' !== sanitize_key( (string) ( $create_input['post_type'] ?? '' ) ) || 'draft' !== sanitize_key( (string) ( $create_input['status'] ?? 'draft' ) ) ) {
-			return new WP_Error(
-				'npcink_governance_core_article_block_create_action_invalid',
-				__( 'Article block create action must create only a draft post.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
-		if ( '' === trim( sanitize_text_field( (string) ( $create_input['title'] ?? '' ) ) ) ) {
-			return new WP_Error(
-				'npcink_governance_core_article_block_title_missing',
-				__( 'Article block create action must include a reviewed title.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
-		if ( true === (bool) ( $create_input['commit'] ?? false ) || false === (bool) ( $create_input['dry_run'] ?? true ) ) {
-			return new WP_Error(
-				'npcink_governance_core_article_block_commit_rejected',
-				__( 'Article block create action must remain dry-run and must not request commit.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
-
-		$update_input = is_array( $update_action['input'] ?? null ) ? $update_action['input'] : array();
-		if ( '$outputs.create-article-draft.post_id' !== (string) ( $update_input['post_id'] ?? '' ) ) {
-			return new WP_Error(
-				'npcink_governance_core_article_block_output_reference_required',
-				__( 'Article block update action must use the draft post output reference.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
-		if ( true === (bool) ( $update_input['commit'] ?? false ) || false === (bool) ( $update_input['dry_run'] ?? true ) ) {
-			return new WP_Error(
-				'npcink_governance_core_article_block_commit_rejected',
-				__( 'Article block update action must remain dry-run and must not request commit.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
-
-		$blocks = is_array( $update_input['blocks'] ?? null ) ? array_values( $update_input['blocks'] ) : array();
-		if ( empty( $blocks ) ) {
-			return new WP_Error(
-				'npcink_governance_core_article_block_blocks_missing',
-				__( 'Article block update action must include Gutenberg blocks.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
+		$blocks = $validated_actions['blocks'];
 		if ( ! empty( $this->block_class_names( $blocks ) ) ) {
 			return new WP_Error(
 				'npcink_governance_core_article_block_class_rejected',
@@ -1591,78 +1547,35 @@ final class Plan_Proposal_Service {
 			);
 		}
 
-		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
-		if ( 2 !== count( $write_actions ) || ! is_array( $write_actions[0] ?? null ) || ! is_array( $write_actions[1] ?? null ) ) {
-			return new WP_Error(
-				'npcink_governance_core_pattern_page_actions_rejected',
-				__( 'Pattern page plans must contain create-draft and update-post-blocks actions.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
+		$validated_actions = $this->validate_draft_blocks_batch_actions(
+			$plan,
+			array(
+				'actions_error_code'          => 'npcink_governance_core_pattern_page_actions_rejected',
+				'actions_error_message'       => __( 'Pattern page plans must contain create-draft and update-post-blocks actions.', 'npcink-governance-core' ),
+				'create_target_error_code'    => 'npcink_governance_core_pattern_page_create_action_invalid',
+				'create_target_error_message' => __( 'Pattern page plans must first create a page draft.', 'npcink-governance-core' ),
+				'update_target_error_code'    => 'npcink_governance_core_pattern_page_update_action_invalid',
+				'update_target_error_message' => __( 'Pattern page plans must then update Gutenberg blocks.', 'npcink-governance-core' ),
+				'post_type'                   => 'page',
+				'post_type_error_code'        => 'npcink_governance_core_pattern_page_create_action_invalid',
+				'post_type_error_message'     => __( 'Pattern page create action must create only a draft page.', 'npcink-governance-core' ),
+				'title_error_code'            => 'npcink_governance_core_pattern_page_title_missing',
+				'title_error_message'         => __( 'Pattern page create action must include a reviewed title.', 'npcink-governance-core' ),
+				'commit_error_code'           => 'npcink_governance_core_pattern_page_commit_rejected',
+				'create_commit_message'       => __( 'Pattern page create action must remain dry-run and must not request commit.', 'npcink-governance-core' ),
+				'output_reference'            => '$outputs.create-pattern-page.post_id',
+				'output_error_code'           => 'npcink_governance_core_pattern_page_output_reference_required',
+				'output_error_message'        => __( 'Pattern page update action must use the draft page output reference.', 'npcink-governance-core' ),
+				'update_commit_message'       => __( 'Pattern page block update action must remain dry-run and must not request commit.', 'npcink-governance-core' ),
+				'blocks_error_code'           => 'npcink_governance_core_pattern_page_blocks_missing',
+				'blocks_error_message'        => __( 'Pattern page block update action must include Gutenberg blocks.', 'npcink-governance-core' ),
+			)
+		);
+		if ( is_wp_error( $validated_actions ) ) {
+			return $validated_actions;
 		}
 
-		$create_action = $write_actions[0];
-		$update_action = $write_actions[1];
-		if ( 'npcink-abilities-toolkit/create-draft' !== sanitize_text_field( (string) ( $create_action['target_ability_id'] ?? '' ) ) ) {
-			return new WP_Error(
-				'npcink_governance_core_pattern_page_create_action_invalid',
-				__( 'Pattern page plans must first create a page draft.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
-		if ( 'npcink-abilities-toolkit/update-post-blocks' !== sanitize_text_field( (string) ( $update_action['target_ability_id'] ?? '' ) ) ) {
-			return new WP_Error(
-				'npcink_governance_core_pattern_page_update_action_invalid',
-				__( 'Pattern page plans must then update Gutenberg blocks.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
-
-		$create_input = is_array( $create_action['input'] ?? null ) ? $create_action['input'] : array();
-		if ( 'page' !== sanitize_key( (string) ( $create_input['post_type'] ?? '' ) ) || 'draft' !== sanitize_key( (string) ( $create_input['status'] ?? 'draft' ) ) ) {
-			return new WP_Error(
-				'npcink_governance_core_pattern_page_create_action_invalid',
-				__( 'Pattern page create action must create only a draft page.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
-		if ( '' === trim( sanitize_text_field( (string) ( $create_input['title'] ?? '' ) ) ) ) {
-			return new WP_Error(
-				'npcink_governance_core_pattern_page_title_missing',
-				__( 'Pattern page create action must include a reviewed title.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
-		if ( true === (bool) ( $create_input['commit'] ?? false ) || false === (bool) ( $create_input['dry_run'] ?? true ) ) {
-			return new WP_Error(
-				'npcink_governance_core_pattern_page_commit_rejected',
-				__( 'Pattern page create action must remain dry-run and must not request commit.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
-
-		$update_input = is_array( $update_action['input'] ?? null ) ? $update_action['input'] : array();
-		if ( '$outputs.create-pattern-page.post_id' !== (string) ( $update_input['post_id'] ?? '' ) ) {
-			return new WP_Error(
-				'npcink_governance_core_pattern_page_output_reference_required',
-				__( 'Pattern page update action must use the draft page output reference.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
-		if ( true === (bool) ( $update_input['commit'] ?? false ) || false === (bool) ( $update_input['dry_run'] ?? true ) ) {
-			return new WP_Error(
-				'npcink_governance_core_pattern_page_commit_rejected',
-				__( 'Pattern page block update action must remain dry-run and must not request commit.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
-		$blocks = is_array( $update_input['blocks'] ?? null ) ? array_values( $update_input['blocks'] ) : array();
-		if ( empty( $blocks ) ) {
-			return new WP_Error(
-				'npcink_governance_core_pattern_page_blocks_missing',
-				__( 'Pattern page block update action must include Gutenberg blocks.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
-		}
+		$blocks = $validated_actions['blocks'];
 
 		$allowed_classes = array_fill_keys(
 			array_values(
@@ -1694,6 +1607,96 @@ final class Plan_Proposal_Service {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Validates the shared draft-create plus block-update batch action shape.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @param array<string,mixed> $config Error codes, messages, and expected action shape.
+	 * @return array<string,mixed>|WP_Error
+	 */
+	private function validate_draft_blocks_batch_actions( array $plan, array $config ) {
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( 2 !== count( $write_actions ) || ! is_array( $write_actions[0] ?? null ) || ! is_array( $write_actions[1] ?? null ) ) {
+			return new WP_Error(
+				(string) $config['actions_error_code'],
+				(string) $config['actions_error_message'],
+				array( 'status' => 422 )
+			);
+		}
+
+		$create_action = $write_actions[0];
+		$update_action = $write_actions[1];
+		if ( 'npcink-abilities-toolkit/create-draft' !== sanitize_text_field( (string) ( $create_action['target_ability_id'] ?? '' ) ) ) {
+			return new WP_Error(
+				(string) $config['create_target_error_code'],
+				(string) $config['create_target_error_message'],
+				array( 'status' => 422 )
+			);
+		}
+		if ( 'npcink-abilities-toolkit/update-post-blocks' !== sanitize_text_field( (string) ( $update_action['target_ability_id'] ?? '' ) ) ) {
+			return new WP_Error(
+				(string) $config['update_target_error_code'],
+				(string) $config['update_target_error_message'],
+				array( 'status' => 422 )
+			);
+		}
+
+		$create_input = is_array( $create_action['input'] ?? null ) ? $create_action['input'] : array();
+		if ( sanitize_key( (string) ( $config['post_type'] ?? '' ) ) !== sanitize_key( (string) ( $create_input['post_type'] ?? '' ) ) || 'draft' !== sanitize_key( (string) ( $create_input['status'] ?? 'draft' ) ) ) {
+			return new WP_Error(
+				(string) $config['post_type_error_code'],
+				(string) $config['post_type_error_message'],
+				array( 'status' => 422 )
+			);
+		}
+		if ( '' === trim( sanitize_text_field( (string) ( $create_input['title'] ?? '' ) ) ) ) {
+			return new WP_Error(
+				(string) $config['title_error_code'],
+				(string) $config['title_error_message'],
+				array( 'status' => 422 )
+			);
+		}
+		if ( true === (bool) ( $create_input['commit'] ?? false ) || false === (bool) ( $create_input['dry_run'] ?? true ) ) {
+			return new WP_Error(
+				(string) $config['commit_error_code'],
+				(string) $config['create_commit_message'],
+				array( 'status' => 422 )
+			);
+		}
+
+		$update_input = is_array( $update_action['input'] ?? null ) ? $update_action['input'] : array();
+		if ( (string) $config['output_reference'] !== (string) ( $update_input['post_id'] ?? '' ) ) {
+			return new WP_Error(
+				(string) $config['output_error_code'],
+				(string) $config['output_error_message'],
+				array( 'status' => 422 )
+			);
+		}
+		if ( true === (bool) ( $update_input['commit'] ?? false ) || false === (bool) ( $update_input['dry_run'] ?? true ) ) {
+			return new WP_Error(
+				(string) $config['commit_error_code'],
+				(string) $config['update_commit_message'],
+				array( 'status' => 422 )
+			);
+		}
+
+		$blocks = is_array( $update_input['blocks'] ?? null ) ? array_values( $update_input['blocks'] ) : array();
+		if ( empty( $blocks ) ) {
+			return new WP_Error(
+				(string) $config['blocks_error_code'],
+				(string) $config['blocks_error_message'],
+				array( 'status' => 422 )
+			);
+		}
+
+		return array(
+			'write_actions' => $write_actions,
+			'create_input'  => $create_input,
+			'update_input'  => $update_input,
+			'blocks'        => $blocks,
+		);
 	}
 
 	/**
