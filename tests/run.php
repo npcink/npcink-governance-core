@@ -1325,6 +1325,7 @@ foreach (
 			'npcink_governance_core_content_metadata_create_missing_rejected',
 			'npcink_governance_core_content_metadata_update_field_rejected',
 			'npcink_governance_core_content_metadata_term_field_rejected',
+			'npcink_governance_core_content_metadata_duplicate_action_rejected',
 		'media_optimization_plan',
 		'media_rename_plan',
 		'pattern_page_plan',

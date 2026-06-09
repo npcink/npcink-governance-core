@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-06-09 — Content Metadata Delta duplicate-slot guardrail added
+
+- **Module**: Core plan-to-proposal intake for reviewed content metadata apply
+  plans.
+- **Status**: Core now rejects `content_metadata_apply_plan` batches that try to
+  include duplicate excerpt, category, or post-tag action slots for the same
+  reviewed metadata apply intent.
+- **Completed**:
+  - Published the existing local media optimization stop/guardrail commits to
+    `origin/master`.
+  - Added fail-closed validation so one content metadata apply plan may include
+    at most one excerpt update action, one category assignment action, and one
+    post-tag assignment action.
+  - Added fault-injection coverage for duplicate excerpt and duplicate taxonomy
+    actions.
+  - Updated plan-to-proposal, REST, governance, and ability-intake contracts.
+- **Verification**:
+  - `composer test:all`
+  - `composer smoke:wp`
+- **Boundary**:
+  - Core still only validates reviewed plan output, creates proposal records,
+    and owns approval/preflight/audit truth. This does not add metadata
+    recommendation generation, Toolbox UI, taxonomy creation, direct
+    WordPress writes, feedback storage, local consent execution, or Core final
+    execution.
+
 ## 2026-06-09 — Media optimization regression guardrails locked
 
 - **Module**: Core operation classification and media optimization governance

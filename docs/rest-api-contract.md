@@ -431,10 +431,11 @@ For `npcink-toolbox/build-content-metadata-apply-plan`, the plan must declare
 `direct_wordpress_write=false`. Core accepts only dry-run, non-commit
 `npcink-abilities-toolkit/update-post` actions that update `excerpt`, and
 `npcink-abilities-toolkit/set-post-terms` actions for `category` or `post_tag`
-using existing `term_ids` with `create_missing=false`. Title/content updates,
-SEO writes, named missing terms, unsupported taxonomies, remove-mode term
-changes, `commit=true`, or `dry_run=false` are rejected before proposal
-creation.
+using existing `term_ids` with `create_missing=false`. The batch may contain at
+most one excerpt action, one category action, and one post-tag action.
+Title/content updates, duplicate metadata action slots, SEO writes, named
+missing terms, unsupported taxonomies, remove-mode term changes, `commit=true`,
+or `dry_run=false` are rejected before proposal creation.
 
 For `npcink-abilities-toolkit/build-media-optimization-plan`, the plan must declare
 `artifact_type=media_optimization_plan`, `proposal_mode=batch`,

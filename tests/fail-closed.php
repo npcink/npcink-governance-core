@@ -2497,6 +2497,24 @@ $content_metadata_term_ids_string_result = $stack['service']->create_from_plan( 
 npcink_governance_core_fail_closed_assert( is_wp_error( $content_metadata_term_ids_string_result ), 'Content metadata apply plan with non-array term_ids is rejected.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_content_metadata_term_ids_missing' === $content_metadata_term_ids_string_result->get_error_code(), 'Content metadata term_ids type rejection uses stable error code.' );
 
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$content_metadata_duplicate_excerpt = npcink_governance_core_fail_closed_content_metadata_apply_plan();
+$content_metadata_duplicate_excerpt['write_actions'][1] = $content_metadata_duplicate_excerpt['write_actions'][0];
+$content_metadata_duplicate_excerpt['write_actions'][1]['action_id'] = 'apply_second_selected_excerpt';
+$content_metadata_duplicate_excerpt_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-content-metadata-apply-plan', $content_metadata_duplicate_excerpt );
+npcink_governance_core_fail_closed_assert( is_wp_error( $content_metadata_duplicate_excerpt_result ), 'Content metadata apply plan with duplicate excerpt actions is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_content_metadata_duplicate_action_rejected' === $content_metadata_duplicate_excerpt_result->get_error_code(), 'Content metadata duplicate excerpt rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$content_metadata_duplicate_taxonomy = npcink_governance_core_fail_closed_content_metadata_apply_plan();
+$content_metadata_duplicate_taxonomy['write_actions'][2] = $content_metadata_duplicate_taxonomy['write_actions'][1];
+$content_metadata_duplicate_taxonomy['write_actions'][2]['action_id'] = 'assign_existing_categories_again';
+$content_metadata_duplicate_taxonomy_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-content-metadata-apply-plan', $content_metadata_duplicate_taxonomy );
+npcink_governance_core_fail_closed_assert( is_wp_error( $content_metadata_duplicate_taxonomy_result ), 'Content metadata apply plan with duplicate taxonomy actions is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_content_metadata_duplicate_action_rejected' === $content_metadata_duplicate_taxonomy_result->get_error_code(), 'Content metadata duplicate taxonomy rejection uses stable error code.' );
+
 $wpdb = npcink_governance_core_fail_closed_reset_db();
 $wpdb->fail_insert_tables[] = $proposal_table;
 $repository = new \Npcink\GovernanceCore\Governance\Proposal_Repository();

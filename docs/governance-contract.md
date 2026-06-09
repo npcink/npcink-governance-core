@@ -149,9 +149,11 @@ The content metadata apply handoff is a reviewed-choice bridge. Core accepts
 `npcink-toolbox/build-content-metadata-apply-plan` only when it is a
 `content_metadata_apply_plan` for one post, with explicit batch approval and
 dry-run actions limited to excerpt updates and existing category or post-tag
-assignment. Core stores proposal truth and `preview.content_metadata_apply`
-only; it does not generate summaries, create terms, approve proposals, store
-feedback/learning truth, or execute WordPress writes.
+assignment. One apply plan may contain at most one excerpt action, one category
+assignment action, and one post-tag assignment action. Core stores proposal
+truth and `preview.content_metadata_apply` only; it does not generate
+summaries, create terms, approve proposals, store feedback/learning truth, or
+execute WordPress writes.
 
 The media optimization handoff is the governed shape for the user intent
 "optimize this attachment." Core accepts

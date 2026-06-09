@@ -151,8 +151,11 @@ small set of reviewed actions for one target post. Core accepts only
 `npcink-abilities-toolkit/update-post` actions that update `excerpt`, and
 `npcink-abilities-toolkit/set-post-terms` actions that target `category` or
 `post_tag` with existing `term_ids`, `create_missing=false`, `dry_run=true`, and
-`commit=false`. Core rejects title/content updates, SEO writes, missing-term
-creation, named `terms`, unsupported taxonomies, and remove-mode term changes.
+`commit=false`. The batch may contain at most one excerpt action, at most one
+category assignment action, and at most one post-tag assignment action. Core
+rejects duplicate metadata action slots, title/content updates, SEO writes,
+missing-term creation, named `terms`, unsupported taxonomies, and remove-mode
+term changes.
 
 The generated batch proposal preserves `preview.content_metadata_apply` with the
 target post id, accepted choices, evidence refs, new-term candidate count, and

@@ -936,6 +936,7 @@ final class Plan_Proposal_Service {
 			'npcink-abilities-toolkit/update-post'      => true,
 			'npcink-abilities-toolkit/set-post-terms'  => true,
 		);
+		$seen_metadata_actions = array();
 
 		foreach ( $write_actions as $action_index => $action ) {
 			if ( ! is_array( $action ) ) {
@@ -986,6 +987,19 @@ final class Plan_Proposal_Service {
 			}
 
 			if ( 'npcink-abilities-toolkit/update-post' === $target_ability_id ) {
+				if ( isset( $seen_metadata_actions['excerpt'] ) ) {
+					return new WP_Error(
+						'npcink_governance_core_content_metadata_duplicate_action_rejected',
+						__( 'Content metadata apply plans may include at most one excerpt update action.', 'npcink-governance-core' ),
+						array(
+							'status'       => 422,
+							'action_index' => $action_index,
+							'action_type'  => 'excerpt',
+						)
+					);
+				}
+				$seen_metadata_actions['excerpt'] = true;
+
 				$allowed_input_keys = array(
 					'post_id'          => true,
 					'excerpt'          => true,
@@ -1056,6 +1070,18 @@ final class Plan_Proposal_Service {
 					)
 				);
 			}
+			if ( isset( $seen_metadata_actions[ $taxonomy ] ) ) {
+				return new WP_Error(
+					'npcink_governance_core_content_metadata_duplicate_action_rejected',
+					__( 'Content metadata apply plans may include at most one action per taxonomy.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+						'action_type'  => $taxonomy,
+					)
+				);
+			}
+			$seen_metadata_actions[ $taxonomy ] = true;
 
 			$mode = sanitize_key( (string) ( $input['mode'] ?? 'append' ) );
 			if ( ! in_array( $mode, array( 'append', 'replace' ), true ) ) {

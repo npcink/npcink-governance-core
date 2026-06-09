@@ -110,9 +110,10 @@ write owner, article generator, approval store, or preflight bypass.
 `npcink-toolbox/build-content-metadata-apply-plan` is the reviewed content
 metadata handoff owned by Toolbox. Core accepts it only as a
 `content_metadata_apply_plan` for one post, grouping accepted excerpt and
-existing category/tag choices into a batch proposal. It does not move excerpt
-generation, taxonomy recommendation, new-term governance, feedback storage, or
-WordPress write execution into Core or Toolbox.
+existing category/tag choices into a batch proposal with at most one action per
+metadata slot. It does not move excerpt generation, taxonomy recommendation,
+new-term governance, feedback storage, or WordPress write execution into Core
+or Toolbox.
 
 `npcink-abilities-toolkit/build-media-optimization-plan` is the bounded local media
 optimization handoff owned by `npcink-abilities-toolkit` or a local product plugin.
