@@ -1,7 +1,8 @@
 # Operation Classification Contract
 
 Status: contract implemented as the Core `Operation_Classifier` policy helper;
-the first Toolbox and high-risk scenario proofs are not implemented yet.
+the first low-risk Toolbox proof and high-risk Core proposal proof are
+implemented.
 
 This contract defines how Npcink modules decide whether an AI-assisted action
 is suggestion-only, eligible for local admin consent, needs strong local
@@ -123,6 +124,10 @@ Acceptance:
 Implemented scenario: reviewed article plus image batch handoff, where one
 operator-reviewed batch creates draft actions, media upload actions, media
 metadata actions, and featured-image actions for article/image pairs.
+
+Continuing contrast cases such as batch image selection, batch SEO updates, and
+batch article edits must also resolve to `core_proposal_required`; they are
+examples of the same boundary, not Local Admin Consent expansion targets.
 
 Expected classification: `core_proposal_required`.
 

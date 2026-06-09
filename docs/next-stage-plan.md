@@ -119,6 +119,8 @@ The next product-boundary implementation should use the
    scenario of a reviewed article plus image batch handoff. That proof groups
    draft creation, media upload, media metadata, and featured-image actions
    into one Core batch proposal and does not use Local Admin Consent.
+   Batch image selection, batch SEO updates, and batch article edits remain
+   contrast examples for the same `core_proposal_required` boundary.
 
 Those scenario proofs are required, but they should validate the shared
 classification contract instead of becoming private one-off bypasses.
