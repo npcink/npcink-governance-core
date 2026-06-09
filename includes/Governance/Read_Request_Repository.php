@@ -241,7 +241,7 @@ final class Read_Request_Repository {
 		}
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
-		$wpdb->update(
+		$updated = $wpdb->update(
 			$this->table_name(),
 			$data,
 			array( 'request_id' => $request_id ),
@@ -249,6 +249,46 @@ final class Read_Request_Repository {
 			array( '%s' )
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		if ( false === $updated ) {
+			return null;
+		}
+
+		return $this->find( $request_id );
+	}
+
+	/**
+	 * Atomically consumes an approved one-time read request.
+	 *
+	 * @param string $request_id Request id.
+	 * @return array<string,mixed>|null
+	 */
+	public function consume_approved_once( string $request_id ): ?array {
+		global $wpdb;
+
+		$request_id = sanitize_text_field( $request_id );
+		$now        = current_time( 'mysql', true );
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		$updated = $wpdb->update(
+			$this->table_name(),
+			array(
+				'status'      => self::STATUS_CONSUMED,
+				'consumed_at' => $now,
+				'updated_at'  => $now,
+			),
+			array(
+				'request_id' => $request_id,
+				'status'     => self::STATUS_APPROVED,
+			),
+			array( '%s', '%s', '%s' ),
+			array( '%s', '%s' )
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		if ( 1 !== $updated ) {
+			return null;
+		}
 
 		return $this->find( $request_id );
 	}

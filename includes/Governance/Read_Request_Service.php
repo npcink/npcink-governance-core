@@ -102,6 +102,29 @@ final class Read_Request_Service {
 			);
 		}
 
+		$data_classes = $this->sanitize_string_list( is_array( $payload['data_classes'] ?? null ) ? (array) $payload['data_classes'] : array() );
+		if ( empty( $data_classes ) ) {
+			return new WP_Error(
+				'npcink_governance_core_read_request_data_classes_required',
+				__( 'Sensitive read requests must declare at least one data class for review.', 'npcink-governance-core' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		$purpose = sanitize_textarea_field( (string) ( $payload['purpose'] ?? '' ) );
+		if ( '' === $purpose ) {
+			return new WP_Error(
+				'npcink_governance_core_read_request_purpose_required',
+				__( 'Sensitive read requests must include a review purpose.', 'npcink-governance-core' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		$redaction_level = $this->redaction_level( (string) ( $payload['redaction_level'] ?? '' ) );
+		if ( is_wp_error( $redaction_level ) ) {
+			return $redaction_level;
+		}
+
 		$caller = is_array( $payload['caller'] ?? null ) ? $payload['caller'] : array();
 		if ( Request_Context::is_app() ) {
 			$caller['auth'] = Request_Context::audit_metadata();
@@ -115,9 +138,9 @@ final class Read_Request_Service {
 				'input_hash'               => $input_hash,
 				'requested_input_summary'  => $payload['requested_input_summary'] ?? '',
 				'sensitivity'              => $this->sensitivity_for_request( $capability, (string) ( $payload['sensitivity'] ?? '' ) ),
-				'data_classes'             => is_array( $payload['data_classes'] ?? null ) ? (array) $payload['data_classes'] : array(),
-				'redaction_level'          => $this->redaction_level( (string) ( $payload['redaction_level'] ?? '' ) ),
-				'purpose'                  => $payload['purpose'] ?? '',
+				'data_classes'             => $data_classes,
+				'redaction_level'          => $redaction_level,
+				'purpose'                  => $purpose,
 				'caller'                   => $caller,
 				'bounds'                   => $bounds,
 				'correlation_id'           => $this->new_correlation_id(),
@@ -165,6 +188,11 @@ final class Read_Request_Service {
 			);
 		}
 
+		$redaction_level = $this->redaction_level( (string) ( $metadata['redaction_level'] ?? $request['redaction_level'] ?? '' ) );
+		if ( is_wp_error( $redaction_level ) ) {
+			return $redaction_level;
+		}
+
 		$bounds     = $this->bounded_read_limits(
 			$capability,
 			$this->read_bounds_payload(
@@ -177,7 +205,7 @@ final class Read_Request_Service {
 			(string) $request['request_id'],
 			array(
 				'bounds'          => $bounds,
-				'redaction_level' => $this->redaction_level( (string) ( $metadata['redaction_level'] ?? $request['redaction_level'] ?? '' ) ),
+				'redaction_level' => $redaction_level,
 				'expires_at'      => $expires_at,
 			)
 		);
@@ -308,6 +336,30 @@ final class Read_Request_Service {
 		}
 
 		$bounds = $this->bounded_read_limits( $capability, is_array( $request['bounds'] ?? null ) ? (array) $request['bounds'] : array() );
+		$grant_request = $request;
+		if ( ! empty( $bounds['one_time'] ) ) {
+			$consumed = $this->requests->consume_approved_once( (string) $request['request_id'] );
+			if ( null === $consumed ) {
+				return $this->preflight_error(
+					'npcink_governance_core_read_request_consume_failed',
+					__( 'One-time sensitive read request could not be consumed before grant.', 'npcink-governance-core' ),
+					409,
+					$request
+				);
+			}
+
+			$consumed_event_id = $this->audit->record(
+				'read_request.consumed',
+				$this->audit_metadata( $consumed, array( 'correlation_id' => (string) $request['correlation_id'] ) ),
+				(string) $request['request_id']
+			);
+			if ( '' === $consumed_event_id ) {
+				return $this->audit_failed_error( 'npcink_governance_core_read_request_consume_audit_failed' );
+			}
+
+			$grant_request = $consumed;
+		}
+
 		$context = array(
 			'request_id'               => (string) $request['request_id'],
 			'ability_id'               => $ability_id,
@@ -328,7 +380,7 @@ final class Read_Request_Service {
 		$event_id = $this->audit->record(
 			'read_request.preflighted',
 			$this->audit_metadata(
-				$request,
+				$grant_request,
 				array(
 					'correlation_id'             => (string) $request['correlation_id'],
 					'approved_input_hash'        => (string) $request['input_hash'],
@@ -345,24 +397,12 @@ final class Read_Request_Service {
 		}
 
 		$response = array(
-			'request'                    => $request,
+			'request'                    => $grant_request,
 			'read_authorization_context' => $context,
 			'correlation_id'             => (string) $request['correlation_id'],
 			'commit_execution'           => false,
 			'write_execution'            => false,
 		);
-
-		if ( ! empty( $bounds['one_time'] ) ) {
-			$consumed = $this->requests->update_status( (string) $request['request_id'], Read_Request_Repository::STATUS_CONSUMED );
-			$this->audit->record(
-				'read_request.consumed',
-				$this->audit_metadata( is_array( $consumed ) ? $consumed : $request, array( 'correlation_id' => (string) $request['correlation_id'] ) ),
-				(string) $request['request_id']
-			);
-			if ( is_array( $consumed ) ) {
-				$response['request'] = $consumed;
-			}
-		}
 
 		return $response;
 	}
@@ -640,11 +680,19 @@ final class Read_Request_Service {
 	 * Returns redaction level.
 	 *
 	 * @param string $value Raw value.
-	 * @return string
+	 * @return string|WP_Error
 	 */
-	private function redaction_level( string $value ): string {
-		$value = sanitize_key( '' !== $value ? $value : 'standard' );
-		return in_array( $value, array( 'none', 'standard', 'strict' ), true ) ? $value : 'standard';
+	private function redaction_level( string $value ) {
+		$value = sanitize_key( '' !== $value ? $value : 'strict' );
+		if ( 'none' === $value ) {
+			return new WP_Error(
+				'npcink_governance_core_read_request_redaction_required',
+				__( 'Sensitive read authorization cannot disable redaction.', 'npcink-governance-core' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		return in_array( $value, array( 'standard', 'strict' ), true ) ? $value : 'strict';
 	}
 
 	/**

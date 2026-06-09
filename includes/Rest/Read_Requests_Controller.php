@@ -277,11 +277,11 @@ final class Read_Requests_Controller {
 					'type'    => 'array',
 					'default' => array(),
 				),
-				'redaction_level' => array(
-					'type'              => 'string',
-					'default'           => 'standard',
-					'sanitize_callback' => 'sanitize_key',
-				),
+					'redaction_level' => array(
+						'type'              => 'string',
+						'default'           => 'strict',
+						'sanitize_callback' => 'sanitize_key',
+					),
 				'purpose'    => array(
 					'type'              => 'string',
 					'default'           => '',
@@ -323,11 +323,11 @@ final class Read_Requests_Controller {
 					'default'           => '',
 					'sanitize_callback' => 'sanitize_text_field',
 				),
-				'redaction_level' => array(
-					'type'              => 'string',
-					'default'           => 'standard',
-					'sanitize_callback' => 'sanitize_key',
-				),
+					'redaction_level' => array(
+						'type'              => 'string',
+						'default'           => 'strict',
+						'sanitize_callback' => 'sanitize_key',
+					),
 				'bounds' => array(
 					'type'    => 'object',
 					'default' => array(),

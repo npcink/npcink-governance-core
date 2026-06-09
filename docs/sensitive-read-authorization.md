@@ -70,10 +70,13 @@ administrator with `manage_options` or the listed app scope.
 | `POST /read-requests/{request_id}/read-preflight` | `read_requests:preflight` | Return bounded read authorization context for the approved input. |
 
 Request creation accepts either structured `input` or an explicit 64-character
-SHA-256 `input_hash`. If `input` is supplied, Core computes the approved hash
-from sanitized structured input. Read preflight must submit the same
-`ability_id` and either the same `input` or the approved `input_hash`; mismatches
-are rejected.
+SHA-256 `input_hash`. It must also include a review `purpose` and at least one
+`data_classes` entry so the administrator can review why the sensitive data is
+needed and what kind of data may be exposed. `redaction_level` can be `standard`
+or `strict` only; sensitive read authorization cannot disable redaction. If
+`input` is supplied, Core computes the approved hash from sanitized structured
+input. Read preflight must submit the same `ability_id` and either the same
+`input` or the approved `input_hash`; mismatches are rejected.
 
 ## Grant Context
 
@@ -141,6 +144,7 @@ Adapter must:
   `core_authorization_truth=npcink_governance_core`;
 - apply `redaction_level`, `allowed_fields`, `denied_fields`, `max_rows`, and
   `tail_lines` before returning read data to an agent or logs;
+- treat `redaction_level=none` as invalid for sensitive read authorization;
 - reject expired, rejected, consumed, mismatched, or unaudited grants.
 
 Adapter must not store an Adapter-owned approval truth for this flow. It may

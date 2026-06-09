@@ -396,9 +396,9 @@ Request fields:
 | `input_hash` | string | no | 64-character SHA-256 hash when the caller cannot send input. Ignored when non-empty `input` is supplied. |
 | `requested_input_summary` | string | no | Human-readable summary; secrets are redacted. |
 | `sensitivity` | string | no | `internal` or `sensitive`; defaults to capability sensitivity. |
-| `data_classes` | array | no | Data classes such as `logs`, `diagnostics`, or `private_content`. |
-| `redaction_level` | string | no | `none`, `standard`, or `strict`. |
-| `purpose` | string | no | Review purpose. |
+| `data_classes` | array | yes | Data classes such as `logs`, `diagnostics`, or `private_content`; at least one is required for review. |
+| `redaction_level` | string | no | `standard` or `strict`; defaults to `strict`. Sensitive read authorization cannot disable redaction. |
+| `purpose` | string | yes | Review purpose. |
 | `caller` | object | no | Caller metadata; app auth is copied into `caller.auth`. |
 | `expires_at` | string | no | UTC expiry, clamped to Core max TTL. |
 | `max_rows`, `tail_lines`, `allowed_fields`, `denied_fields`, `one_time` | mixed | no | Requested bounds, clamped to provider and Core caps. |

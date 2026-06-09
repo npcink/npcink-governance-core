@@ -2829,6 +2829,41 @@ $read_payload = array(
 	'allowed_fields'          => array( 'timestamp', 'message', 'cookie' ),
 	'denied_fields'           => array( 'stack_trace' ),
 );
+
+$missing_data_classes_payload = $read_payload;
+$missing_data_classes_payload['input'] = array( 'tail' => true, 'filter' => 'missing-data-classes' );
+unset( $missing_data_classes_payload['data_classes'] );
+$missing_data_classes = $stack['service']->create( $missing_data_classes_payload );
+npcink_governance_core_fail_closed_assert( is_wp_error( $missing_data_classes ), 'Sensitive read request fails without data classes.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_read_request_data_classes_required' === $missing_data_classes->get_error_code(), 'Missing data classes uses stable error code.' );
+
+$missing_purpose_payload = $read_payload;
+$missing_purpose_payload['input'] = array( 'tail' => true, 'filter' => 'missing-purpose' );
+unset( $missing_purpose_payload['purpose'] );
+$missing_purpose = $stack['service']->create( $missing_purpose_payload );
+npcink_governance_core_fail_closed_assert( is_wp_error( $missing_purpose ), 'Sensitive read request fails without purpose.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_read_request_purpose_required' === $missing_purpose->get_error_code(), 'Missing purpose uses stable error code.' );
+
+$unredacted_payload = $read_payload;
+$unredacted_payload['input'] = array( 'tail' => true, 'filter' => 'no-redaction' );
+$unredacted_payload['redaction_level'] = 'none';
+$unredacted_request = $stack['service']->create( $unredacted_payload );
+npcink_governance_core_fail_closed_assert( is_wp_error( $unredacted_request ), 'Sensitive read request fails when redaction is disabled.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_read_request_redaction_required' === $unredacted_request->get_error_code(), 'Disabled redaction uses stable error code.' );
+
+$unredacted_approval_request = $stack['service']->create(
+	array_merge(
+		$read_payload,
+		array(
+			'input' => array( 'tail' => true, 'filter' => 'approval-no-redaction' ),
+		)
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $unredacted_approval_request ), 'Sensitive read request is created for approval redaction guard.' );
+$unredacted_approval = $stack['service']->approve( (string) $unredacted_approval_request['request_id'], array( 'redaction_level' => 'none' ) );
+npcink_governance_core_fail_closed_assert( is_wp_error( $unredacted_approval ), 'Sensitive read approval fails when redaction is disabled.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_read_request_redaction_required' === $unredacted_approval->get_error_code(), 'Approval disabled redaction uses stable error code.' );
+
 $read_request = $stack['service']->create( $read_payload );
 npcink_governance_core_fail_closed_assert( ! is_wp_error( $read_request ), 'Sensitive read request is created.' );
 npcink_governance_core_fail_closed_assert( 'pending' === (string) ( $read_request['status'] ?? '' ), 'Sensitive read request starts pending.' );
@@ -2968,6 +3003,29 @@ $one_time_replay = $stack['service']->preflight(
 	)
 );
 npcink_governance_core_fail_closed_assert( is_wp_error( $one_time_replay ), 'Consumed one-time sensitive read request cannot be reused.' );
+
+$one_time_failed_consume_request = $stack['service']->create(
+	array_merge(
+		$read_payload,
+		array(
+			'input'    => array( 'tail' => true, 'filter' => 'one-time-consume-fails' ),
+			'one_time' => true,
+		)
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $one_time_failed_consume_request ), 'One-time sensitive read request is created for consume failure.' );
+$one_time_failed_consume_approved = $stack['service']->approve( (string) $one_time_failed_consume_request['request_id'], array( 'one_time' => true ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $one_time_failed_consume_approved ), 'One-time sensitive read request is approved for consume failure.' );
+$wpdb->fail_update_tables[] = $read_request_table;
+$one_time_failed_consume_grant = $stack['service']->preflight(
+	(string) $one_time_failed_consume_request['request_id'],
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/read-error-log',
+		'input'      => array( 'tail' => true, 'filter' => 'one-time-consume-fails' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $one_time_failed_consume_grant ), 'One-time sensitive read request fails closed when consume update fails.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_read_request_consume_failed' === $one_time_failed_consume_grant->get_error_code(), 'One-time consume failure uses stable error code.' );
 
 $read_timeline = $stack['service']->audit_timeline( (string) $read_request['request_id'] );
 $read_timeline_events = array_map(

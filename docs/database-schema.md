@@ -68,7 +68,7 @@ storage.
 | `requested_input_summary` | `longtext` | yes | Sanitized human summary, not raw input. |
 | `sensitivity` | `varchar(40)` | no | `internal` or `sensitive`. |
 | `data_classes_json` | `longtext` | yes | Sanitized data class list. |
-| `redaction_level` | `varchar(80)` | no | `none`, `standard`, or `strict`. |
+| `redaction_level` | `varchar(80)` | no | `standard` or `strict`; sensitive reads cannot disable redaction. |
 | `purpose` | `longtext` | yes | Sanitized review purpose. |
 | `caller_json` | `longtext` | yes | Sanitized caller metadata and optional app auth attribution. |
 | `bounds_json` | `longtext` | yes | `max_rows`, `tail_lines`, `allowed_fields`, `denied_fields`, and `one_time`. |
