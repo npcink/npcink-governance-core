@@ -628,8 +628,8 @@ or `dry_run=false` are rejected before proposal creation.
 
 For `npcink-abilities-toolkit/build-media-optimization-plan`, the plan must declare
 `artifact_type=media_optimization_plan`, `proposal_mode=batch`,
-`batch_approval=true`, and target exactly one `attachment_id` across all
-actions. It must include `npcink-abilities-toolkit/update-media-details` and either
+`batch_approval=true`, and include paired metadata and derivative actions for
+each `attachment_id` in the plan. It must include `npcink-abilities-toolkit/update-media-details` and either
 `npcink-abilities-toolkit/adopt-cloud-media-derivative` or
 `npcink-abilities-toolkit/replace-media-file`. Post-content media reference repair belongs to
 that derivative action's dry-run and commit contract; Core rejects media

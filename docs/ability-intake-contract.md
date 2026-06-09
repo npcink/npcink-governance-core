@@ -137,9 +137,9 @@ or Toolbox.
 
 `npcink-abilities-toolkit/build-media-optimization-plan` is the bounded local media
 optimization handoff owned by `npcink-abilities-toolkit` or a local product plugin.
-Core accepts it only as an explicit batch plan for one attachment, combining
-metadata updates with derivative adoption while leaving Cloud processing and
-final WordPress writes outside Core.
+Core accepts it only as an explicit batch plan where every attachment has a
+paired metadata update and derivative adoption action while leaving Cloud
+processing and final WordPress writes outside Core.
 
 `npcink-abilities-toolkit/build-media-rename-plan` is the bounded local media rename handoff
 owned by `npcink-abilities-toolkit` or a local product plugin. Core accepts it only

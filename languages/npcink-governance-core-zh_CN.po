@@ -1365,8 +1365,8 @@ msgid "Media optimization plans must not split post-content media reference repa
 msgstr "媒体优化计划不得将文章内容媒体引用修复拆分为单独的写入操作。"
 
 #: includes/Governance/Plan_Proposal_Service.php:842
-msgid "Media optimization plans must target exactly one attachment across all write actions."
-msgstr "媒体优化计划的所有写入操作必须正好面向一个附件。"
+msgid "Media optimization plans must pair metadata and derivative actions for each attachment."
+msgstr "媒体优化计划必须为每个附件配对元数据和衍生文件操作。"
 
 #: includes/Governance/Plan_Proposal_Service.php:861
 msgid "Media rename plans must declare artifact_type=media_rename_plan."

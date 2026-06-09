@@ -108,8 +108,8 @@ Use it for behavior that requires real WordPress:
 - bounded batch plan contracts for
   `npcink-toolbox/build-article-batch-write-plan` and
   `npcink-abilities-toolkit/build-media-optimization-plan`, including explicit batch approval
-  and fail-closed rejection of publish, missing derivative, or multi-attachment
-  cases;
+  and fail-closed rejection of publish, missing derivative, or unpaired
+  attachment action cases;
 - bounded media rename plan contracts for `npcink-abilities-toolkit/build-media-rename-plan`,
   including one reviewed `npcink-abilities-toolkit/rename-media-file` action and fail-closed
   rejection of missing target filename or multi-attachment cases;

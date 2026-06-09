@@ -1541,7 +1541,9 @@ npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'previe
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.pattern_page' ), 'Plan-to-proposal docs require pattern page preview evidence.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.content_metadata_apply' ), 'Plan-to-proposal docs require content metadata apply preview evidence.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'proposal_mode=batch' ), 'Plan-to-proposal docs require explicit batch proposal mode where needed.' );
-npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'optimize this media item' ), 'Plan-to-proposal docs define media optimization as a user intent.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'optimize these reviewed media items' ), 'Plan-to-proposal docs define media optimization as a reviewed media intent.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'include paired metadata and derivative actions for' ), 'Plan-to-proposal docs define media optimization attachment pairing.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'each attachment in the plan' ), 'Plan-to-proposal docs define media optimization per-attachment pairing.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'optimize this existing article' ), 'Plan-to-proposal docs define article optimization as an existing-content intent.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'target_file_name' ), 'Plan-to-proposal docs require reviewed media rename target filename.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'Article writing is a local Ability recipe' ), 'Plan-to-proposal docs treat article writing as local Ability recipe.' );

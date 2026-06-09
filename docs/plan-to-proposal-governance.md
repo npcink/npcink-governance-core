@@ -245,10 +245,10 @@ image, upload media, set featured images, or persist provider candidate truth.
 ## Media Optimization Handoff
 
 `npcink-abilities-toolkit/build-media-optimization-plan` is the bounded local plan for the user
-intent "optimize this media item." It must declare
+intent "optimize these reviewed media items." It must declare
 `artifact_type=media_optimization_plan`, `proposal_mode=batch`,
-`batch_approval=true`, and target exactly one attachment across all write
-actions.
+`batch_approval=true`, and include paired metadata and derivative actions for
+each attachment in the plan.
 
 The plan must include:
 

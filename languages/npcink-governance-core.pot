@@ -1367,7 +1367,7 @@ msgid "Media optimization plans must not split post-content media reference repa
 msgstr ""
 
 #: includes/Governance/Plan_Proposal_Service.php:842
-msgid "Media optimization plans must target exactly one attachment across all write actions."
+msgid "Media optimization plans must pair metadata and derivative actions for each attachment."
 msgstr ""
 
 #: includes/Governance/Plan_Proposal_Service.php:861

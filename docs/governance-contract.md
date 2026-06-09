@@ -166,8 +166,8 @@ execute WordPress writes.
 The media optimization handoff is the governed shape for the user intent
 "optimize this attachment." Core accepts
 `npcink-abilities-toolkit/build-media-optimization-plan` only as an explicit batch proposal
-for exactly one attachment, combining `npcink-abilities-toolkit/update-media-details` with a
-derivative adoption action such as
+where every attachment has paired `npcink-abilities-toolkit/update-media-details` and
+derivative adoption actions such as
 `npcink-abilities-toolkit/adopt-cloud-media-derivative` or `npcink-abilities-toolkit/replace-media-file`.
 Post-content media reference repair is part of the derivative adoption ability
 contract and must not be split into a separate `npcink-abilities-toolkit/patch-post-content`,

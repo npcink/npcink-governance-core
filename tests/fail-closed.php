@@ -2497,6 +2497,50 @@ npcink_governance_core_fail_closed_assert( is_array( $media_optimization_proposa
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();
+$multi_media_optimization_plan = npcink_governance_core_fail_closed_media_optimization_plan();
+$multi_media_optimization_plan['attachment_ids'] = array( 1493, 1494 );
+$multi_media_optimization_plan['write_actions'][] = array(
+	'action_id'         => 'update_media_details_1494',
+	'target_ability_id' => 'npcink-abilities-toolkit/update-media-details',
+	'input'             => array(
+		'attachment_id'   => 1494,
+		'title'           => 'Second optimized AI image',
+		'alt'             => 'Second AI generated product image',
+		'source_type'     => 'ai_generated',
+		'dry_run'         => true,
+		'commit'          => false,
+		'idempotency_key' => 'media-optimize-metadata-1494',
+	),
+	'risk'              => 'medium',
+	'requires_approval' => true,
+	'commit_execution'  => false,
+	'proposal_ready'    => true,
+);
+$multi_media_optimization_plan['write_actions'][] = array(
+	'action_id'         => 'adopt_webp_derivative_1494',
+	'target_ability_id' => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',
+	'input'             => array(
+		'attachment_id'                  => 1494,
+		'derivative_artifact'            => 'cloud://artifact/webp-1494',
+		'expected_current_mime_type'     => 'image/png',
+		'expected_derivative_mime_type'  => 'image/webp',
+		'dry_run'                        => true,
+		'commit'                         => false,
+		'idempotency_key'                => 'media-optimize-derivative-1494',
+	),
+	'risk'              => 'medium',
+	'requires_approval' => true,
+	'commit_execution'  => false,
+	'proposal_ready'    => true,
+);
+$multi_media_optimization_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-optimization-plan', $multi_media_optimization_plan, array(), array( 'source' => 'toolbox_media_optimization' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $multi_media_optimization_result ), 'Valid multi-attachment media optimization plan creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $multi_media_optimization_result['proposal_count'] ?? 0 ), 'Valid multi-attachment media optimization plan creates one batch proposal.' );
+$multi_media_optimization_proposal = is_array( $multi_media_optimization_result['proposals'][0] ?? null ) ? $multi_media_optimization_result['proposals'][0] : array();
+npcink_governance_core_fail_closed_assert( 4 === count( (array) ( $multi_media_optimization_proposal['input']['write_actions'] ?? array() ) ), 'Multi-attachment media optimization proposal stores all metadata and derivative actions.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
 $media_optimization_missing_derivative = npcink_governance_core_fail_closed_media_optimization_plan();
 array_pop( $media_optimization_missing_derivative['write_actions'] );
 $media_optimization_missing_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-optimization-plan', $media_optimization_missing_derivative );
@@ -2508,7 +2552,7 @@ $stack = npcink_governance_core_fail_closed_plan_stack();
 $media_optimization_mismatch = npcink_governance_core_fail_closed_media_optimization_plan();
 $media_optimization_mismatch['write_actions'][1]['input']['attachment_id'] = 1494;
 $media_optimization_mismatch_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-optimization-plan', $media_optimization_mismatch );
-npcink_governance_core_fail_closed_assert( is_wp_error( $media_optimization_mismatch_result ), 'Media optimization plan spanning multiple attachments is rejected.' );
+npcink_governance_core_fail_closed_assert( is_wp_error( $media_optimization_mismatch_result ), 'Media optimization plan with unpaired attachment actions is rejected.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_media_optimization_attachment_mismatch' === $media_optimization_mismatch_result->get_error_code(), 'Media optimization attachment mismatch uses stable error code.' );
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();

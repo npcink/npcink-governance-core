@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-09 — Multi-attachment media optimization intake enabled
+
+- **Module**: Core plan-to-proposal intake for media optimization plans.
+- **Status**: `npcink-abilities-toolkit/build-media-optimization-plan` now
+  admits one reviewed batch proposal containing multiple attachments when each
+  attachment has paired metadata update and derivative adoption actions.
+- **Completed**:
+  - Changed the media optimization contract validator from a global
+    single-attachment check to per-attachment pairing checks.
+  - Preserved fail-closed rejection for missing derivative/metadata pairing and
+    for separate post-content reference repair write actions.
+  - Updated public plan-to-proposal, REST, ability intake, governance, testing,
+    README, and translation contract text.
+  - Added fail-closed coverage proving a two-attachment/four-action media
+    optimization plan creates one Core batch proposal.
+- **Verification**:
+  - In `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+  - In `/Users/muze/gitee/magick-ai-core`: `composer smoke:wp`
+- **Boundary**:
+  - Core still only validates reviewed plan output and owns proposal,
+    approval, preflight, and audit truth. It does not execute media writes,
+    download Cloud artifacts, create derivatives, repair post content, or add
+    workflow/runtime queue ownership.
+
 ## 2026-06-09 — Core-managed sensitive read authorization added
 
 - **Module**: Core sensitive read request lifecycle.

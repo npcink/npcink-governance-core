@@ -1205,21 +1205,47 @@ final class Plan_Proposal_Service {
 			);
 		}
 
-		$attachment_ids = array();
+		$attachment_requirements = array();
 		foreach ( $write_actions as $action ) {
+			if ( ! is_array( $action ) ) {
+				continue;
+			}
+			$target = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
 			$input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
 			$id    = absint( $input['attachment_id'] ?? 0 );
-			if ( $id > 0 ) {
-				$attachment_ids[] = $id;
+			if ( ! in_array( $target, array_merge( array( 'npcink-abilities-toolkit/update-media-details' ), $derivative_targets ), true ) ) {
+				continue;
+			}
+
+			if ( $id <= 0 ) {
+				return new WP_Error(
+					'npcink_governance_core_media_optimization_attachment_mismatch',
+					__( 'Media optimization plans must pair metadata and derivative actions for each attachment.', 'npcink-governance-core' ),
+					array( 'status' => 422 )
+				);
+			}
+
+			if ( ! isset( $attachment_requirements[ $id ] ) ) {
+				$attachment_requirements[ $id ] = array(
+					'metadata'   => false,
+					'derivative' => false,
+				);
+			}
+			if ( 'npcink-abilities-toolkit/update-media-details' === $target ) {
+				$attachment_requirements[ $id ]['metadata'] = true;
+			}
+			if ( in_array( $target, $derivative_targets, true ) ) {
+				$attachment_requirements[ $id ]['derivative'] = true;
 			}
 		}
-		$attachment_ids = array_values( array_unique( $attachment_ids ) );
-		if ( 1 !== count( $attachment_ids ) ) {
-			return new WP_Error(
-				'npcink_governance_core_media_optimization_attachment_mismatch',
-				__( 'Media optimization plans must target exactly one attachment across all write actions.', 'npcink-governance-core' ),
-				array( 'status' => 422 )
-			);
+		foreach ( $attachment_requirements as $attachment_requirement ) {
+			if ( empty( $attachment_requirement['metadata'] ) || empty( $attachment_requirement['derivative'] ) ) {
+				return new WP_Error(
+					'npcink_governance_core_media_optimization_attachment_mismatch',
+					__( 'Media optimization plans must pair metadata and derivative actions for each attachment.', 'npcink-governance-core' ),
+					array( 'status' => 422 )
+				);
+			}
 		}
 
 		return true;
