@@ -1,5 +1,26 @@
 # Session Breadcrumb
 
+## 2026-06-09 — Approval policy stage closeout documented
+
+- **Module**: Core approval policy evaluator documentation.
+- **Status**: The guarded approval-policy stage is closed out as a Core
+  implementation milestone, with remaining work redirected to operational
+  observation and Adapter productization.
+- **Completed**:
+  - Added `docs/approval-policy-stage-closeout.md` as the historical summary
+    for future AI sessions.
+  - Recorded the current supported modes, implemented guardrails, verified
+    evidence, explicit non-candidates, OpenClaw development usage, and the
+    recommendation to stop expanding Core in this stage.
+  - Linked the closeout note from the README documentation index.
+- **Verification**:
+  - In `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+  - In `/Users/muze/gitee/magick-ai-core`: `git diff --check`
+- **Boundary**:
+  - Documentation only. No Core REST routes, proposal lifecycle behavior,
+    approval mode, Adapter execution behavior, workflow runtime, policy DSL, or
+    WordPress mutation was added.
+
 ## 2026-06-09 — Local guarded create-draft auto approval added
 
 - **Module**: Core approval policy evaluator.
