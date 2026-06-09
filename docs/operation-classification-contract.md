@@ -143,6 +143,22 @@ Acceptance:
 - no local admin consent audit event or bypass is available;
 - Core remains proposal, approval, preflight, and audit truth.
 
+### Media Optimization Regression Rule
+
+A present administrator replacing one already-visible media file may classify
+as `strong_local_confirmation` only when the product surface can show the exact
+final result and has a bounded restore path. A media optimization plan is
+different: it combines metadata updates, derivative adoption, possible inline
+reference repair, and ordered write actions. Even when it targets one
+attachment from wp-admin, classify that plan as `core_proposal_required` with
+`operation_kind=batch_plan`.
+
+This rule keeps the completed media optimization closure from drifting into
+Local Admin Consent. Core governs the batch proposal and review summary;
+Adapter owns derived readiness and execution state after Core preflight; local
+abilities own verification summaries, replacement-count reporting, and restore
+behavior.
+
 ## Non-Goals
 
 This contract does not add Core final execution, workflow queues, batch

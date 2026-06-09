@@ -125,6 +125,25 @@ The next product-boundary implementation should use the
 Those scenario proofs are required, but they should validate the shared
 classification contract instead of becoming private one-off bypasses.
 
+Media optimization should now be treated as a regression-owned cross-repo path,
+not a new Core feature line. Keep the responsibility split stable:
+
+- Core preserves the media optimization plan intake, batch proposal summary,
+  approval, commit preflight, and audit contract.
+- Adapter preserves derived readiness, executability, non-executable reasons,
+  cached/audited preflight state, and post-Core execution handoff behavior.
+- `npcink-abilities-toolkit` preserves local write verification,
+  replacement rule counts versus actual replacements, and media/reference
+  restore behavior.
+- Cloud Addon remains runtime/detail only and must not become artifact,
+  approval, or WordPress write truth.
+
+Run the relevant cross-repo gates when changing this path instead of adding
+new Core execution or health routes: Core `composer test:all` and
+`composer smoke:wp`, Adapter `composer test:all` and `composer smoke:wp`, and
+Abilities `composer test:all` plus its local WordPress smoke gate when media
+replacement or restore behavior changes.
+
 The next product strategy proof can use the
 [Governed AI Feedback Loop](governed-ai-feedback-loop.md) model. A practical P0
 is Content Metadata Delta: one selected post, related-content vector context,

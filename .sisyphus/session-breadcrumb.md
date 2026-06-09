@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-09 — Media optimization regression guardrails locked
+
+- **Module**: Core operation classification and media optimization governance
+  regression contracts.
+- **Status**: Media optimization is now documented as a cross-repo regression
+  path rather than a new Core feature line, and one-attachment media
+  optimization batch plans are explicitly kept on the Core proposal path.
+- **Completed**:
+  - Added an Operation Classification regression rule that distinguishes
+    single-object media file replacement strong confirmation from media
+    optimization batch plans requiring Core proposal review.
+  - Added static classifier coverage proving a wp-admin, one-attachment
+    `batch_plan` remains `core_proposal_required`.
+  - Documented the cross-repo media optimization regression split: Core keeps
+    proposal/preflight/audit, Adapter keeps derived readiness and execution
+    state, Abilities keeps verification/replacement counts/restore behavior,
+    and Cloud Addon stays runtime/detail only.
+- **Verification**:
+  - `composer test:all`
+- **Boundary**:
+  - Documentation and static-contract guardrails only. No Core execution,
+    health route, Cloud artifact truth, Adapter status API, Abilities callback,
+    REST contract, database schema, or WordPress write behavior was added.
+
 ## 2026-06-09 — Pattern page from-plan Core bridge aligned
 
 - **Module**: Core plan-to-proposal intake for Toolkit Gutenberg pattern pages.

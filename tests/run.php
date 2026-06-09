@@ -917,6 +917,19 @@ $strong_confirmation_classification = $classifier->classify(
 );
 npcink_governance_core_assert( 'strong_local_confirmation' === (string) ( $strong_confirmation_classification['classification'] ?? '' ), 'Operation classifier escalates high-impact single-object writes.' );
 
+$media_optimization_batch_classification = $classifier->classify(
+	array(
+		'request_source'       => 'wp_admin_ui',
+		'actor_presence'      => 'present_click',
+		'preview_completeness' => 'sufficient',
+		'scope'                => 'one_object',
+		'reversibility'        => 'backup_restore',
+		'operation_kind'       => 'batch_plan',
+	)
+);
+npcink_governance_core_assert( 'core_proposal_required' === (string) ( $media_optimization_batch_classification['classification'] ?? '' ), 'Operation classifier keeps one-attachment media optimization batch plans in Core proposal review.' );
+npcink_governance_core_assert( in_array( 'operation_kind_requires_core_proposal', (array) ( $media_optimization_batch_classification['reasons'] ?? array() ), true ), 'Media optimization batch plan is rejected from local confirmation because batch plans require Core proposals.' );
+
 $batch_classification = $classifier->classify(
 	array(
 		'request_source'       => 'external_adapter',
@@ -1403,6 +1416,10 @@ npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'optimi
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'target_file_name' ), 'Plan-to-proposal docs require reviewed media rename target filename.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'Article writing is a local Ability recipe' ), 'Plan-to-proposal docs treat article writing as local Ability recipe.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'must not produce article drafts' ), 'Plan-to-proposal docs prohibit Cloud draft generation.' );
+npcink_governance_core_assert( false !== strpos( $operation_classification, 'Media Optimization Regression Rule' ), 'Operation classification docs lock media optimization batch plans to Core proposal review.' );
+npcink_governance_core_assert( false !== strpos( $operation_classification, 'Adapter owns derived readiness and execution state' ), 'Operation classification docs keep Adapter ownership for media execution state.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'regression-owned cross-repo path' ), 'Next stage plan treats media optimization as a cross-repo regression path.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'replacement rule counts versus actual replacements' ), 'Next stage plan keeps media replacement count verification in Abilities.' );
 
 $article_writing_contract = npcink_governance_core_read( $root . '/docs/article-writing-workflow-contract.md' );
 foreach (
