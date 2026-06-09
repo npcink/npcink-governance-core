@@ -661,6 +661,25 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
+			'npcink-abilities-toolkit/read-error-log' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/read-error-log',
+				'label'             => 'Read Error Log',
+				'risk_level'        => 'read',
+				'requires_approval' => false,
+				'capability'        => 'manage_options',
+				'required_scopes'   => array( 'logs.read' ),
+				'sensitivity'       => 'sensitive',
+				'data_classes'      => array( 'logs', 'diagnostics' ),
+				'read_authorization' => array(
+					'required'       => true,
+					'max_rows'       => 50,
+					'tail_lines'     => 100,
+					'allowed_fields' => array( 'timestamp', 'message', 'severity' ),
+					'denied_fields'  => array( 'cookie', 'authorization' ),
+				),
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
 		);
 	}
 }
@@ -847,6 +866,10 @@ final class Magick_AI_Core_Fail_Closed_WPDB {
 			return $this->first_matching( $this->prefix . 'npcink_governance_core_proposals', array( 'proposal_id' => (string) ( $args[0] ?? '' ) ) );
 		}
 
+		if ( false !== strpos( $sql, 'npcink_governance_core_read_requests' ) && false !== strpos( $sql, 'request_id = %s' ) ) {
+			return $this->first_matching( $this->prefix . 'npcink_governance_core_read_requests', array( 'request_id' => (string) ( $args[0] ?? '' ) ) );
+		}
+
 		if ( false !== strpos( $sql, 'npcink_governance_core_app_keys' ) && false !== strpos( $sql, 'key_id = %s' ) ) {
 			return $this->first_matching( $this->prefix . 'npcink_governance_core_app_keys', array( 'key_id' => (string) ( $args[0] ?? '' ) ) );
 		}
@@ -865,6 +888,10 @@ final class Magick_AI_Core_Fail_Closed_WPDB {
 
 		if ( false !== strpos( $sql, 'npcink_governance_core_audit_log' ) ) {
 			return $this->filter_audit_rows( $sql, $args );
+		}
+
+		if ( false !== strpos( $sql, 'npcink_governance_core_read_requests' ) ) {
+			return $this->filter_read_request_rows( $sql, $args );
 		}
 
 		return array();
@@ -965,6 +992,31 @@ final class Magick_AI_Core_Fail_Closed_WPDB {
 	}
 
 	/**
+	 * Returns filtered read request rows.
+	 *
+	 * @param string           $sql SQL fragment.
+	 * @param array<int,mixed> $args Prepared args.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function filter_read_request_rows( string $sql, array $args ): array {
+		$rows = $this->tables[ $this->prefix . 'npcink_governance_core_read_requests' ] ?? array();
+
+		if ( false !== strpos( $sql, 'status = %s' ) ) {
+			$status = (string) ( $args[0] ?? '' );
+			$rows   = array_values(
+				array_filter(
+					$rows,
+					static function ( array $row ) use ( $status ): bool {
+						return $status === (string) ( $row['status'] ?? '' );
+					}
+				)
+			);
+		}
+
+		return $rows;
+	}
+
+	/**
 	 * Checks row matches.
 	 *
 	 * @param array<string,mixed> $row Row.
@@ -1003,6 +1055,8 @@ require_once dirname( __DIR__ ) . '/includes/Capabilities/Ability_Registry_Adapt
 require_once dirname( __DIR__ ) . '/includes/Governance/Approval_Policy_Evaluator.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Proposal_Repository.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Proposal_Service.php';
+require_once dirname( __DIR__ ) . '/includes/Governance/Read_Request_Repository.php';
+require_once dirname( __DIR__ ) . '/includes/Governance/Read_Request_Service.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Plan_Proposal_Service.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Commit_Preflight_Service.php';
 require_once dirname( __DIR__ ) . '/includes/Security/App_Key_Repository.php';
@@ -1010,6 +1064,7 @@ require_once dirname( __DIR__ ) . '/includes/Security/App_Rate_Limiter.php';
 require_once dirname( __DIR__ ) . '/includes/Security/App_Authenticator.php';
 require_once dirname( __DIR__ ) . '/includes/Rest/Apps_Controller.php';
 require_once dirname( __DIR__ ) . '/includes/Rest/Proposals_Controller.php';
+require_once dirname( __DIR__ ) . '/includes/Rest/Read_Requests_Controller.php';
 
 /**
  * Resets global storage.
@@ -1072,6 +1127,24 @@ function npcink_governance_core_fail_closed_governance_stack(): array {
 		'preflight' => $preflight,
 		'proposals' => $proposals,
 		'audit'     => $audit,
+	);
+}
+
+/**
+ * Returns a sensitive read request service stack.
+ *
+ * @return array{service:\Npcink\GovernanceCore\Governance\Read_Request_Service,requests:\Npcink\GovernanceCore\Governance\Read_Request_Repository,audit:\Npcink\GovernanceCore\Audit\Audit_Log_Repository}
+ */
+function npcink_governance_core_fail_closed_read_request_stack(): array {
+	$requests = new \Npcink\GovernanceCore\Governance\Read_Request_Repository();
+	$abilities = new \Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter();
+	$audit     = new \Npcink\GovernanceCore\Audit\Audit_Log_Repository();
+	$service   = new \Npcink\GovernanceCore\Governance\Read_Request_Service( $requests, $abilities, $audit );
+
+	return array(
+		'service'  => $service,
+		'requests' => $requests,
+		'audit'    => $audit,
 	);
 }
 
@@ -2209,6 +2282,7 @@ function npcink_governance_core_fail_closed_content_metadata_apply_plan(): array
 }
 
 $proposal_table = 'wp_npcink_governance_core_proposals';
+$read_request_table = 'wp_npcink_governance_core_read_requests';
 $audit_table    = 'wp_npcink_governance_core_audit_log';
 $app_table      = 'wp_npcink_governance_core_app_keys';
 
@@ -2672,6 +2746,195 @@ $content_metadata_duplicate_taxonomy['write_actions'][2]['action_id'] = 'assign_
 $content_metadata_duplicate_taxonomy_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-content-metadata-apply-plan', $content_metadata_duplicate_taxonomy );
 npcink_governance_core_fail_closed_assert( is_wp_error( $content_metadata_duplicate_taxonomy_result ), 'Content metadata apply plan with duplicate taxonomy actions is rejected.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_content_metadata_duplicate_action_rejected' === $content_metadata_duplicate_taxonomy_result->get_error_code(), 'Content metadata duplicate taxonomy rejection uses stable error code.' );
+
+$capabilities = ( new \Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter() )->list_capabilities();
+$sensitive_capability = array();
+foreach ( (array) ( $capabilities['items'] ?? array() ) as $item ) {
+	if ( is_array( $item ) && 'npcink-abilities-toolkit/read-error-log' === (string) ( $item['ability_id'] ?? '' ) ) {
+		$sensitive_capability = $item;
+		break;
+	}
+}
+npcink_governance_core_fail_closed_assert( true === (bool) ( $sensitive_capability['read_authorization_required'] ?? false ), 'Capability can mark sensitive read authorization required.' );
+npcink_governance_core_fail_closed_assert( true === (bool) ( $sensitive_capability['requires_read_authorization'] ?? false ), 'Capability exposes Adapter-compatible requires_read_authorization.' );
+npcink_governance_core_fail_closed_assert( 'core_read_authorization_required' === (string) ( $sensitive_capability['read_policy'] ?? '' ), 'Capability exposes Core read authorization read_policy.' );
+npcink_governance_core_fail_closed_assert( 'core_read_request' === (string) ( $sensitive_capability['authorization_mode'] ?? '' ), 'Capability exposes Core read request authorization_mode.' );
+npcink_governance_core_fail_closed_assert( true === (bool) ( $sensitive_capability['read_authorization']['required'] ?? false ), 'Capability exposes nested read_authorization.required.' );
+npcink_governance_core_fail_closed_assert( false !== strpos( (string) ( $sensitive_capability['read_authorization_preflight_route'] ?? '' ), '/read-requests/{request_id}/read-preflight' ), 'Capability exposes read authorization preflight route guidance.' );
+
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_read_request_stack();
+$read_payload = array(
+	'ability_id'              => 'npcink-abilities-toolkit/read-error-log',
+	'input'                   => array(
+		'tail'   => true,
+		'filter' => 'recent-errors',
+	),
+	'requested_input_summary' => 'Tail recent PHP errors. Authorization: Bearer SHOULD_NOT_LEAK',
+	'sensitivity'             => 'sensitive',
+	'data_classes'            => array( 'logs', 'diagnostics' ),
+	'redaction_level'         => 'strict',
+	'purpose'                 => 'Debug a failed smoke run.',
+	'caller'                  => array(
+		'source'        => 'fault_injection',
+		'authorization' => 'Bearer SHOULD_NOT_LEAK',
+		'cookie'        => 'wordpress_logged_in=SHOULD_NOT_LEAK',
+	),
+	'max_rows'                => 500,
+	'tail_lines'              => 500,
+	'allowed_fields'          => array( 'timestamp', 'message', 'cookie' ),
+	'denied_fields'           => array( 'stack_trace' ),
+);
+$read_request = $stack['service']->create( $read_payload );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $read_request ), 'Sensitive read request is created.' );
+npcink_governance_core_fail_closed_assert( 'pending' === (string) ( $read_request['status'] ?? '' ), 'Sensitive read request starts pending.' );
+npcink_governance_core_fail_closed_assert( '' !== (string) ( $read_request['request_id'] ?? '' ), 'Sensitive read request returns request_id.' );
+npcink_governance_core_fail_closed_assert( '' !== (string) ( $read_request['input_hash'] ?? '' ), 'Sensitive read request binds input_hash.' );
+npcink_governance_core_fail_closed_assert( false === strpos( wp_json_encode( $read_request ), 'SHOULD_NOT_LEAK' ), 'Sensitive read request response does not emit secrets.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $read_request['request_id'], 'read_request.created' ) ), 'Sensitive read request creation is audited.' );
+
+$approved_read = $stack['service']->approve(
+	(string) $read_request['request_id'],
+	array(
+		'note'           => 'Approve bounded diagnostic read.',
+		'max_rows'       => 80,
+		'tail_lines'     => 120,
+		'allowed_fields' => array( 'timestamp', 'message', 'severity', 'cookie' ),
+		'denied_fields'  => array( 'authorization' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved_read ) && 'approved' === (string) ( $approved_read['status'] ?? '' ), 'Sensitive read request can be approved.' );
+npcink_governance_core_fail_closed_assert( 50 === (int) ( $approved_read['bounds']['max_rows'] ?? 0 ), 'Sensitive read approval cannot expand provider max_rows.' );
+npcink_governance_core_fail_closed_assert( 100 === (int) ( $approved_read['bounds']['tail_lines'] ?? 0 ), 'Sensitive read approval cannot expand provider tail_lines.' );
+npcink_governance_core_fail_closed_assert( ! in_array( 'cookie', (array) ( $approved_read['bounds']['allowed_fields'] ?? array() ), true ), 'Sensitive read approval cannot allow fields outside provider scope.' );
+npcink_governance_core_fail_closed_assert( in_array( 'authorization', (array) ( $approved_read['bounds']['denied_fields'] ?? array() ), true ), 'Sensitive read approval preserves denied fields.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $read_request['request_id'], 'read_request.approved' ) ), 'Sensitive read approval is audited.' );
+
+$grant = $stack['service']->preflight(
+	(string) $read_request['request_id'],
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/read-error-log',
+		'input'      => $read_payload['input'],
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $grant ), 'Approved sensitive read request returns grant context.' );
+$grant_context = is_array( $grant['read_authorization_context'] ?? null ) ? $grant['read_authorization_context'] : array();
+npcink_governance_core_fail_closed_assert( true === (bool) ( $grant_context['read_authorization_granted'] ?? false ), 'Grant context marks read_authorization_granted=true.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core' === (string) ( $grant_context['core_authorization_truth'] ?? '' ), 'Grant context records Core as authorization truth.' );
+npcink_governance_core_fail_closed_assert( false === (bool) ( $grant_context['commit_execution'] ?? true ), 'Grant context has commit_execution=false.' );
+npcink_governance_core_fail_closed_assert( false === (bool) ( $grant_context['write_execution'] ?? true ), 'Grant context has write_execution=false.' );
+npcink_governance_core_fail_closed_assert( (string) ( $approved_read['input_hash'] ?? '' ) === (string) ( $grant_context['approved_input_hash'] ?? '' ), 'Grant context binds approved input hash.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $read_request['request_id'], 'read_request.preflighted' ) ), 'Sensitive read preflight/grant is audited.' );
+
+$wrong_ability = $stack['service']->preflight(
+	(string) $read_request['request_id'],
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/build-article-block-plan',
+		'input'      => $read_payload['input'],
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $wrong_ability ), 'Sensitive read grant rejects wrong ability_id.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_read_request_ability_mismatch' === $wrong_ability->get_error_code(), 'Wrong ability grant uses stable error code.' );
+
+$wrong_input = $stack['service']->preflight(
+	(string) $read_request['request_id'],
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/read-error-log',
+		'input'      => array( 'tail' => true, 'filter' => 'all-errors' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $wrong_input ), 'Sensitive read grant rejects changed input hash.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_read_request_input_mismatch' === $wrong_input->get_error_code(), 'Changed input grant uses stable error code.' );
+
+$rejected_request = $stack['service']->create(
+	array_merge(
+		$read_payload,
+		array(
+			'input' => array( 'tail' => true, 'filter' => 'rejected-errors' ),
+		)
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $rejected_request ), 'Second sensitive read request is created for rejection.' );
+$rejected_read = $stack['service']->reject( (string) $rejected_request['request_id'], array( 'note' => 'Reject diagnostic read.' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $rejected_read ) && 'rejected' === (string) ( $rejected_read['status'] ?? '' ), 'Sensitive read request can be rejected.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $rejected_request['request_id'], 'read_request.rejected' ) ), 'Sensitive read rejection is audited.' );
+$rejected_grant = $stack['service']->preflight(
+	(string) $rejected_request['request_id'],
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/read-error-log',
+		'input'      => array( 'tail' => true, 'filter' => 'rejected-errors' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $rejected_grant ), 'Rejected sensitive read request cannot grant.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_read_request_not_approved' === $rejected_grant->get_error_code(), 'Rejected read grant uses not-approved error code.' );
+
+$expired_request = $stack['service']->create(
+	array_merge(
+		$read_payload,
+		array(
+			'input' => array( 'tail' => true, 'filter' => 'expired-errors' ),
+		)
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $expired_request ), 'Third sensitive read request is created for expiry.' );
+$expired_approved = $stack['service']->approve( (string) $expired_request['request_id'] );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $expired_approved ), 'Expiring sensitive read request can be approved.' );
+$wpdb->update(
+	$read_request_table,
+	array( 'expires_at' => gmdate( 'Y-m-d H:i:s', time() - 60 ) ),
+	array( 'request_id' => (string) $expired_request['request_id'] )
+);
+$expired_grant = $stack['service']->preflight(
+	(string) $expired_request['request_id'],
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/read-error-log',
+		'input'      => array( 'tail' => true, 'filter' => 'expired-errors' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $expired_grant ), 'Expired sensitive read grant is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_read_request_expired' === $expired_grant->get_error_code(), 'Expired sensitive read grant uses stable error code.' );
+
+$one_time_request = $stack['service']->create(
+	array_merge(
+		$read_payload,
+		array(
+			'input'    => array( 'tail' => true, 'filter' => 'one-time-errors' ),
+			'one_time' => true,
+		)
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $one_time_request ), 'One-time sensitive read request is created.' );
+$one_time_approved = $stack['service']->approve( (string) $one_time_request['request_id'], array( 'one_time' => true ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $one_time_approved ), 'One-time sensitive read request is approved.' );
+$one_time_grant = $stack['service']->preflight(
+	(string) $one_time_request['request_id'],
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/read-error-log',
+		'input'      => array( 'tail' => true, 'filter' => 'one-time-errors' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $one_time_grant ), 'One-time sensitive read request grants once.' );
+$consumed_request = $stack['requests']->find( (string) $one_time_request['request_id'] );
+npcink_governance_core_fail_closed_assert( is_array( $consumed_request ) && 'consumed' === (string) ( $consumed_request['status'] ?? '' ), 'One-time sensitive read request is consumed after grant.' );
+$one_time_replay = $stack['service']->preflight(
+	(string) $one_time_request['request_id'],
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/read-error-log',
+		'input'      => array( 'tail' => true, 'filter' => 'one-time-errors' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $one_time_replay ), 'Consumed one-time sensitive read request cannot be reused.' );
+
+$read_timeline = $stack['service']->audit_timeline( (string) $read_request['request_id'] );
+$read_timeline_events = array_map(
+	static function ( array $event ): string {
+		return (string) ( $event['event_name'] ?? '' );
+	},
+	$read_timeline
+);
+npcink_governance_core_fail_closed_assert( in_array( 'read_request.created', $read_timeline_events, true ), 'Read request audit timeline records create.' );
+npcink_governance_core_fail_closed_assert( in_array( 'read_request.approved', $read_timeline_events, true ), 'Read request audit timeline records approve.' );
+npcink_governance_core_fail_closed_assert( in_array( 'read_request.preflighted', $read_timeline_events, true ), 'Read request audit timeline records preflight/grant.' );
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();
 $wpdb->fail_insert_tables[] = $proposal_table;

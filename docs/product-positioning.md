@@ -18,7 +18,9 @@ External explanation: Npcink AI governance layer for WordPress operations.
 2. Classify ability risk and write requirements.
 3. Record proposals for write-like operations.
 4. Require explicit host approval before final commits.
-5. Audit every requested, approved, rejected, and committed operation.
+5. Record and grant bounded sensitive read authorizations.
+6. Audit every requested, approved, rejected, preflighted, and committed
+   operation.
 
 ## Non-Goals
 
@@ -56,6 +58,10 @@ boundary.
 
 If a feature helps decide whether an AI operation may safely change WordPress,
 it may belong in Core.
+
+If a feature helps decide whether an AI adapter may safely read sensitive
+WordPress operational data, it may belong in Core as a read authorization
+record and grant context.
 
 If a feature creates content, chooses a model, schedules batch work, or owns a
 domain workflow, it belongs outside Core.

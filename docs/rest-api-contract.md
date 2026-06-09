@@ -37,6 +37,11 @@ scope map is:
 | `POST /proposals/{proposal_id}/approve` | `proposals:approve` |
 | `POST /proposals/{proposal_id}/reject` | `proposals:reject` |
 | `POST /proposals/{proposal_id}/commit-preflight` | `commit:preflight` |
+| `POST /read-requests` | `read_requests:create` |
+| `GET /read-requests`, `GET /read-requests/{request_id}` | `read_requests:read` |
+| `POST /read-requests/{request_id}/approve` | `read_requests:approve` |
+| `POST /read-requests/{request_id}/reject` | `read_requests:reject` |
+| `POST /read-requests/{request_id}/read-preflight` | `read_requests:preflight` |
 | `GET /audit` | `audit:read` |
 | `GET /apps`, `POST /apps` | admin-only `manage_options` |
 
@@ -125,6 +130,13 @@ Response `200`:
       "read_policy": "direct_read_public",
       "sensitivity": "public",
       "redaction_required": false,
+      "read_authorization_required": false,
+      "requires_read_authorization": false,
+      "authorization_mode": "none",
+      "read_authorization": { "required": false },
+      "read_authorization_request_route": "",
+      "read_authorization_preflight_route": "",
+      "read_authorization_status_route": "",
       "read_audit_mode": "adapter_read_envelope",
       "input_schema": { "type": "object" },
       "output_schema": { "type": "object" },
@@ -157,13 +169,24 @@ Capability execution guidance:
 - `execution_surface=adapter_after_core_preflight` means execution belongs to
   the adapter or host only after Core approval and commit preflight.
 - `read_policy` is `direct_read_public`, `direct_read_internal`,
-  `direct_read_sensitive`, or `not_direct_read`.
+  `direct_read_sensitive`, `core_read_authorization_required`, or
+  `not_direct_read`.
 - `sensitivity` is `public`, `internal`, or `sensitive`.
 - `redaction_required=true` means the adapter must run the read result through
   its read redaction policy before returning it to OpenClaw or logging it.
 - `read_audit_mode=adapter_read_envelope` means read execution is not a Core
   proposal event; the adapter must return/log a read envelope with correlation
   context.
+- `read_authorization_required=true`,
+  `requires_read_authorization=true`,
+  `read_authorization.required=true`,
+  `read_policy=core_read_authorization_required`, or
+  `authorization_mode=core_read_request` means the adapter must create or fetch
+  a Core sensitive read request and call read preflight before executing the
+  read.
+- `read_authorization_request_route`,
+  `read_authorization_preflight_route`, and
+  `read_authorization_status_route` are route guidance for Adapter handoff.
 - `core_proxy_execute=false` is fixed in the current contract. Core does not
   provide `/execute` or `/proxy-execute`.
 - `commit_execution=false` remains fixed until a separate final commit
@@ -258,6 +281,9 @@ Example shape:
 }
 ```
 
+The grant is read-only: `commit_execution=false` and `write_execution=false`
+are required at the top level and inside `read_authorization_context`.
+
 Errors:
 
 | Code | HTTP | Meaning |
@@ -347,6 +373,166 @@ App audit attribution:
 - stored in event `metadata.auth`;
 - copied into proposal `caller.auth`.
 - includes `scope_decision=allowed` for successful app-authenticated creates.
+
+## Sensitive Read Requests
+
+Sensitive read requests are Core-owned review records for read abilities that
+require extra authorization. They are not write proposals and do not execute
+reads.
+
+### `POST /read-requests`
+
+Purpose: create a pending sensitive read request bound to one real read
+`ability_id` and approved input hash.
+
+Permission: `manage_options` or app scope `read_requests:create`.
+
+Request fields:
+
+| Name | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `ability_id` | string | yes | Must be a discoverable read ability that requires Core read authorization. |
+| `input` | object | no | Structured read input. Core computes `input_hash` when supplied. |
+| `input_hash` | string | no | 64-character SHA-256 hash when the caller cannot send input. Ignored when non-empty `input` is supplied. |
+| `requested_input_summary` | string | no | Human-readable summary; secrets are redacted. |
+| `sensitivity` | string | no | `internal` or `sensitive`; defaults to capability sensitivity. |
+| `data_classes` | array | no | Data classes such as `logs`, `diagnostics`, or `private_content`. |
+| `redaction_level` | string | no | `none`, `standard`, or `strict`. |
+| `purpose` | string | no | Review purpose. |
+| `caller` | object | no | Caller metadata; app auth is copied into `caller.auth`. |
+| `expires_at` | string | no | UTC expiry, clamped to Core max TTL. |
+| `max_rows`, `tail_lines`, `allowed_fields`, `denied_fields`, `one_time` | mixed | no | Requested bounds, clamped to provider and Core caps. |
+| `bounds` | object | no | Alternate container for the same bounds. |
+
+Response `201`: read request row with `request_id`, `input_hash`, status,
+expiry, bounds, correlation id, and sanitized metadata.
+
+Errors:
+
+| Code | HTTP | Meaning |
+| --- | --- | --- |
+| `npcink_governance_core_invalid_read_request_ability_id` | `400` | Missing or invalid namespaced ability id. |
+| `npcink_governance_core_read_ability_not_available` | `404` | Target read ability is not currently discoverable. |
+| `npcink_governance_core_read_authorization_not_required` | `409` | Ability does not require Core read authorization. |
+| `npcink_governance_core_read_request_input_hash_required` | `400` | Neither input nor input_hash was supplied. |
+| `npcink_governance_core_read_request_insert_failed` | `500` | Read request row could not be stored. |
+| `npcink_governance_core_read_request_audit_failed` | `500` | Creation could not be audited; Core deletes the row before failing. |
+
+Audit event:
+
+- `read_request.created`
+
+### `GET /read-requests`
+
+Purpose: list recent sensitive read request records.
+
+Permission: `manage_options` or app scope `read_requests:read`.
+
+Query parameters:
+
+| Name | Type | Default |
+| --- | --- | --- |
+| `limit` | integer | `50` |
+| `status` | string | empty |
+
+Audit event:
+
+- `read_request.listed`
+
+### `GET /read-requests/{request_id}`
+
+Purpose: fetch one read request with `audit_timeline`.
+
+Permission: `manage_options` or app scope `read_requests:read`.
+
+Audit event:
+
+- `read_request.viewed`
+
+### `POST /read-requests/{request_id}/approve`
+
+Purpose: approve a pending read request and optionally tighten expiry,
+redaction level, or bounds. Approval cannot widen provider-declared bounds.
+
+Permission: `manage_options` or app scope `read_requests:approve`.
+
+Audit event:
+
+- `read_request.approved`
+
+### `POST /read-requests/{request_id}/reject`
+
+Purpose: reject a pending read request.
+
+Permission: `manage_options` or app scope `read_requests:reject`.
+
+Audit event:
+
+- `read_request.rejected`
+
+### `POST /read-requests/{request_id}/read-preflight`
+
+Purpose: return bounded `read_authorization_context` for Adapter execution
+checks. This route does not execute the read.
+
+Permission: `manage_options` or app scope `read_requests:preflight`.
+
+Request fields:
+
+| Name | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `ability_id` | string | yes | Must match the approved request. |
+| `input` | object | no | Structured input used to recompute hash. |
+| `input_hash` | string | no | Approved hash when the caller cannot send input. |
+
+Response `200`:
+
+```json
+{
+  "read_authorization_context": {
+    "request_id": "uuid",
+    "ability_id": "npcink-abilities-toolkit/read-error-log",
+    "approved_input_hash": "sha256",
+    "correlation_id": "uuid",
+    "policy_version": "core-read-authorization-v1",
+    "sensitivity": "sensitive",
+    "data_classes": ["logs", "diagnostics"],
+    "redaction_level": "strict",
+    "expires_at": "2026-06-09 12:00:00",
+    "bounds": {
+      "max_rows": 50,
+      "tail_lines": 100,
+      "allowed_fields": ["timestamp", "message", "severity"],
+      "denied_fields": ["authorization", "cookie"],
+      "one_time": false
+    },
+    "read_authorization_granted": true,
+    "core_authorization_truth": "npcink_governance_core",
+    "commit_execution": false,
+    "write_execution": false
+  },
+  "commit_execution": false,
+  "write_execution": false
+}
+```
+
+Errors:
+
+| Code | HTTP | Meaning |
+| --- | --- | --- |
+| `npcink_governance_core_read_request_not_found` | `404` | Request id does not exist. |
+| `npcink_governance_core_read_request_not_approved` | `409` | Pending, rejected, expired, or consumed requests cannot grant. |
+| `npcink_governance_core_read_request_expired` | `409` | Approved grant expired before use. |
+| `npcink_governance_core_read_request_ability_mismatch` | `409` | Requested ability differs from approved ability. |
+| `npcink_governance_core_read_request_input_mismatch` | `409` | Requested input hash differs from approved input hash. |
+| `npcink_governance_core_read_preflight_audit_failed` | `500` | Grant could not be audited. |
+
+Audit events:
+
+- `read_request.preflighted`
+- `read_request.preflight_failed`
+- `read_request.expired` when expiry is detected
+- `read_request.consumed` for one-time grants
 
 ## `POST /proposals/from-plan`
 

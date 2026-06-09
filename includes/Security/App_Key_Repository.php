@@ -83,6 +83,11 @@ final class App_Key_Repository {
 			'proposals:approve',
 			'proposals:reject',
 			'commit:preflight',
+			'read_requests:create',
+			'read_requests:read',
+			'read_requests:approve',
+			'read_requests:reject',
+			'read_requests:preflight',
 			'audit:read',
 		);
 	}
@@ -98,6 +103,9 @@ final class App_Key_Repository {
 			'proposals:create',
 			'proposals:read',
 			'commit:preflight',
+			'read_requests:create',
+			'read_requests:read',
+			'read_requests:preflight',
 		);
 	}
 

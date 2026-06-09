@@ -1,5 +1,40 @@
 # Session Breadcrumb
 
+## 2026-06-09 — Core-managed sensitive read authorization added
+
+- **Module**: Core sensitive read request lifecycle.
+- **Status**: Core now owns a reviewable, approvable, auditable read request /
+  grant flow for read abilities that require extra authorization.
+- **Completed**:
+  - Added capability flags and route guidance for Core read authorization,
+    including `read_authorization_required`,
+    `requires_read_authorization`, `read_policy=core_read_authorization_required`,
+    `authorization_mode=core_read_request`, and nested
+    `read_authorization.required=true`.
+  - Added the `npcink_governance_core_read_requests` table, read request
+    repository/service, REST controller, app scopes, and activation wiring.
+  - Added bounded read preflight context with Core authorization truth,
+    `ability_id` + `input_hash` binding, expiry, redaction/bounds metadata,
+    `commit_execution=false`, and `write_execution=false`.
+  - Updated REST, schema, security, architecture, governance, ability intake,
+    app scope, testing, and sensitive read authorization docs.
+  - Added static, fail-closed, and WordPress smoke coverage for create,
+    approve/reject, preflight/grant, mismatch, expiry, one-time consumption,
+    audit timeline, and secret redaction.
+- **Verification**:
+  - In `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+  - In `/Users/muze/gitee/magick-ai-core`: `composer smoke:wp`
+- **Next steps**:
+  - Adapter should treat capability read authorization fields as fail-closed
+    signals, create/poll Core read requests, and call
+    `/read-requests/{request_id}/read-preflight` immediately before executing
+    the WordPress Abilities API read.
+- **Boundary**:
+  - Core still does not execute reads, proxy read results, store raw logs/files
+    or secrets, own prompt truth, add Adapter approval truth, or introduce any
+    workflow, queue, MCP, Cloud, database direct-read, file-read, or script
+    runtime.
+
 ## 2026-06-09 — Approval policy stage closeout documented
 
 - **Module**: Core approval policy evaluator documentation.

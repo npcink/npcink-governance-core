@@ -12,6 +12,8 @@ Status: MVP architecture.
 | `Proposal_Service` | Proposal creation and audit coordination. |
 | `Plan_Proposal_Service` | Converts supported read-only planning ability outputs into pending Core proposals without running abilities or writes. |
 | `Commit_Preflight_Service` | Approval-commit readiness checks without executing abilities. |
+| `Read_Request_Repository` | Persistence for Core-owned sensitive read authorization requests. |
+| `Read_Request_Service` | Sensitive read request creation, approval/rejection, expiry, one-time consumption, bounded read preflight, and audit coordination. |
 | `Audit_Log_Repository` | Append-only event records and narrow governance filters. |
 | `App_Key_Repository` | Scoped app identity and hashed secret storage. |
 | `App_Rate_Limiter` | Fixed-window app rate counters by route family. |
@@ -26,6 +28,7 @@ Status: MVP architecture.
 MVP custom tables:
 
 - `{prefix}npcink_governance_core_proposals`
+- `{prefix}npcink_governance_core_read_requests`
 - `{prefix}npcink_governance_core_audit_log`
 - `{prefix}npcink_governance_core_app_keys`
 - `{prefix}npcink_governance_core_app_rate_limits`
@@ -48,6 +51,13 @@ proposal row per accepted plan `write_action` and records a
 `proposal.plan_ingested` audit event; it does not add batch tables, queues, or
 workflow runtime state.
 
+Sensitive read authorization adds a separate lifecycle record table because it
+is not a write proposal. The read request row binds `ability_id`, approved
+`input_hash`, purpose, sensitivity, data classes, redaction level, expiry,
+bounds, caller metadata, and correlation id. It returns only bounded
+`read_authorization_context` for Adapter checks; Core still does not execute
+the read ability and does not proxy read results.
+
 ## Dependency Direction
 
 Core may depend on WordPress and public provider APIs. Provider plugins must not
@@ -60,6 +70,9 @@ Allowed:
 - Product plugins or adapters submit supported read-only plan outputs to Core
   for proposal creation.
 - Product plugins later ask Core to approve and commit.
+- Adapters submit sensitive read requests to Core and execute the read through
+  WordPress Abilities API only after Core returns bounded read authorization
+  context.
 
 Disallowed:
 

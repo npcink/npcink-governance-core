@@ -41,6 +41,8 @@ Implemented:
 - shared operation classification policy helper for suggestion-only,
   local-admin-consent, strong-local-confirmation, and Core-proposal-required
   authorization paths.
+- Core-managed sensitive read request/grant flow for read abilities that
+  require extra authorization, including bounded read preflight and audit.
 
 Not implemented:
 
@@ -68,8 +70,10 @@ keeps final
 WordPress execution outside Core for the current stage:
 
 - Core stays the governance layer for proposal records, approval/rejection,
-  commit preflight, app-key policy, and audit;
+  commit preflight, sensitive read authorization, app-key policy, and audit;
 - Adapter/product plugins execute approved writes after commit preflight;
+- Adapter/product plugins execute sensitive reads through WordPress Abilities
+  API only after Core returns bounded read authorization context;
 - any future Core execution route requires a new accepted ADR covering
   idempotency, retry, partial failure, rollback, audit, redaction, and
   destructive action rules.

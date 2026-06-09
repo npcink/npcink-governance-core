@@ -125,6 +125,56 @@ final class App_Authenticator {
 	}
 
 	/**
+	 * Authorizes sensitive read request creation.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return bool|WP_Error
+	 */
+	public function can_create_read_requests( WP_REST_Request $request ) {
+		return $this->authorize( $request, 'read_requests:create', 'read_requests_create' );
+	}
+
+	/**
+	 * Authorizes sensitive read request reads.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return bool|WP_Error
+	 */
+	public function can_read_read_requests( WP_REST_Request $request ) {
+		return $this->authorize( $request, 'read_requests:read', 'read_requests_read' );
+	}
+
+	/**
+	 * Authorizes sensitive read request approval.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return bool|WP_Error
+	 */
+	public function can_approve_read_requests( WP_REST_Request $request ) {
+		return $this->authorize( $request, 'read_requests:approve', 'read_requests_approve' );
+	}
+
+	/**
+	 * Authorizes sensitive read request rejection.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return bool|WP_Error
+	 */
+	public function can_reject_read_requests( WP_REST_Request $request ) {
+		return $this->authorize( $request, 'read_requests:reject', 'read_requests_reject' );
+	}
+
+	/**
+	 * Authorizes sensitive read preflight.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return bool|WP_Error
+	 */
+	public function can_preflight_read_requests( WP_REST_Request $request ) {
+		return $this->authorize( $request, 'read_requests:preflight', 'read_requests_preflight' );
+	}
+
+	/**
 	 * Authorizes audit reads.
 	 *
 	 * @param WP_REST_Request $request Request.

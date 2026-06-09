@@ -32,6 +32,24 @@ Core normalizes each ability to:
 - `source`
 - `raw`
 
+Read abilities may also expose sensitive read authorization guidance:
+
+- `read_authorization_required`
+- `requires_read_authorization`
+- `read_policy=core_read_authorization_required`
+- `governance_mode=core_read_authorization_required`
+- `authorization_mode=core_read_request`
+- `read_authorization.required=true`
+- `read_authorization_request_route`
+- `read_authorization_preflight_route`
+- `read_authorization_status_route`
+
+When any of those fields require Core authorization, an adapter must fail
+closed until it receives a bounded Core `read_authorization_context` for the
+same `ability_id` and input hash. Capability output may include declared read
+bounds such as `max_rows`, `tail_lines`, `allowed_fields`, and
+`denied_fields`; Core read grants may tighten but must not widen those bounds.
+
 ## Runtime Boundary
 
 Ability intake is read-only. It must not:
@@ -41,6 +59,7 @@ Ability intake is read-only. It must not:
 - project Agent Gateway tools;
 - infer workflow ownership;
 - approve or commit writes.
+- grant sensitive reads without a Core read request approval.
 
 ## Plan-To-Proposal Bridge Inputs
 

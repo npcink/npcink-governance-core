@@ -203,6 +203,9 @@ final class Ability_Registry_Adapter {
 				: ( '' !== $required_scope ? array( $required_scope ) : array() )
 		);
 		$read_policy       = $this->read_governance_policy( $ability_id, sanitize_key( $risk_level ), $guidance, $definition, $meta, $annotations );
+		if ( ! empty( $read_policy['read_authorization_required'] ) ) {
+			$guidance['governance_mode'] = 'core_read_authorization_required';
+		}
 
 		return array(
 			'ability_id'        => $ability_id,
@@ -218,6 +221,13 @@ final class Ability_Registry_Adapter {
 			'core_proxy_execute' => false,
 			'commit_execution'  => false,
 			'read_policy'       => $read_policy['read_policy'],
+			'read_authorization_required' => (bool) $read_policy['read_authorization_required'],
+			'requires_read_authorization' => (bool) $read_policy['read_authorization_required'],
+			'authorization_mode' => ! empty( $read_policy['read_authorization_required'] ) ? 'core_read_request' : 'none',
+			'read_authorization' => $read_policy['read_authorization'],
+			'read_authorization_request_route' => ! empty( $read_policy['read_authorization_required'] ) ? '/wp-json/npcink-governance-core/v1/read-requests' : '',
+			'read_authorization_preflight_route' => ! empty( $read_policy['read_authorization_required'] ) ? '/wp-json/npcink-governance-core/v1/read-requests/{request_id}/read-preflight' : '',
+			'read_authorization_status_route' => ! empty( $read_policy['read_authorization_required'] ) ? '/wp-json/npcink-governance-core/v1/read-requests/{request_id}' : '',
 			'sensitivity'       => $read_policy['sensitivity'],
 			'redaction_required' => $read_policy['redaction_required'],
 			'read_audit_mode'   => $read_policy['read_audit_mode'],
@@ -258,7 +268,7 @@ final class Ability_Registry_Adapter {
 	 * @param array<string,mixed> $definition Raw definition.
 	 * @param array<string,mixed> $meta Meta fields.
 	 * @param array<string,mixed> $annotations Annotation fields.
-	 * @return array{read_policy:string,sensitivity:string,redaction_required:bool,read_audit_mode:string}
+	 * @return array{read_policy:string,sensitivity:string,redaction_required:bool,read_audit_mode:string,read_authorization_required:bool,read_authorization:array<string,mixed>}
 	 */
 	private function read_governance_policy( string $ability_id, string $risk_level, array $guidance, array $definition, array $meta, array $annotations ): array {
 		if ( 'direct_read' !== (string) ( $guidance['governance_mode'] ?? '' ) || 'read' !== $risk_level ) {
@@ -267,6 +277,8 @@ final class Ability_Registry_Adapter {
 				'sensitivity'        => 'internal',
 				'redaction_required' => false,
 				'read_audit_mode'    => 'none',
+				'read_authorization_required' => false,
+				'read_authorization' => array( 'required' => false ),
 			);
 		}
 
@@ -292,12 +304,61 @@ final class Ability_Registry_Adapter {
 			),
 			'sensitive' === $sensitivity
 		);
+		$read_authorization = $this->read_authorization_metadata( $definition, $meta, $annotations );
+		$auth_required      = 'sensitive' === $sensitivity
+			|| (bool) ( $read_authorization['required'] ?? false )
+			|| $this->first_bool(
+				array(
+					$definition['read_authorization_required'] ?? null,
+					$definition['requires_read_authorization'] ?? null,
+					$meta['read_authorization_required'] ?? null,
+					$annotations['read_authorization_required'] ?? null,
+				),
+				false
+			)
+			|| 'core_read_authorization_required' === sanitize_key( (string) ( $definition['read_policy'] ?? '' ) )
+			|| 'core_read_request' === sanitize_key( (string) ( $definition['authorization_mode'] ?? '' ) );
+
+		if ( $auth_required ) {
+			$read_authorization['required'] = true;
+		}
 
 		return array(
-			'read_policy'        => 'direct_read_' . $sensitivity,
+			'read_policy'        => $auth_required ? 'core_read_authorization_required' : 'direct_read_' . $sensitivity,
 			'sensitivity'        => $sensitivity,
 			'redaction_required' => $redaction_required,
-			'read_audit_mode'    => 'adapter_read_envelope',
+			'read_audit_mode'    => $auth_required ? 'core_read_request_audit' : 'adapter_read_envelope',
+			'read_authorization_required' => $auth_required,
+			'read_authorization' => $read_authorization,
+		);
+	}
+
+	/**
+	 * Returns provider-declared read authorization metadata.
+	 *
+	 * @param array<string,mixed> $definition Raw definition.
+	 * @param array<string,mixed> $meta Meta fields.
+	 * @param array<string,mixed> $annotations Annotation fields.
+	 * @return array<string,mixed>
+	 */
+	private function read_authorization_metadata( array $definition, array $meta, array $annotations ): array {
+		$source = array();
+		foreach ( array( $definition['read_authorization'] ?? null, $meta['read_authorization'] ?? null, $annotations['read_authorization'] ?? null ) as $candidate ) {
+			if ( is_array( $candidate ) ) {
+				$source = $candidate;
+				break;
+			}
+		}
+
+		$bounds = is_array( $source['bounds'] ?? null ) ? (array) $source['bounds'] : $source;
+
+		return array(
+			'required'       => $this->first_bool( array( $source['required'] ?? null ), false ),
+			'policy_version' => 'core-read-authorization-v1',
+			'max_rows'       => isset( $bounds['max_rows'] ) ? absint( $bounds['max_rows'] ) : 0,
+			'tail_lines'     => isset( $bounds['tail_lines'] ) ? absint( $bounds['tail_lines'] ) : 0,
+			'allowed_fields' => $this->sanitize_scope_list( is_array( $bounds['allowed_fields'] ?? null ) ? (array) $bounds['allowed_fields'] : array() ),
+			'denied_fields'  => $this->sanitize_scope_list( is_array( $bounds['denied_fields'] ?? null ) ? (array) $bounds['denied_fields'] : array() ),
 		);
 	}
 
@@ -395,6 +456,29 @@ final class Ability_Registry_Adapter {
 			}
 		}
 
-		return $definition;
+		return $this->redact_secret_payload( $definition );
+	}
+
+	/**
+	 * Removes secret-shaped values from raw provider metadata.
+	 *
+	 * @param mixed $value Raw value.
+	 * @return mixed
+	 */
+	private function redact_secret_payload( $value ) {
+		if ( is_array( $value ) ) {
+			$clean = array();
+			foreach ( $value as $key => $item ) {
+				$key_string = (string) $key;
+				if ( preg_match( '/(secret|token|private[_-]?key|authorization|cookie|application[_-]?password|password|api[_-]?key)/i', $key_string ) ) {
+					$clean[ $key ] = '[redacted]';
+					continue;
+				}
+				$clean[ $key ] = $this->redact_secret_payload( $item );
+			}
+			return $clean;
+		}
+
+		return $value;
 	}
 }

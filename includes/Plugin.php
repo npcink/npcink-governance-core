@@ -16,10 +16,13 @@ use Npcink\GovernanceCore\Governance\Operation_Classifier;
 use Npcink\GovernanceCore\Governance\Plan_Proposal_Service;
 use Npcink\GovernanceCore\Governance\Proposal_Repository;
 use Npcink\GovernanceCore\Governance\Proposal_Service;
+use Npcink\GovernanceCore\Governance\Read_Request_Repository;
+use Npcink\GovernanceCore\Governance\Read_Request_Service;
 use Npcink\GovernanceCore\Rest\Apps_Controller;
 use Npcink\GovernanceCore\Rest\Audit_Controller;
 use Npcink\GovernanceCore\Rest\Capabilities_Controller;
 use Npcink\GovernanceCore\Rest\Proposals_Controller;
+use Npcink\GovernanceCore\Rest\Read_Requests_Controller;
 use Npcink\GovernanceCore\Security\App_Authenticator;
 use Npcink\GovernanceCore\Security\App_Key_Repository;
 use Npcink\GovernanceCore\Security\App_Rate_Limiter;
@@ -96,6 +99,20 @@ final class Plugin {
 	private $plan_proposal_service = null;
 
 	/**
+	 * Read request repository.
+	 *
+	 * @var Read_Request_Repository|null
+	 */
+	private $read_request_repository = null;
+
+	/**
+	 * Read request service.
+	 *
+	 * @var Read_Request_Service|null
+	 */
+	private $read_request_service = null;
+
+	/**
 	 * App key repository.
 	 *
 	 * @var App_Key_Repository|null
@@ -136,6 +153,7 @@ final class Plugin {
 	 */
 	public static function activate(): void {
 		self::instance()->proposal_repository()->install();
+		self::instance()->read_request_repository()->install();
 		self::instance()->audit_repository()->install();
 		self::instance()->app_key_repository()->install();
 		self::instance()->app_rate_limiter()->install();
@@ -215,6 +233,11 @@ final class Plugin {
 			$this->proposal_repository(),
 			$this->commit_preflight_service(),
 			$this->plan_proposal_service(),
+			$this->app_authenticator()
+		) )->register_routes();
+		( new Read_Requests_Controller(
+			$this->read_request_service(),
+			$this->read_request_repository(),
 			$this->app_authenticator()
 		) )->register_routes();
 		( new Audit_Controller( $this->audit_repository(), $this->app_authenticator() ) )->register_routes();
@@ -328,6 +351,32 @@ final class Plugin {
 		}
 
 		return $this->plan_proposal_service;
+	}
+
+	/**
+	 * Returns read request repository.
+	 *
+	 * @return Read_Request_Repository
+	 */
+	public function read_request_repository(): Read_Request_Repository {
+		if ( null === $this->read_request_repository ) {
+			$this->read_request_repository = new Read_Request_Repository();
+		}
+
+		return $this->read_request_repository;
+	}
+
+	/**
+	 * Returns read request service.
+	 *
+	 * @return Read_Request_Service
+	 */
+	public function read_request_service(): Read_Request_Service {
+		if ( null === $this->read_request_service ) {
+			$this->read_request_service = new Read_Request_Service( $this->read_request_repository(), $this->ability_adapter(), $this->audit_repository() );
+		}
+
+		return $this->read_request_service;
 	}
 
 	/**

@@ -20,17 +20,36 @@ Core owns the governance evidence needed to answer:
 - which scope decision allowed, denied, or rate-limited the request;
 - which proposal lifecycle events happened;
 - which commit-preflight correlation id ties an approval context to audit.
+- which sensitive read request lifecycle events happened;
+- which read-preflight correlation id ties a bounded read authorization context
+  to audit.
 
 The minimal surface is proposal audit timelines, audit filters, scope-decision
-attribution, and commit-preflight correlation.
+attribution, commit-preflight correlation, and sensitive read request audit
+timelines.
 
 Execution remains outside Core:
 
 - `commit_execution=false`;
 - `core_proxy_execute=false`;
 - direct-read abilities execute through WordPress Abilities API;
+- sensitive read abilities execute through WordPress Abilities API only after
+  Core returns bounded `read_authorization_context`;
 - write/destructive abilities continue through proposal, approval/rejection,
   and commit preflight before any external host can execute them.
+
+### Sensitive Read Request Detail
+
+`GET /wp-json/npcink-governance-core/v1/read-requests/{request_id}` returns the
+read request row plus `audit_timeline`, ordered oldest to newest for the
+selected request. The timeline uses Core audit records and includes create,
+approve, reject, preflight, expiry, and one-time consumption events.
+
+The request row stores review and handoff metadata only: `ability_id`,
+`input_hash`, purpose, sensitivity, data classes, redaction level, expiry,
+bounds, caller metadata, and correlation id. It does not store raw read results,
+logs, files, database rows, prompts, provider secrets, cookies, or
+authorization headers.
 
 ## Implemented Surface
 

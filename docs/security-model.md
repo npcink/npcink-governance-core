@@ -49,6 +49,7 @@ authority into Core.
 Core may store:
 
 - proposal metadata;
+- sensitive read request metadata;
 - sanitized ability input;
 - sanitized preview or dry-run handoff payload;
 - caller metadata that does not contain secrets;
@@ -64,6 +65,8 @@ Core must not store:
 - WordPress salts;
 - database credentials;
 - unredacted secrets from provider payloads.
+- raw sensitive read results, raw log lines, raw database rows, private file
+  contents, prompt text used as authorization, or Adapter-owned approval truth.
 
 ## Sanitization And SQL
 
@@ -94,6 +97,8 @@ The MVP supports:
 - approval;
 - rejection;
 - commit preflight;
+- sensitive read request creation, approval/rejection, read preflight, expiry,
+  and one-time consumption;
 - audit records.
 
 The MVP does not execute final writes.
@@ -122,6 +127,18 @@ contract to the contract fingerprint captured at proposal creation, checks the
 declared WordPress capability for user-authenticated requests, audits
 proposal-bound failures as `commit.preflight_failed`, and issues only one
 successful execution handoff per approved proposal input.
+
+Sensitive read preflight returns Core-generated `read_authorization_context`
+without running the read ability. It must bind the grant to `request_id`,
+`ability_id`, approved `input_hash`, `correlation_id`, policy version,
+sensitivity, data classes, redaction level, expiry, and bounds. It must return
+`read_authorization_granted=true`,
+`core_authorization_truth=npcink_governance_core`,
+`commit_execution=false`, and `write_execution=false`. It must fail closed for
+wrong ability ids, changed inputs, expired grants, rejected requests, consumed
+one-time grants, and unaudited grants. Direct database access, file reads, log
+reads, custom scripts, OpenClaw prompt text, and Adapter state cannot replace
+Core authorization.
 
 Plan-to-proposal intake must keep plan and action execution disabled. Core
 requires `dry_run=true`, rejects `commit=true` or `commit_execution=true`, and
@@ -203,6 +220,13 @@ fail future app authentication with `401`.
 App-authenticated requests must have the route's required scope and pass the
 fixed-window rate limit. Missing auth returns `401`, missing scope returns
 `403`, and rate limit failures return `429`.
+
+Sensitive read request app scopes are separate from proposal scopes:
+`read_requests:create`, `read_requests:read`, `read_requests:approve`,
+`read_requests:reject`, and `read_requests:preflight`. Generic adapter keys may
+create/read/preflight sensitive read requests by default, but approval and
+rejection should be issued only to trusted host policies or WordPress
+administrators.
 
 Proposal creation also has a pending-queue guardrail. Core reuses an existing
 pending proposal when the same caller submits the same `ability_id` and

@@ -46,12 +46,19 @@ MVP routes require `manage_options` or a scoped app key where documented.
 - `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/approve`
 - `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/reject`
 - `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight`
+- `POST /wp-json/npcink-governance-core/v1/read-requests`
+- `GET /wp-json/npcink-governance-core/v1/read-requests`
+- `GET /wp-json/npcink-governance-core/v1/read-requests/{request_id}`
+- `POST /wp-json/npcink-governance-core/v1/read-requests/{request_id}/approve`
+- `POST /wp-json/npcink-governance-core/v1/read-requests/{request_id}/reject`
+- `POST /wp-json/npcink-governance-core/v1/read-requests/{request_id}/read-preflight`
 - `GET /wp-json/npcink-governance-core/v1/audit`
 
 The first implementation records proposals, approval/rejection decisions, and
-audit events, and provides commit preflight without executing writes. Final
-commit execution is intentionally not implemented until idempotency and failure
-contracts are locked and covered by tests.
+audit events, provides commit preflight without executing writes, and records
+Core-managed sensitive read requests for read abilities that require additional
+authorization. Final commit execution is intentionally not implemented until
+idempotency and failure contracts are locked and covered by tests.
 
 ## Development
 
@@ -64,6 +71,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Database Schema](docs/database-schema.md)
 - [Security Model](docs/security-model.md)
 - [Ability Intake Contract](docs/ability-intake-contract.md)
+- [Sensitive Read Authorization](docs/sensitive-read-authorization.md)
 - [Third-Party Ability Provider Guide](docs/third-party-ability-provider-guide.md)
 - [Approval Commit Contract](docs/approval-commit-contract.md)
 - [Agent MCP Entry Contract](docs/agent-mcp-entry-contract.md)

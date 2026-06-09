@@ -25,6 +25,8 @@ Use them to assert:
 - public REST route names;
 - required lifecycle events;
 - allowed statuses;
+- Core-owned sensitive read authorization fields, routes, statuses, grant
+  context, and app scopes;
 - product boundaries;
 - forbidden legacy behavior;
 - WordPress.org review guard coverage for recurring release-policy issues;
@@ -57,6 +59,10 @@ evidence would be unsafe:
   decision audit cannot be written;
 - app-key creation revokes the newly created key and withholds the one-time
   token when `app.created` audit cannot be written.
+- sensitive read request create/approve/reject/preflight paths preserve Core as
+  authorization truth, reject changed `ability_id` or `input_hash`, reject
+  expired or rejected records, consume one-time grants, audit each lifecycle
+  event, and never emit secret-shaped payload values.
 
 The test should inject failures through a fake `$wpdb` while still exercising
 the real repository, service, and REST controller classes. Source-code string
@@ -74,6 +80,9 @@ Use it for behavior that requires real WordPress:
 - REST dispatch;
 - current user permissions;
 - integration with `npcink-abilities-toolkit`;
+- Core-managed sensitive read authorization for diagnostics abilities, including
+  capability flags, request creation, approval, bounded read preflight, changed
+  input rejection, audit timeline, and no secret emission;
 - runtime workflow definition discovery through
   `npcink_abilities_toolkit_get_workflow_definitions()`, with fixture fallback from
   `npcink-abilities-toolkit/tests/fixtures/agent-workflow-replay.json`;
@@ -136,6 +145,7 @@ Add or update tests when changing:
 
 - REST routes;
 - proposal status transitions;
+- sensitive read request status transitions and grant context shape;
 - audit events;
 - table schema;
 - ability intake normalization;
@@ -150,6 +160,8 @@ Fail-closed governance paths must be covered when changed:
 - status changes that cannot be audited roll back to the previous status where
   Core can safely do so;
 - one-time app tokens are not returned when app creation cannot be audited.
+- sensitive read grants are never returned when approval, expiry, ability, input,
+  or audit requirements fail.
 
 ## Required Verification
 

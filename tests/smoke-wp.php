@@ -20,6 +20,7 @@ $npcink_governance_core_smoke_term_fixtures          = array();
 $npcink_governance_core_smoke_app_key_fixture_ids    = array();
 $npcink_governance_core_smoke_app_fixture_ids        = array();
 $npcink_governance_core_smoke_proposal_fixture_ids   = array();
+$npcink_governance_core_smoke_read_request_fixture_ids = array();
 $npcink_governance_core_smoke_cleanup_completed      = false;
 $npcink_governance_core_smoke_initial_policy_mode    = 'manual';
 
@@ -211,7 +212,24 @@ function npcink_governance_core_smoke_register_proposal_fixture( string $proposa
 }
 
 /**
- * Tracks app and proposal fixtures created by REST calls.
+ * Registers a sensitive read request fixture for optional purge.
+ *
+ * @param string $request_id Request id.
+ * @return void
+ */
+function npcink_governance_core_smoke_register_read_request_fixture( string $request_id ): void {
+	global $npcink_governance_core_smoke_read_request_fixture_ids;
+
+	$request_id = trim( $request_id );
+	if ( '' === $request_id ) {
+		return;
+	}
+
+	$npcink_governance_core_smoke_read_request_fixture_ids[ $request_id ] = true;
+}
+
+/**
+ * Tracks governance fixtures created by REST calls.
  *
  * @param string $method HTTP method.
  * @param string $route REST route.
@@ -240,6 +258,11 @@ function npcink_governance_core_smoke_track_rest_fixture( string $method, string
 				npcink_governance_core_smoke_register_proposal_fixture( (string) ( $proposal['proposal_id'] ?? '' ) );
 			}
 		}
+		return;
+	}
+
+	if ( '/npcink-governance-core/v1/read-requests' === $route ) {
+		npcink_governance_core_smoke_register_read_request_fixture( (string) ( $data['request_id'] ?? '' ) );
 	}
 }
 
@@ -263,7 +286,7 @@ function npcink_governance_core_smoke_should_purge_governance_records(): bool {
  * @return void
  */
 function npcink_governance_core_smoke_purge_governance_records(): void {
-	global $wpdb, $npcink_governance_core_smoke_app_fixture_ids, $npcink_governance_core_smoke_app_key_fixture_ids, $npcink_governance_core_smoke_proposal_fixture_ids;
+	global $wpdb, $npcink_governance_core_smoke_app_fixture_ids, $npcink_governance_core_smoke_app_key_fixture_ids, $npcink_governance_core_smoke_proposal_fixture_ids, $npcink_governance_core_smoke_read_request_fixture_ids;
 
 	if ( ! npcink_governance_core_smoke_should_purge_governance_records() ) {
 		return;
@@ -273,13 +296,20 @@ function npcink_governance_core_smoke_purge_governance_records(): void {
 	$app_table       = $wpdb->prefix . 'npcink_governance_core_app_keys';
 	$rate_table      = $wpdb->prefix . 'npcink_governance_core_app_rate_limits';
 	$proposal_table  = $wpdb->prefix . 'npcink_governance_core_proposals';
+	$read_request_table = $wpdb->prefix . 'npcink_governance_core_read_requests';
 	$proposal_ids    = array_keys( $npcink_governance_core_smoke_proposal_fixture_ids );
+	$read_request_ids = array_keys( $npcink_governance_core_smoke_read_request_fixture_ids );
 	$app_ids         = array_keys( $npcink_governance_core_smoke_app_fixture_ids );
 	$key_ids         = array_keys( $npcink_governance_core_smoke_app_key_fixture_ids );
 
 	foreach ( $proposal_ids as $proposal_id ) {
 		$wpdb->delete( $audit_table, array( 'proposal_id' => sanitize_text_field( $proposal_id ) ), array( '%s' ) );
 		$wpdb->delete( $proposal_table, array( 'proposal_id' => sanitize_text_field( $proposal_id ) ), array( '%s' ) );
+	}
+
+	foreach ( $read_request_ids as $request_id ) {
+		$wpdb->delete( $audit_table, array( 'proposal_id' => sanitize_text_field( $request_id ) ), array( '%s' ) );
+		$wpdb->delete( $read_request_table, array( 'request_id' => sanitize_text_field( $request_id ) ), array( '%s' ) );
 	}
 
 	foreach ( $app_ids as $app_id ) {
@@ -687,6 +717,27 @@ function npcink_governance_core_smoke_assert_read_policy( array $ability, string
 	npcink_governance_core_smoke_assert( $sensitivity === (string) ( $ability['sensitivity'] ?? '' ), $message . ' sensitivity' );
 	npcink_governance_core_smoke_assert( array_key_exists( 'redaction_required', $ability ) && $redaction_required === (bool) $ability['redaction_required'], $message . ' redaction_required' );
 	npcink_governance_core_smoke_assert( 'adapter_read_envelope' === (string) ( $ability['read_audit_mode'] ?? '' ), $message . ' read_audit_mode' );
+}
+
+/**
+ * Verifies Core-owned sensitive read authorization guidance.
+ *
+ * @param array<string,mixed> $ability Capability row.
+ * @param string              $message Assertion message.
+ * @return void
+ */
+function npcink_governance_core_smoke_assert_read_authorization_required( array $ability, string $message ): void {
+	$read_authorization = is_array( $ability['read_authorization'] ?? null ) ? $ability['read_authorization'] : array();
+
+	npcink_governance_core_smoke_assert( true === (bool) ( $ability['read_authorization_required'] ?? false ), $message . ' read_authorization_required' );
+	npcink_governance_core_smoke_assert( true === (bool) ( $ability['requires_read_authorization'] ?? false ), $message . ' requires_read_authorization' );
+	npcink_governance_core_smoke_assert( true === (bool) ( $read_authorization['required'] ?? false ), $message . ' read_authorization.required' );
+	npcink_governance_core_smoke_assert( 'core_read_authorization_required' === (string) ( $ability['read_policy'] ?? '' ), $message . ' read_policy' );
+	npcink_governance_core_smoke_assert( 'core_read_authorization_required' === (string) ( $ability['governance_mode'] ?? '' ), $message . ' governance_mode' );
+	npcink_governance_core_smoke_assert( 'core_read_request' === (string) ( $ability['authorization_mode'] ?? '' ), $message . ' authorization_mode' );
+	npcink_governance_core_smoke_assert( '/wp-json/npcink-governance-core/v1/read-requests' === (string) ( $ability['read_authorization_request_route'] ?? '' ), $message . ' request route guidance' );
+	npcink_governance_core_smoke_assert( false !== strpos( (string) ( $ability['read_authorization_preflight_route'] ?? '' ), '/read-requests/{request_id}/read-preflight' ), $message . ' preflight route guidance' );
+	npcink_governance_core_smoke_assert( false !== strpos( (string) ( $ability['read_authorization_status_route'] ?? '' ), '/read-requests/{request_id}' ), $message . ' status route guidance' );
 }
 
 /**
@@ -1122,17 +1173,20 @@ update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTI
 
 global $wpdb;
 
-$proposal_table = $wpdb->prefix . 'npcink_governance_core_proposals';
-$audit_table    = $wpdb->prefix . 'npcink_governance_core_audit_log';
-$app_table      = $wpdb->prefix . 'npcink_governance_core_app_keys';
-$rate_table     = $wpdb->prefix . 'npcink_governance_core_app_rate_limits';
+$proposal_table     = $wpdb->prefix . 'npcink_governance_core_proposals';
+$read_request_table = $wpdb->prefix . 'npcink_governance_core_read_requests';
+$audit_table        = $wpdb->prefix . 'npcink_governance_core_audit_log';
+$app_table          = $wpdb->prefix . 'npcink_governance_core_app_keys';
+$rate_table         = $wpdb->prefix . 'npcink_governance_core_app_rate_limits';
 
-$proposal_exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $proposal_table ) );
-$audit_exists    = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $audit_table ) );
-$app_exists      = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $app_table ) );
-$rate_exists     = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $rate_table ) );
+$proposal_exists     = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $proposal_table ) );
+$read_request_exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $read_request_table ) );
+$audit_exists        = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $audit_table ) );
+$app_exists          = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $app_table ) );
+$rate_exists         = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $rate_table ) );
 
 npcink_governance_core_smoke_assert( $proposal_table === $proposal_exists, 'proposal table exists' );
+npcink_governance_core_smoke_assert( $read_request_table === $read_request_exists, 'sensitive read request table exists' );
 npcink_governance_core_smoke_assert( $audit_table === $audit_exists, 'audit table exists' );
 npcink_governance_core_smoke_assert( $app_table === $app_exists, 'app key table exists' );
 npcink_governance_core_smoke_assert( $rate_table === $rate_exists, 'app rate limit table exists' );
@@ -1160,6 +1214,8 @@ $key_id    = (string) ( $app['key_id'] ?? '' );
 npcink_governance_core_smoke_assert( '' !== $app_token && false === strpos( $app_token, ' ' ), 'app key creation returns one-time bearer token' );
 npcink_governance_core_smoke_assert( '' !== $app_id && '' !== $key_id, 'app key creation returns app and key ids' );
 npcink_governance_core_smoke_assert( in_array( 'proposals:create', (array) ( $app['scopes'] ?? array() ), true ), 'app key defaults include proposal creation scope' );
+npcink_governance_core_smoke_assert( in_array( 'read_requests:create', (array) ( $app['scopes'] ?? array() ), true ), 'app key defaults include sensitive read request creation scope' );
+npcink_governance_core_smoke_assert( in_array( 'read_requests:preflight', (array) ( $app['scopes'] ?? array() ), true ), 'app key defaults include sensitive read preflight scope' );
 npcink_governance_core_smoke_assert( ! array_key_exists( 'secret_hash', $app ), 'app key creation response does not expose secret hash' );
 
 $apps_list = npcink_governance_core_smoke_rest( 'GET', '/npcink-governance-core/v1/apps', array( 'limit' => 5 ) );
@@ -1219,9 +1275,107 @@ npcink_governance_core_smoke_assert( $all_disable_core_commit_execute, 'all capa
 npcink_governance_core_smoke_assert( isset( $items_by_id['npcink-abilities-toolkit/site-info'] ), 'site-info read ability is discoverable for direct read guidance' );
 npcink_governance_core_smoke_assert_capability_guidance( $items_by_id['npcink-abilities-toolkit/site-info'], 'direct_read', 'wp_abilities_rest', 'site-info uses direct read execution guidance' );
 npcink_governance_core_smoke_assert_read_policy( $items_by_id['npcink-abilities-toolkit/site-info'], 'direct_read_public', 'public', false, 'site-info uses public read policy' );
-if ( isset( $items_by_id['npcink-abilities-toolkit/wp-diagnostics-summary'] ) ) {
-	npcink_governance_core_smoke_assert_read_policy( $items_by_id['npcink-abilities-toolkit/wp-diagnostics-summary'], 'direct_read_sensitive', 'sensitive', true, 'diagnostics uses sensitive read policy' );
+
+$sensitive_read_ability_id = '';
+foreach ( array( 'npcink-abilities-toolkit/wp-ops-diagnostics-detail', 'npcink-abilities-toolkit/wp-diagnostics-summary' ) as $candidate_sensitive_read_ability_id ) {
+	if ( isset( $items_by_id[ $candidate_sensitive_read_ability_id ] ) ) {
+		$sensitive_read_ability_id = $candidate_sensitive_read_ability_id;
+		break;
+	}
 }
+npcink_governance_core_smoke_assert( '' !== $sensitive_read_ability_id, 'sensitive diagnostics read ability is discoverable' );
+npcink_governance_core_smoke_assert_read_authorization_required( $items_by_id[ $sensitive_read_ability_id ], 'diagnostics sensitive read uses Core read authorization' );
+
+$sensitive_read_input = array(
+	'include_error_log'     => true,
+	'tail_lines'            => 5,
+	'max_plugins_per_group' => 5,
+);
+$read_request = npcink_governance_core_smoke_rest(
+	'POST',
+	'/npcink-governance-core/v1/read-requests',
+	array(
+		'ability_id'              => $sensitive_read_ability_id,
+		'input'                   => $sensitive_read_input,
+		'requested_input_summary' => 'Smoke bounded diagnostics read',
+		'sensitivity'             => 'sensitive',
+		'data_classes'            => array( 'diagnostics', 'logs' ),
+		'redaction_level'         => 'strict',
+		'purpose'                 => 'Core smoke read authorization; authorization header: SHOULD_NOT_LEAK',
+		'caller'                  => array(
+			'caller_type' => 'mcp_adapter',
+			'token'       => 'SHOULD_NOT_LEAK',
+		),
+		'max_rows'                => 25,
+		'tail_lines'              => 5,
+		'allowed_fields'          => array( 'error_log', 'plugins', 'database' ),
+		'denied_fields'           => array( 'authorization', 'cookie' ),
+	)
+);
+$read_request_id = (string) ( $read_request['request_id'] ?? '' );
+npcink_governance_core_smoke_assert( '' !== $read_request_id, 'sensitive read request is created' );
+npcink_governance_core_smoke_assert( 'pending' === (string) ( $read_request['status'] ?? '' ), 'sensitive read request starts pending' );
+npcink_governance_core_smoke_assert( 64 === strlen( (string) ( $read_request['input_hash'] ?? '' ) ), 'sensitive read request binds input hash' );
+npcink_governance_core_smoke_assert( false === strpos( (string) wp_json_encode( $read_request ), 'SHOULD_NOT_LEAK' ), 'sensitive read request response redacts secret-like caller and purpose values' );
+
+$read_request_detail = npcink_governance_core_smoke_rest( 'GET', '/npcink-governance-core/v1/read-requests/' . rawurlencode( $read_request_id ) );
+npcink_governance_core_smoke_assert( is_array( $read_request_detail['audit_timeline'] ?? null ), 'sensitive read request detail returns audit timeline' );
+npcink_governance_core_smoke_assert( count( (array) ( $read_request_detail['audit_timeline'] ?? array() ) ) >= 1, 'sensitive read request audit timeline records creation' );
+
+$read_request_list = npcink_governance_core_smoke_rest( 'GET', '/npcink-governance-core/v1/read-requests', array( 'status' => 'pending', 'limit' => 10 ) );
+$listed_read_request = false;
+foreach ( (array) ( $read_request_list['items'] ?? array() ) as $item ) {
+	if ( is_array( $item ) && $read_request_id === (string) ( $item['request_id'] ?? '' ) ) {
+		$listed_read_request = true;
+		break;
+	}
+}
+npcink_governance_core_smoke_assert( $listed_read_request, 'sensitive read request list returns pending request' );
+
+$read_request_approved = npcink_governance_core_smoke_rest(
+	'POST',
+	'/npcink-governance-core/v1/read-requests/' . rawurlencode( $read_request_id ) . '/approve',
+	array(
+		'note'            => 'Smoke approval',
+		'redaction_level' => 'strict',
+		'max_rows'        => 10,
+		'tail_lines'      => 5,
+		'allowed_fields'  => array( 'error_log', 'plugins' ),
+		'denied_fields'   => array( 'authorization', 'cookie', 'application_password' ),
+	)
+);
+npcink_governance_core_smoke_assert( 'approved' === (string) ( $read_request_approved['status'] ?? '' ), 'sensitive read request is approved' );
+
+$read_wrong_input = npcink_governance_core_smoke_rest_result(
+	'POST',
+	'/npcink-governance-core/v1/read-requests/' . rawurlencode( $read_request_id ) . '/read-preflight',
+	array(
+		'ability_id' => $sensitive_read_ability_id,
+		'input'      => array_merge( $sensitive_read_input, array( 'tail_lines' => 6 ) ),
+	)
+);
+npcink_governance_core_smoke_assert( 409 === (int) $read_wrong_input['status'], 'sensitive read preflight rejects changed input hash' );
+
+$read_grant = npcink_governance_core_smoke_rest(
+	'POST',
+	'/npcink-governance-core/v1/read-requests/' . rawurlencode( $read_request_id ) . '/read-preflight',
+	array(
+		'ability_id' => $sensitive_read_ability_id,
+		'input'      => $sensitive_read_input,
+	)
+);
+$read_context = is_array( $read_grant['read_authorization_context'] ?? null ) ? $read_grant['read_authorization_context'] : array();
+npcink_governance_core_smoke_assert( true === (bool) ( $read_context['read_authorization_granted'] ?? false ), 'sensitive read preflight returns grant flag' );
+npcink_governance_core_smoke_assert( 'npcink_governance_core' === (string) ( $read_context['core_authorization_truth'] ?? '' ), 'sensitive read grant names Core as authorization truth' );
+npcink_governance_core_smoke_assert( false === (bool) ( $read_context['commit_execution'] ?? true ), 'sensitive read grant disables commit execution' );
+npcink_governance_core_smoke_assert( false === (bool) ( $read_context['write_execution'] ?? true ), 'sensitive read grant disables write execution' );
+npcink_governance_core_smoke_assert( (string) ( $read_request['input_hash'] ?? '' ) === (string) ( $read_context['approved_input_hash'] ?? '' ), 'sensitive read grant binds approved input hash' );
+npcink_governance_core_smoke_assert( $sensitive_read_ability_id === (string) ( $read_context['ability_id'] ?? '' ), 'sensitive read grant binds ability id' );
+$granted_max_rows   = (int) ( $read_context['bounds']['max_rows'] ?? 0 );
+$granted_tail_lines = (int) ( $read_context['bounds']['tail_lines'] ?? 0 );
+npcink_governance_core_smoke_assert( $granted_max_rows >= 0 && $granted_max_rows <= 10, 'sensitive read grant does not exceed approved max_rows bound when present' );
+npcink_governance_core_smoke_assert( $granted_tail_lines > 0 && $granted_tail_lines <= 5, 'sensitive read grant does not exceed approved tail_lines bound' );
+npcink_governance_core_smoke_assert( false === strpos( (string) wp_json_encode( $read_grant ), 'SHOULD_NOT_LEAK' ), 'sensitive read grant response does not emit secret sentinel' );
 
 npcink_governance_core_smoke_assert_create_draft_contract( $items_by_id );
 npcink_governance_core_smoke_assert_seo_meta_contract( $items_by_id );

@@ -21,6 +21,13 @@ The MVP implements discovery, proposal records, approval/rejection status, and
 audit records. Commit preflight verifies approval readiness without executing
 writes. Commit execution is intentionally contract-first follow-up work.
 
+Sensitive read abilities use a separate read request lifecycle. A read request
+is not a proposal and does not authorize writes. It records reviewable intent
+for a bounded read, binds the request to `ability_id` and `input_hash`, and can
+return a Core-generated `read_authorization_context` only after approval.
+Adapter or another host still executes the read through WordPress Abilities API
+and must enforce Core bounds and redaction.
+
 ## Proposal Shape
 
 Required fields:
@@ -290,6 +297,31 @@ Reserved policy profiles are:
 The new Core uses approval-commit terminology. It must not reintroduce
 `confirm_token`, `write_confirmed`, or other legacy confirmation parameters.
 
+## Sensitive Read Request Boundary
+
+Read abilities that expose sensitive data must fail closed unless Core has
+approved a sensitive read request. Capability rows may mark this with
+`read_authorization_required=true`, `requires_read_authorization=true`,
+`read_policy=core_read_authorization_required`,
+`authorization_mode=core_read_request`, or
+`read_authorization.required=true`.
+
+A Core read request stores `request_id`, `ability_id`, `input_hash`,
+`requested_input_summary`, `sensitivity`, `data_classes`, `redaction_level`,
+`purpose`, caller metadata, status, `expires_at`, bounds, `correlation_id`,
+timestamps, and audit timeline. Allowed statuses are `pending`, `approved`,
+`rejected`, `expired`, and `consumed` for one-time grants.
+
+Read preflight returns bounded `read_authorization_context` with
+`read_authorization_granted=true`,
+`core_authorization_truth=npcink_governance_core`,
+`commit_execution=false`, and `write_execution=false`. It must reject wrong
+`ability_id`, changed input hash, rejected requests, expired requests, consumed
+one-time grants, unauditable grants, or attempts to widen the capability's
+declared read scope. Prompt text, Adapter state, direct database reads, file
+reads, log reads, cookies, authorization headers, tokens, and custom scripts
+are never authorization truth.
+
 ## Audit Events
 
 MVP event names:
@@ -307,6 +339,15 @@ MVP event names:
 - `proposal.reopened`
 - `proposal.viewed`
 - `proposal.listed`
+- `read_request.created`
+- `read_request.approved`
+- `read_request.rejected`
+- `read_request.expired`
+- `read_request.consumed`
+- `read_request.viewed`
+- `read_request.listed`
+- `read_request.preflighted`
+- `read_request.preflight_failed`
 - `capabilities.listed`
 - `audit.listed`
 - `commit.preflighted`

@@ -168,6 +168,10 @@ foreach (
 		'GET /wp-json/npcink-governance-core/v1/proposals/{proposal_id}',
 		'POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/approve',
 		'POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight',
+		'POST /wp-json/npcink-governance-core/v1/read-requests',
+		'GET /wp-json/npcink-governance-core/v1/read-requests/{request_id}',
+		'POST /wp-json/npcink-governance-core/v1/read-requests/{request_id}/read-preflight',
+		'Sensitive Read Authorization',
 		'ADR-004: Suite Consolidation And Local Admin Consent',
 		'ADR-005: Keep Core Independent And Standardize Channel Adapters',
 		'Operation Classification Contract',
@@ -263,6 +267,11 @@ npcink_governance_core_assert( false !== strpos( $governance, 'proposal.reopened
 npcink_governance_core_assert( false !== strpos( $governance, 'proposal.viewed' ), 'Governance contract records proposal.viewed event.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'proposal.listed' ), 'Governance contract records proposal.listed event.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'commit.preflighted' ), 'Governance contract records commit.preflighted event.' );
+npcink_governance_core_assert( false !== strpos( $governance, 'read_request.created' ), 'Governance contract records read_request.created event.' );
+npcink_governance_core_assert( false !== strpos( $governance, 'read_request.approved' ), 'Governance contract records read_request.approved event.' );
+npcink_governance_core_assert( false !== strpos( $governance, 'read_request.rejected' ), 'Governance contract records read_request.rejected event.' );
+npcink_governance_core_assert( false !== strpos( $governance, 'read_request.preflighted' ), 'Governance contract records read_request.preflighted event.' );
+npcink_governance_core_assert( false !== strpos( $governance, 'core_authorization_truth=npcink_governance_core' ), 'Governance contract keeps Core as sensitive read authorization truth.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'currently discoverable ability id' ), 'Governance contract requires real discoverable proposal ability ids.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'must not reintroduce' ), 'Governance contract rejects legacy confirmation parameters.' );
 
@@ -311,6 +320,11 @@ foreach (
 		'POST /proposals/{proposal_id}/approve',
 		'POST /proposals/{proposal_id}/reject',
 		'POST /proposals/{proposal_id}/commit-preflight',
+		'POST /read-requests',
+		'GET /read-requests/{request_id}',
+		'POST /read-requests/{request_id}/approve',
+		'POST /read-requests/{request_id}/reject',
+		'POST /read-requests/{request_id}/read-preflight',
 		'GET /audit',
 		'POST /apps',
 		'Authorization: Bearer npcink_governance_core.<key_id>.<secret>',
@@ -319,6 +333,18 @@ foreach (
 		'core_proxy_execute=false',
 		'core_proxy_execute',
 		'commit_execution=false',
+		'write_execution=false',
+		'read_authorization_required',
+		'requires_read_authorization',
+		'authorization_mode',
+		'core_read_authorization_required',
+		'core_read_request',
+		'read_authorization_context',
+		'read_authorization_granted',
+		'core_authorization_truth',
+		'read_requests:create',
+		'read_requests:approve',
+		'read_requests:preflight',
 		'npcink_governance_core_app_scope_forbidden',
 		'npcink_governance_core_app_rate_limited',
 		'npcink_governance_core_invalid_ability_id',
@@ -384,6 +410,7 @@ $database_schema = npcink_governance_core_read( $root . '/docs/database-schema.m
 foreach (
 	array(
 		'{prefix}npcink_governance_core_proposals',
+		'{prefix}npcink_governance_core_read_requests',
 		'{prefix}npcink_governance_core_audit_log',
 		'{prefix}npcink_governance_core_app_keys',
 		'{prefix}npcink_governance_core_app_rate_limits',
@@ -405,6 +432,15 @@ foreach (
 		'proposal.listed',
 		'proposal.viewed',
 		'commit.preflighted',
+		'read_request.created',
+		'read_request.approved',
+		'read_request.rejected',
+		'read_request.expired',
+		'read_request.consumed',
+		'read_request.preflighted',
+		'read_request.preflight_failed',
+		'input_hash',
+		'consumed',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $database_schema, $required ), 'Database schema contains required text: ' . $required );
@@ -426,9 +462,34 @@ foreach (
 		'single draft-only create-draft proposals',
 		'proposal.policy_evaluated',
 		'proposal is not left approved',
+		'sensitive read request metadata',
+		'read_authorization_context',
+		'core_authorization_truth=npcink_governance_core',
+		'read_requests:create',
+		'read_requests:preflight',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $security_model, $required ), 'Security model contains required text: ' . $required );
+}
+
+$sensitive_read_auth = npcink_governance_core_read( $root . '/docs/sensitive-read-authorization.md' );
+foreach (
+	array(
+		'Core-managed sensitive read authorization',
+		'read_authorization_required=true',
+		'authorization_mode=core_read_request',
+		'POST /read-requests',
+		'POST /read-requests/{request_id}/read-preflight',
+		'read_authorization_context',
+		'approved_input_hash',
+		'core_authorization_truth',
+		'commit_execution',
+		'write_execution',
+		'Adapter must not store an Adapter-owned approval truth',
+		'workflow runtime',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $sensitive_read_auth, $required ), 'Sensitive read authorization doc contains required text: ' . $required );
 }
 
 $agent_mcp_entry = npcink_governance_core_read( $root . '/docs/agent-mcp-entry-contract.md' );
@@ -459,6 +520,11 @@ foreach (
 		'capabilities:read',
 		'proposals:create',
 		'commit:preflight',
+		'read_requests:create',
+		'read_requests:read',
+		'read_requests:approve',
+		'read_requests:reject',
+		'read_requests:preflight',
 		'Do not grant `proposals:approve` or `audit:read` by default to generic MCP',
 		'Trusted Magick AI Adapter approve-and-execute path',
 		'scope_decision',
@@ -776,6 +842,9 @@ foreach (
 		'capabilities:read',
 		'proposals:create',
 		'commit:preflight',
+		'read_requests:create',
+		'read_requests:read',
+		'read_requests:preflight',
 		'TOKEN_PREFIX',
 		'npcink_governance_core',
 		'npcink_governance_core_app_insert_failed',
@@ -799,6 +868,9 @@ foreach (
 		'npcink_governance_core_app_rate_limited',
 		'can_create_proposals',
 		'can_commit_preflight',
+		'can_create_read_requests',
+		'can_preflight_read_requests',
+		'read_requests_approve',
 		'app.scope_denied',
 		'app.rate_limited',
 		"mark_scope_decision( 'denied' )",
@@ -867,6 +939,9 @@ npcink_governance_core_assert( false !== strpos( $operation_classifier, 'target_
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'includes/Autoloader.php' ), 'Main plugin uses the class autoloader for operation classifier loading.' );
 $plugin_container = npcink_governance_core_read( $root . '/includes/Plugin.php' );
 npcink_governance_core_assert( false !== strpos( $plugin_container, 'operation_classifier' ), 'Plugin container exposes the operation classifier.' );
+npcink_governance_core_assert( false !== strpos( $plugin_container, 'read_request_repository()->install' ), 'Plugin activation installs sensitive read request table.' );
+npcink_governance_core_assert( false !== strpos( $plugin_container, 'Read_Requests_Controller' ), 'Plugin container registers sensitive read request REST controller.' );
+npcink_governance_core_assert( false !== strpos( $plugin_container, 'read_request_service' ), 'Plugin container exposes sensitive read request service.' );
 npcink_governance_core_assert( false !== strpos( $plugin_container, 'npcink_governance_core_record_local_admin_consent' ) && false !== strpos( $plugin_container, 'record_local_admin_consent_audit' ), 'Plugin container exposes a Core-owned local admin consent audit filter.' );
 npcink_governance_core_assert( false !== strpos( $plugin_container, 'local_admin_consent.requested' ) && false !== strpos( $plugin_container, 'local_admin_consent.completed' ) && false !== strpos( $plugin_container, 'local_admin_consent.failed' ), 'Local admin consent audit accepts only bounded lifecycle events.' );
 npcink_governance_core_assert( false !== strpos( $plugin_container, "proposal_created']" ) && false !== strpos( $plugin_container, "core_execution']" ), 'Local admin consent audit does not create proposals or execute Core writes.' );
@@ -957,6 +1032,12 @@ npcink_governance_core_assert( false !== strpos( $ability_adapter, "'core_proxy_
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'direct_read'" ), 'Ability intake guides direct read abilities.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'proposal_required'" ), 'Ability intake guides proposal-required abilities.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'read_policy'" ), 'Ability intake exposes read policy.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'read_authorization_required'" ), 'Ability intake exposes read authorization required flag.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'requires_read_authorization'" ), 'Ability intake exposes Adapter-compatible read authorization flag.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'authorization_mode'" ), 'Ability intake exposes read authorization mode.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'read_authorization'" ), 'Ability intake exposes nested read authorization metadata.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, 'read_authorization_preflight_route' ), 'Ability intake exposes read authorization route guidance.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, 'core_read_authorization_required' ), 'Ability intake marks sensitive reads as Core authorization required.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'sensitivity'" ), 'Ability intake exposes read sensitivity.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'redaction_required'" ), 'Ability intake exposes read redaction requirement.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, 'infer_read_sensitivity' ), 'Ability intake infers read sensitivity when providers omit it.' );
@@ -1158,6 +1239,42 @@ npcink_governance_core_assert( false !== strpos( $proposals_controller, "/commit
 npcink_governance_core_assert( false !== strpos( $proposals_controller, "'ability_id'" ), 'Proposals route requires ability_id.' );
 npcink_governance_core_assert( false !== strpos( $proposals_controller, 'audit_timeline' ), 'Proposal detail REST route returns audit timeline.' );
 npcink_governance_core_assert( false !== strpos( $proposals_controller, 'expire_stale_pending' ), 'Proposal REST routes expire stale pending proposals before reads.' );
+
+$read_requests_controller = npcink_governance_core_read( $root . '/includes/Rest/Read_Requests_Controller.php' );
+npcink_governance_core_assert( false !== strpos( $read_requests_controller, "'/read-requests'" ), 'Read requests REST collection route is registered.' );
+npcink_governance_core_assert( false !== strpos( $read_requests_controller, "/approve'" ), 'Read request approve REST route is registered.' );
+npcink_governance_core_assert( false !== strpos( $read_requests_controller, "/reject'" ), 'Read request reject REST route is registered.' );
+npcink_governance_core_assert( false !== strpos( $read_requests_controller, "/read-preflight'" ), 'Read request preflight REST route is registered.' );
+npcink_governance_core_assert( false !== strpos( $read_requests_controller, 'read_preflight' ), 'Read request REST controller exposes read preflight callback.' );
+
+$read_request_service = npcink_governance_core_read( $root . '/includes/Governance/Read_Request_Service.php' );
+$read_request_repository = npcink_governance_core_read( $root . '/includes/Governance/Read_Request_Repository.php' );
+foreach (
+	array(
+		'read_request.created',
+		'read_request.approved',
+		'read_request.rejected',
+		'read_request.expired',
+		'read_request.preflighted',
+		'read_request.preflight_failed',
+		'read_request.consumed',
+		'read_authorization_context',
+		'read_authorization_granted',
+		'core_authorization_truth',
+		'commit_execution',
+		'write_execution',
+		'approved_input_hash',
+		'ability_mismatch',
+		'input_mismatch',
+		'CORE_MAX_ROWS',
+		'CORE_MAX_TAIL_LINES',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $read_request_service, $required ), 'Read request service contains required text: ' . $required );
+}
+npcink_governance_core_assert( false !== strpos( $read_request_repository, 'npcink_governance_core_read_requests' ), 'Read request repository stores Core read request table.' );
+npcink_governance_core_assert( false !== strpos( $read_request_repository, 'consumed_at' ), 'Read request repository stores one-time consumption timestamp.' );
+npcink_governance_core_assert( false !== strpos( $read_request_repository, 'redact_secret_string' ), 'Read request repository redacts secret-shaped strings.' );
 
 $proposal_service = npcink_governance_core_read( $root . '/includes/Governance/Proposal_Service.php' );
 $proposal_repository = npcink_governance_core_read( $root . '/includes/Governance/Proposal_Repository.php' );

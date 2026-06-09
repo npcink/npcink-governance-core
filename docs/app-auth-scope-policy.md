@@ -64,6 +64,11 @@ ability ids.
 | `proposals:approve` | Approve proposals when a trusted host policy is allowed to do so; also authorizes `local_guarded` cleanup and draft-only create-draft auto approval when paired with `proposals:create`. |
 | `proposals:reject` | Reject proposals. |
 | `commit:preflight` | Request Core-generated approval context for approved proposals. |
+| `read_requests:create` | Create Core sensitive read request records. |
+| `read_requests:read` | List or fetch sensitive read request records. |
+| `read_requests:approve` | Approve sensitive read requests when a trusted host policy is allowed to do so. |
+| `read_requests:reject` | Reject sensitive read requests. |
+| `read_requests:preflight` | Request bounded Core read authorization context for an approved sensitive read request. |
 | `audit:read` | Read audit events. |
 
 Future scopes may add ability-family constraints, but the first version should
@@ -84,6 +89,14 @@ avoid wildcard write semantics.
   carries both `proposals:create` and `proposals:approve`; Core still requires
   trusted evidence, quotas, audit, and commit preflight.
 - Commit preflight requires `commit:preflight` and an approved proposal.
+- Sensitive read request creation requires `read_requests:create`; detail/list
+  reads require `read_requests:read`; read preflight requires
+  `read_requests:preflight` and an approved request bound to the same
+  `ability_id` and input hash.
+- Sensitive read approval and rejection require `read_requests:approve` and
+  `read_requests:reject`. Generic MCP adapters should not receive those by
+  default unless a trusted host policy presents the request purpose, data
+  classes, bounds, expiry, and redaction level to the user.
 - Audit listing requires `audit:read`.
 - Write/destructive WordPress execution is outside Core until final commit
   execution is separately designed.
@@ -177,9 +190,9 @@ Recommended defaults:
 
 | Consumer | Default scopes |
 | --- | --- |
-| MCP adapter | `capabilities:read`, `proposals:create`, `proposals:read`, `commit:preflight` |
+| MCP adapter | `capabilities:read`, `proposals:create`, `proposals:read`, `commit:preflight`, `read_requests:create`, `read_requests:read`, `read_requests:preflight` |
 | Product plugin | `capabilities:read`, `proposals:create`, `proposals:read` |
-| Trusted Magick AI Adapter approve-and-execute path | `capabilities:read`, `proposals:create`, `proposals:read`, `proposals:approve`, `commit:preflight` |
+| Trusted Magick AI Adapter approve-and-execute path | `capabilities:read`, `proposals:create`, `proposals:read`, `proposals:approve`, `commit:preflight`, `read_requests:create`, `read_requests:read`, `read_requests:approve`, `read_requests:reject`, `read_requests:preflight` |
 | Human admin UI | WordPress `manage_options`; no app key required. |
 | Hosted runtime callback | No default Core access until callback identity is separately contracted. |
 
