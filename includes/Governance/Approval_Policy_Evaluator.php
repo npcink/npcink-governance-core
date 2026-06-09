@@ -32,6 +32,7 @@ final class Approval_Policy_Evaluator {
 	const MODE_DRY_RUN_GUARDED       = 'dry_run_guarded';
 	const MODE_LOCAL_GUARDED         = 'local_guarded';
 	const CLEANUP_BATCH_MAX_ACTIONS  = 10;
+	const CREATE_DRAFT_MAX_CONTENT_BYTES = 20000;
 	const AUTO_APPROVAL_HOURLY_LIMIT = 20;
 	const AUTO_APPROVAL_DAILY_LIMIT  = 100;
 	const AUTO_APPROVAL_TRANSIENT_PREFIX = 'npcink_governance_core_auto_approval_';
@@ -87,6 +88,7 @@ final class Approval_Policy_Evaluator {
 		$source     = sanitize_key( (string) ( $caller['source'] ?? '' ) );
 		$mode       = self::current_policy_mode();
 		$cleanup    = $this->cleanup_batch_evaluation( $ability_id, $input, $preview, $caller );
+		$create_draft = $this->create_draft_evaluation( $ability_id, $input );
 
 		$reasons = array( 'default_manual_required' );
 		$decision = self::DECISION_MANUAL_REQUIRED;
@@ -97,6 +99,7 @@ final class Approval_Policy_Evaluator {
 			$profile = self::PROFILE_GUARDED;
 			$reasons[] = 'mode_' . $mode;
 			$reasons = array_merge( $reasons, (array) ( $cleanup['reasons'] ?? array() ) );
+			$reasons = array_merge( $reasons, (array) ( $create_draft['reasons'] ?? array() ) );
 
 			if ( ! empty( $cleanup['allowed'] ) ) {
 				$reasons[] = 'guarded_cleanup_candidate';
@@ -114,10 +117,26 @@ final class Approval_Policy_Evaluator {
 						$reasons[] = 'local_guarded_cleanup_auto_approved';
 					}
 				}
+			} elseif ( ! empty( $create_draft['allowed'] ) ) {
+				$reasons[] = 'guarded_create_draft_candidate';
+				if ( self::MODE_DRY_RUN_GUARDED === $mode ) {
+					$reasons[] = 'auto_approval_dry_run_only';
+				} elseif ( ! $this->caller_can_auto_approve() ) {
+					$reasons[] = 'guarded_create_draft_rejected_missing_approval_scope';
+				} else {
+					$quota = $this->auto_approval_quota_metadata( $mode );
+					if ( ! $this->auto_approval_quota_available( $quota ) ) {
+						$reasons[] = 'guarded_create_draft_rejected_auto_approval_quota_exceeded';
+					} else {
+						$decision = self::DECISION_AUTO_APPROVED;
+						$profile  = self::PROFILE_TRUSTED_LOCAL;
+						$reasons[] = 'local_guarded_create_draft_auto_approved';
+					}
+				}
 			}
 		}
 
-		if ( 'npcink-abilities-toolkit/create-draft' === $ability_id ) {
+		if ( 'npcink-abilities-toolkit/create-draft' === $ability_id && self::MODE_LOCAL_GUARDED !== $mode ) {
 			$reasons[] = 'create_draft_auto_approval_deferred';
 		}
 
@@ -223,6 +242,56 @@ final class Approval_Policy_Evaluator {
 		$reasons[] = 'guarded_cleanup_test_content_evidence';
 
 		return array( 'allowed' => true, 'reasons' => $reasons );
+	}
+
+	/**
+	 * Evaluates the narrow local create-draft candidate.
+	 *
+	 * @param string              $ability_id Ability id.
+	 * @param array<string,mixed> $input Input.
+	 * @return array{allowed:bool,reasons:array<int,string>}
+	 */
+	private function create_draft_evaluation( string $ability_id, array $input ): array {
+		if ( 'npcink-abilities-toolkit/create-draft' !== $ability_id ) {
+			return array( 'allowed' => false, 'reasons' => array() );
+		}
+
+		if ( absint( $input['post_id'] ?? ( $input['ID'] ?? ( $input['id'] ?? 0 ) ) ) > 0 ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_create_draft_rejected_existing_target' ) );
+		}
+
+		$post_type = sanitize_key( (string) ( $input['post_type'] ?? 'post' ) );
+		if ( 'post' !== $post_type ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_create_draft_rejected_post_type' ) );
+		}
+
+		$status = sanitize_key( (string) ( $input['status'] ?? 'draft' ) );
+		if ( 'draft' !== $status ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_create_draft_rejected_status' ) );
+		}
+
+		if ( '' === trim( sanitize_text_field( (string) ( $input['title'] ?? '' ) ) ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_create_draft_rejected_title_missing' ) );
+		}
+
+		if ( false === (bool) ( $input['dry_run'] ?? true ) || true === (bool) ( $input['commit'] ?? false ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_create_draft_rejected_commit_input' ) );
+		}
+
+		foreach ( array( 'publish_at', 'schedule_at', 'scheduled_at', 'post_date', 'post_date_gmt' ) as $schedule_key ) {
+			if ( '' !== trim( sanitize_text_field( (string) ( $input[ $schedule_key ] ?? '' ) ) ) ) {
+				return array( 'allowed' => false, 'reasons' => array( 'guarded_create_draft_rejected_schedule' ) );
+			}
+		}
+
+		if ( strlen( (string) ( $input['content'] ?? '' ) ) > self::CREATE_DRAFT_MAX_CONTENT_BYTES ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_create_draft_rejected_content_size' ) );
+		}
+
+		return array(
+			'allowed' => true,
+			'reasons' => array( 'guarded_create_draft_draft_only' ),
+		);
 	}
 
 	/**

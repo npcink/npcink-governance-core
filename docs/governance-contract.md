@@ -264,9 +264,12 @@ Development mode `dry_run_guarded` may classify trusted cleanup candidates with
 `local_guarded` may return `auto_approved` only for trusted
 `build-nonproduction-content-cleanup-plan` batch proposals whose actions all target
 `npcink-abilities-toolkit/trash-post`, have persisted test-content evidence, pass caller
-authorization, and pass auto-approval quotas. The evaluator does not expose a
-rules DSL and does not add workflow runtime, long-running policy jobs, final
-execution, or a configuration center.
+authorization, and pass auto-approval quotas; or for a single direct
+`npcink-abilities-toolkit/create-draft` proposal that creates only a draft post,
+does not target existing content, stays dry-run/non-commit, and has no
+schedule/publish intent. The evaluator does not expose a rules DSL and does
+not add workflow runtime, long-running policy jobs, final execution, or a
+configuration center.
 
 Implementation rules and the staged auto-approval roadmap are documented in
 [Approval Policy Evaluator Standard](approval-policy-evaluator-standard.md).

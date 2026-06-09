@@ -155,8 +155,8 @@ msgid "Policy mode"
 msgstr "策略模式"
 
 #: includes/Admin/Admin_Page.php:442
-msgid "Local guarded only auto-approves trusted test-content cleanup trash batches. Destructive deletes, comments, terms, and published content updates remain manual."
-msgstr "本地保护模式只会自动批准受信任的测试内容清理回收站批次。破坏性删除、评论、术语和已发布内容更新仍需手动处理。"
+msgid "Local guarded only auto-approves trusted test-content cleanup trash batches and single draft-only create-draft proposals. Destructive deletes, comments, terms, publishing, scheduling, and published content updates remain manual."
+msgstr "本地保护模式只会自动批准受信任的测试内容清理回收站批次和单条仅草稿的 create-draft 提案。破坏性删除、评论、术语、发布、定时发布和已发布内容更新仍需手动处理。"
 
 #: includes/Admin/Admin_Page.php:447
 msgid "Save approval policy"

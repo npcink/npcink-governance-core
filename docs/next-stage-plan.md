@@ -440,7 +440,8 @@ for the productized OpenClaw acceptance checklist.
 
 ### 11. Approval Policy Evaluator Roadmap
 
-Status: development approval modes implemented for cleanup only.
+Status: development approval modes implemented for cleanup and direct
+draft-only create-draft proposals.
 
 Goal: support a conservative future auto-approval tier without turning Core
 into a policy engine or workflow runtime.
@@ -449,9 +450,11 @@ Current rule:
 
 - `manual` remains the default and every proposal remains `manual_required`;
 - every successful proposal creation writes `proposal.policy_evaluated`;
-- `dry_run_guarded` records trusted cleanup candidates without approving them;
+- `dry_run_guarded` records trusted cleanup and draft-only create-draft
+  candidates without approving them;
 - `local_guarded` may auto-approve only trusted test cleanup trash-post
-  batches;
+  batches and single draft-only `npcink-abilities-toolkit/create-draft`
+  proposals;
 - Adapter still executes only approved proposals that pass Core commit
   preflight.
 
@@ -459,9 +462,10 @@ Recommended next slice:
 
 - observe `local_guarded` in development and keep the allowlist limited to
   `build-nonproduction-content-cleanup-plan` -> `plan_to_proposal_batch` proposals whose
-  actions all target `npcink-abilities-toolkit/trash-post`;
-- do not add create-draft auto approval until cleanup auto approval has been
-  stable through local smoke and operator review;
+  actions all target `npcink-abilities-toolkit/trash-post`, plus single direct
+  draft-only `npcink-abilities-toolkit/create-draft` proposals;
+- do not add batch article, publish, schedule, comment, term, destructive,
+  media delete, settings, or published-content update auto approval;
 - do not add a rules DSL, scheduler, workflow runtime, UI configuration center,
   or final execution path.
 

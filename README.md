@@ -219,10 +219,11 @@ shown as `content_reference_repairs` evidence in the derivative preview.
 
 The approval policy evaluator defaults to `manual`, records
 `proposal.policy_evaluated` for every created proposal, and supports two
-development-only guarded modes. `dry_run_guarded` records cleanup candidates
-without approval. `local_guarded` can auto-approve only trusted
-`build-nonproduction-content-cleanup-plan` trash-post batches when explicit
-authorization, test-content evidence, quotas, and audit all pass. See
+development-only guarded modes. `dry_run_guarded` records cleanup and
+draft-only candidates without approval. `local_guarded` can auto-approve only trusted
+`build-nonproduction-content-cleanup-plan` trash-post batches and single
+draft-only `npcink-abilities-toolkit/create-draft` proposals when explicit
+authorization, evidence, quotas, and audit all pass. See
 [Approval Policy Evaluator Standard](docs/approval-policy-evaluator-standard.md).
 
 Real AI provider request logs remain owned by the WordPress `ai` plugin.

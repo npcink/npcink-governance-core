@@ -1665,6 +1665,43 @@ $local_guarded_events = array_values( array_map(
 	(array) ( $local_guarded_audit['items'] ?? array() )
 ) );
 npcink_governance_core_smoke_assert( in_array( 'proposal.auto_approved', $local_guarded_events, true ), 'local guarded cleanup writes auto approval audit event' );
+
+$local_guarded_draft_title = 'Core Local Guarded Draft ' . $npcink_governance_core_smoke_run_id;
+$local_guarded_draft = npcink_governance_core_smoke_rest_as_app(
+	'POST',
+	'/npcink-governance-core/v1/proposals',
+	$local_guarded_token,
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/create-draft',
+		'title'      => 'Local guarded draft proposal ' . $npcink_governance_core_smoke_run_id,
+		'summary'    => 'Created by local guarded draft smoke test.',
+		'input'      => array(
+			'post_type'       => 'post',
+			'status'          => 'draft',
+			'title'           => $local_guarded_draft_title,
+			'content'         => '<p>Local guarded draft content.</p>',
+			'dry_run'         => true,
+			'commit'          => false,
+			'idempotency_key' => 'local-guarded-draft-' . $npcink_governance_core_smoke_run_id,
+		),
+		'preview'    => array(
+			'dry_run'          => true,
+			'after_suggestion' => 'Local guarded draft content.',
+		),
+		'caller'     => array(
+			'source' => 'local-guarded-draft-smoke:' . $npcink_governance_core_smoke_run_id,
+		),
+	)
+);
+$local_guarded_draft_id = (string) ( $local_guarded_draft['proposal_id'] ?? '' );
+npcink_governance_core_smoke_assert( '' !== $local_guarded_draft_id, 'local guarded create-draft proposal is created' );
+npcink_governance_core_smoke_assert( 'approved' === (string) ( $local_guarded_draft['status'] ?? '' ), 'local guarded create-draft is auto-approved' );
+npcink_governance_core_smoke_assert( 'auto_approved' === (string) ( $local_guarded_draft['policy_decision'] ?? '' ), 'local guarded create-draft records auto-approved decision' );
+npcink_governance_core_smoke_assert( 'trusted_local' === (string) ( $local_guarded_draft['policy_profile'] ?? '' ), 'local guarded create-draft records trusted_local profile' );
+npcink_governance_core_smoke_assert( in_array( 'local_guarded_create_draft_auto_approved', (array) ( $local_guarded_draft['policy_reasons'] ?? array() ), true ), 'local guarded create-draft records auto-approved reason' );
+$local_guarded_draft_preflight = npcink_governance_core_smoke_rest_as_app( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( $local_guarded_draft_id ) . '/commit-preflight', $local_guarded_token );
+npcink_governance_core_smoke_assert( true === (bool) ( $local_guarded_draft_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'local guarded create-draft preflight passes without manual approval' );
+npcink_governance_core_smoke_assert( null === get_page_by_title( $local_guarded_draft_title, OBJECT, 'post' ), 'local guarded create-draft preflight does not create the post draft' );
 update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_MANUAL, false );
 
 $plan_attachment_title = 'Core Plan Bridge Media Candidate ' . $npcink_governance_core_smoke_run_id;

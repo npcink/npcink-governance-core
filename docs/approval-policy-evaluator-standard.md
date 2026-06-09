@@ -16,11 +16,12 @@ The evaluator supports three site policy modes stored in
 - `manual`: default. Core records `manual_required` for every proposal with
   `policy_profile=manual`.
 - `dry_run_guarded`: development observation mode. Core may classify trusted
-  cleanup trash-post batches with `policy_profile=guarded`, but the proposal
-  remains `pending`.
+  cleanup trash-post batches and draft-only create-draft proposals with
+  `policy_profile=guarded`, but the proposal remains `pending`.
 - `local_guarded`: development auto-approval mode. Core may approve only
-  trusted test-content cleanup trash-post batches after explicit authorization,
-  persisted evidence, quota checks, and audit.
+  trusted test-content cleanup trash-post batches and single draft-only
+  create-draft proposals after explicit authorization, persisted evidence,
+  quota checks, and audit.
 
 Every successful proposal creation writes `proposal.policy_evaluated`. If that
 audit event cannot be recorded, Core fails closed by deleting the created
@@ -30,7 +31,7 @@ Current behavior is intentionally unchanged:
 
 - all proposals remain `pending` by default in `manual`;
 - no proposal is auto-approved unless `local_guarded` is explicitly enabled and
-  every narrow cleanup condition passes;
+  every narrow cleanup or draft-only create-draft condition passes;
 - Adapter remains thin and executes only approved proposals that pass Core
   commit preflight;
 - policy fields are non-secret governance metadata, not caller-controlled
@@ -128,7 +129,7 @@ of the policy standard even when the first implementation only records
 
 ## Auto-Approval Readiness
 
-Do not widen real auto approval beyond cleanup until all of these remain true:
+Do not widen real auto approval beyond implemented narrow candidates until all of these remain true:
 
 - auto approval is explicitly enabled by Core-owned configuration or a trusted
   host policy contract;
@@ -146,7 +147,8 @@ Do not widen real auto approval beyond cleanup until all of these remain true:
 
 The current safe production default is still `manual`. Use `dry_run_guarded`
 first when validating a new local environment, then `local_guarded` only to
-reduce repetitive development approvals for trusted cleanup batches.
+reduce repetitive development approvals for trusted cleanup batches and
+single draft-only create-draft proposals.
 
 ## First Narrow Candidate: Test Cleanup Trash Batch
 
@@ -175,22 +177,30 @@ Evidence required for real auto approval:
 - documentation that Adapter still performs per-action allowlist and schema
   checks before final WordPress mutation.
 
-## Later Candidate: Create Draft
+## Second Narrow Candidate: Create Draft
 
-`npcink-abilities-toolkit/create-draft` can be considered only after the cleanup batch path is
-proven.
+Status: implemented for development `local_guarded`.
+
+`npcink-abilities-toolkit/create-draft` may be auto-approved only for one direct
+proposal at a time. Plan batch create-draft actions remain governed by their
+own plan contracts and do not inherit this direct-proposal shortcut.
 
 Required properties:
 
 - creates draft content only;
 - cannot publish or schedule;
 - cannot modify existing public content;
-- single item or very small batch;
+- single direct proposal only;
 - caller/app key is explicitly trusted and quota-bound;
 - audit records decision reasons and any status transition.
 
-This is lower priority than cleanup because draft creation is product-facing
-and easier to confuse with article-generation workflow ownership.
+Real auto approval additionally requires `post_type=post` or the equivalent
+default, `status=draft` or the equivalent default, a reviewed title,
+`dry_run=true`, `commit=false`, no schedule/publish fields, bounded content
+size, `local_guarded_create_draft_auto_approved` in `policy_reasons`, and
+`proposal.auto_approved` audit if status changes. This remains a development
+approval reducer, not an article-generation workflow, not batch article
+approval, and not final WordPress execution.
 
 ## Explicit Non-Candidates
 
@@ -246,13 +256,14 @@ Status: implemented for development `local_guarded`.
 - Write `proposal.auto_approved` after `proposal.policy_evaluated`.
 - Keep commit preflight unchanged and mandatory.
 
-### Phase 3: Consider Create Draft
+### Phase 3: Direct Draft Proposal Auto Approval
 
-Only after cleanup auto approval has passed local smoke and operator review.
+Status: implemented for development `local_guarded`.
 
-- Keep single-draft or very small batch limits.
-- Block publish, schedule, and update of existing public content.
+- Keep single direct draft proposals only.
+- Block publish, schedule, non-post post types, and existing-content targets.
 - Require explicit trusted caller/app policy and quotas.
+- Keep commit preflight unchanged and mandatory.
 
 ## Test Expectations
 

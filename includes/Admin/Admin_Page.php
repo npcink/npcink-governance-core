@@ -413,7 +413,7 @@ final class Admin_Page {
 										</option>
 									<?php endforeach; ?>
 								</select>
-								<p class="description"><?php echo esc_html__( 'Local guarded only auto-approves trusted test-content cleanup trash batches. Destructive deletes, comments, terms, and published content updates remain manual.', 'npcink-governance-core' ); ?></p>
+								<p class="description"><?php echo esc_html__( 'Local guarded only auto-approves trusted test-content cleanup trash batches and single draft-only create-draft proposals. Destructive deletes, comments, terms, publishing, scheduling, and published content updates remain manual.', 'npcink-governance-core' ); ?></p>
 							</td>
 						</tr>
 					</tbody>

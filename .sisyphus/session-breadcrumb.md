@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-09 — Local guarded create-draft auto approval added
+
+- **Module**: Core approval policy evaluator.
+- **Status**: Development `local_guarded` now auto-approves a second narrow
+  class: single direct `npcink-abilities-toolkit/create-draft` proposals that
+  create draft posts only.
+- **Completed**:
+  - Added fail-closed evaluator checks for direct create-draft proposals:
+    draft post only, reviewed title, no existing target, no publish/schedule
+    intent, dry-run/no-commit input, bounded content size, trusted caller/app
+    approval scope, quota, and audit.
+  - Kept `manual` as default and `dry_run_guarded` as observation-only.
+  - Updated admin copy, REST/security/app-scope/approval-policy docs,
+    translation catalogs, static contracts, fail-closed tests, and WordPress
+    smoke coverage.
+- **Verification**:
+  - In `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+  - In `/Users/muze/gitee/magick-ai-core`: `composer smoke:wp`
+- **Boundary**:
+  - No auto approval for publish, schedule, batch article plans, destructive
+    operations, comments, terms, media deletes, settings, existing
+    published-content updates, Core final execution, workflow runtime, rules
+    DSL, scheduler, or policy configuration center.
+
 ## 2026-06-09 — Draft block batch validator helper extracted
 
 - **Module**: Core plan-to-proposal intake contract validators.

@@ -157,7 +157,7 @@ msgid "Policy mode"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:442
-msgid "Local guarded only auto-approves trusted test-content cleanup trash batches. Destructive deletes, comments, terms, and published content updates remain manual."
+msgid "Local guarded only auto-approves trusted test-content cleanup trash batches and single draft-only create-draft proposals. Destructive deletes, comments, terms, publishing, scheduling, and published content updates remain manual."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:447
