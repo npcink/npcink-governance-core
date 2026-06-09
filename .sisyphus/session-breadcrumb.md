@@ -1,5 +1,24 @@
 # Session Breadcrumb
 
+## 2026-06-09 — Current-stage closeout and handoff summarized
+
+- **Module**: Core boundary documentation and cross-module handoff guidance.
+- **Status**: The historical discussion about SEO/GEO suggestions, media alt
+  text, pre-publish checks, taxonomy governance, safe draft writing, and human
+  approval is now summarized as a Core stop/Toolbox-Abilities handoff note.
+- **Completed**:
+  - Added `docs/current-stage-closeout-and-handoff.md` to record what has been
+    completed in Core, why Core should stop expanding in this area, and where
+    the remaining product work belongs.
+  - Linked the handoff note from the README documentation index.
+- **Verification**:
+  - `composer test:all`
+  - `git diff --check`
+- **Boundary**:
+  - Documentation only. No Core REST routes, proposal lifecycle behavior,
+    ability execution, product UX, recommendation generation, taxonomy
+    creation, or final WordPress write execution was added.
+
 ## 2026-06-09 — Content Metadata Delta duplicate-slot guardrail added
 
 - **Module**: Core plan-to-proposal intake for reviewed content metadata apply

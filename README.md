@@ -81,6 +81,7 @@ Read the project handoff docs before starting a new implementation session:
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
 - [Operation Classification Contract](docs/operation-classification-contract.md)
 - [Plan To Proposal Governance](docs/plan-to-proposal-governance.md)
+- [Current Stage Closeout And Handoff](docs/current-stage-closeout-and-handoff.md)
 - [Ability Recipe Orchestration Contract](docs/ability-recipe-orchestration-contract.md)
 - [Article Writing Workflow Contract](docs/article-writing-workflow-contract.md)
 - [Cloud Bulk Article Run Contract](docs/cloud-bulk-article-run-contract.md)
