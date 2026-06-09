@@ -54,6 +54,7 @@ abilities:
 - `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-optimization-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
+- `npcink-abilities-toolkit/build-pattern-page-plan`
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
@@ -124,6 +125,12 @@ owned by `npcink-abilities-toolkit` or a local product plugin. Core accepts it o
 as one reviewed `media_rename_plan` for one attachment and one
 `npcink-abilities-toolkit/rename-media-file` action. Filename policy stays outside Core; Core
 only governs the reviewed target filename before Adapter/host execution.
+
+`npcink-abilities-toolkit/build-pattern-page-plan` is the bounded local
+Gutenberg pattern page handoff. Core accepts it only as a
+`pattern_page_plan` with `proposal_mode=batch`, an allowlisted pattern and
+style preset, one draft page create action, one block replacement action, and
+block CSS classes limited to the plan `allowed_classes` list.
 
 Each plan `write_action.target_ability_id` must resolve through normal ability
 intake as a proposal-governed write or destructive ability. Core must not

@@ -645,6 +645,7 @@ function npcink_governance_core_smoke_assert_plan_bridge_contract( array $items_
 			'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan',
 			'npcink-abilities-toolkit/build-media-inventory-fix-plan',
 			'npcink-abilities-toolkit/build-article-optimization-apply-plan',
+			'npcink-abilities-toolkit/build-pattern-page-plan',
 		) as $ability_id
 	) {
 		npcink_governance_core_smoke_assert( isset( $items_by_id[ $ability_id ] ), $ability_id . ' is discoverable for plan-to-proposal intake' );
@@ -1442,6 +1443,42 @@ npcink_governance_core_smoke_assert( false === (bool) ( $article_optimization_pr
 npcink_governance_core_smoke_assert( 'Original smoke excerpt.' === (string) get_post_field( 'post_excerpt', (int) $article_optimization_post_id ), 'article optimization from-plan intake does not mutate the post excerpt' );
 npcink_governance_core_smoke_approve_and_preflight_plan_proposal( (string) ( $article_optimization_proposal['proposal_id'] ?? '' ) );
 npcink_governance_core_smoke_assert( 'Original smoke excerpt.' === (string) get_post_field( 'post_excerpt', (int) $article_optimization_post_id ), 'article optimization preflight does not mutate the post excerpt' );
+
+$pattern_page_title = 'Core Pattern Page Candidate ' . $npcink_governance_core_smoke_run_id;
+$pattern_page_plan_input = array(
+	'title'        => $pattern_page_title,
+	'pattern_id'   => 'openai-style-landing',
+	'style_preset' => 'minimal-dark-light',
+	'variables'    => array(
+		'eyebrow'          => 'WordPress AI Plugin',
+		'hero_title'       => '把 AI 工作流带进 WordPress 内容现场',
+		'hero_description' => '让内容生产、SEO 优化、媒体处理与发布协作在同一个可审计流程中完成。',
+		'primary_cta'      => '查看工作流',
+		'secondary_cta'    => '了解能力',
+		'features'         => array(
+			array(
+				'title'       => 'AI 内容草稿',
+				'description' => '从主题、上下文和站点知识出发，生成结构化草稿。',
+			),
+		),
+	),
+);
+$pattern_page_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-pattern-page-plan', $pattern_page_plan_input );
+$pattern_page_result = npcink_governance_core_smoke_create_proposals_from_plan( 'npcink-abilities-toolkit/build-pattern-page-plan', $pattern_page_plan, $pattern_page_plan_input );
+npcink_governance_core_smoke_assert( 1 === (int) ( $pattern_page_result['proposal_count'] ?? 0 ), 'pattern page plan generates one Core batch proposal' );
+$pattern_page_proposal = is_array( $pattern_page_result['proposals'][0] ?? null ) ? $pattern_page_result['proposals'][0] : array();
+npcink_governance_core_smoke_assert( 'plan_to_proposal_batch' === (string) ( $pattern_page_proposal['preview']['source']['type'] ?? '' ), 'pattern page plan records batch proposal source type' );
+npcink_governance_core_smoke_assert( 'batch' === (string) ( $pattern_page_proposal['preview']['source']['proposal_mode'] ?? '' ), 'pattern page batch preserves proposal_mode' );
+npcink_governance_core_smoke_assert( is_array( $pattern_page_proposal['preview']['pattern_page'] ?? null ), 'pattern page proposal preserves pattern preview context' );
+npcink_governance_core_smoke_assert( 'openai-style-landing' === (string) ( $pattern_page_proposal['preview']['pattern_page']['pattern_id'] ?? '' ), 'pattern page preview preserves pattern id' );
+$pattern_page_actions = is_array( $pattern_page_proposal['input']['write_actions'] ?? null ) ? array_values( $pattern_page_proposal['input']['write_actions'] ) : array();
+npcink_governance_core_smoke_assert( 2 === count( $pattern_page_actions ), 'pattern page batch stores create and block update actions' );
+npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/create-draft' === (string) ( $pattern_page_actions[0]['target_ability_id'] ?? '' ), 'pattern page first action creates a draft page' );
+npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/update-post-blocks' === (string) ( $pattern_page_actions[1]['target_ability_id'] ?? '' ), 'pattern page second action updates Gutenberg blocks' );
+npcink_governance_core_smoke_assert( '$outputs.create-pattern-page.post_id' === (string) ( $pattern_page_actions[1]['input']['post_id'] ?? '' ), 'pattern page update action preserves output reference' );
+npcink_governance_core_smoke_assert( null === get_page_by_title( $pattern_page_title, OBJECT, 'page' ), 'pattern page from-plan intake does not create the page draft' );
+npcink_governance_core_smoke_approve_and_preflight_plan_proposal( (string) ( $pattern_page_proposal['proposal_id'] ?? '' ) );
+npcink_governance_core_smoke_assert( null === get_page_by_title( $pattern_page_title, OBJECT, 'page' ), 'pattern page preflight does not create the page draft' );
 
 $cleanup_pattern = 'Core Plan Bridge Test Cleanup Candidate ' . $npcink_governance_core_smoke_run_id;
 $cleanup_post_id = wp_insert_post(

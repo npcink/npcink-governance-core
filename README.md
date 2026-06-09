@@ -157,7 +157,8 @@ abilities such as `npcink-abilities-toolkit/build-content-inventory-fix-plan`,
 `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`. It also accepts
 `npcink-abilities-toolkit/build-media-optimization-plan` only as one attachment-level media
 optimization batch, `npcink-abilities-toolkit/build-media-rename-plan` only as one reviewed
-attachment rename proposal, and accepts the P0 Toolbox article handoff
+attachment rename proposal, `npcink-abilities-toolkit/build-pattern-page-plan` only as one
+reviewed Gutenberg pattern page batch, and accepts the P0 Toolbox article handoff
 `npcink-toolbox/build-article-write-plan` only as a single reviewed
 `npcink-abilities-toolkit/create-draft` proposal. The bounded local article batch handoff
 `npcink-toolbox/build-article-batch-write-plan` may create one reviewed

@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-09 — Pattern page from-plan Core bridge aligned
+
+- **Module**: Core plan-to-proposal intake for Toolkit Gutenberg pattern pages.
+- **Status**: `npcink-abilities-toolkit/build-pattern-page-plan` is now
+  allowlisted and contract-validated by Core `/proposals/from-plan`.
+- **Completed**:
+  - Added Core allowlist support for the Toolkit pattern page planning ability.
+  - Added fail-closed validation for `pattern_page_plan`: batch mode only,
+    `openai-style-landing` plus `minimal-dark-light`, exactly one draft page
+    create action followed by one `update-post-blocks` action, output reference
+    required, dry-run/no-commit, and CSS class allowlist enforcement.
+  - Added `preview.pattern_page` review evidence and updated public Core
+    contracts.
+  - Added PHP and WordPress smoke coverage proving from-plan intake creates a
+    pending batch proposal and does not create the page draft during intake or
+    preflight.
+- **Verification**:
+  - In `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+  - In `/Users/muze/gitee/magick-ai-core`: `composer smoke:wp`
+- **Boundary**:
+  - Core still does not render patterns, approve proposals, execute batch
+    actions, or mutate WordPress content. Adapter/host execution remains after
+    approval and commit preflight.
+
 ## 2026-06-09 — High-risk article/media batch Core proof implemented
 
 - **Module**: Core operation classification contract and Toolbox article/media

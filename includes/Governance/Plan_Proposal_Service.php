@@ -26,13 +26,14 @@ final class Plan_Proposal_Service {
 	 */
 	private $allowed_plan_abilities = array(
 		'npcink-abilities-toolkit/build-content-inventory-fix-plan'           => true,
-		'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan'            => true,
+		'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan'  => true,
 		'npcink-abilities-toolkit/build-media-inventory-fix-plan'             => true,
 		'npcink-abilities-toolkit/build-media-reference-repair-plan'          => true,
 		'npcink-abilities-toolkit/build-media-settings-reference-repair-plan' => true,
 		'npcink-abilities-toolkit/build-media-optimization-plan'              => true,
 		'npcink-abilities-toolkit/build-media-rename-plan'                    => true,
 		'npcink-abilities-toolkit/build-article-optimization-apply-plan'      => true,
+		'npcink-abilities-toolkit/build-pattern-page-plan'                    => true,
 		'npcink-toolbox/build-article-write-plan'                            => true,
 		'npcink-toolbox/build-article-batch-write-plan'                      => true,
 		'npcink-toolbox/build-article-media-batch-write-plan'                => true,
@@ -185,6 +186,13 @@ final class Plan_Proposal_Service {
 			$article_optimization_contract_error = $this->validate_article_optimization_apply_plan_contract( $plan );
 			if ( is_wp_error( $article_optimization_contract_error ) ) {
 				return $article_optimization_contract_error;
+			}
+		}
+
+		if ( 'npcink-abilities-toolkit/build-pattern-page-plan' === $plan_ability_id ) {
+			$pattern_page_contract_error = $this->validate_pattern_page_plan_contract( $plan );
+			if ( is_wp_error( $pattern_page_contract_error ) ) {
+				return $pattern_page_contract_error;
 			}
 		}
 
@@ -1340,6 +1348,204 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Validates the governed Gutenberg pattern page plan contract.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_pattern_page_plan_contract( array $plan ) {
+		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
+		if ( 'pattern_page_plan' !== $artifact_type ) {
+			return new WP_Error(
+				'npcink_governance_core_pattern_page_plan_invalid',
+				__( 'Pattern page plans must declare artifact_type=pattern_page_plan.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( 'batch' !== sanitize_key( (string) ( $plan['proposal_mode'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_pattern_page_mode_required',
+				__( 'Pattern page plans must request batch proposal mode.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true === (bool) ( $plan['direct_wordpress_write'] ?? false ) ) {
+			return new WP_Error(
+				'npcink_governance_core_pattern_page_direct_write_rejected',
+				__( 'Pattern page plans must not claim direct WordPress write authority.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$allowed_patterns = array(
+			'openai-style-landing' => true,
+		);
+		$allowed_presets = array(
+			'minimal-dark-light' => true,
+		);
+		$pattern_id      = sanitize_key( (string) ( $plan['pattern_id'] ?? '' ) );
+		$style_preset    = sanitize_key( (string) ( $plan['style_preset'] ?? '' ) );
+		if ( ! isset( $allowed_patterns[ $pattern_id ] ) || ! isset( $allowed_presets[ $style_preset ] ) ) {
+			return new WP_Error(
+				'npcink_governance_core_pattern_page_style_rejected',
+				__( 'Pattern page plans must use an allowlisted pattern and style preset.', 'npcink-governance-core' ),
+				array(
+					'status'       => 422,
+					'pattern_id'   => $pattern_id,
+					'style_preset' => $style_preset,
+				)
+			);
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( 2 !== count( $write_actions ) || ! is_array( $write_actions[0] ?? null ) || ! is_array( $write_actions[1] ?? null ) ) {
+			return new WP_Error(
+				'npcink_governance_core_pattern_page_actions_rejected',
+				__( 'Pattern page plans must contain create-draft and update-post-blocks actions.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$create_action = $write_actions[0];
+		$update_action = $write_actions[1];
+		if ( 'npcink-abilities-toolkit/create-draft' !== sanitize_text_field( (string) ( $create_action['target_ability_id'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_pattern_page_create_action_invalid',
+				__( 'Pattern page plans must first create a page draft.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+		if ( 'npcink-abilities-toolkit/update-post-blocks' !== sanitize_text_field( (string) ( $update_action['target_ability_id'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_pattern_page_update_action_invalid',
+				__( 'Pattern page plans must then update Gutenberg blocks.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$create_input = is_array( $create_action['input'] ?? null ) ? $create_action['input'] : array();
+		if ( 'page' !== sanitize_key( (string) ( $create_input['post_type'] ?? '' ) ) || 'draft' !== sanitize_key( (string) ( $create_input['status'] ?? 'draft' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_pattern_page_create_action_invalid',
+				__( 'Pattern page create action must create only a draft page.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+		if ( '' === trim( sanitize_text_field( (string) ( $create_input['title'] ?? '' ) ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_pattern_page_title_missing',
+				__( 'Pattern page create action must include a reviewed title.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+		if ( true === (bool) ( $create_input['commit'] ?? false ) || false === (bool) ( $create_input['dry_run'] ?? true ) ) {
+			return new WP_Error(
+				'npcink_governance_core_pattern_page_commit_rejected',
+				__( 'Pattern page create action must remain dry-run and must not request commit.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$update_input = is_array( $update_action['input'] ?? null ) ? $update_action['input'] : array();
+		if ( '$outputs.create-pattern-page.post_id' !== (string) ( $update_input['post_id'] ?? '' ) ) {
+			return new WP_Error(
+				'npcink_governance_core_pattern_page_output_reference_required',
+				__( 'Pattern page update action must use the draft page output reference.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+		if ( true === (bool) ( $update_input['commit'] ?? false ) || false === (bool) ( $update_input['dry_run'] ?? true ) ) {
+			return new WP_Error(
+				'npcink_governance_core_pattern_page_commit_rejected',
+				__( 'Pattern page block update action must remain dry-run and must not request commit.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+		$blocks = is_array( $update_input['blocks'] ?? null ) ? array_values( $update_input['blocks'] ) : array();
+		if ( empty( $blocks ) ) {
+			return new WP_Error(
+				'npcink_governance_core_pattern_page_blocks_missing',
+				__( 'Pattern page block update action must include Gutenberg blocks.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$allowed_classes = array_fill_keys(
+			array_values(
+				array_filter(
+					array_map( array( $this, 'sanitize_block_class_name' ), (array) ( $plan['allowed_classes'] ?? array() ) )
+				)
+			),
+			true
+		);
+		if ( empty( $allowed_classes ) ) {
+			return new WP_Error(
+				'npcink_governance_core_pattern_page_class_whitelist_missing',
+				__( 'Pattern page plans must include a CSS class allowlist.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		foreach ( $this->block_class_names( $blocks ) as $class_name ) {
+			if ( ! isset( $allowed_classes[ $class_name ] ) ) {
+				return new WP_Error(
+					'npcink_governance_core_pattern_page_class_rejected',
+					__( 'Pattern page blocks may use only allowlisted CSS classes.', 'npcink-governance-core' ),
+					array(
+						'status'     => 422,
+						'class_name' => $class_name,
+					)
+				);
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Returns CSS class names used by Gutenberg block attrs.
+	 *
+	 * @param array<int,mixed> $blocks Block tree.
+	 * @return array<int,string>
+	 */
+	private function block_class_names( array $blocks ): array {
+		$class_names = array();
+		foreach ( $blocks as $block ) {
+			if ( ! is_array( $block ) ) {
+				continue;
+			}
+			$attrs = is_array( $block['attrs'] ?? null ) ? $block['attrs'] : array();
+			foreach ( preg_split( '/\s+/', (string) ( $attrs['className'] ?? '' ) ) ?: array() as $class_name ) {
+				$class_name = $this->sanitize_block_class_name( $class_name );
+				if ( '' !== $class_name ) {
+					$class_names[] = $class_name;
+				}
+			}
+			if ( is_array( $block['innerBlocks'] ?? null ) ) {
+				$class_names = array_merge( $class_names, $this->block_class_names( array_values( $block['innerBlocks'] ) ) );
+			}
+		}
+
+		return array_values( array_unique( $class_names ) );
+	}
+
+	/**
+	 * Sanitizes a CSS class token without requiring all WordPress admin helpers in tests.
+	 *
+	 * @param mixed $class_name Raw class token.
+	 * @return string
+	 */
+	private function sanitize_block_class_name( $class_name ): string {
+		if ( function_exists( 'sanitize_html_class' ) ) {
+			return sanitize_html_class( (string) $class_name );
+		}
+
+		return preg_replace( '/[^A-Za-z0-9_-]/', '', (string) $class_name ) ?: '';
+	}
+
+	/**
 	 * Validates the P0 article writing plan contract.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -1744,6 +1950,32 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Builds preview context for Gutenberg pattern page plans.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function pattern_page_preview( array $plan ): array {
+		$summary = is_array( $plan['summary'] ?? null ) ? $plan['summary'] : array();
+
+		return array(
+			'artifact_type'          => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
+			'version'                => absint( $plan['version'] ?? 0 ),
+			'pattern_id'             => sanitize_key( (string) ( $plan['pattern_id'] ?? '' ) ),
+			'style_preset'           => sanitize_key( (string) ( $plan['style_preset'] ?? '' ) ),
+			'block_count'            => absint( $summary['block_count'] ?? 0 ),
+			'action_count'           => absint( $summary['action_count'] ?? 0 ),
+			'allowed_classes'        => array_values(
+				array_filter(
+					array_map( array( $this, 'sanitize_block_class_name' ), (array) ( $plan['allowed_classes'] ?? array() ) )
+				)
+			),
+			'final_write_path'       => 'core_batch_proposal_required',
+			'direct_wordpress_write' => false,
+		);
+	}
+
+	/**
 	 * Builds preview context for Site Knowledge review plans.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -1917,6 +2149,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'npcink-abilities-toolkit/build-article-optimization-apply-plan' === $plan_ability_id ) {
 			$preview['article_optimization'] = $this->article_optimization_preview( $plan );
+		}
+		if ( 'npcink-abilities-toolkit/build-pattern-page-plan' === $plan_ability_id ) {
+			$preview['pattern_page'] = $this->pattern_page_preview( $plan );
 		}
 		if ( 'npcink-toolbox/build-site-knowledge-review-plan' === $plan_ability_id ) {
 			$preview['site_knowledge_review'] = $this->site_knowledge_review_preview( $plan );
@@ -2119,6 +2354,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'npcink-abilities-toolkit/build-media-rename-plan' === $plan_ability_id ) {
 			$preview['media_rename'] = $this->media_rename_preview( $plan );
+		}
+		if ( 'npcink-abilities-toolkit/build-pattern-page-plan' === $plan_ability_id ) {
+			$preview['pattern_page'] = $this->pattern_page_preview( $plan );
 		}
 		if ( 'npcink-toolbox/build-content-metadata-apply-plan' === $plan_ability_id ) {
 			$preview['content_metadata_apply'] = $this->content_metadata_apply_preview( $plan );

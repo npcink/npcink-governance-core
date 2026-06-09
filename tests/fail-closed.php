@@ -471,6 +471,16 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'post_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
+			'npcink-abilities-toolkit/update-post-blocks' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/update-post-blocks',
+				'label'             => 'Update Post Blocks',
+				'risk_level'        => 'write',
+				'requires_approval' => true,
+				'capability'        => 'edit_posts',
+				'required_scopes'   => array( 'post.write' ),
+				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'post_id' => array( 'type' => array( 'integer', 'string' ) ), 'blocks' => array( 'type' => 'array' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
 			'npcink-abilities-toolkit/set-post-terms' => array(
 				'ability_id'        => 'npcink-abilities-toolkit/set-post-terms',
 				'label'             => 'Set Post Terms',
@@ -628,6 +638,16 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'requires_approval' => false,
 				'capability'        => 'upload_files',
 				'required_scopes'   => array( 'media.read' ),
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
+			'npcink-abilities-toolkit/build-pattern-page-plan' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/build-pattern-page-plan',
+				'label'             => 'Build Pattern Page Plan',
+				'risk_level'        => 'read',
+				'requires_approval' => false,
+				'capability'        => 'edit_pages',
+				'required_scopes'   => array( 'post.read' ),
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
@@ -1679,6 +1699,101 @@ function npcink_governance_core_fail_closed_media_rename_plan(): array {
 }
 
 /**
+ * Creates a representative Gutenberg pattern page plan.
+ *
+ * @return array<string,mixed>
+ */
+function npcink_governance_core_fail_closed_pattern_page_plan(): array {
+	return array(
+		'artifact_type'            => 'pattern_page_plan',
+		'version'                  => 1,
+		'batch_id'                 => 'pattern_page_fault_injection',
+		'pattern_id'               => 'openai-style-landing',
+		'style_preset'             => 'minimal-dark-light',
+		'requires_approval'        => true,
+		'dry_run'                  => true,
+		'commit_execution'         => false,
+		'direct_wordpress_write'   => false,
+		'proposal_mode'            => 'batch',
+		'summary'                  => array(
+			'block_count'  => 3,
+			'action_count' => 2,
+		),
+		'allowed_classes'          => array(
+			'npcink-ai-page',
+			'npcink-ai-hero',
+			'npcink-ai-title',
+			'npcink-ai-lede',
+		),
+		'write_actions'            => array(
+			array(
+				'action_id'         => 'create-pattern-page',
+				'target_ability_id' => 'npcink-abilities-toolkit/create-draft',
+				'input'             => array(
+					'post_type'      => 'page',
+					'status'         => 'draft',
+					'title'          => 'WordPress AI',
+					'content_format' => 'html',
+					'content'        => '',
+					'dry_run'        => true,
+					'commit'         => false,
+					'idempotency_key' => 'pattern-page-create',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+			array(
+				'action_id'         => 'update-pattern-page-blocks',
+				'target_ability_id' => 'npcink-abilities-toolkit/update-post-blocks',
+				'depends_on'        => array( 'create-pattern-page' ),
+				'input'             => array(
+					'post_id'            => '$outputs.create-pattern-page.post_id',
+					'mode'               => 'replace',
+					'validate_roundtrip' => true,
+					'blocks'             => array(
+						array(
+							'blockName'    => 'core/group',
+							'attrs'        => array( 'className' => 'npcink-ai-page npcink-ai-hero' ),
+							'innerBlocks'  => array(
+								array(
+									'blockName'    => 'core/heading',
+									'attrs'        => array( 'className' => 'npcink-ai-title' ),
+									'innerBlocks'  => array(),
+									'innerHTML'    => '<h2 class="wp-block-heading npcink-ai-title">WordPress AI</h2>',
+									'innerContent' => array( '<h2 class="wp-block-heading npcink-ai-title">WordPress AI</h2>' ),
+								),
+								array(
+									'blockName'    => 'core/paragraph',
+									'attrs'        => array( 'className' => 'npcink-ai-lede' ),
+									'innerBlocks'  => array(),
+									'innerHTML'    => '<p class="npcink-ai-lede">Governed AI workflow for WordPress.</p>',
+									'innerContent' => array( '<p class="npcink-ai-lede">Governed AI workflow for WordPress.</p>' ),
+								),
+							),
+							'innerHTML'    => '<div class="wp-block-group npcink-ai-page npcink-ai-hero"></div>',
+							'innerContent' => array( null, null ),
+						),
+					),
+					'dry_run'            => true,
+					'commit'             => false,
+					'idempotency_key'    => 'pattern-page-blocks',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+		),
+		'risk'                     => array(
+			'level'  => 'medium',
+			'reason' => 'Creates a draft page and replaces it with allowlisted Gutenberg pattern blocks.',
+		),
+	);
+}
+
+/**
  * Creates a representative image candidate adoption plan.
  *
  * @return array<string,mixed>
@@ -2241,6 +2356,30 @@ $media_rename_mismatch['write_actions'][0]['input']['attachment_id'] = 1494;
 $media_rename_mismatch_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-rename-plan', $media_rename_mismatch );
 npcink_governance_core_fail_closed_assert( is_wp_error( $media_rename_mismatch_result ), 'Media rename plan spanning multiple attachments is rejected.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_media_rename_attachment_mismatch' === $media_rename_mismatch_result->get_error_code(), 'Media rename attachment mismatch uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$pattern_page_plan = npcink_governance_core_fail_closed_pattern_page_plan();
+$pattern_page_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-pattern-page-plan', $pattern_page_plan, array(), array( 'source' => 'abilities_pattern_page' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $pattern_page_result ), 'Valid pattern page plan creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $pattern_page_result['proposal_count'] ?? 0 ), 'Valid pattern page plan creates one batch proposal.' );
+$pattern_page_proposal = is_array( $pattern_page_result['proposals'][0] ?? null ) ? $pattern_page_result['proposals'][0] : array();
+npcink_governance_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $pattern_page_proposal['preview']['source']['type'] ?? '' ), 'Pattern page plan stores batch proposal source.' );
+npcink_governance_core_fail_closed_assert( is_array( $pattern_page_proposal['preview']['pattern_page'] ?? null ), 'Pattern page proposal preserves pattern page preview.' );
+npcink_governance_core_fail_closed_assert( 'openai-style-landing' === (string) ( $pattern_page_proposal['preview']['pattern_page']['pattern_id'] ?? '' ), 'Pattern page preview preserves pattern id.' );
+npcink_governance_core_fail_closed_assert( 2 === count( (array) ( $pattern_page_proposal['input']['write_actions'] ?? array() ) ), 'Pattern page proposal stores create and block update actions.' );
+npcink_governance_core_fail_closed_assert( '$outputs.create-pattern-page.post_id' === (string) ( $pattern_page_proposal['input']['write_actions'][1]['input']['post_id'] ?? '' ), 'Pattern page update action preserves output reference.' );
+$pattern_page_block = $pattern_page_proposal['input']['write_actions'][1]['input']['blocks'][0] ?? array();
+npcink_governance_core_fail_closed_assert( is_array( $pattern_page_block ) && isset( $pattern_page_block['blockName'] ) && ! isset( $pattern_page_block['blockname'] ), 'Pattern page proposal preserves Gutenberg blockName key case.' );
+npcink_governance_core_fail_closed_assert( isset( $pattern_page_block['innerBlocks'] ) && ! isset( $pattern_page_block['innerblocks'] ), 'Pattern page proposal preserves Gutenberg innerBlocks key case.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$pattern_page_bad_class = npcink_governance_core_fail_closed_pattern_page_plan();
+$pattern_page_bad_class['write_actions'][1]['input']['blocks'][0]['attrs']['className'] = 'npcink-ai-page rogue-class';
+$pattern_page_bad_class_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-pattern-page-plan', $pattern_page_bad_class );
+npcink_governance_core_fail_closed_assert( is_wp_error( $pattern_page_bad_class_result ), 'Pattern page plan with non-allowlisted block class is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_pattern_page_class_rejected' === $pattern_page_bad_class_result->get_error_code(), 'Pattern page class rejection uses stable error code.' );
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();

@@ -361,6 +361,7 @@ abilities:
 - `npcink-abilities-toolkit/build-media-optimization-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
 - `npcink-abilities-toolkit/build-article-optimization-apply-plan`
+- `npcink-abilities-toolkit/build-pattern-page-plan`
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
@@ -466,6 +467,17 @@ the write, or mutate WordPress content. Generated update-post-blocks proposals
 preserve the case-sensitive Gutenberg block tree under action `input.blocks` so
 Adapter-side execution can pass valid block objects to the WordPress Abilities
 API after approval and commit preflight.
+
+For `npcink-abilities-toolkit/build-pattern-page-plan`, the plan must declare
+`artifact_type=pattern_page_plan`, `pattern_id=openai-style-landing`,
+`style_preset=minimal-dark-light`, and `proposal_mode=batch`. It must contain
+exactly two dry-run, non-commit actions: `npcink-abilities-toolkit/create-draft`
+for a draft page, followed by `npcink-abilities-toolkit/update-post-blocks`
+using `$outputs.create-pattern-page.post_id`. Core rejects missing block trees
+and block `className` values outside the plan `allowed_classes` list. The route
+creates a pending Core batch proposal with `preview.pattern_page`; it does not
+render the pattern, approve the proposal, execute the write, or mutate
+WordPress content.
 
 Each accepted independent `write_action` becomes a separate pending proposal by
 default. If the plan declares `batch_approval=true` or

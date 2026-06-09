@@ -16,6 +16,7 @@ an execution bridge.
 - `npcink-abilities-toolkit/build-media-optimization-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
 - `npcink-abilities-toolkit/build-article-optimization-apply-plan`
+- `npcink-abilities-toolkit/build-pattern-page-plan`
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
@@ -122,6 +123,23 @@ recommendations, rewrite article content, approve the proposal, or execute the
 post update. Adapter or the local host still performs final per-action
 allowlist, schema, idempotency, and execution checks after Core approval and
 commit preflight.
+
+`npcink-abilities-toolkit/build-pattern-page-plan` is the bounded local handoff
+for creating a draft page from an allowlisted Gutenberg page pattern. It must
+return `artifact_type=pattern_page_plan`, `pattern_id=openai-style-landing`,
+`style_preset=minimal-dark-light`, `proposal_mode=batch`,
+`requires_approval=true`, `dry_run=true`, `commit_execution=false`, and
+`direct_wordpress_write=false`. Core accepts exactly two ordered actions:
+`npcink-abilities-toolkit/create-draft` for a draft `page`, followed by
+`npcink-abilities-toolkit/update-post-blocks` that uses
+`$outputs.create-pattern-page.post_id` and a non-empty Gutenberg `blocks` tree.
+
+The plan must include `allowed_classes`, and Core rejects block `className`
+values outside that allowlist. The generated batch proposal preserves
+`preview.pattern_page` with the pattern id, style preset, block count, action
+count, and allowed class list. Core does not render the pattern, create the
+draft page, approve the proposal, execute the block update, or provide a
+generic final write path.
 
 `npcink-toolbox/build-content-metadata-apply-plan` is the bounded local handoff
 for the user intent "apply these reviewed article metadata choices" after

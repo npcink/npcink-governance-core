@@ -75,6 +75,7 @@ Core may consume these read-only planning ability outputs:
 - `npcink-abilities-toolkit/build-media-optimization-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
 - `npcink-abilities-toolkit/build-article-optimization-apply-plan`
+- `npcink-abilities-toolkit/build-pattern-page-plan`
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
@@ -182,6 +183,16 @@ dry-run, non-commit post update actions that all target that same post. Core
 stores proposal truth and `preview.article_optimization` only; it does not
 generate recommendations, rewrite content, approve proposals, or execute
 WordPress writes.
+
+The pattern page handoff is the governed shape for the user intent "create this
+reviewed page pattern as a draft." Core accepts
+`npcink-abilities-toolkit/build-pattern-page-plan` only as a
+`pattern_page_plan` for the allowlisted `openai-style-landing` pattern and
+`minimal-dark-light` style preset. It creates one ordered batch proposal for a
+draft page create action and a Gutenberg block replacement action using the
+new page output reference, and it stores `preview.pattern_page`. Core rejects
+block classes outside the plan allowlist and does not render patterns or
+execute WordPress writes.
 
 Plans may request one review item for a group of generated actions with either
 `batch_approval=true` or `proposal_mode=batch`. Core then creates one
