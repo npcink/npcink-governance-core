@@ -16,6 +16,7 @@ an execution bridge.
 - `npcink-abilities-toolkit/build-media-optimization-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
 - `npcink-abilities-toolkit/build-article-optimization-apply-plan`
+- `npcink-abilities-toolkit/build-article-block-plan`
 - `npcink-abilities-toolkit/build-pattern-page-plan`
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
@@ -140,6 +141,28 @@ values outside that allowlist. The generated batch proposal preserves
 count, and allowed class list. Core does not render the pattern, create the
 draft page, approve the proposal, execute the block update, or provide a
 generic final write path.
+
+`npcink-abilities-toolkit/build-article-block-plan` is the bounded local
+handoff for creating a draft post from whitelisted Gutenberg-native editorial
+article structures. It must return `artifact_type=article_block_plan`,
+`article_template` in `editorial-longform`, `how-to-guide`, or
+`comparison-review`, `responsive_profile=article_standard`,
+`proposal_mode=batch`, `requires_approval=true`, `dry_run=true`,
+`commit_execution=false`, and `direct_wordpress_write=false`. Core accepts
+exactly two ordered actions: `npcink-abilities-toolkit/create-draft` for a
+draft `post`, followed by `npcink-abilities-toolkit/update-post-blocks` that
+uses `$outputs.create-article-draft.post_id` and a non-empty Gutenberg `blocks`
+tree.
+
+The plan must report native editorial and responsive quality, including
+`editorial_quality.uses_native_blocks=true` and
+`custom_css_required=false`. Core rejects custom block `className` values for
+this article plan because article visual structure should come from core
+blocks and native attrs, not arbitrary CSS. The generated batch proposal
+preserves `preview.article_block` with the article template, responsive
+profile, media strategy, block count, and quality summaries. Core does not
+generate the article, render the blocks, create the draft post, approve the
+proposal, execute the block update, or provide a generic final write path.
 
 `npcink-toolbox/build-content-metadata-apply-plan` is the bounded local handoff
 for the user intent "apply these reviewed article metadata choices" after

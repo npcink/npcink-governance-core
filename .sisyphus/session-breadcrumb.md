@@ -1,5 +1,33 @@
 # Session Breadcrumb
 
+## 2026-06-09 — Article block from-plan Core bridge aligned
+
+- **Module**: Core plan-to-proposal intake for Toolkit Gutenberg article block
+  drafts.
+- **Status**: `npcink-abilities-toolkit/build-article-block-plan` is now
+  allowlisted and contract-validated by Core `/proposals/from-plan`.
+- **Completed**:
+  - Added Core allowlist support for the Toolkit article block planning
+    ability.
+  - Added fail-closed validation for `article_block_plan`: batch mode only,
+    allowlisted editorial templates, `responsive_profile=article_standard`,
+    exactly one draft post create action followed by one
+    `update-post-blocks` action, output reference required, dry-run/no-commit,
+    native quality evidence required, and custom block classes rejected.
+  - Added `preview.article_block` review evidence and updated public Core
+    contracts.
+  - Added PHP and WordPress smoke coverage proving from-plan intake creates a
+    pending batch proposal and does not create the post draft during intake or
+    preflight.
+- **Verification**:
+  - In `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+  - In `/Users/muze/gitee/magick-ai-core`: `composer smoke:wp`
+- **Boundary**:
+  - Core still does not generate article content, render Gutenberg blocks,
+    approve proposals automatically, execute batch actions, or mutate WordPress
+    content. Adapter/host execution remains after approval and commit
+    preflight.
+
 ## 2026-06-09 — Current-stage closeout and handoff summarized
 
 - **Module**: Core boundary documentation and cross-module handoff guidance.

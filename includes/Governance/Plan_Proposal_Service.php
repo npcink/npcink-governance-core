@@ -33,6 +33,7 @@ final class Plan_Proposal_Service {
 		'npcink-abilities-toolkit/build-media-optimization-plan'              => true,
 		'npcink-abilities-toolkit/build-media-rename-plan'                    => true,
 		'npcink-abilities-toolkit/build-article-optimization-apply-plan'      => true,
+		'npcink-abilities-toolkit/build-article-block-plan'                   => true,
 		'npcink-abilities-toolkit/build-pattern-page-plan'                    => true,
 		'npcink-toolbox/build-article-write-plan'                            => true,
 		'npcink-toolbox/build-article-batch-write-plan'                      => true,
@@ -186,6 +187,13 @@ final class Plan_Proposal_Service {
 			$article_optimization_contract_error = $this->validate_article_optimization_apply_plan_contract( $plan );
 			if ( is_wp_error( $article_optimization_contract_error ) ) {
 				return $article_optimization_contract_error;
+			}
+		}
+
+		if ( 'npcink-abilities-toolkit/build-article-block-plan' === $plan_ability_id ) {
+			$article_block_contract_error = $this->validate_article_block_plan_contract( $plan );
+			if ( is_wp_error( $article_block_contract_error ) ) {
+				return $article_block_contract_error;
 			}
 		}
 
@@ -1374,6 +1382,164 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Validates the governed Gutenberg article block plan contract.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_article_block_plan_contract( array $plan ) {
+		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
+		if ( 'article_block_plan' !== $artifact_type ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_plan_invalid',
+				__( 'Article block plans must declare artifact_type=article_block_plan.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( 'batch' !== sanitize_key( (string) ( $plan['proposal_mode'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_mode_required',
+				__( 'Article block plans must request batch proposal mode.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true === (bool) ( $plan['direct_wordpress_write'] ?? false ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_direct_write_rejected',
+				__( 'Article block plans must not claim direct WordPress write authority.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$allowed_templates = array(
+			'editorial-longform' => true,
+			'how-to-guide'       => true,
+			'comparison-review'  => true,
+		);
+		$article_template = sanitize_key( (string) ( $plan['article_template'] ?? '' ) );
+		if ( ! isset( $allowed_templates[ $article_template ] ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_template_rejected',
+				__( 'Article block plans must use an allowlisted article template.', 'npcink-governance-core' ),
+				array(
+					'status'           => 422,
+					'article_template' => $article_template,
+				)
+			);
+		}
+
+		if ( 'article_standard' !== sanitize_key( (string) ( $plan['responsive_profile'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_responsive_profile_rejected',
+				__( 'Article block plans must use the article_standard responsive profile.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$editorial_quality = is_array( $plan['editorial_quality'] ?? null ) ? $plan['editorial_quality'] : array();
+		$responsive_quality = is_array( $plan['responsive_quality'] ?? null ) ? $plan['responsive_quality'] : array();
+		if ( true !== (bool) ( $editorial_quality['uses_native_blocks'] ?? false ) || true === (bool) ( $editorial_quality['custom_css_required'] ?? true ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_quality_rejected',
+				__( 'Article block plans must use native Gutenberg blocks without custom CSS requirements.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+		if ( true === (bool) ( $responsive_quality['custom_css_required'] ?? true ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_responsive_quality_rejected',
+				__( 'Article block responsive quality must not require custom CSS.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( 2 !== count( $write_actions ) || ! is_array( $write_actions[0] ?? null ) || ! is_array( $write_actions[1] ?? null ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_actions_rejected',
+				__( 'Article block plans must contain create-draft and update-post-blocks actions.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$create_action = $write_actions[0];
+		$update_action = $write_actions[1];
+		if ( 'npcink-abilities-toolkit/create-draft' !== sanitize_text_field( (string) ( $create_action['target_ability_id'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_create_action_invalid',
+				__( 'Article block plans must first create a post draft.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+		if ( 'npcink-abilities-toolkit/update-post-blocks' !== sanitize_text_field( (string) ( $update_action['target_ability_id'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_update_action_invalid',
+				__( 'Article block plans must then update Gutenberg blocks.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$create_input = is_array( $create_action['input'] ?? null ) ? $create_action['input'] : array();
+		if ( 'post' !== sanitize_key( (string) ( $create_input['post_type'] ?? '' ) ) || 'draft' !== sanitize_key( (string) ( $create_input['status'] ?? 'draft' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_create_action_invalid',
+				__( 'Article block create action must create only a draft post.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+		if ( '' === trim( sanitize_text_field( (string) ( $create_input['title'] ?? '' ) ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_title_missing',
+				__( 'Article block create action must include a reviewed title.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+		if ( true === (bool) ( $create_input['commit'] ?? false ) || false === (bool) ( $create_input['dry_run'] ?? true ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_commit_rejected',
+				__( 'Article block create action must remain dry-run and must not request commit.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$update_input = is_array( $update_action['input'] ?? null ) ? $update_action['input'] : array();
+		if ( '$outputs.create-article-draft.post_id' !== (string) ( $update_input['post_id'] ?? '' ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_output_reference_required',
+				__( 'Article block update action must use the draft post output reference.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+		if ( true === (bool) ( $update_input['commit'] ?? false ) || false === (bool) ( $update_input['dry_run'] ?? true ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_commit_rejected',
+				__( 'Article block update action must remain dry-run and must not request commit.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$blocks = is_array( $update_input['blocks'] ?? null ) ? array_values( $update_input['blocks'] ) : array();
+		if ( empty( $blocks ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_blocks_missing',
+				__( 'Article block update action must include Gutenberg blocks.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+		if ( ! empty( $this->block_class_names( $blocks ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_block_class_rejected',
+				__( 'Article block plans must not rely on custom CSS classes.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		return true;
+	}
+
+	/**
 	 * Validates the governed Gutenberg pattern page plan contract.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -1976,6 +2142,30 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Builds preview context for Gutenberg article block plans.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function article_block_preview( array $plan ): array {
+		$summary = is_array( $plan['summary'] ?? null ) ? $plan['summary'] : array();
+
+		return array(
+			'artifact_type'          => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
+			'version'                => absint( $plan['version'] ?? 0 ),
+			'article_template'       => sanitize_key( (string) ( $plan['article_template'] ?? '' ) ),
+			'responsive_profile'     => sanitize_key( (string) ( $plan['responsive_profile'] ?? '' ) ),
+			'media_strategy'         => sanitize_key( (string) ( $plan['media_strategy'] ?? '' ) ),
+			'block_count'            => absint( $summary['block_count'] ?? 0 ),
+			'action_count'           => absint( $summary['action_count'] ?? 0 ),
+			'editorial_quality'      => $this->sanitize_payload( $plan['editorial_quality'] ?? array() ),
+			'responsive_quality'     => $this->sanitize_payload( $plan['responsive_quality'] ?? array() ),
+			'final_write_path'       => 'core_batch_proposal_required',
+			'direct_wordpress_write' => false,
+		);
+	}
+
+	/**
 	 * Builds preview context for Gutenberg pattern page plans.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -2175,6 +2365,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'npcink-abilities-toolkit/build-article-optimization-apply-plan' === $plan_ability_id ) {
 			$preview['article_optimization'] = $this->article_optimization_preview( $plan );
+		}
+		if ( 'npcink-abilities-toolkit/build-article-block-plan' === $plan_ability_id ) {
+			$preview['article_block'] = $this->article_block_preview( $plan );
 		}
 		if ( 'npcink-abilities-toolkit/build-pattern-page-plan' === $plan_ability_id ) {
 			$preview['pattern_page'] = $this->pattern_page_preview( $plan );
@@ -2380,6 +2573,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'npcink-abilities-toolkit/build-media-rename-plan' === $plan_ability_id ) {
 			$preview['media_rename'] = $this->media_rename_preview( $plan );
+		}
+		if ( 'npcink-abilities-toolkit/build-article-block-plan' === $plan_ability_id ) {
+			$preview['article_block'] = $this->article_block_preview( $plan );
 		}
 		if ( 'npcink-abilities-toolkit/build-pattern-page-plan' === $plan_ability_id ) {
 			$preview['pattern_page'] = $this->pattern_page_preview( $plan );

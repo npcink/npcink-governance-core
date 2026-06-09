@@ -75,6 +75,7 @@ Core may consume these read-only planning ability outputs:
 - `npcink-abilities-toolkit/build-media-optimization-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
 - `npcink-abilities-toolkit/build-article-optimization-apply-plan`
+- `npcink-abilities-toolkit/build-article-block-plan`
 - `npcink-abilities-toolkit/build-pattern-page-plan`
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
@@ -195,6 +196,16 @@ draft page create action and a Gutenberg block replacement action using the
 new page output reference, and it stores `preview.pattern_page`. Core rejects
 block classes outside the plan allowlist and does not render patterns or
 execute WordPress writes.
+
+The article block handoff is the governed shape for the user intent "create
+this reviewed Gutenberg article as a draft." Core accepts
+`npcink-abilities-toolkit/build-article-block-plan` only as an
+`article_block_plan` for allowlisted editorial templates and
+`responsive_profile=article_standard`. It creates one ordered batch proposal
+for a draft post create action and a Gutenberg block replacement action using
+the new post output reference, and it stores `preview.article_block`. Core
+rejects custom block classes and does not generate article content, render
+blocks, or execute WordPress writes.
 
 Plans may request one review item for a group of generated actions with either
 `batch_approval=true` or `proposal_mode=batch`. Core then creates one

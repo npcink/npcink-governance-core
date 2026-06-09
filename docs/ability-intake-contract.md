@@ -55,6 +55,7 @@ abilities:
 - `npcink-abilities-toolkit/build-media-optimization-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
 - `npcink-abilities-toolkit/build-pattern-page-plan`
+- `npcink-abilities-toolkit/build-article-block-plan`
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
@@ -132,6 +133,13 @@ Gutenberg pattern page handoff. Core accepts it only as a
 `pattern_page_plan` with `proposal_mode=batch`, an allowlisted pattern and
 style preset, one draft page create action, one block replacement action, and
 block CSS classes limited to the plan `allowed_classes` list.
+
+`npcink-abilities-toolkit/build-article-block-plan` is the bounded local
+Gutenberg article block handoff. Core accepts it only as an
+`article_block_plan` with `proposal_mode=batch`, an allowlisted editorial
+template, `responsive_profile=article_standard`, one draft post create action,
+one block replacement action, native editorial/responsive quality evidence, and
+no custom block CSS classes.
 
 Each plan `write_action.target_ability_id` must resolve through normal ability
 intake as a proposal-governed write or destructive ability. Core must not

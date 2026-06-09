@@ -1480,6 +1480,63 @@ npcink_governance_core_smoke_assert( null === get_page_by_title( $pattern_page_t
 npcink_governance_core_smoke_approve_and_preflight_plan_proposal( (string) ( $pattern_page_proposal['proposal_id'] ?? '' ) );
 npcink_governance_core_smoke_assert( null === get_page_by_title( $pattern_page_title, OBJECT, 'page' ), 'pattern page preflight does not create the page draft' );
 
+$article_block_title = 'Core Article Block Plan Smoke ' . $npcink_governance_core_smoke_run_id;
+$article_block_plan_input = array(
+	'title'              => $article_block_title,
+	'article_template'   => 'comparison-review',
+	'responsive_profile' => 'article_standard',
+	'media_strategy'     => 'none',
+	'variables'          => array(
+		'dek'         => 'Gutenberg article blocks can carry editorial structure through governance.',
+		'intro'       => 'This smoke verifies that article block plans become Core proposals without creating drafts during intake.',
+		'takeaways'   => array(
+			'Core accepts the plan only as a proposal batch.',
+			'Adapter remains the post-Core executor.',
+			'WordPress content is not mutated during from-plan intake.',
+		),
+		'sections'    => array(
+			array(
+				'title'      => 'Why article blocks',
+				'paragraphs' => array( 'Core should govern the reviewed block write without owning article generation.' ),
+			),
+			array(
+				'title'      => 'How it stays bounded',
+				'paragraphs' => array( 'The plan creates a draft post and then replaces blocks through approved execution only.' ),
+			),
+			array(
+				'title'      => 'Responsive check',
+				'paragraphs' => array( 'Comparison columns must stack on mobile.' ),
+			),
+		),
+		'comparisons' => array(
+			array(
+				'title'       => 'HTML',
+				'description' => 'Flexible but harder to keep editable.',
+			),
+			array(
+				'title'       => 'Blocks',
+				'description' => 'Structured and easier to review.',
+			),
+		),
+	),
+);
+$article_block_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-article-block-plan', $article_block_plan_input );
+$article_block_result = npcink_governance_core_smoke_create_proposals_from_plan( 'npcink-abilities-toolkit/build-article-block-plan', $article_block_plan, $article_block_plan_input );
+npcink_governance_core_smoke_assert( 1 === (int) ( $article_block_result['proposal_count'] ?? 0 ), 'article block plan generates one Core batch proposal' );
+$article_block_proposal = is_array( $article_block_result['proposals'][0] ?? null ) ? $article_block_result['proposals'][0] : array();
+npcink_governance_core_smoke_assert( 'plan_to_proposal_batch' === (string) ( $article_block_proposal['preview']['source']['type'] ?? '' ), 'article block plan records batch proposal source type' );
+npcink_governance_core_smoke_assert( 'batch' === (string) ( $article_block_proposal['preview']['source']['proposal_mode'] ?? '' ), 'article block batch preserves proposal_mode' );
+npcink_governance_core_smoke_assert( is_array( $article_block_proposal['preview']['article_block'] ?? null ), 'article block proposal preserves article preview context' );
+npcink_governance_core_smoke_assert( 'comparison-review' === (string) ( $article_block_proposal['preview']['article_block']['article_template'] ?? '' ), 'article block preview preserves article template' );
+$article_block_actions = is_array( $article_block_proposal['input']['write_actions'] ?? null ) ? array_values( $article_block_proposal['input']['write_actions'] ) : array();
+npcink_governance_core_smoke_assert( 2 === count( $article_block_actions ), 'article block batch stores create and block update actions' );
+npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/create-draft' === (string) ( $article_block_actions[0]['target_ability_id'] ?? '' ), 'article block first action creates a draft post' );
+npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/update-post-blocks' === (string) ( $article_block_actions[1]['target_ability_id'] ?? '' ), 'article block second action updates Gutenberg blocks' );
+npcink_governance_core_smoke_assert( '$outputs.create-article-draft.post_id' === (string) ( $article_block_actions[1]['input']['post_id'] ?? '' ), 'article block update action preserves output reference' );
+npcink_governance_core_smoke_assert( null === get_page_by_title( $article_block_title, OBJECT, 'post' ), 'article block from-plan intake does not create the post draft' );
+npcink_governance_core_smoke_approve_and_preflight_plan_proposal( (string) ( $article_block_proposal['proposal_id'] ?? '' ) );
+npcink_governance_core_smoke_assert( null === get_page_by_title( $article_block_title, OBJECT, 'post' ), 'article block preflight does not create the post draft' );
+
 $cleanup_pattern = 'Core Plan Bridge Test Cleanup Candidate ' . $npcink_governance_core_smoke_run_id;
 $cleanup_post_id = wp_insert_post(
 	array(

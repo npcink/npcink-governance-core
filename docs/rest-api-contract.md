@@ -361,6 +361,7 @@ abilities:
 - `npcink-abilities-toolkit/build-media-optimization-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
 - `npcink-abilities-toolkit/build-article-optimization-apply-plan`
+- `npcink-abilities-toolkit/build-article-block-plan`
 - `npcink-abilities-toolkit/build-pattern-page-plan`
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
@@ -479,6 +480,18 @@ and block `className` values outside the plan `allowed_classes` list. The route
 creates a pending Core batch proposal with `preview.pattern_page`; it does not
 render the pattern, approve the proposal, execute the write, or mutate
 WordPress content.
+
+For `npcink-abilities-toolkit/build-article-block-plan`, the plan must declare
+`artifact_type=article_block_plan`, an allowlisted `article_template`,
+`responsive_profile=article_standard`, and `proposal_mode=batch`. It must
+contain exactly two dry-run, non-commit actions:
+`npcink-abilities-toolkit/create-draft` for a draft post, followed by
+`npcink-abilities-toolkit/update-post-blocks` using
+`$outputs.create-article-draft.post_id`. Core rejects missing block trees,
+custom block `className` values, and quality summaries that require custom CSS.
+The route creates a pending Core batch proposal with `preview.article_block`;
+it does not generate the article, render the blocks, approve the proposal,
+execute the write, or mutate WordPress content.
 
 Each accepted independent `write_action` becomes a separate pending proposal by
 default. If the plan declares `batch_approval=true` or

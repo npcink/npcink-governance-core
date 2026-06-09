@@ -651,6 +651,16 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
+			'npcink-abilities-toolkit/build-article-block-plan' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/build-article-block-plan',
+				'label'             => 'Build Article Block Plan',
+				'risk_level'        => 'read',
+				'requires_approval' => false,
+				'capability'        => 'edit_posts',
+				'required_scopes'   => array( 'post.read' ),
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
 		);
 	}
 }
@@ -1794,6 +1804,131 @@ function npcink_governance_core_fail_closed_pattern_page_plan(): array {
 }
 
 /**
+ * Creates a representative Gutenberg article block plan.
+ *
+ * @return array<string,mixed>
+ */
+function npcink_governance_core_fail_closed_article_block_plan(): array {
+	return array(
+		'artifact_type'          => 'article_block_plan',
+		'version'                => 1,
+		'batch_id'               => 'article_block_fault_injection',
+		'article_template'       => 'comparison-review',
+		'responsive_profile'     => 'article_standard',
+		'media_strategy'         => 'existing_media_url',
+		'requires_approval'      => true,
+		'dry_run'                => true,
+		'commit_execution'       => false,
+		'direct_wordpress_write' => false,
+		'proposal_mode'          => 'batch',
+		'summary'                => array(
+			'block_count'  => 5,
+			'action_count' => 2,
+		),
+		'editorial_quality'      => array(
+			'pattern_version'         => '1.0',
+			'uses_native_blocks'      => true,
+			'has_takeaways'           => true,
+			'has_faq'                 => true,
+			'has_comparison_columns'  => true,
+			'custom_css_required'     => false,
+		),
+		'responsive_quality'     => array(
+			'responsive_profile'          => 'article_standard',
+			'uses_core_responsive_blocks' => true,
+			'uses_mobile_stack'           => true,
+			'has_responsive_media'        => true,
+			'max_columns_per_row'         => 2,
+			'custom_css_required'         => false,
+		),
+		'write_actions'          => array(
+			array(
+				'action_id'         => 'create-article-draft',
+				'target_ability_id' => 'npcink-abilities-toolkit/create-draft',
+				'input'             => array(
+					'post_type'      => 'post',
+					'status'         => 'draft',
+					'title'          => 'Gutenberg Article Draft',
+					'content_format' => 'html',
+					'content'        => '',
+					'dry_run'        => true,
+					'commit'         => false,
+					'idempotency_key' => 'article-block-create',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+			array(
+				'action_id'         => 'update-article-blocks',
+				'target_ability_id' => 'npcink-abilities-toolkit/update-post-blocks',
+				'depends_on'        => array( 'create-article-draft' ),
+				'input'             => array(
+					'post_id'            => '$outputs.create-article-draft.post_id',
+					'mode'               => 'replace',
+					'validate_roundtrip' => true,
+					'blocks'             => array(
+						array(
+							'blockName'    => 'core/paragraph',
+							'attrs'        => array(),
+							'innerBlocks'  => array(),
+							'innerHTML'    => '<p>Article intro.</p>',
+							'innerContent' => array( '<p>Article intro.</p>' ),
+						),
+						array(
+							'blockName'    => 'core/image',
+							'attrs'        => array(
+								'url'             => 'https://example.test/wp-content/uploads/article.jpg',
+								'alt'             => 'Article image',
+								'sizeSlug'        => 'large',
+								'linkDestination' => 'none',
+							),
+							'innerBlocks'  => array(),
+							'innerHTML'    => '<figure class="wp-block-image size-large"><img src="https://example.test/wp-content/uploads/article.jpg" alt="Article image"/></figure>',
+							'innerContent' => array( '<figure class="wp-block-image size-large"><img src="https://example.test/wp-content/uploads/article.jpg" alt="Article image"/></figure>' ),
+						),
+						array(
+							'blockName'    => 'core/columns',
+							'attrs'        => array( 'isStackedOnMobile' => true ),
+							'innerBlocks'  => array(),
+							'innerHTML'    => '<div class="wp-block-columns"></div>',
+							'innerContent' => array( '<div class="wp-block-columns"></div>' ),
+						),
+						array(
+							'blockName'    => 'core/details',
+							'attrs'        => array( 'summary' => 'Can editors continue editing?' ),
+							'innerBlocks'  => array(
+								array(
+									'blockName'    => 'core/paragraph',
+									'attrs'        => array(),
+									'innerBlocks'  => array(),
+									'innerHTML'    => '<p>Yes.</p>',
+									'innerContent' => array( '<p>Yes.</p>' ),
+								),
+							),
+							'innerHTML'    => '<details class="wp-block-details"><summary>Can editors continue editing?</summary></details>',
+							'innerContent' => array( '<details class="wp-block-details"><summary>Can editors continue editing?</summary>', null, '</details>' ),
+						),
+					),
+					'dry_run'            => true,
+					'commit'             => false,
+					'idempotency_key'    => 'article-blocks',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+		),
+		'risk'                   => array(
+			'level'  => 'medium',
+			'reason' => 'Creates a draft post and replaces it with Gutenberg-native editorial blocks.',
+		),
+	);
+}
+
+/**
  * Creates a representative image candidate adoption plan.
  *
  * @return array<string,mixed>
@@ -2380,6 +2515,29 @@ $pattern_page_bad_class['write_actions'][1]['input']['blocks'][0]['attrs']['clas
 $pattern_page_bad_class_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-pattern-page-plan', $pattern_page_bad_class );
 npcink_governance_core_fail_closed_assert( is_wp_error( $pattern_page_bad_class_result ), 'Pattern page plan with non-allowlisted block class is rejected.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_pattern_page_class_rejected' === $pattern_page_bad_class_result->get_error_code(), 'Pattern page class rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$article_block_plan = npcink_governance_core_fail_closed_article_block_plan();
+$article_block_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-article-block-plan', $article_block_plan, array(), array( 'source' => 'abilities_article_block' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $article_block_result ), 'Valid article block plan creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $article_block_result['proposal_count'] ?? 0 ), 'Valid article block plan creates one batch proposal.' );
+$article_block_proposal = is_array( $article_block_result['proposals'][0] ?? null ) ? $article_block_result['proposals'][0] : array();
+npcink_governance_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $article_block_proposal['preview']['source']['type'] ?? '' ), 'Article block plan stores batch proposal source.' );
+npcink_governance_core_fail_closed_assert( is_array( $article_block_proposal['preview']['article_block'] ?? null ), 'Article block proposal preserves article block preview.' );
+npcink_governance_core_fail_closed_assert( 'comparison-review' === (string) ( $article_block_proposal['preview']['article_block']['article_template'] ?? '' ), 'Article block preview preserves article template.' );
+npcink_governance_core_fail_closed_assert( 2 === count( (array) ( $article_block_proposal['input']['write_actions'] ?? array() ) ), 'Article block proposal stores create and block update actions.' );
+npcink_governance_core_fail_closed_assert( '$outputs.create-article-draft.post_id' === (string) ( $article_block_proposal['input']['write_actions'][1]['input']['post_id'] ?? '' ), 'Article block update action preserves output reference.' );
+$article_block = $article_block_proposal['input']['write_actions'][1]['input']['blocks'][0] ?? array();
+npcink_governance_core_fail_closed_assert( is_array( $article_block ) && isset( $article_block['blockName'] ) && ! isset( $article_block['blockname'] ), 'Article block proposal preserves Gutenberg blockName key case.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$article_block_bad_class = npcink_governance_core_fail_closed_article_block_plan();
+$article_block_bad_class['write_actions'][1]['input']['blocks'][0]['attrs']['className'] = 'rogue-class';
+$article_block_bad_class_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-article-block-plan', $article_block_bad_class );
+npcink_governance_core_fail_closed_assert( is_wp_error( $article_block_bad_class_result ), 'Article block plan with custom block class is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_article_block_class_rejected' === $article_block_bad_class_result->get_error_code(), 'Article block class rejection uses stable error code.' );
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();
