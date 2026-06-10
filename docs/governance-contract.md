@@ -80,6 +80,7 @@ Core may consume these read-only planning ability outputs:
 - `npcink-abilities-toolkit/build-media-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-optimization-plan`
+- `npcink-abilities-toolkit/build-media-adoption-enhancement-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
 - `npcink-abilities-toolkit/build-article-optimization-apply-plan`
 - `npcink-abilities-toolkit/build-article-block-plan`
@@ -176,6 +177,18 @@ media optimization batch. Plans may expose the adoption dry-run
 `content_reference_repairs` evidence in the derivative preview for review.
 Cloud may provide derivative artifacts and diagnostics, but approval, adoption,
 and WordPress writes stay local and outside Core execution.
+
+The media adoption enhancement handoff is the governed shape for the user intent
+"adopt this reviewed remote image into a page." Core accepts
+`npcink-abilities-toolkit/build-media-adoption-enhancement-plan` only as a
+`media_adoption_enhancement_plan` batch with one
+`npcink-abilities-toolkit/upload-media-from-url` action, one
+`npcink-abilities-toolkit/optimize-media-asset` action, and at most one
+`npcink-abilities-toolkit/patch-post-content` action that replaces a reviewed
+old URL with `$outputs.optimize-media-asset.derivative_url`. Core stores
+proposal truth and `preview.media_adoption_enhancement` only; it does not
+search for images, generate images, import media, optimize files, repair page
+content, approve proposals, or execute WordPress writes.
 
 The media rename handoff is the governed shape for the user intent "rename this
 attachment file." Core accepts `npcink-abilities-toolkit/build-media-rename-plan` only as a

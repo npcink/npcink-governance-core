@@ -110,10 +110,15 @@ Use it for behavior that requires real WordPress:
   `npcink-abilities-toolkit/build-media-optimization-plan`, including explicit batch approval
   and fail-closed rejection of publish, missing derivative, or unpaired
   attachment action cases;
-- bounded media rename plan contracts for `npcink-abilities-toolkit/build-media-rename-plan`,
-  including one reviewed `npcink-abilities-toolkit/rename-media-file` action and fail-closed
-  rejection of missing target filename or multi-attachment cases;
-- existing article optimization plan intake for
+	- bounded media rename plan contracts for `npcink-abilities-toolkit/build-media-rename-plan`,
+	  including one reviewed `npcink-abilities-toolkit/rename-media-file` action and fail-closed
+	  rejection of missing target filename or multi-attachment cases;
+	- media adoption enhancement plan contracts for
+	  `npcink-abilities-toolkit/build-media-adoption-enhancement-plan`, including one upload
+	  action, one `npcink-abilities-toolkit/optimize-media-asset` action, optional
+	  reference repair with `preview.media_adoption_enhancement`, and fail-closed
+	  rejection of missing optimize or unreviewed repair replacement cases;
+	- existing article optimization plan intake for
   `npcink-abilities-toolkit/build-article-optimization-apply-plan`, including a reviewed
   excerpt proposal, `preview.article_optimization`, approval/preflight, and no
   post excerpt mutation;

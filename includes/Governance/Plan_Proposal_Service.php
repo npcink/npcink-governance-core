@@ -31,6 +31,7 @@ final class Plan_Proposal_Service {
 		'npcink-abilities-toolkit/build-media-reference-repair-plan'          => true,
 		'npcink-abilities-toolkit/build-media-settings-reference-repair-plan' => true,
 		'npcink-abilities-toolkit/build-media-optimization-plan'              => true,
+		'npcink-abilities-toolkit/build-media-adoption-enhancement-plan'      => true,
 		'npcink-abilities-toolkit/build-media-rename-plan'                    => true,
 		'npcink-abilities-toolkit/build-article-optimization-apply-plan'      => true,
 		'npcink-abilities-toolkit/build-article-block-plan'                   => true,
@@ -173,6 +174,13 @@ final class Plan_Proposal_Service {
 			$media_optimization_contract_error = $this->validate_media_optimization_plan_contract( $plan );
 			if ( is_wp_error( $media_optimization_contract_error ) ) {
 				return $media_optimization_contract_error;
+			}
+		}
+
+		if ( 'npcink-abilities-toolkit/build-media-adoption-enhancement-plan' === $plan_ability_id ) {
+			$media_adoption_enhancement_contract_error = $this->validate_media_adoption_enhancement_plan_contract( $plan );
+			if ( is_wp_error( $media_adoption_enhancement_contract_error ) ) {
+				return $media_adoption_enhancement_contract_error;
 			}
 		}
 
@@ -1252,6 +1260,184 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Validates a governed media adoption enhancement plan.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_media_adoption_enhancement_plan_contract( array $plan ) {
+		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
+		if ( 'media_adoption_enhancement_plan' !== $artifact_type ) {
+			return new WP_Error(
+				'npcink_governance_core_media_adoption_enhancement_plan_invalid',
+				__( 'Media adoption enhancement plans must declare artifact_type=media_adoption_enhancement_plan.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true !== (bool) ( $plan['batch_approval'] ?? false ) || 'batch' !== sanitize_key( (string) ( $plan['proposal_mode'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_media_adoption_enhancement_batch_required',
+				__( 'Media adoption enhancement plans must explicitly request one batch proposal approval.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true === (bool) ( $plan['direct_wordpress_write'] ?? false ) ) {
+			return new WP_Error(
+				'npcink_governance_core_media_adoption_enhancement_direct_write_rejected',
+				__( 'Media adoption enhancement plans must not claim direct WordPress write authority.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( count( $write_actions ) < 2 || count( $write_actions ) > 3 ) {
+			return new WP_Error(
+				'npcink_governance_core_media_adoption_enhancement_actions_rejected',
+				__( 'Media adoption enhancement plans must contain upload, optimize, and optional reference repair actions only.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$target_counts = array(
+			'npcink-abilities-toolkit/upload-media-from-url' => 0,
+			'npcink-abilities-toolkit/optimize-media-asset'  => 0,
+			'npcink-abilities-toolkit/patch-post-content'    => 0,
+		);
+
+		foreach ( $write_actions as $action_index => $action ) {
+			if ( ! is_array( $action ) ) {
+				return new WP_Error(
+					'npcink_governance_core_media_adoption_enhancement_action_invalid',
+					__( 'Media adoption enhancement actions must be objects.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+
+			$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
+			if ( ! isset( $target_counts[ $target_ability_id ] ) ) {
+				return new WP_Error(
+					'npcink_governance_core_media_adoption_enhancement_target_rejected',
+					__( 'Media adoption enhancement plans may target only media upload, local optimization, and post-content reference repair abilities.', 'npcink-governance-core' ),
+					array(
+						'status'            => 422,
+						'action_index'      => $action_index,
+						'target_ability_id' => $target_ability_id,
+					)
+				);
+			}
+			++$target_counts[ $target_ability_id ];
+
+			$action_error = $this->validate_media_adoption_enhancement_action( $action, $action_index );
+			if ( is_wp_error( $action_error ) ) {
+				return $action_error;
+			}
+		}
+
+		if ( 1 !== $target_counts['npcink-abilities-toolkit/upload-media-from-url'] || 1 !== $target_counts['npcink-abilities-toolkit/optimize-media-asset'] || $target_counts['npcink-abilities-toolkit/patch-post-content'] > 1 ) {
+			return new WP_Error(
+				'npcink_governance_core_media_adoption_enhancement_actions_missing',
+				__( 'Media adoption enhancement plans must include exactly one upload and one optimize action, plus at most one reference repair action.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validates one media adoption enhancement write action.
+	 *
+	 * @param array<string,mixed> $action Write action.
+	 * @param int                 $action_index Action index.
+	 * @return true|WP_Error
+	 */
+	private function validate_media_adoption_enhancement_action( array $action, int $action_index ) {
+		$input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+		if ( true === (bool) ( $input['commit'] ?? false ) || false === (bool) ( $input['dry_run'] ?? true ) ) {
+			return new WP_Error(
+				'npcink_governance_core_media_adoption_enhancement_commit_rejected',
+				__( 'Media adoption enhancement action input must remain dry-run and must not request commit.', 'npcink-governance-core' ),
+				array(
+					'status'       => 422,
+					'action_index' => $action_index,
+				)
+			);
+		}
+
+		$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
+		if ( 'npcink-abilities-toolkit/upload-media-from-url' === $target_ability_id ) {
+			if ( ! $this->is_valid_absolute_url( $input['url'] ?? null ) ) {
+				return new WP_Error(
+					'npcink_governance_core_media_adoption_enhancement_url_missing',
+					__( 'Media adoption enhancement upload actions must include a reviewed media URL.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+			return true;
+		}
+
+		if ( 'npcink-abilities-toolkit/optimize-media-asset' === $target_ability_id ) {
+			if ( ! $this->is_exact_output_reference( $input['attachment_id'] ?? null ) && absint( $input['attachment_id'] ?? 0 ) <= 0 ) {
+				return new WP_Error(
+					'npcink_governance_core_media_adoption_enhancement_attachment_missing',
+					__( 'Media adoption enhancement optimize actions must include attachment_id or an approved output reference.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+			return true;
+		}
+
+		if ( 'npcink-abilities-toolkit/patch-post-content' === $target_ability_id ) {
+			if ( ! $this->is_exact_output_reference( $input['post_id'] ?? null ) && absint( $input['post_id'] ?? 0 ) <= 0 ) {
+				return new WP_Error(
+					'npcink_governance_core_media_adoption_enhancement_post_missing',
+					__( 'Media adoption enhancement reference repair actions must include post_id or an approved output reference.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+			$operations = is_array( $input['operations'] ?? null ) ? array_values( $input['operations'] ) : array();
+			if ( empty( $operations ) ) {
+				return new WP_Error(
+					'npcink_governance_core_media_adoption_enhancement_patch_missing',
+					__( 'Media adoption enhancement reference repair actions must include operations.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+			foreach ( $operations as $operation ) {
+				if ( ! is_array( $operation ) || 'replace' !== sanitize_key( (string) ( $operation['op'] ?? '' ) ) || ! $this->is_valid_absolute_url( $operation['find'] ?? null ) || ! $this->is_exact_output_reference( $operation['replace'] ?? null ) ) {
+					return new WP_Error(
+						'npcink_governance_core_media_adoption_enhancement_patch_invalid',
+						__( 'Media adoption enhancement reference repair operations must replace one reviewed URL with an approved output reference.', 'npcink-governance-core' ),
+						array(
+							'status'       => 422,
+							'action_index' => $action_index,
+						)
+					);
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Validates a governed media rename plan for one attachment.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -2132,6 +2318,31 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Builds preview context for media adoption enhancement plans.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function media_adoption_enhancement_preview( array $plan ): array {
+		$summary = is_array( $plan['summary'] ?? null ) ? $plan['summary'] : array();
+		$media   = is_array( $plan['media'] ?? null ) ? $plan['media'] : array();
+		$reference_repair = is_array( $plan['reference_repair'] ?? null ) ? $plan['reference_repair'] : array();
+
+		return array(
+			'artifact_type'          => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
+			'version'                => absint( $plan['version'] ?? 0 ),
+			'post_id'                => absint( $plan['post_id'] ?? ( $reference_repair['post_id'] ?? 0 ) ),
+			'attach_to_post_id'      => absint( $plan['attach_to_post_id'] ?? ( $media['attach_to_post_id'] ?? 0 ) ),
+			'source_url'             => esc_url_raw( (string) ( $plan['source_url'] ?? ( $media['url'] ?? '' ) ) ),
+			'old_url'                => esc_url_raw( (string) ( $plan['old_url'] ?? ( $reference_repair['old_url'] ?? '' ) ) ),
+			'action_count'           => absint( $summary['action_count'] ?? ( $plan['action_count'] ?? 0 ) ),
+			'reference_repair'       => $this->sanitize_payload( $reference_repair ),
+			'final_write_path'       => 'core_batch_proposal_required',
+			'direct_wordpress_write' => false,
+		);
+	}
+
+	/**
 	 * Builds preview context for media rename plans.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -2389,6 +2600,9 @@ final class Plan_Proposal_Service {
 		if ( 'npcink-abilities-toolkit/build-media-optimization-plan' === $plan_ability_id ) {
 			$preview['media_optimization'] = $this->media_optimization_preview( $plan );
 		}
+		if ( 'npcink-abilities-toolkit/build-media-adoption-enhancement-plan' === $plan_ability_id ) {
+			$preview['media_adoption_enhancement'] = $this->media_adoption_enhancement_preview( $plan );
+		}
 		if ( 'npcink-abilities-toolkit/build-media-rename-plan' === $plan_ability_id ) {
 			$preview['media_rename'] = $this->media_rename_preview( $plan );
 		}
@@ -2599,6 +2813,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'npcink-abilities-toolkit/build-media-optimization-plan' === $plan_ability_id ) {
 			$preview['media_optimization'] = $this->media_optimization_preview( $plan );
+		}
+		if ( 'npcink-abilities-toolkit/build-media-adoption-enhancement-plan' === $plan_ability_id ) {
+			$preview['media_adoption_enhancement'] = $this->media_adoption_enhancement_preview( $plan );
 		}
 		if ( 'npcink-abilities-toolkit/build-media-rename-plan' === $plan_ability_id ) {
 			$preview['media_rename'] = $this->media_rename_preview( $plan );

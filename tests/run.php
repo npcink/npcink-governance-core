@@ -371,9 +371,11 @@ foreach (
 		'ordered batch proposal',
 		'npcink-toolbox/build-article-batch-write-plan',
 		'npcink-abilities-toolkit/build-media-optimization-plan',
+		'npcink-abilities-toolkit/build-media-adoption-enhancement-plan',
 		'npcink-abilities-toolkit/build-media-rename-plan',
 		'article_batch_write_plan',
 		'media_optimization_plan',
+		'media_adoption_enhancement_plan',
 		'media_rename_plan',
 		'scope_decision',
 		'app_id',
@@ -1405,6 +1407,7 @@ foreach (
 		'npcink-abilities-toolkit/build-media-reference-repair-plan',
 		'npcink-abilities-toolkit/build-media-settings-reference-repair-plan',
 		'npcink-abilities-toolkit/build-media-optimization-plan',
+		'npcink-abilities-toolkit/build-media-adoption-enhancement-plan',
 		'npcink-abilities-toolkit/build-media-rename-plan',
 		'npcink-abilities-toolkit/build-article-optimization-apply-plan',
 		'npcink-abilities-toolkit/build-article-block-plan',
@@ -1426,6 +1429,7 @@ foreach (
 		'validate_site_knowledge_review_plan_contract',
 		'validate_content_metadata_apply_plan_contract',
 		'validate_media_optimization_plan_contract',
+		'validate_media_adoption_enhancement_plan_contract',
 		'validate_media_rename_plan_contract',
 		'validate_article_optimization_apply_plan_contract',
 		'validate_pattern_page_plan_contract',
@@ -1434,6 +1438,7 @@ foreach (
 		'article_media_batch_workflow_preview',
 		'media_optimization_preview',
 		'media_optimization_proposal_summary',
+		'media_adoption_enhancement_preview',
 		'media_rename_preview',
 		'article_optimization_preview',
 		'pattern_page_preview',
@@ -1456,6 +1461,7 @@ foreach (
 		'npcink_governance_core_content_metadata_term_field_rejected',
 		'npcink_governance_core_content_metadata_duplicate_action_rejected',
 		'media_optimization_plan',
+		'media_adoption_enhancement_plan',
 		'media_rename_plan',
 		'pattern_page_plan',
 		'article_goal_brief',
@@ -1474,6 +1480,8 @@ foreach (
 		'npcink_governance_core_image_candidate_source_type_invalid',
 		'npcink_governance_core_media_optimization_batch_required',
 		'npcink_governance_core_media_optimization_attachment_mismatch',
+		'npcink_governance_core_media_adoption_enhancement_actions_missing',
+		'npcink_governance_core_media_adoption_enhancement_patch_invalid',
 		'npcink_governance_core_media_rename_target_file_missing',
 		'npcink_governance_core_media_rename_attachment_mismatch',
 		'npcink_governance_core_pattern_page_class_rejected',
@@ -1486,6 +1494,7 @@ foreach (
 		'target_rejected',
 		'npcink-abilities-toolkit/create-draft',
 		'npcink-abilities-toolkit/upload-media-from-url',
+		'npcink-abilities-toolkit/optimize-media-asset',
 		'npcink-abilities-toolkit/set-post-featured-image',
 		'proposal_ready',
 		'needs_input',
@@ -1533,6 +1542,7 @@ npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-content-metadata-apply-plan' ), 'Plan-to-proposal docs include the Toolbox content metadata apply handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'blocked draft-review proposal' ), 'Plan-to-proposal docs keep Site Knowledge review non-executable before human input.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-media-optimization-plan' ), 'Plan-to-proposal docs include the media optimization handoff.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-media-adoption-enhancement-plan' ), 'Plan-to-proposal docs include the media adoption enhancement handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-media-rename-plan' ), 'Plan-to-proposal docs include the media rename handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-article-optimization-apply-plan' ), 'Plan-to-proposal docs include the article optimization apply handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-article-block-plan' ), 'Plan-to-proposal docs include the article block handoff.' );
@@ -1546,6 +1556,8 @@ npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'propos
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'optimize these reviewed media items' ), 'Plan-to-proposal docs define media optimization as a reviewed media intent.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'include paired metadata and derivative actions for' ), 'Plan-to-proposal docs define media optimization attachment pairing.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'each attachment in the plan' ), 'Plan-to-proposal docs define media optimization per-attachment pairing.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'adopt this reviewed remote image into a page' ), 'Plan-to-proposal docs define media adoption enhancement intent.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.media_adoption_enhancement' ), 'Plan-to-proposal docs require media adoption enhancement preview evidence.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'optimize this existing article' ), 'Plan-to-proposal docs define article optimization as an existing-content intent.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'target_file_name' ), 'Plan-to-proposal docs require reviewed media rename target filename.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'Article writing is a local Ability recipe' ), 'Plan-to-proposal docs treat article writing as local Ability recipe.' );

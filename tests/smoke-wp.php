@@ -675,6 +675,7 @@ function npcink_governance_core_smoke_assert_plan_bridge_contract( array $items_
 			'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan',
 			'npcink-abilities-toolkit/build-media-inventory-fix-plan',
 			'npcink-abilities-toolkit/build-article-optimization-apply-plan',
+			'npcink-abilities-toolkit/build-media-adoption-enhancement-plan',
 			'npcink-abilities-toolkit/build-pattern-page-plan',
 		) as $ability_id
 	) {

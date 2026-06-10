@@ -14,6 +14,7 @@ an execution bridge.
 - `npcink-abilities-toolkit/build-media-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-optimization-plan`
+- `npcink-abilities-toolkit/build-media-adoption-enhancement-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
 - `npcink-abilities-toolkit/build-article-optimization-apply-plan`
 - `npcink-abilities-toolkit/build-article-block-plan`
@@ -275,6 +276,35 @@ preview, or processing diagnostics through the local Cloud Addon path, but
 final proposal, approval, adoption, and WordPress writes stay local. Core does
 not optimize images, execute media writes, or approve the proposal
 automatically.
+
+## Media Adoption Enhancement Handoff
+
+`npcink-abilities-toolkit/build-media-adoption-enhancement-plan` is the bounded
+local plan for the user intent "adopt this reviewed remote image into a page."
+It is the governed bridge for images selected through cloud search, cloud image
+generation, or another reviewed source. It is not a search runtime, generation
+runtime, media library executor, or direct page writer.
+
+Core accepts it only when it declares
+`artifact_type=media_adoption_enhancement_plan`, `proposal_mode=batch`,
+`batch_approval=true`, `requires_approval=true`, `dry_run=true`,
+`commit_execution=false`, and `direct_wordpress_write=false`. The write actions
+must contain:
+
+- exactly one `npcink-abilities-toolkit/upload-media-from-url` action with a
+  reviewed absolute URL;
+- exactly one `npcink-abilities-toolkit/optimize-media-asset` action that uses
+  the upload output reference or a reviewed attachment id;
+- at most one `npcink-abilities-toolkit/patch-post-content` action that replaces
+  one reviewed old URL with `$outputs.optimize-media-asset.derivative_url`.
+
+The generated batch proposal preserves `preview.media_adoption_enhancement`
+with source URL, old URL, post attachment context, reference-repair evidence,
+and `direct_wordpress_write=false`. Adapter or the local host still performs
+per-action allowlist, schema, idempotency, output-reference resolution, and
+execution checks after Core approval and commit preflight. Core does not fetch
+the image, optimize files, repair post content, approve the proposal, or execute
+WordPress writes.
 
 ## Media Rename Handoff
 

@@ -167,7 +167,9 @@ abilities such as `npcink-abilities-toolkit/build-content-inventory-fix-plan`,
 `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`. It also accepts
 `npcink-abilities-toolkit/build-media-optimization-plan` only as a reviewed media
 optimization batch where every attachment has paired metadata and derivative actions,
-`npcink-abilities-toolkit/build-media-rename-plan` only as one reviewed
+`npcink-abilities-toolkit/build-media-adoption-enhancement-plan` only as one reviewed
+batch that uploads a selected remote image, optimizes the new attachment, and
+optionally repairs one reviewed post-content reference, `npcink-abilities-toolkit/build-media-rename-plan` only as one reviewed
 attachment rename proposal, `npcink-abilities-toolkit/build-pattern-page-plan` only as one
 reviewed Gutenberg pattern page batch, and accepts the P0 Toolbox article handoff
 `npcink-toolbox/build-article-write-plan` only as a single reviewed

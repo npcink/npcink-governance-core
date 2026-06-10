@@ -72,6 +72,7 @@ abilities:
 - `npcink-abilities-toolkit/build-media-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-optimization-plan`
+- `npcink-abilities-toolkit/build-media-adoption-enhancement-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
 - `npcink-abilities-toolkit/build-pattern-page-plan`
 - `npcink-abilities-toolkit/build-article-block-plan`
@@ -140,6 +141,15 @@ optimization handoff owned by `npcink-abilities-toolkit` or a local product plug
 Core accepts it only as an explicit batch plan where every attachment has a
 paired metadata update and derivative adoption action while leaving Cloud
 processing and final WordPress writes outside Core.
+
+`npcink-abilities-toolkit/build-media-adoption-enhancement-plan` is the bounded
+local handoff for adopting a reviewed remote image into a page. Core accepts it
+only as a `media_adoption_enhancement_plan` batch with one
+`npcink-abilities-toolkit/upload-media-from-url` action, one
+`npcink-abilities-toolkit/optimize-media-asset` action, and at most one
+`npcink-abilities-toolkit/patch-post-content` reference repair action that uses
+the optimized derivative URL output reference. Search, image generation, media
+download, optimization, and final WordPress writes stay outside Core.
 
 `npcink-abilities-toolkit/build-media-rename-plan` is the bounded local media rename handoff
 owned by `npcink-abilities-toolkit` or a local product plugin. Core accepts it only

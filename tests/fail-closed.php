@@ -246,6 +246,18 @@ if ( ! function_exists( 'wp_kses_post' ) ) {
 	}
 }
 
+if ( ! function_exists( 'esc_url_raw' ) ) {
+	/**
+	 * URL sanitizer stub.
+	 *
+	 * @param mixed $value Value.
+	 * @return string
+	 */
+	function esc_url_raw( $value ): string {
+		return filter_var( (string) $value, FILTER_VALIDATE_URL ) ? (string) $value : '';
+	}
+}
+
 if ( ! function_exists( 'sanitize_key' ) ) {
 	/**
 	 * Key sanitizer stub.
@@ -471,6 +483,16 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'post_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
+			'npcink-abilities-toolkit/patch-post-content' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/patch-post-content',
+				'label'             => 'Patch Post Content',
+				'risk_level'        => 'write',
+				'requires_approval' => true,
+				'capability'        => 'edit_posts',
+				'required_scopes'   => array( 'post.write' ),
+				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'post_id' => array( 'type' => array( 'integer', 'string' ) ), 'operations' => array( 'type' => 'array' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
 			'npcink-abilities-toolkit/update-post-blocks' => array(
 				'ability_id'        => 'npcink-abilities-toolkit/update-post-blocks',
 				'label'             => 'Update Post Blocks',
@@ -529,6 +551,16 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'capability'        => 'upload_files',
 				'required_scopes'   => array( 'media.write' ),
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'url' => array( 'type' => 'string' ), 'attach_to_post_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
+			'npcink-abilities-toolkit/optimize-media-asset' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/optimize-media-asset',
+				'label'             => 'Optimize Media Asset',
+				'risk_level'        => 'write',
+				'requires_approval' => true,
+				'capability'        => 'upload_files',
+				'required_scopes'   => array( 'media.write' ),
+				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'attachment_id' => array( 'type' => array( 'integer', 'string' ) ), 'target_max_width' => array( 'type' => 'integer' ), 'preferred_format' => array( 'type' => 'string' ), 'quality' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
 			'npcink-abilities-toolkit/set-post-featured-image' => array(
@@ -628,6 +660,16 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'requires_approval' => false,
 				'capability'        => 'upload_files',
 				'required_scopes'   => array( 'media.read' ),
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
+			'npcink-abilities-toolkit/build-media-adoption-enhancement-plan' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/build-media-adoption-enhancement-plan',
+				'label'             => 'Build Media Adoption Enhancement Plan',
+				'risk_level'        => 'read',
+				'requires_approval' => false,
+				'capability'        => 'upload_files',
+				'required_scopes'   => array( 'media.read', 'post.read' ),
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
@@ -1722,6 +1764,103 @@ function npcink_governance_core_fail_closed_media_optimization_plan(): array {
 }
 
 /**
+ * Creates a representative media adoption enhancement plan.
+ *
+ * @return array<string,mixed>
+ */
+function npcink_governance_core_fail_closed_media_adoption_enhancement_plan(): array {
+	return array(
+		'artifact_type'            => 'media_adoption_enhancement_plan',
+		'version'                  => 1,
+		'batch_id'                 => 'media_adoption_enhancement_fault_injection',
+		'post_id'                  => 8842,
+		'attach_to_post_id'        => 8842,
+		'requires_approval'        => true,
+		'dry_run'                  => true,
+		'commit_execution'         => false,
+		'direct_wordpress_write'   => false,
+		'proposal_mode'            => 'batch',
+		'batch_approval'           => true,
+		'action_count'             => 3,
+		'media'                    => array(
+			'url'               => 'https://images.example.test/generated-dashboard.png',
+			'attach_to_post_id' => 8842,
+		),
+		'reference_repair'         => array(
+			'post_id' => 8842,
+			'old_url' => 'https://example.test/wp-content/uploads/2026/06/old-dashboard.png',
+		),
+		'write_actions'            => array(
+			array(
+				'action_id'         => 'upload-media-asset',
+				'target_ability_id' => 'npcink-abilities-toolkit/upload-media-from-url',
+				'input'             => array(
+					'url'               => 'https://images.example.test/generated-dashboard.png',
+					'file_name'         => 'generated-dashboard.png',
+					'title'             => 'Generated dashboard',
+					'alt'               => 'Generated dashboard preview for WordPress AI',
+					'source_type'       => 'ai_generated',
+					'attach_to_post_id' => 8842,
+					'dry_run'           => true,
+					'commit'            => false,
+					'idempotency_key'   => 'media-adoption-upload-8842',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+			array(
+				'action_id'         => 'optimize-media-asset',
+				'target_ability_id' => 'npcink-abilities-toolkit/optimize-media-asset',
+				'depends_on'        => array( 'upload-media-asset' ),
+				'input'             => array(
+					'attachment_id'     => '$outputs.upload-media-asset.attachment_id',
+					'target_max_width'  => 1600,
+					'preferred_format'  => 'webp',
+					'quality'           => 82,
+					'derivative_suffix' => '-optimized',
+					'dry_run'           => true,
+					'commit'            => false,
+					'idempotency_key'   => 'media-adoption-optimize-8842',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+			array(
+				'action_id'         => 'repair-post-media-reference',
+				'target_ability_id' => 'npcink-abilities-toolkit/patch-post-content',
+				'depends_on'        => array( 'optimize-media-asset' ),
+				'input'             => array(
+					'post_id'         => 8842,
+					'operations'      => array(
+						array(
+							'op'      => 'replace',
+							'find'    => 'https://example.test/wp-content/uploads/2026/06/old-dashboard.png',
+							'replace' => '$outputs.optimize-media-asset.derivative_url',
+							'limit'   => 1,
+						),
+					),
+					'dry_run'         => true,
+					'commit'          => false,
+					'idempotency_key' => 'media-adoption-repair-8842',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+		),
+		'risk'                     => array(
+			'level'  => 'medium',
+			'reason' => 'Imports a reviewed image URL, optimizes it locally, and repairs a reviewed page reference.',
+		),
+	);
+}
+
+/**
  * Creates a representative media rename plan.
  *
  * @return array<string,mixed>
@@ -2583,6 +2722,38 @@ $media_optimization_split_repair['write_actions'][] = array(
 $media_optimization_split_repair_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-optimization-plan', $media_optimization_split_repair );
 npcink_governance_core_fail_closed_assert( is_wp_error( $media_optimization_split_repair_result ), 'Media optimization plan with separate post-content repair action is rejected.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_media_optimization_reference_repair_split' === $media_optimization_split_repair_result->get_error_code(), 'Media optimization split repair rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$media_adoption_enhancement_plan = npcink_governance_core_fail_closed_media_adoption_enhancement_plan();
+$media_adoption_enhancement_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-adoption-enhancement-plan', $media_adoption_enhancement_plan, array(), array( 'source' => 'abilities_media_adoption_enhancement' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $media_adoption_enhancement_result ), 'Valid media adoption enhancement plan creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $media_adoption_enhancement_result['proposal_count'] ?? 0 ), 'Valid media adoption enhancement plan creates one batch proposal.' );
+$media_adoption_enhancement_proposal = is_array( $media_adoption_enhancement_result['proposals'][0] ?? null ) ? $media_adoption_enhancement_result['proposals'][0] : array();
+npcink_governance_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $media_adoption_enhancement_proposal['preview']['source']['type'] ?? '' ), 'Media adoption enhancement plan stores batch proposal source.' );
+npcink_governance_core_fail_closed_assert( 3 === count( (array) ( $media_adoption_enhancement_proposal['input']['write_actions'] ?? array() ) ), 'Media adoption enhancement proposal stores upload, optimize, and repair actions.' );
+npcink_governance_core_fail_closed_assert( is_array( $media_adoption_enhancement_proposal['preview']['media_adoption_enhancement'] ?? null ), 'Media adoption enhancement proposal preserves enhancement preview.' );
+npcink_governance_core_fail_closed_assert( 'https://images.example.test/generated-dashboard.png' === (string) ( $media_adoption_enhancement_proposal['preview']['media_adoption_enhancement']['source_url'] ?? '' ), 'Media adoption enhancement preview preserves nested media source URL.' );
+npcink_governance_core_fail_closed_assert( 'https://example.test/wp-content/uploads/2026/06/old-dashboard.png' === (string) ( $media_adoption_enhancement_proposal['preview']['media_adoption_enhancement']['old_url'] ?? '' ), 'Media adoption enhancement preview preserves nested old URL.' );
+npcink_governance_core_fail_closed_assert( 3 === (int) ( $media_adoption_enhancement_proposal['preview']['media_adoption_enhancement']['action_count'] ?? 0 ), 'Media adoption enhancement preview preserves top-level action count.' );
+npcink_governance_core_fail_closed_assert( '$outputs.upload-media-asset.attachment_id' === (string) ( $media_adoption_enhancement_proposal['input']['write_actions'][1]['input']['attachment_id'] ?? '' ), 'Media adoption enhancement optimize action preserves upload output reference.' );
+npcink_governance_core_fail_closed_assert( '$outputs.optimize-media-asset.derivative_url' === (string) ( $media_adoption_enhancement_proposal['input']['write_actions'][2]['input']['operations'][0]['replace'] ?? '' ), 'Media adoption enhancement repair action preserves derivative URL output reference.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$media_adoption_missing_optimize = npcink_governance_core_fail_closed_media_adoption_enhancement_plan();
+array_splice( $media_adoption_missing_optimize['write_actions'], 1, 1 );
+$media_adoption_missing_optimize_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-adoption-enhancement-plan', $media_adoption_missing_optimize );
+npcink_governance_core_fail_closed_assert( is_wp_error( $media_adoption_missing_optimize_result ), 'Media adoption enhancement plan without optimize action is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_media_adoption_enhancement_actions_missing' === $media_adoption_missing_optimize_result->get_error_code(), 'Media adoption enhancement missing optimize rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$media_adoption_bad_repair = npcink_governance_core_fail_closed_media_adoption_enhancement_plan();
+$media_adoption_bad_repair['write_actions'][2]['input']['operations'][0]['replace'] = 'https://example.test/wp-content/uploads/2026/06/unreviewed.webp';
+$media_adoption_bad_repair_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-adoption-enhancement-plan', $media_adoption_bad_repair );
+npcink_governance_core_fail_closed_assert( is_wp_error( $media_adoption_bad_repair_result ), 'Media adoption enhancement plan with literal repair replacement URL is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_media_adoption_enhancement_patch_invalid' === $media_adoption_bad_repair_result->get_error_code(), 'Media adoption enhancement repair validation uses stable error code.' );
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();

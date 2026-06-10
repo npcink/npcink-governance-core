@@ -547,6 +547,7 @@ abilities:
 - `npcink-abilities-toolkit/build-media-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`
 - `npcink-abilities-toolkit/build-media-optimization-plan`
+- `npcink-abilities-toolkit/build-media-adoption-enhancement-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
 - `npcink-abilities-toolkit/build-article-optimization-apply-plan`
 - `npcink-abilities-toolkit/build-article-block-plan`
@@ -636,6 +637,20 @@ that derivative action's dry-run and commit contract; Core rejects media
 optimization plans that split the repair into a separate
 `npcink-abilities-toolkit/patch-post-content`, `npcink-abilities-toolkit/update-post`, or
 `npcink-abilities-toolkit/update-post-blocks` write action.
+
+For `npcink-abilities-toolkit/build-media-adoption-enhancement-plan`, the plan
+must declare `artifact_type=media_adoption_enhancement_plan`,
+`proposal_mode=batch`, `batch_approval=true`, `requires_approval=true`,
+`dry_run=true`, `commit_execution=false`, and `direct_wordpress_write=false`.
+It must contain exactly one dry-run, non-commit
+`npcink-abilities-toolkit/upload-media-from-url` action, exactly one
+`npcink-abilities-toolkit/optimize-media-asset` action, and at most one
+`npcink-abilities-toolkit/patch-post-content` action. The patch action may only
+replace a reviewed absolute old URL with
+`$outputs.optimize-media-asset.derivative_url`. The route creates a pending
+Core batch proposal with `preview.media_adoption_enhancement`; it does not
+search for images, generate images, download media, optimize files, approve the
+proposal, execute the write, or mutate WordPress content.
 
 For `npcink-abilities-toolkit/build-media-rename-plan`, the plan must declare
 `artifact_type=media_rename_plan`, target exactly one `attachment_id`, and
