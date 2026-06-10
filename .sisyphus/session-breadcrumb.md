@@ -1,5 +1,35 @@
 # Session Breadcrumb
 
+## 2026-06-10 — Repository moved to GitHub primary remote
+
+- **Module**: Repository hosting and local checkout identity.
+- **Status**: GitHub is now the primary Git remote for
+  `npcink-governance-core`, and the local checkout path matches the plugin
+  slug.
+- **Completed**:
+  - Created the public GitHub repository
+    `https://github.com/muze-page/npcink-governance-core`.
+  - Pushed `master` to GitHub with full Git history.
+  - Changed `origin` from the old Gitee repository to
+    `git@github.com:muze-page/npcink-governance-core.git`.
+  - Moved the local checkout from `/Users/muze/gitee/magick-ai-core` to
+    `/Users/muze/gitee/npcink-governance-core`.
+  - Updated the LocalWP plugin symlink so
+    `wp-content/plugins/npcink-governance-core` points to the new checkout
+    path.
+- **Verification**:
+  - GitHub repository is public and non-empty.
+  - `git status --short --branch` reports `master...origin/master`.
+  - LocalWP symlink target resolves to
+    `/Users/muze/gitee/npcink-governance-core`.
+- **Boundary**:
+  - Repository hosting and local path migration only. No plugin runtime,
+    governance authority, provider credential storage, workflow runtime, or
+    final write execution behavior changed.
+- **Follow-up**:
+  - Delete the old Gitee repository after confirming no external automation
+    still references it.
+
 ## 2026-06-10 — Post-release rename leftovers cleaned
 
 - **Module**: Core release identity cleanup.
