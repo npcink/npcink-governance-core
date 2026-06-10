@@ -5,13 +5,25 @@ Status: active release gate.
 Before uploading this plugin to WordPress.org, run:
 
 ```sh
+composer prepare:release
+```
+
+This release gate exists because functional tests and local smoke tests can pass
+while WordPress.org rejects the package for review-policy issues.
+
+`composer prepare:release` wraps the current required local gate:
+
+```sh
+composer validate --no-check-publish
 composer release:verify
 composer smoke:wp
 composer package:release
 ```
 
-This release gate exists because functional tests and local smoke tests can pass
-while WordPress.org rejects the package for review-policy issues.
+It also checks that the plugin header `Version`, the
+`NPCINK_GOVERNANCE_CORE_VERSION` constant, and the `readme.txt` `Stable tag`
+match before packaging, and confirms the final zip root is
+`npcink-governance-core/`.
 
 The local `check:wporg` guard blocks recurring review problems:
 
@@ -68,6 +80,48 @@ Plugin Name: npcink-governance-core
 Author: Npcink
 Text Domain: npcink-governance-core
 ```
+
+For a specific release, pass the expected version:
+
+```sh
+composer prepare:release -- --version 0.1.1
+```
+
+Do not use `--skip-smoke` for a real WordPress.org release. That option exists
+only for local script diagnostics when the LocalWP smoke environment is
+temporarily unavailable.
+
+## WordPress.org SVN Sync
+
+GitHub is the development repository. WordPress.org SVN is the release
+repository only: do not commit every development change to SVN.
+
+After `composer prepare:release` succeeds, sync the built package to an
+existing SVN checkout with a dry run first:
+
+```sh
+composer sync:wporg -- --version 0.1.1 --svn-dir /path/to/wporg-npcink-governance-core
+```
+
+Apply the sync only after reviewing the dry-run output:
+
+```sh
+composer sync:wporg -- --version 0.1.1 --svn-dir /path/to/wporg-npcink-governance-core --apply
+svn status /path/to/wporg-npcink-governance-core
+svn commit /path/to/wporg-npcink-governance-core -m "Release npcink-governance-core 0.1.1"
+```
+
+If the WordPress.org listing assets changed, include `--assets` so
+`sj/exports/wordpress-org` is copied to SVN `/assets` and PNG MIME types are
+set:
+
+```sh
+composer sync:wporg -- --version 0.1.1 --svn-dir /path/to/wporg-npcink-governance-core --assets --apply
+```
+
+The sync helper refuses to overwrite an existing `tags/<version>` directory.
+For normal releases, create each tag once and publish a newer version for
+follow-up fixes.
 
 ## Plugin Check Notes
 
@@ -130,8 +184,9 @@ When resuming release work:
 1. Read this file, `README.md`, `docs/testing-strategy.md`, and
    `docs/security-model.md`.
 2. Run `git status --short --branch` and preserve unrelated user changes.
-3. Run `composer release:verify` and `composer smoke:wp`.
-4. Run `composer package:release` after any file change that affects the zip.
+3. Run `composer prepare:release -- --version <version>`.
+4. Run `composer sync:wporg -- --version <version> --svn-dir <checkout>` as a
+   dry run, then re-run with `--apply` after reviewing the output.
 5. Inspect `build/npcink-governance-core.zip` before upload.
-6. Upload the zip through the WordPress.org Add Plugin page only after the
-   public identity and Plugin Check results match this file.
+6. Commit the SVN checkout only after the public identity, Plugin Check
+   results, and SVN status match this file.

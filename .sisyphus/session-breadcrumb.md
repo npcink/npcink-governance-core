@@ -1,5 +1,41 @@
 # Session Breadcrumb
 
+## 2026-06-10 — WordPress.org release helper scripts added
+
+- **Module**: WordPress.org release tooling.
+- **Status**: Frequent Core code updates now have reusable local release
+  preparation and conservative SVN sync helpers.
+- **Completed**:
+  - Added `scripts/prepare-release.sh` and Composer `prepare:release` to check
+    version metadata, run the local release gate, package the plugin, and
+    verify the zip root.
+  - Added `scripts/sync-wporg-svn.sh` and Composer `sync:wporg` to dry-run or
+    apply package sync into an existing WordPress.org SVN checkout, create a
+    version tag, and optionally sync listing assets.
+  - Adjusted the LocalWP smoke wrapper to prefer `/tmp/wp-cli.phar` when
+    available so release preparation uses the Local PHP runtime and MySQL
+    socket instead of an unrelated PATH `wp`.
+  - Aligned the block theme site smoke assertion with the public contract that
+    permits either `update-template-blocks` or `upsert-template-blocks` as the
+    reviewed template write action.
+  - Updated release and development docs to keep GitHub as the development
+    repository, LocalWP smoke as the local runtime gate, and WordPress.org SVN
+    as release-only.
+- **Verification**:
+  - In `/Users/muze/gitee/npcink-governance-core`: `bash -n scripts/prepare-release.sh scripts/sync-wporg-svn.sh tests/smoke-wp.sh`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer validate --no-check-publish`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer test:all`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer check:wporg`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer smoke:wp`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer prepare:release -- --version 0.1.0 --allow-dirty`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer sync:wporg -- --version 0.1.1 --svn-dir <temporary-svn-checkout> --assets`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer sync:wporg -- --version 0.1.1 --svn-dir <temporary-svn-checkout> --assets --apply`
+  - In `/Users/muze/gitee/npcink-governance-core`: `git diff --check`
+- **Boundary**:
+  - Release tooling and documentation only. No Core runtime authority, provider
+    credential storage, workflow runtime, proposal lifecycle, or WordPress
+    execution behavior changed.
+
 ## 2026-06-10 — GitHub Actions static CI baseline added
 
 - **Module**: GitHub Actions CI baseline.

@@ -10,10 +10,10 @@ WP_CLI_ERROR_REPORTING="${WP_CLI_ERROR_REPORTING:-8191}"
 WP_CLI_MYSQL_SOCKET="${WP_CLI_MYSQL_SOCKET:-}"
 
 if [[ -z "$WP_CLI_BIN" ]]; then
-	if command -v wp >/dev/null 2>&1; then
-		WP_CLI_BIN="$(command -v wp)"
-	elif [[ -f /tmp/wp-cli.phar ]]; then
+	if [[ -f /tmp/wp-cli.phar ]]; then
 		WP_CLI_BIN="/tmp/wp-cli.phar"
+	elif command -v wp >/dev/null 2>&1; then
+		WP_CLI_BIN="$(command -v wp)"
 	else
 		echo "Missing WP-CLI. Set WP_CLI=/path/to/wp-cli.phar or install wp on PATH." >&2
 		exit 2

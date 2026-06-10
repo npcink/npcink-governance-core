@@ -66,8 +66,9 @@ NPCINK_ABILITIES_TOOLKIT_PATH="/Users/muze/gitee/npcink-abilities-toolkit" \
 composer smoke:wp
 ```
 
-For LocalWP environments where `wp` is not on `PATH`, the script can run through
-`/tmp/wp-cli.phar` and Local's PHP runtime. Override these only when needed:
+For the default LocalWP environment, the script prefers `/tmp/wp-cli.phar` when
+available so it can pass Local's PHP runtime and MySQL socket explicitly.
+Override these only when needed:
 
 ```bash
 WP_CLI=/tmp/wp-cli.phar \
@@ -80,6 +81,28 @@ Composer metadata:
 
 ```bash
 composer validate --no-check-publish
+```
+
+GitHub Actions runs the non-LocalWP gate on push and pull requests:
+
+```bash
+composer validate --no-check-publish
+composer test:all
+composer check:wporg
+```
+
+Release preparation for WordPress.org:
+
+```bash
+composer prepare:release -- --version <version>
+```
+
+SVN sync is a release-only step. Run it as a dry run first, then apply it only
+after the release package is verified:
+
+```bash
+composer sync:wporg -- --version <version> --svn-dir /path/to/wporg-npcink-governance-core
+composer sync:wporg -- --version <version> --svn-dir /path/to/wporg-npcink-governance-core --apply
 ```
 
 ## Smoke Test Scope

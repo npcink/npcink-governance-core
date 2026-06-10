@@ -1643,6 +1643,7 @@ $block_theme_site_plan_input = array(
 	'show_home_item'     => true,
 	'show_on_home_page'  => false,
 );
+$block_theme_site_template_before = get_page_by_path( 'twentytwentyfive//single', OBJECT, 'wp_template' );
 $block_theme_site_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_site_plan_input );
 $block_theme_site_result = npcink_governance_core_smoke_create_proposals_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_site_plan, $block_theme_site_plan_input );
 npcink_governance_core_smoke_assert( 1 === (int) ( $block_theme_site_result['proposal_count'] ?? 0 ), 'block theme site plan generates one Core batch proposal' );
@@ -1652,10 +1653,34 @@ npcink_governance_core_smoke_assert( is_array( $block_theme_site_proposal['previ
 npcink_governance_core_smoke_assert( 'create_wp_template_override' === (string) ( $block_theme_site_proposal['preview']['block_theme_site']['file_template_write_mode'] ?? '' ), 'block theme site preview preserves file-backed template override mode' );
 $block_theme_site_actions = is_array( $block_theme_site_proposal['input']['write_actions'] ?? null ) ? array_values( $block_theme_site_proposal['input']['write_actions'] ) : array();
 npcink_governance_core_smoke_assert( 1 === count( $block_theme_site_actions ), 'block theme site batch stores one template write action' );
-npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/upsert-template-blocks' === (string) ( $block_theme_site_actions[0]['target_ability_id'] ?? '' ), 'block theme site action creates a reviewed template override' );
-npcink_governance_core_smoke_assert( 'single' === (string) ( $block_theme_site_actions[0]['input']['slug'] ?? '' ), 'block theme site action preserves template slug' );
+$block_theme_site_target_ability_id = (string) ( $block_theme_site_actions[0]['target_ability_id'] ?? '' );
+npcink_governance_core_smoke_assert(
+	in_array(
+		$block_theme_site_target_ability_id,
+		array(
+			'npcink-abilities-toolkit/update-template-blocks',
+			'npcink-abilities-toolkit/upsert-template-blocks',
+		),
+		true
+	),
+	'block theme site action uses a reviewed template write ability'
+);
+if ( 'npcink-abilities-toolkit/upsert-template-blocks' === $block_theme_site_target_ability_id ) {
+	npcink_governance_core_smoke_assert( 'single' === (string) ( $block_theme_site_actions[0]['input']['slug'] ?? '' ), 'block theme site upsert action preserves template slug' );
+} else {
+	$block_theme_site_post_id = (int) ( $block_theme_site_actions[0]['input']['post_id'] ?? 0 );
+	npcink_governance_core_smoke_assert( $block_theme_site_post_id > 0, 'block theme site update action preserves template post id' );
+	if ( $block_theme_site_template_before instanceof WP_Post ) {
+		npcink_governance_core_smoke_assert( $block_theme_site_post_id === (int) $block_theme_site_template_before->ID, 'block theme site update action targets the existing template override' );
+	}
+}
 npcink_governance_core_smoke_assert( isset( $block_theme_site_actions[0]['input']['blocks'][0]['blockName'] ), 'block theme site action preserves Gutenberg block tree' );
-npcink_governance_core_smoke_assert( null === get_page_by_path( 'twentytwentyfive//single', OBJECT, 'wp_template' ), 'block theme site from-plan intake does not create a template override' );
+$block_theme_site_template_after = get_page_by_path( 'twentytwentyfive//single', OBJECT, 'wp_template' );
+if ( $block_theme_site_template_before instanceof WP_Post ) {
+	npcink_governance_core_smoke_assert( $block_theme_site_template_after instanceof WP_Post && (int) $block_theme_site_template_after->ID === (int) $block_theme_site_template_before->ID, 'block theme site from-plan intake does not replace the existing template override' );
+} else {
+	npcink_governance_core_smoke_assert( null === $block_theme_site_template_after, 'block theme site from-plan intake does not create a template override' );
+}
 
 $article_block_title = 'Core Article Block Plan Smoke ' . $npcink_governance_core_smoke_run_id;
 $article_block_plan_input = array(
