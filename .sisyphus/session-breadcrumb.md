@@ -9,6 +9,9 @@
   - Added `.github/workflows/ci.yml` with PHP 8.0, Composer metadata
     validation, static contract tests, fail-closed tests, and WordPress.org
     review guard.
+  - Added a CI checkout of the public `npcink-abilities-toolkit` repository and
+    `NPCINK_ABILITIES_TOOLKIT_PATH` so Core's shared replay fixture contract
+    remains enforced in GitHub Actions.
   - Kept `composer smoke:wp` out of GitHub Actions because it depends on the
     local LocalWP site, WP-CLI runtime, and local database socket.
 - **Verification**:
