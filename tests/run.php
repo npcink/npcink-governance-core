@@ -226,6 +226,8 @@ $admin_page = npcink_governance_core_read( $root . '/includes/Admin/Admin_Page.p
 foreach ( array( 'PARENT_MENU_SLUG', 'add_menu_page', 'add_submenu_page', 'Core', 'admin.php' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $admin_page, $required ), 'Admin page implements shared menu contract: ' . $required );
 }
+$plugin_container = npcink_governance_core_read( $root . '/includes/Plugin.php' );
+npcink_governance_core_assert( false !== strpos( $plugin_container, 'plugin_action_links_' ) && false !== strpos( $plugin_container, 'filter_plugin_action_links' ) && false !== strpos( $plugin_container, 'admin.php?page=npcink-governance-core' ), 'Plugin screen exposes a Settings shortcut to Core admin.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "const PARENT_MENU_SLUG  = 'npcink-ai';" ), 'Admin page targets the shared Npcink AI parent menu slug.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Npcink AI', 'npcink-governance-core' )" ), 'Admin parent menu title is Npcink AI.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Npcink AI Overview', 'npcink-governance-core' )" ), 'Admin parent overview title is Npcink AI Overview.' );

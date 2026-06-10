@@ -167,10 +167,30 @@ final class Plugin {
 	public function register(): void {
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 		add_filter( 'npcink_governance_core_record_local_admin_consent', array( $this, 'record_local_admin_consent_audit' ), 10, 3 );
+		add_filter( 'plugin_action_links_' . plugin_basename( NPCINK_GOVERNANCE_CORE_FILE ), array( $this, 'filter_plugin_action_links' ) );
 
 		if ( is_admin() ) {
 			( new Admin_Page( $this->ability_adapter(), $this->proposal_repository(), $this->audit_repository(), $this->proposal_service(), $this->app_key_repository() ) )->register();
 		}
+	}
+
+	/**
+	 * Adds a settings shortcut on the WordPress plugins screen.
+	 *
+	 * @param array<int|string,string> $links Existing plugin action links.
+	 * @return array<int|string,string>
+	 */
+	public function filter_plugin_action_links( array $links ): array {
+		array_unshift(
+			$links,
+			sprintf(
+				'<a href="%1$s">%2$s</a>',
+				esc_url( admin_url( 'admin.php?page=npcink-governance-core' ) ),
+				esc_html__( 'Settings', 'default' )
+			)
+		);
+
+		return $links;
 	}
 
 	/**
