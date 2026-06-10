@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-10 — WordPress.org SVN 0.1.0 released
+
+- **Module**: WordPress.org SVN release.
+- **Status**: `npcink-governance-core` 0.1.0 is published to the official
+  WordPress.org plugin SVN repository.
+- **Completed**:
+  - Pushed `master` to the canonical Git remote.
+  - Checked out `https://plugins.svn.wordpress.org/npcink-governance-core`.
+  - Synced the release package contents into SVN `/trunk`.
+  - Created SVN `/tags/0.1.0` from `/trunk`.
+  - Copied WordPress.org listing images into top-level SVN `/assets`.
+  - Set `svn:mime-type=image/png` on the PNG listing assets.
+- **SVN**:
+  - URL: `https://plugins.svn.wordpress.org/npcink-governance-core`
+  - Revision: `3566809`
+  - Commit message: `Release npcink-governance-core 0.1.0`
+  - Public URL: `https://wordpress.org/plugins/npcink-governance-core/`
+- **Verification**:
+  - Remote SVN `/trunk`, `/tags/0.1.0`, and `/assets` listings were checked.
+  - `svn info` for `/trunk` reports Last Changed Rev `3566809`.
+  - Public plugin URL returned HTTP 200 after redirect normalization.
+- **Boundary**:
+  - Release publication only. No Core runtime behavior, governance authority,
+    provider credentials, workflow runtime, or final execution path changed.
+
 ## 2026-06-10 — Release branch merged and public plugin name aligned
 
 - **Module**: WordPress.org release identity and listing assets.
