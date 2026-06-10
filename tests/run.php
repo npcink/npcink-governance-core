@@ -330,6 +330,7 @@ foreach (
 		'GET /audit',
 		'POST /apps',
 		'Authorization: Bearer npcink_governance_core.<key_id>.<secret>',
+		'X-Npcink-Governance-Core-App-Token',
 		'governance_mode',
 		'execution_surface',
 		'core_proxy_execute=false',
@@ -520,6 +521,7 @@ foreach (
 		'app_id',
 		'secret_hash',
 		'Authorization: Bearer npcink_governance_core.<key_id>.<secret>',
+		'X-Npcink-Governance-Core-App-Token',
 		'app.rate_limited',
 		'capabilities:read',
 		'proposals:create',
@@ -877,6 +879,7 @@ foreach (
 		'read_requests_approve',
 		'app.scope_denied',
 		'app.rate_limited',
+		"x-npcink-governance-core-app-token",
 		"mark_scope_decision( 'denied' )",
 		"mark_scope_decision( 'rate_limited' )",
 	) as $required
@@ -1148,7 +1151,7 @@ foreach ( array( 'test:contracts', 'test:fail-closed', 'tests/fail-closed.php' )
 $fail_closed_test = npcink_governance_core_read( $root . '/tests/fail-closed.php' );
 foreach (
 	array(
-		'Magick_AI_Core_Fail_Closed_WPDB',
+		'Npcink_Governance_Core_Fail_Closed_WPDB',
 		'fail_insert_tables',
 		'npcink_governance_core_proposal_insert_failed',
 		'npcink_governance_core_proposal_audit_failed',

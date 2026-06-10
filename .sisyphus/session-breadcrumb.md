@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-06-10 — Post-release rename leftovers cleaned
+
+- **Module**: Core release identity cleanup.
+- **Status**: Remaining non-historical `magick-ai-core` naming leftovers were
+  aligned with `npcink-governance-core`.
+- **Completed**:
+  - Updated the app-token alternate header documentation to
+    `X-Npcink-Governance-Core-App-Token`, matching the existing authenticator
+    header lookup.
+  - Added the alternate app-token header to the REST API contract and static
+    contracts.
+  - Renamed the fail-closed test WPDB stub from the old Magick AI Core class
+    name to `Npcink_Governance_Core_Fail_Closed_WPDB`.
+  - Updated the content metadata delta implementation prompt to refer to the
+    active Core repo as `npcink-governance-core`.
+- **Verification**:
+  - In `/Users/muze/gitee/magick-ai-core`: `git diff --check`
+  - In `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+- **Boundary**:
+  - Naming/documentation/test consistency only. No Core runtime authority,
+    provider credential storage, workflow runtime, product UX, or final write
+    execution behavior changed.
+- **Deferred**:
+  - Local directory and Gitee remote still use `magick-ai-core`; defer until
+    the repository itself is renamed.
+
 ## 2026-06-10 — WordPress.org SVN 0.1.0 released
 
 - **Module**: WordPress.org SVN release.

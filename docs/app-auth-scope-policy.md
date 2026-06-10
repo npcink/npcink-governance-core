@@ -153,7 +153,7 @@ The current implementation uses a bearer app token:
 Authorization: Bearer npcink_governance_core.<key_id>.<secret>
 ```
 
-The same token may be sent as `X-Magick-AI-Core-App-Token` for clients that
+The same token may be sent as `X-Npcink-Governance-Core-App-Token` for clients that
 cannot set the `Authorization` header.
 
 WordPress administrators can issue tokens from either admin-only

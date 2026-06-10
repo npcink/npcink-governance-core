@@ -66,6 +66,9 @@ App tokens use:
 Authorization: Bearer npcink_governance_core.<key_id>.<secret>
 ```
 
+Clients that cannot set `Authorization` may send the same token as
+`X-Npcink-Governance-Core-App-Token`.
+
 The raw secret is returned only by `POST /apps`.
 
 ## `GET /apps`

@@ -729,7 +729,7 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 /**
  * In-memory WPDB stub with injectable table failures.
  */
-final class Magick_AI_Core_Fail_Closed_WPDB {
+final class Npcink_Governance_Core_Fail_Closed_WPDB {
 	/**
 	 * Table prefix.
 	 *
@@ -1111,12 +1111,12 @@ require_once dirname( __DIR__ ) . '/includes/Rest/Read_Requests_Controller.php';
 /**
  * Resets global storage.
  *
- * @return Magick_AI_Core_Fail_Closed_WPDB
+ * @return Npcink_Governance_Core_Fail_Closed_WPDB
  */
-function npcink_governance_core_fail_closed_reset_db(): Magick_AI_Core_Fail_Closed_WPDB {
+function npcink_governance_core_fail_closed_reset_db(): Npcink_Governance_Core_Fail_Closed_WPDB {
 	global $wpdb, $npcink_governance_core_fail_closed_options, $npcink_governance_core_fail_closed_transients, $npcink_governance_core_fail_closed_caps, $npcink_governance_core_fail_closed_abilities, $npcink_governance_core_fail_closed_actions;
 
-	$wpdb = new Magick_AI_Core_Fail_Closed_WPDB();
+	$wpdb = new Npcink_Governance_Core_Fail_Closed_WPDB();
 	$npcink_governance_core_fail_closed_options = array();
 	$npcink_governance_core_fail_closed_transients = array();
 	$npcink_governance_core_fail_closed_caps = array();

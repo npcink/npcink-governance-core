@@ -23,7 +23,7 @@ Read first:
 - docs/operation-classification-contract.md.
 - docs/plan-to-proposal-governance.md.
 - docs/taxonomy-terms-preview-governance-scenario.md.
-- In magick-ai-core only: confirm Core remains proposal, approval, preflight,
+- In npcink-governance-core only: confirm Core remains proposal, approval, preflight,
   and audit truth. Do not move product workbench logic into Core.
 
 Boundary rules:
@@ -131,7 +131,7 @@ Implementation guidance:
 - If the active repo is npcink-abilities-toolkit, implement reusable read-only
   helper or write abilities with schemas, previews, permission callbacks, and
   dry-run behavior.
-- If the active repo is magick-ai-core, only add contract support for a
+- If the active repo is npcink-governance-core, only add contract support for a
   governed plan if needed and explicitly documented. Do not run vector search,
   generate recommendations, or execute metadata writes inside Core.
 - Preserve evidence refs from vector-related posts so a human can understand
