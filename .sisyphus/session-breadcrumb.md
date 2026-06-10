@@ -1,5 +1,26 @@
 # Session Breadcrumb
 
+## 2026-06-10 — GitHub Actions static CI baseline added
+
+- **Module**: GitHub Actions CI baseline.
+- **Status**: The GitHub repository now has a lightweight Actions workflow for
+  non-LocalWP verification on push and pull requests.
+- **Completed**:
+  - Added `.github/workflows/ci.yml` with PHP 8.0, Composer metadata
+    validation, static contract tests, fail-closed tests, and WordPress.org
+    review guard.
+  - Kept `composer smoke:wp` out of GitHub Actions because it depends on the
+    local LocalWP site, WP-CLI runtime, and local database socket.
+- **Verification**:
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer validate --no-check-publish`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer test:all`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer check:wporg`
+  - In `/Users/muze/gitee/npcink-governance-core`: `git diff --check`
+- **Boundary**:
+  - Repository CI configuration only. No Core runtime authority, provider
+    credential storage, workflow runtime, proposal lifecycle, or WordPress
+    execution behavior changed.
+
 ## 2026-06-10 — Block theme site plan Core intake enabled
 
 - **Module**: Core plan-to-proposal intake for block theme site plans.
