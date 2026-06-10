@@ -1838,6 +1838,10 @@ $decision_call_position = strpos( $admin_page, '$this->render_decision_controls(
 $context_call_position  = strpos( $admin_page, '$this->render_review_context( $proposal, $capability );' );
 npcink_governance_core_assert( false !== $decision_call_position && false !== $context_call_position && $decision_call_position < $context_call_position, 'Admin proposal detail places approve/reject controls before secondary review context.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_article_workflow_review_context' ), 'Admin proposal detail renders article workflow review context.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_field_patch_review_context' ), 'Admin proposal detail renders field-level proposal patches.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "'field_patch'" ), 'Admin proposal detail reads preview.field_patch before raw payload.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Field changes' ), 'Admin proposal detail labels field-level changes.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Proposed value' ), 'Admin proposal detail shows proposed field values.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Article workflow' ), 'Admin proposal detail labels article workflow summary.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'final_write_ability' ), 'Admin proposal detail shows article final write ability.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'direct_wordpress_write' ), 'Admin proposal detail shows article direct-write state.' );

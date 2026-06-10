@@ -810,6 +810,18 @@ msgstr ""
 msgid "Blocked items"
 msgstr ""
 
+#: includes/Admin/Admin_Page.php:1458
+msgid "Field changes"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1464
+msgid "Field"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1465
+msgid "Proposed value"
+msgstr ""
+
 #: includes/Admin/Admin_Page.php:1603
 msgid "Article workflow"
 msgstr ""

@@ -808,6 +808,18 @@ msgstr "需要输入"
 msgid "Blocked items"
 msgstr "被阻止项目"
 
+#: includes/Admin/Admin_Page.php:1458
+msgid "Field changes"
+msgstr "字段变更"
+
+#: includes/Admin/Admin_Page.php:1464
+msgid "Field"
+msgstr "字段"
+
+#: includes/Admin/Admin_Page.php:1465
+msgid "Proposed value"
+msgstr "拟议值"
+
 #: includes/Admin/Admin_Page.php:1603
 msgid "Article workflow"
 msgstr "文章工作流"

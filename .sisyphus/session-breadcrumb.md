@@ -1,5 +1,25 @@
 # Session Breadcrumb
 
+## 2026-06-10 — Field patch review context surfaced
+
+- **Module**: Core proposal detail admin review surface.
+- **Status**: Proposal `preview.field_patch` values now appear as first-class
+  field changes in the review context before raw JSON payload disclosure.
+- **Completed**:
+  - Added field-level review rendering for preview metadata such as SEO title
+    and description handoffs from Toolbox.
+  - Kept raw proposal payload available behind the existing disclosure.
+  - Updated static contracts and Chinese translation catalogs.
+- **Verification**:
+  - In `/Users/muze/gitee/magick-ai-core`: `composer test:all`
+  - In `/Users/muze/gitee/magick-ai-core`: `composer smoke:wp`
+  - Browser-verified the local Core proposal detail shows `字段变更`,
+    `seo_title`, and `seo_description` in the review context.
+- **Boundary**:
+  - Display-only admin review improvement. Core still does not choose SEO
+    strategy, generate metadata, execute writes, or become a product workflow
+    surface.
+
 ## 2026-06-09 — Multi-attachment media optimization intake enabled
 
 - **Module**: Core plan-to-proposal intake for media optimization plans.

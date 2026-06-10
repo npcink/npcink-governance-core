@@ -1424,6 +1424,9 @@ final class Admin_Page {
 					if ( ! empty( $preview['blocked_items'] ) ) {
 						$this->render_review_value_row( __( 'Blocked items', 'npcink-governance-core' ), $preview['blocked_items'] );
 					}
+					if ( ! empty( $preview['field_patch'] ) && is_array( $preview['field_patch'] ) ) {
+						$this->render_field_patch_review_context( $preview['field_patch'] );
+					}
 					?>
 				<?php endif; ?>
 				<?php
@@ -1433,6 +1436,56 @@ final class Admin_Page {
 				?>
 			</tbody>
 		</table>
+		<?php
+	}
+
+	/**
+	 * Renders field-level changes from proposal preview metadata.
+	 *
+	 * @param array<string,mixed> $field_patch Field patch preview.
+	 * @return void
+	 */
+	private function render_field_patch_review_context( array $field_patch ): void {
+		$rows = array();
+		foreach ( $field_patch as $field => $value ) {
+			if ( is_int( $field ) && is_array( $value ) ) {
+				$field = (string) ( $value['field'] ?? $value['path'] ?? '' );
+				$value = $value['proposed'] ?? $value['after'] ?? $value['value'] ?? '';
+			}
+
+			$field = sanitize_text_field( (string) $field );
+			if ( '' === $field ) {
+				continue;
+			}
+
+			$rows[ $field ] = $value;
+		}
+
+		if ( empty( $rows ) ) {
+			return;
+		}
+		?>
+		<tr>
+			<th scope="row"><?php echo esc_html__( 'Field changes', 'npcink-governance-core' ); ?></th>
+			<td>
+				<table class="widefat striped" style="max-width: 900px;">
+					<thead>
+						<tr>
+							<th scope="col"><?php echo esc_html__( 'Field', 'npcink-governance-core' ); ?></th>
+							<th scope="col"><?php echo esc_html__( 'Proposed value', 'npcink-governance-core' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ( $rows as $field => $value ) : ?>
+							<tr>
+								<td><code><?php echo esc_html( $field ); ?></code></td>
+								<td><?php $this->render_review_inline_value( $value ); ?></td>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			</td>
+		</tr>
 		<?php
 	}
 
@@ -1503,11 +1556,31 @@ final class Admin_Page {
 				<?php if ( is_array( $value ) || is_object( $value ) ) : ?>
 					<pre style="max-height: 180px; overflow: auto; margin: 0;"><?php echo esc_html( (string) wp_json_encode( $value, JSON_PRETTY_PRINT ) ); ?></pre>
 				<?php else : ?>
-					<?php echo esc_html( (string) $value ); ?>
+					<?php $this->render_review_inline_value( $value ); ?>
 				<?php endif; ?>
 			</td>
 		</tr>
 		<?php
+	}
+
+	/**
+	 * Renders a scalar review value inline.
+	 *
+	 * @param mixed $value Value.
+	 * @return void
+	 */
+	private function render_review_inline_value( $value ): void {
+		if ( is_bool( $value ) ) {
+			echo esc_html( $value ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ) );
+			return;
+		}
+
+		if ( null === $value || '' === $value ) {
+			echo '&mdash;';
+			return;
+		}
+
+		echo esc_html( is_scalar( $value ) ? (string) $value : (string) wp_json_encode( $value, JSON_PRETTY_PRINT ) );
 	}
 
 	/**
