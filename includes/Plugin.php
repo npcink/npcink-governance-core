@@ -186,7 +186,7 @@ final class Plugin {
 			sprintf(
 				'<a href="%1$s">%2$s</a>',
 				esc_url( admin_url( 'admin.php?page=npcink-governance-core' ) ),
-				esc_html__( 'Settings', 'default' )
+				esc_html__( 'Settings', 'npcink-governance-core' )
 			)
 		);
 

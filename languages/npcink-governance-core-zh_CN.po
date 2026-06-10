@@ -29,6 +29,10 @@ msgstr "用于 WordPress 操作的 Npcink AI 治理层。"
 msgid "Npcink"
 msgstr "Npcink"
 
+#: includes/Plugin.php:189
+msgid "Settings"
+msgstr "设置"
+
 #: includes/Admin/Admin_Page.php:127
 #: includes/Admin/Admin_Page.php:219
 msgid "Core"

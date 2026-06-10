@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-10 — WordPress.org release gate warning cleared
+
+- **Module**: Core WordPress.org release package readiness.
+- **Status**: Release verification is clean after fixing the plugin action-link
+  text domain.
+- **Completed**:
+  - Replaced the `Settings` action-link translation domain with
+    `npcink-governance-core`.
+  - Added the `Settings` string to the POT and Simplified Chinese PO catalog and
+    regenerated the MO file.
+  - Built `build/npcink-governance-core.zip` and confirmed the package root is
+    `npcink-governance-core/`.
+- **Verification**:
+  - In `/Users/muze/gitee/magick-ai-core`: `composer release:verify`
+  - In `/Users/muze/gitee/magick-ai-core`: `composer smoke:wp`
+  - In `/Users/muze/gitee/magick-ai-core`: `composer package:release`
+- **Next steps**:
+  - Confirm the release should be cut from this branch or first merged into the
+    canonical release branch.
+  - Prepare WordPress.org SVN top-level `/assets` images if the first public
+    listing should include a custom banner, icon, or screenshots.
+- **Boundary**:
+  - Release metadata/i18n fix only. Core still does not add workflow runtime,
+    product UX, provider credentials, external calls, or final write execution.
+
 ## 2026-06-10 — Field patch review context surfaced
 
 - **Module**: Core proposal detail admin review surface.
