@@ -76,6 +76,7 @@ abilities:
 - `npcink-abilities-toolkit/build-media-rename-plan`
 - `npcink-abilities-toolkit/build-pattern-page-plan`
 - `npcink-abilities-toolkit/build-article-block-plan`
+- `npcink-abilities-toolkit/build-block-theme-site-plan`
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
@@ -169,6 +170,15 @@ Gutenberg article block handoff. Core accepts it only as an
 template, `responsive_profile=article_standard`, one draft post create action,
 one block replacement action, native editorial/responsive quality evidence, and
 no custom block CSS classes.
+
+`npcink-abilities-toolkit/build-block-theme-site-plan` is the bounded local
+block theme handoff. Core accepts it only as a `block_theme_site_plan` with
+`proposal_mode=batch`, `intent=add_breadcrumbs`, `direct_wordpress_write=false`,
+and template write actions limited to
+`npcink-abilities-toolkit/update-template-blocks` or
+`npcink-abilities-toolkit/upsert-template-blocks`. File-backed theme templates
+must become reviewed `wp_template` Site Editor overrides; Core does not edit
+theme files, navigation entities, global styles, or execute WordPress writes.
 
 Each plan `write_action.target_ability_id` must resolve through normal ability
 intake as a proposal-governed write or destructive ability. Core must not

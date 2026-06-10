@@ -19,6 +19,7 @@ an execution bridge.
 - `npcink-abilities-toolkit/build-article-optimization-apply-plan`
 - `npcink-abilities-toolkit/build-article-block-plan`
 - `npcink-abilities-toolkit/build-pattern-page-plan`
+- `npcink-abilities-toolkit/build-block-theme-site-plan`
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
@@ -164,6 +165,25 @@ preserves `preview.article_block` with the article template, responsive
 profile, media strategy, block count, and quality summaries. Core does not
 generate the article, render the blocks, create the draft post, approve the
 proposal, execute the block update, or provide a generic final write path.
+
+`npcink-abilities-toolkit/build-block-theme-site-plan` is the bounded local
+handoff for modifying reviewed templates in the active block theme. It must
+return `artifact_type=block_theme_site_plan`, `intent=add_breadcrumbs`,
+`proposal_mode=batch`, `requires_approval=true`, `dry_run=true`,
+`commit_execution=false`, and `direct_wordpress_write=false`. Core accepts only
+template block write actions targeting
+`npcink-abilities-toolkit/update-template-blocks` or
+`npcink-abilities-toolkit/upsert-template-blocks`, with `mode=replace` and a
+non-empty Gutenberg `blocks` tree.
+
+File-backed templates are represented as reviewed
+`npcink-abilities-toolkit/upsert-template-blocks` actions that create a
+`wp_template` Site Editor override after approval and external execution. The
+generated batch proposal preserves `preview.block_theme_site` with active theme
+evidence, affected template slugs, action count, and
+`file_template_write_mode=create_wp_template_override`. Core does not edit
+theme files, navigation entities, global styles, approve the proposal, execute
+the write, or provide a generic final write path.
 
 `npcink-toolbox/build-content-metadata-apply-plan` is the bounded local handoff
 for the user intent "apply these reviewed article metadata choices" after

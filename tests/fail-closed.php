@@ -503,6 +503,26 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'post_id' => array( 'type' => array( 'integer', 'string' ) ), 'blocks' => array( 'type' => 'array' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
+			'npcink-abilities-toolkit/update-template-blocks' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/update-template-blocks',
+				'label'             => 'Update Template Blocks',
+				'risk_level'        => 'high',
+				'requires_approval' => true,
+				'capability'        => 'edit_theme_options',
+				'required_scopes'   => array( 'site.write' ),
+				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'post_id' => array( 'type' => 'integer' ), 'blocks' => array( 'type' => 'array' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
+			'npcink-abilities-toolkit/upsert-template-blocks' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/upsert-template-blocks',
+				'label'             => 'Upsert Template Blocks',
+				'risk_level'        => 'high',
+				'requires_approval' => true,
+				'capability'        => 'edit_theme_options',
+				'required_scopes'   => array( 'site.write' ),
+				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'slug' => array( 'type' => 'string' ), 'theme' => array( 'type' => 'string' ), 'blocks' => array( 'type' => 'array' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
 			'npcink-abilities-toolkit/set-post-terms' => array(
 				'ability_id'        => 'npcink-abilities-toolkit/set-post-terms',
 				'label'             => 'Set Post Terms',
@@ -690,6 +710,16 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'requires_approval' => false,
 				'capability'        => 'edit_pages',
 				'required_scopes'   => array( 'post.read' ),
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
+			'npcink-abilities-toolkit/build-block-theme-site-plan' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/build-block-theme-site-plan',
+				'label'             => 'Build Block Theme Site Plan',
+				'risk_level'        => 'read',
+				'requires_approval' => false,
+				'capability'        => 'edit_theme_options',
+				'required_scopes'   => array( 'site.read' ),
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
@@ -2016,6 +2046,87 @@ function npcink_governance_core_fail_closed_pattern_page_plan(): array {
 }
 
 /**
+ * Creates a representative block theme site plan.
+ *
+ * @return array<string,mixed>
+ */
+function npcink_governance_core_fail_closed_block_theme_site_plan(): array {
+	return array(
+		'artifact_type'          => 'block_theme_site_plan',
+		'version'                => 1,
+		'batch_id'               => 'block_theme_site_fault_injection',
+		'intent'                 => 'add_breadcrumbs',
+		'active_theme'           => array(
+			'name'       => 'Twenty Twenty-Five',
+			'stylesheet' => 'twentytwentyfive',
+		),
+		'affected_templates'     => array( 'single' ),
+		'requires_approval'      => true,
+		'dry_run'                => true,
+		'commit_execution'       => false,
+		'direct_wordpress_write' => false,
+		'proposal_mode'          => 'batch',
+		'summary'                => array(
+			'block_count'  => 2,
+			'action_count' => 1,
+		),
+		'preview'                => array(
+			array(
+				'target_type'               => 'wp_template',
+				'post_id'                   => 0,
+				'slug'                      => 'single',
+				'theme'                     => 'twentytwentyfive',
+				'source'                    => 'theme',
+				'creates_template_override' => true,
+				'target_ability_id'         => 'npcink-abilities-toolkit/upsert-template-blocks',
+			),
+		),
+		'write_actions'          => array(
+			array(
+				'action_id'         => 'upsert-template-single-breadcrumbs',
+				'target_ability_id' => 'npcink-abilities-toolkit/upsert-template-blocks',
+				'input'             => array(
+					'mode'               => 'replace',
+					'validate_roundtrip' => true,
+					'slug'               => 'single',
+					'theme'              => 'twentytwentyfive',
+					'title'              => 'Single',
+					'source_template_id' => 'twentytwentyfive//single',
+					'blocks'             => array(
+						array(
+							'blockName'    => 'core/group',
+							'attrs'        => array( 'className' => 'openclaw-breadcrumbs' ),
+							'innerBlocks'  => array(
+								array(
+									'blockName'    => 'core/paragraph',
+									'attrs'        => array( 'className' => 'openclaw-breadcrumbs__trail' ),
+									'innerBlocks'  => array(),
+									'innerHTML'    => '<p class="openclaw-breadcrumbs__trail">Home / Current item</p>',
+									'innerContent' => array( '<p class="openclaw-breadcrumbs__trail">Home / Current item</p>' ),
+								),
+							),
+							'innerHTML'    => '<div class="wp-block-group openclaw-breadcrumbs"></div>',
+							'innerContent' => array( null ),
+						),
+					),
+					'dry_run'            => true,
+					'commit'             => false,
+					'idempotency_key'    => 'block-theme-site-upsert',
+				),
+				'risk'              => 'high',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => true,
+			),
+		),
+		'risk'                   => array(
+			'level'  => 'high',
+			'reason' => 'Creates a reviewed Site Editor template override from an active theme file template.',
+		),
+	);
+}
+
+/**
  * Creates a representative Gutenberg article block plan.
  *
  * @return array<string,mixed>
@@ -2804,6 +2915,38 @@ $pattern_page_bad_class['write_actions'][1]['input']['blocks'][0]['attrs']['clas
 $pattern_page_bad_class_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-pattern-page-plan', $pattern_page_bad_class );
 npcink_governance_core_fail_closed_assert( is_wp_error( $pattern_page_bad_class_result ), 'Pattern page plan with non-allowlisted block class is rejected.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_pattern_page_class_rejected' === $pattern_page_bad_class_result->get_error_code(), 'Pattern page class rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$block_theme_site_plan = npcink_governance_core_fail_closed_block_theme_site_plan();
+$block_theme_site_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_site_plan, array(), array( 'source' => 'abilities_block_theme_site' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $block_theme_site_result ), 'Valid block theme site plan creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $block_theme_site_result['proposal_count'] ?? 0 ), 'Valid block theme site plan creates one batch proposal.' );
+$block_theme_site_proposal = is_array( $block_theme_site_result['proposals'][0] ?? null ) ? $block_theme_site_result['proposals'][0] : array();
+npcink_governance_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $block_theme_site_proposal['preview']['source']['type'] ?? '' ), 'Block theme site plan stores batch proposal source.' );
+npcink_governance_core_fail_closed_assert( is_array( $block_theme_site_proposal['preview']['block_theme_site'] ?? null ), 'Block theme site proposal preserves block theme preview.' );
+npcink_governance_core_fail_closed_assert( 'create_wp_template_override' === (string) ( $block_theme_site_proposal['preview']['block_theme_site']['file_template_write_mode'] ?? '' ), 'Block theme site preview records file-template override mode.' );
+npcink_governance_core_fail_closed_assert( 1 === count( (array) ( $block_theme_site_proposal['input']['write_actions'] ?? array() ) ), 'Block theme site proposal stores the template write action.' );
+npcink_governance_core_fail_closed_assert( 'npcink-abilities-toolkit/upsert-template-blocks' === (string) ( $block_theme_site_proposal['input']['write_actions'][0]['target_ability_id'] ?? '' ), 'Block theme site proposal stores template override upsert action.' );
+$block_theme_site_block = $block_theme_site_proposal['input']['write_actions'][0]['input']['blocks'][0] ?? array();
+npcink_governance_core_fail_closed_assert( is_array( $block_theme_site_block ) && isset( $block_theme_site_block['blockName'] ) && ! isset( $block_theme_site_block['blockname'] ), 'Block theme site proposal preserves Gutenberg blockName key case.' );
+npcink_governance_core_fail_closed_assert( isset( $block_theme_site_block['innerBlocks'] ) && ! isset( $block_theme_site_block['innerblocks'] ), 'Block theme site proposal preserves Gutenberg innerBlocks key case.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$block_theme_site_bad_target = npcink_governance_core_fail_closed_block_theme_site_plan();
+$block_theme_site_bad_target['write_actions'][0]['target_ability_id'] = 'npcink-abilities-toolkit/update-post-blocks';
+$block_theme_site_bad_target_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_site_bad_target );
+npcink_governance_core_fail_closed_assert( is_wp_error( $block_theme_site_bad_target_result ), 'Block theme site plan with non-template target is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_block_theme_site_target_rejected' === $block_theme_site_bad_target_result->get_error_code(), 'Block theme site target rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$block_theme_site_missing_slug = npcink_governance_core_fail_closed_block_theme_site_plan();
+unset( $block_theme_site_missing_slug['write_actions'][0]['input']['slug'] );
+$block_theme_site_missing_slug_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_site_missing_slug );
+npcink_governance_core_fail_closed_assert( is_wp_error( $block_theme_site_missing_slug_result ), 'Block theme site template override without slug is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_block_theme_site_upsert_target_missing' === $block_theme_site_missing_slug_result->get_error_code(), 'Block theme site missing slug rejection uses stable error code.' );
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();

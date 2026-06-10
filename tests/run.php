@@ -1415,6 +1415,7 @@ foreach (
 		'npcink-abilities-toolkit/build-article-optimization-apply-plan',
 		'npcink-abilities-toolkit/build-article-block-plan',
 		'npcink-abilities-toolkit/build-pattern-page-plan',
+		'npcink-abilities-toolkit/build-block-theme-site-plan',
 		'npcink-toolbox/build-article-write-plan',
 		'npcink-toolbox/build-article-batch-write-plan',
 		'npcink-toolbox/build-article-media-batch-write-plan',
@@ -1436,6 +1437,7 @@ foreach (
 		'validate_media_rename_plan_contract',
 		'validate_article_optimization_apply_plan_contract',
 		'validate_pattern_page_plan_contract',
+		'validate_block_theme_site_plan_contract',
 		'article_workflow_preview',
 		'article_batch_workflow_preview',
 		'article_media_batch_workflow_preview',
@@ -1445,6 +1447,7 @@ foreach (
 		'media_rename_preview',
 		'article_optimization_preview',
 		'pattern_page_preview',
+		'block_theme_site_preview',
 		'site_knowledge_review_preview',
 		'content_metadata_apply_preview',
 		'article_workflow_artifact_keys',
@@ -1453,6 +1456,7 @@ foreach (
 		'article_media_batch_write_plan',
 		'article_optimization_apply_plan',
 		'article_block_plan',
+		'block_theme_site_plan',
 		'image_candidate_adoption_plan',
 		'site_knowledge_review_plan',
 		'content_metadata_apply_plan',
@@ -1550,10 +1554,12 @@ npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-article-optimization-apply-plan' ), 'Plan-to-proposal docs include the article optimization apply handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-article-block-plan' ), 'Plan-to-proposal docs include the article block handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-pattern-page-plan' ), 'Plan-to-proposal docs include the pattern page handoff.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-block-theme-site-plan' ), 'Plan-to-proposal docs include the block theme site handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_workflow' ), 'Plan-to-proposal docs require article workflow preview evidence.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_optimization' ), 'Plan-to-proposal docs require article optimization preview evidence.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_block' ), 'Plan-to-proposal docs require article block preview evidence.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.pattern_page' ), 'Plan-to-proposal docs require pattern page preview evidence.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.block_theme_site' ), 'Plan-to-proposal docs require block theme site preview evidence.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.content_metadata_apply' ), 'Plan-to-proposal docs require content metadata apply preview evidence.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'proposal_mode=batch' ), 'Plan-to-proposal docs require explicit batch proposal mode where needed.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'optimize these reviewed media items' ), 'Plan-to-proposal docs define media optimization as a reviewed media intent.' );

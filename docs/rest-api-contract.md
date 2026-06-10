@@ -555,6 +555,7 @@ abilities:
 - `npcink-abilities-toolkit/build-article-optimization-apply-plan`
 - `npcink-abilities-toolkit/build-article-block-plan`
 - `npcink-abilities-toolkit/build-pattern-page-plan`
+- `npcink-abilities-toolkit/build-block-theme-site-plan`
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
@@ -698,6 +699,20 @@ custom block `className` values, and quality summaries that require custom CSS.
 The route creates a pending Core batch proposal with `preview.article_block`;
 it does not generate the article, render the blocks, approve the proposal,
 execute the write, or mutate WordPress content.
+
+For `npcink-abilities-toolkit/build-block-theme-site-plan`, the plan must
+declare `artifact_type=block_theme_site_plan`, `intent=add_breadcrumbs`,
+`proposal_mode=batch`, an active theme stylesheet, and
+`direct_wordpress_write=false`. It must contain one or more dry-run, non-commit
+template block actions targeting only
+`npcink-abilities-toolkit/update-template-blocks` or
+`npcink-abilities-toolkit/upsert-template-blocks`, with `mode=replace` and a
+reviewed Gutenberg block tree. Upserts must include the active theme and
+template slug so file-backed theme templates become reviewed `wp_template` Site
+Editor overrides. The route creates a pending Core batch proposal with
+`preview.block_theme_site`; it does not edit theme files, navigation entities,
+global styles, approve the proposal, execute the write, or mutate WordPress
+content.
 
 Each accepted independent `write_action` becomes a separate pending proposal by
 default. If the plan declares `batch_approval=true` or

@@ -85,6 +85,7 @@ Core may consume these read-only planning ability outputs:
 - `npcink-abilities-toolkit/build-article-optimization-apply-plan`
 - `npcink-abilities-toolkit/build-article-block-plan`
 - `npcink-abilities-toolkit/build-pattern-page-plan`
+- `npcink-abilities-toolkit/build-block-theme-site-plan`
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
@@ -226,6 +227,17 @@ for a draft post create action and a Gutenberg block replacement action using
 the new post output reference, and it stores `preview.article_block`. Core
 rejects custom block classes and does not generate article content, render
 blocks, or execute WordPress writes.
+
+The block theme site handoff is the governed shape for the user intent "modify
+this active block theme template." Core accepts
+`npcink-abilities-toolkit/build-block-theme-site-plan` only as a
+`block_theme_site_plan` with `intent=add_breadcrumbs`,
+`proposal_mode=batch`, and template write actions limited to
+`npcink-abilities-toolkit/update-template-blocks` or
+`npcink-abilities-toolkit/upsert-template-blocks`. It stores
+`preview.block_theme_site` and the reviewed block tree, but does not edit theme
+files, navigation entities, global styles, approve proposals, or execute
+WordPress writes.
 
 Plans may request one review item for a group of generated actions with either
 `batch_approval=true` or `proposal_mode=batch`. Core then creates one

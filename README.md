@@ -171,7 +171,9 @@ optimization batch where every attachment has paired metadata and derivative act
 batch that uploads a selected remote image, optimizes the new attachment, and
 optionally repairs one reviewed post-content reference, `npcink-abilities-toolkit/build-media-rename-plan` only as one reviewed
 attachment rename proposal, `npcink-abilities-toolkit/build-pattern-page-plan` only as one
-reviewed Gutenberg pattern page batch, and accepts the P0 Toolbox article handoff
+reviewed Gutenberg pattern page batch, `npcink-abilities-toolkit/build-block-theme-site-plan`
+only as a reviewed Site Editor template override proposal for the active block theme,
+and accepts the P0 Toolbox article handoff
 `npcink-toolbox/build-article-write-plan` only as a single reviewed
 `npcink-abilities-toolkit/create-draft` proposal. The bounded local article batch handoff
 `npcink-toolbox/build-article-batch-write-plan` may create one reviewed

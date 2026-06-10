@@ -36,6 +36,7 @@ final class Plan_Proposal_Service {
 		'npcink-abilities-toolkit/build-article-optimization-apply-plan'      => true,
 		'npcink-abilities-toolkit/build-article-block-plan'                   => true,
 		'npcink-abilities-toolkit/build-pattern-page-plan'                    => true,
+		'npcink-abilities-toolkit/build-block-theme-site-plan'                => true,
 		'npcink-toolbox/build-article-write-plan'                            => true,
 		'npcink-toolbox/build-article-batch-write-plan'                      => true,
 		'npcink-toolbox/build-article-media-batch-write-plan'                => true,
@@ -209,6 +210,13 @@ final class Plan_Proposal_Service {
 			$pattern_page_contract_error = $this->validate_pattern_page_plan_contract( $plan );
 			if ( is_wp_error( $pattern_page_contract_error ) ) {
 				return $pattern_page_contract_error;
+			}
+		}
+
+		if ( 'npcink-abilities-toolkit/build-block-theme-site-plan' === $plan_ability_id ) {
+			$block_theme_contract_error = $this->validate_block_theme_site_plan_contract( $plan );
+			if ( is_wp_error( $block_theme_contract_error ) ) {
+				return $block_theme_contract_error;
 			}
 		}
 
@@ -1822,6 +1830,162 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Validates the governed block theme site plan contract.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_block_theme_site_plan_contract( array $plan ) {
+		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
+		if ( 'block_theme_site_plan' !== $artifact_type ) {
+			return new WP_Error(
+				'npcink_governance_core_block_theme_site_plan_invalid',
+				__( 'Block theme site plans must declare artifact_type=block_theme_site_plan.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( 'add_breadcrumbs' !== sanitize_key( (string) ( $plan['intent'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_block_theme_site_intent_rejected',
+				__( 'Block theme site plans currently must use intent=add_breadcrumbs.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( 'batch' !== sanitize_key( (string) ( $plan['proposal_mode'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_block_theme_site_mode_required',
+				__( 'Block theme site plans must request batch proposal mode.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true === (bool) ( $plan['direct_wordpress_write'] ?? false ) ) {
+			return new WP_Error(
+				'npcink_governance_core_block_theme_site_direct_write_rejected',
+				__( 'Block theme site plans must not claim direct WordPress write authority.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$active_theme = is_array( $plan['active_theme'] ?? null ) ? $plan['active_theme'] : array();
+		$theme        = sanitize_key( (string) ( $active_theme['stylesheet'] ?? '' ) );
+		if ( '' === $theme ) {
+			return new WP_Error(
+				'npcink_governance_core_block_theme_site_theme_missing',
+				__( 'Block theme site plans must identify the active theme stylesheet.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( empty( $write_actions ) ) {
+			return new WP_Error(
+				'npcink_governance_core_block_theme_site_actions_missing',
+				__( 'Block theme site plans must contain at least one template write action.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$allowed_targets = array(
+			'npcink-abilities-toolkit/update-template-blocks' => true,
+			'npcink-abilities-toolkit/upsert-template-blocks' => true,
+		);
+		foreach ( $write_actions as $index => $action ) {
+			if ( ! is_array( $action ) ) {
+				return new WP_Error(
+					'npcink_governance_core_block_theme_site_action_invalid',
+					__( 'Block theme site write actions must be objects.', 'npcink-governance-core' ),
+					array( 'status' => 422 )
+				);
+			}
+
+			$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
+			if ( ! isset( $allowed_targets[ $target_ability_id ] ) ) {
+				return new WP_Error(
+					'npcink_governance_core_block_theme_site_target_rejected',
+					__( 'Block theme site plans may only target governed template block write abilities.', 'npcink-governance-core' ),
+					array(
+						'status'            => 422,
+						'action_index'      => $index,
+						'target_ability_id' => $target_ability_id,
+					)
+				);
+			}
+
+			$input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+			if ( 'replace' !== sanitize_key( (string) ( $input['mode'] ?? '' ) ) ) {
+				return new WP_Error(
+					'npcink_governance_core_block_theme_site_mode_rejected',
+					__( 'Block theme site template actions must use mode=replace.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $index,
+					)
+				);
+			}
+			if ( true === (bool) ( $input['commit'] ?? false ) || false === (bool) ( $input['dry_run'] ?? true ) ) {
+				return new WP_Error(
+					'npcink_governance_core_block_theme_site_commit_rejected',
+					__( 'Block theme site template actions must remain dry-run and must not request commit.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $index,
+					)
+				);
+			}
+			if ( empty( $input['blocks'] ?? array() ) || ! is_array( $input['blocks'] ?? null ) ) {
+				return new WP_Error(
+					'npcink_governance_core_block_theme_site_blocks_missing',
+					__( 'Block theme site template actions must include reviewed Gutenberg blocks.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $index,
+					)
+				);
+			}
+			if ( 'npcink-abilities-toolkit/update-template-blocks' === $target_ability_id && absint( $input['post_id'] ?? 0 ) <= 0 ) {
+				return new WP_Error(
+					'npcink_governance_core_block_theme_site_post_id_missing',
+					__( 'Existing template updates must include post_id.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $index,
+					)
+				);
+			}
+			if ( 'npcink-abilities-toolkit/upsert-template-blocks' === $target_ability_id ) {
+				$slug        = sanitize_key( (string) ( $input['slug'] ?? '' ) );
+				$action_theme = sanitize_key( (string) ( $input['theme'] ?? '' ) );
+				if ( '' === $slug || '' === $action_theme ) {
+					return new WP_Error(
+						'npcink_governance_core_block_theme_site_upsert_target_missing',
+						__( 'Template override upserts must include slug and theme.', 'npcink-governance-core' ),
+						array(
+							'status'       => 422,
+							'action_index' => $index,
+						)
+					);
+				}
+				if ( $theme !== $action_theme ) {
+					return new WP_Error(
+						'npcink_governance_core_block_theme_site_theme_mismatch',
+						__( 'Template override upserts must target the active theme.', 'npcink-governance-core' ),
+						array(
+							'status'       => 422,
+							'action_index' => $index,
+							'theme'        => $action_theme,
+						)
+					);
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Validates the shared draft-create plus block-update batch action shape.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -2432,6 +2596,30 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Builds preview context for block theme site plans.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function block_theme_site_preview( array $plan ): array {
+		$summary      = is_array( $plan['summary'] ?? null ) ? $plan['summary'] : array();
+		$active_theme = is_array( $plan['active_theme'] ?? null ) ? $plan['active_theme'] : array();
+
+		return array(
+			'artifact_type'            => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
+			'version'                  => absint( $plan['version'] ?? 0 ),
+			'intent'                   => sanitize_key( (string) ( $plan['intent'] ?? '' ) ),
+			'active_theme'             => $this->sanitize_payload( $active_theme ),
+			'affected_templates'       => array_values( array_map( 'sanitize_key', (array) ( $plan['affected_templates'] ?? array() ) ) ),
+			'block_count'              => absint( $summary['block_count'] ?? 0 ),
+			'action_count'             => absint( $summary['action_count'] ?? 0 ),
+			'file_template_write_mode' => 'create_wp_template_override',
+			'final_write_path'         => 'core_batch_proposal_required',
+			'direct_wordpress_write'   => false,
+		);
+	}
+
+	/**
 	 * Builds preview context for Site Knowledge review plans.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -2614,6 +2802,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'npcink-abilities-toolkit/build-pattern-page-plan' === $plan_ability_id ) {
 			$preview['pattern_page'] = $this->pattern_page_preview( $plan );
+		}
+		if ( 'npcink-abilities-toolkit/build-block-theme-site-plan' === $plan_ability_id ) {
+			$preview['block_theme_site'] = $this->block_theme_site_preview( $plan );
 		}
 		if ( 'npcink-toolbox/build-site-knowledge-review-plan' === $plan_ability_id ) {
 			$preview['site_knowledge_review'] = $this->site_knowledge_review_preview( $plan );
@@ -2825,6 +3016,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'npcink-abilities-toolkit/build-pattern-page-plan' === $plan_ability_id ) {
 			$preview['pattern_page'] = $this->pattern_page_preview( $plan );
+		}
+		if ( 'npcink-abilities-toolkit/build-block-theme-site-plan' === $plan_ability_id ) {
+			$preview['block_theme_site'] = $this->block_theme_site_preview( $plan );
 		}
 		if ( 'npcink-toolbox/build-content-metadata-apply-plan' === $plan_ability_id ) {
 			$preview['content_metadata_apply'] = $this->content_metadata_apply_preview( $plan );

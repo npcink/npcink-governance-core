@@ -1,5 +1,32 @@
 # Session Breadcrumb
 
+## 2026-06-10 — Block theme site plan Core intake enabled
+
+- **Module**: Core plan-to-proposal intake for block theme site plans.
+- **Status**: `npcink-abilities-toolkit/build-block-theme-site-plan` is now a
+  Core-allowlisted plan ability for reviewed active block theme template
+  proposals.
+- **Completed**:
+  - Added `build-block-theme-site-plan` to Core's plan-to-proposal allowlist.
+  - Added a narrow `block_theme_site_plan` contract validator for
+    `intent=add_breadcrumbs`, `proposal_mode=batch`, active-theme evidence, and
+    template write actions limited to `update-template-blocks` or
+    `upsert-template-blocks`.
+  - Preserved Gutenberg block-tree key case for template block write proposal
+    inputs.
+  - Updated public plan-to-proposal docs and smoke/fail-closed coverage.
+- **Verification**:
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer test:all`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer smoke:wp`
+  - Adapter/OpenClaw local verification created pending proposal
+    `f72ce913-4a80-46c8-a48c-a9b63b0199ea` for
+    `npcink-abilities-toolkit/upsert-template-blocks` without executing it.
+- **Boundary**:
+  - Core stores proposal, approval, preflight, and audit truth only. It still
+    does not edit theme files, navigation, global styles, render templates,
+    approve proposals, execute WordPress writes, or add workflow/runtime
+    ownership.
+
 ## 2026-06-10 — Repository moved to GitHub primary remote
 
 - **Module**: Repository hosting and local checkout identity.

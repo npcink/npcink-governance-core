@@ -473,8 +473,8 @@ final class Proposal_Repository {
 	 * Most structured proposal input remains plain-text sanitized. The create-draft
 	 * content field is a reviewed WordPress post-content field, so explicit
 	 * content_format=html uses WordPress safe post HTML filtering instead.
-	 * Gutenberg block object keys are also case-sensitive, so update-post-blocks
-	 * preserves reviewed block-tree keys while still sanitizing values.
+	 * Gutenberg block object keys are also case-sensitive, so block write abilities
+	 * preserve reviewed block-tree keys while still sanitizing values.
 	 *
 	 * @param string              $ability_id Target ability id.
 	 * @param array<string,mixed> $input Raw proposal input.
@@ -590,19 +590,28 @@ final class Proposal_Repository {
 	}
 
 	/**
-	 * Returns whether an input contains Gutenberg block objects for update-post-blocks.
+	 * Returns whether an input contains Gutenberg block objects.
 	 *
 	 * @param string              $ability_id Target ability id.
 	 * @param array<string,mixed> $input Raw input.
 	 * @return bool
 	 */
 	private function is_update_post_blocks_input( string $ability_id, array $input ): bool {
-		return 'npcink-abilities-toolkit/update-post-blocks' === sanitize_text_field( $ability_id )
+		return in_array(
+			sanitize_text_field( $ability_id ),
+			array(
+				'npcink-abilities-toolkit/update-post-blocks',
+				'npcink-abilities-toolkit/update-template-blocks',
+				'npcink-abilities-toolkit/upsert-template-blocks',
+				'npcink-abilities-toolkit/update-template-part-blocks',
+			),
+			true
+		)
 			&& is_array( $input['blocks'] ?? null );
 	}
 
 	/**
-	 * Preserves update-post-blocks block tree keys while sanitizing block values.
+	 * Preserves block tree keys while sanitizing block values.
 	 *
 	 * @param array<string,mixed> $input Raw update-post-blocks input.
 	 * @param array<string,mixed> $clean Plain sanitized input.
