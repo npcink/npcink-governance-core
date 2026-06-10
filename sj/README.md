@@ -1,4 +1,4 @@
-# Npcink Governance Core Listing Assets
+# npcink-governance-core Listing Assets
 
 This folder is the working area for WordPress.org listing copy and visual
 assets. It is intentionally excluded from release archives through

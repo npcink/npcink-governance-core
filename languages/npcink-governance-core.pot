@@ -2,7 +2,7 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Npcink Governance Core 0.1.0\n"
+"Project-Id-Version: npcink-governance-core 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/npcink-governance-core\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 #: npcink-governance-core.php
 #: includes/Admin/Admin_Page.php:126
 #: includes/Admin/Admin_Page.php:298
-msgid "Npcink Governance Core"
+msgid "npcink-governance-core"
 msgstr ""
 
 #. Description of the plugin
@@ -1179,7 +1179,7 @@ msgid "Proposal action could not be completed."
 msgstr ""
 
 #: includes/Governance/Commit_Preflight_Service.php:68
-msgid "Legacy confirmation parameters are not accepted by Npcink Governance Core."
+msgid "Legacy confirmation parameters are not accepted by npcink-governance-core."
 msgstr ""
 
 #: includes/Governance/Commit_Preflight_Service.php:76

@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Npcink Governance Core
+ * Plugin Name: npcink-governance-core
  * Description: Npcink AI governance layer for WordPress operations.
  * Version: 0.1.0
  * Requires at least: 7.0

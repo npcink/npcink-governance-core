@@ -42,7 +42,7 @@ call site, for example `set_transient( PREFIX . $suffix, ... )`, and keep
 
 Use this public identity for the WordPress.org upload:
 
-- plugin display name: `Npcink Governance Core`;
+- plugin display name: `npcink-governance-core`;
 - package slug and text domain: `npcink-governance-core`;
 - top-level menu and product suite: `Npcink AI`;
 - reviewer-facing description: `Npcink AI governance layer for WordPress operations`;
@@ -51,7 +51,7 @@ Use this public identity for the WordPress.org upload:
 - author: `Npcink`.
 
 Internal PHP namespaces, function prefixes, table prefixes, hooks, options, and
-error codes use the Npcink Governance Core identity. Do not reintroduce legacy
+error codes use the npcink-governance-core identity. Do not reintroduce legacy
 Magick AI compatibility identifiers during a release-only pass.
 
 The upload artifact is:
@@ -64,7 +64,7 @@ Before upload, confirm the package root is `npcink-governance-core/` and the
 plugin header contains:
 
 ```text
-Plugin Name: Npcink Governance Core
+Plugin Name: npcink-governance-core
 Author: Npcink
 Text Domain: npcink-governance-core
 ```
@@ -104,7 +104,7 @@ Use the Additional Information field to help reviewers understand the plugin's
 technical boundary. Prefer this reviewer-facing text over marketing copy:
 
 ```text
-Npcink Governance Core is the Npcink AI governance layer for WordPress operations, reviewing and approving AI-initiated WordPress actions before execution.
+The npcink-governance-core plugin is the Npcink AI governance layer for WordPress operations, reviewing and approving AI-initiated WordPress actions before execution.
 
 The plugin registers REST endpoints under /wp-json/npcink-governance-core/v1/ and stores proposals, audit events, app keys, and rate-limit state in custom WordPress database tables. These direct database queries are intentional because the plugin owns those tables.
 
@@ -114,7 +114,7 @@ The bundled examples use Npcink ability ids, but the base governance proposal li
 
 The plugin does not call external services, does not load remote assets, and does not send site data to third parties. App secrets are hashed before storage, and one-time bearer tokens are only shown at creation time.
 
-Internal PHP namespaces, function prefixes, table prefixes, hooks, options, and error codes use the Npcink Governance Core identity. The public plugin name, slug, text domain, REST namespace, and WordPress.org package identity are Npcink Governance Core / npcink-governance-core.
+Internal PHP namespaces, function prefixes, table prefixes, hooks, options, and error codes use the npcink-governance-core identity. The public plugin name, slug, text domain, REST namespace, and WordPress.org package identity are npcink-governance-core.
 ```
 
 If the form field is short, use this condensed version:

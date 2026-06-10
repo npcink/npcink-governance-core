@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Npcink Governance Core 0.1.0\n"
+"Project-Id-Version: npcink-governance-core 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/npcink-governance-core\n"
 "Last-Translator: Npcink <translate@npcink.local>\n"
 "Language-Team: Chinese (Simplified) <translate@npcink.local>\n"
@@ -16,8 +16,8 @@ msgstr ""
 #: npcink-governance-core.php
 #: includes/Admin/Admin_Page.php:126
 #: includes/Admin/Admin_Page.php:298
-msgid "Npcink Governance Core"
-msgstr "Npcink Governance Core"
+msgid "npcink-governance-core"
+msgstr "npcink-governance-core"
 
 #. Description of the plugin
 #: npcink-governance-core.php
@@ -1177,8 +1177,8 @@ msgid "Proposal action could not be completed."
 msgstr "无法完成提案操作。"
 
 #: includes/Governance/Commit_Preflight_Service.php:68
-msgid "Legacy confirmation parameters are not accepted by Npcink Governance Core."
-msgstr "Npcink Governance Core 不接受旧版确认参数。"
+msgid "Legacy confirmation parameters are not accepted by npcink-governance-core."
+msgstr "npcink-governance-core 不接受旧版确认参数。"
 
 #: includes/Governance/Commit_Preflight_Service.php:76
 msgid "You do not have permission to preflight this proposal."

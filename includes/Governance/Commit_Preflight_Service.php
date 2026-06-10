@@ -65,7 +65,7 @@ final class Commit_Preflight_Service {
 		if ( array_key_exists( 'confirm_token', $request_params ) || array_key_exists( 'write_confirmed', $request_params ) ) {
 			return new WP_Error(
 				'npcink_governance_core_legacy_confirmation_rejected',
-				__( 'Legacy confirmation parameters are not accepted by Npcink Governance Core.', 'npcink-governance-core' ),
+				__( 'Legacy confirmation parameters are not accepted by npcink-governance-core.', 'npcink-governance-core' ),
 				array( 'status' => 400 )
 			);
 		}

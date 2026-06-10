@@ -2,7 +2,7 @@
 
 ## Shared Series Identity
 
-Use a consistent Magick AI plugin-family visual language across future assets:
+Use a consistent Npcink plugin-family visual language across future assets:
 
 - Modern open-source developer tooling.
 - Clean geometric shapes.
@@ -15,7 +15,7 @@ Use a consistent Magick AI plugin-family visual language across future assets:
 ## Icon Prompt
 
 ```text
-Create a square WordPress.org plugin icon for "Npcink Governance Core", one plugin in the Npcink plugin family.
+Create a square WordPress.org plugin icon for "npcink-governance-core", one plugin in the Npcink plugin family.
 
 This specific plugin represents the local WordPress governance layer for AI-assisted operations: proposal intake, approval boundaries, commit preflight, scoped app keys, and audit logs. It is not the ability content package, not an OpenClaw adapter, not a cloud connector, and not a model client.
 
@@ -33,11 +33,11 @@ Avoid: robot faces, chat bubbles, cloud product imagery, ability-node content-pa
 ## Banner Prompt
 
 ```text
-Create a WordPress.org plugin banner for "Npcink Governance Core", size 1544x500, with a layout that also works when scaled down to 772x250.
+Create a WordPress.org plugin banner for "npcink-governance-core", size 1544x500, with a layout that also works when scaled down to 772x250.
 
 This plugin is part of the Npcink plugin family. Its role is the local WordPress governance layer: ability intake, proposal records, approval and rejection decisions, commit preflight, scoped app keys, and audit logs for AI-assisted WordPress operations.
 
-It complements the other Magick AI plugins:
+It complements the other Npcink plugins:
 - Npcink Abilities Toolkit handles ability definitions and ability callbacks.
 - trusted adapter handles OpenClaw channel adaptation and calls Core plus the Abilities API.
 - cloud connector links to cloud services.
@@ -45,7 +45,7 @@ This banner should clearly represent Core governance, not Abilities, Adapter, or
 
 Visual concept: a governance console represented abstractly as proposal cards moving through approval gates, preflight validation, and audit timeline evidence. Show a local WordPress control-plane boundary, not cloud execution or chatbot UI.
 
-Text: "Npcink Governance Core"
+Text: "npcink-governance-core"
 Optional subtitle: "Governance, approval, preflight, and audit for WordPress AI operations"
 
 Tone: trusted control plane, secure review, operational accountability, calm and professional developer infrastructure.

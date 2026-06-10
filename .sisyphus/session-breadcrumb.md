@@ -1,5 +1,36 @@
 # Session Breadcrumb
 
+## 2026-06-10 — Release branch merged and public plugin name aligned
+
+- **Module**: WordPress.org release identity and listing assets.
+- **Status**: The release candidate branch was fast-forward merged into
+  `master`, and the public plugin name is now `npcink-governance-core`.
+- **Completed**:
+  - Merged `codex/media-adoption-enhancement-plan` into `master`.
+  - Updated the plugin header, `readme.txt`, admin title, release gate docs,
+    translation catalogs, and `sj/` listing copy to use
+    `npcink-governance-core` as the public plugin name.
+  - Reworked the WordPress.org banner exports from the existing asset material
+    so they no longer show the old `Magick AI Core` text.
+  - Confirmed WordPress.org asset dimensions for `banner-1544x500.png`,
+    `banner-772x250.png`, `icon-256x256.png`, and `icon-128x128.png`.
+  - Rebuilt `build/npcink-governance-core.zip`; the package root remains
+    `npcink-governance-core/`, and `sj/` remains excluded from the plugin zip.
+- **Verification**:
+  - In `/Users/muze/gitee/magick-ai-core`: `git diff --check`
+  - In `/Users/muze/gitee/magick-ai-core`: `composer release:verify`
+  - In `/Users/muze/gitee/magick-ai-core`: `composer smoke:wp`
+  - In `/Users/muze/gitee/magick-ai-core`: `composer package:release`
+- **Next steps**:
+  - Push `master`.
+  - Copy `build/npcink-governance-core.zip` contents to WordPress.org SVN
+    `/trunk`, create `/tags/0.1.0`, and copy `sj/exports/wordpress-org/*` to
+    SVN top-level `/assets`.
+- **Boundary**:
+  - Release identity and listing asset work only. Core remains the governance
+    layer and still does not execute final writes, route models, store provider
+    credentials, or add workflow/runtime ownership.
+
 ## 2026-06-10 — WordPress.org release gate warning cleared
 
 - **Module**: Core WordPress.org release package readiness.

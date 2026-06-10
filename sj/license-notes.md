@@ -4,7 +4,7 @@
 
 These notes cover the WordPress.org listing assets for:
 
-- Plugin: Npcink Governance Core
+- Plugin: npcink-governance-core
 - Slug: `npcink-governance-core`
 - Asset folder: `sj/`
 - WordPress.org export folder: `sj/exports/wordpress-org/`

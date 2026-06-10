@@ -111,7 +111,7 @@ final class Admin_Page {
 
 		add_submenu_page(
 			self::PARENT_MENU_SLUG,
-			__( 'Npcink Governance Core', 'npcink-governance-core' ),
+			__( 'npcink-governance-core', 'npcink-governance-core' ),
 			__( 'Core', 'npcink-governance-core' ),
 			self::MENU_CAPABILITY,
 			self::MENU_SLUG,
@@ -280,7 +280,7 @@ final class Admin_Page {
 		$error          = $this->admin_query_key( 'npcink_governance_core_error' );
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html__( 'Npcink Governance Core', 'npcink-governance-core' ); ?></h1>
+			<h1><?php echo esc_html__( 'npcink-governance-core', 'npcink-governance-core' ); ?></h1>
 			<p><?php echo esc_html__( 'Review WordPress requests before they run.', 'npcink-governance-core' ); ?></p>
 
 			<?php if ( '' !== $message ) : ?>

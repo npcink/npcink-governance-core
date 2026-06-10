@@ -1,6 +1,6 @@
-# Npcink Governance Core
+# npcink-governance-core
 
-Npcink Governance Core is the Npcink AI governance layer for WordPress operations.
+The npcink-governance-core plugin is the Npcink AI governance layer for WordPress operations.
 
 It does not generate content, own product workflows, route models, or replace
 the WordPress Abilities API. It discovers agent-callable abilities from

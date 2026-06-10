@@ -2,7 +2,7 @@
 
 ## 插件名称
 
-Npcink Governance Core
+npcink-governance-core
 
 ## 简短描述
 
@@ -14,7 +14,7 @@ ai, governance, approval, audit, abilities
 
 ## 插件介绍
 
-Npcink Governance Core 是 WordPress AI 操作的治理层，负责 ability intake、proposal、
+npcink-governance-core 插件是 WordPress AI 操作的治理层，负责 ability intake、proposal、
 审批边界、commit preflight、scoped app key 和 audit log。
 
 它从 WordPress 和 provider 插件发现可被 agent 调用的能力，然后围绕操作提案
@@ -25,7 +25,7 @@ Npcink Governance Core 是 WordPress AI 操作的治理层，负责 ability inta
 Core 属于 Npcink 系列插件，但它只聚焦治理。能力定义属于 Npcink Abilities Toolkit 或其他 provider 插件。产品化 OpenClaw 连接属于 trusted adapter。
 云端服务连接属于 cloud connector。
 
-Npcink Governance Core 不生成内容、不路由模型、不运行 MCP 或 workflow runtime、不保存
+npcink-governance-core 不生成内容、不路由模型、不运行 MCP 或 workflow runtime、不保存
 provider credentials、不代理 ability execution，也不执行最终 WordPress 写入。
 
 ## 核心功能
@@ -55,7 +55,7 @@ provider credentials、不代理 ability execution，也不执行最终 WordPres
 在 Npcink 系列插件中：
 
 - Npcink Abilities Toolkit 负责能力定义和 ability callback。
-- Npcink Governance Core 负责治理、审批、preflight、audit。
+- npcink-governance-core 负责治理、审批、preflight、audit。
 - trusted adapter 负责 OpenClaw 通道适配。
 - cloud connector 负责链接云端服务。
 
