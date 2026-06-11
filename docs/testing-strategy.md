@@ -80,6 +80,9 @@ fault injection.
 ## WordPress Smoke Rules
 
 WordPress smoke lives in `tests/smoke-wp.php`.
+The wrapper `tests/smoke-wp.sh` owns LocalWP environment preflight diagnostics
+for WP-CLI, Local PHP, database socket, plugin symlink, and
+`npcink-abilities-toolkit` path assumptions.
 
 Use it for behavior that requires real WordPress:
 

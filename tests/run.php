@@ -1196,6 +1196,12 @@ npcink_governance_core_assert( false === strpos( $development_workflow, 'magick-
 
 $smoke_wp_sh = npcink_governance_core_read( $root . '/tests/smoke-wp.sh' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp_sh, 'WP_CLI' ), 'WordPress smoke shell uses WP-CLI directly.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp_sh, 'smoke_preflight_note' ), 'WordPress smoke shell reports preflight diagnostics.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp_sh, 'smoke_preflight_fail' ), 'WordPress smoke shell fails environment setup before runtime assertions.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp_sh, 'wp-config.php' ), 'WordPress smoke shell verifies WP_PATH before invoking WP-CLI.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp_sh, 'npcink-abilities-toolkit/npcink-abilities-toolkit.php' ), 'WordPress smoke shell verifies the Toolkit plugin file before runtime assertions.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp_sh, 'NPCINK_ABILITIES_TOOLKIT_PATH' ), 'WordPress smoke shell reports the Toolkit source path assumption.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp_sh, 'readlink' ), 'WordPress smoke shell diagnoses Core plugin symlink state.' );
 npcink_governance_core_assert( false === strpos( $smoke_wp_sh, 'magick-ai-root' ), 'WordPress smoke shell must not depend on magick-ai-root.' );
 
 $smoke_wp = npcink_governance_core_read( $root . '/tests/smoke-wp.php' );
