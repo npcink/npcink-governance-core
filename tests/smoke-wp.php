@@ -1626,6 +1626,11 @@ npcink_governance_core_smoke_assert( 'plan_to_proposal_batch' === (string) ( $pa
 npcink_governance_core_smoke_assert( 'batch' === (string) ( $pattern_page_proposal['preview']['source']['proposal_mode'] ?? '' ), 'pattern page batch preserves proposal_mode' );
 npcink_governance_core_smoke_assert( is_array( $pattern_page_proposal['preview']['pattern_page'] ?? null ), 'pattern page proposal preserves pattern preview context' );
 npcink_governance_core_smoke_assert( 'openai-style-landing' === (string) ( $pattern_page_proposal['preview']['pattern_page']['pattern_id'] ?? '' ), 'pattern page preview preserves pattern id' );
+npcink_governance_core_smoke_assert( is_array( $pattern_page_proposal['preview']['block_editor_quality_gate'] ?? null ), 'pattern page proposal preserves block editor quality gate' );
+npcink_governance_core_smoke_assert( true === (bool) ( $pattern_page_proposal['preview']['block_editor_quality_gate']['ready_for_proposal'] ?? false ), 'pattern page block editor gate remains ready for proposal' );
+npcink_governance_core_smoke_assert( 'landing_design' === (string) ( $pattern_page_proposal['preview']['block_editor_quality_gate']['profile'] ?? '' ), 'pattern page block editor gate preserves review profile' );
+npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/review-block-editor-surface' === (string) ( $pattern_page_proposal['preview']['block_editor_quality_gate']['review_ability_id'] ?? '' ), 'pattern page block editor gate preserves review ability id' );
+npcink_governance_core_smoke_assert( false === (bool) ( $pattern_page_proposal['preview']['block_editor_quality_gate']['commit_execution'] ?? true ), 'pattern page block editor gate keeps commit execution disabled' );
 $pattern_page_actions = is_array( $pattern_page_proposal['input']['write_actions'] ?? null ) ? array_values( $pattern_page_proposal['input']['write_actions'] ) : array();
 npcink_governance_core_smoke_assert( 2 === count( $pattern_page_actions ), 'pattern page batch stores create and block update actions' );
 npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/create-draft' === (string) ( $pattern_page_actions[0]['target_ability_id'] ?? '' ), 'pattern page first action creates a draft page' );
@@ -1651,6 +1656,9 @@ $block_theme_site_proposal = is_array( $block_theme_site_result['proposals'][0] 
 npcink_governance_core_smoke_assert( 'plan_to_proposal_batch' === (string) ( $block_theme_site_proposal['preview']['source']['type'] ?? '' ), 'block theme site plan records batch proposal source type' );
 npcink_governance_core_smoke_assert( is_array( $block_theme_site_proposal['preview']['block_theme_site'] ?? null ), 'block theme site proposal preserves block theme preview context' );
 npcink_governance_core_smoke_assert( 'create_wp_template_override' === (string) ( $block_theme_site_proposal['preview']['block_theme_site']['file_template_write_mode'] ?? '' ), 'block theme site preview preserves file-backed template override mode' );
+if ( is_array( $block_theme_site_plan['block_editor_reviews'] ?? null ) ) {
+	npcink_governance_core_smoke_assert( is_array( $block_theme_site_proposal['preview']['block_editor_reviews'] ?? null ), 'block theme site proposal preserves block editor reviews' );
+}
 $block_theme_site_actions = is_array( $block_theme_site_proposal['input']['write_actions'] ?? null ) ? array_values( $block_theme_site_proposal['input']['write_actions'] ) : array();
 npcink_governance_core_smoke_assert( 1 === count( $block_theme_site_actions ), 'block theme site batch stores one template write action' );
 $block_theme_site_target_ability_id = (string) ( $block_theme_site_actions[0]['target_ability_id'] ?? '' );
@@ -1730,6 +1738,9 @@ npcink_governance_core_smoke_assert( 'plan_to_proposal_batch' === (string) ( $ar
 npcink_governance_core_smoke_assert( 'batch' === (string) ( $article_block_proposal['preview']['source']['proposal_mode'] ?? '' ), 'article block batch preserves proposal_mode' );
 npcink_governance_core_smoke_assert( is_array( $article_block_proposal['preview']['article_block'] ?? null ), 'article block proposal preserves article preview context' );
 npcink_governance_core_smoke_assert( 'comparison-review' === (string) ( $article_block_proposal['preview']['article_block']['article_template'] ?? '' ), 'article block preview preserves article template' );
+if ( is_array( $article_block_plan['block_editor_review'] ?? null ) ) {
+	npcink_governance_core_smoke_assert( is_array( $article_block_proposal['preview']['block_editor_review'] ?? null ), 'article block proposal preserves block editor review' );
+}
 $article_block_actions = is_array( $article_block_proposal['input']['write_actions'] ?? null ) ? array_values( $article_block_proposal['input']['write_actions'] ) : array();
 npcink_governance_core_smoke_assert( 2 === count( $article_block_actions ), 'article block batch stores create and block update actions' );
 npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/create-draft' === (string) ( $article_block_actions[0]['target_ability_id'] ?? '' ), 'article block first action creates a draft post' );

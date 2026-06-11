@@ -2664,6 +2664,27 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Returns plan-level block editor review metadata for proposal previews.
+	 *
+	 * These fields are advisory review evidence only. They do not grant write
+	 * authority or change Core approval/preflight behavior.
+	 *
+	 * @param array<string,mixed> $plan Plan payload.
+	 * @return array<string,mixed>
+	 */
+	private function block_editor_quality_preview( array $plan ): array {
+		$preview = array();
+
+		foreach ( array( 'block_editor_quality_gate', 'block_editor_review', 'block_editor_reviews' ) as $key ) {
+			if ( is_array( $plan[ $key ] ?? null ) ) {
+				$preview[ $key ] = $this->sanitize_payload( $plan[ $key ] );
+			}
+		}
+
+		return $preview;
+	}
+
+	/**
 	 * Builds one Proposal_Service payload for a write action.
 	 *
 	 * @param string              $plan_ability_id Plan ability id.
@@ -2812,6 +2833,7 @@ final class Plan_Proposal_Service {
 		if ( 'npcink-toolbox/build-content-metadata-apply-plan' === $plan_ability_id ) {
 			$preview['content_metadata_apply'] = $this->content_metadata_apply_preview( $plan );
 		}
+		$preview = array_merge( $preview, $this->block_editor_quality_preview( $plan ) );
 
 		$title = sprintf(
 			/* translators: 1: target ability id, 2: action id. */
@@ -3023,6 +3045,7 @@ final class Plan_Proposal_Service {
 		if ( 'npcink-toolbox/build-content-metadata-apply-plan' === $plan_ability_id ) {
 			$preview['content_metadata_apply'] = $this->content_metadata_apply_preview( $plan );
 		}
+		$preview = array_merge( $preview, $this->block_editor_quality_preview( $plan ) );
 		$summary = sprintf(
 			/* translators: 1: plan ability id, 2: action count. */
 			__( 'Created from %1$s as an ordered batch with %2$d actions. Final execution remains outside Core.', 'npcink-governance-core' ),

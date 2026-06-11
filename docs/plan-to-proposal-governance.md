@@ -369,6 +369,11 @@ Generated proposal previews preserve:
 - `blocked_items.skipped_destructive_candidates`;
 - `preflight_blockers`.
 
+For block-editor plan families, Core also preserves plan-level review evidence
+such as `block_editor_quality_gate`, `block_editor_review`, and
+`block_editor_reviews` in proposal `preview`. These fields are review metadata
+only; they do not grant execution authority or bypass approval/preflight.
+
 The target ability input is stored in proposal `input` with `dry_run=true` and
 `commit=false` forced by Core.
 
