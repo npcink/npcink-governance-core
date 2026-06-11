@@ -6,6 +6,9 @@ This repository is primarily developed by one maintainer using AI coding
 agents. The workflow is intentionally lightweight, but every change must still
 leave reviewable evidence in GitHub.
 
+For a condensed handoff summary that future agents can read after this workflow,
+see `docs/ai-development-handoff-summary.md`.
+
 ## Operating Principle
 
 Use GitHub Issues for intent, pull requests for execution evidence, and local
