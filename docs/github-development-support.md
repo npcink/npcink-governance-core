@@ -15,6 +15,9 @@ SVN remains release-only.
 - `Core CI` runs static verification on pull requests and pushes to `master`.
 - `Release Package` is a manually triggered GitHub Actions workflow that builds
   a downloadable plugin zip artifact for review.
+- Solo maintainer + AI agent work should follow
+  `docs/solo-ai-development-workflow.md`: issue first, task branch, PR evidence,
+  separate review pass when practical, then merge after `Static contracts`.
 
 ## Branch Protection
 
@@ -67,3 +70,18 @@ published. The release notes should include:
 - whether listing assets changed.
 
 Do not use GitHub Releases as the WordPress.org publishing path.
+
+## Solo AI Project Board
+
+The `npcink-governance-core Release Board` project is the lightweight planning
+surface for one maintainer working with AI agents.
+
+Use the project fields this way:
+
+- `Release Stage`: `Backlog`, `In Progress`, `Needs Smoke`,
+  `Ready For Release`, `SVN Prepared`, or `Released`.
+- `Gate`: `Static CI`, `Local Smoke`, `Release Package`,
+  `WordPress.org SVN`, or `Docs Only`.
+
+Keep the board small. It should track real work streams and release blockers,
+not every local note or speculative idea.

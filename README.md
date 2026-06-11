@@ -100,6 +100,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Taxonomy Terms Preview Governance Scenario](docs/taxonomy-terms-preview-governance-scenario.md)
 - [Development Workflow](docs/development-workflow.md)
 - [GitHub Development Support](docs/github-development-support.md)
+- [Solo AI Development Workflow](docs/solo-ai-development-workflow.md)
 - [Testing Strategy](docs/testing-strategy.md)
 - [WordPress.org Release Gate](docs/wordpress-org-release-gate.md)
 - [Next Stage Plan](docs/next-stage-plan.md)
