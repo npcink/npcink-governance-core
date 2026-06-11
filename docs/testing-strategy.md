@@ -32,6 +32,9 @@ Use them to assert:
 - runtime-code markers for final execution, provider credentials, model
   routing, workflow runtime, MCP runtime, Agent Gateway catalogs, task queues,
   batch execution consoles, and operator runtime consoles;
+- runtime-shaped REST paths, filenames, and class names such as execute,
+  proxy-execute, jobs, tasks, runs, executor, queue, scheduler, worker, and
+  workflow runtime markers;
 - pull request and boundary-review templates that force AI-assisted changes to
   state the Core ownership boundary before merge;
 - WordPress.org review guard coverage for recurring release-policy issues;

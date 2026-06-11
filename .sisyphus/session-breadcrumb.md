@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-06-11 — Runtime drift marker scan expanded
+
+- **Module**: Core boundary regression checks.
+- **Status**: A second #5 static-contract slice is ready for review.
+- **Completed**:
+  - Expanded static runtime marker checks to catch accidental `/jobs`,
+    `/tasks`, and `/runs` Core REST route additions.
+  - Added runtime-shaped filename and PHP symbol scanning for executor, queue,
+    scheduler, worker, workflow runtime, MCP server, and Agent Gateway markers
+    inside runtime plugin files.
+  - Documented the filename/class/route scan responsibility in the testing
+    strategy.
+- **Verification**:
+  - In `/Users/muze/gitee/npcink-governance-core`: `git diff --check`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer validate --no-check-publish`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer test:all`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer check:wporg`
+- **Boundary**:
+  - Static regression checks and documentation only. No Core runtime authority,
+    provider credential storage, model routing, workflow runtime, MCP runtime,
+    task queue, batch execution console, REST behavior, database schema, or
+    final WordPress execution behavior changed.
+
 ## 2026-06-11 — Core boundary regression checks hardened
 
 - **Module**: Core boundary regression checks.
