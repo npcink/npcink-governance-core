@@ -84,6 +84,22 @@ replay fixture candidate. Environment setup failures exit before the smoke
 test with `[smoke:preflight:fail]` so failures can be classified separately
 from Core contract regressions.
 
+### Smoke Failure Classification
+
+Classify smoke failures before changing code:
+
+- **Environment failure**: `[smoke:preflight:fail] environment:` means the
+  LocalWP root, WP-CLI, Local PHP, MySQL socket, plugin directory, or Core
+  symlink assumption is wrong. Fix the local setup or wrapper targeting first.
+- **Toolkit setup failure**: `[smoke:preflight:fail] toolkit:` means the
+  `npcink-abilities-toolkit` plugin is not mounted where WordPress can load it.
+  Fix the Toolkit symlink/install path; do not copy Toolkit ability definitions into Core.
+- **Core or Toolkit contract regression**: a `[fail]` line from
+  `tests/smoke-wp.php` after preflight passes means WordPress loaded and the
+  smoke assertion failed. Inspect the failing assertion, ability id, proposal
+  id, or correlation id before deciding whether the regression belongs in Core
+  or in the Toolkit provider contract.
+
 Composer metadata:
 
 ```bash
