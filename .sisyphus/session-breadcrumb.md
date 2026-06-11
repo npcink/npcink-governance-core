@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-11 — Solo AI development workflow documented
+
+- **Module**: Solo maintainer + AI development workflow.
+- **Status**: Solo maintainer + AI agent development now has a documented
+  issue-first workflow and seeded GitHub Project backlog.
+- **Completed**:
+  - Added `docs/solo-ai-development-workflow.md` for issue-first AI work,
+    task branches, PR evidence, project board stages, and verification gates.
+  - Linked the workflow from README, GitHub development support docs, and the
+    development workflow.
+  - Created backlog issues #2 through #6 and added them to the
+    `npcink-governance-core Release Board` project with `Release Stage=Backlog`
+    and focused `Gate` values.
+  - Created issue #7 to track this documentation workflow change, with
+    `Release Stage=In Progress` and `Gate=Docs Only`.
+- **Verification**:
+  - In `/Users/muze/gitee/npcink-governance-core`: `git diff --check`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer validate --no-check-publish`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer test:all`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer check:wporg`
+- **Boundary**:
+  - Documentation and GitHub planning process only. No Core runtime authority,
+    provider credential storage, workflow runtime, proposal lifecycle, REST
+    behavior, database schema, or final execution behavior changed.
+
 ## 2026-06-11 — GitHub development support added
 
 - **Module**: GitHub development collaboration and release support.

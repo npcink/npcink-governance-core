@@ -98,6 +98,11 @@ gate, and the manual `Release Package` workflow builds a review artifact only.
 It does not replace the local `composer smoke:wp` or WordPress.org SVN release
 steps.
 
+Solo maintainer + AI agent work is documented in
+`docs/solo-ai-development-workflow.md`. New implementation work should start
+from a GitHub Issue, move through a `codex/<task-name>` branch and pull request,
+and merge only after the required gate passes.
+
 Release preparation for WordPress.org:
 
 ```bash
