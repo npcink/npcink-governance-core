@@ -1,0 +1,98 @@
+name: Release Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Expected plugin version, matching the plugin header, constant, and readme Stable tag.
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-package-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-package:
+    name: Build release package
+    runs-on: ubuntu-latest
+    env:
+      NPCINK_ABILITIES_TOOLKIT_PATH: ${{ github.workspace }}/npcink-abilities-toolkit
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Check out npcink-abilities-toolkit fixtures
+        uses: actions/checkout@v6
+        with:
+          repository: muze-page/npcink-abilities-toolkit
+          ref: master
+          path: npcink-abilities-toolkit
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate Composer metadata
+        run: composer validate --no-check-publish
+
+      - name: Run static contracts
+        run: composer test:all
+
+      - name: Run WordPress.org review guard
+        run: composer check:wporg
+
+      - name: Check release version metadata
+        env:
+          EXPECTED_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          header_version="$(sed -nE 's/^[[:space:]]+\*[[:space:]]Version:[[:space:]]*([^[:space:]]+).*/\1/p' npcink-governance-core.php | head -n 1)"
+          constant_version="$(sed -nE "s/^define\\( 'NPCINK_GOVERNANCE_CORE_VERSION', '([^']+)' \\);/\\1/p" npcink-governance-core.php | head -n 1)"
+          stable_tag="$(sed -nE 's/^Stable tag:[[:space:]]*([^[:space:]]+).*/\1/p' readme.txt | head -n 1)"
+
+          if [[ -z "$header_version" || -z "$constant_version" || -z "$stable_tag" ]]; then
+            echo "Could not read release version metadata." >&2
+            exit 1
+          fi
+
+          if [[ "$header_version" != "$constant_version" || "$header_version" != "$stable_tag" ]]; then
+            echo "Version mismatch:" >&2
+            echo "  Plugin header: $header_version" >&2
+            echo "  Version constant: $constant_version" >&2
+            echo "  Stable tag: $stable_tag" >&2
+            exit 1
+          fi
+
+          if [[ "$header_version" != "$EXPECTED_VERSION" ]]; then
+            echo "Expected version $EXPECTED_VERSION, found $header_version." >&2
+            exit 1
+          fi
+
+      - name: Build plugin package
+        run: composer package:release
+
+      - name: Verify package root
+        run: |
+          set -euo pipefail
+          test -f build/npcink-governance-core.zip
+          bad_entry="$(unzip -Z1 build/npcink-governance-core.zip | awk -F/ '$1 != "npcink-governance-core" { print; exit }')"
+          if [[ -n "$bad_entry" ]]; then
+            echo "Package contains entry outside npcink-governance-core/: $bad_entry" >&2
+            exit 1
+          fi
+          test -f build/npcink-governance-core/npcink-governance-core.php
+
+      - name: Upload release package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: npcink-governance-core-${{ inputs.version }}
+          path: build/npcink-governance-core.zip
+          if-no-files-found: error

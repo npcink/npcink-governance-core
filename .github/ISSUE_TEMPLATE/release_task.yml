@@ -1,0 +1,39 @@
+name: Release Task
+description: Track a GitHub package build and WordPress.org release.
+title: "[Release]: "
+labels: ["release-blocker", "wporg"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: 0.1.1
+    validations:
+      required: true
+  - type: checkboxes
+    id: local_gate
+    attributes:
+      label: Local Release Gate
+      options:
+        - label: Plugin header, version constant, and `readme.txt` Stable tag match.
+        - label: "`composer validate --no-check-publish` passed."
+        - label: "`composer release:verify` passed."
+        - label: "`composer smoke:wp` passed against LocalWP."
+        - label: "`composer package:release` produced `build/npcink-governance-core.zip`."
+  - type: checkboxes
+    id: github_gate
+    attributes:
+      label: GitHub Gate
+      options:
+        - label: Core CI passed on the release commit.
+        - label: Manual Release Package workflow artifact was reviewed.
+        - label: GitHub Release record was created after the WordPress.org release.
+  - type: checkboxes
+    id: wporg
+    attributes:
+      label: WordPress.org SVN
+      options:
+        - label: SVN sync dry run reviewed.
+        - label: SVN trunk updated.
+        - label: SVN version tag created once.
+        - label: SVN assets updated if listing assets changed.

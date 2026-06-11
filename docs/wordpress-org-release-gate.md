@@ -91,6 +91,11 @@ Do not use `--skip-smoke` for a real WordPress.org release. That option exists
 only for local script diagnostics when the LocalWP smoke environment is
 temporarily unavailable.
 
+The GitHub `Release Package` workflow may be used to build a downloadable zip
+artifact for review after Core CI passes. It is not a publication gate and does
+not run the LocalWP smoke test, Plugin Check release scan, or WordPress.org SVN
+sync. Treat it as a secondary package sanity check before the local release gate.
+
 ## WordPress.org SVN Sync
 
 GitHub is the development repository. WordPress.org SVN is the release

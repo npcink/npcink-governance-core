@@ -1,0 +1,27 @@
+name: WordPress.org Review
+description: Track a WordPress.org reviewer finding or policy warning.
+title: "[WP.org]: "
+labels: ["wporg", "release-blocker"]
+body:
+  - type: textarea
+    id: reviewer_message
+    attributes:
+      label: Reviewer Message
+      description: Paste the relevant reviewer finding, including file and line references.
+    validations:
+      required: true
+  - type: textarea
+    id: pattern
+    attributes:
+      label: Pattern Class
+      description: What broader class of issue does this represent?
+    validations:
+      required: true
+  - type: textarea
+    id: guard
+    attributes:
+      label: Local Guard
+      description: Which check should prevent this from recurring?
+      placeholder: composer check:wporg, composer plugin-check:release, tests/run.php, or another gate.
+    validations:
+      required: true

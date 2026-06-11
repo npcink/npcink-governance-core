@@ -1,0 +1,28 @@
+name: Boundary Review
+description: Review a proposed change against the Core governance boundary.
+title: "[Boundary]: "
+labels: ["core-boundary"]
+body:
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Change
+      description: Describe the change and the module it would touch.
+    validations:
+      required: true
+  - type: checkboxes
+    id: ownership
+    attributes:
+      label: Ownership Check
+      options:
+        - label: Core owns proposal, approval, preflight, audit, or app-key governance for this change.
+        - label: Reusable WordPress ability definitions stay in a provider plugin.
+        - label: Final WordPress write execution stays outside Core.
+        - label: No provider credentials, workflow runtime, MCP runtime, Agent Gateway catalogs, task queues, or operator runtime console are added to Core.
+  - type: textarea
+    id: decision
+    attributes:
+      label: Expected Decision
+      description: Should this be accepted into Core, moved to Toolkit/Adapter/Toolbox, or documented as out of scope?
+    validations:
+      required: true

@@ -1,0 +1,37 @@
+name: Bug Report
+description: Report a reproducible Core defect.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What failed, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction Steps
+      description: Include exact commands, REST route, admin action, or smoke scenario.
+      placeholder: |
+        1. Run ...
+        2. Call ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Boundary Check
+      description: Does the issue involve proposal review, approval, preflight, audit, final execution, provider credentials, or ability definitions?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Paste concise logs, failing assertion text, proposal id, correlation id, or screenshots.
+    validations:
+      required: false

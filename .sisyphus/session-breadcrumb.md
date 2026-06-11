@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-11 — GitHub development support added
+
+- **Module**: GitHub development collaboration and release support.
+- **Status**: The repository now has reusable GitHub templates, dependency
+  monitoring configuration, a manual release package artifact workflow, and
+  documentation for the GitHub/WordPress.org split.
+- **Completed**:
+  - Added pull request and issue templates for Core boundary review, bugs,
+    release tasks, and WordPress.org reviewer findings.
+  - Added Dependabot configuration for GitHub Actions and Composer.
+  - Added `Release Package` workflow for manual static package artifact builds.
+  - Added a security policy and GitHub development support documentation.
+- **Verification**:
+  - In `/Users/muze/gitee/npcink-governance-core`: `ruby -e 'require "yaml"; ARGV.each { |f| YAML.load_file(f) }' .github/ISSUE_TEMPLATE/*.yml .github/dependabot.yml .github/workflows/*.yml`
+  - In `/Users/muze/gitee/npcink-governance-core`: `git diff --check`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer validate --no-check-publish`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer test:all`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer check:wporg`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer package:release`
+- **Boundary**:
+  - Repository collaboration and CI/release support only. No Core runtime
+    authority, provider credential storage, workflow runtime, proposal
+    lifecycle, REST behavior, database schema, or final execution behavior
+    changed.
+
 ## 2026-06-10 — WordPress.org release helper scripts added
 
 - **Module**: WordPress.org release tooling.

@@ -91,6 +91,13 @@ composer test:all
 composer check:wporg
 ```
 
+GitHub development support is documented in
+`docs/github-development-support.md`. In short, pull requests and issue
+templates should capture Core boundary impact, `Core CI` protects the static
+gate, and the manual `Release Package` workflow builds a review artifact only.
+It does not replace the local `composer smoke:wp` or WordPress.org SVN release
+steps.
+
 Release preparation for WordPress.org:
 
 ```bash
