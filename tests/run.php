@@ -1192,6 +1192,11 @@ foreach (
 
 $development_workflow = npcink_governance_core_read( $root . '/docs/development-workflow.md' );
 npcink_governance_core_assert( false !== strpos( $development_workflow, 'does not depend on the abandoned legacy Magick AI' ), 'Development workflow rejects the abandoned legacy Magick AI dependency.' );
+npcink_governance_core_assert( false !== strpos( $development_workflow, 'Smoke Failure Classification' ), 'Development workflow documents smoke failure classification.' );
+npcink_governance_core_assert( false !== strpos( $development_workflow, '[smoke:preflight:fail] environment:' ), 'Development workflow classifies smoke environment failures.' );
+npcink_governance_core_assert( false !== strpos( $development_workflow, '[smoke:preflight:fail] toolkit:' ), 'Development workflow classifies smoke Toolkit setup failures.' );
+npcink_governance_core_assert( false !== strpos( $development_workflow, 'do not copy Toolkit ability definitions into Core' ), 'Development workflow preserves Toolkit ability ownership during smoke fixes.' );
+npcink_governance_core_assert( false !== strpos( $development_workflow, 'Core or Toolkit contract regression' ), 'Development workflow classifies post-preflight smoke assertion failures.' );
 npcink_governance_core_assert( false === strpos( $development_workflow, 'magick-ai-root' ), 'Development workflow must not depend on magick-ai-root.' );
 
 $smoke_wp_sh = npcink_governance_core_read( $root . '/tests/smoke-wp.sh' );

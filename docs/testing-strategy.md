@@ -83,6 +83,10 @@ WordPress smoke lives in `tests/smoke-wp.php`.
 The wrapper `tests/smoke-wp.sh` owns LocalWP environment preflight diagnostics
 for WP-CLI, Local PHP, database socket, plugin symlink, and
 `npcink-abilities-toolkit` path assumptions.
+Classify smoke failures before editing code: preflight `environment` failures
+are local setup or targeting issues, preflight `toolkit` failures are provider
+mount/setup issues, and post-preflight PHP smoke `[fail]` lines are Core or
+Toolkit contract regressions that require assertion-level investigation.
 
 Use it for behavior that requires real WordPress:
 

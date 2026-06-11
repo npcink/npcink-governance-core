@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-06-11 — Smoke failure classification documented
+
+- **Module**: LocalWP smoke reliability.
+- **Status**: Second #4 smoke diagnostics slice is ready for review.
+- **Completed**:
+  - Added a smoke failure classification section to the development workflow.
+  - Documented the distinction between preflight `environment` failures,
+    preflight `toolkit` failures, and post-preflight Core or Toolkit contract
+    regressions.
+  - Added static contracts so future edits keep the smoke classification and
+    preserve Toolkit ability ownership.
+- **Verification**:
+  - In `/Users/muze/gitee/npcink-governance-core`: `git diff --check`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer validate --no-check-publish`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer test:all`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer check:wporg`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer smoke:wp`
+- **Boundary**:
+  - Smoke troubleshooting documentation and static contracts only. No Core
+    runtime authority, proposal lifecycle, REST behavior, database schema,
+    reusable ability definitions, Toolkit ability ownership, or final WordPress
+    execution behavior changed.
+
 ## 2026-06-11 — LocalWP smoke preflight diagnostics added
 
 - **Module**: LocalWP smoke reliability.
