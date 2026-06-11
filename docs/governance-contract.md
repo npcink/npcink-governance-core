@@ -14,12 +14,15 @@ This document defines the first Npcink Governance Core governance boundary.
 3. `request`: a caller submits an intended operation.
 4. `proposal`: Core records a reviewable proposal and normalizes metadata.
 5. `review`: a human or trusted host policy approves or rejects the proposal.
-6. `commit`: a future Core service executes only after approval.
-7. `audit`: Core records every lifecycle event.
+6. `preflight`: Core issues one bounded execution handoff after approval.
+7. `execution_result`: Adapter or another host records the post-preflight
+   execution outcome back to Core without making Core the executor.
+8. `audit`: Core records every lifecycle event.
 
-The MVP implements discovery, proposal records, approval/rejection status, and
-audit records. Commit preflight verifies approval readiness without executing
-writes. Commit execution is intentionally contract-first follow-up work.
+The MVP implements discovery, proposal records, approval/rejection status,
+post-preflight execution outcome status, and audit records. Commit preflight
+verifies approval readiness without executing writes. Commit execution remains
+outside Core.
 
 Sensitive read abilities use a separate read request lifecycle. A read request
 is not a proposal and does not authorize writes. It records reviewable intent
@@ -62,6 +65,8 @@ Allowed MVP statuses:
 - `rejected`
 - `expired`
 - `archived`
+- `executed`
+- `execution_failed`
 
 Pending proposals have a bounded review lifetime. Core may automatically move
 stale `pending` proposals to `expired` before listing, viewing, or deciding
@@ -69,6 +74,12 @@ them. Expired proposals are not eligible for approval until they are reopened.
 Expired proposals may be archived as low-frequency audit records, and expired
 or archived proposals may be reopened to `pending` when an administrator needs
 to review them again.
+
+Approved proposals may transition to `executed` or `execution_failed` only
+through a post-preflight execution-result record that binds to the Core-issued
+`commit.preflighted` `correlation_id` and `approved_input_hash`. This records
+Adapter-owned execution outcome and audit evidence; Core still does not execute
+the target ability or store full ability result payloads.
 
 ## Plan-To-Proposal Intake
 
@@ -362,6 +373,8 @@ MVP event names:
 - `proposal.expired`
 - `proposal.archived`
 - `proposal.reopened`
+- `proposal.executed`
+- `proposal.execution_failed`
 - `proposal.viewed`
 - `proposal.listed`
 - `read_request.created`

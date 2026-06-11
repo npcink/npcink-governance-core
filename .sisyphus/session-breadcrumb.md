@@ -1,5 +1,35 @@
 # Session Breadcrumb
 
+## 2026-06-11 — Post-preflight execution outcomes recorded
+
+- **Module**: Proposal lifecycle and Adapter handoff audit.
+- **Status**: Core now records terminal post-preflight execution outcomes
+  reported by the thin Adapter after an allowlisted approved write.
+- **Completed**:
+  - Added Core proposal statuses `executed` and `execution_failed`.
+  - Added `POST /proposals/{proposal_id}/record-execution` so the Adapter can
+    record a public-safe execution result bound to a matching
+    `commit.preflighted` audit event.
+  - Added audit events `proposal.executed` and `proposal.execution_failed`,
+    with rollback to `approved` if outcome audit recording fails.
+  - Updated Adapter integration docs and tests so completed block-theme writes
+    surface Core top-level `status=executed` instead of only an
+    Adapter-derived effective status.
+- **Verification**:
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer test:all`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer smoke:wp`
+  - In `/Users/muze/gitee/magick-ai-adapter`: `composer test:all`
+  - In `/Users/muze/gitee/magick-ai-adapter`: `composer smoke:wp` with the
+    LocalWP PHP and MySQL socket exported explicitly.
+  - Live block-theme proposal `b710f978-598b-4c3a-b255-b207202e4a75` executed
+    through Adapter and now reads back as Core `status=executed` with
+    `proposal.executed` audit and the `openclaw-breadcrumbs` template block.
+- **Boundary**:
+  - Core records execution outcomes only. It still does not execute target
+    abilities or become the final WordPress write authority. Adapter remains
+    the explicit post-Core execution profile for allowlisted writes, with
+    `commit_execution=false` and `core_proxy_execute=false`.
+
 ## 2026-06-11 — AI development workstream summary documented
 
 - **Module**: AI development workstream documentation.

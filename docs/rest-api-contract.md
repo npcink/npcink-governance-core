@@ -37,6 +37,7 @@ scope map is:
 | `POST /proposals/{proposal_id}/approve` | `proposals:approve` |
 | `POST /proposals/{proposal_id}/reject` | `proposals:reject` |
 | `POST /proposals/{proposal_id}/commit-preflight` | `commit:preflight` |
+| `POST /proposals/{proposal_id}/record-execution` | `commit:preflight` |
 | `POST /read-requests` | `read_requests:create` |
 | `GET /read-requests`, `GET /read-requests/{request_id}` | `read_requests:read` |
 | `POST /read-requests/{request_id}/approve` | `read_requests:approve` |
@@ -238,7 +239,7 @@ Response `200`:
 ```
 
 Known proposal status values are `pending`, `approved`, `rejected`, `expired`,
-and `archived`.
+`archived`, `executed`, and `execution_failed`.
 
 Audit event:
 
@@ -1039,6 +1040,61 @@ The handoff object is routing guidance for Adapter. It is not an execution
 token and does not make Core execute the target ability. Core issues at most one
 successful handoff per approved proposal input; replay attempts fail with
 `npcink_governance_core_commit_preflight_already_issued`.
+
+## `POST /proposals/{proposal_id}/record-execution`
+
+Purpose: record the Adapter-owned execution outcome after Core approval and
+commit preflight. This route updates proposal lifecycle status and audit only;
+it does not execute the target ability and does not store full ability result
+payloads.
+
+Permission: `manage_options` or app scope `commit:preflight`.
+
+Path parameters:
+
+| Name | Type | Required |
+| --- | --- | --- |
+| `proposal_id` | string | yes |
+
+Request fields:
+
+| Name | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `execution_status` | string | yes | `succeeded` or `failed`. |
+| `correlation_id` | string | yes | Must match a `commit.preflighted` event for the proposal. |
+| `approved_input_hash` | string | yes | Must match the approved input hash from preflight. |
+| `adapter_request_id` | string | no | Adapter request correlation id. |
+| `execution_mode` | string | no | `single_post`, `batch_write_actions`, or another adapter-safe key. |
+| `executed_count` | integer | no | Number of successful Adapter actions. |
+| `failed_count` | integer | no | Number of failed Adapter actions. |
+| `error_code` | string | no | Public-safe failure code when `execution_status=failed`. |
+
+Response `200`: proposal row with `status=executed` or
+`status=execution_failed`.
+
+Errors:
+
+| Code | HTTP | Meaning |
+| --- | --- | --- |
+| `npcink_governance_core_proposal_not_found` | `404` | Proposal id does not exist. |
+| `npcink_governance_core_execution_record_not_allowed` | `409` | Proposal is not approved or already in an incompatible state. |
+| `npcink_governance_core_invalid_execution_status` | `400` | Execution status is not supported. |
+| `npcink_governance_core_execution_record_binding_required` | `400` | Required preflight binding fields are missing. |
+| `npcink_governance_core_execution_record_preflight_missing` | `409` | No matching Core preflight handoff exists for the supplied binding. |
+| `npcink_governance_core_execution_record_audit_failed` | `500` | Execution outcome could not be audited; status is rolled back. |
+
+Audit events:
+
+- `proposal.executed`
+- `proposal.execution_failed`
+
+Local observability event:
+
+- `core.proposal.record_execution`
+
+Execution result recording keeps `core_proxy_execute=false` and
+`commit_execution=false`. Core remains the proposal, approval, preflight, and
+audit truth; Adapter remains the final WordPress ability executor.
 
 ## Planned Routes
 

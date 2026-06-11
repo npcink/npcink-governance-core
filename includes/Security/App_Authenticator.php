@@ -125,6 +125,16 @@ final class App_Authenticator {
 	}
 
 	/**
+	 * Authorizes recording post-preflight execution results.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return bool|WP_Error
+	 */
+	public function can_record_execution( WP_REST_Request $request ) {
+		return $this->authorize( $request, 'commit:preflight', 'commit_record_execution' );
+	}
+
+	/**
 	 * Authorizes sensitive read request creation.
 	 *
 	 * @param WP_REST_Request $request Request.

@@ -259,6 +259,65 @@ final class Proposals_Controller {
 				),
 			)
 		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/proposals/(?P<proposal_id>[A-Za-z0-9_-]+)/record-execution',
+			array(
+				array(
+					'methods'             => 'POST',
+					'callback'            => array( $this, 'record_execution' ),
+					'permission_callback' => array( $this->auth, 'can_record_execution' ),
+					'args'                => array(
+						'proposal_id' => array(
+							'type'              => 'string',
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'execution_status' => array(
+							'type'              => 'string',
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_key',
+						),
+						'correlation_id' => array(
+							'type'              => 'string',
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'approved_input_hash' => array(
+							'type'              => 'string',
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'adapter_request_id' => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'execution_mode' => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_key',
+						),
+						'executed_count' => array(
+							'type'              => 'integer',
+							'default'           => 0,
+							'sanitize_callback' => 'absint',
+						),
+						'failed_count' => array(
+							'type'              => 'integer',
+							'default'           => 0,
+							'sanitize_callback' => 'absint',
+						),
+						'error_code' => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_key',
+						),
+					),
+				),
+			)
+		);
 	}
 
 	/**
@@ -465,6 +524,47 @@ final class Proposals_Controller {
 				'proposal_id'    => (string) ( $result['proposal_id'] ?? $request->get_param( 'proposal_id' ) ),
 				'ability_id'     => (string) ( $result['proposal']['ability_id'] ?? '' ),
 				'correlation_id' => (string) ( $result['correlation_id'] ?? '' ),
+			)
+		);
+
+		return new WP_REST_Response( $result, 200 );
+	}
+
+	/**
+	 * Records Adapter execution result after Core commit preflight.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return WP_REST_Response|\WP_Error
+	 */
+	public function record_execution( WP_REST_Request $request ) {
+		$started = microtime( true );
+		$result  = $this->service->record_execution_result(
+			(string) $request->get_param( 'proposal_id' ),
+			array(
+				'execution_status'    => $request->get_param( 'execution_status' ),
+				'correlation_id'      => $request->get_param( 'correlation_id' ),
+				'approved_input_hash' => $request->get_param( 'approved_input_hash' ),
+				'adapter_request_id'  => $request->get_param( 'adapter_request_id' ),
+				'execution_mode'      => $request->get_param( 'execution_mode' ),
+				'executed_count'      => $request->get_param( 'executed_count' ),
+				'failed_count'        => $request->get_param( 'failed_count' ),
+				'error_code'          => $request->get_param( 'error_code' ),
+			)
+		);
+
+		if ( is_wp_error( $result ) ) {
+			$this->emit_operation_event( 'core.proposal.record_execution', $started, $result, array( 'proposal_id' => (string) $request->get_param( 'proposal_id' ) ) );
+			return $result;
+		}
+
+		$this->emit_operation_event(
+			'core.proposal.record_execution',
+			$started,
+			null,
+			array(
+				'proposal_id'    => (string) ( $result['proposal_id'] ?? $request->get_param( 'proposal_id' ) ),
+				'ability_id'     => (string) ( $result['ability_id'] ?? '' ),
+				'correlation_id' => (string) $request->get_param( 'correlation_id' ),
 			)
 		);
 

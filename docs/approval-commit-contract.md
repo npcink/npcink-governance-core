@@ -1,7 +1,7 @@
 # Approval Commit Contract
 
-Status: approval status and commit preflight implemented; commit execution
-planned after MVP.
+Status: approval status, commit preflight, and Adapter execution-result
+recording implemented; commit execution stays outside Core.
 
 The approval-commit path is the core reason this plugin exists. The MVP can
 approve or reject proposals, but it does not execute commits yet; this document
@@ -26,10 +26,13 @@ The current implementation supports:
 - `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/approve`
 - `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/reject`
 - `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight`
+- `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/record-execution`
 
 Approval and rejection routes update proposal status and write audit events.
 Commit preflight verifies that an approved proposal can produce Core-generated
-approval context. None of these routes execute the target ability.
+approval context. Execution-result recording lets Adapter move an approved
+proposal to `executed` or `execution_failed` after a matching preflight handoff.
+None of these routes execute the target ability.
 
 Preflight must:
 
@@ -102,6 +105,14 @@ The handoff object is not a second approval and not an execution token. Core
 issues one handoff per approved proposal input. Adapter must treat duplicate
 preflight rejection as a signal to use the original audited handoff or create a
 new proposal after fresh review.
+
+After Adapter executes a write through WordPress Abilities API, it should call
+Core `record-execution` with `execution_status`, `correlation_id`,
+`approved_input_hash`, and public-safe execution counters. Core accepts the
+record only when it matches an existing `commit.preflighted` handoff for the
+approved proposal input. A successful record changes proposal status to
+`executed`; a failed record changes status to `execution_failed`. If audit
+persistence fails, Core rolls the proposal back to `approved`.
 
 Generic MCP keys should not receive `proposals:approve`. Productized Magick AI
 Adapter may use a separately issued trusted key with `proposals:approve` when

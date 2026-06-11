@@ -291,6 +291,8 @@ npcink_governance_core_assert( false !== strpos( $governance, 'proposal.rejected
 npcink_governance_core_assert( false !== strpos( $governance, 'proposal.expired' ), 'Governance contract records proposal.expired event.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'proposal.archived' ), 'Governance contract records proposal.archived event.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'proposal.reopened' ), 'Governance contract records proposal.reopened event.' );
+npcink_governance_core_assert( false !== strpos( $governance, 'proposal.executed' ), 'Governance contract records proposal.executed event.' );
+npcink_governance_core_assert( false !== strpos( $governance, 'proposal.execution_failed' ), 'Governance contract records proposal.execution_failed event.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'proposal.viewed' ), 'Governance contract records proposal.viewed event.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'proposal.listed' ), 'Governance contract records proposal.listed event.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'commit.preflighted' ), 'Governance contract records commit.preflighted event.' );
@@ -899,6 +901,8 @@ foreach (
 		'npcink_governance_core_app_rate_limited',
 		'can_create_proposals',
 		'can_commit_preflight',
+		'can_record_execution',
+		'commit_record_execution',
 		'can_create_read_requests',
 		'can_preflight_read_requests',
 		'read_requests_approve',
@@ -1288,6 +1292,7 @@ npcink_governance_core_assert( false !== strpos( $proposals_controller, 'core.pr
 npcink_governance_core_assert( false !== strpos( $proposals_controller, 'core.proposal.approve' ), 'Proposal approve emits operation observability.' );
 npcink_governance_core_assert( false !== strpos( $proposals_controller, 'core.proposal.reject' ), 'Proposal reject emits operation observability.' );
 npcink_governance_core_assert( false !== strpos( $proposals_controller, 'core.commit.preflight' ), 'Commit preflight emits operation observability.' );
+npcink_governance_core_assert( false !== strpos( $proposals_controller, 'core.proposal.record_execution' ), 'Proposal execution record emits operation observability.' );
 npcink_governance_core_assert( false !== strpos( $proposals_controller, 'npcink_governance_core_proposal_items_blocked' ), 'Commit preflight classifies blocked proposal observability.' );
 npcink_governance_core_assert( false !== strpos( $proposals_controller, "'/proposals/from-plan'" ), 'Plan-to-proposal REST route is registered.' );
 npcink_governance_core_assert( false !== strpos( $proposals_controller, 'create_proposals_from_plan' ), 'Plan-to-proposal REST callback is registered.' );
@@ -1295,6 +1300,7 @@ npcink_governance_core_assert( false !== strpos( $proposals_controller, 'get_pro
 npcink_governance_core_assert( false !== strpos( $proposals_controller, "/approve'" ), 'Proposal approve REST route is registered.' );
 npcink_governance_core_assert( false !== strpos( $proposals_controller, "/reject'" ), 'Proposal reject REST route is registered.' );
 npcink_governance_core_assert( false !== strpos( $proposals_controller, "/commit-preflight'" ), 'Proposal commit preflight REST route is registered.' );
+npcink_governance_core_assert( false !== strpos( $proposals_controller, "/record-execution'" ), 'Proposal execution record REST route is registered.' );
 npcink_governance_core_assert( false !== strpos( $proposals_controller, "'ability_id'" ), 'Proposals route requires ability_id.' );
 npcink_governance_core_assert( false !== strpos( $proposals_controller, 'audit_timeline' ), 'Proposal detail REST route returns audit timeline.' );
 npcink_governance_core_assert( false !== strpos( $proposals_controller, 'expire_stale_pending' ), 'Proposal REST routes expire stale pending proposals before reads.' );
@@ -1376,6 +1382,8 @@ npcink_governance_core_assert( false !== strpos( $wporg_guard, 'variable-only ke
 npcink_governance_core_assert( false !== strpos( $wporg_guard, 'prefix visible at the call site' ), 'WordPress.org guard requires transient prefixes at the call site.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'STATUS_EXPIRED' ), 'Proposal repository defines expired status.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'STATUS_ARCHIVED' ), 'Proposal repository defines archived status.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'STATUS_EXECUTED' ), 'Proposal repository defines executed status.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'STATUS_EXECUTION_FAILED' ), 'Proposal repository defines execution failed status.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'list_stale_pending' ), 'Proposal repository can list stale pending proposals.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'list_pending_for_guardrail' ), 'Proposal repository can list pending proposals for create guardrails.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'count_by_status' ), 'Proposal repository can count status queues.' );
@@ -1412,6 +1420,11 @@ npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.re
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.expired' ), 'Proposal service records proposal.expired audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.archived' ), 'Proposal service records proposal.archived audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.reopened' ), 'Proposal service records proposal.reopened audit event.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'record_execution_result' ), 'Proposal service records post-preflight execution results.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.executed' ), 'Proposal service records proposal.executed audit event.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.execution_failed' ), 'Proposal service records proposal.execution_failed audit event.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_execution_record_preflight_missing' ), 'Proposal service requires execution records to bind to preflight.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_execution_record_audit_failed' ), 'Proposal service fails closed when execution record audit fails.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'PENDING_TTL_SECONDS' ), 'Proposal service defines a pending review TTL.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'PENDING_QUOTA_PER_APP' ), 'Proposal service defines an app pending proposal quota.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'PENDING_QUOTA_PER_USER' ), 'Proposal service defines a user pending proposal quota.' );

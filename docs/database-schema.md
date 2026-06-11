@@ -15,7 +15,7 @@ records; they are not workflow runtime state.
 | `id` | `bigint(20) unsigned` | no | Internal auto-increment primary key. |
 | `proposal_id` | `varchar(64)` | no | Public stable id, generated with `wp_generate_uuid4()` when available. |
 | `ability_id` | `varchar(190)` | no | Target WordPress ability id. |
-| `status` | `varchar(40)` | no | `pending`, `approved`, `rejected`, `expired`, or `archived`. |
+| `status` | `varchar(40)` | no | `pending`, `approved`, `rejected`, `expired`, `archived`, `executed`, or `execution_failed`. |
 | `title` | `text` | yes | Human-readable title. |
 | `summary` | `longtext` | yes | Human-readable summary. |
 | `input_json` | `longtext` | yes | Sanitized structured input. |
@@ -40,6 +40,8 @@ Allowed statuses:
 - `rejected`
 - `expired`
 - `archived`
+- `executed`
+- `execution_failed`
 
 Status transition rules:
 
@@ -49,6 +51,9 @@ Status transition rules:
 - stale `pending` proposals transition to `expired` after the Core pending TTL;
 - only `expired` proposals may transition to `archived`;
 - `expired` or `archived` proposals may be reopened to `pending` for review;
+- only `approved` proposals may transition to `executed` or
+  `execution_failed` through a post-preflight execution-result record that
+  matches `commit.preflighted` `correlation_id` and `approved_input_hash`;
 - MVP status transitions do not execute the target ability.
 
 ## Table: `{prefix}npcink_governance_core_read_requests`
@@ -138,6 +143,8 @@ MVP event names:
 - `proposal.expired`
 - `proposal.archived`
 - `proposal.reopened`
+- `proposal.executed`
+- `proposal.execution_failed`
 - `proposal.viewed`
 - `proposal.listed`
 - `audit.listed`

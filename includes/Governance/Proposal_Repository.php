@@ -22,6 +22,8 @@ final class Proposal_Repository {
 	const STATUS_REJECTED = 'rejected';
 	const STATUS_EXPIRED  = 'expired';
 	const STATUS_ARCHIVED = 'archived';
+	const STATUS_EXECUTED = 'executed';
+	const STATUS_EXECUTION_FAILED = 'execution_failed';
 
 	/**
 	 * Returns table name.
@@ -464,6 +466,8 @@ final class Proposal_Repository {
 			self::STATUS_REJECTED,
 			self::STATUS_EXPIRED,
 			self::STATUS_ARCHIVED,
+			self::STATUS_EXECUTED,
+			self::STATUS_EXECUTION_FAILED,
 		);
 	}
 

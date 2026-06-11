@@ -3620,6 +3620,55 @@ foreach ( $representative_ability_ids as $ability_id ) {
 $wpdb     = npcink_governance_core_fail_closed_reset_db();
 $stack    = npcink_governance_core_fail_closed_governance_stack();
 $proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/update-post' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Execution record proposal is created.' );
+$approved = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'execution_record' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'Execution record proposal is approved.' );
+$preflight = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $preflight ), 'Execution record proposal passes preflight.' );
+$recorded = $stack['service']->record_execution_result(
+	(string) $proposal['proposal_id'],
+	array(
+		'execution_status'    => 'succeeded',
+		'correlation_id'      => (string) ( $preflight['correlation_id'] ?? '' ),
+		'approved_input_hash' => (string) ( $preflight['approval_context']['approved_input_hash'] ?? '' ),
+		'adapter_request_id'  => 'adapter-execution-record-smoke',
+		'execution_mode'      => 'single_post',
+		'executed_count'      => 1,
+		'failed_count'        => 0,
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $recorded ) && 'executed' === (string) ( $recorded['status'] ?? '' ), 'Execution record moves approved proposal to executed.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'proposal.executed' ) ), 'Execution record success is audited.' );
+
+$wpdb     = npcink_governance_core_fail_closed_reset_db();
+$stack    = npcink_governance_core_fail_closed_governance_stack();
+$proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/update-post' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Execution record rollback proposal is created.' );
+$approved = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'execution_record_rollback' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'Execution record rollback proposal is approved.' );
+$preflight = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $preflight ), 'Execution record rollback proposal passes preflight.' );
+$wpdb->fail_insert_event_names[] = 'proposal.executed';
+$recorded = $stack['service']->record_execution_result(
+	(string) $proposal['proposal_id'],
+	array(
+		'execution_status'    => 'succeeded',
+		'correlation_id'      => (string) ( $preflight['correlation_id'] ?? '' ),
+		'approved_input_hash' => (string) ( $preflight['approval_context']['approved_input_hash'] ?? '' ),
+		'adapter_request_id'  => 'adapter-execution-record-rollback',
+		'execution_mode'      => 'single_post',
+		'executed_count'      => 1,
+		'failed_count'        => 0,
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $recorded ), 'Execution record audit failure returns WP_Error.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_execution_record_audit_failed' === $recorded->get_error_code(), 'Execution record audit failure uses stable error code.' );
+$rolled_back = $stack['proposals']->find( (string) $proposal['proposal_id'] );
+npcink_governance_core_fail_closed_assert( is_array( $rolled_back ) && 'approved' === $rolled_back['status'], 'Execution record audit failure rolls status back to approved.' );
+
+$wpdb     = npcink_governance_core_fail_closed_reset_db();
+$stack    = npcink_governance_core_fail_closed_governance_stack();
+$proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/update-post' ) );
 npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Contract drift proposal is created.' );
 $approved = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'contract_drift' ) );
 npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'Contract drift proposal is approved.' );

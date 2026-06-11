@@ -46,6 +46,7 @@ MVP routes require `manage_options` or a scoped app key where documented.
 - `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/approve`
 - `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/reject`
 - `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight`
+- `POST /wp-json/npcink-governance-core/v1/proposals/{proposal_id}/record-execution`
 - `POST /wp-json/npcink-governance-core/v1/read-requests`
 - `GET /wp-json/npcink-governance-core/v1/read-requests`
 - `GET /wp-json/npcink-governance-core/v1/read-requests/{request_id}`
@@ -55,7 +56,8 @@ MVP routes require `manage_options` or a scoped app key where documented.
 - `GET /wp-json/npcink-governance-core/v1/audit`
 
 The first implementation records proposals, approval/rejection decisions, and
-audit events, provides commit preflight without executing writes, and records
+audit events, provides commit preflight without executing writes, records
+Adapter-owned post-preflight execution outcomes as proposal lifecycle status, and records
 Core-managed sensitive read requests for read abilities that require additional
 authorization. Final commit execution is intentionally not implemented until
 idempotency and failure contracts are locked and covered by tests.

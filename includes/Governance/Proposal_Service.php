@@ -326,6 +326,92 @@ final class Proposal_Service {
 	}
 
 	/**
+	 * Records Adapter-owned execution result after Core approval and preflight.
+	 *
+	 * Core records the lifecycle outcome and audit evidence only. It does not
+	 * execute the target ability or store full ability result payloads.
+	 *
+	 * @param string              $proposal_id Proposal id.
+	 * @param array<string,mixed> $metadata Execution metadata.
+	 * @return array<string,mixed>|WP_Error
+	 */
+	public function record_execution_result( string $proposal_id, array $metadata = array() ) {
+		$proposal_id = sanitize_text_field( $proposal_id );
+		$existing    = $this->proposals->find( $proposal_id );
+
+		if ( null === $existing ) {
+			return $this->not_found_error();
+		}
+
+		$previous_status = (string) ( $existing['status'] ?? '' );
+		if ( in_array( $previous_status, array( Proposal_Repository::STATUS_EXECUTED, Proposal_Repository::STATUS_EXECUTION_FAILED ), true ) ) {
+			return $existing;
+		}
+
+		if ( Proposal_Repository::STATUS_APPROVED !== $previous_status ) {
+			return new WP_Error(
+				'npcink_governance_core_execution_record_not_allowed',
+				__( 'Only approved proposals can record final execution results.', 'npcink-governance-core' ),
+				array(
+					'status'          => 409,
+					'proposal_status' => $previous_status,
+				)
+			);
+		}
+
+		$execution_status = sanitize_key( (string) ( $metadata['execution_status'] ?? $metadata['status'] ?? '' ) );
+		$target_status    = $this->proposal_status_for_execution_result( $execution_status );
+		if ( '' === $target_status ) {
+			return new WP_Error(
+				'npcink_governance_core_invalid_execution_status',
+				__( 'Execution status must be succeeded or failed.', 'npcink-governance-core' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		$approved_input_hash = sanitize_text_field( (string) ( $metadata['approved_input_hash'] ?? '' ) );
+		$correlation_id      = sanitize_text_field( (string) ( $metadata['correlation_id'] ?? '' ) );
+		if ( '' === $approved_input_hash || '' === $correlation_id ) {
+			return new WP_Error(
+				'npcink_governance_core_execution_record_binding_required',
+				__( 'Execution records must include the approved input hash and preflight correlation id.', 'npcink-governance-core' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		if ( ! $this->has_matching_preflight_handoff( $proposal_id, $approved_input_hash, $correlation_id ) ) {
+			return new WP_Error(
+				'npcink_governance_core_execution_record_preflight_missing',
+				__( 'Execution record does not match a Core commit-preflight handoff.', 'npcink-governance-core' ),
+				array(
+					'status'              => 409,
+					'approved_input_hash' => $approved_input_hash,
+					'correlation_id'      => $correlation_id,
+				)
+			);
+		}
+
+		$proposal = $this->proposals->update_status( $proposal_id, $target_status );
+		if ( null === $proposal ) {
+			return $this->transition_failed_error();
+		}
+
+		$event_name = Proposal_Repository::STATUS_EXECUTED === $target_status ? 'proposal.executed' : 'proposal.execution_failed';
+		$event_id   = $this->audit->record(
+			$event_name,
+			$this->execution_result_audit_metadata( $proposal, $metadata, $previous_status, $target_status ),
+			$proposal_id
+		);
+
+		if ( '' === $event_id ) {
+			$this->proposals->update_status( $proposal_id, $previous_status );
+			return $this->audit_failed_error( 'npcink_governance_core_execution_record_audit_failed' );
+		}
+
+		return $proposal;
+	}
+
+	/**
 	 * Archives an expired proposal.
 	 *
 	 * @param string              $proposal_id Proposal id.
@@ -644,6 +730,84 @@ final class Proposal_Service {
 		$json = wp_json_encode( $this->normalize_payload_for_hash( $this->sanitize_payload_for_hash( $payload ) ) );
 
 		return hash( 'sha256', is_string( $json ) ? $json : '' );
+	}
+
+	/**
+	 * Maps Adapter execution status to Core proposal terminal status.
+	 *
+	 * @param string $execution_status Adapter execution status.
+	 * @return string Core proposal status or empty string when unsupported.
+	 */
+	private function proposal_status_for_execution_result( string $execution_status ): string {
+		if ( in_array( $execution_status, array( 'succeeded', 'success', 'executed' ), true ) ) {
+			return Proposal_Repository::STATUS_EXECUTED;
+		}
+
+		if ( in_array( $execution_status, array( 'failed', 'failure', 'error' ), true ) ) {
+			return Proposal_Repository::STATUS_EXECUTION_FAILED;
+		}
+
+		return '';
+	}
+
+	/**
+	 * Returns whether the execution record matches an issued Core preflight handoff.
+	 *
+	 * @param string $proposal_id Proposal id.
+	 * @param string $approved_input_hash Approved input hash.
+	 * @param string $correlation_id Preflight correlation id.
+	 * @return bool
+	 */
+	private function has_matching_preflight_handoff( string $proposal_id, string $approved_input_hash, string $correlation_id ): bool {
+		$events = $this->audit->list_filtered(
+			array(
+				'proposal_id'    => $proposal_id,
+				'event_name'     => 'commit.preflighted',
+				'correlation_id' => $correlation_id,
+				'limit'          => 1,
+			)
+		);
+
+		foreach ( $events as $event ) {
+			$metadata = is_array( $event['metadata'] ?? null ) ? $event['metadata'] : array();
+			if (
+				$approved_input_hash === sanitize_text_field( (string) ( $metadata['approved_input_hash'] ?? '' ) )
+				&& $correlation_id === sanitize_text_field( (string) ( $metadata['correlation_id'] ?? '' ) )
+			) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Builds public-safe audit metadata for execution result records.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row after status update.
+	 * @param array<string,mixed> $metadata Raw request metadata.
+	 * @param string              $previous_status Previous proposal status.
+	 * @param string              $target_status New proposal status.
+	 * @return array<string,mixed>
+	 */
+	private function execution_result_audit_metadata( array $proposal, array $metadata, string $previous_status, string $target_status ): array {
+		return array(
+			'ability_id'            => sanitize_text_field( (string) ( $proposal['ability_id'] ?? '' ) ),
+			'status'                => $target_status,
+			'previous_status'       => sanitize_key( $previous_status ),
+			'execution_status'      => sanitize_key( (string) ( $metadata['execution_status'] ?? $metadata['status'] ?? '' ) ),
+			'correlation_id'        => sanitize_text_field( (string) ( $metadata['correlation_id'] ?? '' ) ),
+			'approved_input_hash'   => sanitize_text_field( (string) ( $metadata['approved_input_hash'] ?? '' ) ),
+			'adapter_request_id'    => sanitize_text_field( (string) ( $metadata['adapter_request_id'] ?? '' ) ),
+			'execution_mode'        => sanitize_key( (string) ( $metadata['execution_mode'] ?? '' ) ),
+			'execution_surface'     => 'wp_abilities_rest',
+			'executed_count'        => absint( $metadata['executed_count'] ?? 0 ),
+			'failed_count'          => absint( $metadata['failed_count'] ?? 0 ),
+			'error_code'            => sanitize_key( (string) ( $metadata['error_code'] ?? '' ) ),
+			'commit_execution'      => false,
+			'core_proxy_execute'    => false,
+			'write_execution_owner' => 'adapter_after_core_preflight',
+		);
 	}
 
 	/**
