@@ -1,5 +1,26 @@
 # Session Breadcrumb
 
+## 2026-06-11 — AI development handoff summary added
+
+- **Module**: AI development handoff documentation.
+- **Status**: A standalone AI development handoff summary is available for
+  future agents.
+- **Completed**:
+  - Created issue #11 to track the standalone handoff summary.
+  - Added `docs/ai-development-handoff-summary.md` as the condensed future-AI
+    entrypoint for current GitHub setup, workflow rules, project backlog,
+    current priorities, release boundaries, and startup prompt.
+  - Linked the handoff summary from README and the solo AI workflow doc.
+- **Verification**:
+  - In `/Users/muze/gitee/npcink-governance-core`: `git diff --check`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer validate --no-check-publish`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer test:all`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer check:wporg`
+- **Boundary**:
+  - Documentation and GitHub planning process only. No Core runtime authority,
+    provider credential storage, workflow runtime, proposal lifecycle, REST
+    behavior, database schema, or final execution behavior changed.
+
 ## 2026-06-11 — Priority guardrails documented for solo AI work
 
 - **Module**: Solo AI development priority guardrails.
