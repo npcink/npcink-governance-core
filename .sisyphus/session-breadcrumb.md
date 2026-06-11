@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-11 — AI development workstream summary documented
+
+- **Module**: AI development workstream documentation.
+- **Status**: Current #4/#5 history and stop criteria are captured in repo
+  docs for future agents.
+- **Completed**:
+  - Added `docs/ai-development-workstream-summary.md` to summarize the recent
+    AI development handoff, Core boundary regression, and LocalWP smoke
+    reliability slices.
+  - Linked the workstream summary from README and the AI development handoff
+    summary.
+  - Added static contracts that preserve the summary's main boundary and stop
+    criteria.
+- **Verification**:
+  - In `/Users/muze/gitee/npcink-governance-core`: `git diff --check`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer validate --no-check-publish`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer test:all`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer check:wporg`
+- **Boundary**:
+  - Documentation and static contracts only. No Core runtime authority,
+    proposal lifecycle, REST behavior, database schema, Toolkit ability
+    ownership, smoke runtime behavior, or final WordPress execution behavior
+    changed.
+
 ## 2026-06-11 — Smoke failure classification documented
 
 - **Module**: LocalWP smoke reliability.

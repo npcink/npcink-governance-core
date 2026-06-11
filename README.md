@@ -102,6 +102,7 @@ Read the project handoff docs before starting a new implementation session:
 - [GitHub Development Support](docs/github-development-support.md)
 - [Solo AI Development Workflow](docs/solo-ai-development-workflow.md)
 - [AI Development Handoff Summary](docs/ai-development-handoff-summary.md)
+- [AI Development Workstream Summary](docs/ai-development-workstream-summary.md)
 - [Testing Strategy](docs/testing-strategy.md)
 - [WordPress.org Release Gate](docs/wordpress-org-release-gate.md)
 - [Next Stage Plan](docs/next-stage-plan.md)

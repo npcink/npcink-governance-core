@@ -174,6 +174,7 @@ foreach (
 		'Sensitive Read Authorization',
 		'ADR-004: Suite Consolidation And Local Admin Consent',
 		'ADR-005: Keep Core Independent And Standardize Channel Adapters',
+		'AI Development Workstream Summary',
 		'Operation Classification Contract',
 		'local admin consent with audit',
 	) as $required
@@ -1198,6 +1199,22 @@ npcink_governance_core_assert( false !== strpos( $development_workflow, '[smoke:
 npcink_governance_core_assert( false !== strpos( $development_workflow, 'do not copy Toolkit ability definitions into Core' ), 'Development workflow preserves Toolkit ability ownership during smoke fixes.' );
 npcink_governance_core_assert( false !== strpos( $development_workflow, 'Core or Toolkit contract regression' ), 'Development workflow classifies post-preflight smoke assertion failures.' );
 npcink_governance_core_assert( false === strpos( $development_workflow, 'magick-ai-root' ), 'Development workflow must not depend on magick-ai-root.' );
+
+$ai_workstream_summary = npcink_governance_core_read( $root . '/docs/ai-development-workstream-summary.md' );
+foreach (
+	array(
+		'Core boundary drift',
+		'Weak local smoke evidence',
+		'Core Boundary Regression Checks',
+		'LocalWP Smoke Reliability',
+		'Current Stop Point',
+		'Do not keep adding guards merely because more strings or checks are possible.',
+		'real review finding, smoke failure',
+		'release-preparation issue, or maintainer priority change',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $ai_workstream_summary, $required ), 'AI development workstream summary contains required text: ' . $required );
+}
 
 $smoke_wp_sh = npcink_governance_core_read( $root . '/tests/smoke-wp.sh' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp_sh, 'WP_CLI' ), 'WordPress smoke shell uses WP-CLI directly.' );

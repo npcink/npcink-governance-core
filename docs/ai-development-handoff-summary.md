@@ -103,6 +103,10 @@ This document was added under:
 
 - [#11 Add AI development handoff summary](https://github.com/muze-page/npcink-governance-core/issues/11)
 
+For the current-stage history behind the #5 boundary regression and #4 smoke
+reliability slices, see
+`docs/ai-development-workstream-summary.md`.
+
 ## Current Priority Order
 
 Unless the maintainer gives newer instructions, future agents should prioritize:
