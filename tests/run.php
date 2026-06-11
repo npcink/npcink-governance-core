@@ -1901,6 +1901,9 @@ $forbidden_runtime_terms = array(
 $forbidden_runtime_code_markers = array(
 	"register_rest_route( 'npcink-governance-core/v1', '/execute",
 	"register_rest_route( 'npcink-governance-core/v1', '/proxy-execute",
+	"register_rest_route( 'npcink-governance-core/v1', '/jobs",
+	"register_rest_route( 'npcink-governance-core/v1', '/tasks",
+	"register_rest_route( 'npcink-governance-core/v1', '/runs",
 	'provider_credentials',
 	'provider_api_key',
 	'model_router',
@@ -1914,6 +1917,8 @@ $forbidden_runtime_code_markers = array(
 	'agent_gateway',
 	'mcp_server',
 );
+
+$forbidden_runtime_name_pattern = '/(^|_)(executor|job_runner|queue|scheduler|worker|workflow_runtime|mcp_server|agent_gateway)($|_)/i';
 
 foreach ( npcink_governance_core_project_files( $root ) as $file ) {
 	$relative = str_replace( $root . '/', '', $file );
@@ -1929,6 +1934,15 @@ foreach ( npcink_governance_core_project_files( $root ) as $file ) {
 
 	foreach ( $forbidden_runtime_code_markers as $marker ) {
 		npcink_governance_core_assert( false === strpos( $contents, $marker ), $relative . ' must not reintroduce Core runtime ownership marker: ' . $marker );
+	}
+
+	$basename = strtolower( pathinfo( $relative, PATHINFO_FILENAME ) );
+	npcink_governance_core_assert( 1 !== preg_match( $forbidden_runtime_name_pattern, $basename ), $relative . ' must not introduce a runtime-shaped file name.' );
+
+	if ( preg_match_all( '/\b(?:final\s+)?(?:class|interface|trait)\s+([A-Za-z_][A-Za-z0-9_]*)/', $contents, $matches ) ) {
+		foreach ( $matches[1] as $symbol_name ) {
+			npcink_governance_core_assert( 1 !== preg_match( $forbidden_runtime_name_pattern, $symbol_name ), $relative . ' must not introduce a runtime-shaped PHP symbol: ' . $symbol_name );
+		}
 	}
 }
 
