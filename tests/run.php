@@ -208,6 +208,30 @@ foreach ( array( 'tests', 'examples', 'docs', 'AGENTS.md', '.sisyphus', '.workbu
 	npcink_governance_core_assert( false !== strpos( $distignore, $required ), 'Release distignore excludes development path: ' . $required );
 }
 
+$pull_request_template = npcink_governance_core_read( $root . '/.github/pull_request_template.md' );
+foreach (
+	array(
+		'Core remains the governance layer for ability intake, proposals, approval/preflight, and audit.',
+		'This does not add final WordPress write execution to Core.',
+		'provider credential storage, model routing, workflow runtime, MCP runtime, Agent Gateway catalogs, task queues, batch execution consoles, or product workflow UX',
+		'Reusable WordPress ability definitions remain outside Core',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $pull_request_template, $required ), 'Pull request template contains Core boundary checkpoint: ' . $required );
+}
+
+$boundary_review_template = npcink_governance_core_read( $root . '/.github/ISSUE_TEMPLATE/boundary_review.yml' );
+foreach (
+	array(
+		'Core owns proposal, approval, preflight, audit, or app-key governance for this change.',
+		'Final WordPress write execution stays outside Core.',
+		'provider credentials, model routing, workflow runtime, MCP runtime, Agent Gateway catalogs, task queues, batch execution consoles, operator runtime console, or product workflow UX',
+		'Reusable WordPress ability definitions remain outside Core',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $boundary_review_template, $required ), 'Boundary review template contains Core boundary checkpoint: ' . $required );
+}
+
 $positioning = npcink_governance_core_read( $root . '/docs/product-positioning.md' );
 npcink_governance_core_assert( false !== strpos( $positioning, 'Npcink Governance Core governs AI-assisted WordPress operations.' ), 'Positioning keeps one-sentence product truth.' );
 npcink_governance_core_assert( false !== strpos( $positioning, 'External explanation: Npcink AI governance layer for WordPress operations.' ), 'Positioning keeps public explanation.' );
@@ -1874,16 +1898,37 @@ $forbidden_runtime_terms = array(
 	'workflow/comment-moderation',
 );
 
+$forbidden_runtime_code_markers = array(
+	"register_rest_route( 'npcink-governance-core/v1', '/execute",
+	"register_rest_route( 'npcink-governance-core/v1', '/proxy-execute",
+	'provider_credentials',
+	'provider_api_key',
+	'model_router',
+	'model_routing',
+	'prompt_preset',
+	'workflow_runtime',
+	'task_queue',
+	'workflow_queue',
+	'batch_execution_console',
+	'operator_runtime_console',
+	'agent_gateway',
+	'mcp_server',
+);
+
 foreach ( npcink_governance_core_project_files( $root ) as $file ) {
 	$relative = str_replace( $root . '/', '', $file );
 	$contents = npcink_governance_core_read( $file );
 
-	foreach ( $forbidden_runtime_terms as $term ) {
-		if ( ! preg_match( '/^(includes|npcink-governance-core\.php)/', $relative ) ) {
-			continue;
-		}
+	if ( ! preg_match( '/^(includes|npcink-governance-core\.php)/', $relative ) ) {
+		continue;
+	}
 
+	foreach ( $forbidden_runtime_terms as $term ) {
 		npcink_governance_core_assert( false === strpos( $contents, $term ), $relative . ' must not reintroduce old Core runtime term: ' . $term );
+	}
+
+	foreach ( $forbidden_runtime_code_markers as $marker ) {
+		npcink_governance_core_assert( false === strpos( $contents, $marker ), $relative . ' must not reintroduce Core runtime ownership marker: ' . $marker );
 	}
 }
 

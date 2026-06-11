@@ -16,9 +16,9 @@ body:
       label: Ownership Check
       options:
         - label: Core owns proposal, approval, preflight, audit, or app-key governance for this change.
-        - label: Reusable WordPress ability definitions stay in a provider plugin.
+        - label: Reusable WordPress ability definitions remain outside Core, in `npcink-abilities-toolkit` or another provider plugin.
         - label: Final WordPress write execution stays outside Core.
-        - label: No provider credentials, workflow runtime, MCP runtime, Agent Gateway catalogs, task queues, or operator runtime console are added to Core.
+        - label: No provider credentials, model routing, workflow runtime, MCP runtime, Agent Gateway catalogs, task queues, batch execution consoles, operator runtime console, or product workflow UX are added to Core.
   - type: textarea
     id: decision
     attributes:
