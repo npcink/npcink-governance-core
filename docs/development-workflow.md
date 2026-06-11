@@ -77,6 +77,13 @@ WP_CLI_MYSQL_SOCKET="/path/to/mysql/mysqld.sock" \
 composer smoke:wp
 ```
 
+Before running the WordPress smoke PHP file, `tests/smoke-wp.sh` prints
+`[smoke:preflight]` diagnostics for the repository root, `WP_PATH`, WP-CLI,
+Local PHP, MySQL socket, Core plugin symlink, Toolkit plugin file, and Toolkit
+replay fixture candidate. Environment setup failures exit before the smoke
+test with `[smoke:preflight:fail]` so failures can be classified separately
+from Core contract regressions.
+
 Composer metadata:
 
 ```bash

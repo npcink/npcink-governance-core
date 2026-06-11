@@ -1,5 +1,32 @@
 # Session Breadcrumb
 
+## 2026-06-11 — LocalWP smoke preflight diagnostics added
+
+- **Module**: LocalWP smoke reliability.
+- **Status**: First #4 smoke diagnostics slice is ready for review.
+- **Completed**:
+  - Added `[smoke:preflight]` diagnostics to `tests/smoke-wp.sh` for
+    repository root, `WP_PATH`, WP-CLI, Local PHP, MySQL socket, Core plugin
+    symlink, Toolkit plugin file, and Toolkit replay fixture candidate.
+  - Added fail-fast `[smoke:preflight:fail]` classification for missing
+    WP-CLI/PHP, invalid WordPress root, missing plugins directory, missing
+    Toolkit plugin file, broken Core symlink, or wrong Core symlink target.
+  - Documented the smoke wrapper preflight responsibility in development and
+    testing docs.
+  - Added static contracts so future edits keep the smoke preflight checks.
+- **Verification**:
+  - In `/Users/muze/gitee/npcink-governance-core`: `bash -n tests/smoke-wp.sh`
+  - In `/Users/muze/gitee/npcink-governance-core`: `git diff --check`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer validate --no-check-publish`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer test:all`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer check:wporg`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer smoke:wp`
+- **Boundary**:
+  - Smoke wrapper diagnostics and documentation only. No Core runtime
+    authority, proposal lifecycle, REST behavior, database schema, reusable
+    ability definitions, Toolkit ability ownership, or final WordPress
+    execution behavior changed.
+
 ## 2026-06-11 — Runtime drift marker scan expanded
 
 - **Module**: Core boundary regression checks.
