@@ -29,6 +29,11 @@ Use them to assert:
   context, and app scopes;
 - product boundaries;
 - forbidden legacy behavior;
+- runtime-code markers for final execution, provider credentials, model
+  routing, workflow runtime, MCP runtime, Agent Gateway catalogs, task queues,
+  batch execution consoles, and operator runtime consoles;
+- pull request and boundary-review templates that force AI-assisted changes to
+  state the Core ownership boundary before merge;
 - WordPress.org review guard coverage for recurring release-policy issues;
 - shared `npcink-abilities-toolkit` workflow replay fixture structure and
   host-owned write boundary semantics;

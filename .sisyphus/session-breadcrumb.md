@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-06-11 — Core boundary regression checks hardened
+
+- **Module**: Core boundary regression checks.
+- **Status**: Static guardrails for #5 were strengthened in this session.
+- **Completed**:
+  - Added static contract coverage that keeps the pull request template and
+    boundary-review issue template aligned with the Core ownership boundary.
+  - Expanded runtime-file static scanning for execution routes, provider
+    credential markers, model routing, workflow/MCP runtime markers, task
+    queues, batch execution consoles, and operator runtime console markers.
+  - Tightened the boundary-review issue template so AI-assisted planning must
+    explicitly keep model routing, product workflow UX, batch execution
+    consoles, and reusable ability definitions outside Core.
+  - Documented these static contract responsibilities in the testing strategy.
+- **Verification**:
+  - In `/Users/muze/gitee/npcink-governance-core`: `ruby -e 'require "yaml"; YAML.load_file(".github/ISSUE_TEMPLATE/boundary_review.yml")'`
+  - In `/Users/muze/gitee/npcink-governance-core`: `git diff --check`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer validate --no-check-publish`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer test:all`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer check:wporg`
+- **Boundary**:
+  - Regression checks and documentation only. No Core runtime authority,
+    provider credential storage, model routing, workflow runtime, MCP runtime,
+    task queue, batch execution console, REST behavior, database schema, or
+    final WordPress execution behavior changed.
+
 ## 2026-06-11 — AI development handoff summary added
 
 - **Module**: AI development handoff documentation.
