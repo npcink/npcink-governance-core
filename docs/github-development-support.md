@@ -85,3 +85,8 @@ Use the project fields this way:
 
 Keep the board small. It should track real work streams and release blockers,
 not every local note or speculative idea.
+
+For solo maintainer + AI-agent work, the current priority guardrails live in
+`docs/solo-ai-development-workflow.md`. In the absence of newer maintainer
+instructions, work #5 first to harden AI boundary regression checks, then #4 to
+improve LocalWP smoke reliability.

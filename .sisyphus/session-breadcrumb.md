@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-11 — Priority guardrails documented for solo AI work
+
+- **Module**: Solo AI development priority guardrails.
+- **Status**: Current AI-development priority guidance is now durable in repo
+  docs and in the #4/#5 GitHub Issue bodies.
+- **Completed**:
+  - Created issue #9 to track durable documentation for current AI-development
+    priorities.
+  - Updated `docs/solo-ai-development-workflow.md` to make repository docs and
+    GitHub Issues the source of truth over chat-only recommendations.
+  - Documented the current priority order: #5 Core boundary regression checks
+    first, then #4 LocalWP smoke reliability.
+  - Linked the priority guardrails from GitHub development support docs.
+  - Updated issues #5 and #4 with priority rationale, AI-agent checklists,
+    boundaries, and required gates.
+- **Verification**:
+  - In `/Users/muze/gitee/npcink-governance-core`: `git diff --check`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer validate --no-check-publish`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer test:all`
+  - In `/Users/muze/gitee/npcink-governance-core`: `composer check:wporg`
+- **Boundary**:
+  - Documentation and GitHub planning process only. No Core runtime authority,
+    provider credential storage, workflow runtime, proposal lifecycle, REST
+    behavior, database schema, or final execution behavior changed.
+
 ## 2026-06-11 — Solo AI development workflow documented
 
 - **Module**: Solo maintainer + AI development workflow.
