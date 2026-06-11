@@ -11,6 +11,12 @@ leave reviewable evidence in GitHub.
 Use GitHub Issues for intent, pull requests for execution evidence, and local
 Composer gates for runtime confidence.
 
+Human memory is not the source of truth for AI-agent process guidance. If a
+recommendation should constrain future work, record it in this repository's
+docs, the relevant GitHub Issue, or both. Chat-only guidance is useful for the
+current session, but future agents are expected to follow durable repository and
+GitHub records.
+
 AI agents must preserve the Core product boundary: Core owns ability intake,
 proposal records, approval/preflight boundaries, app-key governance, and audit
 records. Core must not add final WordPress write execution, provider credential
@@ -131,6 +137,31 @@ Every AI agent resuming work should:
 
 If the task is not tied to an existing issue, create or ask for one before
 implementation unless the change is an urgent one-line repair.
+
+## Current Priority Guardrails
+
+When there is no newer maintainer instruction, prioritize the current backlog in
+this order:
+
+1. [#5 Harden Core boundary regression checks](https://github.com/muze-page/npcink-governance-core/issues/5)
+
+   This is the first recommended next workstream because the repository is now
+   developed through frequent AI-assisted changes. Future agents should improve
+   static contracts, docs, and review checklists that prevent Core from drifting
+   into product UX, provider credentials, workflow runtime, MCP runtime, task
+   queues, batch execution consoles, or final WordPress write execution.
+
+2. [#4 Improve LocalWP smoke reliability](https://github.com/muze-page/npcink-governance-core/issues/4)
+
+   This is the second recommended next workstream because frequent code updates,
+   plugin packaging, and WordPress.org releases depend on trustworthy local
+   smoke evidence. Future agents should make smoke failures easier to diagnose
+   and keep LocalWP, WP-CLI, database socket, plugin symlink, and
+   `npcink-abilities-toolkit` assumptions documented.
+
+Do not start speculative GitHub automation, new product surface, or broad
+refactors before these two workstreams unless the maintainer gives a newer
+explicit priority.
 
 ## Issue Labels
 
