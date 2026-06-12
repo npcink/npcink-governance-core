@@ -205,7 +205,7 @@ foreach ( array( 'WordPress minimum: `7.0`', 'PHP minimum: `8.0`', '`npcink-clou
 }
 
 $distignore = npcink_governance_core_read( $root . '/.distignore' );
-foreach ( array( 'tests', 'examples', 'docs', 'AGENTS.md', '.sisyphus', '.workbuddy' ) as $required ) {
+foreach ( array( 'tests', 'examples', 'docs', 'scripts', 'composer.json', 'AGENTS.md', '.sisyphus', '.workbuddy' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $distignore, $required ), 'Release distignore excludes development path: ' . $required );
 }
 
@@ -1202,6 +1202,21 @@ foreach (
 $composer_json = npcink_governance_core_read( $root . '/composer.json' );
 foreach ( array( 'test:contracts', 'test:fail-closed', 'tests/fail-closed.php' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $composer_json, $required ), 'Composer scripts include required test command: ' . $required );
+}
+$composer_data = json_decode( $composer_json, true );
+npcink_governance_core_assert( is_array( $composer_data ), 'Composer JSON parses for script contract checks.' );
+$composer_scripts = is_array( $composer_data['scripts'] ?? null ) ? $composer_data['scripts'] : array();
+npcink_governance_core_assert( isset( $composer_scripts['eval:project:review'] ), 'Composer scripts include optional project eval-lab review command.' );
+npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], 'task=project_boundary_review_triad' ), 'Project eval-lab review command targets the triad task.' );
+npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], '"project=$PWD"' ), 'Project eval-lab review command quotes the project path.' );
+npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], 'mode=working_diff' ), 'Project eval-lab review command pins the default working diff mode.' );
+foreach ( $composer_scripts as $script_name => $script_value ) {
+	if ( str_starts_with( (string) $script_name, 'eval:' ) ) {
+		continue;
+	}
+	$script_value = $composer_scripts[ $script_name ] ?? '';
+	$script_text  = is_array( $script_value ) ? implode( "\n", array_map( 'strval', $script_value ) ) : (string) $script_value;
+	npcink_governance_core_assert( false === strpos( $script_text, 'project_boundary_review_triad' ), 'Optional project eval-lab review is not part of ' . $script_name . '.' );
 }
 
 $fail_closed_test = npcink_governance_core_read( $root . '/tests/fail-closed.php' );

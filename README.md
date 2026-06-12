@@ -202,12 +202,19 @@ rejection, and `plan_to_proposal_batch` for governance review records. Those ter
 leases, schedulers, or operator runtime consoles inside Core.
 
 For development-only AI output quality checks, Core can call the sibling Magick
-AI Evaluation Lab through opt-in Composer commands such as `composer eval:lab -- --list`
-and `composer eval:gutenberg:judge -- dry_run=true limit=3`. Those commands
-produce local review evidence only. They are not part of `composer test:all`,
-do not create proposals or audit records, do not store provider credentials in
-Core, and are excluded from release packages by `.distignore`. See
+AI Evaluation Lab through opt-in Composer commands such as
+`composer eval:lab -- --list`,
+`composer eval:project:review -- dry_run=true`, and
+`composer eval:gutenberg:judge -- dry_run=true limit=3`. Those commands produce
+local review evidence only. They are not part of `composer test:all`, do not
+create proposals or audit records, do not store provider credentials in Core,
+and are excluded from release packages by `.distignore`. See
 [Eval Lab Quality Gate](docs/eval-lab-quality-gate.md).
+Use `eval:project:review` for Core boundary-sensitive diffs and
+`eval:gutenberg:judge` for Gutenberg plan-quality cases exported by Toolkit or
+provider repos. Project review reports stay in the eval-lab
+`project-review/generated/` directory and use a redacted repository label
+instead of an absolute local path.
 
 Article writing is now treated as local Ability recipe orchestration, not a
 Cloud writing product. The [Ability Recipe Orchestration Contract](docs/ability-recipe-orchestration-contract.md)

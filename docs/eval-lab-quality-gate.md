@@ -37,6 +37,23 @@ Eval-lab must not:
 
 ## Commands
 
+Prerequisite: the Magick AI Evaluation Lab must be available as a sibling
+checkout named `magick-ai-eval-lab`, or `MAGICK_AI_EVAL_LAB_PATH` must point to
+another local checkout. If the checkout is missing, `scripts/eval-lab.sh` fails
+with a clear local setup message before any provider call.
+
+Accepted project review modes:
+
+- `working_diff`: review the current uncommitted diff; this is the default.
+  When no working diff exists, eval-lab falls back to `head`.
+- `head`: review the latest commit patch.
+
+The project path is passed to eval-lab only so it can read git status and patch
+context for local review. Eval-lab must not write into the project, persist the
+project path as Core state, or treat the path as a runtime configuration value.
+Provider prompts and generated reports must use a redacted local project label,
+not the absolute filesystem path.
+
 List available eval-lab tasks:
 
 ```bash
@@ -46,8 +63,13 @@ composer eval:lab -- --list
 Validate the local eval-lab wiring without provider calls:
 
 ```bash
+composer eval:project:review -- dry_run=true
 composer eval:gutenberg:judge -- dry_run=true limit=3
 ```
+
+Composer's `--` separator passes trailing `key=value` arguments to the eval-lab
+task. The Core wrapper provides `mode=working_diff` by default; later arguments
+such as `mode=head` override that default.
 
 Use a non-default checkout:
 
@@ -59,6 +81,25 @@ MAGICK_AI_EVAL_LAB_PATH=/Users/muze/gitee/magick-ai-eval-lab \
 Provider-backed runs are opt-in and read credentials only from eval-lab's local
 environment, not from Core runtime code.
 
+Run the project boundary triad against the current Core working diff:
+
+```bash
+composer eval:project:review
+```
+
+Run it against the latest Core commit instead:
+
+```bash
+composer eval:project:review -- mode=head
+```
+
+This writes local JSON and Markdown reports under
+`$MAGICK_AI_EVAL_LAB_PATH/project-review/generated/` or the sibling eval-lab
+checkout's `project-review/generated/` directory. These generated reports are
+disposable local evidence only. They must never be imported as Core audit
+truth, proposals, approvals, preflights, execution history, or CI-required
+acceptance results.
+
 ## When To Use
 
 Use eval-lab after a product or provider feature can already export reviewable
@@ -67,6 +108,7 @@ operators.
 
 Good first candidates:
 
+- Core boundary-sensitive diffs and documentation changes;
 - `npcink-toolbox/build-content-metadata-apply-plan`;
 - `npcink-abilities-toolkit/build-pattern-page-plan`;
 - `npcink-abilities-toolkit/build-article-block-plan`;
