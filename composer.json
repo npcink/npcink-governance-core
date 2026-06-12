@@ -17,6 +17,8 @@
     "test:contracts": "@php tests/run.php",
     "test:fail-closed": "@php tests/fail-closed.php",
     "check:wporg": "@php scripts/check-wordpress-org-review-rules.php",
+    "eval:lab": "sh scripts/eval-lab.sh",
+    "eval:gutenberg:judge": "sh scripts/eval-lab.sh task=gutenberg_judge_cross",
     "test": [
       "@test:contracts",
       "@test:fail-closed"

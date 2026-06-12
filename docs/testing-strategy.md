@@ -13,6 +13,7 @@ Npcink Governance Core starts with a small but strict test pyramid.
 | Fail-closed fault injection | `composer test:fail-closed` | Inject database and audit persistence failures against Core classes and assert rollback or cleanup. |
 | Full local suite | `composer test:all` | Run lint, static contracts, and fault injection together. |
 | Real WordPress smoke | `composer smoke:wp` | Prove activation, schema creation, REST behavior, and `npcink-abilities-toolkit` integration. |
+| Optional eval-lab quality gate | `composer eval:lab -- --list` or `composer eval:gutenberg:judge -- dry_run=true limit=3` | Validate local AI-output evaluation wiring without making it a Core runtime or default test dependency. |
 | WordPress.org review guard | `composer check:wporg` | Catch locally reproducible reviewer policy patterns that Plugin Check may miss. |
 | Plugin Check release scan | `composer plugin-check:release` | Catch WordPress.org packaging and runtime security blockers before release. |
 
@@ -44,6 +45,21 @@ Use them to assert:
 
 Do not use static contracts to test implementation details that may legitimately
 change.
+
+## Optional Eval-Lab Rules
+
+The Magick AI Evaluation Lab integration is optional local development
+infrastructure. It is useful when a product or ability provider needs
+cross-model review of generated recommendations, Gutenberg plans, Site
+Knowledge evidence, or image candidates before submitting a governed handoff to
+Core.
+
+Eval-lab commands must stay out of `composer test:all`, CI-required Core gates,
+release packages, and plugin runtime behavior. They must not create proposals,
+approve proposals, write audit rows, read provider credentials from Core, or
+mutate WordPress state. Core's deterministic gates still own lifecycle,
+authorization, redaction, app scope, rate limit, REST, and persistence
+correctness.
 
 ## Fail-Closed Fault Injection Rules
 

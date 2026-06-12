@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-12 — Eval-lab quality gate boundary documented
+
+- **Module**: Development-only AI output quality evidence.
+- **Status**: Optional eval-lab wiring is documented for local use without
+  changing Core runtime behavior.
+- **Completed**:
+  - Added a thin `scripts/eval-lab.sh` wrapper that calls the sibling
+    Magick AI Evaluation Lab through `MAGICK_AI_EVAL_LAB_PATH` or the default
+    sibling checkout.
+  - Added opt-in Composer commands for listing eval-lab tasks and dry-running
+    the Gutenberg cross-judge task.
+  - Documented the boundary: eval-lab output is local review evidence only and
+    must not create Core proposals, approvals, preflights, execution records,
+    audit truth, provider credential storage, or WordPress writes.
+- **Verification**:
+  - `git diff --check`
+  - `composer validate --no-check-publish`
+  - `composer test:all`
+  - `composer eval:lab -- --list`
+  - `composer eval:gutenberg:judge -- dry_run=true limit=3`
+- **Boundary**:
+  - Core still owns deterministic governance lifecycle tests. Eval-lab remains
+    outside default Core gates, CI-required tests, release packages, and plugin
+    runtime behavior.
+
 ## 2026-06-12 — App scope and guardrail query follow-up hardening
 
 - **Module**: App-auth scopes, proposal guardrail persistence, and lifecycle

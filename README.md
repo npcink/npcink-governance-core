@@ -105,6 +105,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Solo AI Development Workflow](docs/solo-ai-development-workflow.md)
 - [AI Development Handoff Summary](docs/ai-development-handoff-summary.md)
 - [AI Development Workstream Summary](docs/ai-development-workstream-summary.md)
+- [Eval Lab Quality Gate](docs/eval-lab-quality-gate.md)
 - [Testing Strategy](docs/testing-strategy.md)
 - [WordPress.org Release Gate](docs/wordpress-org-release-gate.md)
 - [Next Stage Plan](docs/next-stage-plan.md)
@@ -199,6 +200,14 @@ Core. See
 Core documentation may use Review Queue, pending proposal queue, bounded bulk
 rejection, and `plan_to_proposal_batch` for governance review records. Those terms do not permit workflow/task queue ownership, batch execution, retries,
 leases, schedulers, or operator runtime consoles inside Core.
+
+For development-only AI output quality checks, Core can call the sibling Magick
+AI Evaluation Lab through opt-in Composer commands such as `composer eval:lab -- --list`
+and `composer eval:gutenberg:judge -- dry_run=true limit=3`. Those commands
+produce local review evidence only. They are not part of `composer test:all`,
+do not create proposals or audit records, do not store provider credentials in
+Core, and are excluded from release packages by `.distignore`. See
+[Eval Lab Quality Gate](docs/eval-lab-quality-gate.md).
 
 Article writing is now treated as local Ability recipe orchestration, not a
 Cloud writing product. The [Ability Recipe Orchestration Contract](docs/ability-recipe-orchestration-contract.md)
