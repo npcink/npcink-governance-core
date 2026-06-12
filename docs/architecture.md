@@ -14,9 +14,9 @@ Status: MVP architecture.
 | `Commit_Preflight_Service` | Approval-commit readiness checks without executing abilities. |
 | `Read_Request_Repository` | Persistence for Core-owned sensitive read authorization requests. |
 | `Read_Request_Service` | Sensitive read request creation, approval/rejection, expiry, one-time consumption, bounded read preflight, and audit coordination. |
-| `Audit_Log_Repository` | Append-only event records and narrow governance filters. |
+| `Audit_Log_Repository` | Append-only event records, shared metadata redaction, and indexed governance filters. |
 | `App_Key_Repository` | Scoped app identity and hashed secret storage. |
-| `App_Rate_Limiter` | Fixed-window app rate counters by route family. |
+| `App_Rate_Limiter` | Fixed-window app rate counters by route family with conditional under-limit increments. |
 | `App_Authenticator` | WordPress admin or scoped app-key REST authorization. |
 | `Request_Context` | Request-scoped app attribution for proposals and audit events. |
 | `Observability` | Local metadata-only action bridge for bounded operational collection by other local plugins. |
@@ -39,7 +39,10 @@ records over generalized workflow state.
 The governance operability layer reuses these lifecycle records. It adds
 proposal `audit_timeline` reads, app scope-decision attribution, and
 commit-preflight `correlation_id` metadata without adding workflow state,
-execution queues, or a separate logging subsystem.
+execution queues, or a separate logging subsystem. Common audit filters
+(`ability_id`, `app_id`, `key_id`, `caller_type`, and `correlation_id`) are
+promoted into indexed audit columns while the full sanitized metadata remains
+in `metadata_json`.
 
 Core also emits local metadata-only observability hooks for proposal and
 commit-preflight REST operations. These hooks are optional local signals; they

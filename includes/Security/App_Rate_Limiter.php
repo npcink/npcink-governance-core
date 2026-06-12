@@ -80,52 +80,12 @@ final class App_Rate_Limiter {
 		$window_end     = gmdate( 'Y-m-d H:i:s', $window_end_ts );
 		$now            = current_time( 'mysql', true );
 
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
-		$row = $wpdb->get_row(
-			$wpdb->prepare(
-				'SELECT id, request_count FROM %i WHERE app_id = %s AND route_family = %s AND window_start = %s LIMIT 1',
-				$this->table_name(),
-				$app_id,
-				$route_family,
-				$window_start
-			),
-			ARRAY_A
-		);
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-
-		if ( is_array( $row ) ) {
-			$count = (int) ( $row['request_count'] ?? 0 );
-			if ( $count >= $limit ) {
-				return array(
-					'allowed'       => false,
-					'limit'         => $limit,
-					'remaining'     => 0,
-					'reset_at'      => $window_end,
-					'request_count' => $count,
-				);
-			}
-
-			$count++;
-			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
-			$updated = $wpdb->update(
-				$this->table_name(),
-				array(
-					'request_count' => $count,
-					'updated_at'    => $now,
-				),
-				array( 'id' => (int) $row['id'] ),
-				array( '%d', '%s' ),
-				array( '%d' )
-			);
-			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-
-			return array(
-				'allowed'       => false !== $updated,
-				'limit'         => $limit,
-				'remaining'     => max( 0, $limit - $count ),
-				'reset_at'      => $window_end,
-				'request_count' => $count,
-			);
+		$updated = $this->increment_existing_window( $app_id, $route_family, $window_start, $limit, $now );
+		if ( false === $updated ) {
+			return $this->result_from_row( null, $limit, $window_end, false );
+		}
+		if ( $updated > 0 ) {
+			return $this->result_from_row( $this->find_window( $app_id, $route_family, $window_start ), $limit, $window_end, true );
 		}
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
@@ -145,12 +105,91 @@ final class App_Rate_Limiter {
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
+		if ( false !== $inserted ) {
+			return $this->result_from_row( $this->find_window( $app_id, $route_family, $window_start ), $limit, $window_end, true );
+		}
+
+		$updated = $this->increment_existing_window( $app_id, $route_family, $window_start, $limit, $now );
+		if ( false === $updated ) {
+			return $this->result_from_row( null, $limit, $window_end, false );
+		}
+
+		return $this->result_from_row( $this->find_window( $app_id, $route_family, $window_start ), $limit, $window_end, $updated > 0 );
+	}
+
+	/**
+	 * Atomically increments an existing fixed window only while under limit.
+	 *
+	 * @param string $app_id App id.
+	 * @param string $route_family Route family.
+	 * @param string $window_start Window start.
+	 * @param int    $limit Rate limit.
+	 * @param string $now Current UTC timestamp.
+	 * @return int|false Updated row count, or false on DB error.
+	 */
+	private function increment_existing_window( string $app_id, string $route_family, string $window_start, int $limit, string $now ) {
+		global $wpdb;
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table and needs an atomic conditional increment.
+		return $wpdb->query(
+			$wpdb->prepare(
+				'UPDATE %i SET request_count = request_count + 1, updated_at = %s WHERE app_id = %s AND route_family = %s AND window_start = %s AND request_count < %d',
+				$this->table_name(),
+				$now,
+				$app_id,
+				$route_family,
+				$window_start,
+				$limit
+			)
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+	}
+
+	/**
+	 * Finds a fixed-window counter row.
+	 *
+	 * @param string $app_id App id.
+	 * @param string $route_family Route family.
+	 * @param string $window_start Window start.
+	 * @return array<string,mixed>|null
+	 */
+	private function find_window( string $app_id, string $route_family, string $window_start ): ?array {
+		global $wpdb;
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				'SELECT id, request_count FROM %i WHERE app_id = %s AND route_family = %s AND window_start = %s LIMIT 1',
+				$this->table_name(),
+				$app_id,
+				$route_family,
+				$window_start
+			),
+			ARRAY_A
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return is_array( $row ) ? $row : null;
+	}
+
+	/**
+	 * Builds a rate-limit response from the persisted counter.
+	 *
+	 * @param array<string,mixed>|null $row Counter row.
+	 * @param int                      $limit Rate limit.
+	 * @param string                   $window_end Window end.
+	 * @param bool                     $allowed Whether this request consumed a slot.
+	 * @return array<string,mixed>
+	 */
+	private function result_from_row( ?array $row, int $limit, string $window_end, bool $allowed ): array {
+		$count = is_array( $row ) ? (int) ( $row['request_count'] ?? 0 ) : 0;
+
 		return array(
-			'allowed'       => false !== $inserted,
+			'allowed'       => $allowed,
 			'limit'         => $limit,
-			'remaining'     => max( 0, $limit - 1 ),
+			'remaining'     => max( 0, $limit - $count ),
 			'reset_at'      => $window_end,
-			'request_count' => 1,
+			'request_count' => $count,
 		);
 	}
 }

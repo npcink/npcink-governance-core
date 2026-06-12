@@ -60,6 +60,12 @@ evidence would be unsafe:
 - proposal creation preserves reviewed `npcink-abilities-toolkit/update-post-blocks`
   Gutenberg block key case, including nested batch `write_actions[]`, while
   still sanitizing unsafe block HTML;
+- proposal and audit persistence redact secret-shaped caller metadata,
+  authorization values, API keys, cookies, and token-like strings before they
+  can be returned or stored;
+- plan-to-proposal intake rejects oversized plan payloads, global
+  over-25-action plans, and narrower media optimization / block theme site
+  action caps before storing proposal rows;
 - local guarded cleanup and draft-only create-draft auto approval write
   `proposal.auto_approved`, and audit failure must not leave the proposal
   approved;
@@ -171,6 +177,7 @@ Add or update tests when changing:
 - ability intake normalization;
 - approval-commit contract;
 - security or permission behavior.
+- performance-sensitive bounded intake or indexed-filter behavior.
 
 Fail-closed governance paths must be covered when changed:
 
@@ -179,6 +186,10 @@ Fail-closed governance paths must be covered when changed:
   persistence fails;
 - status changes that cannot be audited roll back to the previous status where
   Core can safely do so;
+- lifecycle status changes that depend on a current state use conditional
+  repository updates so stale transitions fail closed;
+- app rate-limit changes keep the fixed-window increment atomic under the
+  app/route/window uniqueness constraint;
 - one-time app tokens are not returned when app creation cannot be audited.
 - sensitive read grants are never returned when approval, expiry, ability, input,
   or audit requirements fail.

@@ -55,6 +55,9 @@ Status transition rules:
   `execution_failed` through a post-preflight execution-result record that
   matches `commit.preflighted` `correlation_id` and `approved_input_hash`;
 - MVP status transitions do not execute the target ability.
+- lifecycle writes use conditional updates that include the expected current
+  status, so stale concurrent requests fail closed instead of overwriting a
+  newer state.
 
 ## Table: `{prefix}npcink_governance_core_read_requests`
 
@@ -103,6 +106,8 @@ Status transition rules:
 - approved one-time requests transition to `consumed` after successful
   `read-preflight`;
 - status transitions do not execute the read ability.
+- lifecycle writes use conditional updates that include the expected current
+  status, so stale concurrent decisions, expiry checks, or grants fail closed.
 
 ## Table: `{prefix}npcink_governance_core_audit_log`
 
@@ -115,6 +120,11 @@ Purpose: append-only governance events.
 | `event_name` | `varchar(120)` | no | Dotted event name such as `proposal.created`. |
 | `proposal_id` | `varchar(64)` | no | Related proposal id or empty string. |
 | `actor_id` | `bigint(20) unsigned` | no | WordPress user id. |
+| `ability_id` | `varchar(190)` | no | Indexed target ability id copied from metadata when available. |
+| `app_id` | `varchar(64)` | no | Indexed app id copied from app-auth metadata when available. |
+| `key_id` | `varchar(64)` | no | Indexed app key id copied from app-auth metadata when available. |
+| `caller_type` | `varchar(80)` | no | Indexed caller type copied from app-auth metadata when available. |
+| `correlation_id` | `varchar(64)` | no | Indexed preflight correlation id copied from metadata when available. |
 | `metadata_json` | `longtext` | yes | Sanitized event metadata. |
 | `created_at` | `datetime` | no | UTC time from `current_time( 'mysql', true )`. |
 
@@ -124,6 +134,11 @@ Indexes:
 - unique key: `event_id`
 - key: `event_name`
 - key: `proposal_id`
+- key: `ability_id`
+- key: `app_id`
+- key: `key_id`
+- key: `caller_type`
+- key: `correlation_id`
 - key: `created_at`
 
 MVP event names:
@@ -175,8 +190,9 @@ Governance operability metadata:
   `metadata.auth.scope`, `metadata.auth.scope_decision`, and
   `metadata.auth.route_family`;
 - commit preflight events include `metadata.correlation_id`;
-- audit reads support metadata filters for `ability_id`, `app_id`, `key_id`,
-  `caller_type`, and `correlation_id` without adding extra audit columns.
+- audit reads support filters for `ability_id`, `app_id`, `key_id`,
+  `caller_type`, and `correlation_id` through indexed audit columns instead of
+  scanning `metadata_json`;
 - sensitive read request events reuse the existing audit `proposal_id` column
   for the `request_id` relation and also include `metadata.request_id`;
 - sensitive read grant events include `input_hash`, `correlation_id`,
@@ -234,6 +250,10 @@ Indexes:
 - unique key: `app_route_window` on `app_id`, `route_family`, `window_start`
 - key: `key_id`
 - key: `window_end`
+
+Existing fixed-window rows are incremented with a conditional SQL update that
+requires `request_count < limit`; the unique `app_route_window` key guards
+concurrent first writes for the same app, route family, and window.
 
 ## Migration Rules
 

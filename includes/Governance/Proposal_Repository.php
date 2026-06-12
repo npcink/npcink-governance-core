@@ -7,6 +7,7 @@
 
 namespace Npcink\GovernanceCore\Governance;
 
+use Npcink\GovernanceCore\Security\Sensitive_Data_Redactor;
 use WP_Error;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -367,32 +368,89 @@ final class Proposal_Repository {
 	}
 
 	/**
+	 * Updates proposal status only when the current status still matches.
+	 *
+	 * @param string $proposal_id Proposal id.
+	 * @param string $expected_status Expected current status.
+	 * @param string $status New status.
+	 * @return array<string,mixed>|null
+	 */
+	public function update_status_when( string $proposal_id, string $expected_status, string $status ): ?array {
+		global $wpdb;
+
+		$proposal_id     = sanitize_text_field( $proposal_id );
+		$expected_status = sanitize_key( $expected_status );
+		$status          = sanitize_key( $status );
+		$allowed         = $this->allowed_statuses();
+
+		if ( ! in_array( $expected_status, $allowed, true ) || ! in_array( $status, $allowed, true ) ) {
+			return null;
+		}
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		$updated = $wpdb->update(
+			$this->table_name(),
+			array(
+				'status'     => $status,
+				'updated_at' => current_time( 'mysql', true ),
+			),
+			array(
+				'proposal_id' => $proposal_id,
+				'status'      => $expected_status,
+			),
+			array( '%s', '%s' ),
+			array( '%s', '%s' )
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return 1 === $updated ? $this->find( $proposal_id ) : null;
+	}
+
+	/**
 	 * Reopens a proposal and resets the review clock.
 	 *
 	 * @param string $proposal_id Proposal id.
 	 * @return array<string,mixed>|null
 	 */
 	public function reopen( string $proposal_id ): ?array {
+		return $this->reopen_when( $proposal_id, self::STATUS_EXPIRED );
+	}
+
+	/**
+	 * Reopens a proposal only when the current status still matches.
+	 *
+	 * @param string $proposal_id Proposal id.
+	 * @param string $expected_status Expected current status.
+	 * @return array<string,mixed>|null
+	 */
+	public function reopen_when( string $proposal_id, string $expected_status ): ?array {
 		global $wpdb;
 
 		$proposal_id = sanitize_text_field( $proposal_id );
+		$expected_status = sanitize_key( $expected_status );
 		$now         = current_time( 'mysql', true );
+		if ( ! in_array( $expected_status, array( self::STATUS_EXPIRED, self::STATUS_ARCHIVED ), true ) ) {
+			return null;
+		}
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
-		$wpdb->update(
+		$updated = $wpdb->update(
 			$this->table_name(),
 			array(
 				'status'     => self::STATUS_PENDING,
 				'created_at' => $now,
 				'updated_at' => $now,
 			),
-			array( 'proposal_id' => $proposal_id ),
+			array(
+				'proposal_id' => $proposal_id,
+				'status'      => $expected_status,
+			),
 			array( '%s', '%s', '%s' ),
-			array( '%s' )
+			array( '%s', '%s' )
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
-		return $this->find( $proposal_id );
+		return 1 === $updated ? $this->find( $proposal_id ) : null;
 	}
 
 
@@ -744,22 +802,6 @@ final class Proposal_Repository {
 	 * @return mixed
 	 */
 	private function sanitize_payload( $value ) {
-		if ( is_array( $value ) ) {
-			$clean = array();
-			foreach ( $value as $key => $item ) {
-				$clean[ sanitize_key( (string) $key ) ] = $this->sanitize_payload( $item );
-			}
-			return $clean;
-		}
-
-		if ( is_string( $value ) ) {
-			return sanitize_textarea_field( $value );
-		}
-
-		if ( is_bool( $value ) || is_int( $value ) || is_float( $value ) || null === $value ) {
-			return $value;
-		}
-
-		return sanitize_text_field( (string) $value );
+		return Sensitive_Data_Redactor::sanitize_payload( $value );
 	}
 }

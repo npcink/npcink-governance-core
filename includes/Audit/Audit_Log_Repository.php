@@ -8,6 +8,7 @@
 namespace Npcink\GovernanceCore\Audit;
 
 use Npcink\GovernanceCore\Security\Request_Context;
+use Npcink\GovernanceCore\Security\Sensitive_Data_Redactor;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -48,12 +49,22 @@ final class Audit_Log_Repository {
 				event_name varchar(120) NOT NULL,
 				proposal_id varchar(64) DEFAULT '' NOT NULL,
 				actor_id bigint(20) unsigned DEFAULT 0 NOT NULL,
+				ability_id varchar(190) DEFAULT '' NOT NULL,
+				app_id varchar(64) DEFAULT '' NOT NULL,
+				key_id varchar(64) DEFAULT '' NOT NULL,
+				caller_type varchar(80) DEFAULT '' NOT NULL,
+				correlation_id varchar(64) DEFAULT '' NOT NULL,
 				metadata_json longtext NULL,
 				created_at datetime NOT NULL,
 				PRIMARY KEY  (id),
 				UNIQUE KEY event_id (event_id),
 				KEY event_name (event_name),
 				KEY proposal_id (proposal_id),
+				KEY ability_id (ability_id),
+				KEY app_id (app_id),
+				KEY key_id (key_id),
+				KEY caller_type (caller_type),
+				KEY correlation_id (correlation_id),
 				KEY created_at (created_at)
 			) {$charset_collate};"
 		);
@@ -76,6 +87,8 @@ final class Audit_Log_Repository {
 		if ( ! empty( $auth ) ) {
 			$metadata['auth'] = $auth;
 		}
+		$metadata = $this->sanitize_metadata( $metadata );
+		$indexes  = $this->indexed_metadata( is_array( $metadata ) ? $metadata : array() );
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$inserted = $wpdb->insert(
@@ -85,10 +98,15 @@ final class Audit_Log_Repository {
 				'event_name'    => sanitize_text_field( $event_name ),
 				'proposal_id'   => sanitize_text_field( $proposal_id ),
 				'actor_id'      => get_current_user_id(),
-				'metadata_json' => wp_json_encode( $this->sanitize_metadata( $metadata ) ),
+				'ability_id'    => $indexes['ability_id'],
+				'app_id'        => $indexes['app_id'],
+				'key_id'        => $indexes['key_id'],
+				'caller_type'   => $indexes['caller_type'],
+				'correlation_id' => $indexes['correlation_id'],
+				'metadata_json' => wp_json_encode( $metadata ),
 				'created_at'    => $now,
 			),
-			array( '%s', '%s', '%s', '%d', '%s', '%s' )
+			array( '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
@@ -121,7 +139,7 @@ final class Audit_Log_Repository {
 		$where          = $parts['where'];
 		$args           = $parts['args'];
 
-		$sql = 'SELECT event_id, event_name, proposal_id, actor_id, metadata_json, created_at FROM %i';
+		$sql = 'SELECT event_id, event_name, proposal_id, actor_id, ability_id, app_id, key_id, caller_type, correlation_id, metadata_json, created_at FROM %i';
 		array_unshift( $args, $this->table_name() );
 
 		if ( ! empty( $where ) ) {
@@ -205,26 +223,12 @@ final class Audit_Log_Repository {
 	}
 
 	/**
-	 * Returns a JSON-safe metadata key/value search needle.
-	 *
-	 * @param string $key Metadata key.
-	 * @param string $value Metadata value.
-	 * @return string
-	 */
-	private function metadata_filter_needle( string $key, string $value ): string {
-		$encoded = wp_json_encode( $value );
-		return '"' . sanitize_key( $key ) . '":' . ( is_string( $encoded ) ? $encoded : '""' );
-	}
-
-	/**
 	 * Builds filtered audit query parts.
 	 *
 	 * @param array<string,mixed> $filters Filters.
 	 * @return array{where:array<int,string>,args:array<int,mixed>}
 	 */
 	private function filtered_query_parts( array $filters ): array {
-		global $wpdb;
-
 		$proposal_id    = sanitize_text_field( (string) ( $filters['proposal_id'] ?? '' ) );
 		$event_name     = sanitize_text_field( (string) ( $filters['event_name'] ?? '' ) );
 		$ability_id     = sanitize_text_field( (string) ( $filters['ability_id'] ?? '' ) );
@@ -251,21 +255,19 @@ final class Audit_Log_Repository {
 			}
 		}
 
-		$metadata_filters = array(
-			'ability_id'     => $ability_id,
-			'app_id'         => $app_id,
-			'key_id'         => $key_id,
-			'caller_type'    => $caller_type,
-			'correlation_id' => $correlation_id,
-		);
-
-		foreach ( $metadata_filters as $key => $value ) {
-			if ( '' === $value ) {
-				continue;
+		foreach (
+			array(
+				'ability_id'     => $ability_id,
+				'app_id'         => $app_id,
+				'key_id'         => $key_id,
+				'caller_type'    => $caller_type,
+				'correlation_id' => $correlation_id,
+			) as $column => $value
+		) {
+			if ( '' !== $value ) {
+				$where[] = sanitize_key( (string) $column ) . ' = %s';
+				$args[]  = $value;
 			}
-
-			$where[] = 'metadata_json LIKE %s';
-			$args[]  = '%' . $wpdb->esc_like( $this->metadata_filter_needle( (string) $key, (string) $value ) ) . '%';
 		}
 
 		return array(
@@ -310,22 +312,24 @@ final class Audit_Log_Repository {
 	 * @return mixed
 	 */
 	private function sanitize_metadata( $value ) {
-		if ( is_array( $value ) ) {
-			$clean = array();
-			foreach ( $value as $key => $item ) {
-				$clean[ sanitize_key( (string) $key ) ] = $this->sanitize_metadata( $item );
-			}
-			return $clean;
-		}
+		return Sensitive_Data_Redactor::sanitize_payload( $value );
+	}
 
-		if ( is_string( $value ) ) {
-			return sanitize_textarea_field( $value );
-		}
+	/**
+	 * Extracts indexed audit metadata fields.
+	 *
+	 * @param array<string,mixed> $metadata Sanitized metadata.
+	 * @return array{ability_id:string,app_id:string,key_id:string,caller_type:string,correlation_id:string}
+	 */
+	private function indexed_metadata( array $metadata ): array {
+		$auth = is_array( $metadata['auth'] ?? null ) ? (array) $metadata['auth'] : array();
 
-		if ( is_bool( $value ) || is_int( $value ) || is_float( $value ) || null === $value ) {
-			return $value;
-		}
-
-		return sanitize_text_field( (string) $value );
+		return array(
+			'ability_id'     => sanitize_text_field( (string) ( $metadata['ability_id'] ?? '' ) ),
+			'app_id'         => sanitize_text_field( (string) ( $metadata['app_id'] ?? ( $auth['app_id'] ?? '' ) ) ),
+			'key_id'         => sanitize_text_field( (string) ( $metadata['key_id'] ?? ( $auth['key_id'] ?? '' ) ) ),
+			'caller_type'    => sanitize_key( (string) ( $metadata['caller_type'] ?? ( $auth['caller_type'] ?? '' ) ) ),
+			'correlation_id' => sanitize_text_field( (string) ( $metadata['correlation_id'] ?? '' ) ),
+		);
 	}
 }

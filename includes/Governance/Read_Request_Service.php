@@ -213,7 +213,7 @@ final class Read_Request_Service {
 			return $this->transition_failed_error();
 		}
 
-		$approved = $this->requests->update_status( (string) $request['request_id'], Read_Request_Repository::STATUS_APPROVED );
+		$approved = $this->requests->update_status_when( (string) $request['request_id'], Read_Request_Repository::STATUS_PENDING, Read_Request_Repository::STATUS_APPROVED );
 		if ( null === $approved ) {
 			return $this->transition_failed_error();
 		}
@@ -225,7 +225,7 @@ final class Read_Request_Service {
 		);
 
 		if ( '' === $event_id ) {
-			$this->requests->update_status( (string) $request['request_id'], Read_Request_Repository::STATUS_PENDING );
+			$this->requests->update_status_when( (string) $request['request_id'], Read_Request_Repository::STATUS_APPROVED, Read_Request_Repository::STATUS_PENDING );
 			return $this->audit_failed_error( 'npcink_governance_core_read_request_decision_audit_failed' );
 		}
 
@@ -245,7 +245,7 @@ final class Read_Request_Service {
 			return $request;
 		}
 
-		$rejected = $this->requests->update_status( (string) $request['request_id'], Read_Request_Repository::STATUS_REJECTED );
+		$rejected = $this->requests->update_status_when( (string) $request['request_id'], Read_Request_Repository::STATUS_PENDING, Read_Request_Repository::STATUS_REJECTED );
 		if ( null === $rejected ) {
 			return $this->transition_failed_error();
 		}
@@ -257,7 +257,7 @@ final class Read_Request_Service {
 		);
 
 		if ( '' === $event_id ) {
-			$this->requests->update_status( (string) $request['request_id'], Read_Request_Repository::STATUS_PENDING );
+			$this->requests->update_status_when( (string) $request['request_id'], Read_Request_Repository::STATUS_REJECTED, Read_Request_Repository::STATUS_PENDING );
 			return $this->audit_failed_error( 'npcink_governance_core_read_request_decision_audit_failed' );
 		}
 
@@ -289,7 +289,7 @@ final class Read_Request_Service {
 		}
 
 		if ( $this->is_expired( $request ) ) {
-			$expired = $this->requests->update_status( $request_id, Read_Request_Repository::STATUS_EXPIRED );
+			$expired = $this->requests->update_status_when( $request_id, Read_Request_Repository::STATUS_APPROVED, Read_Request_Repository::STATUS_EXPIRED );
 			$this->audit->record(
 				'read_request.expired',
 				$this->audit_metadata( is_array( $expired ) ? $expired : $request, array( 'expiration_reason' => 'grant_attempt_after_expiry' ) ),
@@ -478,7 +478,7 @@ final class Read_Request_Service {
 		}
 
 		if ( $this->is_expired( $request ) ) {
-			$expired = $this->requests->update_status( (string) $request['request_id'], Read_Request_Repository::STATUS_EXPIRED );
+			$expired = $this->requests->update_status_when( (string) $request['request_id'], Read_Request_Repository::STATUS_PENDING, Read_Request_Repository::STATUS_EXPIRED );
 			$this->audit->record(
 				'read_request.expired',
 				$this->audit_metadata( is_array( $expired ) ? $expired : $request, array( 'expiration_reason' => 'decision_attempt_after_expiry' ) ),

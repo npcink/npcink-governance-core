@@ -265,7 +265,7 @@ final class Proposal_Service {
 			);
 		}
 
-		$approved = $this->proposals->update_status( $proposal_id, Proposal_Repository::STATUS_APPROVED );
+		$approved = $this->proposals->update_status_when( $proposal_id, Proposal_Repository::STATUS_PENDING, Proposal_Repository::STATUS_APPROVED );
 		if ( null === $approved ) {
 			$this->proposals->delete_by_proposal_id( $proposal_id );
 			return $this->transition_failed_error();
@@ -278,7 +278,7 @@ final class Proposal_Service {
 		);
 
 		if ( '' === $event_id ) {
-			$this->proposals->update_status( $proposal_id, Proposal_Repository::STATUS_PENDING );
+			$this->proposals->update_status_when( $proposal_id, Proposal_Repository::STATUS_APPROVED, Proposal_Repository::STATUS_PENDING );
 			return $this->audit_failed_error( 'npcink_governance_core_auto_approval_audit_failed' );
 		}
 
@@ -391,7 +391,7 @@ final class Proposal_Service {
 			);
 		}
 
-		$proposal = $this->proposals->update_status( $proposal_id, $target_status );
+		$proposal = $this->proposals->update_status_when( $proposal_id, Proposal_Repository::STATUS_APPROVED, $target_status );
 		if ( null === $proposal ) {
 			return $this->transition_failed_error();
 		}
@@ -404,7 +404,7 @@ final class Proposal_Service {
 		);
 
 		if ( '' === $event_id ) {
-			$this->proposals->update_status( $proposal_id, $previous_status );
+			$this->proposals->update_status_when( $proposal_id, $target_status, $previous_status );
 			return $this->audit_failed_error( 'npcink_governance_core_execution_record_audit_failed' );
 		}
 
@@ -434,7 +434,7 @@ final class Proposal_Service {
 			);
 		}
 
-		$proposal = $this->proposals->update_status( $proposal_id, Proposal_Repository::STATUS_ARCHIVED );
+		$proposal = $this->proposals->update_status_when( $proposal_id, Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_ARCHIVED );
 		if ( null === $proposal ) {
 			return $this->transition_failed_error();
 		}
@@ -454,7 +454,7 @@ final class Proposal_Service {
 		);
 
 		if ( '' === $event_id ) {
-			$this->proposals->update_status( $proposal_id, Proposal_Repository::STATUS_EXPIRED );
+			$this->proposals->update_status_when( $proposal_id, Proposal_Repository::STATUS_ARCHIVED, Proposal_Repository::STATUS_EXPIRED );
 			return $this->audit_failed_error( 'npcink_governance_core_proposal_archive_audit_failed' );
 		}
 
@@ -485,7 +485,7 @@ final class Proposal_Service {
 			);
 		}
 
-		$proposal = $this->proposals->reopen( $proposal_id );
+		$proposal = $this->proposals->reopen_when( $proposal_id, $previous_status );
 		if ( null === $proposal ) {
 			return $this->transition_failed_error();
 		}
@@ -504,7 +504,7 @@ final class Proposal_Service {
 		);
 
 		if ( '' === $event_id ) {
-			$this->proposals->update_status( $proposal_id, $previous_status );
+			$this->proposals->update_status_when( $proposal_id, Proposal_Repository::STATUS_PENDING, $previous_status );
 			return $this->audit_failed_error( 'npcink_governance_core_proposal_reopen_audit_failed' );
 		}
 
@@ -975,7 +975,7 @@ final class Proposal_Service {
 			);
 		}
 
-		$proposal = $this->proposals->update_status( $proposal_id, $status );
+		$proposal = $this->proposals->update_status_when( $proposal_id, Proposal_Repository::STATUS_PENDING, $status );
 		if ( null === $proposal ) {
 			return $this->transition_failed_error();
 		}
@@ -993,7 +993,7 @@ final class Proposal_Service {
 		);
 
 		if ( '' === $event_id ) {
-			$this->proposals->update_status( $proposal_id, (string) $existing['status'] );
+			$this->proposals->update_status_when( $proposal_id, $status, (string) $existing['status'] );
 			return $this->audit_failed_error( 'npcink_governance_core_proposal_decision_audit_failed' );
 		}
 
@@ -1013,7 +1013,7 @@ final class Proposal_Service {
 			return false;
 		}
 
-		$expired = $this->proposals->update_status( $proposal_id, Proposal_Repository::STATUS_EXPIRED );
+		$expired = $this->proposals->update_status_when( $proposal_id, Proposal_Repository::STATUS_PENDING, Proposal_Repository::STATUS_EXPIRED );
 		if ( null === $expired ) {
 			return false;
 		}
@@ -1031,7 +1031,7 @@ final class Proposal_Service {
 		);
 
 		if ( '' === $event_id ) {
-			$this->proposals->update_status( $proposal_id, Proposal_Repository::STATUS_PENDING );
+			$this->proposals->update_status_when( $proposal_id, Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_PENDING );
 			return false;
 		}
 

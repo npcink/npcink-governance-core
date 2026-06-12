@@ -48,6 +48,10 @@ final class Plan_Proposal_Service {
 	private const ARTICLE_BATCH_MAX_ACTIONS = 5;
 	private const ARTICLE_MEDIA_BATCH_MAX_ARTICLES = 5;
 	private const ARTICLE_MEDIA_BATCH_MAX_ACTIONS = 25;
+	private const PLAN_MAX_WRITE_ACTIONS = 25;
+	private const PLAN_MAX_PAYLOAD_BYTES = 262144;
+	private const MEDIA_OPTIMIZATION_MAX_ACTIONS = 10;
+	private const BLOCK_THEME_SITE_MAX_ACTIONS = 10;
 
 	/**
 	 * Ability adapter.
@@ -417,6 +421,30 @@ final class Plan_Proposal_Service {
 				'npcink_governance_core_plan_write_actions_missing',
 				__( 'Plan output must include write_actions.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
+			);
+		}
+
+		$encoded = wp_json_encode( $plan );
+		if ( is_string( $encoded ) && strlen( $encoded ) > self::PLAN_MAX_PAYLOAD_BYTES ) {
+			return new WP_Error(
+				'npcink_governance_core_plan_payload_too_large',
+				__( 'Plan output is too large for Core proposal intake.', 'npcink-governance-core' ),
+				array(
+					'status'    => 413,
+					'max_bytes' => self::PLAN_MAX_PAYLOAD_BYTES,
+				)
+			);
+		}
+
+		$write_actions = array_values( (array) $plan['write_actions'] );
+		if ( count( $write_actions ) > self::PLAN_MAX_WRITE_ACTIONS ) {
+			return new WP_Error(
+				'npcink_governance_core_plan_too_many_actions',
+				__( 'Plan output includes too many write actions for one Core intake request.', 'npcink-governance-core' ),
+				array(
+					'status'      => 422,
+					'max_actions' => self::PLAN_MAX_WRITE_ACTIONS,
+				)
 			);
 		}
 
@@ -1181,6 +1209,16 @@ final class Plan_Proposal_Service {
 				array( 'status' => 422 )
 			);
 		}
+		if ( count( $write_actions ) > self::MEDIA_OPTIMIZATION_MAX_ACTIONS ) {
+			return new WP_Error(
+				'npcink_governance_core_media_optimization_actions_rejected',
+				__( 'Media optimization plans must keep reviewed metadata and derivative actions bounded.', 'npcink-governance-core' ),
+				array(
+					'status'      => 422,
+					'max_actions' => self::MEDIA_OPTIMIZATION_MAX_ACTIONS,
+				)
+			);
+		}
 
 		$targets = array();
 		foreach ( $write_actions as $action ) {
@@ -1885,6 +1923,16 @@ final class Plan_Proposal_Service {
 				'npcink_governance_core_block_theme_site_actions_missing',
 				__( 'Block theme site plans must contain at least one template write action.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
+			);
+		}
+		if ( count( $write_actions ) > self::BLOCK_THEME_SITE_MAX_ACTIONS ) {
+			return new WP_Error(
+				'npcink_governance_core_block_theme_site_actions_rejected',
+				__( 'Block theme site plans must keep template write actions bounded.', 'npcink-governance-core' ),
+				array(
+					'status'      => 422,
+					'max_actions' => self::BLOCK_THEME_SITE_MAX_ACTIONS,
+				)
 			);
 		}
 

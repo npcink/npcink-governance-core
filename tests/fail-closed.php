@@ -946,6 +946,17 @@ final class Npcink_Governance_Core_Fail_Closed_WPDB {
 			return $this->first_matching( $this->prefix . 'npcink_governance_core_app_keys', array( 'key_id' => (string) ( $args[0] ?? '' ) ) );
 		}
 
+		if ( false !== strpos( $sql, 'npcink_governance_core_app_rate_limits' ) && false !== strpos( $sql, 'window_start = %s' ) ) {
+			return $this->first_matching(
+				$this->prefix . 'npcink_governance_core_app_rate_limits',
+				array(
+					'app_id'       => (string) ( $args[0] ?? '' ),
+					'route_family' => (string) ( $args[1] ?? '' ),
+					'window_start' => (string) ( $args[2] ?? '' ),
+				)
+			);
+		}
+
 		return null;
 	}
 
@@ -967,6 +978,43 @@ final class Npcink_Governance_Core_Fail_Closed_WPDB {
 		}
 
 		return array();
+	}
+
+	/**
+	 * Runs a limited direct query used by rate-limit conditional increments.
+	 *
+	 * @param mixed $query Query.
+	 * @return int|false
+	 */
+	public function query( $query ) {
+		$sql  = is_array( $query ) ? (string) ( $query['query'] ?? '' ) : (string) $query;
+		$args = is_array( $query ) ? (array) ( $query['args'] ?? array() ) : array();
+
+		if ( false !== strpos( $sql, 'npcink_governance_core_app_rate_limits' ) && false !== strpos( $sql, 'request_count = request_count + 1' ) ) {
+			$table        = $this->prefix . 'npcink_governance_core_app_rate_limits';
+			$now          = (string) ( $args[0] ?? '' );
+			$app_id       = (string) ( $args[1] ?? '' );
+			$route_family = (string) ( $args[2] ?? '' );
+			$window_start = (string) ( $args[3] ?? '' );
+			$limit        = (int) ( $args[4] ?? 0 );
+
+			foreach ( $this->tables[ $table ] ?? array() as $index => $row ) {
+				if (
+					$app_id === (string) ( $row['app_id'] ?? '' )
+					&& $route_family === (string) ( $row['route_family'] ?? '' )
+					&& $window_start === (string) ( $row['window_start'] ?? '' )
+					&& (int) ( $row['request_count'] ?? 0 ) < $limit
+				) {
+					$this->tables[ $table ][ $index ]['request_count'] = (int) ( $row['request_count'] ?? 0 ) + 1;
+					$this->tables[ $table ][ $index ]['updated_at']    = $now;
+					return 1;
+				}
+			}
+
+			return 0;
+		}
+
+		return 0;
 	}
 
 	/**
@@ -1121,6 +1169,7 @@ function npcink_governance_core_fail_closed_assert( bool $condition, string $mes
 }
 
 require_once dirname( __DIR__ ) . '/includes/Security/Request_Context.php';
+require_once dirname( __DIR__ ) . '/includes/Security/Sensitive_Data_Redactor.php';
 require_once dirname( __DIR__ ) . '/includes/Observability.php';
 require_once dirname( __DIR__ ) . '/includes/Audit/Audit_Log_Repository.php';
 require_once dirname( __DIR__ ) . '/includes/Capabilities/Ability_Registry_Adapter.php';
@@ -2548,12 +2597,30 @@ $create_response = $controller->create_proposal( new WP_REST_Request( $create_pa
 npcink_governance_core_fail_closed_assert( $create_response instanceof WP_REST_Response && 201 === $create_response->get_status(), 'Proposal REST create succeeds for observability smoke.' );
 $created_proposal = $create_response->get_data();
 $proposal_id      = (string) ( is_array( $created_proposal ) ? ( $created_proposal['proposal_id'] ?? '' ) : '' );
+npcink_governance_core_fail_closed_assert( false === strpos( (string) wp_json_encode( $created_proposal ), 'CALLER_SECRET_SENTINEL' ), 'Proposal response redacts secret-shaped caller metadata.' );
 $create_events    = npcink_governance_core_fail_closed_observability_events( 'core.proposal.create' );
 npcink_governance_core_fail_closed_assert( 1 === count( $create_events ), 'Proposal create emits one observability event.' );
 npcink_governance_core_fail_closed_assert( 'ok' === (string) ( $create_events[0]['status'] ?? '' ), 'Proposal create emits ok status.' );
 npcink_governance_core_fail_closed_assert( $proposal_id === (string) ( $create_events[0]['proposal_id'] ?? '' ), 'Proposal create event includes proposal id.' );
 npcink_governance_core_fail_closed_assert( 'npcink-abilities-toolkit/create-draft' === (string) ( $create_events[0]['ability_id'] ?? '' ), 'Proposal create event includes ability id.' );
 npcink_governance_core_fail_closed_assert_observability_metadata_only( $create_events[0], 'Proposal create observability event' );
+npcink_governance_core_fail_closed_assert( false === strpos( (string) wp_json_encode( $wpdb->rows( $audit_table ) ), 'CALLER_SECRET_SENTINEL' ), 'Proposal audit rows redact secret-shaped caller metadata.' );
+
+$redaction_audit = new \Npcink\GovernanceCore\Audit\Audit_Log_Repository();
+$redaction_audit->record(
+	'security.redaction_smoke',
+	array(
+		'authorization' => 'Bearer AUDIT_BEARER_SECRET_SENTINEL',
+		'nested'        => array(
+			'api_key' => 'AUDIT_API_KEY_SECRET_SENTINEL',
+		),
+		'note'          => 'cookie: AUDIT_COOKIE_SECRET_SENTINEL',
+	)
+);
+$redaction_audit_rows = wp_json_encode( $wpdb->rows( $audit_table ) );
+npcink_governance_core_fail_closed_assert( false === strpos( (string) $redaction_audit_rows, 'AUDIT_BEARER_SECRET_SENTINEL' ), 'Audit metadata redacts authorization values.' );
+npcink_governance_core_fail_closed_assert( false === strpos( (string) $redaction_audit_rows, 'AUDIT_API_KEY_SECRET_SENTINEL' ), 'Audit metadata redacts secret-shaped nested keys.' );
+npcink_governance_core_fail_closed_assert( false === strpos( (string) $redaction_audit_rows, 'AUDIT_COOKIE_SECRET_SENTINEL' ), 'Audit metadata redacts cookie-shaped strings.' );
 
 npcink_governance_core_fail_closed_reset_observability_events();
 $approve_response = $controller->approve_proposal(
@@ -2651,6 +2718,15 @@ npcink_governance_core_fail_closed_assert( ! is_wp_error( $article_result ), 'Va
 npcink_governance_core_fail_closed_assert( 1 === (int) ( $article_result['proposal_count'] ?? 0 ), 'Valid Toolbox article write plan creates exactly one proposal.' );
 npcink_governance_core_fail_closed_assert( 'npcink-abilities-toolkit/create-draft' === (string) ( $article_result['proposals'][0]['ability_id'] ?? '' ), 'Valid Toolbox article write plan targets create-draft.' );
 npcink_governance_core_fail_closed_assert( is_array( $article_result['proposals'][0]['preview']['article_workflow'] ?? null ), 'Valid Toolbox article write plan preserves article workflow preview.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$oversized_payload_plan = npcink_governance_core_fail_closed_article_write_plan();
+$oversized_payload_plan['intake_padding'] = str_repeat( 'x', 263000 );
+$oversized_payload_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-article-write-plan', $oversized_payload_plan );
+npcink_governance_core_fail_closed_assert( is_wp_error( $oversized_payload_result ), 'Oversized plan payload is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_plan_payload_too_large' === $oversized_payload_result->get_error_code(), 'Oversized plan payload rejection uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Oversized plan payload stores no proposal row.' );
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();
@@ -2788,6 +2864,32 @@ npcink_governance_core_fail_closed_assert( ! is_wp_error( $multi_media_optimizat
 npcink_governance_core_fail_closed_assert( 1 === (int) ( $multi_media_optimization_result['proposal_count'] ?? 0 ), 'Valid multi-attachment media optimization plan creates one batch proposal.' );
 $multi_media_optimization_proposal = is_array( $multi_media_optimization_result['proposals'][0] ?? null ) ? $multi_media_optimization_result['proposals'][0] : array();
 npcink_governance_core_fail_closed_assert( 4 === count( (array) ( $multi_media_optimization_proposal['input']['write_actions'] ?? array() ) ), 'Multi-attachment media optimization proposal stores all metadata and derivative actions.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$too_many_media_actions = npcink_governance_core_fail_closed_media_optimization_plan();
+$base_media_actions = $too_many_media_actions['write_actions'];
+$too_many_media_actions['attachment_ids'] = array();
+$too_many_media_actions['write_actions'] = array();
+for ( $i = 0; $i < 6; $i++ ) {
+	$attachment_id = 2000 + $i;
+	$metadata_action = $base_media_actions[0];
+	$derivative_action = $base_media_actions[1];
+	$metadata_action['action_id'] = 'update_media_details_' . $attachment_id;
+	$metadata_action['input']['attachment_id'] = $attachment_id;
+	$metadata_action['input']['idempotency_key'] = 'media-optimize-metadata-' . $attachment_id;
+	$derivative_action['action_id'] = 'adopt_webp_derivative_' . $attachment_id;
+	$derivative_action['input']['attachment_id'] = $attachment_id;
+	$derivative_action['input']['derivative_artifact'] = 'cloud://artifact/webp-' . $attachment_id;
+	$derivative_action['input']['idempotency_key'] = 'media-optimize-derivative-' . $attachment_id;
+	$too_many_media_actions['attachment_ids'][] = $attachment_id;
+	$too_many_media_actions['write_actions'][] = $metadata_action;
+	$too_many_media_actions['write_actions'][] = $derivative_action;
+}
+$too_many_media_actions_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-optimization-plan', $too_many_media_actions );
+npcink_governance_core_fail_closed_assert( is_wp_error( $too_many_media_actions_result ), 'Media optimization plan with too many actions is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_media_optimization_actions_rejected' === $too_many_media_actions_result->get_error_code(), 'Media optimization action limit rejection uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Oversized media optimization plan stores no proposal row.' );
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();
@@ -2931,6 +3033,42 @@ npcink_governance_core_fail_closed_assert( 'npcink-abilities-toolkit/upsert-temp
 $block_theme_site_block = $block_theme_site_proposal['input']['write_actions'][0]['input']['blocks'][0] ?? array();
 npcink_governance_core_fail_closed_assert( is_array( $block_theme_site_block ) && isset( $block_theme_site_block['blockName'] ) && ! isset( $block_theme_site_block['blockname'] ), 'Block theme site proposal preserves Gutenberg blockName key case.' );
 npcink_governance_core_fail_closed_assert( isset( $block_theme_site_block['innerBlocks'] ) && ! isset( $block_theme_site_block['innerblocks'] ), 'Block theme site proposal preserves Gutenberg innerBlocks key case.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$too_many_global_actions = npcink_governance_core_fail_closed_block_theme_site_plan();
+$base_block_theme_action = $too_many_global_actions['write_actions'][0];
+$too_many_global_actions['write_actions'] = array();
+for ( $i = 0; $i < 26; $i++ ) {
+	$action = $base_block_theme_action;
+	$action['action_id'] = 'upsert-template-global-limit-' . $i;
+	$action['input']['slug'] = 'single-global-limit-' . $i;
+	$action['input']['source_template_id'] = 'twentytwentyfive//single-global-limit-' . $i;
+	$action['input']['idempotency_key'] = 'block-theme-site-global-limit-' . $i;
+	$too_many_global_actions['write_actions'][] = $action;
+}
+$too_many_global_actions_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $too_many_global_actions );
+npcink_governance_core_fail_closed_assert( is_wp_error( $too_many_global_actions_result ), 'Plan with too many write actions is rejected before proposal creation.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_plan_too_many_actions' === $too_many_global_actions_result->get_error_code(), 'Global plan action limit rejection uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Plan over global action limit stores no proposal row.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$too_many_block_theme_actions = npcink_governance_core_fail_closed_block_theme_site_plan();
+$base_block_theme_action = $too_many_block_theme_actions['write_actions'][0];
+$too_many_block_theme_actions['write_actions'] = array();
+for ( $i = 0; $i < 11; $i++ ) {
+	$action = $base_block_theme_action;
+	$action['action_id'] = 'upsert-template-block-limit-' . $i;
+	$action['input']['slug'] = 'single-block-limit-' . $i;
+	$action['input']['source_template_id'] = 'twentytwentyfive//single-block-limit-' . $i;
+	$action['input']['idempotency_key'] = 'block-theme-site-block-limit-' . $i;
+	$too_many_block_theme_actions['write_actions'][] = $action;
+}
+$too_many_block_theme_actions_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $too_many_block_theme_actions );
+npcink_governance_core_fail_closed_assert( is_wp_error( $too_many_block_theme_actions_result ), 'Block theme site plan with too many template actions is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_block_theme_site_actions_rejected' === $too_many_block_theme_actions_result->get_error_code(), 'Block theme site action limit rejection uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Oversized block theme site plan stores no proposal row.' );
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();

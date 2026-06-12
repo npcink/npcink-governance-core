@@ -892,6 +892,24 @@ npcink_governance_core_assert( false === strpos( $app_key_repository, 'mai_core.
 $app_rate_limiter = npcink_governance_core_read( $root . '/includes/Security/App_Rate_Limiter.php' );
 npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'npcink_governance_core_app_rate_limits' ), 'App rate limiter stores fixed-window counters.' );
 npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'app_route_window' ), 'App rate limiter has unique app route window key.' );
+npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'increment_existing_window' ), 'App rate limiter uses a conditional increment helper.' );
+npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'request_count = request_count + 1' ), 'App rate limiter increments counters in SQL.' );
+npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'request_count < %d' ), 'App rate limiter only increments while under limit.' );
+
+$sensitive_data_redactor = npcink_governance_core_read( $root . '/includes/Security/Sensitive_Data_Redactor.php' );
+foreach (
+	array(
+		'Sensitive_Data_Redactor',
+		'sanitize_payload',
+		'is_secret_key',
+		'redact_secret_string',
+		'Bearer [redacted]',
+		'api_key',
+		'application_password',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $sensitive_data_redactor, $required ), 'Sensitive data redactor contains required text: ' . $required );
+}
 
 $app_authenticator = npcink_governance_core_read( $root . '/includes/Security/App_Authenticator.php' );
 foreach (
@@ -1339,6 +1357,9 @@ foreach (
 }
 npcink_governance_core_assert( false !== strpos( $read_request_repository, 'npcink_governance_core_read_requests' ), 'Read request repository stores Core read request table.' );
 npcink_governance_core_assert( false !== strpos( $read_request_repository, 'consumed_at' ), 'Read request repository stores one-time consumption timestamp.' );
+npcink_governance_core_assert( false !== strpos( $read_request_repository, 'update_status_when' ), 'Read request repository supports conditional status transitions.' );
+npcink_governance_core_assert( false !== strpos( $read_request_repository, '\'status\'     => $expected_status' ), 'Read request repository binds current status in conditional updates.' );
+npcink_governance_core_assert( false !== strpos( $read_request_repository, 'Sensitive_Data_Redactor::sanitize_payload' ), 'Read request repository uses shared sensitive data redaction.' );
 npcink_governance_core_assert( false !== strpos( $read_request_repository, 'redact_secret_string' ), 'Read request repository redacts secret-shaped strings.' );
 
 $proposal_service = npcink_governance_core_read( $root . '/includes/Governance/Proposal_Service.php' );
@@ -1439,12 +1460,15 @@ npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.li
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.viewed' ), 'Proposal service records proposal.viewed audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'audit_timeline' ), 'Proposal service exposes proposal audit timeline.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, "'pending'" ), 'Proposal service only transitions pending proposals.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'update_status_when' ), 'Proposal repository supports conditional status transitions.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'reopen_when' ), 'Proposal repository supports conditional reopen transitions.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'Sensitive_Data_Redactor::sanitize_payload' ), 'Proposal repository uses shared sensitive data redaction.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_ability_not_available' ), 'Proposal service rejects unavailable target abilities.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, '$this->abilities->find' ), 'Proposal service validates against ability intake.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_proposal_audit_failed' ), 'Proposal service fails closed when creation audit fails.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_proposal_decision_audit_failed' ), 'Proposal service fails closed when decision audit fails.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'audit_failed_error' ), 'Proposal service uses stable audit failure errors.' );
-npcink_governance_core_assert( false !== strpos( $proposal_service, 'update_status( $proposal_id, (string) $existing' ), 'Proposal service rolls back decision status when audit fails.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'update_status_when( $proposal_id, $status, (string) $existing' ), 'Proposal service rolls back decision status when audit fails.' );
 npcink_governance_core_assert( false === strpos( $proposal_service, 'confirm_token' ), 'Proposal service does not use confirm_token.' );
 npcink_governance_core_assert( false === strpos( $proposal_service, 'write_confirmed' ), 'Proposal service does not use write_confirmed.' );
 
@@ -1545,17 +1569,25 @@ foreach (
 		'ARTICLE_BATCH_MAX_ACTIONS',
 		'ARTICLE_MEDIA_BATCH_MAX_ARTICLES',
 		'ARTICLE_MEDIA_BATCH_MAX_ACTIONS',
+		'PLAN_MAX_WRITE_ACTIONS',
+		'PLAN_MAX_PAYLOAD_BYTES',
+		'MEDIA_OPTIMIZATION_MAX_ACTIONS',
+		'BLOCK_THEME_SITE_MAX_ACTIONS',
+		'npcink_governance_core_plan_too_many_actions',
+		'npcink_governance_core_plan_payload_too_large',
 		'npcink_governance_core_article_batch_mode_required',
 		'npcink_governance_core_article_media_batch_mode_required',
 		'npcink_governance_core_article_media_batch_candidate_missing',
 		'npcink_governance_core_image_candidate_contract_missing',
 		'npcink_governance_core_image_candidate_source_type_invalid',
 		'npcink_governance_core_media_optimization_batch_required',
+		'npcink_governance_core_media_optimization_actions_rejected',
 		'npcink_governance_core_media_optimization_attachment_mismatch',
 		'npcink_governance_core_media_adoption_enhancement_actions_missing',
 		'npcink_governance_core_media_adoption_enhancement_patch_invalid',
 		'npcink_governance_core_media_rename_target_file_missing',
 		'npcink_governance_core_media_rename_attachment_mismatch',
+		'npcink_governance_core_block_theme_site_actions_rejected',
 		'npcink_governance_core_pattern_page_class_rejected',
 		'npcink_governance_core_article_plan_',
 		'npcink_governance_core_article_batch_',
@@ -1750,7 +1782,11 @@ npcink_governance_core_assert( false !== strpos( $audit_repository, 'app_id' ), 
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'key_id' ), 'Audit repository filters by key id metadata.' );
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'caller_type' ), 'Audit repository filters by caller type metadata.' );
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'correlation_id' ), 'Audit repository filters by correlation id metadata.' );
-npcink_governance_core_assert( false !== strpos( $audit_repository, 'metadata_filter_needle' ), 'Audit repository uses JSON-safe metadata filter needles.' );
+npcink_governance_core_assert( false !== strpos( $audit_repository, 'ability_id varchar(190)' ), 'Audit repository stores indexed ability id column.' );
+npcink_governance_core_assert( false !== strpos( $audit_repository, 'KEY correlation_id' ), 'Audit repository stores indexed correlation id column.' );
+npcink_governance_core_assert( false !== strpos( $audit_repository, 'indexed_metadata' ), 'Audit repository extracts indexed metadata fields.' );
+npcink_governance_core_assert( false !== strpos( $audit_repository, 'Sensitive_Data_Redactor::sanitize_payload' ), 'Audit repository uses shared sensitive data redaction.' );
+npcink_governance_core_assert( false === strpos( $audit_repository, 'metadata_json LIKE' ), 'Audit repository does not scan metadata_json for common filters.' );
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'exclude_event_names' ), 'Audit repository can exclude noisy read events.' );
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'count_filtered' ), 'Audit repository can count filtered rows for pagination.' );
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'offset' ), 'Audit repository supports paginated admin lists.' );

@@ -7,6 +7,7 @@
 
 namespace Npcink\GovernanceCore\Governance;
 
+use Npcink\GovernanceCore\Security\Sensitive_Data_Redactor;
 use WP_Error;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -258,6 +259,51 @@ final class Read_Request_Repository {
 	}
 
 	/**
+	 * Updates request status only when the current status still matches.
+	 *
+	 * @param string $request_id Request id.
+	 * @param string $expected_status Expected current status.
+	 * @param string $status New status.
+	 * @return array<string,mixed>|null
+	 */
+	public function update_status_when( string $request_id, string $expected_status, string $status ): ?array {
+		global $wpdb;
+
+		$request_id      = sanitize_text_field( $request_id );
+		$expected_status = sanitize_key( $expected_status );
+		$status          = sanitize_key( $status );
+		if ( ! in_array( $expected_status, $this->allowed_statuses(), true ) || ! in_array( $status, $this->allowed_statuses(), true ) ) {
+			return null;
+		}
+
+		$data = array(
+			'status'     => $status,
+			'updated_at' => current_time( 'mysql', true ),
+		);
+		$formats = array( '%s', '%s' );
+
+		if ( self::STATUS_CONSUMED === $status ) {
+			$data['consumed_at'] = current_time( 'mysql', true );
+			$formats[]          = '%s';
+		}
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		$updated = $wpdb->update(
+			$this->table_name(),
+			$data,
+			array(
+				'request_id' => $request_id,
+				'status'     => $expected_status,
+			),
+			$formats,
+			array( '%s', '%s' )
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return 1 === $updated ? $this->find( $request_id ) : null;
+	}
+
+	/**
 	 * Atomically consumes an approved one-time read request.
 	 *
 	 * @param string $request_id Request id.
@@ -411,32 +457,7 @@ final class Read_Request_Repository {
 	 * @return mixed
 	 */
 	private function sanitize_payload( $value ) {
-		if ( is_array( $value ) ) {
-			$clean = array();
-			foreach ( $value as $key => $item ) {
-				$key_string = (string) $key;
-				$clean_key   = sanitize_key( $key_string );
-				if ( '' === $clean_key ) {
-					continue;
-				}
-				if ( $this->is_secret_key( $key_string ) ) {
-					$clean[ $clean_key ] = '[redacted]';
-					continue;
-				}
-				$clean[ $clean_key ] = $this->sanitize_payload( $item );
-			}
-			return $clean;
-		}
-
-		if ( is_string( $value ) ) {
-			return $this->redact_secret_string( sanitize_textarea_field( $value ) );
-		}
-
-		if ( is_bool( $value ) || is_int( $value ) || is_float( $value ) || null === $value ) {
-			return $value;
-		}
-
-		return sanitize_text_field( (string) $value );
+		return Sensitive_Data_Redactor::sanitize_payload( $value );
 	}
 
 	/**
@@ -446,7 +467,7 @@ final class Read_Request_Repository {
 	 * @return bool
 	 */
 	private function is_secret_key( string $key ): bool {
-		return 1 === preg_match( '/(secret|token|private[_-]?key|authorization|cookie|application[_-]?password|password|api[_-]?key)/i', $key );
+		return Sensitive_Data_Redactor::is_secret_key( $key );
 	}
 
 	/**
@@ -456,9 +477,6 @@ final class Read_Request_Repository {
 	 * @return string
 	 */
 	private function redact_secret_string( string $value ): string {
-		$value = preg_replace( '/Bearer\s+[A-Za-z0-9._~+\/=-]+/i', 'Bearer [redacted]', $value );
-		$value = preg_replace( '/(application password|private key|authorization header|cookie)\s*[:=]\s*\S+/i', '$1=[redacted]', is_string( $value ) ? $value : '' );
-
-		return is_string( $value ) ? $value : '';
+		return Sensitive_Data_Redactor::redact_secret_string( $value );
 	}
 }

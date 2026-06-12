@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-12 — Security and performance hardening pass
+
+- **Module**: Governance persistence, app-auth rate limits, audit filters, and
+  plan-to-proposal intake bounds.
+- **Status**: P1/P2/P3 audit findings were addressed inside Core's governance
+  lifecycle boundary.
+- **Completed**:
+  - Added shared sensitive-data redaction for proposal payloads, sensitive read
+    request payloads, and audit metadata.
+  - Switched proposal/read-request lifecycle writes to conditional status
+    transitions and made fixed-window app rate counters increment under-limit
+    in SQL.
+  - Promoted common audit metadata filters into indexed audit columns.
+  - Bounded from-plan payload size and write-action counts, with narrower caps
+    for media optimization and block theme site batch reviews.
+- **Verification**:
+  - `composer test:all`
+  - `composer smoke:wp`
+  - `composer validate --no-check-publish`
+  - `composer check:wporg`
+- **Boundary**:
+  - Core still owns governance records, review, preflight, audit, and app-key
+    enforcement only. This pass does not add workflow runtime, execution
+    queues, provider credentials, or final WordPress write authority.
+
 ## 2026-06-11 — Post-preflight execution outcomes recorded
 
 - **Module**: Proposal lifecycle and Adapter handoff audit.

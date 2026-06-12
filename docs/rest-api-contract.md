@@ -575,6 +575,11 @@ Request fields:
 | `plan_input` | object | no | Input originally used to build the plan. Used for safety gates such as `include_delete_candidates=true`; media delete plans may also require source-side flags such as `include_unattached_nonproduction_media=true` or `include_trash_parent_media=true` before the plan emits a delete action. |
 | `caller` | object | no | Caller metadata copied into generated proposals. |
 
+Core rejects oversized plan intake before proposal creation. The plan payload
+must stay within Core's plan intake byte limit and may not contain more than 25
+`write_actions`. Specific batch review shapes can be narrower; media
+optimization plans and block theme site plans are capped at 10 actions each.
+
 For `npcink-toolbox/build-article-write-plan`, the plan must declare
 `artifact_type=article_write_plan`, `version>=1`, and include
 `article_goal_brief`, `research_evidence_pack`, `article_outline`,
@@ -807,6 +812,10 @@ Errors:
 | `npcink_governance_core_plan_commit_execution_rejected` | `422` | Plan requested commit execution. |
 | `npcink_governance_core_plan_dry_run_required` | `422` | Plan is not dry-run. |
 | `npcink_governance_core_plan_write_actions_missing` | `422` | Plan has no `write_actions` array. |
+| `npcink_governance_core_plan_payload_too_large` | `413` | Plan payload exceeds Core's intake byte limit. |
+| `npcink_governance_core_plan_too_many_actions` | `422` | Plan contains too many `write_actions` for one Core intake request. |
+| `npcink_governance_core_media_optimization_actions_rejected` | `422` | Media optimization plan exceeds its bounded metadata/derivative action cap. |
+| `npcink_governance_core_block_theme_site_actions_rejected` | `422` | Block theme site plan exceeds its bounded template action cap. |
 
 Audit event:
 
@@ -894,6 +903,10 @@ Query parameters:
 | `key_id` | string | empty | Optional metadata filter for the app key id. |
 | `caller_type` | string | empty | Optional metadata filter such as `mcp_adapter`. |
 | `correlation_id` | string | empty | Optional metadata filter for commit-preflight correlation. |
+
+The common metadata filters above are backed by indexed audit columns copied
+from sanitized event metadata at write time. The response still returns the
+sanitized `metadata` object.
 
 Response `200`:
 

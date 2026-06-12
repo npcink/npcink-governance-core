@@ -388,10 +388,17 @@ Plan intake fails closed when:
 - the plan does not include `dry_run=true`;
 - the plan includes `commit_execution=true`;
 - the plan lacks a `write_actions` array;
+- the encoded plan payload exceeds Core's plan intake byte limit;
+- the plan contains more than 25 `write_actions`;
 - a target ability is not discoverable;
 - a target ability is not proposal-governed;
 - a target ability unexpectedly enables Core proxy or commit execution;
 - an action input sets `dry_run=false` or `commit=true`.
+
+Some batch review shapes have narrower caps than the global plan limit. Media
+optimization plans and block theme site plans currently accept at most 10
+actions each so a single approval remains reviewable and the intake path stays
+bounded.
 
 `manual_review` and `skipped_destructive_candidates` are never dropped. They
 are copied into generated proposal warnings and blocked item context.
