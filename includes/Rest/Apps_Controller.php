@@ -140,15 +140,22 @@ final class Apps_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function create_app( WP_REST_Request $request ) {
-		$app = $this->apps->create(
-			array(
-				'app_label'           => $request->get_param( 'app_label' ),
-				'caller_type'         => $request->get_param( 'caller_type' ),
-				'scopes'              => is_array( $request->get_param( 'scopes' ) ) ? $request->get_param( 'scopes' ) : array(),
-				'rate_limit'          => $request->get_param( 'rate_limit' ),
-				'rate_window_seconds' => $request->get_param( 'rate_window_seconds' ),
-			)
+		$data = array(
+			'app_label'           => $request->get_param( 'app_label' ),
+			'caller_type'         => $request->get_param( 'caller_type' ),
+			'rate_limit'          => $request->get_param( 'rate_limit' ),
+			'rate_window_seconds' => $request->get_param( 'rate_window_seconds' ),
 		);
+
+		$body_params = method_exists( $request, 'get_body_params' ) && is_array( $request->get_body_params() ) ? $request->get_body_params() : array();
+		$json_params = method_exists( $request, 'get_json_params' ) && is_array( $request->get_json_params() ) ? $request->get_json_params() : array();
+		$body_params = array_merge( $body_params, $json_params );
+		$scope_param = $request->get_param( 'scopes' );
+		if ( array_key_exists( 'scopes', $body_params ) || ( is_array( $scope_param ) && ! empty( $scope_param ) ) ) {
+			$data['scopes'] = is_array( $scope_param ) ? $scope_param : array();
+		}
+
+		$app = $this->apps->create( $data );
 
 		if ( is_wp_error( $app ) ) {
 			return $app;

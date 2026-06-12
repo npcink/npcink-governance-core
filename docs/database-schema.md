@@ -21,6 +21,7 @@ records; they are not workflow runtime state.
 | `input_json` | `longtext` | yes | Sanitized structured input. |
 | `preview_json` | `longtext` | yes | Sanitized dry-run preview or handoff payload. |
 | `caller_json` | `longtext` | yes | Sanitized caller metadata, including non-secret Core guardrails and policy decision metadata. |
+| `pending_quota_key` | `varchar(190)` | no | Indexed guardrail bucket such as `app:{app_id}` or `user:{user_id}` for pending quota and duplicate checks. |
 | `created_by` | `bigint(20) unsigned` | no | WordPress user id. |
 | `created_at` | `datetime` | no | UTC time from `current_time( 'mysql', true )`. |
 | `updated_at` | `datetime` | no | UTC time from `current_time( 'mysql', true )`. |
@@ -31,6 +32,8 @@ Indexes:
 - unique key: `proposal_id`
 - key: `ability_id`
 - key: `status`
+- key: `pending_quota_key`
+- key: `status_quota` on `status`, `pending_quota_key`
 - key: `created_at`
 
 Allowed statuses:

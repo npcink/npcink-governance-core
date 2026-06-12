@@ -1083,15 +1083,16 @@ final class Admin_Page {
 	 */
 	private function render_scope_checkboxes(): void {
 		$defaults = $this->apps->default_scopes();
-		$labels   = array(
-			'capabilities:read' => __( 'Read capabilities', 'npcink-governance-core' ),
-			'proposals:create'  => __( 'Create proposals', 'npcink-governance-core' ),
-			'proposals:read'    => __( 'Read proposals', 'npcink-governance-core' ),
-			'commit:preflight'  => __( 'Commit preflight', 'npcink-governance-core' ),
-			'proposals:approve' => __( 'Approve proposals', 'npcink-governance-core' ),
-			'proposals:reject'  => __( 'Reject proposals', 'npcink-governance-core' ),
-			'audit:read'        => __( 'Read audit log', 'npcink-governance-core' ),
-		);
+			$labels   = array(
+				'capabilities:read'        => __( 'Read capabilities', 'npcink-governance-core' ),
+				'proposals:create'         => __( 'Create proposals', 'npcink-governance-core' ),
+				'proposals:read'           => __( 'Read proposals', 'npcink-governance-core' ),
+				'commit:preflight'         => __( 'Commit preflight', 'npcink-governance-core' ),
+				'proposals:approve'        => __( 'Approve proposals', 'npcink-governance-core' ),
+				'proposals:reject'         => __( 'Reject proposals', 'npcink-governance-core' ),
+				'commit:record_execution' => __( 'Record execution results', 'npcink-governance-core' ),
+				'audit:read'               => __( 'Read audit log', 'npcink-governance-core' ),
+			);
 
 		foreach ( $this->apps->allowed_scopes() as $scope ) {
 			?>

@@ -131,7 +131,7 @@ final class App_Authenticator {
 	 * @return bool|WP_Error
 	 */
 	public function can_record_execution( WP_REST_Request $request ) {
-		return $this->authorize( $request, 'commit:preflight', 'commit_record_execution' );
+		return $this->authorize( $request, 'commit:record_execution', 'commit_record_execution' );
 	}
 
 	/**

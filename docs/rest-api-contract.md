@@ -37,7 +37,7 @@ scope map is:
 | `POST /proposals/{proposal_id}/approve` | `proposals:approve` |
 | `POST /proposals/{proposal_id}/reject` | `proposals:reject` |
 | `POST /proposals/{proposal_id}/commit-preflight` | `commit:preflight` |
-| `POST /proposals/{proposal_id}/record-execution` | `commit:preflight` |
+| `POST /proposals/{proposal_id}/record-execution` | `commit:record_execution` |
 | `POST /read-requests` | `read_requests:create` |
 | `GET /read-requests`, `GET /read-requests/{request_id}` | `read_requests:read` |
 | `POST /read-requests/{request_id}/approve` | `read_requests:approve` |
@@ -96,7 +96,7 @@ Request fields:
 | --- | --- | --- | --- |
 | `app_label` | string | no | Human-readable app label. |
 | `caller_type` | string | no | `mcp_adapter`, `agent_host`, `product_plugin`, or another sanitized key. |
-| `scopes` | array | no | Defaults to `capabilities:read`, `proposals:create`, `proposals:read`, and `commit:preflight`. |
+| `scopes` | array | no | Omit to use default adapter scopes: `capabilities:read`, `proposals:create`, `proposals:read`, `commit:preflight`, `read_requests:create`, `read_requests:read`, and `read_requests:preflight`. If provided, at least one valid scope is required. |
 | `rate_limit` | integer | no | Defaults to `60`. |
 | `rate_window_seconds` | integer | no | Defaults to `3600`. |
 
@@ -1061,7 +1061,7 @@ commit preflight. This route updates proposal lifecycle status and audit only;
 it does not execute the target ability and does not store full ability result
 payloads.
 
-Permission: `manage_options` or app scope `commit:preflight`.
+Permission: `manage_options` or app scope `commit:record_execution`.
 
 Path parameters:
 

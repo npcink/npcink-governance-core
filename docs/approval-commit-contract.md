@@ -110,14 +110,17 @@ After Adapter executes a write through WordPress Abilities API, it should call
 Core `record-execution` with `execution_status`, `correlation_id`,
 `approved_input_hash`, and public-safe execution counters. Core accepts the
 record only when it matches an existing `commit.preflighted` handoff for the
-approved proposal input. A successful record changes proposal status to
-`executed`; a failed record changes status to `execution_failed`. If audit
-persistence fails, Core rolls the proposal back to `approved`.
+approved proposal input and the caller has `commit:record_execution`. A
+successful record changes proposal status to `executed`; a failed record
+changes status to `execution_failed`. If audit persistence fails, Core rolls
+the proposal back to `approved`.
 
-Generic MCP keys should not receive `proposals:approve`. Productized Magick AI
-Adapter may use a separately issued trusted key with `proposals:approve` when
-its own UI or host policy presents proposal risk and collects the user's
-approval before calling Core.
+Generic MCP keys should not receive `proposals:approve` or
+`commit:record_execution`. Productized Magick AI Adapter may use a separately
+issued trusted key with `proposals:approve` and `commit:record_execution` when
+its own UI or host policy presents proposal risk, collects the user's approval,
+executes the approved ability outside Core, and records only the execution
+outcome back into Core.
 
 Do not accept legacy `confirm_token`, `write_confirmed`, or compatibility
 confirmation parameters in the rebuilt Core.

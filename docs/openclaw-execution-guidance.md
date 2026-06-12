@@ -230,7 +230,7 @@ module:
 - call read abilities through WordPress Abilities API;
 - call Core proposal/preflight for write and destructive abilities;
 - provide approve-and-execute only from a trusted Adapter surface that uses
-  `proposals:approve` plus `commit:preflight`; generic agent keys should not
-  get approval scope;
+  `proposals:approve`, `commit:preflight`, and `commit:record_execution`;
+  generic agent keys should not get approval or execution-recording scope;
 - keep adapter transport, tool presentation, and OpenClaw-specific behavior out
   of Core.

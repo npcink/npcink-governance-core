@@ -61,6 +61,7 @@ final class Proposal_Repository {
 				input_json longtext NULL,
 				preview_json longtext NULL,
 				caller_json longtext NULL,
+				pending_quota_key varchar(190) DEFAULT '' NOT NULL,
 				created_by bigint(20) unsigned DEFAULT 0 NOT NULL,
 				created_at datetime NOT NULL,
 				updated_at datetime NOT NULL,
@@ -68,6 +69,8 @@ final class Proposal_Repository {
 				UNIQUE KEY proposal_id (proposal_id),
 				KEY ability_id (ability_id),
 				KEY status (status),
+				KEY pending_quota_key (pending_quota_key),
+				KEY status_quota (status, pending_quota_key),
 				KEY created_at (created_at)
 			) {$charset_collate};"
 		);
@@ -86,25 +89,28 @@ final class Proposal_Repository {
 		$now         = current_time( 'mysql', true );
 		$ability_id  = sanitize_text_field( (string) ( $data['ability_id'] ?? '' ) );
 		$input       = is_array( $data['input'] ?? null ) ? $data['input'] : array();
+		$caller      = $this->sanitize_payload( $data['caller'] ?? array() );
+		$caller      = is_array( $caller ) ? $caller : array();
 		$record      = array(
-			'proposal_id'  => $proposal_id,
-			'ability_id'   => $ability_id,
-			'status'       => self::STATUS_PENDING,
-			'title'        => sanitize_text_field( (string) ( $data['title'] ?? '' ) ),
-			'summary'      => sanitize_textarea_field( (string) ( $data['summary'] ?? '' ) ),
-			'input_json'   => wp_json_encode( $this->sanitize_input_for_ability( $ability_id, $input ) ),
-			'preview_json' => wp_json_encode( $this->sanitize_payload( $data['preview'] ?? array() ) ),
-			'caller_json'  => wp_json_encode( $this->sanitize_payload( $data['caller'] ?? array() ) ),
-			'created_by'   => get_current_user_id(),
-			'created_at'   => $now,
-			'updated_at'   => $now,
+			'proposal_id'       => $proposal_id,
+			'ability_id'        => $ability_id,
+			'status'            => self::STATUS_PENDING,
+			'title'             => sanitize_text_field( (string) ( $data['title'] ?? '' ) ),
+			'summary'           => sanitize_textarea_field( (string) ( $data['summary'] ?? '' ) ),
+			'input_json'        => wp_json_encode( $this->sanitize_input_for_ability( $ability_id, $input ) ),
+			'preview_json'      => wp_json_encode( $this->sanitize_payload( $data['preview'] ?? array() ) ),
+			'caller_json'       => wp_json_encode( $caller ),
+			'pending_quota_key' => $this->pending_quota_key_from_caller( $caller, get_current_user_id() ),
+			'created_by'        => get_current_user_id(),
+			'created_at'        => $now,
+			'updated_at'        => $now,
 		);
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$inserted = $wpdb->insert(
 			$this->table_name(),
 			$record,
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s' )
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s' )
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
@@ -270,34 +276,17 @@ final class Proposal_Repository {
 
 		$ability_id = sanitize_text_field( $ability_id );
 		$limit      = max( 1, min( 1000, $limit ) );
-		$where      = array( 'status = %s' );
-		$args       = array( $this->table_name(), self::STATUS_PENDING );
+		$where      = array( 'status = %s', 'pending_quota_key = %s' );
+		$args       = array( $this->table_name(), self::STATUS_PENDING, $quota_key );
 
 		if ( '' !== $ability_id ) {
 			$where[] = 'ability_id = %s';
 			$args[]  = $ability_id;
 		}
 
-		$identity_where = array();
-		if ( 0 === strpos( $quota_key, 'user:' ) ) {
-			$user_id = absint( substr( $quota_key, 5 ) );
-			$identity_where[] = 'created_by = %d';
-			$args[]           = $user_id;
-		}
-
-		foreach ( $this->guardrail_like_terms( $quota_key ) as $term ) {
-			$identity_where[] = 'caller_json LIKE %s';
-			$args[]           = '%' . $wpdb->esc_like( $term ) . '%';
-		}
-
-		if ( empty( $identity_where ) ) {
-			return array();
-		}
-
-		$where[] = '(' . implode( ' OR ', $identity_where ) . ')';
 		$args[]  = $limit;
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,PluginCheck.Security.DirectDB.UnescapedDBParameter,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- SQL uses fixed clauses, generated placeholders, and Core's custom governance table.
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- SQL uses fixed clauses, generated placeholders, and Core's custom governance table.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM %i WHERE ' . $this->join_where_clauses( $where ) . ' ORDER BY id DESC LIMIT %d',
@@ -305,7 +294,7 @@ final class Proposal_Repository {
 			),
 			ARRAY_A
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,PluginCheck.Security.DirectDB.UnescapedDBParameter,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
 	}
@@ -340,7 +329,7 @@ final class Proposal_Repository {
 	 * @param string $status New status.
 	 * @return array<string,mixed>|null
 	 */
-	public function update_status( string $proposal_id, string $status ): ?array {
+	private function update_status( string $proposal_id, string $status ): ?array {
 		global $wpdb;
 
 		$proposal_id = sanitize_text_field( $proposal_id );
@@ -767,22 +756,26 @@ final class Proposal_Repository {
 	}
 
 	/**
-	 * Returns safe LIKE terms for a guardrail quota key.
+	 * Returns the indexed pending quota key for proposal guardrail queries.
 	 *
-	 * @param string $quota_key Guardrail quota key.
-	 * @return array<int,string>
+	 * @param array<string,mixed> $caller Caller metadata.
+	 * @param int                 $created_by WordPress user id.
+	 * @return string
 	 */
-	private function guardrail_like_terms( string $quota_key ): array {
-		$terms = array( $quota_key );
-
-		if ( 0 === strpos( $quota_key, 'app:' ) ) {
-			$app_id = substr( $quota_key, 4 );
-			if ( '' !== $app_id ) {
-				$terms[] = $app_id;
-			}
+	private function pending_quota_key_from_caller( array $caller, int $created_by ): string {
+		$guardrails = is_array( $caller['core_guardrails'] ?? null ) ? $caller['core_guardrails'] : array();
+		$quota_key  = sanitize_text_field( (string) ( $guardrails['pending_quota_key'] ?? '' ) );
+		if ( '' !== $quota_key ) {
+			return $quota_key;
 		}
 
-		return array_values( array_unique( array_filter( array_map( 'sanitize_text_field', $terms ) ) ) );
+		$auth   = is_array( $caller['auth'] ?? null ) ? $caller['auth'] : array();
+		$app_id = sanitize_text_field( (string) ( $auth['app_id'] ?? '' ) );
+		if ( '' !== $app_id ) {
+			return 'app:' . $app_id;
+		}
+
+		return 'user:' . max( 0, $created_by );
 	}
 
 	/**

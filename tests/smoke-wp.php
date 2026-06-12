@@ -1217,7 +1217,38 @@ npcink_governance_core_smoke_assert( '' !== $app_id && '' !== $key_id, 'app key 
 npcink_governance_core_smoke_assert( in_array( 'proposals:create', (array) ( $app['scopes'] ?? array() ), true ), 'app key defaults include proposal creation scope' );
 npcink_governance_core_smoke_assert( in_array( 'read_requests:create', (array) ( $app['scopes'] ?? array() ), true ), 'app key defaults include sensitive read request creation scope' );
 npcink_governance_core_smoke_assert( in_array( 'read_requests:preflight', (array) ( $app['scopes'] ?? array() ), true ), 'app key defaults include sensitive read preflight scope' );
+npcink_governance_core_smoke_assert( ! in_array( 'commit:record_execution', (array) ( $app['scopes'] ?? array() ), true ), 'app key defaults do not include execution-result recording scope' );
 npcink_governance_core_smoke_assert( ! array_key_exists( 'secret_hash', $app ), 'app key creation response does not expose secret hash' );
+
+wp_set_current_user( 1 );
+$empty_scope_request = new WP_REST_Request( 'POST', '/npcink-governance-core/v1/apps' );
+$empty_scope_request->set_body_params(
+	array(
+		'app_label'           => 'Empty scopes smoke ' . $npcink_governance_core_smoke_run_id,
+		'caller_type'         => 'mcp_adapter',
+		'scopes'              => array(),
+		'rate_limit'          => 20,
+		'rate_window_seconds' => 3600,
+	)
+);
+$empty_scope_response = rest_do_request( $empty_scope_request );
+$empty_scope_data     = $empty_scope_response->get_data();
+npcink_governance_core_smoke_assert( 400 === (int) $empty_scope_response->get_status(), 'app key creation rejects explicitly empty scopes' );
+npcink_governance_core_smoke_assert( 'npcink_governance_core_app_scopes_empty' === (string) ( is_array( $empty_scope_data ) ? ( $empty_scope_data['code'] ?? '' ) : '' ), 'empty scopes return stable app scope error code' );
+
+$invalid_scope_app = npcink_governance_core_smoke_rest_result(
+	'POST',
+	'/npcink-governance-core/v1/apps',
+	array(
+		'app_label'           => 'Invalid scopes smoke ' . $npcink_governance_core_smoke_run_id,
+		'caller_type'         => 'mcp_adapter',
+		'scopes'              => array( 'not:a-real-scope' ),
+		'rate_limit'          => 20,
+		'rate_window_seconds' => 3600,
+	)
+);
+npcink_governance_core_smoke_assert( 400 === (int) $invalid_scope_app['status'], 'app key creation rejects explicitly invalid scopes' );
+npcink_governance_core_smoke_assert( 'npcink_governance_core_app_scopes_empty' === (string) ( $invalid_scope_app['data']['code'] ?? '' ), 'invalid scopes return stable app scope error code' );
 
 $apps_list = npcink_governance_core_smoke_rest( 'GET', '/npcink-governance-core/v1/apps', array( 'limit' => 5 ) );
 $apps_json = wp_json_encode( $apps_list );
@@ -2290,6 +2321,50 @@ npcink_governance_core_smoke_assert( 'core-preflight-v1' === (string) ( $trusted
 npcink_governance_core_smoke_assert( false === (bool) ( $trusted_preflight['execution_handoff']['core_proxy_execute'] ?? true ), 'trusted Adapter execution handoff keeps Core proxy execution disabled' );
 npcink_governance_core_smoke_assert( false === (bool) ( $trusted_preflight['execution_handoff']['commit_execution'] ?? true ), 'trusted Adapter execution handoff keeps Core final execution disabled' );
 
+$trusted_record_denied = npcink_governance_core_smoke_rest_result_as_app(
+	'POST',
+	'/npcink-governance-core/v1/proposals/' . rawurlencode( $trusted_proposal_id ) . '/record-execution',
+	$trusted_adapter_token,
+	array(
+		'execution_status'    => 'succeeded',
+		'correlation_id'      => (string) ( $trusted_preflight['execution_handoff']['correlation_id'] ?? '' ),
+		'approved_input_hash' => (string) ( $trusted_preflight['execution_handoff']['approved_input_hash'] ?? '' ),
+		'adapter_request_id'  => 'trusted-record-denied-' . $npcink_governance_core_smoke_run_id,
+	)
+);
+npcink_governance_core_smoke_assert( 403 === (int) $trusted_record_denied['status'], 'preflight-only trusted Adapter key cannot record execution result' );
+
+$execution_recorder_app = npcink_governance_core_smoke_rest(
+	'POST',
+	'/npcink-governance-core/v1/apps',
+	array(
+		'app_label'           => 'Execution Recorder Smoke ' . $npcink_governance_core_smoke_run_id,
+		'caller_type'         => 'trusted_adapter',
+		'scopes'              => array( 'commit:record_execution' ),
+		'rate_limit'          => 20,
+		'rate_window_seconds' => 3600,
+	)
+);
+$execution_recorder_token  = (string) ( $execution_recorder_app['token'] ?? '' );
+$execution_recorder_app_id = (string) ( $execution_recorder_app['app_id'] ?? '' );
+npcink_governance_core_smoke_assert( '' !== $execution_recorder_token && '' !== $execution_recorder_app_id, 'execution recorder app key is created with recording scope' );
+
+$trusted_recorded = npcink_governance_core_smoke_rest_as_app(
+	'POST',
+	'/npcink-governance-core/v1/proposals/' . rawurlencode( $trusted_proposal_id ) . '/record-execution',
+	$execution_recorder_token,
+	array(
+		'execution_status'    => 'succeeded',
+		'correlation_id'      => (string) ( $trusted_preflight['execution_handoff']['correlation_id'] ?? '' ),
+		'approved_input_hash' => (string) ( $trusted_preflight['execution_handoff']['approved_input_hash'] ?? '' ),
+		'adapter_request_id'  => 'trusted-record-success-' . $npcink_governance_core_smoke_run_id,
+		'execution_mode'      => 'single_post',
+		'executed_count'      => 1,
+		'failed_count'        => 0,
+	)
+);
+npcink_governance_core_smoke_assert( 'executed' === (string) ( $trusted_recorded['status'] ?? '' ), 'execution recorder app records successful execution result' );
+
 $rate_app = npcink_governance_core_smoke_rest(
 	'POST',
 	'/npcink-governance-core/v1/apps',
@@ -2479,6 +2554,7 @@ $trusted_proposal_audit = npcink_governance_core_smoke_rest(
 $trusted_proposal_audit_items = (array) ( $trusted_proposal_audit['items'] ?? array() );
 $found_trusted_approval       = false;
 $found_trusted_preflight      = false;
+$found_trusted_record         = false;
 foreach ( $trusted_proposal_audit_items as $item ) {
 	if ( ! is_array( $item ) ) {
 		continue;
@@ -2492,9 +2568,14 @@ foreach ( $trusted_proposal_audit_items as $item ) {
 		$found_trusted_preflight = $trusted_adapter_app_id === (string) ( $item['metadata']['auth']['app_id'] ?? '' )
 			&& 'commit:preflight' === (string) ( $item['metadata']['auth']['scope'] ?? '' );
 	}
+	if ( 'proposal.executed' === (string) ( $item['event_name'] ?? '' ) ) {
+		$found_trusted_record = $execution_recorder_app_id === (string) ( $item['metadata']['auth']['app_id'] ?? '' )
+			&& 'commit:record_execution' === (string) ( $item['metadata']['auth']['scope'] ?? '' );
+	}
 }
 npcink_governance_core_smoke_assert( $found_trusted_approval, 'trusted Adapter approval audit stores app attribution and approve scope' );
 npcink_governance_core_smoke_assert( $found_trusted_preflight, 'trusted Adapter preflight audit stores app attribution and preflight scope' );
+npcink_governance_core_smoke_assert( $found_trusted_record, 'execution recorder audit stores app attribution and execution-recording scope' );
 
 $app_id_audit = npcink_governance_core_smoke_rest(
 	'GET',

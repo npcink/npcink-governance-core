@@ -1,5 +1,33 @@
 # Session Breadcrumb
 
+## 2026-06-12 — App scope and guardrail query follow-up hardening
+
+- **Module**: App-auth scopes, proposal guardrail persistence, and lifecycle
+  repository APIs.
+- **Status**: Follow-up P1/P2/P3 findings from the hardening review were
+  addressed inside Core's governance boundary.
+- **Completed**:
+  - Split post-preflight execution-result recording into
+    `commit:record_execution`, separate from `commit:preflight`, and kept it
+    out of default app scopes.
+  - Changed explicit empty or invalid app scopes to fail closed with a stable
+    `npcink_governance_core_app_scopes_empty` error instead of silently
+    granting default scopes.
+  - Added indexed `pending_quota_key` proposal storage so pending quota and
+    duplicate checks no longer scan `caller_json` with `LIKE`.
+  - Reduced accidental future lifecycle-race risk by making unconditional
+    repository status update helpers private while preserving conditional
+    transition APIs.
+- **Verification**:
+  - `composer test:all`
+  - `composer smoke:wp`
+  - `composer validate --no-check-publish`
+  - `composer check:wporg`
+- **Boundary**:
+  - Core still records governance lifecycle and audit evidence only. This pass
+    does not add workflow runtime, execution queues, provider credentials, or
+    final WordPress write authority.
+
 ## 2026-06-12 — Security and performance hardening pass
 
 - **Module**: Governance persistence, app-auth rate limits, audit filters, and

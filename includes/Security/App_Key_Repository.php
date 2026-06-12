@@ -83,6 +83,7 @@ final class App_Key_Repository {
 			'proposals:approve',
 			'proposals:reject',
 			'commit:preflight',
+			'commit:record_execution',
 			'read_requests:create',
 			'read_requests:read',
 			'read_requests:approve',
@@ -121,10 +122,21 @@ final class App_Key_Repository {
 		$app_id              = $this->generate_public_id( 'app' );
 		$key_id              = $this->generate_public_id( 'key' );
 		$secret              = $this->generate_secret();
-		$scopes              = $this->sanitize_scopes( is_array( $data['scopes'] ?? null ) ? $data['scopes'] : $this->default_scopes() );
+		$scopes              = $this->default_scopes();
+		if ( array_key_exists( 'scopes', $data ) ) {
+			$scopes = $this->sanitize_scopes( is_array( $data['scopes'] ) ? $data['scopes'] : array() );
+		}
 		$rate_limit          = max( 1, min( 10000, absint( $data['rate_limit'] ?? self::DEFAULT_RATE_LIMIT ) ) );
 		$rate_window_seconds = max( 60, min( 86400, absint( $data['rate_window_seconds'] ?? self::DEFAULT_RATE_WINDOW ) ) );
 		$now                 = current_time( 'mysql', true );
+
+		if ( empty( $scopes ) ) {
+			return new WP_Error(
+				'npcink_governance_core_app_scopes_empty',
+				__( 'App keys must include at least one valid scope.', 'npcink-governance-core' ),
+				array( 'status' => 400 )
+			);
+		}
 
 		$secret_hash = password_hash( $secret, PASSWORD_DEFAULT );
 		if ( ! is_string( $secret_hash ) ) {
@@ -361,7 +373,7 @@ final class App_Key_Repository {
 		}
 
 		$clean = array_values( array_unique( $clean ) );
-		return empty( $clean ) ? $this->default_scopes() : $clean;
+		return $clean;
 	}
 
 	/**

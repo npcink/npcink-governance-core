@@ -409,6 +409,7 @@ foreach (
 		'app_id',
 		'key_id',
 		'caller_type',
+		'commit:record_execution',
 		'event_name',
 		'core.commit.preflight',
 		'status=warning',
@@ -472,6 +473,8 @@ foreach (
 		'read_request.preflighted',
 		'read_request.preflight_failed',
 		'input_hash',
+		'pending_quota_key',
+		'status_quota',
 		'consumed',
 	) as $required
 ) {
@@ -553,12 +556,13 @@ foreach (
 		'capabilities:read',
 		'proposals:create',
 		'commit:preflight',
+		'commit:record_execution',
 		'read_requests:create',
 		'read_requests:read',
 		'read_requests:approve',
 		'read_requests:reject',
 		'read_requests:preflight',
-		'Do not grant `proposals:approve` or `audit:read` by default to generic MCP',
+		'Do not grant `proposals:approve`, `commit:record_execution`, or `audit:read` by',
 		'Trusted Magick AI Adapter approve-and-execute path',
 		'scope_decision',
 		'correlation_id',
@@ -698,6 +702,7 @@ foreach (
 		'Proposal Status Bridge',
 		'proxy Core proposal list/detail reads',
 		'not expose `POST /proposals/{proposal_id}/approve`',
+		'commit:record_execution',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $openclaw_execution_guidance, $required ), 'OpenClaw execution guidance doc contains required text: ' . $required );
@@ -875,6 +880,7 @@ foreach (
 		'capabilities:read',
 		'proposals:create',
 		'commit:preflight',
+		'commit:record_execution',
 		'read_requests:create',
 		'read_requests:read',
 		'read_requests:preflight',
@@ -882,12 +888,14 @@ foreach (
 		'npcink_governance_core',
 		'npcink_governance_core_app_insert_failed',
 		'npcink_governance_core_app_secret_hash_failed',
+		'npcink_governance_core_app_scopes_empty',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $app_key_repository, $required ), 'App key repository contains required text: ' . $required );
 }
 npcink_governance_core_assert( false === strpos( $app_key_repository, "'secret' => " . '$secret' ), 'App key repository does not persist raw app secret in DB record.' );
 npcink_governance_core_assert( false === strpos( $app_key_repository, 'mai_core.' ), 'App key repository does not generate legacy Magick AI token prefixes.' );
+npcink_governance_core_assert( false === strpos( $app_key_repository, 'empty( $clean ) ? $this->default_scopes()' ), 'App key repository does not turn explicitly empty scopes into default scopes.' );
 
 $app_rate_limiter = npcink_governance_core_read( $root . '/includes/Security/App_Rate_Limiter.php' );
 npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'npcink_governance_core_app_rate_limits' ), 'App rate limiter stores fixed-window counters.' );
@@ -920,6 +928,7 @@ foreach (
 		'can_create_proposals',
 		'can_commit_preflight',
 		'can_record_execution',
+		'commit:record_execution',
 		'commit_record_execution',
 		'can_create_read_requests',
 		'can_preflight_read_requests',
@@ -1358,6 +1367,7 @@ foreach (
 npcink_governance_core_assert( false !== strpos( $read_request_repository, 'npcink_governance_core_read_requests' ), 'Read request repository stores Core read request table.' );
 npcink_governance_core_assert( false !== strpos( $read_request_repository, 'consumed_at' ), 'Read request repository stores one-time consumption timestamp.' );
 npcink_governance_core_assert( false !== strpos( $read_request_repository, 'update_status_when' ), 'Read request repository supports conditional status transitions.' );
+npcink_governance_core_assert( false === strpos( $read_request_repository, 'public function update_status(' ), 'Read request repository does not expose unconditional status transitions as public API.' );
 npcink_governance_core_assert( false !== strpos( $read_request_repository, '\'status\'     => $expected_status' ), 'Read request repository binds current status in conditional updates.' );
 npcink_governance_core_assert( false !== strpos( $read_request_repository, 'Sensitive_Data_Redactor::sanitize_payload' ), 'Read request repository uses shared sensitive data redaction.' );
 npcink_governance_core_assert( false !== strpos( $read_request_repository, 'redact_secret_string' ), 'Read request repository redacts secret-shaped strings.' );
@@ -1407,6 +1417,8 @@ npcink_governance_core_assert( false !== strpos( $proposal_repository, 'STATUS_E
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'STATUS_EXECUTION_FAILED' ), 'Proposal repository defines execution failed status.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'list_stale_pending' ), 'Proposal repository can list stale pending proposals.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'list_pending_for_guardrail' ), 'Proposal repository can list pending proposals for create guardrails.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'pending_quota_key' ), 'Proposal repository stores indexed pending quota keys.' );
+npcink_governance_core_assert( false === strpos( $proposal_repository, 'caller_json LIKE' ), 'Proposal repository does not scan caller JSON for guardrail quota lookup.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'count_by_status' ), 'Proposal repository can count status queues.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'OFFSET %d' ), 'Proposal repository supports paginated admin lists.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'npcink_governance_core_proposal_insert_failed' ), 'Proposal repository returns a stable insert failure error.' );
@@ -1461,6 +1473,7 @@ npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.vi
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'audit_timeline' ), 'Proposal service exposes proposal audit timeline.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, "'pending'" ), 'Proposal service only transitions pending proposals.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'update_status_when' ), 'Proposal repository supports conditional status transitions.' );
+npcink_governance_core_assert( false === strpos( $proposal_repository, 'public function update_status(' ), 'Proposal repository does not expose unconditional status transitions as public API.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'reopen_when' ), 'Proposal repository supports conditional reopen transitions.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'Sensitive_Data_Redactor::sanitize_payload' ), 'Proposal repository uses shared sensitive data redaction.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_ability_not_available' ), 'Proposal service rejects unavailable target abilities.' );

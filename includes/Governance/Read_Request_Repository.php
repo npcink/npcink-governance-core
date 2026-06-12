@@ -221,7 +221,7 @@ final class Read_Request_Repository {
 	 * @param string $status New status.
 	 * @return array<string,mixed>|null
 	 */
-	public function update_status( string $request_id, string $status ): ?array {
+	private function update_status( string $request_id, string $status ): ?array {
 		global $wpdb;
 
 		$request_id = sanitize_text_field( $request_id );
