@@ -1482,6 +1482,7 @@ npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_gove
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_proposal_decision_audit_failed' ), 'Proposal service fails closed when decision audit fails.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'audit_failed_error' ), 'Proposal service uses stable audit failure errors.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'update_status_when( $proposal_id, $status, (string) $existing' ), 'Proposal service rolls back decision status when audit fails.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'update_status_when( $proposal_id, Proposal_Repository::STATUS_APPROVED, Proposal_Repository::STATUS_PENDING' ), 'Proposal service rolls back auto approval status when audit fails.' );
 npcink_governance_core_assert( false === strpos( $proposal_service, 'confirm_token' ), 'Proposal service does not use confirm_token.' );
 npcink_governance_core_assert( false === strpos( $proposal_service, 'write_confirmed' ), 'Proposal service does not use write_confirmed.' );
 
