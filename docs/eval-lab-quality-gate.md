@@ -46,13 +46,16 @@ Accepted project review modes:
 
 - `working_diff`: review the current uncommitted diff; this is the default.
   When no working diff exists, eval-lab falls back to `head`.
-- `head`: review the latest commit patch.
+- `head`: review the most recent commit patch, equivalent to the HEAD vs
+  HEAD~1 diff.
 
 The project path is passed to eval-lab only so it can read git status and patch
 context for local review. Eval-lab must not write into the project, persist the
 project path as Core state, or treat the path as a runtime configuration value.
 Provider prompts and generated reports must use a redacted local project label,
-not the absolute filesystem path.
+not the absolute filesystem path. Core's wrapper passes
+`project_label=npcink-governance-core` and
+`contract=project_boundary_review_triad.v1` explicitly.
 
 List available eval-lab tasks:
 
@@ -109,6 +112,8 @@ operators.
 Good first candidates:
 
 - Core boundary-sensitive diffs and documentation changes;
+- Core audit, credential, proposal persistence, REST authorization, app scope,
+  rate limit, eval-lab wrapper, or release packaging changes;
 - `npcink-toolbox/build-content-metadata-apply-plan`;
 - `npcink-abilities-toolkit/build-pattern-page-plan`;
 - `npcink-abilities-toolkit/build-article-block-plan`;

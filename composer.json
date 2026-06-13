@@ -18,7 +18,7 @@
     "test:fail-closed": "@php tests/fail-closed.php",
     "check:wporg": "@php scripts/check-wordpress-org-review-rules.php",
     "eval:lab": "sh scripts/eval-lab.sh",
-    "eval:project:review": "sh scripts/eval-lab.sh task=project_boundary_review_triad \"project=$PWD\" mode=working_diff",
+    "eval:project:review": "sh scripts/eval-lab.sh task=project_boundary_review_triad \"project=$PWD\" project_label=npcink-governance-core contract=project_boundary_review_triad.v1 mode=working_diff",
     "eval:gutenberg:judge": "sh scripts/eval-lab.sh task=gutenberg_judge_cross",
     "test": [
       "@test:contracts",

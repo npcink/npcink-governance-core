@@ -214,7 +214,9 @@ Use `eval:project:review` for Core boundary-sensitive diffs and
 `eval:gutenberg:judge` for Gutenberg plan-quality cases exported by Toolkit or
 provider repos. Project review reports stay in the eval-lab
 `project-review/generated/` directory and use a redacted repository label
-instead of an absolute local path.
+instead of an absolute local path. Typical Core boundary-sensitive diffs touch
+audit evidence, proposal persistence, credentials, REST authorization, app
+scope, rate limits, eval-lab wrappers, or release packaging.
 
 Article writing is now treated as local Ability recipe orchestration, not a
 Cloud writing product. The [Ability Recipe Orchestration Contract](docs/ability-recipe-orchestration-contract.md)

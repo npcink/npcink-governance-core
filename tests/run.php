@@ -1209,7 +1209,20 @@ $composer_scripts = is_array( $composer_data['scripts'] ?? null ) ? $composer_da
 npcink_governance_core_assert( isset( $composer_scripts['eval:project:review'] ), 'Composer scripts include optional project eval-lab review command.' );
 npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], 'task=project_boundary_review_triad' ), 'Project eval-lab review command targets the triad task.' );
 npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], '"project=$PWD"' ), 'Project eval-lab review command quotes the project path.' );
+npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], 'project_label=npcink-governance-core' ), 'Project eval-lab review command passes a redacted project label.' );
+npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], 'contract=project_boundary_review_triad.v1' ), 'Project eval-lab review command pins the output contract.' );
 npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], 'mode=working_diff' ), 'Project eval-lab review command pins the default working diff mode.' );
+$default_gate_scripts = array( 'test', 'test:all', 'release:verify', 'package:release', 'prepare:release', 'plugin-check:release', 'check:wporg', 'smoke:wp', 'test:contracts', 'test:fail-closed' );
+foreach ( $default_gate_scripts as $script_name ) {
+	if ( ! isset( $composer_scripts[ $script_name ] ) ) {
+		continue;
+	}
+	$script_value = $composer_scripts[ $script_name ];
+	$script_text  = is_array( $script_value ) ? implode( "\n", array_map( 'strval', $script_value ) ) : (string) $script_value;
+	foreach ( array( '@eval:', 'scripts/eval-lab.sh', 'eval-lab.sh', 'project_boundary_review_triad', 'gutenberg_judge_cross' ) as $forbidden ) {
+		npcink_governance_core_assert( false === strpos( $script_text, $forbidden ), 'Default Composer gate ' . $script_name . ' does not invoke eval-lab via ' . $forbidden . '.' );
+	}
+}
 foreach ( $composer_scripts as $script_name => $script_value ) {
 	if ( str_starts_with( (string) $script_name, 'eval:' ) ) {
 		continue;

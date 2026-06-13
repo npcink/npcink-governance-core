@@ -3,8 +3,9 @@
 ## 2026-06-12 — Eval-lab quality gate boundary documented
 
 - **Module**: Development-only AI output quality evidence.
-- **Status**: Optional eval-lab wiring is documented for local use and now has
-  a project boundary review entrypoint without changing Core runtime behavior.
+- **Status**: Optional eval-lab wiring is documented for local use, has a
+  project boundary review entrypoint, and now pins a redacted project label plus
+  eval-lab output contract without changing Core runtime behavior.
 - **Completed**:
   - Added a thin `scripts/eval-lab.sh` wrapper that calls the sibling
     Magick AI Evaluation Lab through `MAGICK_AI_EVAL_LAB_PATH` or the default
@@ -13,6 +14,11 @@
     the Gutenberg cross-judge task.
   - Added `composer eval:project:review` as an opt-in wrapper for the
     eval-lab `project_boundary_review_triad` task.
+  - Re-ran provider-backed three-model review after pushing, then tightened the
+    wrapper to pass `project_label=npcink-governance-core` and
+    `contract=project_boundary_review_triad.v1`.
+  - Strengthened static contracts so default Composer test and release gates
+    cannot indirectly invoke eval-lab.
   - Documented the boundary: eval-lab output is local review evidence only and
     must not create Core proposals, approvals, preflights, execution records,
     audit truth, provider credential storage, or WordPress writes.
