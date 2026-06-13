@@ -173,12 +173,16 @@ no custom block CSS classes.
 
 `npcink-abilities-toolkit/build-block-theme-site-plan` is the bounded local
 block theme handoff. Core accepts it only as a `block_theme_site_plan` with
-`proposal_mode=batch`, `intent=add_breadcrumbs`, `direct_wordpress_write=false`,
-and template write actions limited to
+`proposal_mode=batch`, `intent=add_breadcrumbs` or
+`intent=customize_template_layout`, `direct_wordpress_write=false`, and template
+write actions limited to
 `npcink-abilities-toolkit/update-template-blocks` or
 `npcink-abilities-toolkit/upsert-template-blocks`. File-backed theme templates
 must become reviewed `wp_template` Site Editor overrides; Core does not edit
 theme files, navigation entities, global styles, or execute WordPress writes.
+For `customize_template_layout`, Core additionally requires a passing
+`template_layout_contract` with a bounded profile such as `article_standard`,
+`page_standard`, or `homepage_landing`.
 
 Each plan `write_action.target_ability_id` must resolve through normal ability
 intake as a proposal-governed write or destructive ability. Core must not

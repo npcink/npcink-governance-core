@@ -1,5 +1,37 @@
 # Session Breadcrumb
 
+## 2026-06-13 — Block theme layout proposal intake accepted
+
+- **Module**: Plan-to-proposal intake for block theme template layouts.
+- **Status**: Core now accepts bounded `customize_template_layout` block theme
+  site plans as proposal batches when Toolkit supplies a passing template
+  layout contract.
+- **Completed**:
+  - Extended `build-block-theme-site-plan` intake beyond `add_breadcrumbs` to
+    also allow `intent=customize_template_layout`.
+  - Added Core-side validation for bounded layout profiles:
+    `article_standard`, `page_standard`, and `homepage_landing`.
+  - Required `template_layout_contract.contract_status=pass` and
+    `placement_model=bounded_template_layout_profile` before proposal creation.
+  - Preserved layout intent, profile, and contract details in
+    `preview.block_theme_site`.
+  - Updated fail-closed tests, static contracts, REST/intake docs, and the
+    WordPress smoke scenario to verify layout proposal intake instead of relying
+    on a breadcrumb action that may already be valid on the local site.
+- **Verification**:
+  - `composer test`
+  - `git diff --check`
+  - `composer validate --no-check-publish`
+  - `composer test:all`
+  - Manual LocalWP REST check for `customize_template_layout` proposal intake
+    returning HTTP 201 with one proposal.
+  - `WP_CLI=/tmp/wp-cli.phar WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - Core only validates and stores proposal/audit context. It does not define
+    Toolkit abilities, generate block layouts, approve proposals, execute
+    writes, edit theme files, mutate navigation/global styles, or become a
+    final WordPress write executor.
+
 ## 2026-06-12 — Eval-lab quality gate boundary documented
 
 - **Module**: Development-only AI output quality evidence.

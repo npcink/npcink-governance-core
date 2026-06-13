@@ -1672,12 +1672,17 @@ npcink_governance_core_smoke_approve_and_preflight_plan_proposal( (string) ( $pa
 npcink_governance_core_smoke_assert( null === get_page_by_title( $pattern_page_title, OBJECT, 'page' ), 'pattern page preflight does not create the page draft' );
 
 $block_theme_site_plan_input = array(
-	'intent'             => 'add_breadcrumbs',
-	'target_templates'   => array( 'single' ),
-	'separator'          => '/',
-	'show_current_item'  => true,
-	'show_home_item'     => true,
-	'show_on_home_page'  => false,
+	'intent'                 => 'customize_template_layout',
+	'target_templates'       => array( 'single' ),
+	'layout_profile'         => 'article_standard',
+	'include_breadcrumbs'    => true,
+	'show_author_date'       => true,
+	'show_featured_image'    => true,
+	'include_related_posts'  => true,
+	'separator'              => '/',
+	'show_current_item'      => true,
+	'show_home_item'         => true,
+	'show_on_home_page'      => false,
 );
 $block_theme_site_template_before = get_page_by_path( 'twentytwentyfive//single', OBJECT, 'wp_template' );
 $block_theme_site_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_site_plan_input );
@@ -1686,6 +1691,9 @@ npcink_governance_core_smoke_assert( 1 === (int) ( $block_theme_site_result['pro
 $block_theme_site_proposal = is_array( $block_theme_site_result['proposals'][0] ?? null ) ? $block_theme_site_result['proposals'][0] : array();
 npcink_governance_core_smoke_assert( 'plan_to_proposal_batch' === (string) ( $block_theme_site_proposal['preview']['source']['type'] ?? '' ), 'block theme site plan records batch proposal source type' );
 npcink_governance_core_smoke_assert( is_array( $block_theme_site_proposal['preview']['block_theme_site'] ?? null ), 'block theme site proposal preserves block theme preview context' );
+npcink_governance_core_smoke_assert( 'customize_template_layout' === (string) ( $block_theme_site_proposal['preview']['block_theme_site']['intent'] ?? '' ), 'block theme site proposal preserves template layout intent' );
+npcink_governance_core_smoke_assert( 'article_standard' === (string) ( $block_theme_site_proposal['preview']['block_theme_site']['layout_profile'] ?? '' ), 'block theme site proposal preserves bounded layout profile' );
+npcink_governance_core_smoke_assert( 'pass' === (string) ( $block_theme_site_proposal['preview']['block_theme_site']['template_layout_contract']['contract_status'] ?? '' ), 'block theme site proposal preserves passing template layout contract' );
 npcink_governance_core_smoke_assert( 'create_wp_template_override' === (string) ( $block_theme_site_proposal['preview']['block_theme_site']['file_template_write_mode'] ?? '' ), 'block theme site preview preserves file-backed template override mode' );
 if ( is_array( $block_theme_site_plan['block_editor_reviews'] ?? null ) ) {
 	npcink_governance_core_smoke_assert( is_array( $block_theme_site_proposal['preview']['block_editor_reviews'] ?? null ), 'block theme site proposal preserves block editor reviews' );

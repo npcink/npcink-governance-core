@@ -168,13 +168,15 @@ proposal, execute the block update, or provide a generic final write path.
 
 `npcink-abilities-toolkit/build-block-theme-site-plan` is the bounded local
 handoff for modifying reviewed templates in the active block theme. It must
-return `artifact_type=block_theme_site_plan`, `intent=add_breadcrumbs`,
-`proposal_mode=batch`, `requires_approval=true`, `dry_run=true`,
-`commit_execution=false`, and `direct_wordpress_write=false`. Core accepts only
-template block write actions targeting
+return `artifact_type=block_theme_site_plan`, `intent=add_breadcrumbs` or
+`intent=customize_template_layout`, `proposal_mode=batch`,
+`requires_approval=true`, `dry_run=true`, `commit_execution=false`, and
+`direct_wordpress_write=false`. Core accepts only template block write actions targeting
 `npcink-abilities-toolkit/update-template-blocks` or
 `npcink-abilities-toolkit/upsert-template-blocks`, with `mode=replace` and a
 non-empty Gutenberg `blocks` tree.
+For `customize_template_layout`, Core also requires a passing bounded
+`template_layout_contract` with accepted profile rows.
 
 File-backed templates are represented as reviewed
 `npcink-abilities-toolkit/upsert-template-blocks` actions that create a

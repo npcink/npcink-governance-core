@@ -242,10 +242,12 @@ blocks, or execute WordPress writes.
 The block theme site handoff is the governed shape for the user intent "modify
 this active block theme template." Core accepts
 `npcink-abilities-toolkit/build-block-theme-site-plan` only as a
-`block_theme_site_plan` with `intent=add_breadcrumbs`,
-`proposal_mode=batch`, and template write actions limited to
+`block_theme_site_plan` with `intent=add_breadcrumbs` or
+`intent=customize_template_layout`, `proposal_mode=batch`, and template write
+actions limited to
 `npcink-abilities-toolkit/update-template-blocks` or
-`npcink-abilities-toolkit/upsert-template-blocks`. It stores
+`npcink-abilities-toolkit/upsert-template-blocks`. Layout customization plans
+must include a passing bounded `template_layout_contract`. Core stores
 `preview.block_theme_site` and the reviewed block tree, but does not edit theme
 files, navigation entities, global styles, approve proposals, or execute
 WordPress writes.

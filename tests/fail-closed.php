@@ -2176,6 +2176,80 @@ function npcink_governance_core_fail_closed_block_theme_site_plan(): array {
 }
 
 /**
+ * Creates a representative block theme template layout plan.
+ *
+ * @return array<string,mixed>
+ */
+function npcink_governance_core_fail_closed_block_theme_layout_plan(): array {
+	$plan = npcink_governance_core_fail_closed_block_theme_site_plan();
+	$plan['batch_id']       = 'block_theme_layout_fault_injection';
+	$plan['intent']         = 'customize_template_layout';
+	$plan['layout_profile'] = 'article_standard';
+	$plan['template_layout_contract'] = array(
+		'catalog_id'        => 'gutenberg_native_v1',
+		'catalog_version'   => '1.0',
+		'surface'           => 'template',
+		'intent'            => 'customize_template_layout',
+		'placement_model'   => 'bounded_template_layout_profile',
+		'accepted_profiles' => array( 'article_standard', 'page_standard', 'homepage_landing' ),
+		'forbidden_outputs' => array( 'raw_template_html', 'core/html', 'core/freeform', 'non_core_blocks', 'custom_css' ),
+		'contract_status'   => 'pass',
+		'violation_codes'   => array(),
+		'profiles'          => array(
+			array(
+				'slug'            => 'single',
+				'layout_profile'  => 'article_standard',
+				'profile_allowed' => true,
+				'sections'        => array( 'header', 'breadcrumbs', 'post_title', 'author_date', 'featured_image', 'post_content', 'related_posts', 'footer' ),
+			),
+		),
+	);
+	$plan['preview'][0]['layout_profile'] = 'article_standard';
+	$plan['preview'][0]['layout_sections'] = array( 'header', 'breadcrumbs', 'post_title', 'author_date', 'featured_image', 'post_content', 'related_posts', 'footer' );
+	$plan['write_actions'][0]['action_id'] = 'upsert-template-single-layout';
+	$plan['write_actions'][0]['input']['blocks'] = array(
+		array(
+			'blockName'    => 'core/template-part',
+			'attrs'        => array( 'slug' => 'header', 'theme' => 'twentytwentyfive' ),
+			'innerBlocks'  => array(),
+			'innerHTML'    => '',
+			'innerContent' => array(),
+		),
+		array(
+			'blockName'    => 'core/group',
+			'attrs'        => array( 'tagName' => 'main', 'className' => 'openclaw-template-layout openclaw-template-layout-article_standard' ),
+			'innerBlocks'  => array(
+				array(
+					'blockName'    => 'core/post-title',
+					'attrs'        => array( 'level' => 1 ),
+					'innerBlocks'  => array(),
+					'innerHTML'    => '',
+					'innerContent' => array(),
+				),
+				array(
+					'blockName'    => 'core/post-content',
+					'attrs'        => array(),
+					'innerBlocks'  => array(),
+					'innerHTML'    => '',
+					'innerContent' => array(),
+				),
+			),
+			'innerHTML'    => '<main class="wp-block-group openclaw-template-layout openclaw-template-layout-article_standard"></main>',
+			'innerContent' => array( '<main class="wp-block-group openclaw-template-layout openclaw-template-layout-article_standard">', null, null, '</main>' ),
+		),
+		array(
+			'blockName'    => 'core/template-part',
+			'attrs'        => array( 'slug' => 'footer', 'theme' => 'twentytwentyfive' ),
+			'innerBlocks'  => array(),
+			'innerHTML'    => '',
+			'innerContent' => array(),
+		),
+	);
+
+	return $plan;
+}
+
+/**
  * Creates a representative Gutenberg article block plan.
  *
  * @return array<string,mixed>
@@ -3033,6 +3107,33 @@ npcink_governance_core_fail_closed_assert( 'npcink-abilities-toolkit/upsert-temp
 $block_theme_site_block = $block_theme_site_proposal['input']['write_actions'][0]['input']['blocks'][0] ?? array();
 npcink_governance_core_fail_closed_assert( is_array( $block_theme_site_block ) && isset( $block_theme_site_block['blockName'] ) && ! isset( $block_theme_site_block['blockname'] ), 'Block theme site proposal preserves Gutenberg blockName key case.' );
 npcink_governance_core_fail_closed_assert( isset( $block_theme_site_block['innerBlocks'] ) && ! isset( $block_theme_site_block['innerblocks'] ), 'Block theme site proposal preserves Gutenberg innerBlocks key case.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$block_theme_layout_plan = npcink_governance_core_fail_closed_block_theme_layout_plan();
+$block_theme_layout_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_layout_plan, array(), array( 'source' => 'abilities_block_theme_layout' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $block_theme_layout_result ), 'Valid block theme template layout plan creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $block_theme_layout_result['proposal_count'] ?? 0 ), 'Valid block theme template layout plan creates one batch proposal.' );
+$block_theme_layout_proposal = is_array( $block_theme_layout_result['proposals'][0] ?? null ) ? $block_theme_layout_result['proposals'][0] : array();
+npcink_governance_core_fail_closed_assert( 'customize_template_layout' === (string) ( $block_theme_layout_proposal['preview']['block_theme_site']['intent'] ?? '' ), 'Block theme layout proposal preserves layout intent.' );
+npcink_governance_core_fail_closed_assert( 'article_standard' === (string) ( $block_theme_layout_proposal['preview']['block_theme_site']['layout_profile'] ?? '' ), 'Block theme layout proposal preserves layout profile.' );
+npcink_governance_core_fail_closed_assert( 'pass' === (string) ( $block_theme_layout_proposal['preview']['block_theme_site']['template_layout_contract']['contract_status'] ?? '' ), 'Block theme layout proposal preserves passing layout contract.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$block_theme_layout_bad_profile = npcink_governance_core_fail_closed_block_theme_layout_plan();
+$block_theme_layout_bad_profile['template_layout_contract']['profiles'][0]['layout_profile'] = 'arbitrary_layout';
+$block_theme_layout_bad_profile_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_layout_bad_profile );
+npcink_governance_core_fail_closed_assert( is_wp_error( $block_theme_layout_bad_profile_result ), 'Block theme layout plan with unaccepted profile is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_block_theme_site_layout_profile_rejected' === $block_theme_layout_bad_profile_result->get_error_code(), 'Block theme layout profile rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$block_theme_layout_missing_contract = npcink_governance_core_fail_closed_block_theme_layout_plan();
+unset( $block_theme_layout_missing_contract['template_layout_contract'] );
+$block_theme_layout_missing_contract_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_layout_missing_contract );
+npcink_governance_core_fail_closed_assert( is_wp_error( $block_theme_layout_missing_contract_result ), 'Block theme layout plan without a passing layout contract is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_block_theme_site_layout_contract_rejected' === $block_theme_layout_missing_contract_result->get_error_code(), 'Block theme layout contract rejection uses stable error code.' );
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();

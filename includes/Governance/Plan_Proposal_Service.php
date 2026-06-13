@@ -1883,12 +1883,23 @@ final class Plan_Proposal_Service {
 			);
 		}
 
-		if ( 'add_breadcrumbs' !== sanitize_key( (string) ( $plan['intent'] ?? '' ) ) ) {
+		$intent          = sanitize_key( (string) ( $plan['intent'] ?? '' ) );
+		$allowed_intents = array(
+			'add_breadcrumbs'            => true,
+			'customize_template_layout' => true,
+		);
+		if ( ! isset( $allowed_intents[ $intent ] ) ) {
 			return new WP_Error(
 				'npcink_governance_core_block_theme_site_intent_rejected',
-				__( 'Block theme site plans currently must use intent=add_breadcrumbs.', 'npcink-governance-core' ),
+				__( 'Block theme site plans currently must use intent=add_breadcrumbs or intent=customize_template_layout.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
+		}
+		if ( 'customize_template_layout' === $intent ) {
+			$layout_contract = $this->validate_block_theme_site_layout_contract( $plan );
+			if ( is_wp_error( $layout_contract ) ) {
+				return $layout_contract;
+			}
 		}
 
 		if ( 'batch' !== sanitize_key( (string) ( $plan['proposal_mode'] ?? '' ) ) ) {
@@ -2027,6 +2038,80 @@ final class Plan_Proposal_Service {
 						)
 					);
 				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validates bounded template layout metadata for block theme layout plans.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_block_theme_site_layout_contract( array $plan ) {
+		$allowed_profiles = array(
+			'article_standard' => true,
+			'page_standard'    => true,
+			'homepage_landing' => true,
+		);
+		$layout_profile   = sanitize_key( (string) ( $plan['layout_profile'] ?? '' ) );
+		$layout_contract  = is_array( $plan['template_layout_contract'] ?? null ) ? $plan['template_layout_contract'] : array();
+		$contract_status  = sanitize_key( (string) ( $layout_contract['contract_status'] ?? '' ) );
+		$contract_model   = sanitize_key( (string) ( $layout_contract['placement_model'] ?? '' ) );
+		$profile_rows     = is_array( $layout_contract['profiles'] ?? null ) ? array_values( $layout_contract['profiles'] ) : array();
+
+		if ( '' !== $layout_profile && 'auto' !== $layout_profile && ! isset( $allowed_profiles[ $layout_profile ] ) ) {
+			return new WP_Error(
+				'npcink_governance_core_block_theme_site_layout_profile_rejected',
+				__( 'Block theme layout plans may only use accepted bounded layout profiles.', 'npcink-governance-core' ),
+				array(
+					'status'         => 422,
+					'layout_profile' => $layout_profile,
+				)
+			);
+		}
+		if ( 'pass' !== $contract_status || 'bounded_template_layout_profile' !== $contract_model ) {
+			return new WP_Error(
+				'npcink_governance_core_block_theme_site_layout_contract_rejected',
+				__( 'Block theme layout plans must include a passing bounded template layout contract.', 'npcink-governance-core' ),
+				array(
+					'status'          => 422,
+					'contract_status' => $contract_status,
+					'contract_model'  => $contract_model,
+				)
+			);
+		}
+		if ( empty( $profile_rows ) ) {
+			return new WP_Error(
+				'npcink_governance_core_block_theme_site_layout_profiles_missing',
+				__( 'Block theme layout plans must include reviewed layout profile rows.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+		foreach ( $profile_rows as $index => $row ) {
+			if ( ! is_array( $row ) ) {
+				return new WP_Error(
+					'npcink_governance_core_block_theme_site_layout_profile_invalid',
+					__( 'Block theme layout profile rows must be objects.', 'npcink-governance-core' ),
+					array(
+						'status'        => 422,
+						'profile_index' => $index,
+					)
+				);
+			}
+			$row_profile = sanitize_key( (string) ( $row['layout_profile'] ?? '' ) );
+			if ( ! isset( $allowed_profiles[ $row_profile ] ) || empty( $row['profile_allowed'] ) ) {
+				return new WP_Error(
+					'npcink_governance_core_block_theme_site_layout_profile_rejected',
+					__( 'Block theme layout plans may only use accepted bounded layout profiles.', 'npcink-governance-core' ),
+					array(
+						'status'         => 422,
+						'profile_index'  => $index,
+						'layout_profile' => $row_profile,
+					)
+				);
 			}
 		}
 
@@ -2657,8 +2742,10 @@ final class Plan_Proposal_Service {
 			'artifact_type'            => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
 			'version'                  => absint( $plan['version'] ?? 0 ),
 			'intent'                   => sanitize_key( (string) ( $plan['intent'] ?? '' ) ),
+			'layout_profile'           => sanitize_key( (string) ( $plan['layout_profile'] ?? '' ) ),
 			'active_theme'             => $this->sanitize_payload( $active_theme ),
 			'affected_templates'       => array_values( array_map( 'sanitize_key', (array) ( $plan['affected_templates'] ?? array() ) ) ),
+			'template_layout_contract' => is_array( $plan['template_layout_contract'] ?? null ) ? $this->sanitize_payload( $plan['template_layout_contract'] ) : array(),
 			'block_count'              => absint( $summary['block_count'] ?? 0 ),
 			'action_count'             => absint( $summary['action_count'] ?? 0 ),
 			'file_template_write_mode' => 'create_wp_template_override',
