@@ -106,6 +106,7 @@ Read the project handoff docs before starting a new implementation session:
 - [AI Development Handoff Summary](docs/ai-development-handoff-summary.md)
 - [AI Development Workstream Summary](docs/ai-development-workstream-summary.md)
 - [Eval Lab Quality Gate](docs/eval-lab-quality-gate.md)
+- [Eval-Lab Triad Review Closeout](docs/eval-lab-triad-review-closeout.md)
 - [Testing Strategy](docs/testing-strategy.md)
 - [WordPress.org Release Gate](docs/wordpress-org-release-gate.md)
 - [Next Stage Plan](docs/next-stage-plan.md)
