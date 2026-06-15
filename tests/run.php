@@ -1540,6 +1540,8 @@ npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'pol
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'payload_hash' ), 'Commit preflight has stable payload hash generation.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'new_correlation_id' ), 'Commit preflight generates a correlation id.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'proposal_item_preflight' ), 'Commit preflight evaluates proposal item readiness.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'batch_review_summary' ), 'Commit preflight returns batch review summary when a proposal has one.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'batch_review_summary_preflight' ), 'Commit preflight bounds batch review summary response shape.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'npcink_governance_core_proposal_items_blocked' ), 'Commit preflight blocks incomplete proposal items.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'execution_handoff' ), 'Commit preflight returns adapter execution handoff.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'adapter_after_core_preflight' ), 'Commit preflight handoff points execution to Adapter.' );
@@ -1675,6 +1677,11 @@ foreach (
 		'proposal_ready',
 		'needs_input',
 		'preflight_blockers',
+		'batch_review_summary',
+		'core-batch-review-summary-v1',
+		'operator_next_action',
+		'resolve_blocked_items_before_commit_preflight',
+		'final_execution_owner',
 		'plan_requires_batch_proposal',
 		'plan_to_proposal_batch',
 		'batch_approval',

@@ -2912,6 +2912,10 @@ $media_optimization_proposal = is_array( $media_optimization_result['proposals']
 npcink_governance_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $media_optimization_proposal['preview']['source']['type'] ?? '' ), 'Media optimization plan stores batch proposal source.' );
 npcink_governance_core_fail_closed_assert( 2 === count( (array) ( $media_optimization_proposal['input']['write_actions'] ?? array() ) ), 'Media optimization proposal stores metadata and derivative actions.' );
 npcink_governance_core_fail_closed_assert( is_array( $media_optimization_proposal['preview']['media_optimization'] ?? null ), 'Media optimization proposal preserves optimization preview.' );
+npcink_governance_core_fail_closed_assert( 'core-batch-review-summary-v1' === (string) ( $media_optimization_proposal['preview']['batch_review_summary']['summary_version'] ?? '' ), 'Media optimization proposal stores a stable batch review summary.' );
+npcink_governance_core_fail_closed_assert( 2 === (int) ( $media_optimization_proposal['preview']['batch_review_summary']['action_count'] ?? 0 ), 'Media optimization batch review summary counts actions.' );
+npcink_governance_core_fail_closed_assert( 'review_and_approve_or_reject' === (string) ( $media_optimization_proposal['preview']['batch_review_summary']['operator_next_action'] ?? '' ), 'Ready media optimization batch tells the operator to review and decide.' );
+npcink_governance_core_fail_closed_assert( false === (bool) ( $media_optimization_proposal['preview']['batch_review_summary']['core_execution'] ?? true ), 'Media optimization batch review summary keeps Core execution disabled.' );
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();
@@ -4042,6 +4046,14 @@ $proposal = $stack['service']->create(
 						'reason' => 'Destructive review evidence is required.',
 					),
 				),
+				'batch_review_summary' => array(
+					'summary_version'      => 'core-batch-review-summary-v1',
+					'operator_next_action' => 'resolve_blocked_items_before_commit_preflight',
+					'core_execution'       => false,
+					'commit_execution'     => false,
+					'api_key'              => 'BATCH_SUMMARY_SECRET_SENTINEL',
+					'queue_lease'          => 'not-core-owned-runtime-state',
+				),
 			),
 		)
 	)
@@ -4052,6 +4064,11 @@ npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'Blocked 
 $blocked = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
 npcink_governance_core_fail_closed_assert( is_wp_error( $blocked ), 'Blocked item fails commit preflight.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_proposal_items_blocked' === $blocked->get_error_code(), 'Blocked item uses stable error code.' );
+$blocked_data = is_array( $blocked->get_error_data() ) ? $blocked->get_error_data() : array();
+npcink_governance_core_fail_closed_assert( 'core-batch-review-summary-v1' === (string) ( $blocked_data['proposal_item_preflight']['batch_review_summary']['summary_version'] ?? '' ), 'Blocked item preflight returns batch review summary for operator recovery.' );
+npcink_governance_core_fail_closed_assert( 'resolve_blocked_items_before_commit_preflight' === (string) ( $blocked_data['proposal_item_preflight']['batch_review_summary']['operator_next_action'] ?? '' ), 'Blocked item preflight returns operator next action.' );
+npcink_governance_core_fail_closed_assert( false === strpos( (string) wp_json_encode( $blocked_data['proposal_item_preflight']['batch_review_summary'] ?? array() ), 'BATCH_SUMMARY_SECRET_SENTINEL' ), 'Blocked item preflight does not leak secret-shaped batch summary fields.' );
+npcink_governance_core_fail_closed_assert( false === array_key_exists( 'queue_lease', (array) ( $blocked_data['proposal_item_preflight']['batch_review_summary'] ?? array() ) ), 'Blocked item preflight does not expose queue-like batch summary fields.' );
 npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), 'Blocked item preflight failure is audited.' );
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();

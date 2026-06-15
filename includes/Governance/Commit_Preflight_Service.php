@@ -10,6 +10,7 @@ namespace Npcink\GovernanceCore\Governance;
 use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
 use Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter;
 use Npcink\GovernanceCore\Security\Request_Context;
+use Npcink\GovernanceCore\Security\Sensitive_Data_Redactor;
 use WP_Error;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -260,6 +261,7 @@ final class Commit_Preflight_Service {
 		$needs_input     = array_values( array_map( 'sanitize_key', (array) ( $preview['needs_input'] ?? array() ) ) );
 		$blocking_items  = is_array( $preview['preflight_blockers'] ?? null ) ? array_values( $preview['preflight_blockers'] ) : array();
 		$proposal_ready  = array_key_exists( 'proposal_ready', $preview ) ? (bool) $preview['proposal_ready'] : true;
+		$batch_review_summary = $this->batch_review_summary_preflight( $preview );
 
 		if ( ! $proposal_ready && empty( $blocking_items ) ) {
 			$blocking_items[] = array(
@@ -274,7 +276,52 @@ final class Commit_Preflight_Service {
 			'needs_input'    => $needs_input,
 			'blocked_items'  => $blocking_items,
 			'warnings'       => is_array( $preview['warnings'] ?? null ) ? $preview['warnings'] : array(),
+			'batch_review_summary' => $batch_review_summary,
 			'commit_execution' => false,
+		);
+	}
+
+	/**
+	 * Returns a bounded operator-facing batch review summary for preflight responses.
+	 *
+	 * @param array<string,mixed> $preview Proposal preview.
+	 * @return array<string,mixed>
+	 */
+	private function batch_review_summary_preflight( array $preview ): array {
+		$summary = is_array( $preview['batch_review_summary'] ?? null ) ? $preview['batch_review_summary'] : array();
+		$version = sanitize_key( (string) ( $summary['summary_version'] ?? '' ) );
+		if ( 'core-batch-review-summary-v1' !== $version ) {
+			return array();
+		}
+
+		$target_ability_ids = array();
+		foreach ( (array) ( $summary['target_ability_ids'] ?? array() ) as $target_id ) {
+			if ( ! is_scalar( $target_id ) ) {
+				continue;
+			}
+			$target_id = sanitize_text_field( (string) $target_id );
+			if ( '' !== $target_id ) {
+				$target_ability_ids[] = $target_id;
+			}
+		}
+
+		return array(
+			'summary_version'       => $version,
+			'plan_ability_id'       => sanitize_text_field( (string) ( $summary['plan_ability_id'] ?? '' ) ),
+			'batch_id'              => sanitize_text_field( (string) ( $summary['batch_id'] ?? '' ) ),
+			'action_count'          => absint( $summary['action_count'] ?? 0 ),
+			'executable_count'      => absint( $summary['executable_count'] ?? 0 ),
+			'blocked_count'         => absint( $summary['blocked_count'] ?? 0 ),
+			'needs_input_count'     => absint( $summary['needs_input_count'] ?? 0 ),
+			'warning_count'         => absint( $summary['warning_count'] ?? 0 ),
+			'target_ability_ids'    => $target_ability_ids,
+			'proposal_ready'        => (bool) ( $summary['proposal_ready'] ?? false ),
+			'retryable'             => (bool) ( $summary['retryable'] ?? false ),
+			'operator_next_action'  => sanitize_key( (string) ( $summary['operator_next_action'] ?? '' ) ),
+			'final_execution_owner' => sanitize_key( (string) ( $summary['final_execution_owner'] ?? '' ) ),
+			'core_execution'        => false,
+			'commit_execution'      => false,
+			'blocked_items'         => Sensitive_Data_Redactor::sanitize_payload( is_array( $summary['blocked_items'] ?? null ) ? $summary['blocked_items'] : array() ),
 		);
 	}
 

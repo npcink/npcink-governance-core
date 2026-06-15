@@ -3346,6 +3346,17 @@ final class Plan_Proposal_Service {
 		$target_ids  = array_values( array_unique( array_filter( $target_ids ) ) );
 		$action_ids  = array_values( array_filter( $action_ids ) );
 		$needs_input = array_values( array_unique( array_filter( $needs_input ) ) );
+		$proposal_ready = $proposal_ready && empty( $needs_input ) && empty( $preflight_blockers );
+		$batch_review_summary = $this->batch_review_summary(
+			$plan_ability_id,
+			$batch_id,
+			$batch_actions,
+			$target_ids,
+			$needs_input,
+			$preflight_blockers,
+			$warnings,
+			$proposal_ready
+		);
 		$preview     = array(
 			'source' => array(
 				'type'            => 'plan_to_proposal_batch',
@@ -3358,6 +3369,7 @@ final class Plan_Proposal_Service {
 			'action_count'       => count( $batch_actions ),
 			'action_ids'         => $action_ids,
 			'target_ability_ids' => $target_ids,
+			'batch_review_summary' => $batch_review_summary,
 			'actions'            => $action_previews,
 			'plan_preview'       => $this->sanitize_payload( $plan['preview'] ?? array() ),
 			'risk'               => is_array( $plan['risk'] ?? null ) ? $this->sanitize_payload( $plan['risk'] ) : array(),
@@ -3370,7 +3382,7 @@ final class Plan_Proposal_Service {
 			'dry_run'            => true,
 			'commit'             => false,
 			'commit_execution'   => false,
-			'proposal_ready'     => $proposal_ready && empty( $needs_input ) && empty( $preflight_blockers ),
+			'proposal_ready'     => $proposal_ready,
 			'needs_input'        => $needs_input,
 			'preflight_blockers' => $preflight_blockers,
 		);
@@ -3437,6 +3449,57 @@ final class Plan_Proposal_Service {
 					'action_count'    => count( $batch_actions ),
 				)
 			),
+		);
+	}
+
+	/**
+	 * Builds the operator-facing review summary for a grouped proposal.
+	 *
+	 * @param string                   $plan_ability_id Plan ability id.
+	 * @param string                   $batch_id Batch id.
+	 * @param array<int,array<string,mixed>> $batch_actions Batch actions.
+	 * @param array<int,string>        $target_ids Target ability ids.
+	 * @param array<int,string>        $needs_input Required input fields.
+	 * @param array<int,mixed>         $preflight_blockers Preflight blockers.
+	 * @param array<string,mixed>      $warnings Plan warnings.
+	 * @param bool                     $proposal_ready Whether the grouped proposal can pass item preflight.
+	 * @return array<string,mixed>
+	 */
+	private function batch_review_summary( string $plan_ability_id, string $batch_id, array $batch_actions, array $target_ids, array $needs_input, array $preflight_blockers, array $warnings, bool $proposal_ready ): array {
+		$action_count = count( $batch_actions );
+		$blocked_count = count( $preflight_blockers );
+		$needs_input_count = count( $needs_input );
+		$warning_count = 0;
+		foreach ( $warnings as $warning_items ) {
+			if ( is_array( $warning_items ) ) {
+				$warning_count += count( $warning_items );
+			}
+		}
+
+		$operator_next_action = 'review_and_approve_or_reject';
+		if ( ! $proposal_ready || $blocked_count > 0 || $needs_input_count > 0 ) {
+			$operator_next_action = 'resolve_blocked_items_before_commit_preflight';
+		} elseif ( $warning_count > 0 ) {
+			$operator_next_action = 'review_warnings_before_approval';
+		}
+
+		return array(
+			'summary_version'     => 'core-batch-review-summary-v1',
+			'plan_ability_id'     => $plan_ability_id,
+			'batch_id'            => $batch_id,
+			'action_count'        => $action_count,
+			'executable_count'    => $proposal_ready ? $action_count : 0,
+			'blocked_count'       => $blocked_count,
+			'needs_input_count'   => $needs_input_count,
+			'warning_count'       => $warning_count,
+			'target_ability_ids'  => $target_ids,
+			'proposal_ready'      => $proposal_ready,
+			'retryable'           => ! $proposal_ready,
+			'operator_next_action' => $operator_next_action,
+			'final_execution_owner' => 'adapter_after_core_preflight',
+			'core_execution'      => false,
+			'commit_execution'    => false,
+			'blocked_items'       => $this->sanitize_payload( $preflight_blockers ),
 		);
 	}
 

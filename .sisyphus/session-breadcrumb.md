@@ -1,5 +1,26 @@
 # Session Breadcrumb
 
+## 2026-06-15 — Batch proposal review summary added
+
+- **Module**: Plan-to-proposal batch review visibility.
+- **Status**: Core batch proposals now expose a stable
+  `preview.batch_review_summary`, and commit preflight returns the same summary
+  under `proposal_item_preflight` for operator recovery guidance.
+- **Completed**:
+  - Added `core-batch-review-summary-v1` for grouped
+    `plan_to_proposal_batch` proposals, including action counts, blocked counts,
+    target ability ids, retryability, operator next action, and explicit
+    `final_execution_owner=adapter_after_core_preflight`.
+  - Preserved `core_execution=false` and `commit_execution=false` in the
+    summary so it cannot be mistaken for Core-owned runtime or execution
+    authority.
+  - Bounded the commit-preflight summary response shape so unknown queue-like
+    fields and secret-shaped fields are not surfaced from proposal preview.
+  - Updated fail-closed/static tests and REST/governance/plan-intake docs.
+- **Boundary**:
+  - Core still does not own queues, schedulers, retry leases, background
+    workers, unattended approval, or final WordPress writes.
+
 ## 2026-06-13 — Block theme layout proposal intake accepted
 
 - **Module**: Plan-to-proposal intake for block theme template layouts.

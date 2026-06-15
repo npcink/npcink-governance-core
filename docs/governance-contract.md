@@ -264,7 +264,10 @@ Plans may request one review item for a group of generated actions with either
 `plan_to_proposal_batch` proposal containing `input.write_actions[]`. The batch
 proposal remains a governance record only; Adapter or another host executor is
 still responsible for final per-action allowlist and schema checks after Core
-approval and commit preflight.
+approval and commit preflight. Batch previews include
+`batch_review_summary` so review surfaces can show action counts, target
+ability ids, blocked counts, retry guidance, and the operator next action
+without creating a Core queue, retry worker, or unattended execution runtime.
 
 Generated proposal previews must preserve:
 

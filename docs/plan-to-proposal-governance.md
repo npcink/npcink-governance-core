@@ -441,6 +441,13 @@ path must continue to enforce its per-action allowlist, schema validation,
 dependency/output reference rules, and batch size limits before any WordPress
 mutation happens.
 
+Grouped proposals also store `preview.batch_review_summary` with
+`summary_version=core-batch-review-summary-v1`, action and blocked counts,
+target ability ids, `operator_next_action`, and `final_execution_owner`. This
+summary is for human review, Adapter recovery guidance, and commit-preflight
+visibility only. It is not a queue record, lease, retry job, execution token, or
+Core-owned runtime state.
+
 ## Commit Preflight
 
 Commit preflight now evaluates proposal item readiness:
@@ -449,6 +456,11 @@ Commit preflight now evaluates proposal item readiness:
   after approval.
 - `proposal_ready=false` or non-empty `needs_input`/`preflight_blockers` returns
   `npcink_governance_core_proposal_items_blocked` with HTTP `409`.
+- if the proposal carries `preview.batch_review_summary`, commit preflight
+  returns a bounded summary shape inside
+  `proposal_item_preflight.batch_review_summary` so operators and adapters can
+  show the blocked reason and next action without inferring a hidden execution
+  queue.
 
 This means a human may review an incomplete plan action, but the host cannot
 treat it as committable until the required input is resolved in a later

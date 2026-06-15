@@ -817,6 +817,15 @@ reviewable proposals, but their preview carries `proposal_ready=false`,
 `needs_input`, and `preflight_blockers`; commit preflight must return `409`
 until the missing input is resolved by the host.
 
+When the plan creates one `plan_to_proposal_batch` proposal, the proposal
+preview includes `batch_review_summary`. The summary standardizes
+`action_count`, `blocked_count`, `needs_input_count`, `target_ability_ids`,
+`operator_next_action`, `retryable`, `final_execution_owner`, and
+`commit_execution=false` for operator review and Adapter recovery guidance. It
+does not create a Core queue, scheduler, retry lease, or execution runtime.
+Commit preflight returns only the bounded summary fields; unknown queue-like or
+secret-shaped preview fields are not part of the preflight contract.
+
 Errors:
 
 | Code | HTTP | Meaning |
@@ -980,6 +989,15 @@ Response `200`:
     "needs_input": [],
     "blocked_items": [],
     "warnings": [],
+    "batch_review_summary": {
+      "summary_version": "core-batch-review-summary-v1",
+      "action_count": 2,
+      "blocked_count": 0,
+      "operator_next_action": "review_and_approve_or_reject",
+      "final_execution_owner": "adapter_after_core_preflight",
+      "core_execution": false,
+      "commit_execution": false
+    },
     "commit_execution": false
   },
   "approval_context": {
