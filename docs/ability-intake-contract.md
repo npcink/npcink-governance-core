@@ -135,7 +135,10 @@ metadata handoff owned by Toolbox. Core accepts it only as a
 existing category/tag choices into a batch proposal with at most one action per
 metadata slot. It does not move excerpt generation, taxonomy recommendation,
 new-term governance, feedback storage, or WordPress write execution into Core
-or Toolbox.
+or Toolbox. If the handoff includes operation classification evidence, it must
+classify the Core-submitted handoff as `core_proposal_required`; local admin
+consent classifications belong to product-side present-admin flows and are not
+accepted through Core plan intake.
 
 `npcink-abilities-toolkit/build-media-optimization-plan` is the bounded local media
 optimization handoff owned by `npcink-abilities-toolkit` or a local product plugin.
@@ -182,7 +185,13 @@ must become reviewed `wp_template` Site Editor overrides; Core does not edit
 theme files, navigation entities, global styles, or execute WordPress writes.
 For `customize_template_layout`, Core additionally requires a passing
 `template_layout_contract` with a bounded profile such as `article_standard`,
-`page_standard`, or `homepage_landing`.
+`page_standard`, or `homepage_landing`. Template upserts are limited to
+`front-page`, `home`, `index`, `page`, or `single`; reviewed block trees must
+use safe core blocks, declare parser roundtrip validation, stay within bounded
+block count/depth/attribute-size limits, and avoid scriptable or embedded raw
+HTML. Navigation, global styles, theme files, `theme.json`, custom
+HTML/freeform, shortcode, embed, and unknown block changes are rejected before
+proposal creation.
 
 Each plan `write_action.target_ability_id` must resolve through normal ability
 intake as a proposal-governed write or destructive ability. Core must not

@@ -172,9 +172,10 @@ The content metadata apply handoff is a reviewed-choice bridge. Core accepts
 dry-run actions limited to excerpt updates and existing category or post-tag
 assignment. One apply plan may contain at most one excerpt action, one category
 assignment action, and one post-tag assignment action. Core stores proposal
-truth and `preview.content_metadata_apply` only; it does not generate
-summaries, create terms, approve proposals, store feedback/learning truth, or
-execute WordPress writes.
+truth and `preview.content_metadata_apply` only; if classification evidence is
+present, it must show `core_proposal_required` before Core accepts the plan.
+Core does not generate summaries, create terms, approve proposals, store
+feedback/learning truth, or execute WordPress writes.
 
 The media optimization handoff is the governed shape for the user intent
 "optimize this attachment." Core accepts
@@ -251,6 +252,12 @@ must include a passing bounded `template_layout_contract`. Core stores
 `preview.block_theme_site` and the reviewed block tree, but does not edit theme
 files, navigation entities, global styles, approve proposals, or execute
 WordPress writes.
+Accepted block theme template plans are limited to bounded template content
+changes: accepted template slugs, safe core blocks only, declared parser
+roundtrip validation, bounded block count/depth/attribute size, and no
+scriptable or embedded raw HTML. Navigation, global styles, theme files,
+`theme.json`, custom HTML/freeform, shortcode, embed, and unknown block changes
+are rejected before proposal creation.
 
 Plans may request one review item for a group of generated actions with either
 `batch_approval=true` or `proposal_mode=batch`. Core then creates one
@@ -431,7 +438,7 @@ record `commit.preflight_failed` with the stable error code, target ability id,
 proposal status, and `commit_execution=false`.
 
 App-authenticated audit metadata includes `scope_decision`, currently
-`allowed`, `denied`, or `rate_limited`.
+`allowed`, `denied`, `expired`, or `rate_limited`.
 
 ## Security Defaults
 

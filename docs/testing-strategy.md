@@ -166,6 +166,10 @@ Use it for behavior that requires real WordPress:
   `npcink-abilities-toolkit/build-pattern-page-plan`, including a two-action
   batch proposal, `preview.pattern_page`, class allowlist rejection, and no
   draft page mutation during intake or preflight;
+- block theme template layout malicious fixtures, including roundtrip evidence
+  omission, custom HTML/freeform blocks, navigation blocks, embedded/scriptable
+  HTML, non-allowlisted template slugs, oversized block trees, and no template
+  mutation during intake or preflight;
 - governance operability coverage, including proposal `audit_timeline`,
   commit-preflight `correlation_id`, app `scope_decision`, and audit filters
   for ability, app, key, caller type, and correlation id;

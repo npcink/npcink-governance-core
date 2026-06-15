@@ -52,6 +52,9 @@ final class Plan_Proposal_Service {
 	private const PLAN_MAX_PAYLOAD_BYTES = 262144;
 	private const MEDIA_OPTIMIZATION_MAX_ACTIONS = 10;
 	private const BLOCK_THEME_SITE_MAX_ACTIONS = 10;
+	private const BLOCK_THEME_SITE_MAX_BLOCKS = 80;
+	private const BLOCK_THEME_SITE_MAX_BLOCK_DEPTH = 8;
+	private const BLOCK_THEME_SITE_MAX_ATTR_BYTES = 16384;
 
 	/**
 	 * Ability adapter.
@@ -962,6 +965,20 @@ final class Plan_Proposal_Service {
 				'npcink_governance_core_content_metadata_batch_required',
 				__( 'Content metadata apply plans must explicitly request one batch proposal approval.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
+			);
+		}
+
+		$authorization = is_array( $plan['authorization'] ?? null ) ? $plan['authorization'] : array();
+		$decision_envelope = is_array( $authorization['decision_envelope'] ?? null ) ? $authorization['decision_envelope'] : array();
+		$classification = sanitize_key( (string) ( $authorization['classification'] ?? ( $decision_envelope['classification'] ?? '' ) ) );
+		if ( '' !== $classification && 'core_proposal_required' !== $classification ) {
+			return new WP_Error(
+				'npcink_governance_core_content_metadata_authorization_rejected',
+				__( 'Content metadata apply plans submitted to Core must classify as Core proposal required.', 'npcink-governance-core' ),
+				array(
+					'status'         => 422,
+					'classification' => $classification,
+				)
 			);
 		}
 
@@ -2004,6 +2021,10 @@ final class Plan_Proposal_Service {
 					)
 				);
 			}
+			$block_tree_error = $this->validate_block_theme_site_blocks( $input['blocks'], $input, $index );
+			if ( is_wp_error( $block_tree_error ) ) {
+				return $block_tree_error;
+			}
 			if ( 'npcink-abilities-toolkit/update-template-blocks' === $target_ability_id && absint( $input['post_id'] ?? 0 ) <= 0 ) {
 				return new WP_Error(
 					'npcink_governance_core_block_theme_site_post_id_missing',
@@ -2027,6 +2048,17 @@ final class Plan_Proposal_Service {
 						)
 					);
 				}
+				if ( ! isset( $this->block_theme_site_allowed_template_slugs()[ $slug ] ) ) {
+					return new WP_Error(
+						'npcink_governance_core_block_theme_site_template_rejected',
+						__( 'Block theme site template overrides may only target accepted template slugs.', 'npcink-governance-core' ),
+						array(
+							'status'       => 422,
+							'action_index' => $index,
+							'slug'         => $slug,
+						)
+					);
+				}
 				if ( $theme !== $action_theme ) {
 					return new WP_Error(
 						'npcink_governance_core_block_theme_site_theme_mismatch',
@@ -2042,6 +2074,195 @@ final class Plan_Proposal_Service {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Validates reviewed block trees for governed block theme template plans.
+	 *
+	 * @param array<int,mixed>    $blocks Block tree.
+	 * @param array<string,mixed> $input Action input.
+	 * @param int                 $action_index Action index.
+	 * @return true|WP_Error
+	 */
+	private function validate_block_theme_site_blocks( array $blocks, array $input, int $action_index ) {
+		if ( true !== (bool) ( $input['validate_roundtrip'] ?? false ) ) {
+			return new WP_Error(
+				'npcink_governance_core_block_theme_site_roundtrip_required',
+				__( 'Block theme site template actions must declare parser roundtrip validation.', 'npcink-governance-core' ),
+				array(
+					'status'       => 422,
+					'action_index' => $action_index,
+				)
+			);
+		}
+
+		$stats = array(
+			'count'     => 0,
+			'max_depth' => 0,
+		);
+		$error = $this->inspect_block_theme_site_blocks( $blocks, 1, $stats );
+		if ( is_wp_error( $error ) ) {
+			$data                 = is_array( $error->get_error_data() ) ? $error->get_error_data() : array();
+			$data['action_index'] = $action_index;
+			return new WP_Error( $error->get_error_code(), $error->get_error_message(), $data );
+		}
+		if ( $stats['count'] > self::BLOCK_THEME_SITE_MAX_BLOCKS || $stats['max_depth'] > self::BLOCK_THEME_SITE_MAX_BLOCK_DEPTH ) {
+			return new WP_Error(
+				'npcink_governance_core_block_theme_site_block_tree_rejected',
+				__( 'Block theme site template block trees must stay bounded.', 'npcink-governance-core' ),
+				array(
+					'status'       => 422,
+					'action_index' => $action_index,
+					'block_count'  => $stats['count'],
+					'max_depth'    => $stats['max_depth'],
+				)
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Recursively inspects one block theme site block tree.
+	 *
+	 * @param array<int,mixed>       $blocks Block list.
+	 * @param int                    $depth Current depth.
+	 * @param array<string,int>      $stats Mutable block stats.
+	 * @return true|WP_Error
+	 */
+	private function inspect_block_theme_site_blocks( array $blocks, int $depth, array &$stats ) {
+		$allowed_blocks = $this->block_theme_site_allowed_blocks();
+		foreach ( $blocks as $block ) {
+			if ( ! is_array( $block ) ) {
+				return new WP_Error(
+					'npcink_governance_core_block_theme_site_block_rejected',
+					__( 'Block theme site plans may only contain reviewed block objects.', 'npcink-governance-core' ),
+					array( 'status' => 422 )
+				);
+			}
+
+			$stats['count']     = (int) $stats['count'] + 1;
+			$stats['max_depth'] = max( (int) $stats['max_depth'], $depth );
+			$block_name         = sanitize_text_field( (string) ( $block['blockName'] ?? '' ) );
+			if ( ! isset( $allowed_blocks[ $block_name ] ) ) {
+				return new WP_Error(
+					'npcink_governance_core_block_theme_site_block_rejected',
+					__( 'Block theme site plans may only use accepted safe core blocks.', 'npcink-governance-core' ),
+					array(
+						'status'     => 422,
+						'block_name' => $block_name,
+					)
+				);
+			}
+
+			$attrs_json = wp_json_encode( is_array( $block['attrs'] ?? null ) ? $block['attrs'] : array() );
+			if ( is_string( $attrs_json ) && strlen( $attrs_json ) > self::BLOCK_THEME_SITE_MAX_ATTR_BYTES ) {
+				return new WP_Error(
+					'npcink_governance_core_block_theme_site_block_rejected',
+					__( 'Block theme site block attributes must stay bounded.', 'npcink-governance-core' ),
+					array(
+						'status'     => 422,
+						'block_name' => $block_name,
+					)
+				);
+			}
+
+			if ( $this->block_theme_site_block_contains_forbidden_html( $block ) ) {
+				return new WP_Error(
+					'npcink_governance_core_block_theme_site_block_rejected',
+					__( 'Block theme site plans must not contain scriptable or embedded raw HTML.', 'npcink-governance-core' ),
+					array(
+						'status'     => 422,
+						'block_name' => $block_name,
+					)
+				);
+			}
+
+			$inner_blocks = is_array( $block['innerBlocks'] ?? null ) ? array_values( $block['innerBlocks'] ) : array();
+			if ( ! empty( $inner_blocks ) ) {
+				$error = $this->inspect_block_theme_site_blocks( $inner_blocks, $depth + 1, $stats );
+				if ( is_wp_error( $error ) ) {
+					return $error;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Returns allowed block names for governed block theme template proposals.
+	 *
+	 * @return array<string,bool>
+	 */
+	private function block_theme_site_allowed_blocks(): array {
+		return array(
+			'core/button'              => true,
+			'core/buttons'             => true,
+			'core/column'              => true,
+			'core/columns'             => true,
+			'core/group'               => true,
+			'core/heading'             => true,
+			'core/latest-posts'        => true,
+			'core/list'                => true,
+			'core/list-item'           => true,
+			'core/paragraph'           => true,
+			'core/post-author-name'    => true,
+			'core/post-content'        => true,
+			'core/post-date'           => true,
+			'core/post-featured-image' => true,
+			'core/post-template'       => true,
+			'core/post-title'          => true,
+			'core/query'               => true,
+			'core/query-no-results'    => true,
+			'core/query-pagination'    => true,
+			'core/separator'           => true,
+			'core/spacer'              => true,
+			'core/template-part'       => true,
+		);
+	}
+
+	/**
+	 * Returns accepted template slugs for governed block theme template proposals.
+	 *
+	 * @return array<string,bool>
+	 */
+	private function block_theme_site_allowed_template_slugs(): array {
+		return array(
+			'front-page' => true,
+			'home'       => true,
+			'index'      => true,
+			'page'       => true,
+			'single'     => true,
+		);
+	}
+
+	/**
+	 * Checks block HTML fields for scriptable or embedded markup.
+	 *
+	 * @param array<string,mixed> $block Block.
+	 * @return bool
+	 */
+	private function block_theme_site_block_contains_forbidden_html( array $block ): bool {
+		$strings = array();
+		if ( is_string( $block['innerHTML'] ?? null ) ) {
+			$strings[] = (string) $block['innerHTML'];
+		}
+		if ( is_array( $block['innerContent'] ?? null ) ) {
+			foreach ( $block['innerContent'] as $content ) {
+				if ( is_string( $content ) ) {
+					$strings[] = $content;
+				}
+			}
+		}
+
+		foreach ( $strings as $html ) {
+			if ( preg_match( '/<\s*(script|iframe|object|embed|style|link|meta)\b/i', $html ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -2792,6 +3013,7 @@ final class Plan_Proposal_Service {
 			'post_id'                => absint( $post['post_id'] ?? ( $plan['target_post_id'] ?? 0 ) ),
 			'accepted_choices'       => $this->sanitize_payload( $plan['accepted_choices'] ?? array() ),
 			'evidence_refs'          => $this->sanitize_payload( $plan['evidence_refs'] ?? array() ),
+			'classification_evidence' => $this->sanitize_payload( $plan['authorization'] ?? array() ),
 			'new_term_candidate_count' => count( is_array( $plan['new_term_candidates'] ?? null ) ? $plan['new_term_candidates'] : array() ),
 			'final_write_path'       => 'core_batch_proposal_required',
 			'direct_wordpress_write' => false,

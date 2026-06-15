@@ -256,8 +256,8 @@ Core rejects additional proposal creation with
 
 Successful app-authenticated governance events include sanitized app attribution
 in `metadata.auth`, including `scope_decision=allowed`. Scope denials record
-`scope_decision=denied`; rate-limit denials record
-`scope_decision=rate_limited`. App-created proposals also copy that attribution
+`scope_decision=denied`; expired-key denials record `scope_decision=expired`;
+rate-limit denials record `scope_decision=rate_limited`. App-created proposals also copy that attribution
 into `caller.auth`.
 
 Commit preflight returns and audits a `correlation_id` so an adapter can connect

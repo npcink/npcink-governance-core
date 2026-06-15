@@ -175,6 +175,7 @@ Current `scope_decision` values:
 
 - `allowed`;
 - `denied`;
+- `expired`;
 - `rate_limited`.
 
 Raw app secrets, bearer tokens, authorization headers, cookies, passwords, and

@@ -877,6 +877,14 @@ foreach (
 		'password_verify',
 		'OFFSET %d',
 		'latest_last_used_at',
+		'expires_at',
+		'last_used_ip_hash',
+		'revoked_at',
+		'revoked_reason',
+		'hash_algorithm_version',
+		'token_prefix',
+		'is_expired',
+		'sanitize_future_datetime',
 		'capabilities:read',
 		'proposals:create',
 		'commit:preflight',
@@ -938,6 +946,8 @@ foreach (
 		"x-npcink-governance-core-app-token",
 		"mark_scope_decision( 'denied' )",
 		"mark_scope_decision( 'rate_limited' )",
+		"mark_scope_decision( 'expired' )",
+		'request_ip_hash',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $app_authenticator, $required ), 'App authenticator contains required text: ' . $required );
@@ -998,6 +1008,8 @@ foreach (
 	npcink_governance_core_assert( false !== strpos( $operation_classifier, $required ), 'Operation classifier contains required text: ' . $required );
 }
 npcink_governance_core_assert( false !== strpos( $operation_classifier, 'operation-classification-v1' ), 'Operation classifier returns a stable policy version.' );
+npcink_governance_core_assert( false !== strpos( $operation_classifier, 'decision_envelope' ), 'Operation classifier returns a stable decision envelope.' );
+npcink_governance_core_assert( false !== strpos( $operation_classifier, 'risk_factors' ), 'Operation classifier exposes auditable decision risk factors.' );
 npcink_governance_core_assert( false !== strpos( $operation_classifier, 'target_ability_id' ), 'Operation classifier requires Core proposal evidence for high-risk writes.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'includes/Autoloader.php' ), 'Main plugin uses the class autoloader for operation classifier loading.' );
 $plugin_container = npcink_governance_core_read( $root . '/includes/Plugin.php' );
@@ -1019,6 +1031,7 @@ $suggestion_classification = $classifier->classify(
 	)
 );
 npcink_governance_core_assert( 'suggestion_only' === (string) ( $suggestion_classification['classification'] ?? '' ), 'Operation classifier returns suggestion_only for no-write suggestions.' );
+npcink_governance_core_assert( 'operation-classification-v1' === (string) ( $suggestion_classification['decision_envelope']['decision_version'] ?? '' ), 'Operation classifier decision envelope includes the stable decision version.' );
 
 $local_consent_classification = $classifier->classify(
 	array(
@@ -1032,6 +1045,7 @@ $local_consent_classification = $classifier->classify(
 );
 npcink_governance_core_assert( 'local_admin_consent' === (string) ( $local_consent_classification['classification'] ?? '' ), 'Operation classifier allows single visible low-risk admin writes.' );
 npcink_governance_core_assert( in_array( 'actor_user_id', (array) ( $local_consent_classification['required_evidence'] ?? array() ), true ), 'Local admin consent requires actor evidence.' );
+npcink_governance_core_assert( 'wp_admin_ui' === (string) ( $local_consent_classification['decision_envelope']['request_source'] ?? '' ), 'Local admin consent envelope preserves normalized request source.' );
 
 $batch_featured_images_classification = $classifier->classify(
 	array(
@@ -1045,6 +1059,7 @@ $batch_featured_images_classification = $classifier->classify(
 );
 npcink_governance_core_assert( 'core_proposal_required' === (string) ( $batch_featured_images_classification['classification'] ?? '' ), 'Operation classifier sends batch image selection to Core proposal review even from wp-admin.' );
 npcink_governance_core_assert( in_array( 'scope_not_single_object', (array) ( $batch_featured_images_classification['reasons'] ?? array() ), true ), 'Batch image selection is rejected from local consent because it touches multiple objects.' );
+npcink_governance_core_assert( in_array( 'broad_or_batch_scope', (array) ( $batch_featured_images_classification['decision_envelope']['risk_factors'] ?? array() ), true ), 'Batch classification envelope records broad or batch scope risk.' );
 
 $strong_confirmation_classification = $classifier->classify(
 	array(
@@ -1595,6 +1610,7 @@ foreach (
 		'npcink_governance_core_site_knowledge_ready_rejected',
 		'npcink_governance_core_site_knowledge_evidence_missing',
 		'npcink_governance_core_content_metadata_create_missing_rejected',
+		'npcink_governance_core_content_metadata_authorization_rejected',
 		'npcink_governance_core_content_metadata_update_field_rejected',
 		'npcink_governance_core_content_metadata_term_field_rejected',
 		'npcink_governance_core_content_metadata_duplicate_action_rejected',
@@ -1632,10 +1648,18 @@ foreach (
 		'npcink_governance_core_block_theme_site_actions_rejected',
 		'npcink_governance_core_block_theme_site_layout_profile_rejected',
 		'npcink_governance_core_block_theme_site_layout_contract_rejected',
+		'npcink_governance_core_block_theme_site_block_rejected',
+		'npcink_governance_core_block_theme_site_block_tree_rejected',
+		'npcink_governance_core_block_theme_site_roundtrip_required',
+		'npcink_governance_core_block_theme_site_template_rejected',
 		'customize_template_layout',
 		'template_layout_contract',
 		'article_standard',
 		'homepage_landing',
+		'BLOCK_THEME_SITE_MAX_BLOCKS',
+		'BLOCK_THEME_SITE_MAX_BLOCK_DEPTH',
+		'block_theme_site_allowed_blocks',
+		'block_theme_site_allowed_template_slugs',
 		'npcink_governance_core_pattern_page_class_rejected',
 		'npcink_governance_core_article_plan_',
 		'npcink_governance_core_article_batch_',

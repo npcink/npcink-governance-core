@@ -177,6 +177,14 @@ return `artifact_type=block_theme_site_plan`, `intent=add_breadcrumbs` or
 non-empty Gutenberg `blocks` tree.
 For `customize_template_layout`, Core also requires a passing bounded
 `template_layout_contract` with accepted profile rows.
+Template upserts are limited to accepted template slugs (`front-page`, `home`,
+`index`, `page`, and `single`). The reviewed block tree must declare parser
+roundtrip validation, use only Core's safe block allowlist, stay within bounded
+block count/depth/attribute-size limits, and must not contain scriptable or
+embedded raw HTML such as `script`, `iframe`, `object`, `embed`, `style`,
+`link`, or `meta`. Core rejects navigation blocks, custom HTML/freeform blocks,
+shortcode blocks, embed blocks, unknown blocks, and any plan that tries to
+touch navigation entities, global styles, theme files, or `theme.json`.
 
 File-backed templates are represented as reviewed
 `npcink-abilities-toolkit/upsert-template-blocks` actions that create a
@@ -201,13 +209,16 @@ small set of reviewed actions for one target post. Core accepts only
 category assignment action, and at most one post-tag assignment action. Core
 rejects duplicate metadata action slots, title/content updates, SEO writes,
 missing-term creation, named `terms`, unsupported taxonomies, and remove-mode
-term changes.
+term changes. If the plan carries an operation classification envelope, it must
+classify the submitted handoff as `core_proposal_required`; a
+`local_admin_consent` classification belongs to a present-admin product path
+and is rejected from Core plan intake.
 
 The generated batch proposal preserves `preview.content_metadata_apply` with the
-target post id, accepted choices, evidence refs, new-term candidate count, and
-`direct_wordpress_write=false`. Core does not generate metadata suggestions,
-approve the proposal, execute the write, create taxonomy terms, store feedback,
-or maintain a learning loop.
+target post id, accepted choices, evidence refs, classification decision
+evidence, new-term candidate count, and `direct_wordpress_write=false`. Core
+does not generate metadata suggestions, approve the proposal, execute the
+write, create taxonomy terms, store feedback, or maintain a learning loop.
 
 Article writing is a local Ability recipe, not a Cloud writing feature. Cloud
 must not produce article drafts, `article_write_plan` candidates, or bulk

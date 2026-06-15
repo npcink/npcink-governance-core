@@ -2558,6 +2558,24 @@ function npcink_governance_core_fail_closed_content_metadata_apply_plan(): array
 			'tag_ids'          => array( 41, 42 ),
 			'new_term_policy'  => 'manual_review_only_no_create_term_action',
 		),
+		'authorization'          => array(
+			'classification'    => 'core_proposal_required',
+			'reason'            => 'content_metadata_apply_plan_uses_core_review',
+			'decision_envelope' => array(
+				'decision_version'  => 'operation-classification-v1',
+				'classification'    => 'core_proposal_required',
+				'reasons'           => array( 'reviewed_metadata_apply_plan' ),
+				'risk_factors'      => array( 'batch_or_multi_action_metadata_apply' ),
+				'required_evidence' => array( 'target_ability_id', 'before_after_or_dry_run_evidence' ),
+				'request_source'    => 'external_adapter',
+				'actor_presence'   => 'delegated',
+				'preview_completeness' => 'sufficient',
+				'scope'             => 'one_object',
+				'reversibility'     => 'easy_undo',
+				'operation_kind'    => 'batch_plan',
+				'writes_wordpress_state' => true,
+			),
+		),
 		'evidence_refs'          => array(
 			array(
 				'id'      => 'target-post',
@@ -3137,6 +3155,64 @@ npcink_governance_core_fail_closed_assert( 'npcink_governance_core_block_theme_s
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();
+$block_theme_missing_roundtrip = npcink_governance_core_fail_closed_block_theme_layout_plan();
+unset( $block_theme_missing_roundtrip['write_actions'][0]['input']['validate_roundtrip'] );
+$block_theme_missing_roundtrip_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_missing_roundtrip );
+npcink_governance_core_fail_closed_assert( is_wp_error( $block_theme_missing_roundtrip_result ), 'Block theme layout plan without roundtrip validation evidence is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_block_theme_site_roundtrip_required' === $block_theme_missing_roundtrip_result->get_error_code(), 'Block theme layout roundtrip rejection uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Block theme layout missing roundtrip stores no proposal row.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$block_theme_bad_block = npcink_governance_core_fail_closed_block_theme_layout_plan();
+$block_theme_bad_block['write_actions'][0]['input']['blocks'][1]['innerBlocks'][] = array(
+	'blockName'    => 'core/html',
+	'attrs'        => array(),
+	'innerBlocks'  => array(),
+	'innerHTML'    => '<script>alert("blocked")</script>',
+	'innerContent' => array( '<script>alert("blocked")</script>' ),
+);
+$block_theme_bad_block_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_bad_block );
+npcink_governance_core_fail_closed_assert( is_wp_error( $block_theme_bad_block_result ), 'Block theme layout plan with raw HTML block is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_block_theme_site_block_rejected' === $block_theme_bad_block_result->get_error_code(), 'Block theme raw HTML block rejection uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Block theme raw HTML block stores no proposal row.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$block_theme_navigation_block = npcink_governance_core_fail_closed_block_theme_layout_plan();
+$block_theme_navigation_block['write_actions'][0]['input']['blocks'][1]['innerBlocks'][] = array(
+	'blockName'    => 'core/navigation',
+	'attrs'        => array( 'ref' => 1 ),
+	'innerBlocks'  => array(),
+	'innerHTML'    => '',
+	'innerContent' => array(),
+);
+$block_theme_navigation_block_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_navigation_block );
+npcink_governance_core_fail_closed_assert( is_wp_error( $block_theme_navigation_block_result ), 'Block theme layout plan with navigation block is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_block_theme_site_block_rejected' === $block_theme_navigation_block_result->get_error_code(), 'Block theme navigation block rejection uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Block theme navigation block stores no proposal row.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$block_theme_script_html = npcink_governance_core_fail_closed_block_theme_layout_plan();
+$block_theme_script_html['write_actions'][0]['input']['blocks'][1]['innerHTML'] = '<main><iframe src="https://example.com"></iframe></main>';
+$block_theme_script_html['write_actions'][0]['input']['blocks'][1]['innerContent'] = array( '<main><iframe src="https://example.com"></iframe></main>' );
+$block_theme_script_html_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_script_html );
+npcink_governance_core_fail_closed_assert( is_wp_error( $block_theme_script_html_result ), 'Block theme layout plan with embedded HTML is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_block_theme_site_block_rejected' === $block_theme_script_html_result->get_error_code(), 'Block theme embedded HTML rejection uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Block theme embedded HTML stores no proposal row.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$block_theme_bad_slug = npcink_governance_core_fail_closed_block_theme_layout_plan();
+$block_theme_bad_slug['write_actions'][0]['input']['slug'] = 'archive-product';
+$block_theme_bad_slug_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_bad_slug );
+npcink_governance_core_fail_closed_assert( is_wp_error( $block_theme_bad_slug_result ), 'Block theme layout plan for a non-allowlisted template slug is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_block_theme_site_template_rejected' === $block_theme_bad_slug_result->get_error_code(), 'Block theme template slug rejection uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Block theme bad slug stores no proposal row.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
 $too_many_global_actions = npcink_governance_core_fail_closed_block_theme_site_plan();
 $base_block_theme_action = $too_many_global_actions['write_actions'][0];
 $too_many_global_actions['write_actions'] = array();
@@ -3276,6 +3352,16 @@ $content_metadata_proposal = is_array( $content_metadata_result['proposals'][0] 
 npcink_governance_core_fail_closed_assert( 'plan_to_proposal_batch' === (string) ( $content_metadata_proposal['preview']['source']['type'] ?? '' ), 'Content metadata apply plan stores batch proposal source.' );
 npcink_governance_core_fail_closed_assert( 3 === count( (array) ( $content_metadata_proposal['input']['write_actions'] ?? array() ) ), 'Content metadata apply proposal stores excerpt, category, and tag actions.' );
 npcink_governance_core_fail_closed_assert( isset( $content_metadata_proposal['preview']['content_metadata_apply'] ), 'Content metadata apply preview is preserved in the proposal.' );
+npcink_governance_core_fail_closed_assert( 'core_proposal_required' === (string) ( $content_metadata_proposal['preview']['content_metadata_apply']['classification_evidence']['decision_envelope']['classification'] ?? '' ), 'Content metadata apply proposal preserves classifier decision evidence.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$content_metadata_local_consent = npcink_governance_core_fail_closed_content_metadata_apply_plan();
+$content_metadata_local_consent['authorization']['classification'] = 'local_admin_consent';
+$content_metadata_local_consent['authorization']['decision_envelope']['classification'] = 'local_admin_consent';
+$content_metadata_local_consent_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-content-metadata-apply-plan', $content_metadata_local_consent );
+npcink_governance_core_fail_closed_assert( is_wp_error( $content_metadata_local_consent_result ), 'Content metadata apply plan with local-admin-consent classification is rejected from Core intake.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_content_metadata_authorization_rejected' === $content_metadata_local_consent_result->get_error_code(), 'Content metadata authorization mismatch rejection uses stable error code.' );
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();

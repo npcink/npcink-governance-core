@@ -109,6 +109,11 @@ final class Apps_Controller {
 							'default'           => App_Key_Repository::DEFAULT_RATE_WINDOW,
 							'sanitize_callback' => 'absint',
 						),
+						'expires_at' => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
 					),
 				),
 			)
@@ -145,6 +150,7 @@ final class Apps_Controller {
 			'caller_type'         => $request->get_param( 'caller_type' ),
 			'rate_limit'          => $request->get_param( 'rate_limit' ),
 			'rate_window_seconds' => $request->get_param( 'rate_window_seconds' ),
+			'expires_at'          => $request->get_param( 'expires_at' ),
 		);
 
 		$body_params = method_exists( $request, 'get_body_params' ) && is_array( $request->get_body_params() ) ? $request->get_body_params() : array();

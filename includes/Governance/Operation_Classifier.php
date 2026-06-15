@@ -15,6 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Classifies AI-assisted operation authorization paths.
  */
 final class Operation_Classifier {
+	const POLICY_VERSION = 'operation-classification-v1';
+
 	const CLASSIFICATION_SUGGESTION_ONLY          = 'suggestion_only';
 	const CLASSIFICATION_LOCAL_ADMIN_CONSENT      = 'local_admin_consent';
 	const CLASSIFICATION_STRONG_LOCAL_CONFIRMATION = 'strong_local_confirmation';
@@ -75,12 +77,22 @@ final class Operation_Classifier {
 		$reversibility = $this->sanitize_enum( (string) ( $operation['reversibility'] ?? '' ), self::allowed_reversibility(), self::REVERSIBILITY_HARD_RESTORE );
 		$kind          = $this->sanitize_enum( (string) ( $operation['operation_kind'] ?? '' ), self::allowed_operation_kinds(), self::KIND_BATCH_PLAN );
 		$writes_state  = array_key_exists( 'writes_wordpress_state', $operation ) ? (bool) $operation['writes_wordpress_state'] : self::KIND_SUGGEST !== $kind;
+		$context       = array(
+			'request_source'       => $source,
+			'actor_presence'      => $actor,
+			'preview_completeness' => $preview,
+			'scope'                => $scope,
+			'reversibility'        => $reversibility,
+			'operation_kind'       => $kind,
+			'writes_wordpress_state' => $writes_state,
+		);
 
 		if ( ! $writes_state || self::KIND_SUGGEST === $kind ) {
 			return $this->result(
 				self::CLASSIFICATION_SUGGESTION_ONLY,
 				array( 'no_wordpress_write' ),
-				array()
+				array(),
+				$context
 			);
 		}
 
@@ -89,7 +101,8 @@ final class Operation_Classifier {
 			return $this->result(
 				self::CLASSIFICATION_CORE_PROPOSAL_REQUIRED,
 				$hard_core_reasons,
-				$this->core_proposal_required_evidence()
+				$this->core_proposal_required_evidence(),
+				$context
 			);
 		}
 
@@ -97,7 +110,8 @@ final class Operation_Classifier {
 			return $this->result(
 				self::CLASSIFICATION_STRONG_LOCAL_CONFIRMATION,
 				array( 'single_object_high_impact_write', 'present_admin_preview_required' ),
-				$this->strong_local_confirmation_evidence()
+				$this->strong_local_confirmation_evidence(),
+				$context
 			);
 		}
 
@@ -111,14 +125,16 @@ final class Operation_Classifier {
 			return $this->result(
 				self::CLASSIFICATION_LOCAL_ADMIN_CONSENT,
 				array( 'present_admin_single_visible_low_risk_write' ),
-				$this->local_admin_consent_evidence()
+				$this->local_admin_consent_evidence(),
+				$context
 			);
 		}
 
 		return $this->result(
 			self::CLASSIFICATION_CORE_PROPOSAL_REQUIRED,
 			array( 'local_admin_consent_requirements_not_met' ),
-			$this->core_proposal_required_evidence()
+			$this->core_proposal_required_evidence(),
+			$context
 		);
 	}
 
@@ -347,14 +363,82 @@ final class Operation_Classifier {
 	 * @param string            $classification Classification.
 	 * @param array<int,string> $reasons Reasons.
 	 * @param array<int,string> $required_evidence Required evidence keys.
+	 * @param array<string,mixed> $context Normalized decision context.
 	 * @return array<string,mixed>
 	 */
-	private function result( string $classification, array $reasons, array $required_evidence ): array {
+	private function result( string $classification, array $reasons, array $required_evidence, array $context ): array {
+		$reasons           = array_values( array_unique( array_map( array( $this, 'sanitize_token' ), $reasons ) ) );
+		$required_evidence = array_values( array_unique( array_map( array( $this, 'sanitize_token' ), $required_evidence ) ) );
+		$envelope          = array_merge(
+			array(
+				'decision_version'  => self::POLICY_VERSION,
+				'classification'    => $classification,
+				'reasons'           => $reasons,
+				'risk_factors'      => $this->risk_factors_for_context( $context ),
+				'required_evidence' => $required_evidence,
+			),
+			$this->sanitize_decision_context( $context )
+		);
+
 		return array(
 			'classification'    => $classification,
-			'reasons'           => array_values( array_unique( array_map( array( $this, 'sanitize_token' ), $reasons ) ) ),
-			'required_evidence' => array_values( array_unique( array_map( array( $this, 'sanitize_token' ), $required_evidence ) ) ),
-			'policy_version'    => 'operation-classification-v1',
+			'reasons'           => $reasons,
+			'required_evidence' => $required_evidence,
+			'policy_version'    => self::POLICY_VERSION,
+			'decision_version'  => self::POLICY_VERSION,
+			'decision_envelope' => $envelope,
+		);
+	}
+
+	/**
+	 * Returns stable risk factors for auditable decision evidence.
+	 *
+	 * @param array<string,mixed> $context Normalized decision context.
+	 * @return array<int,string>
+	 */
+	private function risk_factors_for_context( array $context ): array {
+		$factors       = array();
+		$source        = (string) ( $context['request_source'] ?? '' );
+		$actor         = (string) ( $context['actor_presence'] ?? '' );
+		$preview       = (string) ( $context['preview_completeness'] ?? '' );
+		$scope         = (string) ( $context['scope'] ?? '' );
+		$reversibility = (string) ( $context['reversibility'] ?? '' );
+		$kind          = (string) ( $context['operation_kind'] ?? '' );
+
+		if ( self::SOURCE_WP_ADMIN_UI !== $source || self::ACTOR_PRESENT_CLICK !== $actor ) {
+			$factors[] = 'external_or_background_channel';
+		}
+		if ( ! $this->preview_is_sufficient( $preview ) ) {
+			$factors[] = 'insufficient_preview';
+		}
+		if ( ! $this->scope_is_local( $scope ) ) {
+			$factors[] = 'broad_or_batch_scope';
+		}
+		if ( ! $this->reversibility_is_low_cost( $reversibility ) ) {
+			$factors[] = 'hard_to_reverse';
+		}
+		if ( $this->is_always_core_kind( $kind ) || $this->is_high_impact_single_object_kind( $kind ) ) {
+			$factors[] = 'high_impact_operation_kind';
+		}
+
+		return array_values( array_unique( $factors ) );
+	}
+
+	/**
+	 * Sanitizes normalized context for envelope persistence.
+	 *
+	 * @param array<string,mixed> $context Normalized decision context.
+	 * @return array<string,mixed>
+	 */
+	private function sanitize_decision_context( array $context ): array {
+		return array(
+			'request_source'       => $this->sanitize_token( (string) ( $context['request_source'] ?? '' ) ),
+			'actor_presence'      => $this->sanitize_token( (string) ( $context['actor_presence'] ?? '' ) ),
+			'preview_completeness' => $this->sanitize_token( (string) ( $context['preview_completeness'] ?? '' ) ),
+			'scope'                => $this->sanitize_token( (string) ( $context['scope'] ?? '' ) ),
+			'reversibility'        => $this->sanitize_token( (string) ( $context['reversibility'] ?? '' ) ),
+			'operation_kind'       => $this->sanitize_token( (string) ( $context['operation_kind'] ?? '' ) ),
+			'writes_wordpress_state' => (bool) ( $context['writes_wordpress_state'] ?? false ),
 		);
 	}
 

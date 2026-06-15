@@ -18,6 +18,10 @@ Core implementation:
 
 The classifier is intentionally a pure policy helper. It does not create
 proposals, execute writes, record audit events, or decide product UI copy.
+Every result also includes a stable `decision_envelope` so consumers can store
+the same auditable evidence in proposal previews, local admin consent audit
+metadata, or product-side activity records without inventing their own
+classification shape.
 
 ## Classification Values
 
@@ -75,6 +79,34 @@ Return `core_proposal_required` when any of these are true:
 - the action depends on an AI-generated plan with multiple write actions.
 
 ## Required Evidence
+
+Each classification result preserves the legacy top-level fields
+`classification`, `reasons`, `required_evidence`, and `policy_version`, and
+also returns:
+
+```json
+{
+  "decision_version": "operation-classification-v1",
+  "decision_envelope": {
+    "decision_version": "operation-classification-v1",
+    "classification": "core_proposal_required",
+    "reasons": ["non_admin_ui_source"],
+    "risk_factors": ["external_or_background_channel"],
+    "required_evidence": ["target_ability_id"],
+    "request_source": "external_adapter",
+    "actor_presence": "delegated",
+    "preview_completeness": "partial",
+    "scope": "multiple_objects",
+    "reversibility": "hard_restore",
+    "operation_kind": "batch_plan",
+    "writes_wordpress_state": true
+  }
+}
+```
+
+Consumers should persist the `decision_envelope` when the classification
+affects whether a WordPress write uses local admin consent or Core proposal
+review.
 
 For `local_admin_consent`, Core records audit evidence through the
 `npcink_governance_core_record_local_admin_consent` filter. This is an
