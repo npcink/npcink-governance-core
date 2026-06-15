@@ -33,9 +33,25 @@ The runtime must not own:
 
 ## Owner Boundary
 
-The runtime must be a dedicated local plugin, module, or deliberately
-contracted product component. It must not be implemented inside Core or inside
-the OpenClaw Adapter.
+Per
+[ADR-007: Dedicated Local Automation Runtime Owner](decisions/ADR-007-dedicated-local-automation-runtime-owner.md),
+the runtime owner is `npcink-local-automation-runtime`. It must be
+independently developed and independently testable. Product release packaging
+may bundle it inside `magick-ai-toolbox` as an isolated module, but it must not
+be implemented inside Core or inside the OpenClaw Adapter.
+
+When bundled in Toolbox, the runtime must keep an isolated module identity:
+
+- module path: `modules/local-automation-runtime/`
+- namespace: `Npcink\LocalAutomationRuntime`
+- table prefix: `npcink_local_automation_runtime`
+- capability family: `npcink_runtime_*` or `cap.runtime.*`
+- contract version: `npcink_local_automation_runtime.v1`
+- independent kill switch, health status, tests, and boundary docs
+
+Toolbox may host the operator console and release package. Toolbox fixed
+buttons must not own runtime job state, schedulers, leases, retries,
+dead-letter processing, unattended approval, or final WordPress writes.
 
 | Component | Owns | Must not own |
 | --- | --- | --- |
@@ -335,3 +351,8 @@ Current Npcink batch support remains Phase 0 reviewed governance:
   in product surfaces;
 - no unattended runtime, no scheduler, no worker, no runtime job table, and no
   final WordPress write execution in Core.
+
+Phase 1 planning artifacts are defined in
+[Local Automation Runtime Phase 1 Schema](local-automation-runtime-phase-1-schema.md)
+and `tests/fixtures/local-automation-runtime-dry-run-replay.json`. They are
+contract fixtures for the future runtime repo, not Core runtime inputs.

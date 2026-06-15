@@ -175,7 +175,12 @@ foreach (
 		'ADR-004: Suite Consolidation And Local Admin Consent',
 		'ADR-005: Keep Core Independent And Standardize Channel Adapters',
 		'ADR-006: Unattended Batch Automation Runtime Boundary',
+		'ADR-007: Dedicated Local Automation Runtime Owner',
 		'Local Automation Runtime Contract',
+		'Local Automation Runtime Phase 1 Schema',
+		'npcink-local-automation-runtime',
+		'modules/local-automation-runtime/',
+		'local-automation-runtime-dry-run-replay.json',
 		'Jobs, leases, retry workers, scheduler state',
 		'AI Development Workstream Summary',
 		'Operation Classification Contract',
@@ -968,6 +973,7 @@ $adr_003 = npcink_governance_core_read( $root . '/docs/decisions/ADR-003-keep-fi
 $adr_004 = npcink_governance_core_read( $root . '/docs/decisions/ADR-004-suite-consolidation-and-local-admin-consent.md' );
 $adr_005 = npcink_governance_core_read( $root . '/docs/decisions/ADR-005-keep-core-independent-and-standardize-channel-adapters.md' );
 $adr_006 = npcink_governance_core_read( $root . '/docs/decisions/ADR-006-unattended-batch-automation-runtime-boundary.md' );
+$adr_007 = npcink_governance_core_read( $root . '/docs/decisions/ADR-007-dedicated-local-automation-runtime-owner.md' );
 npcink_governance_core_assert( false !== strpos( $adr_001, 'Create a new standalone `npcink-governance-core` plugin' ), 'ADR-001 records rebuild decision.' );
 npcink_governance_core_assert( false !== strpos( $adr_002, '`npcink-governance-core` must not implement a workflow runtime' ), 'ADR-002 bans workflow runtime ownership.' );
 npcink_governance_core_assert( false !== strpos( $adr_003, 'Core remains governance-only' ), 'ADR-003 keeps Core governance-only for the current stage.' );
@@ -989,14 +995,26 @@ npcink_governance_core_assert( false !== strpos( $adr_006, 'batch_review_summary
 npcink_governance_core_assert( false !== strpos( $adr_006, 'Lease, lock, timeout, retry backoff, and dead-letter semantics' ), 'ADR-006 requires lease, timeout, retry, and dead-letter semantics before runtime.' );
 npcink_governance_core_assert( false !== strpos( $adr_006, 'Kill switch, pause, resume, and cancel behavior' ), 'ADR-006 requires operator stop controls before runtime.' );
 npcink_governance_core_assert( false !== strpos( $adr_006, 'No unattended runtime exists in this phase' ), 'ADR-006 keeps Phase 0 reviewed governance only.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'Use `npcink-local-automation-runtime` as the dedicated owner' ), 'ADR-007 selects a dedicated future runtime owner.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, '`npcink-local-automation-runtime`' ), 'ADR-007 names npcink-local-automation-runtime.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'repo: `/Users/muze/gitee/npcink-local-automation-runtime`' ), 'ADR-007 records the future runtime repo path.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'release packaging may bundle it inside' ) && false !== strpos( $adr_007, '`magick-ai-toolbox`' ), 'ADR-007 allows Toolbox release bundling.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'module path: `modules/local-automation-runtime/`' ), 'ADR-007 defines the Toolbox bundled module path.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'Toolbox fixed-flow' ) && false !== strpos( $adr_007, 'runtime state machine' ), 'ADR-007 keeps Toolbox fixed buttons out of runtime ownership.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'Phase 1 is contract and replay only' ), 'ADR-007 keeps Phase 1 contract and replay only.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'This Core pass does not create the development repository' ), 'ADR-007 keeps this Core pass implementation-free.' );
 
 $local_automation_runtime_contract = npcink_governance_core_read( $root . '/docs/local-automation-runtime-contract.md' );
 foreach (
 	array(
 		'Status: planning contract',
+		'ADR-007: Dedicated Local Automation Runtime Owner',
+		'npcink-local-automation-runtime',
+		'magick-ai-toolbox',
+		'modules/local-automation-runtime/',
+		'Toolbox fixed',
 		'does not add Core REST',
 		'Core final write execution',
-		'The runtime must be a dedicated local plugin',
 		'contract_version',
 		'npcink_local_automation_runtime.v1',
 		'job_id',
@@ -1028,6 +1046,47 @@ foreach (
 ) {
 	npcink_governance_core_assert( false !== strpos( $local_automation_runtime_contract, $required ), 'Local automation runtime contract contains required text: ' . $required );
 }
+
+$local_automation_phase_1_schema = npcink_governance_core_read( $root . '/docs/local-automation-runtime-phase-1-schema.md' );
+foreach (
+	array(
+		'Status: planning schema',
+		'npcink-local-automation-runtime',
+		'npcink_local_automation_runtime.v1',
+		'dry_run_replay',
+		'background_execution',
+		'Allowed Phase 1 `status` values',
+		'Phase 1 fixtures must not use `running`',
+		'core_execution` and `commit_execution` must both be `false`',
+		'Action execution events are intentionally excluded from Phase 1 fixtures',
+		'"phase": "phase_1_contract_only"',
+		'"worker_created": false',
+		'"scheduler_created": false',
+		'"dead_letter_processor_created": false',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $local_automation_phase_1_schema, $required ), 'Local automation runtime Phase 1 schema contains required text: ' . $required );
+}
+
+$local_automation_replay_text = npcink_governance_core_read( $root . '/tests/fixtures/local-automation-runtime-dry-run-replay.json' );
+$local_automation_replay      = json_decode( $local_automation_replay_text, true );
+npcink_governance_core_assert( is_array( $local_automation_replay ), 'Local automation runtime dry-run replay fixture is valid JSON.' );
+npcink_governance_core_assert( 'npcink_local_automation_runtime.v1' === ( $local_automation_replay['contract_version'] ?? '' ), 'Local automation runtime replay fixture declares contract version.' );
+npcink_governance_core_assert( 'dry_run_replay' === ( $local_automation_replay['mode'] ?? '' ), 'Local automation runtime replay fixture is dry-run replay only.' );
+npcink_governance_core_assert( 'npcink-local-automation-runtime' === ( $local_automation_replay['runtime_owner'] ?? '' ), 'Local automation runtime replay fixture names the future owner.' );
+npcink_governance_core_assert( false === ( $local_automation_replay['core_runtime_execution'] ?? true ), 'Local automation runtime replay fixture keeps Core runtime execution false.' );
+npcink_governance_core_assert( false === ( $local_automation_replay['background_execution'] ?? true ), 'Local automation runtime replay fixture keeps background execution false.' );
+npcink_governance_core_assert( isset( $local_automation_replay['job']['eligibility_summary'] ) && is_array( $local_automation_replay['job']['eligibility_summary'] ), 'Local automation runtime replay fixture includes eligibility summary.' );
+npcink_governance_core_assert( isset( $local_automation_replay['job']['blocked_items'] ) && is_array( $local_automation_replay['job']['blocked_items'] ), 'Local automation runtime replay fixture includes blocked items.' );
+npcink_governance_core_assert( isset( $local_automation_replay['job']['actions'] ) && 2 === count( $local_automation_replay['job']['actions'] ), 'Local automation runtime replay fixture includes two dry-run actions.' );
+npcink_governance_core_assert( false === ( $local_automation_replay['core_handoff']['core_execution'] ?? true ), 'Local automation runtime replay fixture keeps handoff core_execution false.' );
+npcink_governance_core_assert( false === ( $local_automation_replay['core_handoff']['commit_execution'] ?? true ), 'Local automation runtime replay fixture keeps handoff commit_execution false.' );
+npcink_governance_core_assert( true === ( $local_automation_replay['operator_controls']['kill_switch'] ?? false ), 'Local automation runtime replay fixture includes kill switch control.' );
+npcink_governance_core_assert( true === ( $local_automation_replay['acceptance']['schema_only'] ?? false ), 'Local automation runtime replay fixture is schema-only.' );
+npcink_governance_core_assert( true === ( $local_automation_replay['acceptance']['dry_run_replay_only'] ?? false ), 'Local automation runtime replay fixture is replay-only.' );
+npcink_governance_core_assert( false === ( $local_automation_replay['acceptance']['worker_created'] ?? true ), 'Local automation runtime replay fixture does not create a worker.' );
+npcink_governance_core_assert( false === ( $local_automation_replay['acceptance']['scheduler_created'] ?? true ), 'Local automation runtime replay fixture does not create a scheduler.' );
+npcink_governance_core_assert( false === ( $local_automation_replay['acceptance']['dead_letter_processor_created'] ?? true ), 'Local automation runtime replay fixture does not create a dead-letter processor.' );
 
 $operation_classification = npcink_governance_core_read( $root . '/docs/operation-classification-contract.md' );
 $operation_classifier = npcink_governance_core_read( $root . '/includes/Governance/Operation_Classifier.php' );
