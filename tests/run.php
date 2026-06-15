@@ -174,6 +174,9 @@ foreach (
 		'Sensitive Read Authorization',
 		'ADR-004: Suite Consolidation And Local Admin Consent',
 		'ADR-005: Keep Core Independent And Standardize Channel Adapters',
+		'ADR-006: Unattended Batch Automation Runtime Boundary',
+		'Local Automation Runtime Contract',
+		'Jobs, leases, retry workers, scheduler state',
 		'AI Development Workstream Summary',
 		'Operation Classification Contract',
 		'local admin consent with audit',
@@ -964,6 +967,7 @@ $adr_002 = npcink_governance_core_read( $root . '/docs/decisions/ADR-002-no-work
 $adr_003 = npcink_governance_core_read( $root . '/docs/decisions/ADR-003-keep-final-execution-outside-core.md' );
 $adr_004 = npcink_governance_core_read( $root . '/docs/decisions/ADR-004-suite-consolidation-and-local-admin-consent.md' );
 $adr_005 = npcink_governance_core_read( $root . '/docs/decisions/ADR-005-keep-core-independent-and-standardize-channel-adapters.md' );
+$adr_006 = npcink_governance_core_read( $root . '/docs/decisions/ADR-006-unattended-batch-automation-runtime-boundary.md' );
 npcink_governance_core_assert( false !== strpos( $adr_001, 'Create a new standalone `npcink-governance-core` plugin' ), 'ADR-001 records rebuild decision.' );
 npcink_governance_core_assert( false !== strpos( $adr_002, '`npcink-governance-core` must not implement a workflow runtime' ), 'ADR-002 bans workflow runtime ownership.' );
 npcink_governance_core_assert( false !== strpos( $adr_003, 'Core remains governance-only' ), 'ADR-003 keeps Core governance-only for the current stage.' );
@@ -977,6 +981,53 @@ npcink_governance_core_assert( false !== strpos( $adr_005, 'Do not merge Core an
 npcink_governance_core_assert( false !== strpos( $adr_005, 'OpenClaw Adapter as the first channel adapter' ), 'ADR-005 treats OpenClaw Adapter as one channel adapter.' );
 npcink_governance_core_assert( false !== strpos( $adr_005, 'shared operation classification contract' ), 'ADR-005 requires shared operation classification.' );
 npcink_governance_core_assert( false !== strpos( $adr_005, 'Future MCP, browser' ) && false !== strpos( $adr_005, 'cloud, or local automation adapters' ), 'ADR-005 preserves future adapter optionality.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'Do not implement unattended batch automation inside Core or the OpenClaw' ), 'ADR-006 keeps unattended batch automation outside Core and Adapter.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'dedicated local automation runtime' ), 'ADR-006 requires a dedicated local automation runtime contract.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'Core must not own jobs, leases, retries, workers' ), 'ADR-006 blocks Core runtime ownership.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'Adapter must not own scheduler state' ), 'ADR-006 blocks Adapter scheduler ownership.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'batch_review_summary' ) && false !== strpos( $adr_006, 'batch_review_feedback' ), 'ADR-006 ties current batch work to review feedback, not runtime.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'Lease, lock, timeout, retry backoff, and dead-letter semantics' ), 'ADR-006 requires lease, timeout, retry, and dead-letter semantics before runtime.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'Kill switch, pause, resume, and cancel behavior' ), 'ADR-006 requires operator stop controls before runtime.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'No unattended runtime exists in this phase' ), 'ADR-006 keeps Phase 0 reviewed governance only.' );
+
+$local_automation_runtime_contract = npcink_governance_core_read( $root . '/docs/local-automation-runtime-contract.md' );
+foreach (
+	array(
+		'Status: planning contract',
+		'does not add Core REST',
+		'Core final write execution',
+		'The runtime must be a dedicated local plugin',
+		'contract_version',
+		'npcink_local_automation_runtime.v1',
+		'job_id',
+		'idempotency_key',
+		'core_handoff',
+		'Allowed job statuses',
+		'awaiting_core_approval',
+		'awaiting_core_preflight',
+		'dead_lettered',
+		'compare-and-set style',
+		'eligibility_summary',
+		'blocked_items',
+		'Core proposal creation fails',
+		'approved_input_hash',
+		'lease_token',
+		'lease_expires_at',
+		'no infinite retries',
+		'next_retry_at',
+		'Action execution must carry an action-level idempotency key',
+		'$outputs.prior_action.field',
+		'approval scope',
+		'kill switch for all scheduled unattended runs',
+		'runtime.job.dead_lettered',
+		'runtime.action.lease_acquired',
+		'Before a supervised worker ships',
+		'Before scheduled unattended jobs ship',
+		'no unattended runtime, no scheduler, no worker, no runtime job table',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $local_automation_runtime_contract, $required ), 'Local automation runtime contract contains required text: ' . $required );
+}
 
 $operation_classification = npcink_governance_core_read( $root . '/docs/operation-classification-contract.md' );
 $operation_classifier = npcink_governance_core_read( $root . '/includes/Governance/Operation_Classifier.php' );

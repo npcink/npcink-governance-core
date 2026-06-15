@@ -1,5 +1,43 @@
 # Session Breadcrumb
 
+## 2026-06-15 — Local automation runtime contract drafted
+
+- **Module**: Future local automation runtime planning contract.
+- **Status**: A planning-only runtime contract now defines the required job
+  model, action model, state machine, Core handoff, lease/retry/dead-letter
+  behavior, idempotency, dependency resolution, authorization, operator
+  controls, audit events, and acceptance gates for future unattended batch
+  automation.
+- **Completed**:
+  - Added `docs/local-automation-runtime-contract.md` as the contract-first
+    specification for any future dedicated runtime owner.
+  - Linked the contract from README and ADR-006.
+  - Added static contract assertions so default tests protect the boundary and
+    required runtime semantics.
+- **Boundary**:
+  - This pass is documentation and contract only. Core still has no runtime
+    job table, scheduler, lease store, retry worker, dead-letter processor,
+    unattended approval loop, or final WordPress write execution.
+
+## 2026-06-15 — Unattended batch automation boundary recorded
+
+- **Module**: Core architecture decisions and batch automation boundary.
+- **Status**: ADR-006 now records that unattended batch automation must wait
+  for a dedicated local automation runtime contract instead of being added to
+  Core or the OpenClaw Adapter.
+- **Completed**:
+  - Added ADR-006 to define current-stage reviewed batch governance versus
+    future unattended runtime ownership.
+  - Required a future runtime contract to define job storage, leases, locks,
+    retry backoff, dead-letter handling, idempotency, dependency resolution,
+    kill switch, pause/cancel behavior, rate limits, runtime audit, and
+    operator-visible recovery guidance before implementation.
+  - Updated README and static contracts so the ADR is part of the default
+    development entrypoint and test gate.
+- **Boundary**:
+  - This pass does not add jobs, queues, schedulers, retry workers, unattended
+    approval, runtime state, or final WordPress writes to Core.
+
 ## 2026-06-15 — Batch proposal review summary added
 
 - **Module**: Plan-to-proposal batch review visibility.
