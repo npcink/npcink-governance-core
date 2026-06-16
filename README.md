@@ -37,6 +37,7 @@ This plugin does not own:
 MVP routes require `manage_options` or a scoped app key where documented.
 
 - `GET /wp-json/npcink-governance-core/v1/capabilities`
+- `GET /wp-json/npcink-governance-core/v1/contract`
 - `GET /wp-json/npcink-governance-core/v1/apps`
 - `POST /wp-json/npcink-governance-core/v1/apps`
 - `GET /wp-json/npcink-governance-core/v1/proposals`
@@ -61,6 +62,12 @@ Adapter-owned post-preflight execution outcomes as proposal lifecycle status, an
 Core-managed sensitive read requests for read abilities that require additional
 authorization. Final commit execution is intentionally not implemented until
 idempotency and failure contracts are locked and covered by tests.
+
+The `/contract` endpoint is an administrator-only runtime discovery surface. It
+returns Core version and contract metadata, handoff route templates, and the
+fixed current-stage boundary that Core does not proxy reads, execute final
+writes, own workflow runtime, own queues, own MCP runtime, own Agent Gateway
+catalogs, or store provider credentials.
 
 ## Development
 

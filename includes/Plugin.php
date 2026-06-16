@@ -21,6 +21,7 @@ use Npcink\GovernanceCore\Governance\Read_Request_Service;
 use Npcink\GovernanceCore\Rest\Apps_Controller;
 use Npcink\GovernanceCore\Rest\Audit_Controller;
 use Npcink\GovernanceCore\Rest\Capabilities_Controller;
+use Npcink\GovernanceCore\Rest\Contract_Controller;
 use Npcink\GovernanceCore\Rest\Proposals_Controller;
 use Npcink\GovernanceCore\Rest\Read_Requests_Controller;
 use Npcink\GovernanceCore\Security\App_Authenticator;
@@ -247,6 +248,7 @@ final class Plugin {
 	 * @return void
 	 */
 	public function register_rest_routes(): void {
+		( new Contract_Controller( $this->app_authenticator() ) )->register_routes();
 		( new Capabilities_Controller( $this->ability_adapter(), $this->audit_repository(), $this->app_authenticator() ) )->register_routes();
 		( new Proposals_Controller(
 			$this->proposal_service(),
