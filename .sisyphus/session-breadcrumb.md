@@ -31,6 +31,29 @@
     credentials, Adapter execution, approval-token compatibility, or final
     WordPress writes.
 
+## 2026-06-17 — Pending review list slimmed
+
+- **Module**: Core admin review workbench pending request list.
+- **Status**: The pending list now uses a compact review table with request,
+  status, created/due, and review action columns. Default rows show shortened
+  proposal ids, compact source summaries, and compact remaining-time labels.
+  Full proposal id, ability id, and source trace remain behind technical
+  details. Undeclared risk no longer renders as a repeated default-row badge.
+- **Completed**:
+  - Removed the wide default Source column and moved machine trace back behind
+    technical details.
+  - Added compact source, short identifier, declared-risk, and due-label
+    helpers.
+  - Updated CSS, admin surface standard, static contracts, and zh_CN
+    translations for the slimmer list.
+- **Verification**:
+  - `composer test:all`
+  - `git diff --check`
+- **Boundary**:
+  - This changes Core admin display only. It does not change proposal TTL,
+    approval semantics, Adapter execution, queues, workflow runtime, MCP
+    runtime, Agent Gateway catalogs, provider credentials, or final writes.
+
 ## 2026-06-17 — Core admin workbench scanability improved
 
 - **Module**: Core admin review workbench and proposal detail display.

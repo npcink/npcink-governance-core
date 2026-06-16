@@ -170,6 +170,66 @@
 	margin-top: 4px;
 }
 
+.npcink-governance-core-review-table {
+	table-layout: fixed;
+}
+
+.npcink-governance-core-review-table .check-column {
+	width: 42px;
+}
+
+.npcink-governance-core-request-cell {
+	width: auto;
+}
+
+.npcink-governance-core-status-cell {
+	width: 148px;
+}
+
+.npcink-governance-core-time-cell {
+	width: 170px;
+	white-space: nowrap;
+}
+
+.npcink-governance-core-action-cell {
+	width: 96px;
+	text-align: right;
+}
+
+.npcink-governance-core-request-title {
+	margin: 0 0 4px;
+	color: #1d2327;
+	font-weight: 600;
+}
+
+.npcink-governance-core-request-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 12px;
+	color: #646970;
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+.npcink-governance-core-request-meta code {
+	font-size: 12px;
+}
+
+.npcink-governance-core-due-label {
+	color: #646970;
+	font-size: 12px;
+}
+
+.npcink-governance-core-due-soon {
+	color: #996800;
+	font-weight: 600;
+}
+
+.npcink-governance-core-due-expired {
+	color: #8a2424;
+	font-weight: 600;
+}
+
 .npcink-governance-core-empty-state {
 	display: flex;
 	flex-direction: column;
@@ -356,5 +416,15 @@
 	.npcink-governance-core-workbench-toolbar,
 	.npcink-governance-core-proposal-summary {
 		grid-template-columns: 1fr;
+	}
+
+	.npcink-governance-core-review-table {
+		table-layout: auto;
+	}
+
+	.npcink-governance-core-time-cell,
+	.npcink-governance-core-action-cell,
+	.npcink-governance-core-status-cell {
+		width: auto;
 	}
 }

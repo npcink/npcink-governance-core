@@ -538,21 +538,20 @@ final class Admin_Page {
 		<form class="npcink-governance-core-max-wide" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="npcink_governance_core_bulk_reject_proposals" />
 			<?php wp_nonce_field( 'npcink_governance_core_bulk_reject_proposals' ); ?>
-			<table class="widefat striped">
+			<table class="widefat striped npcink-governance-core-review-table">
 				<thead>
 					<tr>
 						<td class="check-column"><span class="screen-reader-text"><?php echo esc_html__( 'Select proposal', 'npcink-governance-core' ); ?></span></td>
 						<th scope="col"><?php echo esc_html__( 'Request', 'npcink-governance-core' ); ?></th>
-						<th scope="col"><?php echo esc_html__( 'State', 'npcink-governance-core' ); ?></th>
-						<th scope="col"><?php echo esc_html__( 'Source', 'npcink-governance-core' ); ?></th>
-						<th scope="col"><?php echo esc_html__( 'Time', 'npcink-governance-core' ); ?></th>
-						<th scope="col"><?php echo esc_html__( 'Decide', 'npcink-governance-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Status', 'npcink-governance-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Created', 'npcink-governance-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Action', 'npcink-governance-core' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php if ( empty( $pending ) ) : ?>
 						<tr>
-							<td colspan="6">
+							<td colspan="5">
 								<div class="npcink-governance-core-empty-state">
 									<strong><?php echo esc_html__( 'No requests need review.', 'npcink-governance-core' ); ?></strong>
 									<span><?php echo esc_html__( 'Find a proposal by ID, inspect recent activity, or open expired and archived records when you need audit context.', 'npcink-governance-core' ); ?></span>
@@ -571,28 +570,30 @@ final class Admin_Page {
 							<th scope="row" class="check-column">
 								<input type="checkbox" name="proposal_ids[]" value="<?php echo esc_attr( $proposal_id ); ?>" aria-label="<?php echo esc_attr__( 'Select proposal', 'npcink-governance-core' ); ?>" />
 							</th>
-							<td>
-								<strong><?php echo esc_html( $this->proposal_request_label( $proposal ) ); ?></strong><br />
-								<span class="npcink-governance-core-subtle">
-									<?php echo esc_html__( 'Proposal ID:', 'npcink-governance-core' ); ?>
-									<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
-								</span>
+							<td class="npcink-governance-core-request-cell">
+								<div class="npcink-governance-core-request-title"><?php echo esc_html( $this->proposal_request_label( $proposal ) ); ?></div>
+								<div class="npcink-governance-core-request-meta">
+									<span>
+										<?php echo esc_html__( 'Proposal ID:', 'npcink-governance-core' ); ?>
+										<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $this->compact_identifier( $proposal_id ) ); ?></code></a>
+									</span>
+									<span><?php echo esc_html( $this->proposal_source_summary( $proposal ) ); ?></span>
+								</div>
 								<?php $this->render_pending_proposal_technical_details( $proposal ); ?>
 							</td>
-							<td>
+							<td class="npcink-governance-core-status-cell">
 								<?php $this->render_status_badge( (string) $proposal['status'] ); ?>
-								<?php $this->render_risk_badge( $this->proposal_risk_label( $proposal ) ); ?>
+								<?php if ( $this->proposal_has_declared_risk( $proposal ) ) : ?>
+									<?php $this->render_risk_badge( $this->proposal_risk_label( $proposal ) ); ?>
+								<?php endif; ?>
 							</td>
-							<td>
-								<?php echo esc_html( $this->proposal_source_label( $proposal ) ); ?>
+							<td class="npcink-governance-core-time-cell">
+								<span><?php echo esc_html( $this->display_datetime( (string) $proposal['created_at'] ) ); ?></span><br />
+								<span class="<?php echo esc_attr( $this->proposal_due_class( $proposal ) ); ?>"><?php echo esc_html( $this->proposal_due_label( $proposal ) ); ?></span>
 							</td>
-							<td>
-								<?php echo esc_html( $this->display_datetime( (string) $proposal['created_at'] ) ); ?><br />
-								<span class="npcink-governance-core-muted"><?php echo esc_html( $this->proposal_expiry_label( $proposal ) ); ?></span>
-							</td>
-							<td>
-								<a class="button" href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>">
-									<?php echo esc_html__( 'View and decide', 'npcink-governance-core' ); ?>
+							<td class="npcink-governance-core-action-cell">
+								<a class="button button-secondary" href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>">
+									<?php echo esc_html__( 'Review', 'npcink-governance-core' ); ?>
 								</a>
 							</td>
 						</tr>
@@ -632,6 +633,10 @@ final class Admin_Page {
 		?>
 		<details class="npcink-governance-core-row-details">
 			<summary><?php echo esc_html__( 'Technical details', 'npcink-governance-core' ); ?></summary>
+			<div>
+				<?php echo esc_html__( 'Proposal ID:', 'npcink-governance-core' ); ?>
+				<code><?php echo esc_html( (string) $proposal['proposal_id'] ); ?></code>
+			</div>
 			<div>
 				<?php echo esc_html__( 'Target ability:', 'npcink-governance-core' ); ?>
 				<code><?php echo esc_html( (string) $proposal['ability_id'] ); ?></code>
@@ -742,6 +747,81 @@ final class Admin_Page {
 		}
 
 		return array_slice( array_values( array_unique( $parts ) ), 0, 5 );
+	}
+
+	/**
+	 * Returns a short source summary for the default review row.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return string
+	 */
+	private function proposal_source_summary( array $proposal ): string {
+		$caller = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
+		$auth   = is_array( $caller['auth'] ?? null ) ? $caller['auth'] : array();
+		$parts  = array();
+
+		$caller_type = (string) ( $auth['caller_type'] ?? $caller['caller_type'] ?? '' );
+		if ( '' !== $caller_type ) {
+			$parts[] = $this->source_actor_label( $caller_type );
+		}
+
+		$app_id = (string) ( $auth['app_id'] ?? $caller['app_id'] ?? '' );
+		if ( '' !== $app_id ) {
+			$parts[] = $this->compact_identifier( $app_id );
+		}
+
+		$source = (string) ( $caller['source'] ?? '' );
+		if ( '' !== $source ) {
+			$parts[] = $this->source_short_label( $source );
+		}
+
+		$preview        = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
+		$preview_source = is_array( $preview['source'] ?? null ) ? $preview['source'] : array();
+		$source_type    = (string) ( $preview_source['type'] ?? '' );
+		if ( empty( $parts ) && '' !== $source_type ) {
+			$parts[] = $this->source_short_label( $source_type );
+		}
+
+		if ( empty( $parts ) ) {
+			$parts[] = __( 'Direct request', 'npcink-governance-core' );
+		}
+
+		return implode( ' · ', array_slice( array_values( array_unique( $parts ) ), 0, 3 ) );
+	}
+
+	/**
+	 * Returns a compact actor label.
+	 *
+	 * @param string $caller_type Caller type.
+	 * @return string
+	 */
+	private function source_actor_label( string $caller_type ): string {
+		$labels = array(
+			'external_app'    => __( 'External app', 'npcink-governance-core' ),
+			'product_adapter' => __( 'Product adapter', 'npcink-governance-core' ),
+			'wp_admin'        => __( 'WordPress admin', 'npcink-governance-core' ),
+			'admin'           => __( 'WordPress admin', 'npcink-governance-core' ),
+		);
+
+		return (string) ( $labels[ $caller_type ] ?? str_replace( '_', ' ', $caller_type ) );
+	}
+
+	/**
+	 * Returns a compact source label.
+	 *
+	 * @param string $source Source value.
+	 * @return string
+	 */
+	private function source_short_label( string $source ): string {
+		if ( 0 === strpos( $source, 'pending-quota-smoke' ) ) {
+			return __( 'Smoke quota', 'npcink-governance-core' );
+		}
+
+		if ( 'plan_to_proposal_batch' === $source ) {
+			return __( 'Plan batch', 'npcink-governance-core' );
+		}
+
+		return $this->compact_identifier( $source );
 	}
 
 	/**
@@ -2316,6 +2396,16 @@ final class Admin_Page {
 	}
 
 	/**
+	 * Returns whether a proposal has risk metadata worth showing in the list.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return bool
+	 */
+	private function proposal_has_declared_risk( array $proposal ): bool {
+		return __( 'Not declared', 'npcink-governance-core' ) !== $this->proposal_risk_label( $proposal );
+	}
+
+	/**
 	 * Returns a compact risk label for a proposal.
 	 *
 	 * @param array<string,mixed> $proposal Proposal row.
@@ -2367,6 +2457,21 @@ final class Admin_Page {
 		}
 
 		return __( 'Direct request', 'npcink-governance-core' );
+	}
+
+	/**
+	 * Returns a shortened identifier.
+	 *
+	 * @param string $value Identifier.
+	 * @return string
+	 */
+	private function compact_identifier( string $value ): string {
+		$value = trim( $value );
+		if ( strlen( $value ) <= 18 ) {
+			return $value;
+		}
+
+		return substr( $value, 0, 8 ) . '...' . substr( $value, -4 );
 	}
 
 	/**
@@ -2447,6 +2552,60 @@ final class Admin_Page {
 			__( 'Expires in %s', 'npcink-governance-core' ),
 			$this->duration_label( $remaining )
 		);
+	}
+
+	/**
+	 * Returns a compact due label for the review row.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return string
+	 */
+	private function proposal_due_label( array $proposal ): string {
+		$status  = (string) ( $proposal['status'] ?? '' );
+		$created = strtotime( (string) ( $proposal['created_at'] ?? '' ) );
+		if ( false === $created ) {
+			return __( 'Unknown', 'npcink-governance-core' );
+		}
+
+		if ( Proposal_Repository::STATUS_PENDING !== $status ) {
+			return $this->status_label( $status );
+		}
+
+		$remaining = ( $created + $this->service->pending_ttl_seconds() ) - time();
+		if ( $remaining <= 0 ) {
+			return __( 'Expired', 'npcink-governance-core' );
+		}
+
+		return sprintf(
+			/* translators: %s: remaining duration. */
+			__( '%s left', 'npcink-governance-core' ),
+			$this->duration_label( $remaining )
+		);
+	}
+
+	/**
+	 * Returns the due-label CSS class for a proposal.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return string
+	 */
+	private function proposal_due_class( array $proposal ): string {
+		$status  = (string) ( $proposal['status'] ?? '' );
+		$created = strtotime( (string) ( $proposal['created_at'] ?? '' ) );
+		if ( Proposal_Repository::STATUS_PENDING !== $status || false === $created ) {
+			return 'npcink-governance-core-due-label';
+		}
+
+		$remaining = ( $created + $this->service->pending_ttl_seconds() ) - time();
+		if ( $remaining <= 0 ) {
+			return 'npcink-governance-core-due-label npcink-governance-core-due-expired';
+		}
+
+		if ( $remaining <= 6 * HOUR_IN_SECONDS ) {
+			return 'npcink-governance-core-due-label npcink-governance-core-due-soon';
+		}
+
+		return 'npcink-governance-core-due-label';
 	}
 
 	/**

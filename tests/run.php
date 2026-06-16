@@ -2089,7 +2089,9 @@ foreach (
 		'Review Queue',
 		'compact status summary',
 		'pending request list',
-		'status, risk, source',
+		'compact source summary',
+		'shortened proposal id',
+		'undeclared-risk badge',
 		'read-only `Proposal ID` lookup',
 		'technical details',
 		'Activity Log',
@@ -2146,13 +2148,18 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_workbench_toolbar' ), 'Admin default page groups lookup and recent activity as utilities.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-workbench-toolbar' ), 'Admin default page separates utility lookup from the main queue.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Pending requests' ), 'Admin review queue uses user-facing pending request copy.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'State' ) && false !== strpos( $admin_page, 'Source' ), 'Admin review queue exposes scan-friendly status and source columns.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-review-table' ), 'Admin review queue uses the compact review table.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Status' ) && false !== strpos( $admin_page, 'Created' ) && false !== strpos( $admin_page, 'Action' ), 'Admin review queue uses compact status, created, and action columns.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_risk_label' ), 'Admin review queue summarizes proposal risk in the default row.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_source_label' ), 'Admin review queue summarizes proposal source in the default row.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_expiry_label( $proposal )' ), 'Admin review queue shows expiry context in the default row.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'View and decide' ), 'Admin review queue uses a decision-oriented row action.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_has_declared_risk' ), 'Admin review queue hides undeclared-risk noise from default rows.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_source_summary' ), 'Admin review queue summarizes proposal source in the default row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'compact_identifier( $proposal_id )' ), 'Admin review queue shortens proposal ids in the default row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_due_label( $proposal )' ), 'Admin review queue shows compact remaining time in the default row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "__( '%s left', 'npcink-governance-core' )" ), 'Admin review queue avoids spelling the fixed TTL as repeated dominant text.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Review' ), 'Admin review queue uses a compact review row action.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Technical details' ), 'Admin review queue folds machine identifiers behind technical details.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Proposal ID:' ), 'Admin review queue keeps proposal ids visible in the default row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "(string) \$proposal['proposal_id']" ), 'Admin technical details keep the full proposal id available.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Describe why these requests should be rejected.' ), 'Admin bulk rejection asks for a user-entered reason without prefilled technical copy.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Rejected from bulk review.' ), 'Admin bulk rejection fallback note uses neutral governance copy.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Target ability:' ), 'Admin review queue keeps ability ids available in technical details.' );
@@ -2243,6 +2250,9 @@ $context_call_position  = strpos( $admin_page, '$this->render_review_context( $p
 npcink_governance_core_assert( false !== $decision_call_position && false !== $context_call_position && $context_call_position < $decision_call_position, 'Admin proposal detail places review context before approve/reject controls.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-summary-strip' ), 'Admin CSS styles the compact status summary.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-workbench-toolbar' ), 'Admin CSS styles the utility toolbar.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-review-table' ), 'Admin CSS styles the compact review list.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-request-meta' ), 'Admin CSS styles compact request metadata.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-due-label' ), 'Admin CSS styles compact due labels.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-status-badge' ), 'Admin CSS styles proposal status badges.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-risk-badge' ), 'Admin CSS styles proposal risk badges.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-empty-state' ), 'Admin CSS styles the active queue empty state.' );
