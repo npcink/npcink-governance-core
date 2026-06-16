@@ -26,6 +26,92 @@
 	color: #50575e;
 }
 
+.npcink-governance-core-summary-strip {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 12px;
+	margin: 16px 0;
+}
+
+.npcink-governance-core-summary-item {
+	box-sizing: border-box;
+	min-height: 104px;
+	padding: 12px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-left-width: 4px;
+}
+
+.npcink-governance-core-summary-warning {
+	border-left-color: #dba617;
+}
+
+.npcink-governance-core-summary-ok {
+	border-left-color: #008a20;
+}
+
+.npcink-governance-core-summary-error {
+	border-left-color: #d63638;
+}
+
+.npcink-governance-core-summary-neutral,
+.npcink-governance-core-summary-inactive {
+	border-left-color: #8c8f94;
+}
+
+.npcink-governance-core-summary-label {
+	display: block;
+	margin: 0 0 4px;
+	color: #50575e;
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.npcink-governance-core-summary-value {
+	margin: 0 0 4px;
+	color: #1d2327;
+	font-size: 24px;
+	font-weight: 600;
+	line-height: 1.2;
+}
+
+.npcink-governance-core-summary-detail {
+	color: #646970;
+	font-size: 12px;
+	line-height: 1.4;
+}
+
+.npcink-governance-core-workbench-toolbar {
+	display: grid;
+	grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
+	gap: 12px;
+	margin: 0 0 16px;
+}
+
+.npcink-governance-core-utility-panel {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	box-sizing: border-box;
+	min-width: 0;
+	padding: 12px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+}
+
+.npcink-governance-core-utility-panel-stretch {
+	height: 100%;
+}
+
+.npcink-governance-core-system-settings {
+	margin-top: 12px;
+}
+
+.npcink-governance-core-system-settings .npcink-governance-core-disclosure {
+	margin-bottom: 10px;
+}
+
 .npcink-governance-core-disclosure {
 	margin: 0 0 16px;
 }
@@ -82,6 +168,82 @@
 
 .npcink-governance-core-row-details div {
 	margin-top: 4px;
+}
+
+.npcink-governance-core-empty-state {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 18px;
+	text-align: left;
+}
+
+.npcink-governance-core-empty-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px 16px;
+}
+
+.npcink-governance-core-status-badge,
+.npcink-governance-core-risk-badge {
+	display: inline-block;
+	margin: 0 4px 4px 0;
+	padding: 2px 8px;
+	border: 1px solid #c3c4c7;
+	background: #f6f7f7;
+	color: #1d2327;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.7;
+	white-space: nowrap;
+}
+
+.npcink-governance-core-status-pending,
+.npcink-governance-core-risk-write,
+.npcink-governance-core-risk-high {
+	border-color: #dba617;
+	background: #fcf9e8;
+	color: #553b00;
+}
+
+.npcink-governance-core-status-approved,
+.npcink-governance-core-status-executed,
+.npcink-governance-core-risk-read,
+.npcink-governance-core-risk-low {
+	border-color: #68de7c;
+	background: #edfaef;
+	color: #005c12;
+}
+
+.npcink-governance-core-status-rejected,
+.npcink-governance-core-status-expired,
+.npcink-governance-core-status-archived,
+.npcink-governance-core-risk-not-declared {
+	border-color: #c3c4c7;
+	background: #f6f7f7;
+	color: #50575e;
+}
+
+.npcink-governance-core-status-execution-failed,
+.npcink-governance-core-risk-destructive {
+	border-color: #d63638;
+	background: #fcf0f1;
+	color: #8a2424;
+}
+
+.npcink-governance-core-proposal-summary {
+	display: grid;
+	grid-template-columns: minmax(280px, 2fr) repeat(3, minmax(140px, 1fr));
+	gap: 12px;
+	box-sizing: border-box;
+	margin: 0 0 16px;
+	padding: 12px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+}
+
+.npcink-governance-core-detail-table {
+	max-width: 1100px;
 }
 
 .npcink-governance-core-flex-field {
@@ -187,4 +349,12 @@
 
 .npcink-governance-core-created-actions {
 	margin-top: 20px;
+}
+
+@media screen and (max-width: 960px) {
+	.npcink-governance-core-summary-strip,
+	.npcink-governance-core-workbench-toolbar,
+	.npcink-governance-core-proposal-summary {
+		grid-template-columns: 1fr;
+	}
 }

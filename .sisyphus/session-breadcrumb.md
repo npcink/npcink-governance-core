@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Core admin workbench scanability improved
+
+- **Module**: Core admin review workbench and proposal detail display.
+- **Status**: The default review queue now opens with compact status context,
+  keeps proposal lookup and recent activity as secondary utilities, exposes
+  status/risk/source/expiry scan cues in pending rows, and moves low-frequency
+  policy/app-key controls under system settings. Proposal detail now leads with
+  request/status/risk/source context and places review context before the
+  approve/reject decision controls.
+- **Completed**:
+  - Added status and risk badges across active, archive, and detail views.
+  - Added a useful no-work empty state with lookup, activity, and archive
+    navigation.
+  - Updated the admin surface standard and static contracts for the new review
+    hierarchy.
+- **Verification**:
+  - `composer test:all`
+  - `git diff --check`
+- **Boundary**:
+  - This changes Core admin display and review affordances only. It does not
+    add workflow runtime, task queues, MCP runtime, Agent Gateway catalogs,
+    Adapter execution, provider credentials, or final WordPress writes.
+
 ## 2026-06-17 — Runtime contract endpoint exposes Adapter-safe bindings
 
 - **Module**: Core runtime contract endpoint and Core-issued preflight
