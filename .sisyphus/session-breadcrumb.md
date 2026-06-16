@@ -2964,15 +2964,17 @@
     policy. Do not add final commit execution until preflight and idempotency
     contracts are written and tested.
 
-## 2026-06-16 — Article template layout profile v0.2 intake
+## 2026-06-16 — Article template layout profile v0.3 intake
 
 - **Module**: block theme site proposal intake / bounded template layout
   contract
-- **Status**: Core now accepts `article_standard@0.2` from the Abilities
+- **Status**: Core now accepts `article_standard@0.3` from the Abilities
   Toolkit template profile compiler.
 - **Completed**:
   - Updated the block theme layout contract allowlist from
-    `article_standard@0.1` to `article_standard@0.2`.
+    `article_standard@0.2` to `article_standard@0.3` after the v0.2 visual
+    acceptance pass showed the `base-2` title/navigation bands were not visible
+    enough in the active Twenty Twenty-Five palette.
   - Updated fail-closed fixtures and REST/intake docs so proposal creation
     matches the Toolkit compiler output.
   - Kept Core as proposal/intake authority only; no template generation,
@@ -2983,6 +2985,6 @@
   - `composer validate --no-check-publish` passed.
 - **Next recommended step**:
   - Use OpenClaw to regenerate an article template proposal with
-    `article_standard@0.2`, execute it through Adapter commit intent, then run
+    `article_standard@0.3`, execute it through Adapter commit intent, then run
     visual acceptance to confirm the article page no longer needs manual review
     for low background variety.
