@@ -454,17 +454,17 @@ Current rule:
 
 - `manual` remains the default and every proposal remains `manual_required`;
 - every successful proposal creation writes `proposal.policy_evaluated`;
-- `dry_run_guarded` records trusted cleanup and draft-only create-draft
-  candidates without approving them;
-- `local_guarded` may auto-approve only trusted test cleanup trash-post
+- `smart_guarded` may auto-approve only trusted test cleanup trash-post
   batches and single draft-only `npcink-abilities-toolkit/create-draft`
   proposals;
+- `dev_allow_all` may auto-approve every proposal only in local development
+  when `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL` is true;
 - Adapter still executes only approved proposals that pass Core commit
   preflight.
 
 Recommended next slice:
 
-- observe `local_guarded` in development and keep the allowlist limited to
+- observe `smart_guarded` in development and keep the allowlist limited to
   `build-nonproduction-content-cleanup-plan` -> `plan_to_proposal_batch` proposals whose
   actions all target `npcink-abilities-toolkit/trash-post`, plus single direct
   draft-only `npcink-abilities-toolkit/create-draft` proposals;

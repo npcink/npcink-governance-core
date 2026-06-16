@@ -457,9 +457,11 @@ final class Admin_Page {
 	private function render_approval_policy_entry(): void {
 		$current = Approval_Policy_Evaluator::current_policy_mode();
 		$labels  = array(
-			Approval_Policy_Evaluator::MODE_MANUAL          => __( 'Manual', 'npcink-governance-core' ),
-			Approval_Policy_Evaluator::MODE_DRY_RUN_GUARDED => __( 'Dry-run guarded', 'npcink-governance-core' ),
-			Approval_Policy_Evaluator::MODE_LOCAL_GUARDED   => __( 'Local guarded', 'npcink-governance-core' ),
+			Approval_Policy_Evaluator::MODE_MANUAL          => __( 'Require approval for all', 'npcink-governance-core' ),
+			Approval_Policy_Evaluator::MODE_SMART_GUARDED   => __( 'Smart approval', 'npcink-governance-core' ),
+			Approval_Policy_Evaluator::MODE_DEV_ALLOW_ALL   => __( 'Allow all (development only)', 'npcink-governance-core' ),
+			Approval_Policy_Evaluator::MODE_DRY_RUN_GUARDED => __( 'Dry-run guarded (legacy)', 'npcink-governance-core' ),
+			Approval_Policy_Evaluator::MODE_LOCAL_GUARDED   => __( 'Local guarded (legacy)', 'npcink-governance-core' ),
 		);
 		?>
 		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide">
@@ -490,7 +492,7 @@ final class Admin_Page {
 										</option>
 									<?php endforeach; ?>
 								</select>
-								<p class="description"><?php echo esc_html__( 'Local guarded only auto-approves trusted test-content cleanup trash batches and single draft-only create-draft proposals. Destructive deletes, comments, terms, publishing, scheduling, and published content updates remain manual.', 'npcink-governance-core' ); ?></p>
+								<p class="description"><?php echo esc_html__( 'Smart approval only auto-approves trusted test-content cleanup trash batches and single draft-only create-draft proposals. Allow all is local-development only and requires NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL; commit preflight is still required and Core still does not execute writes.', 'npcink-governance-core' ); ?></p>
 							</td>
 						</tr>
 					</tbody>

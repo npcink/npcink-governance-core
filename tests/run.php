@@ -319,6 +319,10 @@ foreach (
 	array(
 		'Status: active planning standard',
 		'npcink_governance_core_approval_policy_mode',
+		'smart_guarded',
+		'dev_allow_all',
+		'Approval_Policy_Strategy',
+		'NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL',
 		'dry_run_guarded',
 		'local_guarded',
 		'manual_required',
@@ -334,7 +338,9 @@ foreach (
 		'plan_to_proposal_batch',
 		'npcink-abilities-toolkit/trash-post',
 		'npcink-abilities-toolkit/create-draft',
-		'local_guarded_create_draft_auto_approved',
+		'smart_guarded_create_draft_auto_approved',
+		'dev_allow_all_auto_approved',
+		'dev_allow_all_rejected_disabled',
 		'trusted test-content',
 		'include_unattached_nonproduction_media',
 		'npcink-abilities-toolkit/delete-media-permanently',
@@ -516,7 +522,9 @@ foreach (
 		'App Auth Scope Policy',
 		'Authorization: Bearer npcink_governance_core.<key_id>.<secret>',
 		'raw app secrets',
-		'local_guarded',
+		'smart_guarded',
+		'dev_allow_all',
+		'NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL',
 		'trusted test cleanup trash-post batches',
 		'single draft-only create-draft proposals',
 		'proposal.policy_evaluated',
@@ -1567,6 +1575,10 @@ $wporg_guard = npcink_governance_core_read( $root . '/scripts/check-wordpress-or
 foreach (
 	array(
 		'Approval_Policy_Evaluator',
+		'Approval_Policy_Strategy',
+		'Manual_Approval_Policy_Strategy',
+		'Smart_Guarded_Approval_Policy_Strategy',
+		'Dev_Allow_All_Approval_Policy_Strategy',
 		'manual_required',
 		'auto_approved',
 		'blocked',
@@ -1576,6 +1588,8 @@ foreach (
 		'break_glass',
 		'core-approval-policy-v1',
 		'OPTION_POLICY_MODE',
+		'MODE_SMART_GUARDED',
+		'MODE_DEV_ALLOW_ALL',
 		'MODE_DRY_RUN_GUARDED',
 		'MODE_LOCAL_GUARDED',
 		'CLEANUP_BATCH_MAX_ACTIONS',
@@ -1583,6 +1597,12 @@ foreach (
 		'AUTO_APPROVAL_HOURLY_LIMIT',
 		'AUTO_APPROVAL_DAILY_LIMIT',
 		'auto_approval_dry_run_only',
+		'smart_guarded_cleanup_auto_approved',
+		'smart_guarded_create_draft_auto_approved',
+		'dev_allow_all_auto_approved',
+		'dev_allow_all_rejected_disabled',
+		'commit_preflight_still_required',
+		'NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL',
 		'local_guarded_cleanup_auto_approved',
 		'local_guarded_create_draft_auto_approved',
 		'guarded_create_draft_rejected_status',
@@ -2047,7 +2067,7 @@ npcink_governance_core_assert( false !== strpos( $audit_controller, 'correlation
 $request_context = npcink_governance_core_read( $root . '/includes/Security/Request_Context.php' );
 npcink_governance_core_assert( false !== strpos( $request_context, 'scope_decision' ), 'Request context stores scope decision.' );
 npcink_governance_core_assert( false !== strpos( $request_context, 'mark_scope_decision' ), 'Request context can update scope decision for denials.' );
-npcink_governance_core_assert( false !== strpos( $request_context, "'scopes'" ), 'Request context stores app scopes for local guarded auto approval.' );
+npcink_governance_core_assert( false !== strpos( $request_context, "'scopes'" ), 'Request context stores app scopes for smart guarded auto approval.' );
 npcink_governance_core_assert( false !== strpos( $request_context, 'in_array( $scope' ), 'Request context can check any app scope, not only the current route scope.' );
 
 $observability = npcink_governance_core_read( $root . '/includes/Observability.php' );
@@ -2147,8 +2167,8 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'render_system_set
 npcink_governance_core_assert( false !== strpos( $admin_page, 'System settings' ), 'Admin default page labels low-frequency settings as system settings.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Advanced Access' ), 'Admin page folds Core app-key management behind advanced access.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Development Approval Policy' ), 'Admin page exposes lightweight development approval policy mode.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'MODE_DRY_RUN_GUARDED' ), 'Admin page exposes dry-run guarded approval mode.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'MODE_LOCAL_GUARDED' ), 'Admin page exposes local guarded approval mode.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'MODE_SMART_GUARDED' ), 'Admin page exposes smart approval mode.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'MODE_DEV_ALLOW_ALL' ), 'Admin page exposes development allow-all approval mode.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'update_option( Approval_Policy_Evaluator::OPTION_POLICY_MODE' ), 'Admin page persists approval policy mode through a bounded option.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'app-keys'" ), 'Admin page keeps app-key management available behind an advanced view.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_admin_tabs' ), 'Admin page exposes tabbed Core sections.' );

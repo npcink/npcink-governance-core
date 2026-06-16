@@ -1,5 +1,36 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Approval policy strategy modes added
+
+- **Module**: Core approval policy evaluator and development policy admin
+  setting.
+- **Status**: Approval policy evaluation now uses bounded strategy classes for
+  `manual`, `smart_guarded`, and `dev_allow_all`. `manual` requires approval
+  for all proposals. `smart_guarded` preserves the narrow trusted cleanup and
+  draft-only auto-approval path. `dev_allow_all` is explicitly local
+  development-only, requires `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL`,
+  still writes policy and auto-approval audit, and still leaves commit preflight
+  mandatory.
+- **Completed**:
+  - Added `Approval_Policy_Strategy` with manual, smart guarded, and
+    development allow-all implementations.
+  - Kept `dry_run_guarded` and `local_guarded` accepted as legacy stored option
+    values while presenting the new three-mode admin policy.
+  - Updated approval policy, REST, governance, security, admin, app-scope, and
+    testing contracts.
+  - Added fail-closed coverage for disabled and enabled `dev_allow_all`.
+- **Verification**:
+  - `php -l includes/Governance/Approval_Policy_Evaluator.php`
+  - `php tests/run.php`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+  - `git diff --check`
+- **Boundary**:
+  - This changes proposal approval policy only. It does not add workflow
+    runtime, task queues, MCP runtime, Agent Gateway catalogs, provider
+    credentials, Adapter execution, approval-token compatibility, or final
+    WordPress writes.
+
 ## 2026-06-17 — Core admin workbench scanability improved
 
 - **Module**: Core admin review workbench and proposal detail display.

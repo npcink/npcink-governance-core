@@ -321,17 +321,18 @@ longer matches the approved proposal.
 Core evaluates a lightweight approval policy decision during proposal creation.
 The default `manual` mode records `manual_required` for every proposal with
 `policy_profile=manual` and `policy_version=core-approval-policy-v1`.
-Development mode `dry_run_guarded` may classify trusted cleanup candidates with
-`policy_profile=guarded` while leaving them pending. Development mode
-`local_guarded` may return `auto_approved` only for trusted
+Mode `smart_guarded` may return `auto_approved` only for trusted
 `build-nonproduction-content-cleanup-plan` batch proposals whose actions all target
 `npcink-abilities-toolkit/trash-post`, have persisted test-content evidence, pass caller
 authorization, and pass auto-approval quotas; or for a single direct
 `npcink-abilities-toolkit/create-draft` proposal that creates only a draft post,
 does not target existing content, stays dry-run/non-commit, and has no
-schedule/publish intent. The evaluator does not expose a rules DSL and does
-not add workflow runtime, long-running policy jobs, final execution, or a
-configuration center.
+schedule/publish intent. Mode `dev_allow_all` may auto-approve every proposal
+only in local development when
+`NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL` is true, the caller can approve
+proposals, quotas pass, and audit succeeds. The evaluator does not expose a
+rules DSL and does not add workflow runtime, long-running policy jobs, final
+execution, or a configuration center.
 
 Implementation rules and the staged auto-approval roadmap are documented in
 [Approval Policy Evaluator Standard](approval-policy-evaluator-standard.md).

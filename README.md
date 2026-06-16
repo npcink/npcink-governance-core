@@ -294,12 +294,15 @@ to the local derivative adoption ability's dry-run/commit contract and may be
 shown as `content_reference_repairs` evidence in the derivative preview.
 
 The approval policy evaluator defaults to `manual`, records
-`proposal.policy_evaluated` for every created proposal, and supports two
-development-only guarded modes. `dry_run_guarded` records cleanup and
-draft-only candidates without approval. `local_guarded` can auto-approve only trusted
+`proposal.policy_evaluated` for every created proposal, and supports three
+bounded strategy modes. `manual` requires approval for every proposal.
+`smart_guarded` can auto-approve only trusted
 `build-nonproduction-content-cleanup-plan` trash-post batches and single
 draft-only `npcink-abilities-toolkit/create-draft` proposals when explicit
-authorization, evidence, quotas, and audit all pass. See
+authorization, evidence, quotas, and audit all pass. `dev_allow_all` is
+local-development only, requires the
+`NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL` constant, and still requires
+commit preflight before Adapter-owned execution. See
 [Approval Policy Evaluator Standard](docs/approval-policy-evaluator-standard.md).
 
 Real AI provider request logs remain owned by the WordPress `ai` plugin.

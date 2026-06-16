@@ -18,18 +18,22 @@ the narrow development candidates already documented in the Approval Policy
 Evaluator Standard.
 
 The default remains `manual`. All proposals require manual approval unless the
-site explicitly enables a guarded development mode and every fail-closed
+site explicitly enables a bounded strategy mode and every fail-closed
 condition passes.
 
-Supported modes:
+Current supported modes:
 
 - `manual`: production-safe default. Every proposal records
   `manual_required`.
-- `dry_run_guarded`: observation-only development mode. It records candidate
-  policy decisions but leaves proposals pending.
-- `local_guarded`: development approval reducer. It may auto-approve only
+- `smart_guarded`: conservative approval reducer. It may auto-approve only
   trusted test cleanup trash batches and single direct draft-only
   `npcink-abilities-toolkit/create-draft` proposals.
+- `dev_allow_all`: explicit local-development allow-all mode. It requires
+  `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL` and still requires commit
+  preflight before Adapter-owned execution.
+
+The historical `dry_run_guarded` and `local_guarded` values remain accepted as
+legacy stored configuration values.
 
 Adapter remains thin. It reads Core proposal state, calls Core commit preflight,
 and executes only already approved proposals whose preflight passes. Adapter
@@ -47,11 +51,11 @@ The stage delivered these Core-side pieces:
 - duplicate pending proposal reuse based on sanitized input hash;
 - pending proposal quotas and stale pending expiration;
 - separate hourly and daily auto-approval quotas;
-- `dry_run_guarded` candidate detection for trusted cleanup and create-draft
-  proposals without status changes;
-- `local_guarded` auto approval for trusted nonproduction cleanup
+- legacy `dry_run_guarded` candidate detection for trusted cleanup and
+  create-draft proposals without status changes;
+- `smart_guarded` auto approval for trusted nonproduction cleanup
   `trash-post` batches;
-- `local_guarded` auto approval for a single direct draft-only
+- `smart_guarded` auto approval for a single direct draft-only
   `npcink-abilities-toolkit/create-draft` proposal;
 - `proposal.auto_approved` audit whenever Core changes a proposal to approved;
 - admin/settings copy for the guarded modes;
@@ -67,7 +71,7 @@ The closeout test pass verified the Core path with:
 - `composer test:all`;
 - `composer validate --no-check-publish`;
 - `composer smoke:wp`;
-- a manual REST positive probe proving a trusted `local_guarded` direct
+- a manual REST positive probe proving a trusted guarded direct
   create-draft proposal became `approved`, returned
   `policy_decision=auto_approved`, wrote `proposal.policy_evaluated` and
   `proposal.auto_approved`, passed commit preflight, returned
@@ -85,7 +89,7 @@ does not require taking ownership of those Adapter changes for this closeout.
 
 Do not keep expanding Core approval policy in this stage. The useful local
 development pain point is addressed: repeated OpenClaw draft and trusted test
-cleanup approvals can be reduced with `local_guarded`, while the governance
+cleanup approvals can be reduced with `smart_guarded`, while the governance
 boundary stays intact.
 
 Core should not add auto approval for:
@@ -141,7 +145,7 @@ Treat the current Core implementation as complete for this approval-policy
 stage. The next useful work is operational:
 
 1. push and publish the current Core branch;
-2. use `local_guarded` during local OpenClaw development;
+2. use `smart_guarded` during local OpenClaw development;
 3. observe audit and proposal behavior in real daily use;
 4. fix only concrete bugs or missing evidence surfaced by that use;
 5. move product polish, OpenClaw setup, and approve-and-execute experience to

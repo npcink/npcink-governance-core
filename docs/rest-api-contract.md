@@ -450,20 +450,22 @@ Proposal rows include policy fields:
 
 | Name | Type | Notes |
 | --- | --- | --- |
-| `policy_decision` | string | Defaults to `manual_required`. `local_guarded` may return `auto_approved` only for trusted test cleanup trash-post batches and single draft-only create-draft proposals. Reserved values are `manual_required`, `auto_approved`, and `blocked`. |
-| `policy_profile` | string | Defaults to `manual`. `dry_run_guarded` may return `guarded`; `local_guarded` auto approval returns `trusted_local`. Reserved profiles are `manual`, `guarded`, `trusted_local`, and `break_glass`. |
+| `policy_decision` | string | Defaults to `manual_required`. `smart_guarded` may return `auto_approved` only for trusted test cleanup trash-post batches and single draft-only create-draft proposals. `dev_allow_all` may return `auto_approved` only in explicit local development mode. Reserved values are `manual_required`, `auto_approved`, and `blocked`. |
+| `policy_profile` | string | Defaults to `manual`. `smart_guarded` and `dev_allow_all` candidate evaluation may return `guarded`; auto approval returns `trusted_local`. Reserved profiles are `manual`, `guarded`, `trusted_local`, and `break_glass`. |
 | `policy_version` | string | Current value is `core-approval-policy-v1`. |
 | `policy_reasons` | array | Stable, sanitized reason keys. |
 
 The policy evaluator stores `caller.core_policy`, promotes the same fields into
 proposal responses, and records `proposal.policy_evaluated`. `manual` remains
-the default and does not auto-approve. `local_guarded` may auto-approve only
+the default and does not auto-approve. `smart_guarded` may auto-approve only
 trusted `build-nonproduction-content-cleanup-plan` `plan_to_proposal_batch` proposals
 whose actions all target `npcink-abilities-toolkit/trash-post`, or a single
 direct `npcink-abilities-toolkit/create-draft` proposal that creates only a
-draft post with dry-run/non-commit input and no schedule/publish intent. It
-does not add a rules DSL, workflow runtime, long-running scheduler, final
-execution path, or policy configuration UI.
+draft post with dry-run/non-commit input and no schedule/publish intent.
+`dev_allow_all` is local-development only, requires
+`NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL`, and still leaves commit
+preflight mandatory. It does not add a rules DSL, workflow runtime,
+long-running scheduler, final execution path, or policy configuration UI.
 
 Errors:
 
@@ -481,7 +483,7 @@ Audit event:
 
 - `proposal.created`
 - `proposal.policy_evaluated`
-- `proposal.auto_approved` when `local_guarded` changes status to approved
+- `proposal.auto_approved` when a policy strategy changes status to approved
 
 App audit attribution:
 

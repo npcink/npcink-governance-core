@@ -15,13 +15,19 @@ The evaluator supports three site policy modes stored in
 
 - `manual`: default. Core records `manual_required` for every proposal with
   `policy_profile=manual`.
-- `dry_run_guarded`: development observation mode. Core may classify trusted
-  cleanup trash-post batches and draft-only create-draft proposals with
-  `policy_profile=guarded`, but the proposal remains `pending`.
-- `local_guarded`: development auto-approval mode. Core may approve only
+- `smart_guarded`: conservative smart approval mode. Core may approve only
   trusted test-content cleanup trash-post batches and single draft-only
   create-draft proposals after explicit authorization, persisted evidence,
   quota checks, and audit.
+- `dev_allow_all`: local development allow-all mode. It may approve every
+  proposal only when `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL` is explicitly
+  defined as true, the caller can approve proposals, quota checks pass, and
+  audit succeeds. It still does not execute writes and commit preflight remains
+  mandatory.
+
+Legacy stored values `dry_run_guarded` and `local_guarded` remain accepted for
+compatibility. New admin configuration presents only `manual`, `smart_guarded`,
+and `dev_allow_all`.
 
 Every successful proposal creation writes `proposal.policy_evaluated`. If that
 audit event cannot be recorded, Core fails closed by deleting the created
@@ -30,8 +36,10 @@ proposal row.
 Current behavior is intentionally unchanged:
 
 - all proposals remain `pending` by default in `manual`;
-- no proposal is auto-approved unless `local_guarded` is explicitly enabled and
-  every narrow cleanup or draft-only create-draft condition passes;
+- no production proposal is auto-approved unless `smart_guarded` is explicitly
+  enabled and every narrow cleanup or draft-only create-draft condition passes;
+- no development allow-all approval is applied unless
+  `dev_allow_all` is selected and the local development constant is true;
 - Adapter remains thin and executes only approved proposals that pass Core
   commit preflight;
 - policy fields are non-secret governance metadata, not caller-controlled
@@ -44,6 +52,7 @@ Current behavior is intentionally unchanged:
 Core may own:
 
 - a hardcoded evaluator class;
+- small policy strategy classes selected by a bounded mode value;
 - stable policy decision fields;
 - audit metadata for every policy decision;
 - conservative fail-closed checks before and during auto approval;
@@ -103,7 +112,7 @@ Audit metadata for `proposal.policy_evaluated` must include:
 - `commit_execution=false`
 - proposal id and ability id when available
 
-When `local_guarded` changes proposal status, Core must also write
+When a strategy changes proposal status automatically, Core must also write
 `proposal.auto_approved`. If that audit event cannot be written, Core must not
 leave the proposal approved.
 
@@ -123,7 +132,7 @@ of the policy standard even when the first implementation only records
 - app-authenticated callers have a bounded pending proposal quota;
 - administrator callers have a high but finite pending proposal quota;
 - stale pending proposals are expired before create guardrail checks;
-- `local_guarded` uses separate hourly and daily auto-approval quotas per
+- `smart_guarded` and `dev_allow_all` use separate hourly and daily auto-approval quotas per
   app/caller/profile;
 - auto approval records quota subject and limits in audit metadata.
 
@@ -145,10 +154,10 @@ Do not widen real auto approval beyond implemented narrow candidates until all o
   correlation id, and preflight policy version;
 - Adapter still executes only after approved status and successful preflight.
 
-The current safe production default is still `manual`. Use `dry_run_guarded`
-first when validating a new local environment, then `local_guarded` only to
-reduce repetitive development approvals for trusted cleanup batches and
-single draft-only create-draft proposals.
+The current safe production default is still `manual`. Use `smart_guarded`
+only when the site should reduce repetitive approvals for trusted cleanup
+batches and single draft-only create-draft proposals. Use `dev_allow_all` only
+inside a local development environment with the explicit constant enabled.
 
 ## First Narrow Candidate: Test Cleanup Trash Batch
 
@@ -179,7 +188,7 @@ Evidence required for real auto approval:
 
 ## Second Narrow Candidate: Create Draft
 
-Status: implemented for development `local_guarded`.
+Status: implemented for `smart_guarded`.
 
 `npcink-abilities-toolkit/create-draft` may be auto-approved only for one direct
 proposal at a time. Plan batch create-draft actions remain governed by their
@@ -197,10 +206,34 @@ Required properties:
 Real auto approval additionally requires `post_type=post` or the equivalent
 default, `status=draft` or the equivalent default, a reviewed title,
 `dry_run=true`, `commit=false`, no schedule/publish fields, bounded content
-size, `local_guarded_create_draft_auto_approved` in `policy_reasons`, and
+size, `smart_guarded_create_draft_auto_approved` in `policy_reasons`, and
 `proposal.auto_approved` audit if status changes. This remains a development
 approval reducer, not an article-generation workflow, not batch article
 approval, and not final WordPress execution.
+
+`local_guarded_create_draft_auto_approved` and
+`local_guarded_cleanup_auto_approved` may still appear as legacy-compatible
+reason keys, but new contracts should assert the `smart_guarded_*` reason keys.
+
+## Development Allow-All Strategy
+
+`dev_allow_all` exists only to reduce local development friction when a
+developer deliberately wants every proposal to become `approved` before commit
+preflight. It must remain visibly unsafe and bounded:
+
+- the stored policy mode must be `dev_allow_all`;
+- the constant `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL` must be true;
+- the current user or app caller must be able to approve proposals;
+- hourly and daily auto-approval quota checks must pass;
+- `proposal.policy_evaluated` and `proposal.auto_approved` audit events must
+  be written;
+- `policy_reasons` must include `dev_allow_all_auto_approved` and
+  `commit_preflight_still_required`;
+- Core must still return `commit_execution=false` in policy audit metadata and
+  must not execute final writes.
+
+When the constant is absent or false, `dev_allow_all` must fail closed to
+`manual_required` with `dev_allow_all_rejected_disabled`.
 
 ## Explicit Non-Candidates
 
@@ -248,7 +281,8 @@ Status: implemented.
 
 ### Phase 2: Explicit Auto Approval For Cleanup Only
 
-Status: implemented for development `local_guarded`.
+Status: implemented for `smart_guarded`; legacy `local_guarded` maps to the
+same guarded implementation.
 
 - Add explicit enablement and app/scope authorization.
 - Add hourly and daily auto-approval quotas.
@@ -258,12 +292,23 @@ Status: implemented for development `local_guarded`.
 
 ### Phase 3: Direct Draft Proposal Auto Approval
 
-Status: implemented for development `local_guarded`.
+Status: implemented for `smart_guarded`; legacy `local_guarded` maps to the
+same guarded implementation.
 
 - Keep single direct draft proposals only.
 - Block publish, schedule, non-post post types, and existing-content targets.
 - Require explicit trusted caller/app policy and quotas.
 - Keep commit preflight unchanged and mandatory.
+
+### Phase 4: Strategy Mode Refactor
+
+Status: implemented.
+
+- Add a bounded `Approval_Policy_Strategy` contract.
+- Implement `manual`, `smart_guarded`, and `dev_allow_all` strategies.
+- Keep `dry_run_guarded` and `local_guarded` as legacy stored values only.
+- Keep Core out of workflow runtime, scheduler, queue, MCP, Agent Gateway, and
+  final execution ownership.
 
 ## Test Expectations
 

@@ -122,13 +122,14 @@ The MVP supports:
 The MVP does not execute final writes.
 
 The approval policy evaluator defaults to `manual`, records `manual_required`
-for every proposal, and writes `proposal.policy_evaluated`. Development-only
-`dry_run_guarded` records trusted cleanup candidates without changing proposal
-status. Development-only `local_guarded` may auto-approve only trusted test
-cleanup trash-post batches and single draft-only create-draft proposals when
-explicit caller/app authorization, persisted evidence, quota, and audit checks
-pass. It does not auto-approve publish, schedule, destructive, comment, term,
-settings, or existing published-content update proposals. It does not accept
+for every proposal, and writes `proposal.policy_evaluated`. `smart_guarded`
+may auto-approve only trusted test cleanup trash-post batches and single draft-only create-draft proposals when explicit caller/app authorization,
+persisted evidence, quota, and audit checks pass. `dev_allow_all` is
+local-development only, requires
+`NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL`, caller approval authority,
+quota, and audit, and still does not execute writes. `smart_guarded` does not
+auto-approve publish, schedule, destructive, comment, term, settings, or
+existing published-content update proposals. The evaluator does not accept
 caller-supplied policy rules and does not add a rules DSL, workflow runtime,
 scheduler, final execution, or configuration center. If policy decision audit
 cannot be written, Core fails closed and deletes the created proposal row; if

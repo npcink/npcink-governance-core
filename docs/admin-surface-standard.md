@@ -38,8 +38,8 @@ queue:
   records instead of only saying that the queue is empty;
 - `System settings` disclosure for low-frequency development policy and trusted
   client access;
-- nested `Development Approval Policy` disclosure for the lightweight manual,
-  dry-run guarded, and local guarded policy modes;
+- nested `Development Approval Policy` disclosure for the lightweight require
+  approval for all, smart approval, and local-development allow-all modes;
 - nested `Advanced Access` disclosure for low-frequency client access key
   management.
 

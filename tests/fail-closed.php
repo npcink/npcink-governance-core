@@ -4016,7 +4016,7 @@ npcink_governance_core_fail_closed_assert( 'npcink_governance_core_policy_decisi
 npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Unaudited policy decision deletes the proposal row.' );
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();
-update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_LOCAL_GUARDED, false );
+update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_SMART_GUARDED, false );
 \Npcink\GovernanceCore\Security\Request_Context::set_app(
 	array(
 		'app_id'       => 'app_auto',
@@ -4029,20 +4029,21 @@ update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTI
 );
 $stack    = npcink_governance_core_fail_closed_proposal_stack();
 $proposal = $stack['service']->create( npcink_governance_core_fail_closed_cleanup_batch_payload() );
-npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Local guarded cleanup proposal is created.' );
-npcink_governance_core_fail_closed_assert( 'approved' === (string) ( $proposal['status'] ?? '' ), 'Local guarded cleanup proposal is auto-approved.' );
-npcink_governance_core_fail_closed_assert( 'auto_approved' === (string) ( $proposal['policy_decision'] ?? '' ), 'Local guarded cleanup records auto-approved decision.' );
-npcink_governance_core_fail_closed_assert( 'trusted_local' === (string) ( $proposal['policy_profile'] ?? '' ), 'Local guarded cleanup records trusted_local profile.' );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Smart guarded cleanup proposal is created.' );
+npcink_governance_core_fail_closed_assert( 'approved' === (string) ( $proposal['status'] ?? '' ), 'Smart guarded cleanup proposal is auto-approved.' );
+npcink_governance_core_fail_closed_assert( 'auto_approved' === (string) ( $proposal['policy_decision'] ?? '' ), 'Smart guarded cleanup records auto-approved decision.' );
+npcink_governance_core_fail_closed_assert( 'trusted_local' === (string) ( $proposal['policy_profile'] ?? '' ), 'Smart guarded cleanup records trusted_local profile.' );
+npcink_governance_core_fail_closed_assert( in_array( 'smart_guarded_cleanup_auto_approved', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded cleanup records stable auto approval reason.' );
 $auto_approval_events = array_filter(
 	$wpdb->rows( $audit_table ),
 	static function ( array $row ): bool {
 		return 'proposal.auto_approved' === (string) ( $row['event_name'] ?? '' );
 	}
 );
-npcink_governance_core_fail_closed_assert( 1 === count( $auto_approval_events ), 'Local guarded cleanup writes proposal.auto_approved audit.' );
+npcink_governance_core_fail_closed_assert( 1 === count( $auto_approval_events ), 'Smart guarded cleanup writes proposal.auto_approved audit.' );
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();
-update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_LOCAL_GUARDED, false );
+update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_SMART_GUARDED, false );
 \Npcink\GovernanceCore\Security\Request_Context::set_app(
 	array(
 		'app_id'       => 'app_auto',
@@ -4057,12 +4058,12 @@ $stack    = npcink_governance_core_fail_closed_proposal_stack();
 $proposal = $stack['service']->create(
 	array(
 		'ability_id' => 'npcink-abilities-toolkit/create-draft',
-		'title'      => 'Local guarded draft proposal',
+		'title'      => 'Smart guarded draft proposal',
 		'summary'    => 'Create one draft only.',
 		'input'      => array(
 			'post_type'       => 'post',
 			'status'          => 'draft',
-			'title'           => 'Local guarded draft',
+			'title'           => 'Smart guarded draft',
 			'content'         => '<p>Draft content.</p>',
 			'dry_run'         => true,
 			'commit'          => false,
@@ -4072,14 +4073,14 @@ $proposal = $stack['service']->create(
 		'caller'     => array( 'source' => 'fault_injection' ),
 	)
 );
-npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Local guarded create-draft proposal is created.' );
-npcink_governance_core_fail_closed_assert( 'approved' === (string) ( $proposal['status'] ?? '' ), 'Local guarded create-draft proposal is auto-approved.' );
-npcink_governance_core_fail_closed_assert( 'auto_approved' === (string) ( $proposal['policy_decision'] ?? '' ), 'Local guarded create-draft records auto-approved decision.' );
-npcink_governance_core_fail_closed_assert( 'trusted_local' === (string) ( $proposal['policy_profile'] ?? '' ), 'Local guarded create-draft records trusted_local profile.' );
-npcink_governance_core_fail_closed_assert( in_array( 'local_guarded_create_draft_auto_approved', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Local guarded create-draft records stable auto approval reason.' );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Smart guarded create-draft proposal is created.' );
+npcink_governance_core_fail_closed_assert( 'approved' === (string) ( $proposal['status'] ?? '' ), 'Smart guarded create-draft proposal is auto-approved.' );
+npcink_governance_core_fail_closed_assert( 'auto_approved' === (string) ( $proposal['policy_decision'] ?? '' ), 'Smart guarded create-draft records auto-approved decision.' );
+npcink_governance_core_fail_closed_assert( 'trusted_local' === (string) ( $proposal['policy_profile'] ?? '' ), 'Smart guarded create-draft records trusted_local profile.' );
+npcink_governance_core_fail_closed_assert( in_array( 'smart_guarded_create_draft_auto_approved', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded create-draft records stable auto approval reason.' );
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();
-update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_LOCAL_GUARDED, false );
+update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_SMART_GUARDED, false );
 \Npcink\GovernanceCore\Security\Request_Context::set_app(
 	array(
 		'app_id'       => 'app_auto',
@@ -4094,7 +4095,7 @@ $stack    = npcink_governance_core_fail_closed_proposal_stack();
 $proposal = $stack['service']->create(
 	array(
 		'ability_id' => 'npcink-abilities-toolkit/create-draft',
-		'title'      => 'Local guarded publish proposal',
+		'title'      => 'Smart guarded publish proposal',
 		'summary'    => 'Publish must not auto approve.',
 		'input'      => array(
 			'post_type'       => 'post',
@@ -4109,13 +4110,63 @@ $proposal = $stack['service']->create(
 		'caller'     => array( 'source' => 'fault_injection' ),
 	)
 );
-npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Local guarded publish create-draft proposal is still created for review.' );
-npcink_governance_core_fail_closed_assert( 'pending' === (string) ( $proposal['status'] ?? '' ), 'Local guarded publish create-draft remains pending.' );
-npcink_governance_core_fail_closed_assert( 'manual_required' === (string) ( $proposal['policy_decision'] ?? '' ), 'Local guarded publish create-draft remains manual.' );
-npcink_governance_core_fail_closed_assert( in_array( 'guarded_create_draft_rejected_status', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Local guarded publish create-draft records status rejection reason.' );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Smart guarded publish create-draft proposal is still created for review.' );
+npcink_governance_core_fail_closed_assert( 'pending' === (string) ( $proposal['status'] ?? '' ), 'Smart guarded publish create-draft remains pending.' );
+npcink_governance_core_fail_closed_assert( 'manual_required' === (string) ( $proposal['policy_decision'] ?? '' ), 'Smart guarded publish create-draft remains manual.' );
+npcink_governance_core_fail_closed_assert( in_array( 'guarded_create_draft_rejected_status', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded publish create-draft records status rejection reason.' );
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();
-update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_LOCAL_GUARDED, false );
+update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_DEV_ALLOW_ALL, false );
+\Npcink\GovernanceCore\Security\Request_Context::set_app(
+	array(
+		'app_id'       => 'app_auto',
+		'key_id'       => 'key_auto',
+		'caller_type'  => 'trusted_adapter',
+		'scope'        => 'proposals:create',
+		'scopes'       => array( 'proposals:create', 'proposals:approve' ),
+		'route_family' => 'proposals_create',
+	)
+);
+$stack    = npcink_governance_core_fail_closed_proposal_stack();
+$proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/approve-comment' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Development allow-all disabled proposal is still created for review.' );
+npcink_governance_core_fail_closed_assert( 'pending' === (string) ( $proposal['status'] ?? '' ), 'Development allow-all without constant remains pending.' );
+npcink_governance_core_fail_closed_assert( 'manual_required' === (string) ( $proposal['policy_decision'] ?? '' ), 'Development allow-all without constant remains manual.' );
+npcink_governance_core_fail_closed_assert( in_array( 'dev_allow_all_rejected_disabled', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Development allow-all without constant records disabled reason.' );
+
+if ( ! defined( 'NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL' ) ) {
+	define( 'NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL', true );
+}
+
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_DEV_ALLOW_ALL, false );
+\Npcink\GovernanceCore\Security\Request_Context::set_app(
+	array(
+		'app_id'       => 'app_auto',
+		'key_id'       => 'key_auto',
+		'caller_type'  => 'trusted_adapter',
+		'scope'        => 'proposals:create',
+		'scopes'       => array( 'proposals:create', 'proposals:approve' ),
+		'route_family' => 'proposals_create',
+	)
+);
+$stack    = npcink_governance_core_fail_closed_proposal_stack();
+$proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/approve-comment' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Development allow-all enabled proposal is created.' );
+npcink_governance_core_fail_closed_assert( 'approved' === (string) ( $proposal['status'] ?? '' ), 'Development allow-all enabled proposal is auto-approved.' );
+npcink_governance_core_fail_closed_assert( 'auto_approved' === (string) ( $proposal['policy_decision'] ?? '' ), 'Development allow-all records auto-approved decision.' );
+npcink_governance_core_fail_closed_assert( in_array( 'dev_allow_all_auto_approved', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Development allow-all records stable auto approval reason.' );
+npcink_governance_core_fail_closed_assert( in_array( 'commit_preflight_still_required', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Development allow-all records commit preflight requirement.' );
+$auto_approval_events = array_filter(
+	$wpdb->rows( $audit_table ),
+	static function ( array $row ): bool {
+		return 'proposal.auto_approved' === (string) ( $row['event_name'] ?? '' );
+	}
+);
+npcink_governance_core_fail_closed_assert( 1 === count( $auto_approval_events ), 'Development allow-all writes proposal.auto_approved audit.' );
+
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_SMART_GUARDED, false );
 \Npcink\GovernanceCore\Security\Request_Context::set_app(
 	array(
 		'app_id'       => 'app_auto',
