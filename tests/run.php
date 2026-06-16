@@ -162,6 +162,7 @@ foreach (
 		'Review Queue, pending proposal queue',
 		'Those terms do not permit workflow/task queue ownership',
 		'GET /wp-json/npcink-governance-core/v1/capabilities',
+		'GET /wp-json/npcink-governance-core/v1/contract',
 		'POST /wp-json/npcink-governance-core/v1/apps',
 		'POST /wp-json/npcink-governance-core/v1/proposals',
 		'POST /wp-json/npcink-governance-core/v1/proposals/from-plan',
@@ -351,6 +352,7 @@ foreach (
 $rest_contract = npcink_governance_core_read( $root . '/docs/rest-api-contract.md' );
 foreach (
 	array(
+		'GET /contract',
 		'GET /capabilities',
 		'POST /proposals',
 		'POST /proposals/from-plan',
@@ -372,6 +374,8 @@ foreach (
 		'core_proxy_execute=false',
 		'core_proxy_execute',
 		'commit_execution=false',
+		'npcink_governance_core_contract.v1',
+		'admin-only runtime discovery surface',
 		'write_execution=false',
 		'read_authorization_required',
 		'requires_read_authorization',
@@ -1465,6 +1469,15 @@ npcink_governance_core_assert( false !== strpos( $smoke_wp, 'archived proposal c
 $capabilities_controller = npcink_governance_core_read( $root . '/includes/Rest/Capabilities_Controller.php' );
 npcink_governance_core_assert( false !== strpos( $capabilities_controller, "'/capabilities'" ), 'Capabilities REST route is registered.' );
 npcink_governance_core_assert( false !== strpos( $capabilities_controller, 'capabilities.listed' ), 'Capabilities route records audit event.' );
+
+$contract_controller = npcink_governance_core_read( $root . '/includes/Rest/Contract_Controller.php' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'/contract'" ), 'Runtime contract REST route is registered.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, 'can_manage' ), 'Runtime contract REST route is admin-only.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, 'npcink_governance_core_contract.v1' ), 'Runtime contract exposes the Core contract schema.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'core_proxy_execute'      => false" ), 'Runtime contract keeps Core proxy execution disabled.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'commit_execution'        => false" ), 'Runtime contract keeps commit execution disabled.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'provider_secret_storage' => false" ), 'Runtime contract keeps provider secret storage outside Core.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, 'adapter_or_host_after_core_preflight' ), 'Runtime contract leaves final writes with the adapter or host after preflight.' );
 
 $proposals_controller = npcink_governance_core_read( $root . '/includes/Rest/Proposals_Controller.php' );
 npcink_governance_core_assert( false !== strpos( $proposals_controller, "'/proposals'" ), 'Proposals REST route is registered.' );

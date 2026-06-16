@@ -15,6 +15,9 @@ current_user_can( 'manage_options' )
 Scoped app keys are also supported for external governance clients. App keys do
 not replace human admin approval.
 
+The runtime contract discovery endpoint remains administrator-only. It exposes
+version and boundary metadata, not app-authenticated governance state.
+
 ## Future Authorization Layers
 
 The app identity model is described in

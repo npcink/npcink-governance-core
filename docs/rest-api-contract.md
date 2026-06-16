@@ -31,6 +31,7 @@ scope map is:
 
 | Route family | Required scope |
 | --- | --- |
+| `GET /contract` | admin-only `manage_options` |
 | `GET /capabilities` | `capabilities:read` |
 | `POST /proposals`, `POST /proposals/from-plan` | `proposals:create` |
 | `GET /proposals`, `GET /proposals/{proposal_id}` | `proposals:read` |
@@ -71,6 +72,45 @@ Clients that cannot set `Authorization` may send the same token as
 `X-Npcink-Governance-Core-App-Token`.
 
 The raw secret is returned only by `POST /apps`.
+
+## `GET /contract`
+
+Purpose: expose a stable admin-only runtime discovery surface for local host
+and adapter compatibility checks.
+
+Permission: `manage_options`.
+
+Response `200`:
+
+```json
+{
+  "schema_version": "npcink_governance_core_contract.v1",
+  "core_contract_version": "1",
+  "plugin_version": "0.1.0",
+  "rest_namespace": "npcink-governance-core/v1",
+  "runtime_controls": {
+    "core_proxy_execute": false,
+    "commit_execution": false,
+    "read_proxy_execute": false,
+    "workflow_orchestration": false,
+    "background_jobs": false,
+    "batch_execution": false,
+    "mcp_transport": false,
+    "agent_catalog": false,
+    "provider_secret_storage": false
+  },
+  "boundary": {
+    "proposal_truth_owner": "npcink-governance-core",
+    "approval_truth_owner": "npcink-governance-core",
+    "final_write_authority": "adapter_or_host_after_core_preflight"
+  }
+}
+```
+
+This endpoint is metadata-only. It must not return proposal rows, audit rows,
+app keys, app secret material, provider credentials, ability definitions,
+workflow runtime state, queues, MCP sessions, Agent Gateway catalogs, or final
+write execution results.
 
 ## `GET /apps`
 

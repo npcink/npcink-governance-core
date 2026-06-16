@@ -1199,6 +1199,16 @@ npcink_governance_core_smoke_assert( true === (bool) ( $capabilities['available'
 npcink_governance_core_smoke_assert( 'npcink_abilities_toolkit' === (string) ( $capabilities['source'] ?? '' ), 'capabilities are discovered from npcink-abilities-toolkit' );
 npcink_governance_core_smoke_assert( count( $items ) > 0, 'capabilities endpoint returns abilities' );
 
+$runtime_contract = npcink_governance_core_smoke_rest( 'GET', '/npcink-governance-core/v1/contract' );
+npcink_governance_core_smoke_assert( 'npcink_governance_core_contract.v1' === (string) ( $runtime_contract['schema_version'] ?? '' ), 'runtime contract exposes the expected schema version' );
+npcink_governance_core_smoke_assert( defined( 'NPCINK_GOVERNANCE_CORE_VERSION' ) && NPCINK_GOVERNANCE_CORE_VERSION === (string) ( $runtime_contract['plugin_version'] ?? '' ), 'runtime contract exposes the active plugin version' );
+npcink_governance_core_smoke_assert( false === (bool) ( $runtime_contract['runtime_controls']['core_proxy_execute'] ?? true ), 'runtime contract keeps Core proxy execution disabled' );
+npcink_governance_core_smoke_assert( false === (bool) ( $runtime_contract['runtime_controls']['commit_execution'] ?? true ), 'runtime contract keeps commit execution disabled' );
+npcink_governance_core_smoke_assert( false === (bool) ( $runtime_contract['runtime_controls']['workflow_orchestration'] ?? true ), 'runtime contract keeps workflow orchestration outside Core' );
+npcink_governance_core_smoke_assert( false === (bool) ( $runtime_contract['runtime_controls']['background_jobs'] ?? true ), 'runtime contract keeps background jobs outside Core' );
+npcink_governance_core_smoke_assert( false === (bool) ( $runtime_contract['runtime_controls']['provider_secret_storage'] ?? true ), 'runtime contract keeps provider secret storage outside Core' );
+npcink_governance_core_smoke_assert( 'adapter_or_host_after_core_preflight' === (string) ( $runtime_contract['boundary']['final_write_authority'] ?? '' ), 'runtime contract leaves final writes with adapter or host after preflight' );
+
 $app = npcink_governance_core_smoke_rest(
 	'POST',
 	'/npcink-governance-core/v1/apps',
