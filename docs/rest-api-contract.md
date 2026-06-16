@@ -772,7 +772,7 @@ For `intent=customize_template_layout`, Core additionally requires a passing
 `article_standard`, `page_standard`, or `homepage_landing`. The contract must
 also declare accepted compiler, policy, and profile versions, including
 `block_theme_profile_compiler@0.2`, `block_theme_safe_core_blocks@0.2`, and
-profile ids such as `article_standard@0.3` and `homepage_landing@0.2`.
+profile ids such as `article_standard@0.4` and `homepage_landing@0.2`.
 Core accepts only bounded template slugs (`front-page`, `home`, `index`,
 `page`, and `single`), requires parser roundtrip validation evidence, and
 allows homepage layout reader modules such as `core/latest-posts` and

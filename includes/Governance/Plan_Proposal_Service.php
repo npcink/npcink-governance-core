@@ -2393,7 +2393,7 @@ final class Plan_Proposal_Service {
 			'homepage_landing' => true,
 		);
 		$allowed_profile_versions = array(
-			'article_standard' => 'article_standard@0.3',
+			'article_standard' => 'article_standard@0.4',
 			'page_standard'    => 'page_standard@0.1',
 			'homepage_landing' => 'homepage_landing@0.2',
 		);
