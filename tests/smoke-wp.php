@@ -1757,6 +1757,27 @@ if ( $block_theme_site_template_before instanceof WP_Post ) {
 	npcink_governance_core_smoke_assert( null === $block_theme_site_template_after, 'block theme site from-plan intake does not create a template override' );
 }
 
+$block_theme_homepage_plan_input = array(
+	'intent'                 => 'customize_template_layout',
+	'target_templates'       => array( 'front-page' ),
+	'layout_profile'         => 'homepage_landing',
+	'include_latest_posts'   => true,
+	'include_category_links' => true,
+	'include_cta'            => true,
+);
+$block_theme_homepage_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_homepage_plan_input );
+$block_theme_homepage_result = npcink_governance_core_smoke_create_proposals_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_homepage_plan, $block_theme_homepage_plan_input );
+npcink_governance_core_smoke_assert( 1 === (int) ( $block_theme_homepage_result['proposal_count'] ?? 0 ), 'block theme homepage layout plan generates one Core batch proposal' );
+$block_theme_homepage_proposal = is_array( $block_theme_homepage_result['proposals'][0] ?? null ) ? $block_theme_homepage_result['proposals'][0] : array();
+npcink_governance_core_smoke_assert( 'homepage_landing' === (string) ( $block_theme_homepage_proposal['preview']['block_theme_site']['layout_profile'] ?? '' ), 'block theme homepage proposal preserves homepage landing profile' );
+$block_theme_homepage_actions = is_array( $block_theme_homepage_proposal['input']['write_actions'] ?? null ) ? array_values( $block_theme_homepage_proposal['input']['write_actions'] ) : array();
+npcink_governance_core_smoke_assert( 1 === count( $block_theme_homepage_actions ), 'block theme homepage batch stores one template write action' );
+$block_theme_homepage_blocks_json = wp_json_encode( $block_theme_homepage_actions[0]['input']['blocks'] ?? array() );
+$block_theme_homepage_blocks_json = is_string( $block_theme_homepage_blocks_json ) ? $block_theme_homepage_blocks_json : '';
+npcink_governance_core_smoke_assert( false !== strpos( $block_theme_homepage_blocks_json, 'core\/button' ), 'block theme homepage proposal stores a CTA button block' );
+npcink_governance_core_smoke_assert( false !== strpos( $block_theme_homepage_blocks_json, 'core\/latest-posts' ), 'block theme homepage proposal stores latest posts block' );
+npcink_governance_core_smoke_assert( false !== strpos( $block_theme_homepage_blocks_json, 'core\/categories' ), 'block theme homepage proposal stores categories block' );
+
 $article_block_title = 'Core Article Block Plan Smoke ' . $npcink_governance_core_smoke_run_id;
 $article_block_plan_input = array(
 	'title'              => $article_block_title,

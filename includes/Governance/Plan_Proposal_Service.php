@@ -2310,6 +2310,7 @@ final class Plan_Proposal_Service {
 		return array(
 			'core/button'              => true,
 			'core/buttons'             => true,
+			'core/categories'          => true,
 			'core/column'              => true,
 			'core/columns'             => true,
 			'core/group'               => true,

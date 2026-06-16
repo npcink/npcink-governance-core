@@ -311,6 +311,7 @@ npcink_governance_core_assert( false !== strpos( $governance, 'read_request.pref
 npcink_governance_core_assert( false !== strpos( $governance, 'core_authorization_truth=npcink_governance_core' ), 'Governance contract keeps Core as sensitive read authorization truth.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'currently discoverable ability id' ), 'Governance contract requires real discoverable proposal ability ids.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'must not reintroduce' ), 'Governance contract rejects legacy confirmation parameters.' );
+npcink_governance_core_assert( false !== strpos( $governance, 'core/categories' ), 'Governance contract documents safe categories block for homepage layouts.' );
 
 $approval_policy_standard = npcink_governance_core_read( $root . '/docs/approval-policy-evaluator-standard.md' );
 foreach (
@@ -1242,6 +1243,7 @@ npcink_governance_core_assert( false !== strpos( $ability_intake, 'Create Draft 
 npcink_governance_core_assert( false !== strpos( $ability_intake, 'Set Post SEO Meta Governance Scenario' ), 'Ability intake contract points to the set-post-seo-meta scenario.' );
 npcink_governance_core_assert( false !== strpos( $ability_intake, 'Approve Comment Governance Scenario' ), 'Ability intake contract points to the approve-comment scenario.' );
 npcink_governance_core_assert( false !== strpos( $ability_intake, 'Taxonomy Terms Preview Governance Scenario' ), 'Ability intake contract points to the taxonomy terms preview scenario.' );
+npcink_governance_core_assert( false !== strpos( $ability_intake, 'core/categories' ), 'Ability intake contract documents safe categories block for homepage layouts.' );
 
 $shared_replay_path = npcink_governance_core_shared_replay_fixture_path( $root );
 npcink_governance_core_assert( '' !== $shared_replay_path, 'Shared npcink-abilities-toolkit replay fixture is available for Core static proof.' );
@@ -1775,6 +1777,7 @@ foreach (
 		'template_layout_contract',
 		'article_standard',
 		'homepage_landing',
+		'core/categories',
 		'BLOCK_THEME_SITE_MAX_BLOCKS',
 		'BLOCK_THEME_SITE_MAX_BLOCK_DEPTH',
 		'block_theme_site_allowed_blocks',
@@ -1848,6 +1851,7 @@ npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-article-block-plan' ), 'Plan-to-proposal docs include the article block handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-pattern-page-plan' ), 'Plan-to-proposal docs include the pattern page handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-block-theme-site-plan' ), 'Plan-to-proposal docs include the block theme site handoff.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'core/categories' ), 'Plan-to-proposal docs document safe categories blocks for homepage layouts.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_workflow' ), 'Plan-to-proposal docs require article workflow preview evidence.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_optimization' ), 'Plan-to-proposal docs require article optimization preview evidence.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'preview.article_block' ), 'Plan-to-proposal docs require article block preview evidence.' );

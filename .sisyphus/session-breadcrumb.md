@@ -1,5 +1,34 @@
 # Session Breadcrumb
 
+## 2026-06-16 — Homepage block theme layout proposal intake accepted
+
+- **Module**: Plan-to-proposal intake for block theme homepage layouts.
+- **Status**: Core now accepts `homepage_landing` block theme site plans that
+  include the safe dynamic `core/categories` block for category entry sections.
+- **Completed**:
+  - Added `core/categories` to Core's block theme safe core block allowlist.
+  - Added fail-closed coverage for a representative `front-page`
+    `homepage_landing` layout with hero, CTA button, latest posts, and
+    categories.
+  - Added WordPress smoke coverage that runs the real Toolkit
+    `build-block-theme-site-plan` homepage layout through
+    `POST /proposals/from-plan`.
+  - Updated ability intake, governance, REST, and plan-to-proposal docs so the
+    homepage profile's latest-posts and category-entry reader blocks are
+    explicit.
+- **Verification**:
+  - `composer test`
+  - `php tests/fail-closed.php`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+  - `composer validate --no-check-publish`
+- **Boundary**:
+  - Core still only validates and stores proposal/audit context. This does not
+    add Core final write execution, navigation edits, global styles edits,
+    theme file edits, `theme.json` mutation, raw HTML acceptance, or Toolkit
+    ability ownership.
+
 ## 2026-06-15 — Runtime owner can be bundled in Toolbox release
 
 - **Module**: Future runtime packaging decision.

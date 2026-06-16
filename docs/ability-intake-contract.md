@@ -189,7 +189,9 @@ For `customize_template_layout`, Core additionally requires a passing
 `front-page`, `home`, `index`, `page`, or `single`; reviewed block trees must
 use safe core blocks, declare parser roundtrip validation, stay within bounded
 block count/depth/attribute-size limits, and avoid scriptable or embedded raw
-HTML. Navigation, global styles, theme files, `theme.json`, custom
+HTML. The `homepage_landing` profile may use safe dynamic core reader blocks
+such as `core/latest-posts` and `core/categories` for latest post and category
+entry sections. Navigation, global styles, theme files, `theme.json`, custom
 HTML/freeform, shortcode, embed, and unknown block changes are rejected before
 proposal creation.
 

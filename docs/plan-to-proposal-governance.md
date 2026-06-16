@@ -185,6 +185,9 @@ embedded raw HTML such as `script`, `iframe`, `object`, `embed`, `style`,
 `link`, or `meta`. Core rejects navigation blocks, custom HTML/freeform blocks,
 shortcode blocks, embed blocks, unknown blocks, and any plan that tries to
 touch navigation entities, global styles, theme files, or `theme.json`.
+Homepage layout proposals may include safe dynamic reader blocks such as
+`core/latest-posts` and `core/categories` for latest post and category entry
+sections.
 
 File-backed templates are represented as reviewed
 `npcink-abilities-toolkit/upsert-template-blocks` actions that create a

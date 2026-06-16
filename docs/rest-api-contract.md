@@ -732,9 +732,11 @@ For `intent=customize_template_layout`, Core additionally requires a passing
 `article_standard`, `page_standard`, or `homepage_landing`.
 Core accepts only bounded template slugs (`front-page`, `home`, `index`,
 `page`, and `single`), requires parser roundtrip validation evidence, and
-rejects navigation blocks, custom HTML/freeform blocks, shortcode blocks, embed
-blocks, unknown blocks, scriptable or embedded raw HTML, oversized block
-attributes, excessive block count, and excessive block depth.
+allows homepage layout reader modules such as `core/latest-posts` and
+`core/categories` while still rejecting navigation blocks, custom HTML/freeform
+blocks, shortcode blocks, embed blocks, unknown blocks, scriptable or embedded
+raw HTML, oversized block attributes, excessive block count, and excessive
+block depth.
 
 Each accepted independent `write_action` becomes a separate pending proposal by
 default. If the plan declares `batch_approval=true` or

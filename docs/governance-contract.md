@@ -255,7 +255,9 @@ WordPress writes.
 Accepted block theme template plans are limited to bounded template content
 changes: accepted template slugs, safe core blocks only, declared parser
 roundtrip validation, bounded block count/depth/attribute size, and no
-scriptable or embedded raw HTML. Navigation, global styles, theme files,
+scriptable or embedded raw HTML. The `homepage_landing` profile may include
+safe dynamic reader blocks such as `core/latest-posts` and `core/categories`
+for latest post and category entry sections. Navigation, global styles, theme files,
 `theme.json`, custom HTML/freeform, shortcode, embed, and unknown block changes
 are rejected before proposal creation.
 
