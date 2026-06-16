@@ -188,8 +188,9 @@ For `customize_template_layout`, Core additionally requires a passing
 `page_standard`, or `homepage_landing`. The layout contract must declare
 `compiler_version=block_theme_profile_compiler@0.2`,
 `forbidden_policy_version=block_theme_safe_core_blocks@0.2`, and accepted
-versioned profiles such as `homepage_landing@0.2`; each profile row must carry
-the matching profile version, operation, modules, and forbidden-output policy.
+versioned profiles such as `article_standard@0.2` and `homepage_landing@0.2`;
+each profile row must carry the matching profile version, operation, modules,
+and forbidden-output policy.
 Template upserts are limited to
 `front-page`, `home`, `index`, `page`, or `single`; reviewed block trees must
 use safe core blocks, declare parser roundtrip validation, stay within bounded

@@ -2963,3 +2963,26 @@
     commit preflight contract, minimal admin approval UI, then app auth/scope
     policy. Do not add final commit execution until preflight and idempotency
     contracts are written and tested.
+
+## 2026-06-16 — Article template layout profile v0.2 intake
+
+- **Module**: block theme site proposal intake / bounded template layout
+  contract
+- **Status**: Core now accepts `article_standard@0.2` from the Abilities
+  Toolkit template profile compiler.
+- **Completed**:
+  - Updated the block theme layout contract allowlist from
+    `article_standard@0.1` to `article_standard@0.2`.
+  - Updated fail-closed fixtures and REST/intake docs so proposal creation
+    matches the Toolkit compiler output.
+  - Kept Core as proposal/intake authority only; no template generation,
+    workflow runtime, proxy execution, or final write execution was added.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed against the LocalWP `magick-ai` site.
+  - `composer validate --no-check-publish` passed.
+- **Next recommended step**:
+  - Use OpenClaw to regenerate an article template proposal with
+    `article_standard@0.2`, execute it through Adapter commit intent, then run
+    visual acceptance to confirm the article page no longer needs manual review
+    for low background variety.
