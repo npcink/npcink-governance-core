@@ -376,6 +376,17 @@ foreach (
 		'commit_execution=false',
 		'npcink_governance_core_contract.v1',
 		'admin-only runtime discovery surface',
+		'runtime_contract_endpoint_version',
+		'minimum_adapter_contract_version',
+		'metadata_only',
+		'admin_authenticated',
+		'context_bindings',
+		'site_binding',
+		'site_url',
+		'home_url',
+		'blog_id',
+		'pending_signed_client_identity_contract',
+		'client_key_fingerprint',
 		'write_execution=false',
 		'read_authorization_required',
 		'requires_read_authorization',
@@ -1477,6 +1488,11 @@ npcink_governance_core_assert( false !== strpos( $contract_controller, 'npcink_g
 npcink_governance_core_assert( false !== strpos( $contract_controller, "'core_proxy_execute'      => false" ), 'Runtime contract keeps Core proxy execution disabled.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, "'commit_execution'        => false" ), 'Runtime contract keeps commit execution disabled.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, "'provider_secret_storage' => false" ), 'Runtime contract keeps provider secret storage outside Core.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, 'minimum_adapter_contract_version' ), 'Runtime contract exposes Adapter compatibility floor.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, 'context_bindings' ), 'Runtime contract exposes context binding metadata.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'fields'       => array( 'site_url', 'home_url', 'blog_id' )" ), 'Runtime contract declares site binding fields.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, 'pending_signed_client_identity_contract' ), 'Runtime contract declares pending client fingerprint binding.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, 'forbidden_payloads' ), 'Runtime contract declares forbidden payload families.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'adapter_or_host_after_core_preflight' ), 'Runtime contract leaves final writes with the adapter or host after preflight.' );
 
 $proposals_controller = npcink_governance_core_read( $root . '/includes/Rest/Proposals_Controller.php' );
@@ -1524,6 +1540,10 @@ foreach (
 		'commit_execution',
 		'write_execution',
 		'approved_input_hash',
+		'site_binding_context',
+		"function_exists( 'site_url' ) ? site_url() : ''",
+		"function_exists( 'home_url' ) ? home_url() : ''",
+		"function_exists( 'get_current_blog_id' ) ? get_current_blog_id() : 0",
 		'ability_mismatch',
 		'input_mismatch',
 		'CORE_MAX_ROWS',
@@ -1662,6 +1682,10 @@ npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'cor
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'approved_input_hash' ), 'Commit preflight binds approval context to approved input hash.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'approved_preview_hash' ), 'Commit preflight binds approval context to approved preview hash.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'policy_version' ), 'Commit preflight returns a policy version for Adapter binding.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'site_binding_context' ), 'Commit preflight has a site binding helper.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "function_exists( 'site_url' ) ? site_url() : ''" ), 'Commit preflight binds site_url.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "function_exists( 'home_url' ) ? home_url() : ''" ), 'Commit preflight binds home_url.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "function_exists( 'get_current_blog_id' ) ? get_current_blog_id() : 0" ), 'Commit preflight binds blog_id.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'payload_hash' ), 'Commit preflight has stable payload hash generation.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'new_correlation_id' ), 'Commit preflight generates a correlation id.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'proposal_item_preflight' ), 'Commit preflight evaluates proposal item readiness.' );

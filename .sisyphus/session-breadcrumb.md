@@ -1,5 +1,34 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Runtime contract endpoint exposes Adapter-safe bindings
+
+- **Module**: Core runtime contract endpoint and Core-issued preflight
+  contexts.
+- **Status**: `/contract` now reports Adapter-facing runtime compatibility,
+  Core truth ownership, forbidden payload families, and context binding
+  support. Commit preflight and sensitive-read preflight now include
+  `site_url`, `home_url`, and `blog_id` in Core-issued contexts.
+- **Completed**:
+  - Added contract metadata for Adapter compatibility, metadata-only discovery,
+    commit preflight availability, sensitive-read preflight availability, and
+    pending signed client fingerprint binding.
+  - Added site binding fields to `approval_context`, `execution_handoff`, and
+    `read_authorization_context`.
+  - Updated REST, approval-commit, sensitive-read, and README docs.
+  - Added static contract and WordPress smoke coverage for the runtime contract
+    endpoint and site-bound preflight contexts.
+- **Verification**:
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+  - `composer validate --no-check-publish`
+  - `git diff --check`
+- **Boundary**:
+  - Core still does not proxy reads, execute final writes, own Adapter
+    execution profiles, own Toolkit ability definitions, own workflow runtime,
+    own queues, own MCP runtime, own Agent Gateway catalogs, or store provider
+    credentials. Client-key fingerprint binding remains pending until Core
+    emits a signed client identity field.
+
 ## 2026-06-16 — Block theme profile compiler contract enforced
 
 - **Module**: Plan-to-proposal intake for block theme template layout profiles.

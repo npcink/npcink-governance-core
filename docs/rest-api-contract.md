@@ -88,6 +88,24 @@ Response `200`:
   "core_contract_version": "1",
   "plugin_version": "0.1.0",
   "rest_namespace": "npcink-governance-core/v1",
+  "governance_contract_version": "1",
+  "rest_api_contract_version": "1",
+  "proposal_lifecycle_version": "1",
+  "approval_commit_contract_version": "1",
+  "sensitive_read_authorization_version": "1",
+  "app_auth_contract_version": "1",
+  "runtime_contract_endpoint_version": "1",
+  "compatibility": {
+    "contract_family": "npcink_governance_core",
+    "minimum_adapter_contract_version": "1",
+    "metadata_only": true,
+    "admin_authenticated": true,
+    "proposal_truth_available": true,
+    "approval_truth_available": true,
+    "commit_preflight_available": true,
+    "execution_result_record_available": true,
+    "sensitive_read_preflight_available": true
+  },
   "runtime_controls": {
     "core_proxy_execute": false,
     "commit_execution": false,
@@ -99,10 +117,52 @@ Response `200`:
     "agent_catalog": false,
     "provider_secret_storage": false
   },
+  "context_bindings": {
+    "site_binding": {
+      "fields": ["site_url", "home_url", "blog_id"],
+      "emitted_in": [
+        "approval_context",
+        "execution_handoff",
+        "read_authorization_context"
+      ],
+      "site_url": "https://example.test",
+      "home_url": "https://example.test",
+      "blog_id": 1,
+      "fail_closed": true
+    },
+    "client_key_fingerprint": {
+      "field": "client_key_fingerprint",
+      "emitted": false,
+      "status": "pending_signed_client_identity_contract",
+      "owner": "npcink-governance-core"
+    }
+  },
+  "handoff_routes": {
+    "capabilities": "/wp-json/npcink-governance-core/v1/capabilities",
+    "proposal_create": "/wp-json/npcink-governance-core/v1/proposals",
+    "plan_to_proposal": "/wp-json/npcink-governance-core/v1/proposals/from-plan",
+    "commit_preflight_template": "/wp-json/npcink-governance-core/v1/proposals/{proposal_id}/commit-preflight",
+    "record_execution_template": "/wp-json/npcink-governance-core/v1/proposals/{proposal_id}/record-execution",
+    "read_request_create": "/wp-json/npcink-governance-core/v1/read-requests",
+    "read_preflight_template": "/wp-json/npcink-governance-core/v1/read-requests/{request_id}/read-preflight"
+  },
   "boundary": {
     "proposal_truth_owner": "npcink-governance-core",
     "approval_truth_owner": "npcink-governance-core",
-    "final_write_authority": "adapter_or_host_after_core_preflight"
+    "audit_truth_owner": "npcink-governance-core",
+    "ability_definitions_owner": "wordpress_abilities_provider",
+    "final_write_authority": "adapter_or_host_after_core_preflight",
+    "workflow_execution_owner": "external_dedicated_runtime",
+    "cloud_control_plane_owner": "not_npcink-governance-core"
+  },
+  "forbidden_payloads": {
+    "proposal_rows": false,
+    "audit_rows": false,
+    "app_secret_material": false,
+    "provider_secret_material": false,
+    "ability_definitions": false,
+    "runtime_state": false,
+    "final_execution_results": false
   }
 }
 ```
@@ -111,6 +171,13 @@ This endpoint is metadata-only. It must not return proposal rows, audit rows,
 app keys, app secret material, provider credentials, ability definitions,
 workflow runtime state, queues, MCP sessions, Agent Gateway catalogs, or final
 write execution results.
+
+Core-issued commit preflight and sensitive-read authorization contexts include
+the current `site_url`, `home_url`, and `blog_id` so adapters can fail closed
+when a handoff is replayed on the wrong WordPress site. Client-key fingerprint
+binding remains pending until Core emits a signed `client_key_fingerprint`
+field in those contexts; the contract advertises that state as
+`pending_signed_client_identity_contract`.
 
 ## `GET /apps`
 

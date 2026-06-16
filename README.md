@@ -67,7 +67,11 @@ The `/contract` endpoint is an administrator-only runtime discovery surface. It
 returns Core version and contract metadata, handoff route templates, and the
 fixed current-stage boundary that Core does not proxy reads, execute final
 writes, own workflow runtime, own queues, own MCP runtime, own Agent Gateway
-catalogs, or store provider credentials.
+catalogs, or store provider credentials. It also reports Adapter-facing
+runtime compatibility, Core truth ownership, and context binding support.
+Commit preflight and sensitive-read preflight bind returned contexts to the
+current `site_url`, `home_url`, and `blog_id`; client-key fingerprint binding
+remains pending until Core emits a signed client identity field.
 
 ## Development
 
