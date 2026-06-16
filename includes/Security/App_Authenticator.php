@@ -226,6 +226,19 @@ final class App_Authenticator {
 		if ( null === $app || 'active' !== (string) ( $app['status'] ?? '' ) || ! $this->apps->verify_secret( $app, $secret ) ) {
 			return $this->error( 'npcink_governance_core_app_auth_invalid', __( 'App authentication token is invalid.', 'npcink-governance-core' ), 401 );
 		}
+		if ( $this->apps->is_expired( $app ) ) {
+			$this->set_context( $app, $scope, $route_family );
+			Request_Context::mark_scope_decision( 'expired' );
+			$this->audit->record(
+				'app.scope_denied',
+				array(
+					'required_scope' => $scope,
+					'route_family'   => sanitize_key( $route_family ),
+					'denial_reason'  => 'app_key_expired',
+				)
+			);
+			return $this->error( 'npcink_governance_core_app_auth_invalid', __( 'App authentication token is invalid.', 'npcink-governance-core' ), 401 );
+		}
 
 		if ( ! in_array( $scope, (array) ( $app['scopes'] ?? array() ), true ) ) {
 			$this->set_context( $app, $scope, $route_family );
@@ -265,9 +278,23 @@ final class App_Authenticator {
 			);
 		}
 
-		$this->apps->touch_last_used( $key_id );
+		$this->apps->touch_last_used( $key_id, $this->request_ip_hash() );
 
 		return true;
+	}
+
+	/**
+	 * Returns a non-reversible hash of the request IP when available.
+	 *
+	 * @return string
+	 */
+	private function request_ip_hash(): string {
+		$remote_addr = sanitize_text_field( (string) ( $_SERVER['REMOTE_ADDR'] ?? '' ) );
+		if ( '' === $remote_addr ) {
+			return '';
+		}
+
+		return hash( 'sha256', $remote_addr );
 	}
 
 	/**

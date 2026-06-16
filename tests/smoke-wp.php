@@ -1276,6 +1276,34 @@ npcink_governance_core_smoke_assert( $app_keys->revoke_by_key_id( $revoked_key )
 $revoked_result = npcink_governance_core_smoke_rest_result_as_app( 'GET', '/npcink-governance-core/v1/capabilities', $revoked_token );
 npcink_governance_core_smoke_assert( 401 === (int) $revoked_result['status'], 'revoked app key returns 401' );
 
+$expired_app = npcink_governance_core_smoke_rest(
+	'POST',
+	'/npcink-governance-core/v1/apps',
+	array(
+		'app_label'           => 'Expired smoke ' . $npcink_governance_core_smoke_run_id,
+		'caller_type'         => 'mcp_adapter',
+		'scopes'              => array( 'capabilities:read' ),
+		'rate_limit'          => 20,
+		'rate_window_seconds' => 3600,
+		'expires_at'          => gmdate( 'Y-m-d H:i:s', time() + 3600 ),
+	)
+);
+$expired_token = (string) ( $expired_app['token'] ?? '' );
+$expired_key   = (string) ( $expired_app['key_id'] ?? '' );
+npcink_governance_core_smoke_register_app_key_fixture( $expired_key );
+global $wpdb;
+$wpdb->update(
+	$app_keys->table_name(),
+	array(
+		'expires_at' => gmdate( 'Y-m-d H:i:s', time() - 60 ),
+	),
+	array( 'key_id' => $expired_key ),
+	array( '%s' ),
+	array( '%s' )
+);
+$expired_result = npcink_governance_core_smoke_rest_result_as_app( 'GET', '/npcink-governance-core/v1/capabilities', $expired_token );
+npcink_governance_core_smoke_assert( 401 === (int) $expired_result['status'], 'expired app key returns 401' );
+
 $items_by_id                     = array();
 $all_have_governance_mode        = true;
 $all_have_execution_surface      = true;

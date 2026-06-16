@@ -1,5 +1,106 @@
 # Session Breadcrumb
 
+## 2026-06-15 — Runtime owner can be bundled in Toolbox release
+
+- **Module**: Future runtime packaging decision.
+- **Status**: ADR-007 now clarifies that `npcink-local-automation-runtime`
+  remains the independently developed and independently testable runtime owner,
+  while release packaging may bundle it inside Toolbox as an isolated
+  `modules/local-automation-runtime/` module.
+- **Completed**:
+  - Updated ADR-007 to allow Toolbox release bundling without collapsing
+    runtime ownership into Toolbox fixed-flow buttons.
+  - Updated the runtime contract and README with the required isolated module
+    identity: namespace, table prefix, capabilities, contract version, kill
+    switch, tests, and boundary docs.
+  - Updated static contracts so default tests protect the bundled-module
+    boundary.
+- **Boundary**:
+  - This pass changes packaging policy only. It does not create the runtime
+    repo/module and does not add Core REST routes, Core tables, workers,
+    schedulers, lease stores, retry processors, dead-letter processors,
+    unattended approval, or final WordPress writes.
+
+## 2026-06-15 — Local automation runtime owner and Phase 1 replay fixed
+
+- **Module**: Future runtime owner decision and Phase 1 contract artifacts.
+- **Status**: ADR-007 now names the future independent runtime owner as
+  `npcink-local-automation-runtime`, with Phase 1 limited to schema and
+  dry-run replay artifacts.
+- **Completed**:
+  - Added ADR-007 to select the future repo/plugin owner and keep Core,
+    Adapter, Toolbox, and Toolkit out of unattended runtime ownership.
+  - Added `docs/local-automation-runtime-phase-1-schema.md` for the Phase 1
+    dry-run replay schema.
+  - Added `tests/fixtures/local-automation-runtime-dry-run-replay.json` as the
+    first contract fixture for the future runtime repo.
+  - Updated README, the runtime contract, and static tests to cover owner,
+    schema, replay, and no-background-execution guarantees.
+- **Boundary**:
+  - This pass still does not create `/Users/muze/gitee/npcink-local-automation-runtime`
+    and does not add Core REST routes, Core tables, workers, schedulers, lease
+    stores, retry processors, dead-letter processors, unattended approval, or
+    final WordPress writes.
+
+## 2026-06-15 — Local automation runtime contract drafted
+
+- **Module**: Future local automation runtime planning contract.
+- **Status**: A planning-only runtime contract now defines the required job
+  model, action model, state machine, Core handoff, lease/retry/dead-letter
+  behavior, idempotency, dependency resolution, authorization, operator
+  controls, audit events, and acceptance gates for future unattended batch
+  automation.
+- **Completed**:
+  - Added `docs/local-automation-runtime-contract.md` as the contract-first
+    specification for any future dedicated runtime owner.
+  - Linked the contract from README and ADR-006.
+  - Added static contract assertions so default tests protect the boundary and
+    required runtime semantics.
+- **Boundary**:
+  - This pass is documentation and contract only. Core still has no runtime
+    job table, scheduler, lease store, retry worker, dead-letter processor,
+    unattended approval loop, or final WordPress write execution.
+
+## 2026-06-15 — Unattended batch automation boundary recorded
+
+- **Module**: Core architecture decisions and batch automation boundary.
+- **Status**: ADR-006 now records that unattended batch automation must wait
+  for a dedicated local automation runtime contract instead of being added to
+  Core or the OpenClaw Adapter.
+- **Completed**:
+  - Added ADR-006 to define current-stage reviewed batch governance versus
+    future unattended runtime ownership.
+  - Required a future runtime contract to define job storage, leases, locks,
+    retry backoff, dead-letter handling, idempotency, dependency resolution,
+    kill switch, pause/cancel behavior, rate limits, runtime audit, and
+    operator-visible recovery guidance before implementation.
+  - Updated README and static contracts so the ADR is part of the default
+    development entrypoint and test gate.
+- **Boundary**:
+  - This pass does not add jobs, queues, schedulers, retry workers, unattended
+    approval, runtime state, or final WordPress writes to Core.
+
+## 2026-06-15 — Batch proposal review summary added
+
+- **Module**: Plan-to-proposal batch review visibility.
+- **Status**: Core batch proposals now expose a stable
+  `preview.batch_review_summary`, and commit preflight returns the same summary
+  under `proposal_item_preflight` for operator recovery guidance.
+- **Completed**:
+  - Added `core-batch-review-summary-v1` for grouped
+    `plan_to_proposal_batch` proposals, including action counts, blocked counts,
+    target ability ids, retryability, operator next action, and explicit
+    `final_execution_owner=adapter_after_core_preflight`.
+  - Preserved `core_execution=false` and `commit_execution=false` in the
+    summary so it cannot be mistaken for Core-owned runtime or execution
+    authority.
+  - Bounded the commit-preflight summary response shape so unknown queue-like
+    fields and secret-shaped fields are not surfaced from proposal preview.
+  - Updated fail-closed/static tests and REST/governance/plan-intake docs.
+- **Boundary**:
+  - Core still does not own queues, schedulers, retry leases, background
+    workers, unattended approval, or final WordPress writes.
+
 ## 2026-06-13 — Block theme layout proposal intake accepted
 
 - **Module**: Plan-to-proposal intake for block theme template layouts.

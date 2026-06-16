@@ -177,6 +177,14 @@ return `artifact_type=block_theme_site_plan`, `intent=add_breadcrumbs` or
 non-empty Gutenberg `blocks` tree.
 For `customize_template_layout`, Core also requires a passing bounded
 `template_layout_contract` with accepted profile rows.
+Template upserts are limited to accepted template slugs (`front-page`, `home`,
+`index`, `page`, and `single`). The reviewed block tree must declare parser
+roundtrip validation, use only Core's safe block allowlist, stay within bounded
+block count/depth/attribute-size limits, and must not contain scriptable or
+embedded raw HTML such as `script`, `iframe`, `object`, `embed`, `style`,
+`link`, or `meta`. Core rejects navigation blocks, custom HTML/freeform blocks,
+shortcode blocks, embed blocks, unknown blocks, and any plan that tries to
+touch navigation entities, global styles, theme files, or `theme.json`.
 
 File-backed templates are represented as reviewed
 `npcink-abilities-toolkit/upsert-template-blocks` actions that create a
@@ -201,13 +209,16 @@ small set of reviewed actions for one target post. Core accepts only
 category assignment action, and at most one post-tag assignment action. Core
 rejects duplicate metadata action slots, title/content updates, SEO writes,
 missing-term creation, named `terms`, unsupported taxonomies, and remove-mode
-term changes.
+term changes. If the plan carries an operation classification envelope, it must
+classify the submitted handoff as `core_proposal_required`; a
+`local_admin_consent` classification belongs to a present-admin product path
+and is rejected from Core plan intake.
 
 The generated batch proposal preserves `preview.content_metadata_apply` with the
-target post id, accepted choices, evidence refs, new-term candidate count, and
-`direct_wordpress_write=false`. Core does not generate metadata suggestions,
-approve the proposal, execute the write, create taxonomy terms, store feedback,
-or maintain a learning loop.
+target post id, accepted choices, evidence refs, classification decision
+evidence, new-term candidate count, and `direct_wordpress_write=false`. Core
+does not generate metadata suggestions, approve the proposal, execute the
+write, create taxonomy terms, store feedback, or maintain a learning loop.
 
 Article writing is a local Ability recipe, not a Cloud writing feature. Cloud
 must not produce article drafts, `article_write_plan` candidates, or bulk
@@ -430,6 +441,13 @@ path must continue to enforce its per-action allowlist, schema validation,
 dependency/output reference rules, and batch size limits before any WordPress
 mutation happens.
 
+Grouped proposals also store `preview.batch_review_summary` with
+`summary_version=core-batch-review-summary-v1`, action and blocked counts,
+target ability ids, `operator_next_action`, and `final_execution_owner`. This
+summary is for human review, Adapter recovery guidance, and commit-preflight
+visibility only. It is not a queue record, lease, retry job, execution token, or
+Core-owned runtime state.
+
 ## Commit Preflight
 
 Commit preflight now evaluates proposal item readiness:
@@ -438,6 +456,11 @@ Commit preflight now evaluates proposal item readiness:
   after approval.
 - `proposal_ready=false` or non-empty `needs_input`/`preflight_blockers` returns
   `npcink_governance_core_proposal_items_blocked` with HTTP `409`.
+- if the proposal carries `preview.batch_review_summary`, commit preflight
+  returns a bounded summary shape inside
+  `proposal_item_preflight.batch_review_summary` so operators and adapters can
+  show the blocked reason and next action without inferring a hidden execution
+  queue.
 
 This means a human may review an incomplete plan action, but the host cannot
 treat it as committable until the required input is resolved in a later

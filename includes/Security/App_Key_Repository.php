@@ -57,6 +57,11 @@ final class App_Key_Repository {
 				rate_limit int unsigned DEFAULT 60 NOT NULL,
 				rate_window_seconds int unsigned DEFAULT 3600 NOT NULL,
 				caller_type varchar(80) DEFAULT 'external_app' NOT NULL,
+				expires_at datetime NULL,
+				last_used_ip_hash varchar(64) DEFAULT '' NOT NULL,
+				revoked_at datetime NULL,
+				revoked_reason text NULL,
+				hash_algorithm_version varchar(80) DEFAULT 'password_hash_default' NOT NULL,
 				created_by bigint(20) unsigned DEFAULT 0 NOT NULL,
 				created_at datetime NOT NULL,
 				updated_at datetime NOT NULL,
@@ -128,6 +133,7 @@ final class App_Key_Repository {
 		}
 		$rate_limit          = max( 1, min( 10000, absint( $data['rate_limit'] ?? self::DEFAULT_RATE_LIMIT ) ) );
 		$rate_window_seconds = max( 60, min( 86400, absint( $data['rate_window_seconds'] ?? self::DEFAULT_RATE_WINDOW ) ) );
+		$expires_at          = $this->sanitize_future_datetime( (string) ( $data['expires_at'] ?? '' ) );
 		$now                 = current_time( 'mysql', true );
 
 		if ( empty( $scopes ) ) {
@@ -157,6 +163,11 @@ final class App_Key_Repository {
 			'rate_limit'          => $rate_limit,
 			'rate_window_seconds' => $rate_window_seconds,
 			'caller_type'         => sanitize_key( (string) ( $data['caller_type'] ?? 'external_app' ) ),
+			'expires_at'          => $expires_at,
+			'last_used_ip_hash'   => '',
+			'revoked_at'          => null,
+			'revoked_reason'      => null,
+			'hash_algorithm_version' => 'password_hash_default',
 			'created_by'          => get_current_user_id(),
 			'created_at'          => $now,
 			'updated_at'          => $now,
@@ -167,7 +178,7 @@ final class App_Key_Repository {
 		$inserted = $wpdb->insert(
 			$this->table_name(),
 			$record,
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%d', '%s', '%s', '%s' )
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s' )
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
@@ -202,7 +213,7 @@ final class App_Key_Repository {
 			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 			$rows  = $wpdb->get_results(
 				$wpdb->prepare(
-					'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, created_by, created_at, updated_at, last_used_at FROM %i ORDER BY id DESC LIMIT %d OFFSET %d',
+					'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, expires_at, last_used_ip_hash, revoked_at, revoked_reason, hash_algorithm_version, created_by, created_at, updated_at, last_used_at FROM %i ORDER BY id DESC LIMIT %d OFFSET %d',
 					$this->table_name(),
 					$limit,
 					$offset
@@ -281,7 +292,7 @@ final class App_Key_Repository {
 			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 			$row = $wpdb->get_row(
 				$wpdb->prepare(
-					'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, created_by, created_at, updated_at, last_used_at FROM %i WHERE key_id = %s LIMIT 1',
+					'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, expires_at, last_used_ip_hash, revoked_at, revoked_reason, hash_algorithm_version, created_by, created_at, updated_at, last_used_at FROM %i WHERE key_id = %s LIMIT 1',
 					$this->table_name(),
 					sanitize_text_field( $key_id )
 				),
@@ -310,18 +321,26 @@ final class App_Key_Repository {
 	 * @param string $key_id Key id.
 	 * @return void
 	 */
-	public function touch_last_used( string $key_id ): void {
+	public function touch_last_used( string $key_id, string $ip_hash = '' ): void {
 		global $wpdb;
+
+		$updates = array(
+			'last_used_at' => current_time( 'mysql', true ),
+			'updated_at'   => current_time( 'mysql', true ),
+		);
+		$formats = array( '%s', '%s' );
+		$ip_hash = sanitize_text_field( $ip_hash );
+		if ( '' !== $ip_hash ) {
+			$updates['last_used_ip_hash'] = $ip_hash;
+			$formats[] = '%s';
+		}
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$wpdb->update(
 			$this->table_name(),
-			array(
-				'last_used_at' => current_time( 'mysql', true ),
-				'updated_at'   => current_time( 'mysql', true ),
-			),
+			$updates,
 			array( 'key_id' => sanitize_text_field( $key_id ) ),
-			array( '%s', '%s' ),
+			$formats,
 			array( '%s' )
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
@@ -333,26 +352,40 @@ final class App_Key_Repository {
 	 * @param string $key_id Key id.
 	 * @return bool Whether a row was updated.
 	 */
-	public function revoke_by_key_id( string $key_id ): bool {
+	public function revoke_by_key_id( string $key_id, string $reason = '' ): bool {
 		global $wpdb;
+		$now = current_time( 'mysql', true );
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$updated = $wpdb->update(
 			$this->table_name(),
 			array(
-				'status'     => 'revoked',
-				'updated_at' => current_time( 'mysql', true ),
+				'status'         => 'revoked',
+				'revoked_at'     => $now,
+				'revoked_reason' => sanitize_textarea_field( $reason ),
+				'updated_at'     => $now,
 			),
 			array(
 				'key_id' => sanitize_text_field( $key_id ),
 				'status' => 'active',
 			),
-			array( '%s', '%s' ),
+			array( '%s', '%s', '%s', '%s' ),
 			array( '%s', '%s' )
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return false !== $updated && $updated > 0;
+	}
+
+	/**
+	 * Checks whether an app key row is expired.
+	 *
+	 * @param array<string,mixed> $app App row.
+	 * @return bool
+	 */
+	public function is_expired( array $app ): bool {
+		$expires_at = strtotime( (string) ( $app['expires_at'] ?? '' ) );
+		return false !== $expires_at && $expires_at <= time();
 	}
 
 	/**
@@ -418,6 +451,12 @@ final class App_Key_Repository {
 			'rate_limit'          => (int) ( $row['rate_limit'] ?? self::DEFAULT_RATE_LIMIT ),
 			'rate_window_seconds' => (int) ( $row['rate_window_seconds'] ?? self::DEFAULT_RATE_WINDOW ),
 			'caller_type'         => sanitize_key( (string) ( $row['caller_type'] ?? 'external_app' ) ),
+			'token_prefix'        => self::TOKEN_PREFIX,
+			'expires_at'          => sanitize_text_field( (string) ( $row['expires_at'] ?? '' ) ),
+			'last_used_ip_hash'   => sanitize_text_field( (string) ( $row['last_used_ip_hash'] ?? '' ) ),
+			'revoked_at'          => sanitize_text_field( (string) ( $row['revoked_at'] ?? '' ) ),
+			'revoked_reason'      => sanitize_textarea_field( (string) ( $row['revoked_reason'] ?? '' ) ),
+			'hash_algorithm_version' => sanitize_key( (string) ( $row['hash_algorithm_version'] ?? 'password_hash_default' ) ),
 			'created_by'          => (int) ( $row['created_by'] ?? 0 ),
 			'created_at'          => sanitize_text_field( (string) ( $row['created_at'] ?? '' ) ),
 			'updated_at'          => sanitize_text_field( (string) ( $row['updated_at'] ?? '' ) ),
@@ -429,5 +468,25 @@ final class App_Key_Repository {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Sanitizes an optional future UTC datetime.
+	 *
+	 * @param string $value Raw value.
+	 * @return string|null
+	 */
+	private function sanitize_future_datetime( string $value ) {
+		$value = trim( $value );
+		if ( '' === $value ) {
+			return null;
+		}
+
+		$timestamp = strtotime( $value );
+		if ( false === $timestamp || $timestamp <= time() ) {
+			return null;
+		}
+
+		return gmdate( 'Y-m-d H:i:s', $timestamp );
 	}
 }

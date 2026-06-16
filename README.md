@@ -91,6 +91,8 @@ Read the project handoff docs before starting a new implementation session:
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
 - [Operation Classification Contract](docs/operation-classification-contract.md)
 - [Plan To Proposal Governance](docs/plan-to-proposal-governance.md)
+- [Local Automation Runtime Contract](docs/local-automation-runtime-contract.md)
+- [Local Automation Runtime Phase 1 Schema](docs/local-automation-runtime-phase-1-schema.md)
 - [Current Stage Closeout And Handoff](docs/current-stage-closeout-and-handoff.md)
 - [Approval Policy Stage Closeout](docs/approval-policy-stage-closeout.md)
 - [Ability Recipe Orchestration Contract](docs/ability-recipe-orchestration-contract.md)
@@ -117,6 +119,8 @@ Read the project handoff docs before starting a new implementation session:
 - [ADR-003: Keep Final Execution Outside Core For The Current Stage](docs/decisions/ADR-003-keep-final-execution-outside-core.md)
 - [ADR-004: Suite Consolidation And Local Admin Consent](docs/decisions/ADR-004-suite-consolidation-and-local-admin-consent.md)
 - [ADR-005: Keep Core Independent And Standardize Channel Adapters](docs/decisions/ADR-005-keep-core-independent-and-standardize-channel-adapters.md)
+- [ADR-006: Unattended Batch Automation Runtime Boundary](docs/decisions/ADR-006-unattended-batch-automation-runtime-boundary.md)
+- [ADR-007: Dedicated Local Automation Runtime Owner](docs/decisions/ADR-007-dedicated-local-automation-runtime-owner.md)
 
 External agent clients can start from the
 [OpenClaw governance adapter example](examples/openclaw-governance-adapter/README.md).
@@ -161,6 +165,28 @@ into today's OpenClaw Adapter yet. Keep Core independent, treat OpenClaw
 Adapter as the first channel adapter, standardize the shared channel adapter
 contract, and use the Operation Classification Contract before moving Toolbox
 or adapter flows to local admin consent or Core proposal paths.
+
+ADR-006 keeps unattended batch automation out of Core and the OpenClaw Adapter
+until a dedicated local automation runtime contract exists. Current batch work
+is reviewed governance only: Toolkit and Toolbox can expose eligibility,
+blocked items, retry guidance, and operator next actions; Core stores
+`batch_review_summary`; Adapter projects `batch_review_feedback` and executes
+nothing until Core approval, commit preflight, and its explicit allowlist pass.
+Jobs, leases, retry workers, scheduler state, dead-letter handling, and
+unattended approval loops require a separate runtime owner and contract.
+The [Local Automation Runtime Contract](docs/local-automation-runtime-contract.md)
+defines the future runtime's job model, action model, state machine, Core
+handoff, lease/retry/dead-letter behavior, idempotency, dependency resolution,
+authorization, operator controls, audit events, and acceptance gates without
+adding Core runtime ownership.
+ADR-007 names the dedicated runtime owner as
+`npcink-local-automation-runtime`. It should be independently developed and
+independently testable, while product release packaging may bundle it inside
+Toolbox as `modules/local-automation-runtime/` if the module keeps its own
+namespace, table prefix, capabilities, kill switch, tests, and boundary docs.
+Phase 1 is schema and dry-run replay only: Core keeps the planning schema and
+`tests/fixtures/local-automation-runtime-dry-run-replay.json` as handoff
+artifacts, while runtime implementation waits for the dedicated owner.
 
 The taxonomy terms preview extension proves the same boundary for
 `npcink-abilities-toolkit/propose-post-taxonomy-terms` -> `npcink-abilities-toolkit/set-post-terms`: adapters

@@ -174,6 +174,14 @@ foreach (
 		'Sensitive Read Authorization',
 		'ADR-004: Suite Consolidation And Local Admin Consent',
 		'ADR-005: Keep Core Independent And Standardize Channel Adapters',
+		'ADR-006: Unattended Batch Automation Runtime Boundary',
+		'ADR-007: Dedicated Local Automation Runtime Owner',
+		'Local Automation Runtime Contract',
+		'Local Automation Runtime Phase 1 Schema',
+		'npcink-local-automation-runtime',
+		'modules/local-automation-runtime/',
+		'local-automation-runtime-dry-run-replay.json',
+		'Jobs, leases, retry workers, scheduler state',
 		'AI Development Workstream Summary',
 		'Operation Classification Contract',
 		'local admin consent with audit',
@@ -877,6 +885,14 @@ foreach (
 		'password_verify',
 		'OFFSET %d',
 		'latest_last_used_at',
+		'expires_at',
+		'last_used_ip_hash',
+		'revoked_at',
+		'revoked_reason',
+		'hash_algorithm_version',
+		'token_prefix',
+		'is_expired',
+		'sanitize_future_datetime',
 		'capabilities:read',
 		'proposals:create',
 		'commit:preflight',
@@ -938,6 +954,8 @@ foreach (
 		"x-npcink-governance-core-app-token",
 		"mark_scope_decision( 'denied' )",
 		"mark_scope_decision( 'rate_limited' )",
+		"mark_scope_decision( 'expired' )",
+		'request_ip_hash',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $app_authenticator, $required ), 'App authenticator contains required text: ' . $required );
@@ -954,6 +972,8 @@ $adr_002 = npcink_governance_core_read( $root . '/docs/decisions/ADR-002-no-work
 $adr_003 = npcink_governance_core_read( $root . '/docs/decisions/ADR-003-keep-final-execution-outside-core.md' );
 $adr_004 = npcink_governance_core_read( $root . '/docs/decisions/ADR-004-suite-consolidation-and-local-admin-consent.md' );
 $adr_005 = npcink_governance_core_read( $root . '/docs/decisions/ADR-005-keep-core-independent-and-standardize-channel-adapters.md' );
+$adr_006 = npcink_governance_core_read( $root . '/docs/decisions/ADR-006-unattended-batch-automation-runtime-boundary.md' );
+$adr_007 = npcink_governance_core_read( $root . '/docs/decisions/ADR-007-dedicated-local-automation-runtime-owner.md' );
 npcink_governance_core_assert( false !== strpos( $adr_001, 'Create a new standalone `npcink-governance-core` plugin' ), 'ADR-001 records rebuild decision.' );
 npcink_governance_core_assert( false !== strpos( $adr_002, '`npcink-governance-core` must not implement a workflow runtime' ), 'ADR-002 bans workflow runtime ownership.' );
 npcink_governance_core_assert( false !== strpos( $adr_003, 'Core remains governance-only' ), 'ADR-003 keeps Core governance-only for the current stage.' );
@@ -967,6 +987,106 @@ npcink_governance_core_assert( false !== strpos( $adr_005, 'Do not merge Core an
 npcink_governance_core_assert( false !== strpos( $adr_005, 'OpenClaw Adapter as the first channel adapter' ), 'ADR-005 treats OpenClaw Adapter as one channel adapter.' );
 npcink_governance_core_assert( false !== strpos( $adr_005, 'shared operation classification contract' ), 'ADR-005 requires shared operation classification.' );
 npcink_governance_core_assert( false !== strpos( $adr_005, 'Future MCP, browser' ) && false !== strpos( $adr_005, 'cloud, or local automation adapters' ), 'ADR-005 preserves future adapter optionality.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'Do not implement unattended batch automation inside Core or the OpenClaw' ), 'ADR-006 keeps unattended batch automation outside Core and Adapter.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'dedicated local automation runtime' ), 'ADR-006 requires a dedicated local automation runtime contract.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'Core must not own jobs, leases, retries, workers' ), 'ADR-006 blocks Core runtime ownership.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'Adapter must not own scheduler state' ), 'ADR-006 blocks Adapter scheduler ownership.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'batch_review_summary' ) && false !== strpos( $adr_006, 'batch_review_feedback' ), 'ADR-006 ties current batch work to review feedback, not runtime.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'Lease, lock, timeout, retry backoff, and dead-letter semantics' ), 'ADR-006 requires lease, timeout, retry, and dead-letter semantics before runtime.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'Kill switch, pause, resume, and cancel behavior' ), 'ADR-006 requires operator stop controls before runtime.' );
+npcink_governance_core_assert( false !== strpos( $adr_006, 'No unattended runtime exists in this phase' ), 'ADR-006 keeps Phase 0 reviewed governance only.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'Use `npcink-local-automation-runtime` as the dedicated owner' ), 'ADR-007 selects a dedicated future runtime owner.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, '`npcink-local-automation-runtime`' ), 'ADR-007 names npcink-local-automation-runtime.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'repo: `/Users/muze/gitee/npcink-local-automation-runtime`' ), 'ADR-007 records the future runtime repo path.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'release packaging may bundle it inside' ) && false !== strpos( $adr_007, '`magick-ai-toolbox`' ), 'ADR-007 allows Toolbox release bundling.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'module path: `modules/local-automation-runtime/`' ), 'ADR-007 defines the Toolbox bundled module path.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'Toolbox fixed-flow' ) && false !== strpos( $adr_007, 'runtime state machine' ), 'ADR-007 keeps Toolbox fixed buttons out of runtime ownership.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'Phase 1 is contract and replay only' ), 'ADR-007 keeps Phase 1 contract and replay only.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'This Core pass does not create the development repository' ), 'ADR-007 keeps this Core pass implementation-free.' );
+
+$local_automation_runtime_contract = npcink_governance_core_read( $root . '/docs/local-automation-runtime-contract.md' );
+foreach (
+	array(
+		'Status: planning contract',
+		'ADR-007: Dedicated Local Automation Runtime Owner',
+		'npcink-local-automation-runtime',
+		'magick-ai-toolbox',
+		'modules/local-automation-runtime/',
+		'Toolbox fixed',
+		'does not add Core REST',
+		'Core final write execution',
+		'contract_version',
+		'npcink_local_automation_runtime.v1',
+		'job_id',
+		'idempotency_key',
+		'core_handoff',
+		'Allowed job statuses',
+		'awaiting_core_approval',
+		'awaiting_core_preflight',
+		'dead_lettered',
+		'compare-and-set style',
+		'eligibility_summary',
+		'blocked_items',
+		'Core proposal creation fails',
+		'approved_input_hash',
+		'lease_token',
+		'lease_expires_at',
+		'no infinite retries',
+		'next_retry_at',
+		'Action execution must carry an action-level idempotency key',
+		'$outputs.prior_action.field',
+		'approval scope',
+		'kill switch for all scheduled unattended runs',
+		'runtime.job.dead_lettered',
+		'runtime.action.lease_acquired',
+		'Before a supervised worker ships',
+		'Before scheduled unattended jobs ship',
+		'no unattended runtime, no scheduler, no worker, no runtime job table',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $local_automation_runtime_contract, $required ), 'Local automation runtime contract contains required text: ' . $required );
+}
+
+$local_automation_phase_1_schema = npcink_governance_core_read( $root . '/docs/local-automation-runtime-phase-1-schema.md' );
+foreach (
+	array(
+		'Status: planning schema',
+		'npcink-local-automation-runtime',
+		'npcink_local_automation_runtime.v1',
+		'dry_run_replay',
+		'background_execution',
+		'Allowed Phase 1 `status` values',
+		'Phase 1 fixtures must not use `running`',
+		'core_execution` and `commit_execution` must both be `false`',
+		'Action execution events are intentionally excluded from Phase 1 fixtures',
+		'"phase": "phase_1_contract_only"',
+		'"worker_created": false',
+		'"scheduler_created": false',
+		'"dead_letter_processor_created": false',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $local_automation_phase_1_schema, $required ), 'Local automation runtime Phase 1 schema contains required text: ' . $required );
+}
+
+$local_automation_replay_text = npcink_governance_core_read( $root . '/tests/fixtures/local-automation-runtime-dry-run-replay.json' );
+$local_automation_replay      = json_decode( $local_automation_replay_text, true );
+npcink_governance_core_assert( is_array( $local_automation_replay ), 'Local automation runtime dry-run replay fixture is valid JSON.' );
+npcink_governance_core_assert( 'npcink_local_automation_runtime.v1' === ( $local_automation_replay['contract_version'] ?? '' ), 'Local automation runtime replay fixture declares contract version.' );
+npcink_governance_core_assert( 'dry_run_replay' === ( $local_automation_replay['mode'] ?? '' ), 'Local automation runtime replay fixture is dry-run replay only.' );
+npcink_governance_core_assert( 'npcink-local-automation-runtime' === ( $local_automation_replay['runtime_owner'] ?? '' ), 'Local automation runtime replay fixture names the future owner.' );
+npcink_governance_core_assert( false === ( $local_automation_replay['core_runtime_execution'] ?? true ), 'Local automation runtime replay fixture keeps Core runtime execution false.' );
+npcink_governance_core_assert( false === ( $local_automation_replay['background_execution'] ?? true ), 'Local automation runtime replay fixture keeps background execution false.' );
+npcink_governance_core_assert( isset( $local_automation_replay['job']['eligibility_summary'] ) && is_array( $local_automation_replay['job']['eligibility_summary'] ), 'Local automation runtime replay fixture includes eligibility summary.' );
+npcink_governance_core_assert( isset( $local_automation_replay['job']['blocked_items'] ) && is_array( $local_automation_replay['job']['blocked_items'] ), 'Local automation runtime replay fixture includes blocked items.' );
+npcink_governance_core_assert( isset( $local_automation_replay['job']['actions'] ) && 2 === count( $local_automation_replay['job']['actions'] ), 'Local automation runtime replay fixture includes two dry-run actions.' );
+npcink_governance_core_assert( false === ( $local_automation_replay['core_handoff']['core_execution'] ?? true ), 'Local automation runtime replay fixture keeps handoff core_execution false.' );
+npcink_governance_core_assert( false === ( $local_automation_replay['core_handoff']['commit_execution'] ?? true ), 'Local automation runtime replay fixture keeps handoff commit_execution false.' );
+npcink_governance_core_assert( true === ( $local_automation_replay['operator_controls']['kill_switch'] ?? false ), 'Local automation runtime replay fixture includes kill switch control.' );
+npcink_governance_core_assert( true === ( $local_automation_replay['acceptance']['schema_only'] ?? false ), 'Local automation runtime replay fixture is schema-only.' );
+npcink_governance_core_assert( true === ( $local_automation_replay['acceptance']['dry_run_replay_only'] ?? false ), 'Local automation runtime replay fixture is replay-only.' );
+npcink_governance_core_assert( false === ( $local_automation_replay['acceptance']['worker_created'] ?? true ), 'Local automation runtime replay fixture does not create a worker.' );
+npcink_governance_core_assert( false === ( $local_automation_replay['acceptance']['scheduler_created'] ?? true ), 'Local automation runtime replay fixture does not create a scheduler.' );
+npcink_governance_core_assert( false === ( $local_automation_replay['acceptance']['dead_letter_processor_created'] ?? true ), 'Local automation runtime replay fixture does not create a dead-letter processor.' );
 
 $operation_classification = npcink_governance_core_read( $root . '/docs/operation-classification-contract.md' );
 $operation_classifier = npcink_governance_core_read( $root . '/includes/Governance/Operation_Classifier.php' );
@@ -998,6 +1118,8 @@ foreach (
 	npcink_governance_core_assert( false !== strpos( $operation_classifier, $required ), 'Operation classifier contains required text: ' . $required );
 }
 npcink_governance_core_assert( false !== strpos( $operation_classifier, 'operation-classification-v1' ), 'Operation classifier returns a stable policy version.' );
+npcink_governance_core_assert( false !== strpos( $operation_classifier, 'decision_envelope' ), 'Operation classifier returns a stable decision envelope.' );
+npcink_governance_core_assert( false !== strpos( $operation_classifier, 'risk_factors' ), 'Operation classifier exposes auditable decision risk factors.' );
 npcink_governance_core_assert( false !== strpos( $operation_classifier, 'target_ability_id' ), 'Operation classifier requires Core proposal evidence for high-risk writes.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'includes/Autoloader.php' ), 'Main plugin uses the class autoloader for operation classifier loading.' );
 $plugin_container = npcink_governance_core_read( $root . '/includes/Plugin.php' );
@@ -1019,6 +1141,7 @@ $suggestion_classification = $classifier->classify(
 	)
 );
 npcink_governance_core_assert( 'suggestion_only' === (string) ( $suggestion_classification['classification'] ?? '' ), 'Operation classifier returns suggestion_only for no-write suggestions.' );
+npcink_governance_core_assert( 'operation-classification-v1' === (string) ( $suggestion_classification['decision_envelope']['decision_version'] ?? '' ), 'Operation classifier decision envelope includes the stable decision version.' );
 
 $local_consent_classification = $classifier->classify(
 	array(
@@ -1032,6 +1155,7 @@ $local_consent_classification = $classifier->classify(
 );
 npcink_governance_core_assert( 'local_admin_consent' === (string) ( $local_consent_classification['classification'] ?? '' ), 'Operation classifier allows single visible low-risk admin writes.' );
 npcink_governance_core_assert( in_array( 'actor_user_id', (array) ( $local_consent_classification['required_evidence'] ?? array() ), true ), 'Local admin consent requires actor evidence.' );
+npcink_governance_core_assert( 'wp_admin_ui' === (string) ( $local_consent_classification['decision_envelope']['request_source'] ?? '' ), 'Local admin consent envelope preserves normalized request source.' );
 
 $batch_featured_images_classification = $classifier->classify(
 	array(
@@ -1045,6 +1169,7 @@ $batch_featured_images_classification = $classifier->classify(
 );
 npcink_governance_core_assert( 'core_proposal_required' === (string) ( $batch_featured_images_classification['classification'] ?? '' ), 'Operation classifier sends batch image selection to Core proposal review even from wp-admin.' );
 npcink_governance_core_assert( in_array( 'scope_not_single_object', (array) ( $batch_featured_images_classification['reasons'] ?? array() ), true ), 'Batch image selection is rejected from local consent because it touches multiple objects.' );
+npcink_governance_core_assert( in_array( 'broad_or_batch_scope', (array) ( $batch_featured_images_classification['decision_envelope']['risk_factors'] ?? array() ), true ), 'Batch classification envelope records broad or batch scope risk.' );
 
 $strong_confirmation_classification = $classifier->classify(
 	array(
@@ -1525,6 +1650,8 @@ npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'pol
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'payload_hash' ), 'Commit preflight has stable payload hash generation.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'new_correlation_id' ), 'Commit preflight generates a correlation id.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'proposal_item_preflight' ), 'Commit preflight evaluates proposal item readiness.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'batch_review_summary' ), 'Commit preflight returns batch review summary when a proposal has one.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'batch_review_summary_preflight' ), 'Commit preflight bounds batch review summary response shape.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'npcink_governance_core_proposal_items_blocked' ), 'Commit preflight blocks incomplete proposal items.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'execution_handoff' ), 'Commit preflight returns adapter execution handoff.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'adapter_after_core_preflight' ), 'Commit preflight handoff points execution to Adapter.' );
@@ -1595,6 +1722,7 @@ foreach (
 		'npcink_governance_core_site_knowledge_ready_rejected',
 		'npcink_governance_core_site_knowledge_evidence_missing',
 		'npcink_governance_core_content_metadata_create_missing_rejected',
+		'npcink_governance_core_content_metadata_authorization_rejected',
 		'npcink_governance_core_content_metadata_update_field_rejected',
 		'npcink_governance_core_content_metadata_term_field_rejected',
 		'npcink_governance_core_content_metadata_duplicate_action_rejected',
@@ -1632,10 +1760,18 @@ foreach (
 		'npcink_governance_core_block_theme_site_actions_rejected',
 		'npcink_governance_core_block_theme_site_layout_profile_rejected',
 		'npcink_governance_core_block_theme_site_layout_contract_rejected',
+		'npcink_governance_core_block_theme_site_block_rejected',
+		'npcink_governance_core_block_theme_site_block_tree_rejected',
+		'npcink_governance_core_block_theme_site_roundtrip_required',
+		'npcink_governance_core_block_theme_site_template_rejected',
 		'customize_template_layout',
 		'template_layout_contract',
 		'article_standard',
 		'homepage_landing',
+		'BLOCK_THEME_SITE_MAX_BLOCKS',
+		'BLOCK_THEME_SITE_MAX_BLOCK_DEPTH',
+		'block_theme_site_allowed_blocks',
+		'block_theme_site_allowed_template_slugs',
 		'npcink_governance_core_pattern_page_class_rejected',
 		'npcink_governance_core_article_plan_',
 		'npcink_governance_core_article_batch_',
@@ -1651,6 +1787,11 @@ foreach (
 		'proposal_ready',
 		'needs_input',
 		'preflight_blockers',
+		'batch_review_summary',
+		'core-batch-review-summary-v1',
+		'operator_next_action',
+		'resolve_blocked_items_before_commit_preflight',
+		'final_execution_owner',
 		'plan_requires_batch_proposal',
 		'plan_to_proposal_batch',
 		'batch_approval',

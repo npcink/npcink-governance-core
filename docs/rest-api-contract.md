@@ -99,8 +99,12 @@ Request fields:
 | `scopes` | array | no | Omit to use default adapter scopes: `capabilities:read`, `proposals:create`, `proposals:read`, `commit:preflight`, `read_requests:create`, `read_requests:read`, and `read_requests:preflight`. If provided, at least one valid scope is required. |
 | `rate_limit` | integer | no | Defaults to `60`. |
 | `rate_window_seconds` | integer | no | Defaults to `3600`. |
+| `expires_at` | string | no | Optional future UTC expiry. Past or invalid values are ignored. |
 
-Response `201`: app row plus `secret`, `token`, and `shown_once=true`.
+Response `201`: app row plus `secret`, `token`, `token_prefix`, and
+`shown_once=true`. App rows expose `expires_at`, `last_used_at`,
+`last_used_ip_hash`, `revoked_at`, `revoked_reason`, and
+`hash_algorithm_version`, but never raw secrets or secret hashes.
 
 Audit event:
 
@@ -635,7 +639,11 @@ using existing `term_ids` with `create_missing=false`. The batch may contain at
 most one excerpt action, one category action, and one post-tag action.
 Title/content updates, duplicate metadata action slots, SEO writes, named
 missing terms, unsupported taxonomies, remove-mode term changes, `commit=true`,
-or `dry_run=false` are rejected before proposal creation.
+or `dry_run=false` are rejected before proposal creation. If the plan supplies
+an operation classification envelope, the classification must be
+`core_proposal_required`; Core rejects `local_admin_consent` plan submissions
+because that path belongs to a present-admin product surface with local audit
+instead of Core plan intake.
 
 For `npcink-abilities-toolkit/build-media-optimization-plan`, the plan must declare
 `artifact_type=media_optimization_plan`, `proposal_mode=batch`,
@@ -722,6 +730,11 @@ content.
 For `intent=customize_template_layout`, Core additionally requires a passing
 `template_layout_contract` whose profile rows use accepted profiles such as
 `article_standard`, `page_standard`, or `homepage_landing`.
+Core accepts only bounded template slugs (`front-page`, `home`, `index`,
+`page`, and `single`), requires parser roundtrip validation evidence, and
+rejects navigation blocks, custom HTML/freeform blocks, shortcode blocks, embed
+blocks, unknown blocks, scriptable or embedded raw HTML, oversized block
+attributes, excessive block count, and excessive block depth.
 
 Each accepted independent `write_action` becomes a separate pending proposal by
 default. If the plan declares `batch_approval=true` or
@@ -803,6 +816,15 @@ Core has a delete action to review. Actions with `requires_input` still become
 reviewable proposals, but their preview carries `proposal_ready=false`,
 `needs_input`, and `preflight_blockers`; commit preflight must return `409`
 until the missing input is resolved by the host.
+
+When the plan creates one `plan_to_proposal_batch` proposal, the proposal
+preview includes `batch_review_summary`. The summary standardizes
+`action_count`, `blocked_count`, `needs_input_count`, `target_ability_ids`,
+`operator_next_action`, `retryable`, `final_execution_owner`, and
+`commit_execution=false` for operator review and Adapter recovery guidance. It
+does not create a Core queue, scheduler, retry lease, or execution runtime.
+Commit preflight returns only the bounded summary fields; unknown queue-like or
+secret-shaped preview fields are not part of the preflight contract.
 
 Errors:
 
@@ -967,6 +989,15 @@ Response `200`:
     "needs_input": [],
     "blocked_items": [],
     "warnings": [],
+    "batch_review_summary": {
+      "summary_version": "core-batch-review-summary-v1",
+      "action_count": 2,
+      "blocked_count": 0,
+      "operator_next_action": "review_and_approve_or_reject",
+      "final_execution_owner": "adapter_after_core_preflight",
+      "core_execution": false,
+      "commit_execution": false
+    },
     "commit_execution": false
   },
   "approval_context": {

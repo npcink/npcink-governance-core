@@ -44,12 +44,19 @@ Core app identity includes:
 | `scopes` | Explicit allowed actions. |
 | `rate_limit` | Requests allowed per route-family window. |
 | `rate_window_seconds` | Fixed-window duration. |
+| `expires_at` | Optional UTC expiry. Expired keys fail app authentication with `401`. |
+| `token_prefix` | Display-only token prefix for admin copy/paste guidance. |
+| `hash_algorithm_version` | Stored hash algorithm label for future migration evidence. |
 | `created_by` | WordPress user id that created the app identity. |
 | `created_at` | UTC creation time. |
 | `last_used_at` | Last successful authentication time. |
+| `last_used_ip_hash` | Non-reversible hash of the last successful request IP, when available. |
+| `revoked_at` | UTC time the key was manually revoked. |
+| `revoked_reason` | Optional administrator or system reason for revocation. |
 
 Raw secrets, bearer tokens, HMAC secrets, request signatures, cookies, and
-authorization headers must not be stored in proposal or audit metadata.
+authorization headers must not be stored in proposal or audit metadata. Core
+stores only a hash of the last-used IP, never the raw address.
 
 ## Initial Scope Set
 
@@ -139,7 +146,8 @@ Every app-authenticated governance event includes `metadata.auth` with:
 - `caller_type`, such as `mcp_adapter`, `agent_host`, `product_plugin`, or
   `internal`;
 - required `scope`;
-- `scope_decision`, currently `allowed`, `denied`, or `rate_limited`;
+- `scope_decision`, currently `allowed`, `denied`, `expired`, or
+  `rate_limited`;
 - `route_family`.
 
 The existing `actor_id` column continues to hold WordPress user identity. Pure
