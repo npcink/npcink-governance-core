@@ -1,5 +1,24 @@
 # Session Breadcrumb
 
+## 2026-06-16 — Block theme profile compiler contract enforced
+
+- **Module**: Plan-to-proposal intake for block theme template layout profiles.
+- **Status**: Core now validates `customize_template_layout` plans as
+  versioned profile compiler outputs, not only as safe block trees.
+- **Completed**:
+  - Required `template_layout_contract.compiler_version` or plan
+    `compiler_version` to be `block_theme_profile_compiler@0.2`.
+  - Required `template_layout_contract.forbidden_policy_version` to be
+    `block_theme_safe_core_blocks@0.2`.
+  - Required accepted versioned profiles such as `homepage_landing@0.2` and
+    per-profile rows with matching profile version, operation, modules, and
+    forbidden-output policy.
+  - Updated fail-closed fixtures, static contracts, and governance/API docs.
+- **Boundary**:
+  - Core still does not choose profiles, compile Gutenberg block trees, approve
+    proposals, execute writes, modify theme files, edit navigation, patch
+    global styles, or write `theme.json`.
+
 ## 2026-06-16 — Homepage block theme layout proposal intake accepted
 
 - **Module**: Plan-to-proposal intake for block theme homepage layouts.

@@ -2311,6 +2311,7 @@ final class Plan_Proposal_Service {
 			'core/button'              => true,
 			'core/buttons'             => true,
 			'core/categories'          => true,
+			'core/comments'            => true,
 			'core/column'              => true,
 			'core/columns'             => true,
 			'core/group'               => true,
@@ -2323,6 +2324,8 @@ final class Plan_Proposal_Service {
 			'core/post-content'        => true,
 			'core/post-date'           => true,
 			'core/post-featured-image' => true,
+			'core/post-navigation-link' => true,
+			'core/post-terms'          => true,
 			'core/post-template'       => true,
 			'core/post-title'          => true,
 			'core/query'               => true,
@@ -2389,11 +2392,19 @@ final class Plan_Proposal_Service {
 			'page_standard'    => true,
 			'homepage_landing' => true,
 		);
+		$allowed_profile_versions = array(
+			'article_standard' => 'article_standard@0.1',
+			'page_standard'    => 'page_standard@0.1',
+			'homepage_landing' => 'homepage_landing@0.2',
+		);
 		$layout_profile   = sanitize_key( (string) ( $plan['layout_profile'] ?? '' ) );
 		$layout_contract  = is_array( $plan['template_layout_contract'] ?? null ) ? $plan['template_layout_contract'] : array();
 		$contract_status  = sanitize_key( (string) ( $layout_contract['contract_status'] ?? '' ) );
 		$contract_model   = sanitize_key( (string) ( $layout_contract['placement_model'] ?? '' ) );
+		$compiler_version = sanitize_text_field( (string) ( $layout_contract['compiler_version'] ?? ( $plan['compiler_version'] ?? '' ) ) );
+		$policy_version   = sanitize_text_field( (string) ( $layout_contract['forbidden_policy_version'] ?? '' ) );
 		$profile_rows     = is_array( $layout_contract['profiles'] ?? null ) ? array_values( $layout_contract['profiles'] ) : array();
+		$accepted_versions = is_array( $layout_contract['accepted_profile_versions'] ?? null ) ? array_values( $layout_contract['accepted_profile_versions'] ) : array();
 
 		if ( '' !== $layout_profile && 'auto' !== $layout_profile && ! isset( $allowed_profiles[ $layout_profile ] ) ) {
 			return new WP_Error(
@@ -2405,16 +2416,35 @@ final class Plan_Proposal_Service {
 				)
 			);
 		}
-		if ( 'pass' !== $contract_status || 'bounded_template_layout_profile' !== $contract_model ) {
+		if (
+			'pass' !== $contract_status
+			|| 'bounded_template_layout_profile' !== $contract_model
+			|| 'block_theme_profile_compiler@0.2' !== $compiler_version
+			|| 'block_theme_safe_core_blocks@0.2' !== $policy_version
+		) {
 			return new WP_Error(
 				'npcink_governance_core_block_theme_site_layout_contract_rejected',
-				__( 'Block theme layout plans must include a passing bounded template layout contract.', 'npcink-governance-core' ),
+				__( 'Block theme layout plans must include a passing bounded template layout contract with accepted compiler and policy versions.', 'npcink-governance-core' ),
 				array(
 					'status'          => 422,
 					'contract_status' => $contract_status,
 					'contract_model'  => $contract_model,
+					'compiler_version' => $compiler_version,
+					'forbidden_policy_version' => $policy_version,
 				)
 			);
+		}
+		foreach ( $allowed_profile_versions as $profile_version ) {
+			if ( ! in_array( $profile_version, $accepted_versions, true ) ) {
+				return new WP_Error(
+					'npcink_governance_core_block_theme_site_layout_contract_rejected',
+					__( 'Block theme layout plans must declare all accepted versioned profile contracts.', 'npcink-governance-core' ),
+					array(
+						'status'          => 422,
+						'missing_profile_version' => $profile_version,
+					)
+				);
+			}
 		}
 		if ( empty( $profile_rows ) ) {
 			return new WP_Error(
@@ -2435,6 +2465,10 @@ final class Plan_Proposal_Service {
 				);
 			}
 			$row_profile = sanitize_key( (string) ( $row['layout_profile'] ?? '' ) );
+			$row_profile_version = sanitize_text_field( (string) ( $row['profile_version'] ?? ( $row['profile_id'] ?? '' ) ) );
+			$row_operation       = sanitize_key( (string) ( $row['operation'] ?? '' ) );
+			$row_modules         = is_array( $row['modules'] ?? null ) ? array_values( $row['modules'] ) : array();
+			$row_forbidden       = is_array( $row['forbidden_outputs'] ?? null ) ? array_values( $row['forbidden_outputs'] ) : array();
 			if ( ! isset( $allowed_profiles[ $row_profile ] ) || empty( $row['profile_allowed'] ) ) {
 				return new WP_Error(
 					'npcink_governance_core_block_theme_site_layout_profile_rejected',
@@ -2445,6 +2479,36 @@ final class Plan_Proposal_Service {
 						'layout_profile' => $row_profile,
 					)
 				);
+			}
+			if (
+				( $allowed_profile_versions[ $row_profile ] ?? '' ) !== $row_profile_version
+				|| 'replace_template_layout_with_preserved_template_parts' !== $row_operation
+				|| empty( $row_modules )
+			) {
+				return new WP_Error(
+					'npcink_governance_core_block_theme_site_layout_profile_rejected',
+					__( 'Block theme layout profile rows must use accepted profile versions, operations, and modules.', 'npcink-governance-core' ),
+					array(
+						'status'          => 422,
+						'profile_index'   => $index,
+						'layout_profile'  => $row_profile,
+						'profile_version' => $row_profile_version,
+						'operation'       => $row_operation,
+					)
+				);
+			}
+			foreach ( array( 'core/html', 'non_core_blocks', 'custom_css', 'theme_json', 'global_styles', 'navigation_write', 'template_part_write' ) as $required_forbidden ) {
+				if ( ! in_array( $required_forbidden, $row_forbidden, true ) ) {
+					return new WP_Error(
+						'npcink_governance_core_block_theme_site_layout_contract_rejected',
+						__( 'Block theme layout profile rows must preserve the forbidden output policy.', 'npcink-governance-core' ),
+						array(
+							'status'             => 422,
+							'profile_index'      => $index,
+							'missing_forbidden'  => $required_forbidden,
+						)
+					);
+				}
 			}
 		}
 

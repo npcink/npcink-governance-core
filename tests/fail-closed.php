@@ -2196,21 +2196,31 @@ function npcink_governance_core_fail_closed_block_theme_layout_plan(): array {
 	$plan['intent']         = 'customize_template_layout';
 	$plan['layout_profile'] = 'article_standard';
 	$plan['template_layout_contract'] = array(
-		'catalog_id'        => 'gutenberg_native_v1',
-		'catalog_version'   => '1.0',
-		'surface'           => 'template',
-		'intent'            => 'customize_template_layout',
-		'placement_model'   => 'bounded_template_layout_profile',
-		'accepted_profiles' => array( 'article_standard', 'page_standard', 'homepage_landing' ),
-		'forbidden_outputs' => array( 'raw_template_html', 'core/html', 'core/freeform', 'non_core_blocks', 'custom_css' ),
-		'contract_status'   => 'pass',
-		'violation_codes'   => array(),
-		'profiles'          => array(
+		'catalog_id'                => 'gutenberg_native_v1',
+		'catalog_version'           => '1.0',
+		'compiler_version'          => 'block_theme_profile_compiler@0.2',
+		'forbidden_policy_version'  => 'block_theme_safe_core_blocks@0.2',
+		'surface'                   => 'template',
+		'intent'                    => 'customize_template_layout',
+		'placement_model'           => 'bounded_template_layout_profile',
+		'accepted_profiles'         => array( 'article_standard', 'page_standard', 'homepage_landing' ),
+		'accepted_profile_versions' => array( 'article_standard@0.1', 'page_standard@0.1', 'homepage_landing@0.2' ),
+		'forbidden_outputs'         => array( 'raw_template_html', 'core/html', 'core/freeform', 'non_core_blocks', 'custom_css', 'theme_json', 'global_styles', 'navigation_write', 'template_part_write' ),
+		'contract_status'           => 'pass',
+		'violation_codes'           => array(),
+		'profiles'                  => array(
 			array(
-				'slug'            => 'single',
-				'layout_profile'  => 'article_standard',
-				'profile_allowed' => true,
-				'sections'        => array( 'header', 'breadcrumbs', 'post_title', 'author_date', 'featured_image', 'post_content', 'related_posts', 'footer' ),
+				'slug'              => 'single',
+				'layout_profile'    => 'article_standard',
+				'profile_id'        => 'article_standard@0.1',
+				'profile_version'   => 'article_standard@0.1',
+				'compiler_version'  => 'block_theme_profile_compiler@0.2',
+				'operation'         => 'replace_template_layout_with_preserved_template_parts',
+				'profile_allowed'   => true,
+				'modules'           => array( 'header', 'breadcrumbs', 'post_title', 'author_date', 'post_categories', 'featured_image', 'post_content', 'post_tags', 'post_navigation', 'comments', 'related_posts', 'footer' ),
+				'sections'          => array( 'header', 'breadcrumbs', 'post_title', 'author_date', 'post_categories', 'featured_image', 'post_content', 'post_tags', 'post_navigation', 'comments', 'related_posts', 'footer' ),
+				'allowed_blocks'    => array( 'core/template-part', 'core/group', 'core/heading', 'core/paragraph', 'core/post-title', 'core/post-author-name', 'core/post-date', 'core/post-featured-image', 'core/post-terms', 'core/post-navigation-link', 'core/comments', 'core/post-content', 'core/latest-posts' ),
+				'forbidden_outputs' => array( 'raw_template_html', 'core/html', 'core/freeform', 'non_core_blocks', 'custom_css', 'theme_json', 'global_styles', 'navigation_write', 'template_part_write' ),
 			),
 		),
 	);
@@ -2270,10 +2280,17 @@ function npcink_governance_core_fail_closed_block_theme_homepage_layout_plan(): 
 	$plan['layout_profile'] = 'homepage_landing';
 	$plan['affected_templates'] = array( 'front-page' );
 	$plan['template_layout_contract']['profiles'][0] = array(
-		'slug'            => 'front-page',
-		'layout_profile'  => 'homepage_landing',
-		'profile_allowed' => true,
-		'sections'        => array( 'header', 'hero', 'latest_posts', 'category_links', 'footer' ),
+		'slug'              => 'front-page',
+		'layout_profile'    => 'homepage_landing',
+		'profile_id'        => 'homepage_landing@0.2',
+		'profile_version'   => 'homepage_landing@0.2',
+		'compiler_version'  => 'block_theme_profile_compiler@0.2',
+		'operation'         => 'replace_template_layout_with_preserved_template_parts',
+		'profile_allowed'   => true,
+		'modules'           => array( 'header', 'hero', 'entry_columns', 'primary_cta', 'latest_posts', 'category_links', 'final_cta', 'footer' ),
+		'sections'          => array( 'header', 'hero', 'entry_columns', 'primary_cta', 'latest_posts', 'category_links', 'final_cta', 'footer' ),
+		'allowed_blocks'    => array( 'core/template-part', 'core/group', 'core/heading', 'core/paragraph', 'core/buttons', 'core/button', 'core/columns', 'core/column', 'core/latest-posts', 'core/categories', 'core/separator', 'core/spacer' ),
+		'forbidden_outputs' => array( 'raw_template_html', 'core/html', 'core/freeform', 'non_core_blocks', 'custom_css', 'theme_json', 'global_styles', 'navigation_write', 'template_part_write' ),
 	);
 	$plan['preview'][0]['slug'] = 'front-page';
 	$plan['preview'][0]['layout_profile'] = 'homepage_landing';
