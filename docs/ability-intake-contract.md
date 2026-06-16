@@ -185,11 +185,22 @@ must become reviewed `wp_template` Site Editor overrides; Core does not edit
 theme files, navigation entities, global styles, or execute WordPress writes.
 For `customize_template_layout`, Core additionally requires a passing
 `template_layout_contract` with a bounded profile such as `article_standard`,
-`page_standard`, or `homepage_landing`. Template upserts are limited to
+`page_standard`, or `homepage_landing`. The layout contract must declare
+`compiler_version=block_theme_profile_compiler@0.2`,
+`forbidden_policy_version=block_theme_safe_core_blocks@0.2`, and accepted
+versioned profiles such as `article_standard@0.3` and `homepage_landing@0.2`;
+each profile row must carry the matching profile version, operation, modules,
+and forbidden-output policy.
+Template upserts are limited to
 `front-page`, `home`, `index`, `page`, or `single`; reviewed block trees must
 use safe core blocks, declare parser roundtrip validation, stay within bounded
 block count/depth/attribute-size limits, and avoid scriptable or embedded raw
-HTML. Navigation, global styles, theme files, `theme.json`, custom
+HTML. The `homepage_landing` profile may use safe dynamic core reader blocks
+such as `core/latest-posts` and `core/categories` for latest post and category
+entry sections. The `article_standard` profile may use safe dynamic template
+blocks such as `core/post-terms`, `core/post-navigation-link`, and
+`core/comments` for categories/tags, previous-next navigation, and comments.
+Navigation, global styles, theme files, `theme.json`, custom
 HTML/freeform, shortcode, embed, and unknown block changes are rejected before
 proposal creation.
 

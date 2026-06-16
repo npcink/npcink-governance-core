@@ -2196,21 +2196,31 @@ function npcink_governance_core_fail_closed_block_theme_layout_plan(): array {
 	$plan['intent']         = 'customize_template_layout';
 	$plan['layout_profile'] = 'article_standard';
 	$plan['template_layout_contract'] = array(
-		'catalog_id'        => 'gutenberg_native_v1',
-		'catalog_version'   => '1.0',
-		'surface'           => 'template',
-		'intent'            => 'customize_template_layout',
-		'placement_model'   => 'bounded_template_layout_profile',
-		'accepted_profiles' => array( 'article_standard', 'page_standard', 'homepage_landing' ),
-		'forbidden_outputs' => array( 'raw_template_html', 'core/html', 'core/freeform', 'non_core_blocks', 'custom_css' ),
-		'contract_status'   => 'pass',
-		'violation_codes'   => array(),
-		'profiles'          => array(
+		'catalog_id'                => 'gutenberg_native_v1',
+		'catalog_version'           => '1.0',
+		'compiler_version'          => 'block_theme_profile_compiler@0.2',
+		'forbidden_policy_version'  => 'block_theme_safe_core_blocks@0.2',
+		'surface'                   => 'template',
+		'intent'                    => 'customize_template_layout',
+		'placement_model'           => 'bounded_template_layout_profile',
+		'accepted_profiles'         => array( 'article_standard', 'page_standard', 'homepage_landing' ),
+		'accepted_profile_versions' => array( 'article_standard@0.3', 'page_standard@0.1', 'homepage_landing@0.2' ),
+		'forbidden_outputs'         => array( 'raw_template_html', 'core/html', 'core/freeform', 'non_core_blocks', 'custom_css', 'theme_json', 'global_styles', 'navigation_write', 'template_part_write' ),
+		'contract_status'           => 'pass',
+		'violation_codes'           => array(),
+		'profiles'                  => array(
 			array(
-				'slug'            => 'single',
-				'layout_profile'  => 'article_standard',
-				'profile_allowed' => true,
-				'sections'        => array( 'header', 'breadcrumbs', 'post_title', 'author_date', 'featured_image', 'post_content', 'related_posts', 'footer' ),
+				'slug'              => 'single',
+				'layout_profile'    => 'article_standard',
+				'profile_id'        => 'article_standard@0.3',
+				'profile_version'   => 'article_standard@0.3',
+				'compiler_version'  => 'block_theme_profile_compiler@0.2',
+				'operation'         => 'replace_template_layout_with_preserved_template_parts',
+				'profile_allowed'   => true,
+				'modules'           => array( 'header', 'breadcrumbs', 'post_title', 'author_date', 'post_categories', 'featured_image', 'post_content', 'post_tags', 'post_navigation', 'comments', 'related_posts', 'footer' ),
+				'sections'          => array( 'header', 'breadcrumbs', 'post_title', 'author_date', 'post_categories', 'featured_image', 'post_content', 'post_tags', 'post_navigation', 'comments', 'related_posts', 'footer' ),
+				'allowed_blocks'    => array( 'core/template-part', 'core/group', 'core/heading', 'core/paragraph', 'core/post-title', 'core/post-author-name', 'core/post-date', 'core/post-featured-image', 'core/post-terms', 'core/post-navigation-link', 'core/comments', 'core/post-content', 'core/latest-posts' ),
+				'forbidden_outputs' => array( 'raw_template_html', 'core/html', 'core/freeform', 'non_core_blocks', 'custom_css', 'theme_json', 'global_styles', 'navigation_write', 'template_part_write' ),
 			),
 		),
 	);
@@ -2246,6 +2256,115 @@ function npcink_governance_core_fail_closed_block_theme_layout_plan(): array {
 			),
 			'innerHTML'    => '<main class="wp-block-group openclaw-template-layout openclaw-template-layout-article_standard"></main>',
 			'innerContent' => array( '<main class="wp-block-group openclaw-template-layout openclaw-template-layout-article_standard">', null, null, '</main>' ),
+		),
+		array(
+			'blockName'    => 'core/template-part',
+			'attrs'        => array( 'slug' => 'footer', 'theme' => 'twentytwentyfive' ),
+			'innerBlocks'  => array(),
+			'innerHTML'    => '',
+			'innerContent' => array(),
+		),
+	);
+
+	return $plan;
+}
+
+/**
+ * Creates a representative homepage block theme template layout plan.
+ *
+ * @return array<string,mixed>
+ */
+function npcink_governance_core_fail_closed_block_theme_homepage_layout_plan(): array {
+	$plan = npcink_governance_core_fail_closed_block_theme_layout_plan();
+	$plan['batch_id']       = 'block_theme_homepage_layout_fault_injection';
+	$plan['layout_profile'] = 'homepage_landing';
+	$plan['affected_templates'] = array( 'front-page' );
+	$plan['template_layout_contract']['profiles'][0] = array(
+		'slug'              => 'front-page',
+		'layout_profile'    => 'homepage_landing',
+		'profile_id'        => 'homepage_landing@0.2',
+		'profile_version'   => 'homepage_landing@0.2',
+		'compiler_version'  => 'block_theme_profile_compiler@0.2',
+		'operation'         => 'replace_template_layout_with_preserved_template_parts',
+		'profile_allowed'   => true,
+		'modules'           => array( 'header', 'hero', 'entry_columns', 'primary_cta', 'latest_posts', 'category_links', 'final_cta', 'footer' ),
+		'sections'          => array( 'header', 'hero', 'entry_columns', 'primary_cta', 'latest_posts', 'category_links', 'final_cta', 'footer' ),
+		'allowed_blocks'    => array( 'core/template-part', 'core/group', 'core/heading', 'core/paragraph', 'core/buttons', 'core/button', 'core/columns', 'core/column', 'core/latest-posts', 'core/categories', 'core/separator', 'core/spacer' ),
+		'forbidden_outputs' => array( 'raw_template_html', 'core/html', 'core/freeform', 'non_core_blocks', 'custom_css', 'theme_json', 'global_styles', 'navigation_write', 'template_part_write' ),
+	);
+	$plan['preview'][0]['slug'] = 'front-page';
+	$plan['preview'][0]['layout_profile'] = 'homepage_landing';
+	$plan['preview'][0]['layout_sections'] = array( 'header', 'hero', 'latest_posts', 'category_links', 'footer' );
+	$plan['write_actions'][0]['action_id'] = 'upsert-template-front-page-layout';
+	$plan['write_actions'][0]['input']['slug'] = 'front-page';
+	$plan['write_actions'][0]['input']['title'] = 'Front Page';
+	$plan['write_actions'][0]['input']['source_template_id'] = 'twentytwentyfive//front-page';
+	$plan['write_actions'][0]['input']['blocks'] = array(
+		array(
+			'blockName'    => 'core/template-part',
+			'attrs'        => array( 'slug' => 'header', 'theme' => 'twentytwentyfive' ),
+			'innerBlocks'  => array(),
+			'innerHTML'    => '',
+			'innerContent' => array(),
+		),
+		array(
+			'blockName'    => 'core/group',
+			'attrs'        => array( 'tagName' => 'main', 'className' => 'openclaw-template-layout openclaw-template-layout-homepage_landing' ),
+			'innerBlocks'  => array(
+				array(
+					'blockName'    => 'core/group',
+					'attrs'        => array( 'className' => 'openclaw-homepage-hero' ),
+					'innerBlocks'  => array(
+						array(
+							'blockName'    => 'core/heading',
+							'attrs'        => array( 'level' => 1 ),
+							'innerBlocks'  => array(),
+							'innerHTML'    => '<h1>Welcome</h1>',
+							'innerContent' => array( '<h1>Welcome</h1>' ),
+						),
+						array(
+							'blockName'    => 'core/paragraph',
+							'attrs'        => array(),
+							'innerBlocks'  => array(),
+							'innerHTML'    => '<p>Homepage introduction.</p>',
+							'innerContent' => array( '<p>Homepage introduction.</p>' ),
+						),
+						array(
+							'blockName'    => 'core/buttons',
+							'attrs'        => array(),
+							'innerBlocks'  => array(
+								array(
+									'blockName'    => 'core/button',
+									'attrs'        => array( 'url' => 'https://example.test/blog' ),
+									'innerBlocks'  => array(),
+									'innerHTML'    => '<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="https://example.test/blog">Read Blog</a></div>',
+									'innerContent' => array( '<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="https://example.test/blog">Read Blog</a></div>' ),
+								),
+							),
+							'innerHTML'    => '<div class="wp-block-buttons"></div>',
+							'innerContent' => array( '<div class="wp-block-buttons">', null, '</div>' ),
+						),
+					),
+					'innerHTML'    => '<div class="wp-block-group openclaw-homepage-hero"></div>',
+					'innerContent' => array( '<div class="wp-block-group openclaw-homepage-hero">', null, null, null, '</div>' ),
+				),
+				array(
+					'blockName'    => 'core/latest-posts',
+					'attrs'        => array( 'postsToShow' => 6 ),
+					'innerBlocks'  => array(),
+					'innerHTML'    => '',
+					'innerContent' => array(),
+				),
+				array(
+					'blockName'    => 'core/categories',
+					'attrs'        => array( 'showPostCounts' => true ),
+					'innerBlocks'  => array(),
+					'innerHTML'    => '',
+					'innerContent' => array(),
+				),
+			),
+			'innerHTML'    => '<main class="wp-block-group openclaw-template-layout openclaw-template-layout-homepage_landing"></main>',
+			'innerContent' => array( '<main class="wp-block-group openclaw-template-layout openclaw-template-layout-homepage_landing">', null, null, null, '</main>' ),
 		),
 		array(
 			'blockName'    => 'core/template-part',
@@ -3229,6 +3348,17 @@ $block_theme_layout_proposal = is_array( $block_theme_layout_result['proposals']
 npcink_governance_core_fail_closed_assert( 'customize_template_layout' === (string) ( $block_theme_layout_proposal['preview']['block_theme_site']['intent'] ?? '' ), 'Block theme layout proposal preserves layout intent.' );
 npcink_governance_core_fail_closed_assert( 'article_standard' === (string) ( $block_theme_layout_proposal['preview']['block_theme_site']['layout_profile'] ?? '' ), 'Block theme layout proposal preserves layout profile.' );
 npcink_governance_core_fail_closed_assert( 'pass' === (string) ( $block_theme_layout_proposal['preview']['block_theme_site']['template_layout_contract']['contract_status'] ?? '' ), 'Block theme layout proposal preserves passing layout contract.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$block_theme_homepage_layout_plan = npcink_governance_core_fail_closed_block_theme_homepage_layout_plan();
+$block_theme_homepage_layout_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_homepage_layout_plan, array(), array( 'source' => 'abilities_block_theme_homepage_layout' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $block_theme_homepage_layout_result ), 'Valid block theme homepage layout plan with categories creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $block_theme_homepage_layout_result['proposal_count'] ?? 0 ), 'Valid block theme homepage layout plan creates one batch proposal.' );
+$block_theme_homepage_layout_proposal = is_array( $block_theme_homepage_layout_result['proposals'][0] ?? null ) ? $block_theme_homepage_layout_result['proposals'][0] : array();
+npcink_governance_core_fail_closed_assert( 'homepage_landing' === (string) ( $block_theme_homepage_layout_proposal['preview']['block_theme_site']['layout_profile'] ?? '' ), 'Block theme homepage layout proposal preserves homepage layout profile.' );
+$block_theme_homepage_blocks_json = wp_json_encode( $block_theme_homepage_layout_proposal['input']['write_actions'][0]['input']['blocks'] ?? array() );
+npcink_governance_core_fail_closed_assert( is_string( $block_theme_homepage_blocks_json ) && false !== strpos( $block_theme_homepage_blocks_json, 'core\/categories' ), 'Block theme homepage layout proposal accepts core categories blocks.' );
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();

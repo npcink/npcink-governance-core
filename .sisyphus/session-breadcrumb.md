@@ -1,5 +1,53 @@
 # Session Breadcrumb
 
+## 2026-06-16 — Block theme profile compiler contract enforced
+
+- **Module**: Plan-to-proposal intake for block theme template layout profiles.
+- **Status**: Core now validates `customize_template_layout` plans as
+  versioned profile compiler outputs, not only as safe block trees.
+- **Completed**:
+  - Required `template_layout_contract.compiler_version` or plan
+    `compiler_version` to be `block_theme_profile_compiler@0.2`.
+  - Required `template_layout_contract.forbidden_policy_version` to be
+    `block_theme_safe_core_blocks@0.2`.
+  - Required accepted versioned profiles such as `homepage_landing@0.2` and
+    per-profile rows with matching profile version, operation, modules, and
+    forbidden-output policy.
+  - Updated fail-closed fixtures, static contracts, and governance/API docs.
+- **Boundary**:
+  - Core still does not choose profiles, compile Gutenberg block trees, approve
+    proposals, execute writes, modify theme files, edit navigation, patch
+    global styles, or write `theme.json`.
+
+## 2026-06-16 — Homepage block theme layout proposal intake accepted
+
+- **Module**: Plan-to-proposal intake for block theme homepage layouts.
+- **Status**: Core now accepts `homepage_landing` block theme site plans that
+  include the safe dynamic `core/categories` block for category entry sections.
+- **Completed**:
+  - Added `core/categories` to Core's block theme safe core block allowlist.
+  - Added fail-closed coverage for a representative `front-page`
+    `homepage_landing` layout with hero, CTA button, latest posts, and
+    categories.
+  - Added WordPress smoke coverage that runs the real Toolkit
+    `build-block-theme-site-plan` homepage layout through
+    `POST /proposals/from-plan`.
+  - Updated ability intake, governance, REST, and plan-to-proposal docs so the
+    homepage profile's latest-posts and category-entry reader blocks are
+    explicit.
+- **Verification**:
+  - `composer test`
+  - `php tests/fail-closed.php`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+  - `composer validate --no-check-publish`
+- **Boundary**:
+  - Core still only validates and stores proposal/audit context. This does not
+    add Core final write execution, navigation edits, global styles edits,
+    theme file edits, `theme.json` mutation, raw HTML acceptance, or Toolkit
+    ability ownership.
+
 ## 2026-06-15 — Runtime owner can be bundled in Toolbox release
 
 - **Module**: Future runtime packaging decision.
@@ -2915,3 +2963,28 @@
     commit preflight contract, minimal admin approval UI, then app auth/scope
     policy. Do not add final commit execution until preflight and idempotency
     contracts are written and tested.
+
+## 2026-06-16 — Article template layout profile v0.3 intake
+
+- **Module**: block theme site proposal intake / bounded template layout
+  contract
+- **Status**: Core now accepts `article_standard@0.3` from the Abilities
+  Toolkit template profile compiler.
+- **Completed**:
+  - Updated the block theme layout contract allowlist from
+    `article_standard@0.2` to `article_standard@0.3` after the v0.2 visual
+    acceptance pass showed the `base-2` title/navigation bands were not visible
+    enough in the active Twenty Twenty-Five palette.
+  - Updated fail-closed fixtures and REST/intake docs so proposal creation
+    matches the Toolkit compiler output.
+  - Kept Core as proposal/intake authority only; no template generation,
+    workflow runtime, proxy execution, or final write execution was added.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed against the LocalWP `magick-ai` site.
+  - `composer validate --no-check-publish` passed.
+- **Next recommended step**:
+  - Use OpenClaw to regenerate an article template proposal with
+    `article_standard@0.3`, execute it through Adapter commit intent, then run
+    visual acceptance to confirm the article page no longer needs manual review
+    for low background variety.

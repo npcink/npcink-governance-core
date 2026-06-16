@@ -248,14 +248,21 @@ this active block theme template." Core accepts
 actions limited to
 `npcink-abilities-toolkit/update-template-blocks` or
 `npcink-abilities-toolkit/upsert-template-blocks`. Layout customization plans
-must include a passing bounded `template_layout_contract`. Core stores
+must include a passing bounded `template_layout_contract` with accepted compiler,
+policy, and profile versions (`block_theme_profile_compiler@0.2`,
+`block_theme_safe_core_blocks@0.2`, and versioned profiles such as
+`homepage_landing@0.2`). Core stores
 `preview.block_theme_site` and the reviewed block tree, but does not edit theme
 files, navigation entities, global styles, approve proposals, or execute
 WordPress writes.
 Accepted block theme template plans are limited to bounded template content
 changes: accepted template slugs, safe core blocks only, declared parser
 roundtrip validation, bounded block count/depth/attribute size, and no
-scriptable or embedded raw HTML. Navigation, global styles, theme files,
+scriptable or embedded raw HTML. The `homepage_landing` profile may include
+safe dynamic reader blocks such as `core/latest-posts` and `core/categories`
+for latest post and category entry sections. `article_standard` plans may use
+safe dynamic template blocks such as `core/post-terms`,
+`core/post-navigation-link`, and `core/comments`. Navigation, global styles, theme files,
 `theme.json`, custom HTML/freeform, shortcode, embed, and unknown block changes
 are rejected before proposal creation.
 

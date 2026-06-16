@@ -729,12 +729,17 @@ global styles, approve the proposal, execute the write, or mutate WordPress
 content.
 For `intent=customize_template_layout`, Core additionally requires a passing
 `template_layout_contract` whose profile rows use accepted profiles such as
-`article_standard`, `page_standard`, or `homepage_landing`.
+`article_standard`, `page_standard`, or `homepage_landing`. The contract must
+also declare accepted compiler, policy, and profile versions, including
+`block_theme_profile_compiler@0.2`, `block_theme_safe_core_blocks@0.2`, and
+profile ids such as `article_standard@0.3` and `homepage_landing@0.2`.
 Core accepts only bounded template slugs (`front-page`, `home`, `index`,
 `page`, and `single`), requires parser roundtrip validation evidence, and
-rejects navigation blocks, custom HTML/freeform blocks, shortcode blocks, embed
-blocks, unknown blocks, scriptable or embedded raw HTML, oversized block
-attributes, excessive block count, and excessive block depth.
+allows homepage layout reader modules such as `core/latest-posts` and
+`core/categories` while still rejecting navigation blocks, custom HTML/freeform
+blocks, shortcode blocks, embed blocks, unknown blocks, scriptable or embedded
+raw HTML, oversized block attributes, excessive block count, and excessive
+block depth.
 
 Each accepted independent `write_action` becomes a separate pending proposal by
 default. If the plan declares `batch_approval=true` or
