@@ -42,6 +42,7 @@ final class Plan_Proposal_Service {
 		'npcink-toolbox/build-article-media-batch-write-plan'                => true,
 		'npcink-toolbox/build-image-candidate-adoption-plan'                 => true,
 		'npcink-toolbox/build-site-knowledge-review-plan'                    => true,
+		'npcink-toolbox/build-nightly-inspection-review-plan'                => true,
 		'npcink-toolbox/build-content-metadata-apply-plan'                   => true,
 	);
 
@@ -168,6 +169,13 @@ final class Plan_Proposal_Service {
 			$site_knowledge_contract_error = $this->validate_site_knowledge_review_plan_contract( $plan );
 			if ( is_wp_error( $site_knowledge_contract_error ) ) {
 				return $site_knowledge_contract_error;
+			}
+		}
+
+		if ( 'npcink-toolbox/build-nightly-inspection-review-plan' === $plan_ability_id ) {
+			$nightly_inspection_contract_error = $this->validate_nightly_inspection_review_plan_contract( $plan );
+			if ( is_wp_error( $nightly_inspection_contract_error ) ) {
+				return $nightly_inspection_contract_error;
 			}
 		}
 
@@ -929,6 +937,109 @@ final class Plan_Proposal_Service {
 			return new WP_Error(
 				'npcink_governance_core_site_knowledge_commit_rejected',
 				__( 'Site Knowledge review action input must remain dry-run and must not request commit.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validates a Nightly Site Inspection review plan from Cloud runtime handoff.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_nightly_inspection_review_plan_contract( array $plan ) {
+		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
+		if ( 'nightly_site_inspection_review_plan' !== $artifact_type ) {
+			return new WP_Error(
+				'npcink_governance_core_nightly_inspection_plan_invalid',
+				__( 'Nightly Inspection review plans must declare artifact_type=nightly_site_inspection_review_plan.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$contract_version = sanitize_text_field( (string) ( $plan['contract_version'] ?? '' ) );
+		if ( '' !== $contract_version && 'nightly_site_inspection_core_review_plan.v1' !== $contract_version ) {
+			return new WP_Error(
+				'npcink_governance_core_nightly_inspection_contract_rejected',
+				__( 'Nightly Inspection review plans must use the v1 Core review plan contract.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true === (bool) ( $plan['direct_wordpress_write'] ?? false ) ) {
+			return new WP_Error(
+				'npcink_governance_core_nightly_inspection_direct_write_rejected',
+				__( 'Nightly Inspection review plans must not claim direct WordPress write authority.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$evidence_refs = is_array( $plan['evidence_refs'] ?? null ) ? array_values( $plan['evidence_refs'] ) : array();
+		if ( empty( $evidence_refs ) ) {
+			return new WP_Error(
+				'npcink_governance_core_nightly_inspection_evidence_missing',
+				__( 'Nightly Inspection review plans must preserve Cloud evidence_refs.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( 1 !== count( $write_actions ) || ! is_array( $write_actions[0] ?? null ) ) {
+			return new WP_Error(
+				'npcink_governance_core_nightly_inspection_action_count_rejected',
+				__( 'Nightly Inspection review plans must contain exactly one blocked create-draft review action.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$action = $write_actions[0];
+		if ( 'npcink-abilities-toolkit/create-draft' !== sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_nightly_inspection_target_rejected',
+				__( 'Nightly Inspection review plans may target only create-draft as a non-ready review proposal.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true === (bool) ( $action['proposal_ready'] ?? true ) ) {
+			return new WP_Error(
+				'npcink_governance_core_nightly_inspection_ready_rejected',
+				__( 'Nightly Inspection review plans must remain not ready until a human supplies draft fields.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$requires_input = array_values( array_map( 'sanitize_key', (array) ( $action['requires_input'] ?? array() ) ) );
+		foreach ( array( 'title', 'content' ) as $field ) {
+			if ( ! in_array( $field, $requires_input, true ) ) {
+				return new WP_Error(
+					'npcink_governance_core_nightly_inspection_required_input_missing',
+					__( 'Nightly Inspection review plans must require human title and content input.', 'npcink-governance-core' ),
+					array(
+						'status' => 422,
+						'field'  => $field,
+					)
+				);
+			}
+		}
+
+		$input  = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+		$status = sanitize_key( (string) ( $input['status'] ?? ( $input['post_status'] ?? 'draft' ) ) );
+		if ( '' !== $status && 'draft' !== $status ) {
+			return new WP_Error(
+				'npcink_governance_core_nightly_inspection_publish_rejected',
+				__( 'Nightly Inspection review plans may prepare draft proposals only.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true === (bool) ( $input['commit'] ?? false ) || false === (bool) ( $input['dry_run'] ?? true ) ) {
+			return new WP_Error(
+				'npcink_governance_core_nightly_inspection_commit_rejected',
+				__( 'Nightly Inspection review action input must remain dry-run and must not request commit.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
 		}
@@ -2999,6 +3110,33 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Builds preview context for Nightly Site Inspection review plans.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function nightly_inspection_review_preview( array $plan ): array {
+		return array(
+			'artifact_type'          => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
+			'contract_version'       => sanitize_text_field( (string) ( $plan['contract_version'] ?? '' ) ),
+			'version'                => absint( $plan['version'] ?? 0 ),
+			'cloud_run_id'           => sanitize_text_field( (string) ( $plan['cloud_run_id'] ?? ( $plan['batch_id'] ?? '' ) ) ),
+			'runtime_owner'          => sanitize_key( (string) ( $plan['runtime_owner'] ?? '' ) ),
+			'agent_id'               => sanitize_key( (string) ( $plan['agent_id'] ?? '' ) ),
+			'agent_version'          => sanitize_text_field( (string) ( $plan['agent_version'] ?? '' ) ),
+			'workflow'               => sanitize_key( (string) ( $plan['workflow'] ?? '' ) ),
+			'intent'                 => sanitize_key( (string) ( $plan['intent'] ?? '' ) ),
+			'local_next_action'      => sanitize_key( (string) ( $plan['local_next_action'] ?? '' ) ),
+			'evidence_gate_status'   => sanitize_key( (string) ( $plan['evidence_gate_status'] ?? '' ) ),
+			'evidence_refs'          => $this->sanitize_payload( $plan['evidence_refs'] ?? array() ),
+			'blocked_outputs'        => $this->sanitize_payload( $plan['blocked_outputs'] ?? array() ),
+			'final_write_path'       => 'core_proposal_required',
+			'direct_wordpress_write' => false,
+			'cloud_scheduler_truth'  => false,
+		);
+	}
+
+	/**
 	 * Builds preview context for content metadata apply plans.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
@@ -3186,6 +3324,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'npcink-toolbox/build-site-knowledge-review-plan' === $plan_ability_id ) {
 			$preview['site_knowledge_review'] = $this->site_knowledge_review_preview( $plan );
+		}
+		if ( 'npcink-toolbox/build-nightly-inspection-review-plan' === $plan_ability_id ) {
+			$preview['nightly_inspection_review'] = $this->nightly_inspection_review_preview( $plan );
 		}
 		if ( 'npcink-toolbox/build-content-metadata-apply-plan' === $plan_ability_id ) {
 			$preview['content_metadata_apply'] = $this->content_metadata_apply_preview( $plan );

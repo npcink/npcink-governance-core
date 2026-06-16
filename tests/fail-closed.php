@@ -663,6 +663,16 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
+			'npcink-toolbox/build-nightly-inspection-review-plan' => array(
+				'ability_id'        => 'npcink-toolbox/build-nightly-inspection-review-plan',
+				'label'             => 'Build Nightly Inspection Review Plan',
+				'risk_level'        => 'read',
+				'requires_approval' => false,
+				'capability'        => 'manage_options',
+				'required_scopes'   => array( 'cap.toolbox.workflow_suggest' ),
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
 			'npcink-toolbox/build-content-metadata-apply-plan' => array(
 				'ability_id'        => 'npcink-toolbox/build-content-metadata-apply-plan',
 				'label'             => 'Build Content Metadata Apply Plan',
@@ -2529,6 +2539,85 @@ function npcink_governance_core_fail_closed_site_knowledge_review_plan(): array 
 }
 
 /**
+ * Creates a representative Nightly Site Inspection Core review plan.
+ *
+ * @return array<string,mixed>
+ */
+function npcink_governance_core_fail_closed_nightly_inspection_review_plan(): array {
+	return array(
+		'artifact_type'          => 'nightly_site_inspection_review_plan',
+		'contract_version'       => 'nightly_site_inspection_core_review_plan.v1',
+		'version'                => 1,
+		'batch_id'               => 'run_nightly_inspection_fault_injection',
+		'cloud_run_id'           => 'run_nightly_inspection_fault_injection',
+		'requires_approval'      => true,
+		'dry_run'                => true,
+		'commit_execution'       => false,
+		'proposal_mode'          => 'single',
+		'write_posture'          => 'core_proposal_handoff',
+		'direct_wordpress_write' => false,
+		'runtime_owner'          => 'npcink-local-automation-runtime',
+		'agent_id'               => 'nightly_site_inspection_cloud_runtime',
+		'agent_version'          => 'nightly_site_inspection_cloud_runtime.v1',
+		'workflow'               => 'nightly_site_inspection',
+		'intent'                 => 'morning_review_preparation',
+		'cloud_output'           => 'proposal_candidate',
+		'local_next_action'      => 'operator_review',
+		'evidence_gate_status'   => 'passed',
+		'evidence_refs'          => array(
+			array(
+				'action_id'     => 'action_001',
+				'title'         => 'Short title',
+				'post_id'       => 123,
+				'source_type'   => 'post',
+				'score'         => 55,
+				'severity'      => 'critical',
+				'reason_codes'  => array( 'missing_meta_description', 'missing_internal_links' ),
+				'suggested_use' => 'morning_brief_review_evidence',
+			),
+		),
+		'blocked_outputs'        => array(
+			'direct_wordpress_write',
+			'article_body',
+			'article_write_plan',
+			'final_seo_copy',
+		),
+		'issue_types'            => array( 'nightly_site_inspection' ),
+		'risk'                   => array(
+			'level'  => 'medium',
+			'reason' => 'review_required',
+		),
+		'preview'                => array(
+			array(
+				'action_id'          => 'review_nightly_site_inspection',
+				'proposal_ready'     => false,
+				'evidence_ref_count' => 1,
+			),
+		),
+		'write_actions'          => array(
+			array(
+				'action_id'         => 'review_nightly_site_inspection',
+				'target_ability_id' => 'npcink-abilities-toolkit/create-draft',
+				'input'             => array(
+					'title'           => '',
+					'content'         => '',
+					'status'          => 'draft',
+					'dry_run'         => true,
+					'commit'          => false,
+					'idempotency_key' => 'nightly-inspection-review-fixture',
+				),
+				'risk'              => 'medium',
+				'requires_approval' => true,
+				'commit_execution'  => false,
+				'proposal_ready'    => false,
+				'requires_input'    => array( 'title', 'content' ),
+				'reason'            => 'Morning Brief found reviewable content quality signals.',
+			),
+		),
+	);
+}
+
+/**
  * Creates a representative content metadata apply plan.
  *
  * @return array<string,mixed>
@@ -3345,6 +3434,36 @@ $site_knowledge_missing_evidence['evidence_refs'] = array();
 $site_knowledge_missing_evidence_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-site-knowledge-review-plan', $site_knowledge_missing_evidence );
 npcink_governance_core_fail_closed_assert( is_wp_error( $site_knowledge_missing_evidence_result ), 'Site Knowledge review plan without evidence is rejected.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_site_knowledge_evidence_missing' === $site_knowledge_missing_evidence_result->get_error_code(), 'Site Knowledge missing evidence rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$nightly_inspection_plan = npcink_governance_core_fail_closed_nightly_inspection_review_plan();
+$nightly_inspection_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-nightly-inspection-review-plan', $nightly_inspection_plan, array(), array( 'source' => 'cloud_nightly_inspection' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $nightly_inspection_result ), 'Valid Nightly Inspection review plan creates a Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $nightly_inspection_result['proposal_count'] ?? 0 ), 'Valid Nightly Inspection review plan creates one blocked proposal.' );
+npcink_governance_core_fail_closed_assert( 0 === (int) ( $nightly_inspection_result['proposal_ready_count'] ?? 0 ), 'Nightly Inspection review proposal is not proposal-ready before human draft input.' );
+$nightly_inspection_proposal = is_array( $nightly_inspection_result['proposals'][0] ?? null ) ? $nightly_inspection_result['proposals'][0] : array();
+npcink_governance_core_fail_closed_assert( 'npcink-abilities-toolkit/create-draft' === (string) ( $nightly_inspection_proposal['ability_id'] ?? '' ), 'Nightly Inspection review plan targets the governed create-draft ability.' );
+npcink_governance_core_fail_closed_assert( false === (bool) ( $nightly_inspection_proposal['preview']['proposal_ready'] ?? true ), 'Nightly Inspection review proposal stores proposal_ready=false.' );
+npcink_governance_core_fail_closed_assert( in_array( 'title', (array) ( $nightly_inspection_proposal['preview']['needs_input'] ?? array() ), true ), 'Nightly Inspection review proposal requires title input.' );
+npcink_governance_core_fail_closed_assert( isset( $nightly_inspection_proposal['preview']['nightly_inspection_review'] ), 'Nightly Inspection review preview is preserved in the proposal.' );
+npcink_governance_core_fail_closed_assert( 'run_nightly_inspection_fault_injection' === (string) ( $nightly_inspection_proposal['preview']['nightly_inspection_review']['cloud_run_id'] ?? '' ), 'Nightly Inspection proposal preserves Cloud run id.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$nightly_inspection_ready = npcink_governance_core_fail_closed_nightly_inspection_review_plan();
+$nightly_inspection_ready['write_actions'][0]['proposal_ready'] = true;
+$nightly_inspection_ready_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-nightly-inspection-review-plan', $nightly_inspection_ready );
+npcink_governance_core_fail_closed_assert( is_wp_error( $nightly_inspection_ready_result ), 'Nightly Inspection review plan marked ready is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_nightly_inspection_ready_rejected' === $nightly_inspection_ready_result->get_error_code(), 'Nightly Inspection ready rejection uses stable error code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
+$nightly_inspection_missing_evidence = npcink_governance_core_fail_closed_nightly_inspection_review_plan();
+$nightly_inspection_missing_evidence['evidence_refs'] = array();
+$nightly_inspection_missing_evidence_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-nightly-inspection-review-plan', $nightly_inspection_missing_evidence );
+npcink_governance_core_fail_closed_assert( is_wp_error( $nightly_inspection_missing_evidence_result ), 'Nightly Inspection review plan without evidence is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_nightly_inspection_evidence_missing' === $nightly_inspection_missing_evidence_result->get_error_code(), 'Nightly Inspection missing evidence rejection uses stable error code.' );
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();
