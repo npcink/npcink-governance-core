@@ -302,7 +302,7 @@ final class Admin_Page {
 					<p><?php echo esc_html__( 'Selected proposal was not found.', 'npcink-governance-core' ); ?></p>
 				</div>
 				<?php $this->render_admin_tabs( 'review' ); ?>
-				<?php $this->render_review_workbench( $pending, $pending_count, $review_page ); ?>
+				<?php $this->render_review_workbench( $pending, $pending_count, $review_page, $selected_id ); ?>
 			<?php elseif ( 'audit' === $view ) : ?>
 				<?php $audit_filters = $this->audit_filters_from_request(); ?>
 				<?php $audit_total = $this->audit->count_filtered( $audit_filters ); ?>
@@ -363,12 +363,36 @@ final class Admin_Page {
 	 * @param int                            $page Current review page.
 	 * @return void
 	 */
-	private function render_review_workbench( array $pending, int $pending_count, int $page ): void {
+	private function render_review_workbench( array $pending, int $pending_count, int $page, string $lookup_id = '' ): void {
 		?>
+		<?php $this->render_proposal_lookup( $lookup_id ); ?>
 		<?php $this->render_pending_proposals( $pending, $pending_count, $page ); ?>
 		<?php $this->render_recent_activity(); ?>
 		<?php $this->render_approval_policy_entry(); ?>
 		<?php $this->render_advanced_access_entry(); ?>
+		<?php
+	}
+
+	/**
+	 * Renders read-only proposal id lookup.
+	 *
+	 * @param string $lookup_id Current lookup id.
+	 * @return void
+	 */
+	private function render_proposal_lookup( string $lookup_id = '' ): void {
+		?>
+		<div class="npcink-governance-core-secondary-row npcink-governance-core-max-wide">
+			<div>
+				<strong><?php echo esc_html__( 'Proposal lookup', 'npcink-governance-core' ); ?></strong>
+				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Open a Core proposal by ID.', 'npcink-governance-core' ); ?></span>
+			</div>
+			<form class="npcink-governance-core-inline-actions" method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>">
+				<input type="hidden" name="page" value="<?php echo esc_attr( self::MENU_SLUG ); ?>" />
+				<label for="npcink-governance-core-proposal-lookup" class="screen-reader-text"><?php echo esc_html__( 'Proposal ID', 'npcink-governance-core' ); ?></label>
+				<input id="npcink-governance-core-proposal-lookup" class="regular-text" type="text" name="proposal_id" value="<?php echo esc_attr( $lookup_id ); ?>" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+				<button type="submit" class="button"><?php echo esc_html__( 'Find proposal', 'npcink-governance-core' ); ?></button>
+			</form>
+		</div>
 		<?php
 	}
 

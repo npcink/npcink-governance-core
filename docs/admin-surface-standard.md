@@ -21,6 +21,8 @@ queue:
 
 - paginated pending request list with user-facing request labels, time, and a
   clear decision entry;
+- read-only `Proposal ID` lookup that opens the existing Core proposal detail
+  route without adding Adapter execution actions;
 - `Proposal ID` visible in each default row as the governance lookup handle;
 - ability id and source trace preserved behind per-row technical details for
   Adapter/OpenClaw handoff lookup;

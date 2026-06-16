@@ -2067,6 +2067,7 @@ foreach (
 		'local governance workbench',
 		'Review Queue',
 		'pending request list',
+		'read-only `Proposal ID` lookup',
 		'technical details',
 		'Activity Log',
 		'Expired / Archived',
@@ -2108,6 +2109,10 @@ npcink_governance_core_assert( false === strpos( $admin_page, "echo esc_html( (s
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Reject selected' ), 'Admin review queue exposes bulk rejection.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Bulk actions' ), 'Admin review queue folds bulk rejection behind a low-frequency disclosure.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'array_slice( $proposal_ids, 0, 50 )' ), 'Admin bulk rejection is bounded.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_proposal_lookup' ), 'Admin review queue exposes proposal lookup.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-proposal-lookup' ), 'Admin proposal lookup uses a stable field id.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "method=\"get\" action=\"<?php echo esc_url( admin_url( 'admin.php' ) ); ?>\"" ), 'Admin proposal lookup is read-only GET navigation.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Find proposal' ), 'Admin proposal lookup opens an existing proposal detail by id.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Pending requests' ), 'Admin review queue uses user-facing pending request copy.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'View and decide' ), 'Admin review queue uses a decision-oriented row action.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Technical details' ), 'Admin review queue folds machine identifiers behind technical details.' );
