@@ -104,13 +104,22 @@ Successful read preflight returns:
     "read_authorization_granted": true,
     "core_authorization_truth": "npcink_governance_core",
     "commit_execution": false,
-    "write_execution": false
+    "write_execution": false,
+    "site_url": "https://example.test",
+    "home_url": "https://example.test",
+    "blog_id": 1
   }
 }
 ```
 
 The context is not a write approval, not a prompt-derived permission, and not an
 execution token for any other ability or input.
+
+The `site_url`, `home_url`, and `blog_id` fields bind the read grant to the
+current WordPress site. Adapter must fail closed if those fields are present and
+do not match the site where it would execute the read ability. Client-key
+fingerprint binding remains pending until Core emits a signed
+`client_key_fingerprint` field in read authorization contexts.
 
 ## Audit Semantics
 

@@ -76,12 +76,21 @@ array(
 	'approved_preview_hash'      => '<sha256>',
 	'approval_updated_at'        => '<utc timestamp>',
 	'policy_version'             => 'core-preflight-v1',
+	'site_url'                   => '<current WordPress site_url>',
+	'home_url'                   => '<current WordPress home_url>',
+	'blog_id'                    => 1,
 )
 ```
 
 The `correlation_id` must also be stored in the `commit.preflighted` audit
 event. It connects the returned approval context to the audit trail; it is not
 a final execution token.
+
+The `site_url`, `home_url`, and `blog_id` fields bind Core's approval context to
+the current WordPress site. Adapter and host executors should fail closed when
+those fields are present and do not match their execution site. Client-key
+fingerprint binding is intentionally not part of this context until the signed
+client identity contract is added to Core.
 
 ## Execution Handoff
 
@@ -98,6 +107,9 @@ array(
 	'policy_version'      => 'core-preflight-v1',
 	'core_proxy_execute'  => false,
 	'commit_execution'    => false,
+	'site_url'            => '<current WordPress site_url>',
+	'home_url'            => '<current WordPress home_url>',
+	'blog_id'             => 1,
 )
 ```
 

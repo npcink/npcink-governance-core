@@ -1110,6 +1110,12 @@ function npcink_governance_core_smoke_run_governance_proposal( string $ability_i
 	npcink_governance_core_smoke_assert( '' !== (string) ( $preflight['approval_context']['approved_preview_hash'] ?? '' ), $ability_id . ' approval context includes approved preview hash' );
 	npcink_governance_core_smoke_assert( 'core-preflight-v1' === (string) ( $preflight['approval_context']['policy_version'] ?? '' ), $ability_id . ' approval context includes policy version' );
 	npcink_governance_core_smoke_assert( $approved_input_hash === (string) ( $preflight['execution_handoff']['approved_input_hash'] ?? '' ), $ability_id . ' execution handoff carries approved input hash' );
+	npcink_governance_core_smoke_assert( untrailingslashit( site_url() ) === (string) ( $preflight['approval_context']['site_url'] ?? '' ), $ability_id . ' approval context binds current site_url' );
+	npcink_governance_core_smoke_assert( untrailingslashit( home_url() ) === (string) ( $preflight['approval_context']['home_url'] ?? '' ), $ability_id . ' approval context binds current home_url' );
+	npcink_governance_core_smoke_assert( get_current_blog_id() === (int) ( $preflight['approval_context']['blog_id'] ?? 0 ), $ability_id . ' approval context binds current blog id' );
+	npcink_governance_core_smoke_assert( untrailingslashit( site_url() ) === (string) ( $preflight['execution_handoff']['site_url'] ?? '' ), $ability_id . ' execution handoff binds current site_url' );
+	npcink_governance_core_smoke_assert( untrailingslashit( home_url() ) === (string) ( $preflight['execution_handoff']['home_url'] ?? '' ), $ability_id . ' execution handoff binds current home_url' );
+	npcink_governance_core_smoke_assert( get_current_blog_id() === (int) ( $preflight['execution_handoff']['blog_id'] ?? 0 ), $ability_id . ' execution handoff binds current blog id' );
 	$GLOBALS['npcink_governance_core_smoke_preflight_correlations'][ $proposal_id ] = $correlation_id;
 
 	return $proposal_id;
@@ -1207,6 +1213,16 @@ npcink_governance_core_smoke_assert( false === (bool) ( $runtime_contract['runti
 npcink_governance_core_smoke_assert( false === (bool) ( $runtime_contract['runtime_controls']['workflow_orchestration'] ?? true ), 'runtime contract keeps workflow orchestration outside Core' );
 npcink_governance_core_smoke_assert( false === (bool) ( $runtime_contract['runtime_controls']['background_jobs'] ?? true ), 'runtime contract keeps background jobs outside Core' );
 npcink_governance_core_smoke_assert( false === (bool) ( $runtime_contract['runtime_controls']['provider_secret_storage'] ?? true ), 'runtime contract keeps provider secret storage outside Core' );
+npcink_governance_core_smoke_assert( '1' === (string) ( $runtime_contract['runtime_contract_endpoint_version'] ?? '' ), 'runtime contract exposes endpoint version' );
+npcink_governance_core_smoke_assert( true === (bool) ( $runtime_contract['compatibility']['metadata_only'] ?? false ), 'runtime contract is metadata-only' );
+npcink_governance_core_smoke_assert( true === (bool) ( $runtime_contract['compatibility']['commit_preflight_available'] ?? false ), 'runtime contract exposes commit preflight availability' );
+npcink_governance_core_smoke_assert( true === (bool) ( $runtime_contract['compatibility']['sensitive_read_preflight_available'] ?? false ), 'runtime contract exposes sensitive read preflight availability' );
+npcink_governance_core_smoke_assert( array( 'site_url', 'home_url', 'blog_id' ) === array_values( (array) ( $runtime_contract['context_bindings']['site_binding']['fields'] ?? array() ) ), 'runtime contract declares site binding fields' );
+npcink_governance_core_smoke_assert( untrailingslashit( site_url() ) === (string) ( $runtime_contract['context_bindings']['site_binding']['site_url'] ?? '' ), 'runtime contract binds current site_url' );
+npcink_governance_core_smoke_assert( untrailingslashit( home_url() ) === (string) ( $runtime_contract['context_bindings']['site_binding']['home_url'] ?? '' ), 'runtime contract binds current home_url' );
+npcink_governance_core_smoke_assert( get_current_blog_id() === (int) ( $runtime_contract['context_bindings']['site_binding']['blog_id'] ?? 0 ), 'runtime contract binds current blog id' );
+npcink_governance_core_smoke_assert( false === (bool) ( $runtime_contract['context_bindings']['client_key_fingerprint']['emitted'] ?? true ), 'runtime contract marks client fingerprint binding pending' );
+npcink_governance_core_smoke_assert( 'pending_signed_client_identity_contract' === (string) ( $runtime_contract['context_bindings']['client_key_fingerprint']['status'] ?? '' ), 'runtime contract names pending client identity contract' );
 npcink_governance_core_smoke_assert( 'adapter_or_host_after_core_preflight' === (string) ( $runtime_contract['boundary']['final_write_authority'] ?? '' ), 'runtime contract leaves final writes with adapter or host after preflight' );
 
 $app = npcink_governance_core_smoke_rest(
@@ -1441,6 +1457,9 @@ npcink_governance_core_smoke_assert( false === (bool) ( $read_context['commit_ex
 npcink_governance_core_smoke_assert( false === (bool) ( $read_context['write_execution'] ?? true ), 'sensitive read grant disables write execution' );
 npcink_governance_core_smoke_assert( (string) ( $read_request['input_hash'] ?? '' ) === (string) ( $read_context['approved_input_hash'] ?? '' ), 'sensitive read grant binds approved input hash' );
 npcink_governance_core_smoke_assert( $sensitive_read_ability_id === (string) ( $read_context['ability_id'] ?? '' ), 'sensitive read grant binds ability id' );
+npcink_governance_core_smoke_assert( untrailingslashit( site_url() ) === (string) ( $read_context['site_url'] ?? '' ), 'sensitive read grant binds current site_url' );
+npcink_governance_core_smoke_assert( untrailingslashit( home_url() ) === (string) ( $read_context['home_url'] ?? '' ), 'sensitive read grant binds current home_url' );
+npcink_governance_core_smoke_assert( get_current_blog_id() === (int) ( $read_context['blog_id'] ?? 0 ), 'sensitive read grant binds current blog id' );
 $granted_max_rows   = (int) ( $read_context['bounds']['max_rows'] ?? 0 );
 $granted_tail_lines = (int) ( $read_context['bounds']['tail_lines'] ?? 0 );
 npcink_governance_core_smoke_assert( $granted_max_rows >= 0 && $granted_max_rows <= 10, 'sensitive read grant does not exceed approved max_rows bound when present' );

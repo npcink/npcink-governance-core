@@ -26,6 +26,7 @@ final class Contract_Controller {
 	const APPROVAL_COMMIT_CONTRACT_VERSION     = '1';
 	const SENSITIVE_READ_AUTHORIZATION_VERSION = '1';
 	const APP_AUTH_CONTRACT_VERSION            = '1';
+	const RUNTIME_CONTRACT_ENDPOINT_VERSION    = '1';
 
 	/**
 	 * Authenticator.
@@ -80,6 +81,18 @@ final class Contract_Controller {
 				'approval_commit_contract_version'       => self::APPROVAL_COMMIT_CONTRACT_VERSION,
 				'sensitive_read_authorization_version'   => self::SENSITIVE_READ_AUTHORIZATION_VERSION,
 				'app_auth_contract_version'              => self::APP_AUTH_CONTRACT_VERSION,
+				'runtime_contract_endpoint_version'      => self::RUNTIME_CONTRACT_ENDPOINT_VERSION,
+				'compatibility'                          => array(
+					'contract_family'                    => 'npcink_governance_core',
+					'minimum_adapter_contract_version'   => '1',
+					'metadata_only'                      => true,
+					'admin_authenticated'                => true,
+					'proposal_truth_available'           => true,
+					'approval_truth_available'           => true,
+					'commit_preflight_available'         => true,
+					'execution_result_record_available'  => true,
+					'sensitive_read_preflight_available' => true,
+				),
 				'runtime_controls'                       => array(
 					'core_proxy_execute'      => false,
 					'commit_execution'        => false,
@@ -90,6 +103,22 @@ final class Contract_Controller {
 					'mcp_transport'           => false,
 					'agent_catalog'           => false,
 					'provider_secret_storage' => false,
+				),
+				'context_bindings'                       => array(
+					'site_binding'           => array(
+						'fields'       => array( 'site_url', 'home_url', 'blog_id' ),
+						'emitted_in'   => array( 'approval_context', 'execution_handoff', 'read_authorization_context' ),
+						'site_url'     => $this->normalize_url( function_exists( 'site_url' ) ? site_url() : '' ),
+						'home_url'     => $this->normalize_url( function_exists( 'home_url' ) ? home_url() : '' ),
+						'blog_id'      => function_exists( 'get_current_blog_id' ) ? get_current_blog_id() : 0,
+						'fail_closed'  => true,
+					),
+					'client_key_fingerprint' => array(
+						'field'      => 'client_key_fingerprint',
+						'emitted'    => false,
+						'status'     => 'pending_signed_client_identity_contract',
+						'owner'      => 'npcink-governance-core',
+					),
 				),
 				'handoff_routes'                         => array(
 					'capabilities'                       => '/wp-json/npcink-governance-core/v1/capabilities',
@@ -109,8 +138,27 @@ final class Contract_Controller {
 					'workflow_execution_owner'   => 'external_dedicated_runtime',
 					'cloud_control_plane_owner'  => 'not_npcink-governance-core',
 				),
+				'forbidden_payloads'                     => array(
+					'proposal_rows'          => false,
+					'audit_rows'             => false,
+					'app_secret_material'    => false,
+					'provider_secret_material' => false,
+					'ability_definitions'    => false,
+					'runtime_state'          => false,
+					'final_execution_results' => false,
+				),
 			),
 			200
 		);
+	}
+
+	/**
+	 * Normalizes a URL for context binding comparisons.
+	 *
+	 * @param string $url URL.
+	 * @return string
+	 */
+	private function normalize_url( string $url ): string {
+		return rtrim( $url, '/' );
 	}
 }

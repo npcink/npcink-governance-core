@@ -85,7 +85,7 @@ evidence would be unsafe:
 - plan-to-proposal intake rejects oversized plan payloads, global
   over-25-action plans, and narrower media optimization / block theme site
   action caps before storing proposal rows;
-- local guarded cleanup and draft-only create-draft auto approval write
+- smart guarded cleanup and draft-only create-draft auto approval write
   `proposal.auto_approved`, and audit failure must not leave the proposal
   approved;
 - approval and rejection roll back to the previous proposal status when

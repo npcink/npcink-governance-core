@@ -67,7 +67,11 @@ The `/contract` endpoint is an administrator-only runtime discovery surface. It
 returns Core version and contract metadata, handoff route templates, and the
 fixed current-stage boundary that Core does not proxy reads, execute final
 writes, own workflow runtime, own queues, own MCP runtime, own Agent Gateway
-catalogs, or store provider credentials.
+catalogs, or store provider credentials. It also reports Adapter-facing
+runtime compatibility, Core truth ownership, and context binding support.
+Commit preflight and sensitive-read preflight bind returned contexts to the
+current `site_url`, `home_url`, and `blog_id`; client-key fingerprint binding
+remains pending until Core emits a signed client identity field.
 
 ## Development
 
@@ -290,12 +294,15 @@ to the local derivative adoption ability's dry-run/commit contract and may be
 shown as `content_reference_repairs` evidence in the derivative preview.
 
 The approval policy evaluator defaults to `manual`, records
-`proposal.policy_evaluated` for every created proposal, and supports two
-development-only guarded modes. `dry_run_guarded` records cleanup and
-draft-only candidates without approval. `local_guarded` can auto-approve only trusted
+`proposal.policy_evaluated` for every created proposal, and supports three
+bounded strategy modes. `manual` requires approval for every proposal.
+`smart_guarded` can auto-approve only trusted
 `build-nonproduction-content-cleanup-plan` trash-post batches and single
 draft-only `npcink-abilities-toolkit/create-draft` proposals when explicit
-authorization, evidence, quotas, and audit all pass. See
+authorization, evidence, quotas, and audit all pass. `dev_allow_all` is
+local-development only, requires the
+`NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL` constant, and still requires
+commit preflight before Adapter-owned execution. See
 [Approval Policy Evaluator Standard](docs/approval-policy-evaluator-standard.md).
 
 Real AI provider request logs remain owned by the WordPress `ai` plugin.

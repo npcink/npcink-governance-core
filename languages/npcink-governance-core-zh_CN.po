@@ -1555,3 +1555,65 @@ msgstr "无法保护应用密钥 secret。"
 #: includes/Security/App_Key_Repository.php:155
 msgid "App key could not be stored."
 msgstr "无法存储应用密钥。"
+
+#: includes/Admin/Admin_Page.php
+msgid "No requests need review."
+msgstr "无待审核请求。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Find a proposal by ID, inspect recent activity, or open expired and archived records when you need audit context."
+msgstr "可通过提案 ID 查找，查看最近活动，或打开过期和归档记录获取审计上下文。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Open activity log"
+msgstr "打开活动日志"
+
+#: includes/Admin/Admin_Page.php
+msgid "Open expired records"
+msgstr "打开过期记录"
+
+#: includes/Admin/Admin_Page.php
+msgid "System settings"
+msgstr "系统设置"
+
+#: includes/Admin/Admin_Page.php
+msgid "Development policy and trusted client access."
+msgstr "开发策略和可信客户端访问。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Source"
+msgstr "来源"
+
+#: includes/Admin/Admin_Page.php
+msgid "Not declared"
+msgstr "未声明"
+
+#: includes/Admin/Admin_Page.php
+msgid "Direct request"
+msgstr "直接请求"
+
+#: includes/Admin/Admin_Page.php
+msgid "External app"
+msgstr "外部应用"
+
+#: includes/Admin/Admin_Page.php
+msgid "Product adapter"
+msgstr "产品适配器"
+
+#: includes/Admin/Admin_Page.php
+msgid "WordPress admin"
+msgstr "WordPress 管理员"
+
+#: includes/Admin/Admin_Page.php
+msgid "Smoke quota"
+msgstr "Smoke 测试"
+
+#: includes/Admin/Admin_Page.php
+msgid "Plan batch"
+msgstr "计划批次"
+
+#. translators: %s: remaining duration.
+#: includes/Admin/Admin_Page.php
+#, php-format
+msgid "%s left"
+msgstr "剩余 %s"

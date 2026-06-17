@@ -189,6 +189,7 @@ final class Commit_Preflight_Service {
 		$correlation_id = $this->new_correlation_id();
 		$approved_preview_hash = $this->payload_hash( $proposal['preview'] ?? array() );
 		$policy_version        = 'core-preflight-v1';
+		$site_binding          = $this->site_binding_context();
 		$approval_context = array(
 			'approval_commit_authorized' => true,
 			'confirmation_state'        => 'approved_commit',
@@ -199,7 +200,7 @@ final class Commit_Preflight_Service {
 			'approved_preview_hash'      => $approved_preview_hash,
 			'approval_updated_at'        => (string) ( $proposal['updated_at'] ?? '' ),
 			'policy_version'             => $policy_version,
-		);
+		) + $site_binding;
 		$execution_handoff = array(
 			'executor'           => 'adapter_after_core_preflight',
 			'execution_surface' => 'wp_abilities_rest',
@@ -210,7 +211,7 @@ final class Commit_Preflight_Service {
 			'policy_version'    => $policy_version,
 			'core_proxy_execute' => false,
 			'commit_execution'  => false,
-		);
+		) + $site_binding;
 
 		$event_id = $this->audit->record(
 			'commit.preflighted',
@@ -332,6 +333,29 @@ final class Commit_Preflight_Service {
 	 */
 	private function new_correlation_id(): string {
 		return function_exists( 'wp_generate_uuid4' ) ? wp_generate_uuid4() : uniqid( 'npcink_governance_core_corr_', true );
+	}
+
+	/**
+	 * Returns the current WordPress site binding for Core-issued handoff context.
+	 *
+	 * @return array<string,mixed>
+	 */
+	private function site_binding_context(): array {
+		return array(
+			'site_url' => $this->normalize_url( function_exists( 'site_url' ) ? site_url() : '' ),
+			'home_url' => $this->normalize_url( function_exists( 'home_url' ) ? home_url() : '' ),
+			'blog_id'  => function_exists( 'get_current_blog_id' ) ? get_current_blog_id() : 0,
+		);
+	}
+
+	/**
+	 * Normalizes a URL for context binding comparisons.
+	 *
+	 * @param string $url URL.
+	 * @return string
+	 */
+	private function normalize_url( string $url ): string {
+		return rtrim( $url, '/' );
 	}
 
 	/**

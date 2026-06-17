@@ -1,5 +1,111 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Approval policy strategy modes added
+
+- **Module**: Core approval policy evaluator and development policy admin
+  setting.
+- **Status**: Approval policy evaluation now uses bounded strategy classes for
+  `manual`, `smart_guarded`, and `dev_allow_all`. `manual` requires approval
+  for all proposals. `smart_guarded` preserves the narrow trusted cleanup and
+  draft-only auto-approval path. `dev_allow_all` is explicitly local
+  development-only, requires `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL`,
+  still writes policy and auto-approval audit, and still leaves commit preflight
+  mandatory.
+- **Completed**:
+  - Added `Approval_Policy_Strategy` with manual, smart guarded, and
+    development allow-all implementations.
+  - Kept `dry_run_guarded` and `local_guarded` accepted as legacy stored option
+    values while presenting the new three-mode admin policy.
+  - Updated approval policy, REST, governance, security, admin, app-scope, and
+    testing contracts.
+  - Added fail-closed coverage for disabled and enabled `dev_allow_all`.
+- **Verification**:
+  - `php -l includes/Governance/Approval_Policy_Evaluator.php`
+  - `php tests/run.php`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+  - `git diff --check`
+- **Boundary**:
+  - This changes proposal approval policy only. It does not add workflow
+    runtime, task queues, MCP runtime, Agent Gateway catalogs, provider
+    credentials, Adapter execution, approval-token compatibility, or final
+    WordPress writes.
+
+## 2026-06-17 — Pending review list slimmed
+
+- **Module**: Core admin review workbench pending request list.
+- **Status**: The pending list now uses a compact review table with request,
+  status, created/due, and review action columns. Default rows show shortened
+  proposal ids, compact source summaries, and compact remaining-time labels.
+  Full proposal id, ability id, and source trace remain behind technical
+  details. Undeclared risk no longer renders as a repeated default-row badge.
+- **Completed**:
+  - Removed the wide default Source column and moved machine trace back behind
+    technical details.
+  - Added compact source, short identifier, declared-risk, and due-label
+    helpers.
+  - Updated CSS, admin surface standard, static contracts, and zh_CN
+    translations for the slimmer list.
+- **Verification**:
+  - `composer test:all`
+  - `git diff --check`
+- **Boundary**:
+  - This changes Core admin display only. It does not change proposal TTL,
+    approval semantics, Adapter execution, queues, workflow runtime, MCP
+    runtime, Agent Gateway catalogs, provider credentials, or final writes.
+
+## 2026-06-17 — Core admin workbench scanability improved
+
+- **Module**: Core admin review workbench and proposal detail display.
+- **Status**: The default review queue now opens with compact status context,
+  keeps proposal lookup and recent activity as secondary utilities, exposes
+  status/risk/source/expiry scan cues in pending rows, and moves low-frequency
+  policy/app-key controls under system settings. Proposal detail now leads with
+  request/status/risk/source context and places review context before the
+  approve/reject decision controls.
+- **Completed**:
+  - Added status and risk badges across active, archive, and detail views.
+  - Added a useful no-work empty state with lookup, activity, and archive
+    navigation.
+  - Updated the admin surface standard and static contracts for the new review
+    hierarchy.
+- **Verification**:
+  - `composer test:all`
+  - `git diff --check`
+- **Boundary**:
+  - This changes Core admin display and review affordances only. It does not
+    add workflow runtime, task queues, MCP runtime, Agent Gateway catalogs,
+    Adapter execution, provider credentials, or final WordPress writes.
+
+## 2026-06-17 — Runtime contract endpoint exposes Adapter-safe bindings
+
+- **Module**: Core runtime contract endpoint and Core-issued preflight
+  contexts.
+- **Status**: `/contract` now reports Adapter-facing runtime compatibility,
+  Core truth ownership, forbidden payload families, and context binding
+  support. Commit preflight and sensitive-read preflight now include
+  `site_url`, `home_url`, and `blog_id` in Core-issued contexts.
+- **Completed**:
+  - Added contract metadata for Adapter compatibility, metadata-only discovery,
+    commit preflight availability, sensitive-read preflight availability, and
+    pending signed client fingerprint binding.
+  - Added site binding fields to `approval_context`, `execution_handoff`, and
+    `read_authorization_context`.
+  - Updated REST, approval-commit, sensitive-read, and README docs.
+  - Added static contract and WordPress smoke coverage for the runtime contract
+    endpoint and site-bound preflight contexts.
+- **Verification**:
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+  - `composer validate --no-check-publish`
+  - `git diff --check`
+- **Boundary**:
+  - Core still does not proxy reads, execute final writes, own Adapter
+    execution profiles, own Toolkit ability definitions, own workflow runtime,
+    own queues, own MCP runtime, own Agent Gateway catalogs, or store provider
+    credentials. Client-key fingerprint binding remains pending until Core
+    emits a signed client identity field.
+
 ## 2026-06-16 — Block theme profile compiler contract enforced
 
 - **Module**: Plan-to-proposal intake for block theme template layout profiles.

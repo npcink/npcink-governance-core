@@ -1557,3 +1557,65 @@ msgstr ""
 #: includes/Security/App_Key_Repository.php:155
 msgid "App key could not be stored."
 msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "No requests need review."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Find a proposal by ID, inspect recent activity, or open expired and archived records when you need audit context."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Open activity log"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Open expired records"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "System settings"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Development policy and trusted client access."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Source"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Not declared"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Direct request"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "External app"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Product adapter"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "WordPress admin"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Smoke quota"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Plan batch"
+msgstr ""
+
+#. translators: %s: remaining duration.
+#: includes/Admin/Admin_Page.php
+#, php-format
+msgid "%s left"
+msgstr ""

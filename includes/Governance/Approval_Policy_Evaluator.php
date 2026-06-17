@@ -14,6 +14,157 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Strategy contract for one approval policy mode.
+ */
+interface Approval_Policy_Strategy {
+	/**
+	 * Evaluates one proposal payload.
+	 *
+	 * @param array<string,mixed>    $proposal Proposal-like payload.
+	 * @param string                 $mode Current policy mode.
+	 * @param Approval_Policy_Evaluator $evaluator Shared evaluator helpers.
+	 * @return array<string,mixed>
+	 */
+	public function evaluate( array $proposal, string $mode, Approval_Policy_Evaluator $evaluator ): array;
+}
+
+/**
+ * Requires explicit approval for every proposal.
+ */
+final class Manual_Approval_Policy_Strategy implements Approval_Policy_Strategy {
+	/**
+	 * Evaluates one proposal payload.
+	 *
+	 * @param array<string,mixed>    $proposal Proposal-like payload.
+	 * @param string                 $mode Current policy mode.
+	 * @param Approval_Policy_Evaluator $evaluator Shared evaluator helpers.
+	 * @return array<string,mixed>
+	 */
+	public function evaluate( array $proposal, string $mode, Approval_Policy_Evaluator $evaluator ): array {
+		$ability_id = sanitize_text_field( (string) ( $proposal['ability_id'] ?? '' ) );
+		$reasons    = array( 'default_manual_required', 'mode_' . $mode );
+		if ( 'npcink-abilities-toolkit/create-draft' === $ability_id ) {
+			$reasons[] = 'create_draft_auto_approval_deferred';
+		}
+
+		return $evaluator->policy_result(
+			$proposal,
+			$mode,
+			Approval_Policy_Evaluator::DECISION_MANUAL_REQUIRED,
+			Approval_Policy_Evaluator::PROFILE_MANUAL,
+			$reasons
+		);
+	}
+}
+
+/**
+ * Auto-approves only narrow, evidenced, quota-bound candidates.
+ */
+final class Smart_Guarded_Approval_Policy_Strategy implements Approval_Policy_Strategy {
+	/**
+	 * Evaluates one proposal payload.
+	 *
+	 * @param array<string,mixed>    $proposal Proposal-like payload.
+	 * @param string                 $mode Current policy mode.
+	 * @param Approval_Policy_Evaluator $evaluator Shared evaluator helpers.
+	 * @return array<string,mixed>
+	 */
+	public function evaluate( array $proposal, string $mode, Approval_Policy_Evaluator $evaluator ): array {
+		$ability_id    = sanitize_text_field( (string) ( $proposal['ability_id'] ?? '' ) );
+		$input         = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
+		$preview       = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
+		$caller        = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
+		$cleanup       = $evaluator->cleanup_batch_evaluation( $ability_id, $input, $preview, $caller );
+		$create_draft  = $evaluator->create_draft_evaluation( $ability_id, $input );
+		$legacy_dry_run = Approval_Policy_Evaluator::MODE_DRY_RUN_GUARDED === $mode;
+
+		$reasons  = array( 'default_manual_required', 'mode_' . $mode );
+		$decision = Approval_Policy_Evaluator::DECISION_MANUAL_REQUIRED;
+		$profile  = Approval_Policy_Evaluator::PROFILE_GUARDED;
+		$quota    = array();
+
+		$reasons = array_merge( $reasons, (array) ( $cleanup['reasons'] ?? array() ) );
+		$reasons = array_merge( $reasons, (array) ( $create_draft['reasons'] ?? array() ) );
+
+		if ( ! empty( $cleanup['allowed'] ) ) {
+			$reasons[] = 'guarded_cleanup_candidate';
+			if ( $legacy_dry_run ) {
+				$reasons[] = 'auto_approval_dry_run_only';
+			} elseif ( ! $evaluator->caller_can_auto_approve() ) {
+				$reasons[] = 'guarded_cleanup_rejected_missing_approval_scope';
+			} else {
+				$quota = $evaluator->auto_approval_quota_metadata( $mode );
+				if ( ! $evaluator->auto_approval_quota_available( $quota ) ) {
+					$reasons[] = 'guarded_cleanup_rejected_auto_approval_quota_exceeded';
+				} else {
+					$decision  = Approval_Policy_Evaluator::DECISION_AUTO_APPROVED;
+					$profile   = Approval_Policy_Evaluator::PROFILE_TRUSTED_LOCAL;
+					$reasons[] = 'smart_guarded_cleanup_auto_approved';
+					$reasons[] = 'local_guarded_cleanup_auto_approved';
+				}
+			}
+		} elseif ( ! empty( $create_draft['allowed'] ) ) {
+			$reasons[] = 'guarded_create_draft_candidate';
+			if ( $legacy_dry_run ) {
+				$reasons[] = 'auto_approval_dry_run_only';
+			} elseif ( ! $evaluator->caller_can_auto_approve() ) {
+				$reasons[] = 'guarded_create_draft_rejected_missing_approval_scope';
+			} else {
+				$quota = $evaluator->auto_approval_quota_metadata( $mode );
+				if ( ! $evaluator->auto_approval_quota_available( $quota ) ) {
+					$reasons[] = 'guarded_create_draft_rejected_auto_approval_quota_exceeded';
+				} else {
+					$decision  = Approval_Policy_Evaluator::DECISION_AUTO_APPROVED;
+					$profile   = Approval_Policy_Evaluator::PROFILE_TRUSTED_LOCAL;
+					$reasons[] = 'smart_guarded_create_draft_auto_approved';
+					$reasons[] = 'local_guarded_create_draft_auto_approved';
+				}
+			}
+		}
+
+		return $evaluator->policy_result( $proposal, $mode, $decision, $profile, $reasons, $quota );
+	}
+}
+
+/**
+ * Development-only policy that approves every proposal after explicit opt-in.
+ */
+final class Dev_Allow_All_Approval_Policy_Strategy implements Approval_Policy_Strategy {
+	/**
+	 * Evaluates one proposal payload.
+	 *
+	 * @param array<string,mixed>    $proposal Proposal-like payload.
+	 * @param string                 $mode Current policy mode.
+	 * @param Approval_Policy_Evaluator $evaluator Shared evaluator helpers.
+	 * @return array<string,mixed>
+	 */
+	public function evaluate( array $proposal, string $mode, Approval_Policy_Evaluator $evaluator ): array {
+		$reasons  = array( 'default_manual_required', 'mode_' . $mode );
+		$decision = Approval_Policy_Evaluator::DECISION_MANUAL_REQUIRED;
+		$profile  = Approval_Policy_Evaluator::PROFILE_GUARDED;
+		$quota    = array();
+
+		if ( ! $evaluator->dev_allow_all_enabled() ) {
+			$reasons[] = 'dev_allow_all_rejected_disabled';
+		} elseif ( ! $evaluator->caller_can_auto_approve() ) {
+			$reasons[] = 'dev_allow_all_rejected_missing_approval_scope';
+		} else {
+			$quota = $evaluator->auto_approval_quota_metadata( $mode );
+			if ( ! $evaluator->auto_approval_quota_available( $quota ) ) {
+				$reasons[] = 'dev_allow_all_rejected_auto_approval_quota_exceeded';
+			} else {
+				$decision  = Approval_Policy_Evaluator::DECISION_AUTO_APPROVED;
+				$profile   = Approval_Policy_Evaluator::PROFILE_TRUSTED_LOCAL;
+				$reasons[] = 'dev_allow_all_auto_approved';
+				$reasons[] = 'commit_preflight_still_required';
+			}
+		}
+
+		return $evaluator->policy_result( $proposal, $mode, $decision, $profile, $reasons, $quota );
+	}
+}
+
+/**
  * Evaluates conservative approval policy decisions.
  */
 final class Approval_Policy_Evaluator {
@@ -29,6 +180,8 @@ final class Approval_Policy_Evaluator {
 	const VERSION                    = 'core-approval-policy-v1';
 	const OPTION_POLICY_MODE         = 'npcink_governance_core_approval_policy_mode';
 	const MODE_MANUAL                = 'manual';
+	const MODE_SMART_GUARDED         = 'smart_guarded';
+	const MODE_DEV_ALLOW_ALL         = 'dev_allow_all';
 	const MODE_DRY_RUN_GUARDED       = 'dry_run_guarded';
 	const MODE_LOCAL_GUARDED         = 'local_guarded';
 	const CLEANUP_BATCH_MAX_ACTIONS  = 10;
@@ -45,8 +198,8 @@ final class Approval_Policy_Evaluator {
 	public static function allowed_policy_modes(): array {
 		return array(
 			self::MODE_MANUAL,
-			self::MODE_DRY_RUN_GUARDED,
-			self::MODE_LOCAL_GUARDED,
+			self::MODE_SMART_GUARDED,
+			self::MODE_DEV_ALLOW_ALL,
 		);
 	}
 
@@ -58,7 +211,23 @@ final class Approval_Policy_Evaluator {
 	 */
 	public static function sanitize_policy_mode( string $mode ): string {
 		$mode = sanitize_key( $mode );
-		return in_array( $mode, self::allowed_policy_modes(), true ) ? $mode : self::MODE_MANUAL;
+		if ( in_array( $mode, self::allowed_policy_modes(), true ) || in_array( $mode, self::legacy_policy_modes(), true ) ) {
+			return $mode;
+		}
+
+		return self::MODE_MANUAL;
+	}
+
+	/**
+	 * Returns legacy option values accepted for compatibility.
+	 *
+	 * @return array<int,string>
+	 */
+	public static function legacy_policy_modes(): array {
+		return array(
+			self::MODE_DRY_RUN_GUARDED,
+			self::MODE_LOCAL_GUARDED,
+		);
 	}
 
 	/**
@@ -81,65 +250,24 @@ final class Approval_Policy_Evaluator {
 	 * @return array<string,mixed>
 	 */
 	public function evaluate( array $proposal ): array {
-		$ability_id = sanitize_text_field( (string) ( $proposal['ability_id'] ?? '' ) );
-		$input      = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
-		$preview    = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
-		$caller     = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
-		$source     = sanitize_key( (string) ( $caller['source'] ?? '' ) );
-		$mode       = self::current_policy_mode();
-		$cleanup    = $this->cleanup_batch_evaluation( $ability_id, $input, $preview, $caller );
-		$create_draft = $this->create_draft_evaluation( $ability_id, $input );
+		$mode = self::current_policy_mode();
+		return $this->strategy_for_mode( $mode )->evaluate( $proposal, $mode, $this );
+	}
 
-		$reasons = array( 'default_manual_required' );
-		$decision = self::DECISION_MANUAL_REQUIRED;
-		$profile  = self::PROFILE_MANUAL;
-		$quota    = array();
-
-		if ( self::MODE_DRY_RUN_GUARDED === $mode || self::MODE_LOCAL_GUARDED === $mode ) {
-			$profile = self::PROFILE_GUARDED;
-			$reasons[] = 'mode_' . $mode;
-			$reasons = array_merge( $reasons, (array) ( $cleanup['reasons'] ?? array() ) );
-			$reasons = array_merge( $reasons, (array) ( $create_draft['reasons'] ?? array() ) );
-
-			if ( ! empty( $cleanup['allowed'] ) ) {
-				$reasons[] = 'guarded_cleanup_candidate';
-				if ( self::MODE_DRY_RUN_GUARDED === $mode ) {
-					$reasons[] = 'auto_approval_dry_run_only';
-				} elseif ( ! $this->caller_can_auto_approve() ) {
-					$reasons[] = 'guarded_cleanup_rejected_missing_approval_scope';
-				} else {
-					$quota = $this->auto_approval_quota_metadata( $mode );
-					if ( ! $this->auto_approval_quota_available( $quota ) ) {
-						$reasons[] = 'guarded_cleanup_rejected_auto_approval_quota_exceeded';
-					} else {
-						$decision = self::DECISION_AUTO_APPROVED;
-						$profile  = self::PROFILE_TRUSTED_LOCAL;
-						$reasons[] = 'local_guarded_cleanup_auto_approved';
-					}
-				}
-			} elseif ( ! empty( $create_draft['allowed'] ) ) {
-				$reasons[] = 'guarded_create_draft_candidate';
-				if ( self::MODE_DRY_RUN_GUARDED === $mode ) {
-					$reasons[] = 'auto_approval_dry_run_only';
-				} elseif ( ! $this->caller_can_auto_approve() ) {
-					$reasons[] = 'guarded_create_draft_rejected_missing_approval_scope';
-				} else {
-					$quota = $this->auto_approval_quota_metadata( $mode );
-					if ( ! $this->auto_approval_quota_available( $quota ) ) {
-						$reasons[] = 'guarded_create_draft_rejected_auto_approval_quota_exceeded';
-					} else {
-						$decision = self::DECISION_AUTO_APPROVED;
-						$profile  = self::PROFILE_TRUSTED_LOCAL;
-						$reasons[] = 'local_guarded_create_draft_auto_approved';
-					}
-				}
-			}
-		}
-
-		if ( 'npcink-abilities-toolkit/create-draft' === $ability_id && self::MODE_LOCAL_GUARDED !== $mode ) {
-			$reasons[] = 'create_draft_auto_approval_deferred';
-		}
-
+	/**
+	 * Builds a normalized policy result.
+	 *
+	 * @param array<string,mixed> $proposal Proposal-like payload.
+	 * @param string              $mode Current policy mode.
+	 * @param string              $decision Decision.
+	 * @param string              $profile Profile.
+	 * @param array<int,string>   $reasons Reason keys.
+	 * @param array<string,mixed> $quota Quota metadata.
+	 * @return array<string,mixed>
+	 */
+	public function policy_result( array $proposal, string $mode, string $decision, string $profile, array $reasons, array $quota = array() ): array {
+		$caller = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
+		$source = sanitize_key( (string) ( $caller['source'] ?? '' ) );
 		if ( '' !== $source ) {
 			$reasons[] = 'source_' . $source;
 		}
@@ -152,6 +280,24 @@ final class Approval_Policy_Evaluator {
 			'policy_reasons'  => array_values( array_unique( array_map( 'sanitize_key', $reasons ) ) ),
 			'auto_approval_quota' => $quota,
 		);
+	}
+
+	/**
+	 * Returns the strategy for a policy mode.
+	 *
+	 * @param string $mode Policy mode.
+	 * @return Approval_Policy_Strategy
+	 */
+	private function strategy_for_mode( string $mode ): Approval_Policy_Strategy {
+		if ( self::MODE_SMART_GUARDED === $mode || self::MODE_LOCAL_GUARDED === $mode || self::MODE_DRY_RUN_GUARDED === $mode ) {
+			return new Smart_Guarded_Approval_Policy_Strategy();
+		}
+
+		if ( self::MODE_DEV_ALLOW_ALL === $mode ) {
+			return new Dev_Allow_All_Approval_Policy_Strategy();
+		}
+
+		return new Manual_Approval_Policy_Strategy();
 	}
 
 	/**
@@ -194,7 +340,7 @@ final class Approval_Policy_Evaluator {
 	 * @param array<string,mixed> $caller Caller.
 	 * @return array{allowed:bool,reasons:array<int,string>}
 	 */
-	private function cleanup_batch_evaluation( string $ability_id, array $input, array $preview, array $caller ): array {
+	public function cleanup_batch_evaluation( string $ability_id, array $input, array $preview, array $caller ): array {
 		$reasons = array();
 		if ( 'npcink-abilities-toolkit/trash-post' !== $ability_id ) {
 			return array( 'allowed' => false, 'reasons' => array() );
@@ -251,7 +397,7 @@ final class Approval_Policy_Evaluator {
 	 * @param array<string,mixed> $input Input.
 	 * @return array{allowed:bool,reasons:array<int,string>}
 	 */
-	private function create_draft_evaluation( string $ability_id, array $input ): array {
+	public function create_draft_evaluation( string $ability_id, array $input ): array {
 		if ( 'npcink-abilities-toolkit/create-draft' !== $ability_id ) {
 			return array( 'allowed' => false, 'reasons' => array() );
 		}
@@ -332,7 +478,7 @@ final class Approval_Policy_Evaluator {
 	 *
 	 * @return bool
 	 */
-	private function caller_can_auto_approve(): bool {
+	public function caller_can_auto_approve(): bool {
 		if ( function_exists( 'current_user_can' ) && current_user_can( 'manage_options' ) ) {
 			return true;
 		}
@@ -346,7 +492,7 @@ final class Approval_Policy_Evaluator {
 	 * @param string $mode Policy mode.
 	 * @return array<string,mixed>
 	 */
-	private function auto_approval_quota_metadata( string $mode ): array {
+	public function auto_approval_quota_metadata( string $mode ): array {
 		$subject = 'user:' . ( function_exists( 'get_current_user_id' ) ? max( 0, get_current_user_id() ) : 0 );
 		$auth    = Request_Context::audit_metadata();
 		if ( ! empty( $auth['app_id'] ) ) {
@@ -372,7 +518,7 @@ final class Approval_Policy_Evaluator {
 	 * @param array<string,mixed> $quota Quota metadata.
 	 * @return bool
 	 */
-	private function auto_approval_quota_available( array $quota ): bool {
+	public function auto_approval_quota_available( array $quota ): bool {
 		foreach ( array( 'hour', 'day' ) as $window ) {
 			$key_suffix = $this->auto_approval_transient_key_suffix( $quota, $window );
 			$limit      = absint( $quota[ $window . '_limit' ] ?? 0 );
@@ -407,5 +553,14 @@ final class Approval_Policy_Evaluator {
 		}
 
 		return '';
+	}
+
+	/**
+	 * Returns whether the unsafe local development allow-all strategy is enabled.
+	 *
+	 * @return bool
+	 */
+	public function dev_allow_all_enabled(): bool {
+		return defined( 'NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL' ) && true === NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL;
 	}
 }

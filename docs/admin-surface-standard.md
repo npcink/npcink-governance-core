@@ -19,25 +19,45 @@ The page is split into focused admin tabs:
 The default `Review Queue` tab must stay focused on the current governance
 queue:
 
-- paginated pending request list with user-facing request labels, time, and a
-  clear decision entry;
-- `Proposal ID` visible in each default row as the governance lookup handle;
-- ability id and source trace preserved behind per-row technical details for
-  Adapter/OpenClaw handoff lookup;
+- compact status summary for current needs-review, approved, execution-failed,
+  and audit-event state;
+- lookup and recent activity grouped as secondary utilities below the status
+  summary, not as first-level review work;
+- paginated pending request list with user-facing request labels, compact
+  status, compact age/expiry, and a clear review entry;
+- default pending rows use a compact source summary and shortened proposal id;
+  full proposal id, ability id, and source trace stay behind technical details;
+- default pending rows do not render an undeclared-risk badge. Risk appears in
+  the list only when the proposal declares risk metadata;
+- default pending rows should show remaining time compactly and avoid spelling
+  the fixed 24-hour TTL as dominant repeated text on every row;
+- read-only `Proposal ID` lookup that opens the existing Core proposal detail
+  route without adding Adapter execution actions;
+- shortened `Proposal ID` visible in each default row as the governance lookup
+  handle;
+- full proposal id, ability id, and source trace preserved behind per-row
+  technical details for Adapter/OpenClaw handoff lookup;
 - bounded bulk rejection for selected pending proposals;
 - stale proposals available from the expired/archive tab;
-- `Development Approval Policy` disclosure for the lightweight manual,
-  dry-run guarded, and local guarded policy modes;
-- one-line recent activity summary with a link to the activity log;
-- `Advanced Access` disclosure for low-frequency client access key management.
+- useful empty state that points to proposal lookup, activity log, and expired
+  records instead of only saying that the queue is empty;
+- `System settings` disclosure for low-frequency development policy and trusted
+  client access;
+- nested `Development Approval Policy` disclosure for the lightweight require
+  approval for all, smart approval, and local-development allow-all modes;
+- nested `Advanced Access` disclosure for low-frequency client access key
+  management.
 
 ## Detail Views
 
 Proposal detail should be a focused review surface:
 
-- proposal identity and status;
-- approve/reject decision controls for pending proposals;
+- proposal summary panel with request, status, risk, and source before the
+  lower-level identity table;
+- proposal identity and status with visual status badges;
 - review context from ability intake and preview metadata;
+- approve/reject decision controls for pending proposals after the review
+  context, so the reviewer sees the basis before choosing;
 - raw proposal payload behind a disclosure;
 - proposal audit timeline behind a disclosure.
 - lifecycle controls for expired or archived proposals.
