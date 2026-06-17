@@ -50,6 +50,8 @@ Optional fields:
 Core-generated fields:
 
 - `proposal_id`
+- `display_id`: deterministic human-facing alias derived from `proposal_id`
+  for operator display and admin lookup. It is not a replacement primary id.
 - `status`
 - `policy_decision`
 - `policy_profile`

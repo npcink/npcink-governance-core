@@ -330,6 +330,7 @@ Response `200`:
   "items": [
     {
       "proposal_id": "uuid",
+      "display_id": "P-1234ABCD-EF90",
       "ability_id": "npcink-abilities-toolkit/create-draft",
       "status": "pending",
       "title": "Smoke proposal",
@@ -351,6 +352,10 @@ Response `200`:
 
 Known proposal status values are `pending`, `approved`, `rejected`, `expired`,
 `archived`, `executed`, and `execution_failed`.
+
+Proposal rows include `display_id` as a deterministic human-facing alias
+derived from `proposal_id`. It is intended for operator display and admin
+lookup. The REST path parameter remains the full `proposal_id`.
 
 Audit event:
 
@@ -379,6 +384,7 @@ Example shape:
 ```json
 {
   "proposal_id": "uuid",
+  "display_id": "P-1234ABCD-EF90",
   "ability_id": "npcink-abilities-toolkit/create-draft",
   "status": "approved",
   "audit_timeline": [

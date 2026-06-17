@@ -323,8 +323,6 @@ foreach (
 		'dev_allow_all',
 		'Approval_Policy_Strategy',
 		'NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL',
-		'dry_run_guarded',
-		'local_guarded',
 		'manual_required',
 		'auto_approved',
 		'blocked',
@@ -419,6 +417,8 @@ foreach (
 		'archived',
 		'audit_timeline',
 		'correlation_id',
+		'display_id',
+		'deterministic human-facing alias',
 		'policy_decision',
 		'policy_profile',
 		'policy_reasons',
@@ -505,6 +505,7 @@ foreach (
 		'input_hash',
 		'pending_quota_key',
 		'status_quota',
+		'`display_id` is not stored as a column',
 		'consumed',
 	) as $required
 ) {
@@ -1590,21 +1591,16 @@ foreach (
 		'OPTION_POLICY_MODE',
 		'MODE_SMART_GUARDED',
 		'MODE_DEV_ALLOW_ALL',
-		'MODE_DRY_RUN_GUARDED',
-		'MODE_LOCAL_GUARDED',
 		'CLEANUP_BATCH_MAX_ACTIONS',
 		'CREATE_DRAFT_MAX_CONTENT_BYTES',
 		'AUTO_APPROVAL_HOURLY_LIMIT',
 		'AUTO_APPROVAL_DAILY_LIMIT',
-		'auto_approval_dry_run_only',
 		'smart_guarded_cleanup_auto_approved',
 		'smart_guarded_create_draft_auto_approved',
 		'dev_allow_all_auto_approved',
 		'dev_allow_all_rejected_disabled',
 		'commit_preflight_still_required',
 		'NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL',
-		'local_guarded_cleanup_auto_approved',
-		'local_guarded_create_draft_auto_approved',
 		'guarded_create_draft_rejected_status',
 		'guarded_cleanup_rejected_missing_test_content_evidence',
 		'build-nonproduction-content-cleanup-plan',
@@ -1616,6 +1612,11 @@ foreach (
 ) {
 	npcink_governance_core_assert( false !== strpos( $approval_policy_evaluator, $required ), 'Approval policy evaluator contains required text: ' . $required );
 }
+npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'MODE_DRY_RUN_GUARDED' ), 'Approval policy evaluator removes dry-run guarded mode.' );
+npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'MODE_LOCAL_GUARDED' ), 'Approval policy evaluator removes local guarded mode.' );
+npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'auto_approval_dry_run_only' ), 'Approval policy evaluator removes dry-run-only approval reason.' );
+npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'local_guarded_cleanup_auto_approved' ), 'Approval policy evaluator removes local guarded cleanup reason.' );
+npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'local_guarded_create_draft_auto_approved' ), 'Approval policy evaluator removes local guarded create-draft reason.' );
 npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'set_transient( $prefixed_key' ), 'Approval policy evaluator does not pass variable-only transient keys.' );
 npcink_governance_core_assert( false !== strpos( $wporg_guard, 'variable-only key' ), 'WordPress.org guard rejects variable-only transient keys.' );
 npcink_governance_core_assert( false !== strpos( $wporg_guard, 'prefix visible at the call site' ), 'WordPress.org guard requires transient prefixes at the call site.' );
@@ -1631,6 +1632,10 @@ npcink_governance_core_assert( false !== strpos( $proposal_repository, 'count_by
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'OFFSET %d' ), 'Proposal repository supports paginated admin lists.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'npcink_governance_core_proposal_insert_failed' ), 'Proposal repository returns a stable insert failure error.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'delete_by_proposal_id' ), 'Proposal repository can remove unaudited created proposals.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'display_id_for_proposal_id' ), 'Proposal repository derives stable human-facing display ids.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, "'display_id'" ), 'Proposal rows expose a display id without replacing proposal_id.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'find_by_display_id' ), 'Proposal repository supports admin lookup by display id.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'ORDER BY id DESC LIMIT 2' ), 'Proposal display id lookup detects non-unique aliases instead of choosing an arbitrary row.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'policy_fields_from_caller' ), 'Proposal repository promotes stored policy fields into responses.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'policy_decision' ), 'Proposal repository returns policy_decision.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'policy_reasons' ), 'Proposal repository returns policy_reasons.' );
@@ -2090,9 +2095,9 @@ foreach (
 		'compact status summary',
 		'pending request list',
 		'compact source summary',
-		'shortened proposal id',
+		'stable display id',
 		'undeclared-risk badge',
-		'read-only `Proposal ID` lookup',
+		'read-only lookup',
 		'technical details',
 		'Activity Log',
 		'Expired / Archived',
@@ -2153,7 +2158,10 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Status' ) && fals
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_risk_label' ), 'Admin review queue summarizes proposal risk in the default row.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_has_declared_risk' ), 'Admin review queue hides undeclared-risk noise from default rows.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_source_summary' ), 'Admin review queue summarizes proposal source in the default row.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'compact_identifier( $proposal_id )' ), 'Admin review queue shortens proposal ids in the default row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_display_id( $proposal )' ), 'Admin review queue shows stable display ids in the default row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'find_proposal_for_lookup' ), 'Admin proposal lookup accepts display ids as well as full proposal ids.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'find_by_display_id( $lookup_id )' ), 'Admin proposal lookup resolves display ids through the repository.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'P-1234ABCD-EF90' ), 'Admin proposal lookup teaches the display id format.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_due_label( $proposal )' ), 'Admin review queue shows compact remaining time in the default row.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "__( '%s left', 'npcink-governance-core' )" ), 'Admin review queue avoids spelling the fixed TTL as repeated dominant text.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Review' ), 'Admin review queue uses a compact review row action.' );
@@ -2252,6 +2260,7 @@ npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-workbench-toolbar' ), 'Admin CSS styles the utility toolbar.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-review-table' ), 'Admin CSS styles the compact review list.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-request-meta' ), 'Admin CSS styles compact request metadata.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-display-id' ), 'Admin CSS styles proposal display ids.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-due-label' ), 'Admin CSS styles compact due labels.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-status-badge' ), 'Admin CSS styles proposal status badges.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-risk-badge' ), 'Admin CSS styles proposal risk badges.' );

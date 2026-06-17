@@ -25,9 +25,8 @@ The evaluator supports three site policy modes stored in
   audit succeeds. It still does not execute writes and commit preflight remains
   mandatory.
 
-Legacy stored values `dry_run_guarded` and `local_guarded` remain accepted for
-compatibility. New admin configuration presents only `manual`, `smart_guarded`,
-and `dev_allow_all`.
+Any unrecognized stored value falls back to `manual`. Old approval policy modes
+are intentionally not accepted.
 
 Every successful proposal creation writes `proposal.policy_evaluated`. If that
 audit event cannot be recorded, Core fails closed by deleting the created
@@ -211,10 +210,6 @@ size, `smart_guarded_create_draft_auto_approved` in `policy_reasons`, and
 approval reducer, not an article-generation workflow, not batch article
 approval, and not final WordPress execution.
 
-`local_guarded_create_draft_auto_approved` and
-`local_guarded_cleanup_auto_approved` may still appear as legacy-compatible
-reason keys, but new contracts should assert the `smart_guarded_*` reason keys.
-
 ## Development Allow-All Strategy
 
 `dev_allow_all` exists only to reduce local development friction when a
@@ -281,8 +276,7 @@ Status: implemented.
 
 ### Phase 2: Explicit Auto Approval For Cleanup Only
 
-Status: implemented for `smart_guarded`; legacy `local_guarded` maps to the
-same guarded implementation.
+Status: implemented for `smart_guarded`.
 
 - Add explicit enablement and app/scope authorization.
 - Add hourly and daily auto-approval quotas.
@@ -292,8 +286,7 @@ same guarded implementation.
 
 ### Phase 3: Direct Draft Proposal Auto Approval
 
-Status: implemented for `smart_guarded`; legacy `local_guarded` maps to the
-same guarded implementation.
+Status: implemented for `smart_guarded`.
 
 - Keep single direct draft proposals only.
 - Block publish, schedule, non-post post types, and existing-content targets.
@@ -306,7 +299,8 @@ Status: implemented.
 
 - Add a bounded `Approval_Policy_Strategy` contract.
 - Implement `manual`, `smart_guarded`, and `dev_allow_all` strategies.
-- Keep `dry_run_guarded` and `local_guarded` as legacy stored values only.
+- Remove prior approval policy mode aliases instead of keeping compatibility
+  shims.
 - Keep Core out of workflow runtime, scheduler, queue, MCP, Agent Gateway, and
   final execution ownership.
 

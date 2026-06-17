@@ -135,15 +135,15 @@ msgid "Core admin sections"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:409
-msgid "Manual"
+msgid "Require approval for all"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:410
-msgid "Dry-run guarded"
+msgid "Smart approval"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:411
-msgid "Local guarded"
+msgid "Allow all (development only)"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:416
@@ -161,7 +161,7 @@ msgid "Policy mode"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:442
-msgid "Local guarded only auto-approves trusted test-content cleanup trash batches and single draft-only create-draft proposals. Destructive deletes, comments, terms, publishing, scheduling, and published content updates remain manual."
+msgid "Smart approval only auto-approves trusted test-content cleanup trash batches and single draft-only create-draft proposals. Allow all is local-development only and requires NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL; commit preflight is still required and Core still does not execute writes."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:447
@@ -1580,6 +1580,24 @@ msgstr ""
 
 #: includes/Admin/Admin_Page.php
 msgid "Development policy and trusted client access."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Open a Core proposal by display ID or full proposal ID."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Display ID:"
+msgstr ""
+
+#. translators: %s: full proposal id.
+#: includes/Admin/Admin_Page.php
+#, php-format
+msgid "Full proposal ID: %s"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Display ID"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php

@@ -133,16 +133,16 @@ msgid "Core admin sections"
 msgstr "Core 管理区段"
 
 #: includes/Admin/Admin_Page.php:409
-msgid "Manual"
-msgstr "手动"
+msgid "Require approval for all"
+msgstr "全部需要同意"
 
 #: includes/Admin/Admin_Page.php:410
-msgid "Dry-run guarded"
-msgstr "试运行保护"
+msgid "Smart approval"
+msgstr "智能同意"
 
 #: includes/Admin/Admin_Page.php:411
-msgid "Local guarded"
-msgstr "本地保护"
+msgid "Allow all (development only)"
+msgstr "全部允许（仅开发）"
 
 #: includes/Admin/Admin_Page.php:416
 msgid "Development Approval Policy"
@@ -159,8 +159,8 @@ msgid "Policy mode"
 msgstr "策略模式"
 
 #: includes/Admin/Admin_Page.php:442
-msgid "Local guarded only auto-approves trusted test-content cleanup trash batches and single draft-only create-draft proposals. Destructive deletes, comments, terms, publishing, scheduling, and published content updates remain manual."
-msgstr "本地保护模式只会自动批准受信任的测试内容清理回收站批次和单条仅草稿的 create-draft 提案。破坏性删除、评论、术语、发布、定时发布和已发布内容更新仍需手动处理。"
+msgid "Smart approval only auto-approves trusted test-content cleanup trash batches and single draft-only create-draft proposals. Allow all is local-development only and requires NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL; commit preflight is still required and Core still does not execute writes."
+msgstr "智能同意只会自动批准受信任的测试内容清理回收站批次和单条仅草稿的 create-draft 提案。全部允许仅限本地开发，并且需要 NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL；仍然必须通过提交预检，Core 仍不会执行写入。"
 
 #: includes/Admin/Admin_Page.php:447
 msgid "Save approval policy"
@@ -1579,6 +1579,24 @@ msgstr "系统设置"
 #: includes/Admin/Admin_Page.php
 msgid "Development policy and trusted client access."
 msgstr "开发策略和可信客户端访问。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Open a Core proposal by display ID or full proposal ID."
+msgstr "通过展示 ID 或完整提案 ID 打开 Core 提案。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Display ID:"
+msgstr "展示 ID："
+
+#. translators: %s: full proposal id.
+#: includes/Admin/Admin_Page.php
+#, php-format
+msgid "Full proposal ID: %s"
+msgstr "完整提案 ID：%s"
+
+#: includes/Admin/Admin_Page.php
+msgid "Display ID"
+msgstr "展示 ID"
 
 #: includes/Admin/Admin_Page.php
 msgid "Source"

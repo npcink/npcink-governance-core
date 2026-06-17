@@ -1,5 +1,33 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Approval policy legacy modes removed
+
+- **Module**: Core approval policy evaluator, development policy admin setting,
+  and policy smoke coverage.
+- **Status**: The approval policy mode set is now only `manual`,
+  `smart_guarded`, and `dev_allow_all`. Removed policy mode strings now fall
+  back to `manual` instead of acting as compatibility aliases. WordPress smoke
+  now exercises `smart_guarded` as the main auto-approval path and verifies
+  `dev_allow_all` both disabled and enabled.
+- **Completed**:
+  - Removed prior guarded mode constants, sanitize compatibility, dry-run-only
+    branch behavior, and old auto-approval reason keys.
+  - Removed legacy policy labels from the Core admin setting.
+  - Updated policy docs, static contracts, fail-closed coverage, smoke coverage,
+    and zh_CN translation artifacts.
+  - Verified `dev_allow_all` still requires the explicit local development
+    constant, proposal approval authority, audit, and commit preflight.
+- **Verification**:
+  - `php -l includes/Governance/Approval_Policy_Evaluator.php`
+  - `php -l tests/smoke-wp.php`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This changes approval policy selection and tests only. It does not add
+    workflow runtime, task queues, MCP runtime, Agent Gateway catalogs, provider
+    credentials, Adapter execution, approval-token compatibility, or final
+    WordPress writes.
+
 ## 2026-06-17 — Approval policy strategy modes added
 
 - **Module**: Core approval policy evaluator and development policy admin

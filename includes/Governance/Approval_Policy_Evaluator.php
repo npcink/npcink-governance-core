@@ -76,7 +76,6 @@ final class Smart_Guarded_Approval_Policy_Strategy implements Approval_Policy_St
 		$caller        = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
 		$cleanup       = $evaluator->cleanup_batch_evaluation( $ability_id, $input, $preview, $caller );
 		$create_draft  = $evaluator->create_draft_evaluation( $ability_id, $input );
-		$legacy_dry_run = Approval_Policy_Evaluator::MODE_DRY_RUN_GUARDED === $mode;
 
 		$reasons  = array( 'default_manual_required', 'mode_' . $mode );
 		$decision = Approval_Policy_Evaluator::DECISION_MANUAL_REQUIRED;
@@ -88,9 +87,7 @@ final class Smart_Guarded_Approval_Policy_Strategy implements Approval_Policy_St
 
 		if ( ! empty( $cleanup['allowed'] ) ) {
 			$reasons[] = 'guarded_cleanup_candidate';
-			if ( $legacy_dry_run ) {
-				$reasons[] = 'auto_approval_dry_run_only';
-			} elseif ( ! $evaluator->caller_can_auto_approve() ) {
+			if ( ! $evaluator->caller_can_auto_approve() ) {
 				$reasons[] = 'guarded_cleanup_rejected_missing_approval_scope';
 			} else {
 				$quota = $evaluator->auto_approval_quota_metadata( $mode );
@@ -100,14 +97,11 @@ final class Smart_Guarded_Approval_Policy_Strategy implements Approval_Policy_St
 					$decision  = Approval_Policy_Evaluator::DECISION_AUTO_APPROVED;
 					$profile   = Approval_Policy_Evaluator::PROFILE_TRUSTED_LOCAL;
 					$reasons[] = 'smart_guarded_cleanup_auto_approved';
-					$reasons[] = 'local_guarded_cleanup_auto_approved';
 				}
 			}
 		} elseif ( ! empty( $create_draft['allowed'] ) ) {
 			$reasons[] = 'guarded_create_draft_candidate';
-			if ( $legacy_dry_run ) {
-				$reasons[] = 'auto_approval_dry_run_only';
-			} elseif ( ! $evaluator->caller_can_auto_approve() ) {
+			if ( ! $evaluator->caller_can_auto_approve() ) {
 				$reasons[] = 'guarded_create_draft_rejected_missing_approval_scope';
 			} else {
 				$quota = $evaluator->auto_approval_quota_metadata( $mode );
@@ -117,7 +111,6 @@ final class Smart_Guarded_Approval_Policy_Strategy implements Approval_Policy_St
 					$decision  = Approval_Policy_Evaluator::DECISION_AUTO_APPROVED;
 					$profile   = Approval_Policy_Evaluator::PROFILE_TRUSTED_LOCAL;
 					$reasons[] = 'smart_guarded_create_draft_auto_approved';
-					$reasons[] = 'local_guarded_create_draft_auto_approved';
 				}
 			}
 		}
@@ -182,8 +175,6 @@ final class Approval_Policy_Evaluator {
 	const MODE_MANUAL                = 'manual';
 	const MODE_SMART_GUARDED         = 'smart_guarded';
 	const MODE_DEV_ALLOW_ALL         = 'dev_allow_all';
-	const MODE_DRY_RUN_GUARDED       = 'dry_run_guarded';
-	const MODE_LOCAL_GUARDED         = 'local_guarded';
 	const CLEANUP_BATCH_MAX_ACTIONS  = 10;
 	const CREATE_DRAFT_MAX_CONTENT_BYTES = 20000;
 	const AUTO_APPROVAL_HOURLY_LIMIT = 20;
@@ -211,23 +202,7 @@ final class Approval_Policy_Evaluator {
 	 */
 	public static function sanitize_policy_mode( string $mode ): string {
 		$mode = sanitize_key( $mode );
-		if ( in_array( $mode, self::allowed_policy_modes(), true ) || in_array( $mode, self::legacy_policy_modes(), true ) ) {
-			return $mode;
-		}
-
-		return self::MODE_MANUAL;
-	}
-
-	/**
-	 * Returns legacy option values accepted for compatibility.
-	 *
-	 * @return array<int,string>
-	 */
-	public static function legacy_policy_modes(): array {
-		return array(
-			self::MODE_DRY_RUN_GUARDED,
-			self::MODE_LOCAL_GUARDED,
-		);
+		return in_array( $mode, self::allowed_policy_modes(), true ) ? $mode : self::MODE_MANUAL;
 	}
 
 	/**
@@ -289,7 +264,7 @@ final class Approval_Policy_Evaluator {
 	 * @return Approval_Policy_Strategy
 	 */
 	private function strategy_for_mode( string $mode ): Approval_Policy_Strategy {
-		if ( self::MODE_SMART_GUARDED === $mode || self::MODE_LOCAL_GUARDED === $mode || self::MODE_DRY_RUN_GUARDED === $mode ) {
+		if ( self::MODE_SMART_GUARDED === $mode ) {
 			return new Smart_Guarded_Approval_Policy_Strategy();
 		}
 

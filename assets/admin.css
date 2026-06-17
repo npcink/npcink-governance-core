@@ -215,6 +215,11 @@
 	font-size: 12px;
 }
 
+.npcink-governance-core-display-id {
+	font-weight: 600;
+	letter-spacing: 0;
+}
+
 .npcink-governance-core-due-label {
 	color: #646970;
 	font-size: 12px;

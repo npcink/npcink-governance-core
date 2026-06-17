@@ -274,7 +274,7 @@ final class Admin_Page {
 		$review_page    = $this->bounded_page( $pending_count, $review_page, self::REVIEW_PAGE_SIZE );
 		$pending        = $this->proposals->list_recent( self::REVIEW_PAGE_SIZE, Proposal_Repository::STATUS_PENDING, $this->offset_for_page( $review_page, self::REVIEW_PAGE_SIZE ) );
 		$selected_id    = $this->admin_query_text( 'proposal_id' );
-		$selected       = '' !== $selected_id ? $this->proposals->find( $selected_id ) : null;
+		$selected       = '' !== $selected_id ? $this->find_proposal_for_lookup( $selected_id ) : null;
 		$view           = $this->admin_query_key( 'view' );
 		$message        = $this->admin_query_key( 'npcink_governance_core_message' );
 		$error          = $this->admin_query_key( 'npcink_governance_core_error' );
@@ -437,12 +437,12 @@ final class Admin_Page {
 		<div class="npcink-governance-core-utility-panel">
 			<div>
 				<strong><?php echo esc_html__( 'Proposal lookup', 'npcink-governance-core' ); ?></strong>
-				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Open a Core proposal by ID.', 'npcink-governance-core' ); ?></span>
+				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Open a Core proposal by display ID or full proposal ID.', 'npcink-governance-core' ); ?></span>
 			</div>
 			<form class="npcink-governance-core-inline-actions" method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>">
 				<input type="hidden" name="page" value="<?php echo esc_attr( self::MENU_SLUG ); ?>" />
 				<label for="npcink-governance-core-proposal-lookup" class="screen-reader-text"><?php echo esc_html__( 'Proposal ID', 'npcink-governance-core' ); ?></label>
-				<input id="npcink-governance-core-proposal-lookup" class="regular-text" type="text" name="proposal_id" value="<?php echo esc_attr( $lookup_id ); ?>" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+				<input id="npcink-governance-core-proposal-lookup" class="regular-text" type="text" name="proposal_id" value="<?php echo esc_attr( $lookup_id ); ?>" placeholder="P-1234ABCD-EF90" />
 				<button type="submit" class="button"><?php echo esc_html__( 'Find proposal', 'npcink-governance-core' ); ?></button>
 			</form>
 		</div>
@@ -460,8 +460,6 @@ final class Admin_Page {
 			Approval_Policy_Evaluator::MODE_MANUAL          => __( 'Require approval for all', 'npcink-governance-core' ),
 			Approval_Policy_Evaluator::MODE_SMART_GUARDED   => __( 'Smart approval', 'npcink-governance-core' ),
 			Approval_Policy_Evaluator::MODE_DEV_ALLOW_ALL   => __( 'Allow all (development only)', 'npcink-governance-core' ),
-			Approval_Policy_Evaluator::MODE_DRY_RUN_GUARDED => __( 'Dry-run guarded (legacy)', 'npcink-governance-core' ),
-			Approval_Policy_Evaluator::MODE_LOCAL_GUARDED   => __( 'Local guarded (legacy)', 'npcink-governance-core' ),
 		);
 		?>
 		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide">
@@ -566,6 +564,14 @@ final class Admin_Page {
 					<?php endif; ?>
 					<?php foreach ( $pending as $proposal ) : ?>
 						<?php $proposal_id = (string) $proposal['proposal_id']; ?>
+						<?php $display_id = $this->proposal_display_id( $proposal ); ?>
+						<?php
+						$display_title = sprintf(
+							/* translators: %s: full proposal id. */
+							__( 'Full proposal ID: %s', 'npcink-governance-core' ),
+							$proposal_id
+						);
+						?>
 						<tr>
 							<th scope="row" class="check-column">
 								<input type="checkbox" name="proposal_ids[]" value="<?php echo esc_attr( $proposal_id ); ?>" aria-label="<?php echo esc_attr__( 'Select proposal', 'npcink-governance-core' ); ?>" />
@@ -574,8 +580,8 @@ final class Admin_Page {
 								<div class="npcink-governance-core-request-title"><?php echo esc_html( $this->proposal_request_label( $proposal ) ); ?></div>
 								<div class="npcink-governance-core-request-meta">
 									<span>
-										<?php echo esc_html__( 'Proposal ID:', 'npcink-governance-core' ); ?>
-										<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $this->compact_identifier( $proposal_id ) ); ?></code></a>
+										<?php echo esc_html__( 'Display ID:', 'npcink-governance-core' ); ?>
+										<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>" title="<?php echo esc_attr( $display_title ); ?>"><code class="npcink-governance-core-display-id"><?php echo esc_html( $display_id ); ?></code></a>
 									</span>
 									<span><?php echo esc_html( $this->proposal_source_summary( $proposal ) ); ?></span>
 								</div>
@@ -633,6 +639,10 @@ final class Admin_Page {
 		?>
 		<details class="npcink-governance-core-row-details">
 			<summary><?php echo esc_html__( 'Technical details', 'npcink-governance-core' ); ?></summary>
+			<div>
+				<?php echo esc_html__( 'Display ID:', 'npcink-governance-core' ); ?>
+				<code><?php echo esc_html( $this->proposal_display_id( $proposal ) ); ?></code>
+			</div>
 			<div>
 				<?php echo esc_html__( 'Proposal ID:', 'npcink-governance-core' ); ?>
 				<code><?php echo esc_html( (string) $proposal['proposal_id'] ); ?></code>
@@ -787,6 +797,21 @@ final class Admin_Page {
 		}
 
 		return implode( ' · ', array_slice( array_values( array_unique( $parts ) ), 0, 3 ) );
+	}
+
+	/**
+	 * Returns a stable human-facing proposal display id.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return string
+	 */
+	private function proposal_display_id( array $proposal ): string {
+		$display_id = sanitize_text_field( (string) ( $proposal['display_id'] ?? '' ) );
+		if ( '' !== $display_id ) {
+			return $display_id;
+		}
+
+		return Proposal_Repository::display_id_for_proposal_id( (string) ( $proposal['proposal_id'] ?? '' ) );
 	}
 
 	/**
@@ -1442,6 +1467,10 @@ final class Admin_Page {
 		<?php $this->render_proposal_summary_panel( $proposal ); ?>
 		<table class="widefat striped npcink-governance-core-detail-table">
 			<tbody>
+				<tr>
+					<th scope="row"><?php echo esc_html__( 'Display ID', 'npcink-governance-core' ); ?></th>
+					<td><code><?php echo esc_html( $this->proposal_display_id( $proposal ) ); ?></code></td>
+				</tr>
 				<tr>
 					<th scope="row"><?php echo esc_html__( 'Proposal ID', 'npcink-governance-core' ); ?></th>
 					<td><code><?php echo esc_html( $proposal_id ); ?></code></td>
@@ -2403,6 +2432,26 @@ final class Admin_Page {
 	 */
 	private function proposal_has_declared_risk( array $proposal ): bool {
 		return __( 'Not declared', 'npcink-governance-core' ) !== $this->proposal_risk_label( $proposal );
+	}
+
+	/**
+	 * Finds a proposal for admin lookup input.
+	 *
+	 * @param string $lookup_id Display id or full proposal id.
+	 * @return array<string,mixed>|null
+	 */
+	private function find_proposal_for_lookup( string $lookup_id ): ?array {
+		$lookup_id = sanitize_text_field( $lookup_id );
+		if ( '' === $lookup_id ) {
+			return null;
+		}
+
+		$proposal = $this->proposals->find( $lookup_id );
+		if ( null !== $proposal ) {
+			return $proposal;
+		}
+
+		return $this->proposals->find_by_display_id( $lookup_id );
 	}
 
 	/**

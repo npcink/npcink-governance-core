@@ -4014,6 +4014,8 @@ $result = $stack['service']->create( npcink_governance_core_fail_closed_payload(
 npcink_governance_core_fail_closed_assert( is_wp_error( $result ), 'Policy decision audit failure returns WP_Error.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_policy_decision_audit_failed' === $result->get_error_code(), 'Policy decision audit failure uses stable error code.' );
 npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Unaudited policy decision deletes the proposal row.' );
+npcink_governance_core_fail_closed_assert( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_MANUAL === \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::sanitize_policy_mode( 'dry_run_guarded' ), 'Removed dry-run guarded mode falls back to manual.' );
+npcink_governance_core_fail_closed_assert( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_MANUAL === \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::sanitize_policy_mode( 'local_guarded' ), 'Removed local guarded mode falls back to manual.' );
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();
 update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_SMART_GUARDED, false );
