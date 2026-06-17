@@ -1820,7 +1820,7 @@ final class Admin_Page {
 			</div>
 			<div>
 				<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Source', 'npcink-governance-core' ); ?></div>
-				<strong><?php echo esc_html( $this->proposal_source_label( $proposal ) ); ?></strong>
+				<strong><?php echo esc_html( $this->proposal_source_summary( $proposal ) ); ?></strong>
 				<div class="npcink-governance-core-summary-detail"><?php echo esc_html( $this->display_datetime( (string) ( $proposal['created_at'] ?? '' ) ) ); ?></div>
 			</div>
 			<div>
