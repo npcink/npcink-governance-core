@@ -348,6 +348,10 @@ msgstr "能力："
 msgid "Review"
 msgstr "审核"
 
+#: includes/Admin/Admin_Page.php:567
+msgid "Select all proposals on this page"
+msgstr "选择本页所有提案"
+
 #: includes/Admin/Admin_Page.php:511
 msgid "View and decide"
 msgstr "查看并决定"
@@ -403,6 +407,38 @@ msgstr "清空选择"
 #: includes/Admin/Admin_Page.php:677
 msgid "Reject selected"
 msgstr "拒绝所选项"
+
+#: includes/Admin/Admin_Page.php:719
+msgid "Bulk action"
+msgstr "批量操作"
+
+#: includes/Admin/Admin_Page.php:724
+msgid "Apply"
+msgstr "应用"
+
+#: includes/Admin/Admin_Page.php:733
+msgid "%s items"
+msgstr "%s 项"
+
+#: includes/Admin/Admin_Page.php:740
+msgid "First page"
+msgstr "第一页"
+
+#: includes/Admin/Admin_Page.php:741
+msgid "Previous page"
+msgstr "上一页"
+
+#: includes/Admin/Admin_Page.php:747
+msgid "Page %1$d of %2$d"
+msgstr "第 %1$d 页，共 %2$d 页"
+
+#: includes/Admin/Admin_Page.php:754
+msgid "Next page"
+msgstr "下一页"
+
+#: includes/Admin/Admin_Page.php:755
+msgid "Last page"
+msgstr "最后一页"
 
 #: includes/Admin/Admin_Page.php:701
 msgid "Source:"

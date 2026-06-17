@@ -25,7 +25,7 @@ final class Admin_Page {
 	const PARENT_MENU_SLUG  = 'npcink-ai';
 	const MENU_SLUG         = 'npcink-governance-core';
 	const MENU_CAPABILITY   = 'manage_options';
-	const REVIEW_PAGE_SIZE  = 20;
+	const REVIEW_PAGE_SIZE  = 10;
 	const ARCHIVE_PAGE_SIZE = 20;
 	const AUDIT_PAGE_SIZE   = 25;
 	const APP_KEY_PAGE_SIZE = 10;
@@ -556,14 +556,16 @@ final class Admin_Page {
 	private function render_pending_proposals( array $pending, int $total, int $page ): void {
 		?>
 		<h2><?php echo esc_html__( 'Pending requests', 'npcink-governance-core' ); ?></h2>
-		<p><?php echo esc_html( $this->pagination_summary( $total, $page, self::REVIEW_PAGE_SIZE ) ); ?></p>
 		<form class="npcink-governance-core-max-wide" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="npcink_governance_core_bulk_reject_proposals" />
 			<?php wp_nonce_field( 'npcink_governance_core_bulk_reject_proposals' ); ?>
+			<?php $this->render_review_queue_nav( $total, $page, ! empty( $pending ) ); ?>
 			<table class="widefat striped npcink-governance-core-review-table">
 				<thead>
 					<tr>
-						<td class="check-column"><span class="screen-reader-text"><?php echo esc_html__( 'Select proposal', 'npcink-governance-core' ); ?></span></td>
+						<td class="check-column">
+							<input type="checkbox" data-npcink-bulk-toggle-all aria-label="<?php echo esc_attr__( 'Select all proposals on this page', 'npcink-governance-core' ); ?>" />
+						</td>
 						<th scope="col"><?php echo esc_html__( 'Request', 'npcink-governance-core' ); ?></th>
 						<th scope="col"><?php echo esc_html__( 'Source', 'npcink-governance-core' ); ?></th>
 						<th scope="col"><?php echo esc_html__( 'Status', 'npcink-governance-core' ); ?></th>
@@ -689,8 +691,95 @@ final class Admin_Page {
 					</div>
 				</details>
 			<?php endif; ?>
+			<?php $this->render_review_queue_nav( $total, $page, false ); ?>
 		</form>
-		<?php $this->render_pagination( $total, $page, self::REVIEW_PAGE_SIZE, 'review_page', array() ); ?>
+		<?php
+	}
+
+	/**
+	 * Renders the WordPress-style review queue navigation row.
+	 *
+	 * @param int  $total Total matching proposals.
+	 * @param int  $page Current page.
+	 * @param bool $show_bulk Whether to show bulk action controls.
+	 * @return void
+	 */
+	private function render_review_queue_nav( int $total, int $page, bool $show_bulk ): void {
+		if ( $total <= 0 ) {
+			return;
+		}
+
+		$total_pages = max( 1, (int) ceil( $total / self::REVIEW_PAGE_SIZE ) );
+		$page        = min( max( 1, $page ), $total_pages );
+		$base_url    = remove_query_arg( 'review_page', $this->admin_url( array() ) );
+		?>
+		<div class="tablenav npcink-governance-core-list-nav">
+			<div class="alignleft actions bulkactions npcink-governance-core-list-nav-bulk">
+				<?php if ( $show_bulk ) : ?>
+					<label class="screen-reader-text" for="npcink-governance-core-bulk-action"><?php echo esc_html__( 'Bulk action', 'npcink-governance-core' ); ?></label>
+					<select id="npcink-governance-core-bulk-action" data-npcink-bulk-select>
+						<option value=""><?php echo esc_html__( 'Bulk actions', 'npcink-governance-core' ); ?></option>
+						<option value="reject"><?php echo esc_html__( 'Reject selected', 'npcink-governance-core' ); ?></option>
+					</select>
+					<button type="button" class="button" data-npcink-bulk-apply><?php echo esc_html__( 'Apply', 'npcink-governance-core' ); ?></button>
+				<?php endif; ?>
+			</div>
+			<div class="tablenav-pages npcink-governance-core-list-nav-pages">
+				<span class="displaying-num">
+					<?php
+					echo esc_html(
+						sprintf(
+							/* translators: %s: total item count. */
+							__( '%s items', 'npcink-governance-core' ),
+							number_format_i18n( $total )
+						)
+					);
+					?>
+				</span>
+				<span class="pagination-links">
+					<?php $this->render_review_queue_page_button( 1, $page > 1, $base_url, __( 'First page', 'npcink-governance-core' ), '&laquo;' ); ?>
+					<?php $this->render_review_queue_page_button( max( 1, $page - 1 ), $page > 1, $base_url, __( 'Previous page', 'npcink-governance-core' ), '&lsaquo;' ); ?>
+					<span class="paging-input">
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: 1: current page, 2: total pages. */
+								__( 'Page %1$d of %2$d', 'npcink-governance-core' ),
+								$page,
+								$total_pages
+							)
+						);
+						?>
+					</span>
+					<?php $this->render_review_queue_page_button( min( $total_pages, $page + 1 ), $page < $total_pages, $base_url, __( 'Next page', 'npcink-governance-core' ), '&rsaquo;' ); ?>
+					<?php $this->render_review_queue_page_button( $total_pages, $page < $total_pages, $base_url, __( 'Last page', 'npcink-governance-core' ), '&raquo;' ); ?>
+				</span>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Renders one review queue pagination button.
+	 *
+	 * @param int    $target_page Target page.
+	 * @param bool   $enabled Whether the button should be clickable.
+	 * @param string $base_url Base URL without review_page.
+	 * @param string $label Accessible label.
+	 * @param string $symbol Visible symbol entity.
+	 * @return void
+	 */
+	private function render_review_queue_page_button( int $target_page, bool $enabled, string $base_url, string $label, string $symbol ): void {
+		if ( ! $enabled ) {
+			?>
+			<span class="tablenav-pages-navspan button disabled npcink-governance-core-page-button" aria-hidden="true"><?php echo wp_kses_post( $symbol ); ?></span>
+			<?php
+			return;
+		}
+
+		$url = add_query_arg( 'review_page', (string) $target_page, $base_url );
+		?>
+		<a class="button npcink-governance-core-page-button" href="<?php echo esc_url( $url ); ?>" aria-label="<?php echo esc_attr( $label ); ?>"><?php echo wp_kses_post( $symbol ); ?></a>
 		<?php
 	}
 

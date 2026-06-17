@@ -23,8 +23,12 @@ queue:
   and audit-event state;
 - lookup and recent activity grouped as secondary utilities below the status
   summary, not as first-level review work;
-- paginated pending request list with user-facing request labels, compact source summary,
-  compact status, compact age/expiry, and a clear review entry;
+- paginated pending request list with 10 proposals per page, user-facing request
+  labels, compact source summary, compact status, compact age/expiry, and a
+  clear review entry;
+- review queue pagination and bulk selection should use a WordPress-style table navigation row:
+  bulk action controls on the left, item count and square
+  first/previous/next/last page buttons on the right;
 - default pending rows use a dedicated `Source` column for compact caller/app
   attribution and a stable display id such as `P-1234ABCD-EF90`; full proposal
   id, ability id, app id, and source trace stay behind technical details;

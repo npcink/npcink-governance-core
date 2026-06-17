@@ -1,5 +1,36 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Pending review pagination and list controls tightened
+
+- **Module**: Core admin review queue pagination and bulk-selection controls.
+- **Status**: The pending review queue now shows 10 proposals per page. The
+  review list uses a WordPress-style table navigation row with bulk action
+  controls on the left and item count plus square first/previous/next/last
+  pagination buttons on the right. The old loose numbered pagination links no
+  longer render on the review queue.
+- **Completed**:
+  - Changed review queue page size from 20 to 10.
+  - Added review-queue-specific table navigation and square pagination buttons.
+  - Added a visible bulk-action select/apply control and page-level select-all
+    checkbox while keeping the contextual bulk rejection confirmation.
+  - Updated admin CSS, admin JavaScript, admin surface docs, static contracts,
+    and translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php && node -c assets/admin.js`
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+  - Browser visual check was attempted, but Playwright could not attach because
+    the shared browser user-data directory was locked by another active browser
+    instance.
+- **Boundary**:
+  - This is admin display and interaction behavior only. It does not change
+    proposal lifecycle semantics, bulk reject permission checks, nonce
+    enforcement, the 50-proposal bulk-reject bound, REST routes, Adapter
+    execution, workflow runtime, queues, MCP runtime, Agent Gateway catalogs,
+    provider credentials, or final writes.
+
 ## 2026-06-17 — Pending bulk rejection moved behind selection
 
 - **Module**: Core admin review queue bulk rejection affordance.

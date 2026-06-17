@@ -2145,6 +2145,9 @@ foreach (
 		'Review Queue',
 		'compact status summary',
 		'pending request list',
+		'10 proposals per page',
+		'WordPress-style table navigation row',
+		'first/previous/next/last page buttons',
 		'compact source summary',
 		'source attribution should default to the actor only',
 		'stable display id',
@@ -2276,6 +2279,12 @@ npcink_governance_core_assert( false === strpos( $admin_page, 'render_summary_st
 npcink_governance_core_assert( false === strpos( $admin_page, 'render_status_metric' ), 'Admin default page removes metric cards from the review surface.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_pagination' ), 'Admin page paginates long governance lists.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'review_page' ), 'Admin page paginates review queue.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'REVIEW_PAGE_SIZE  = 10' ), 'Admin review queue shows ten pending proposals per page.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_review_queue_nav' ), 'Admin review queue renders a WordPress-style table navigation row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'data-npcink-bulk-toggle-all' ), 'Admin review queue supports selecting all visible pending proposals.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'data-npcink-bulk-select' ) && false !== strpos( $admin_page, 'data-npcink-bulk-apply' ), 'Admin review queue exposes compact bulk action controls.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_review_queue_page_button' ), 'Admin review queue renders square pagination buttons.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Page %1$d of %2$d' ), 'Admin review queue renders compact page position text.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'archive_page' ), 'Admin page paginates expired and archived proposals.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_page' ), 'Admin page paginates governance audit.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'app_key_page' ), 'Admin page paginates advanced app-key management.' );
@@ -2360,12 +2369,16 @@ npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-empty-state' ), 'Admin CSS styles the active queue empty state.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-bulk-action-bar' ), 'Admin CSS styles the contextual bulk action bar.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-bulk-disclosure[hidden]' ), 'Admin CSS hides bulk actions until JavaScript reveals selection context.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-list-nav' ), 'Admin CSS styles the review queue table navigation row.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-page-button' ), 'Admin CSS styles compact square pagination buttons.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'data-npcink-details-target' ), 'Admin JS toggles row details by explicit target id.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'aria-expanded' ), 'Admin JS maintains details toggle accessibility state.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'target.hidden = expanded' ), 'Admin JS shows and hides inline technical detail rows.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'updateBulkActions' ), 'Admin JS updates bulk action visibility from row selection.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'disclosure.hidden = count === 0' ), 'Admin JS hides bulk actions until at least one proposal is selected.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'data-npcink-bulk-clear' ), 'Admin JS clears selected bulk proposal checkboxes.' );
+npcink_governance_core_assert( false !== strpos( $admin_js, 'data-npcink-bulk-toggle-all' ), 'Admin JS keeps the select-all checkbox in sync.' );
+npcink_governance_core_assert( false !== strpos( $admin_js, 'data-npcink-bulk-apply' ), 'Admin JS opens the contextual bulk rejection confirmation from the compact toolbar.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_article_workflow_review_context' ), 'Admin proposal detail renders article workflow review context.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_field_patch_review_context' ), 'Admin proposal detail renders field-level proposal patches.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'field_patch'" ), 'Admin proposal detail reads preview.field_patch before raw payload.' );

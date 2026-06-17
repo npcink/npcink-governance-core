@@ -9,6 +9,8 @@
 		var countLabel;
 		var help;
 		var selectedLabel;
+		var toggleAll = document.querySelector( '[data-npcink-bulk-toggle-all]' );
+		var applyButton = document.querySelector( '[data-npcink-bulk-apply]' );
 
 		if ( ! disclosure ) {
 			return;
@@ -31,13 +33,35 @@
 				? help.getAttribute( 'data-selected-help' )
 				: help.getAttribute( 'data-default-help' );
 		}
+
+		if ( toggleAll ) {
+			toggleAll.checked = count > 0 && count === checkboxes.length;
+			toggleAll.indeterminate = count > 0 && count < checkboxes.length;
+		}
+
+		if ( applyButton ) {
+			applyButton.disabled = count === 0;
+		}
 	}
 
 	document.addEventListener( 'click', function ( event ) {
 		var toggle = event.target.closest( '.npcink-governance-core-row-details-toggle' );
 		var bulkClear = event.target.closest( '[data-npcink-bulk-clear]' );
+		var bulkApply = event.target.closest( '[data-npcink-bulk-apply]' );
+		var bulkSelect;
+		var disclosure;
 		var target;
 		var expanded;
+
+		if ( bulkApply ) {
+			bulkSelect = document.querySelector( '[data-npcink-bulk-select]' );
+			disclosure = document.querySelector( '[data-npcink-bulk-disclosure]' );
+			if ( bulkSelect && bulkSelect.value === 'reject' && disclosure && ! disclosure.hidden ) {
+				disclosure.open = true;
+				disclosure.scrollIntoView( { block: 'nearest' } );
+			}
+			return;
+		}
 
 		if ( bulkClear ) {
 			Array.prototype.forEach.call( document.querySelectorAll( 'input[name="proposal_ids[]"]' ), function ( checkbox ) {
@@ -65,6 +89,14 @@
 	} );
 
 	document.addEventListener( 'change', function ( event ) {
+		if ( event.target.matches( '[data-npcink-bulk-toggle-all]' ) ) {
+			Array.prototype.forEach.call( document.querySelectorAll( 'input[name="proposal_ids[]"]' ), function ( checkbox ) {
+				checkbox.checked = event.target.checked;
+			} );
+			updateBulkActions();
+			return;
+		}
+
 		if ( event.target.matches( 'input[name="proposal_ids[]"]' ) ) {
 			updateBulkActions();
 		}

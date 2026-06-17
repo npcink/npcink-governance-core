@@ -350,6 +350,10 @@ msgstr ""
 msgid "Review"
 msgstr ""
 
+#: includes/Admin/Admin_Page.php:567
+msgid "Select all proposals on this page"
+msgstr ""
+
 #: includes/Admin/Admin_Page.php:511
 msgid "View and decide"
 msgstr ""
@@ -404,6 +408,38 @@ msgstr ""
 
 #: includes/Admin/Admin_Page.php:677
 msgid "Reject selected"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:719
+msgid "Bulk action"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:724
+msgid "Apply"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:733
+msgid "%s items"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:740
+msgid "First page"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:741
+msgid "Previous page"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:747
+msgid "Page %1$d of %2$d"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:754
+msgid "Next page"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:755
+msgid "Last page"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:701
