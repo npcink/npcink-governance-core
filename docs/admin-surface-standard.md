@@ -23,11 +23,11 @@ queue:
   and audit-event state;
 - lookup and recent activity grouped as secondary utilities below the status
   summary, not as first-level review work;
-- paginated pending request list with user-facing request labels, compact
-  status, compact age/expiry, and a clear review entry;
-- default pending rows use a compact source summary and a stable display id
-  such as `P-1234ABCD-EF90`; full proposal id, ability id, and source trace
-  stay behind technical details;
+- paginated pending request list with user-facing request labels, compact source summary,
+  compact status, compact age/expiry, and a clear review entry;
+- default pending rows use a dedicated `Source` column for compact caller/app
+  attribution and a stable display id such as `P-1234ABCD-EF90`; full proposal
+  id, ability id, app id, and source trace stay behind technical details;
 - default pending rows must not place the technical detail disclosure inside
   the request column. Use a dedicated `Details` column that toggles an inline full-width key-value details table below the row;
 - default pending rows do not render an undeclared-risk badge. Risk appears in

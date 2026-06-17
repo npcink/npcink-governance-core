@@ -565,6 +565,7 @@ final class Admin_Page {
 					<tr>
 						<td class="check-column"><span class="screen-reader-text"><?php echo esc_html__( 'Select proposal', 'npcink-governance-core' ); ?></span></td>
 						<th scope="col"><?php echo esc_html__( 'Request', 'npcink-governance-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Source', 'npcink-governance-core' ); ?></th>
 						<th scope="col"><?php echo esc_html__( 'Status', 'npcink-governance-core' ); ?></th>
 						<th scope="col"><?php echo esc_html__( 'Created', 'npcink-governance-core' ); ?></th>
 						<th scope="col"><?php echo esc_html__( 'Details', 'npcink-governance-core' ); ?></th>
@@ -574,7 +575,7 @@ final class Admin_Page {
 				<tbody>
 					<?php if ( empty( $pending ) ) : ?>
 						<tr>
-							<td colspan="6">
+							<td colspan="7">
 								<div class="npcink-governance-core-empty-state">
 									<strong><?php echo esc_html__( 'No requests need review.', 'npcink-governance-core' ); ?></strong>
 									<span><?php echo esc_html__( 'Find a proposal by ID, inspect recent activity, or open expired and archived records when you need audit context.', 'npcink-governance-core' ); ?></span>
@@ -591,6 +592,7 @@ final class Admin_Page {
 						<?php $proposal_id = (string) $proposal['proposal_id']; ?>
 						<?php $display_id = $this->proposal_display_id( $proposal ); ?>
 						<?php $details_id = 'npcink-governance-core-row-details-' . substr( md5( $proposal_id ), 0, 12 ); ?>
+						<?php $source_trace = implode( ' · ', $this->pending_proposal_trace_parts( $proposal ) ); ?>
 						<?php
 						$display_title = sprintf(
 							/* translators: %s: full proposal id. */
@@ -609,8 +611,12 @@ final class Admin_Page {
 										<?php echo esc_html__( 'Display ID:', 'npcink-governance-core' ); ?>
 										<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>" title="<?php echo esc_attr( $display_title ); ?>"><code class="npcink-governance-core-display-id"><?php echo esc_html( $display_id ); ?></code></a>
 									</span>
-									<span><?php echo esc_html( $this->proposal_source_summary( $proposal ) ); ?></span>
 								</div>
+							</td>
+							<td class="npcink-governance-core-source-cell">
+								<span class="npcink-governance-core-source-summary" title="<?php echo esc_attr( '' !== $source_trace ? $source_trace : $this->proposal_source_summary( $proposal ) ); ?>">
+									<?php echo esc_html( $this->proposal_source_summary( $proposal ) ); ?>
+								</span>
 							</td>
 							<td class="npcink-governance-core-status-cell">
 								<?php $this->render_status_badge( (string) $proposal['status'] ); ?>
@@ -642,7 +648,7 @@ final class Admin_Page {
 							</td>
 						</tr>
 						<tr id="<?php echo esc_attr( $details_id ); ?>" class="npcink-governance-core-row-details-row" hidden>
-							<td colspan="6">
+							<td colspan="7">
 								<?php $this->render_pending_proposal_technical_details( $proposal ); ?>
 							</td>
 						</tr>

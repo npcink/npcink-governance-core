@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Pending row source moved to its own column
+
+- **Module**: Core admin review queue pending request list.
+- **Status**: The default pending row now separates request identity from
+  caller/app attribution. `Request` keeps the user-facing action and display
+  id, while a dedicated `Source` column shows the compact external app or
+  caller summary. Full app id and source trace remain in the row details table.
+- **Completed**:
+  - Added the pending row `Source` column between request and status.
+  - Moved compact source attribution out of the request metadata block.
+  - Added CSS and static contracts for the dedicated source column.
+  - Updated the admin surface standard for the request/source split.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php && node -c assets/admin.js`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This is admin display behavior only. It does not change proposal ids,
+    proposal TTL, approval semantics, REST routes, Adapter execution, workflow
+    runtime, queues, MCP runtime, Agent Gateway catalogs, provider credentials,
+    or final writes.
+
 ## 2026-06-17 — Approval policy contract fallback made visible
 
 - **Module**: Core approval policy evaluator, Core admin system settings, and

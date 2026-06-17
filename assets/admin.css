@@ -169,6 +169,10 @@
 	width: auto;
 }
 
+.npcink-governance-core-source-cell {
+	width: 190px;
+}
+
 .npcink-governance-core-status-cell {
 	width: 148px;
 }
@@ -204,6 +208,14 @@
 
 .npcink-governance-core-request-meta code {
 	font-size: 12px;
+}
+
+.npcink-governance-core-source-summary {
+	display: block;
+	color: #50575e;
+	font-size: 12px;
+	line-height: 1.5;
+	word-break: break-word;
 }
 
 .npcink-governance-core-display-id {
@@ -455,6 +467,7 @@
 	.npcink-governance-core-time-cell,
 	.npcink-governance-core-detail-cell,
 	.npcink-governance-core-action-cell,
+	.npcink-governance-core-source-cell,
 	.npcink-governance-core-status-cell {
 		width: auto;
 	}
