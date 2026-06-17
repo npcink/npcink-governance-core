@@ -60,25 +60,30 @@ row plus `audit_timeline`, ordered oldest to newest for the selected proposal.
 
 The WordPress admin proposal detail also shows:
 
-- proposal request, status, action count, warning/blocker counts, audit-event
-  count, and summary in the top operator summary;
-- collapsed technical identity/source/policy inspectors for display id, full
-  proposal id, target ability, timestamps, source trace, caller/app
-  attribution, and policy reasons;
+- compact proposal request, status, action count, warning/blocker counts, and
+  audit-event count in the top operator summary;
+- proposal detail tabs for overview, action plan, audit evidence, and technical
+  information so dense action/audit/troubleshooting data is not shown in the
+  first scan;
+- collapsed technical identity/source/policy inspectors in the technical tab for
+  display id, full proposal id, target ability, timestamps, source trace,
+  caller/app attribution, and policy reasons;
 - explicit non-pending outcome copy when approval/rejection controls are absent;
-- batch action details for plan-to-proposal rows, including ordered action id,
-  target ability, readiness, and dependency information while final execution
-  remains outside Core;
+- batch action details in the action-plan tab for plan-to-proposal rows,
+  including ordered action id, target ability, readiness, and dependency
+  information while final execution remains outside Core;
 - grouped review basis from live ability intake and preview metadata, with
   zero-value preview signals reduced to one no-issues line and before/after
-  suggestions kept behind structured preview detail when present;
+  suggestions kept behind structured preview detail in the action-plan tab when
+  present;
 - article workflow summary when `preview.article_workflow` exists, including
   title/topic, risk level, readiness, blocked-claim count, final write ability,
   final write path, direct-write state, and required artifact availability;
-- audit lifecycle summary with event labels and timestamps visible by default,
-  plus a collapsed full audit timeline with actor and compact technical
-  metadata;
-- raw caller, input, and preview JSON behind a final troubleshooting disclosure;
+- audit lifecycle summary in the audit-evidence tab with event labels and
+  timestamps visible by default, plus a collapsed full audit timeline with
+  actor and compact technical metadata;
+- raw caller, input, and preview JSON behind a troubleshooting disclosure in the
+  technical tab;
 - approve/reject form for pending proposals.
 - archive/reopen controls for expired or archived proposals.
 

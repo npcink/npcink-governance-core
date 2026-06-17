@@ -499,6 +499,17 @@
 	min-width: 0;
 }
 
+.npcink-governance-core-detail-tabs {
+	margin-top: 4px;
+	margin-bottom: 0;
+	max-width: 1100px;
+}
+
+.npcink-governance-core-tab-panel {
+	box-sizing: border-box;
+	margin-top: 12px;
+}
+
 .npcink-governance-core-summary-count {
 	display: block;
 	margin: 0 0 4px;
