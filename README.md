@@ -90,6 +90,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Agent MCP Entry Contract](docs/agent-mcp-entry-contract.md)
 - [App Auth Scope Policy](docs/app-auth-scope-policy.md)
 - [Approval Policy Evaluator Standard](docs/approval-policy-evaluator-standard.md)
+- [Adapter Handoff And Approval Policy Acceptance](docs/adapter-handoff-and-approval-policy-acceptance.md)
 - [Core Governance Operability](docs/core-governance-operability.md)
 - [AI Provider Log Correlation](docs/ai-provider-log-correlation.md)
 - [Core Governance Handoff Validation](docs/core-governance-handoff-validation.md)

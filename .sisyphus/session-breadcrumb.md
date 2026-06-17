@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Adapter handoff and approval policy acceptance documented
+
+- **Module**: Core handoff documentation, next-stage planning, and static
+  contracts.
+- **Status**: The next approve-and-execute work is now explicitly assigned to
+  Magick AI Adapter or another channel adapter. Core keeps proposal, approval,
+  commit preflight, app-key policy, and audit truth only. A local manual
+  acceptance checklist now covers `manual`, `smart_guarded`, `dev_allow_all`,
+  stale stored policy values, display-id lookup, audit timeline, and
+  `commit_execution=false` handoff behavior.
+- **Completed**:
+  - Added `docs/adapter-handoff-and-approval-policy-acceptance.md`.
+  - Linked the new handoff and manual acceptance checklist from README and the
+    next-stage plan.
+  - Added static contracts for Adapter-owned approve-and-execute, Core
+    non-execution boundaries, and approval policy manual acceptance coverage.
+- **Verification**:
+  - `php tests/run.php`
+  - `git diff --check`
+  - `composer test:all`
+- **Boundary**:
+  - This is documentation and contract coverage only. It does not add Core
+    execution routes, Adapter implementation, workflow runtime, queues, MCP
+    runtime, Agent Gateway catalogs, provider credentials, approval-token
+    compatibility, or final WordPress writes.
+
 ## 2026-06-17 — Pending row table density tightened
 
 - **Module**: Core admin review queue pending request list.

@@ -671,6 +671,9 @@ npcink_governance_core_assert( false === strpos( $next_stage_plan, 'revocation U
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'OpenClaw Adapter / Agent Gateway Planning' ), 'Next stage plan keeps OpenClaw adapter planning outside Core.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'OpenClaw Execution Guidance' ), 'Next stage plan links OpenClaw execution guidance.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'productized acceptance in Magick AI Adapter' ), 'Next stage plan points productized OpenClaw acceptance to Adapter.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Adapter Handoff And Approval Policy Acceptance' ), 'Next stage plan links Adapter handoff and policy acceptance.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'continue approve-and-execute implementation in Magick AI Adapter' ), 'Next stage plan moves approve-and-execute implementation to Adapter.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Manual local acceptance' ), 'Next stage plan records manual approval policy acceptance.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, '/Users/muze/gitee/npcink-openclaw-adapter/docs/openclaw-consumer-acceptance.md' ), 'Next stage plan links Adapter acceptance checklist.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'AI Provider Log Correlation Acceptance' ), 'Next stage plan includes AI provider log correlation acceptance.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'real AI provider request log correlation is implemented and tested in' ), 'Next stage plan keeps provider log correlation implementation in Adapter.' );
@@ -687,6 +690,7 @@ npcink_governance_core_assert( false !== strpos( $readme, 'Core 0.4 Consumer Rea
 npcink_governance_core_assert( false !== strpos( $readme, 'Core Governance Operability' ), 'README links Core Governance Operability.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'AI Provider Log Correlation' ), 'README links AI Provider Log Correlation.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'OpenClaw Execution Guidance' ), 'README links OpenClaw Execution Guidance.' );
+npcink_governance_core_assert( false !== strpos( $readme, 'Adapter Handoff And Approval Policy Acceptance' ), 'README links Adapter handoff and approval policy acceptance.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'ADR-003: Keep Final Execution Outside Core For The Current Stage' ), 'README links ADR-003.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Productized OpenClaw acceptance should be run from Magick AI Adapter' ), 'README points OpenClaw productized acceptance to Adapter.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Create Draft Governance Scenario' ), 'README links Create Draft Governance Scenario.' );
@@ -695,6 +699,34 @@ npcink_governance_core_assert( false !== strpos( $readme, 'Approve Comment Gover
 npcink_governance_core_assert( false !== strpos( $readme, 'Taxonomy Terms Preview Governance Scenario' ), 'README links Taxonomy Terms Preview Governance Scenario.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Article writing is now treated as local Ability recipe orchestration' ), 'README documents local Ability recipe orchestration boundary.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Cloud must not generate article drafts' ), 'README prohibits Cloud writing generation.' );
+
+$adapter_policy_acceptance = npcink_governance_core_read( $root . '/docs/adapter-handoff-and-approval-policy-acceptance.md' );
+foreach (
+	array(
+		'Adapter Handoff And Approval Policy Acceptance',
+		'The next execution work belongs in Magick AI Adapter',
+		'/Users/muze/gitee/npcink-openclaw-adapter',
+		'Adapter should implement or verify this approve-and-execute sequence',
+		'Discover Core capability guidance',
+		'create a Core proposal with',
+		'Poll or display Core proposal status',
+		'Call Core commit preflight',
+		'Execute the target WordPress ability through WordPress Abilities API',
+		'Record the result back to Core with',
+		'Adapter must fail closed',
+		'Adapter must not',
+		'add Core `/execute`, `/proxy-execute`, scheduler, queue, workflow runtime',
+		'Manual Approval Policy Acceptance',
+		'Require Approval For All',
+		'Smart Approval',
+		'Allow All Development Mode',
+		'Stale Stored Policy Value',
+		'commit_execution=false',
+		'no Core code path executes a target ability',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $adapter_policy_acceptance, $required ), 'Adapter handoff acceptance doc contains required text: ' . $required );
+}
 
 $third_party_provider_guide = npcink_governance_core_read( $root . '/docs/third-party-ability-provider-guide.md' );
 foreach (
