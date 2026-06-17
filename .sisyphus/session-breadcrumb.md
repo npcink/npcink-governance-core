@@ -1,5 +1,40 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Proposal detail review surface reorganized
+
+- **Module**: Core admin proposal detail.
+- **Status**: Proposal detail now opens with an operator summary, grouped
+  identity/source/policy inspectors, non-pending outcome copy, batch action
+  review, grouped review basis, default-open audit evidence for non-pending
+  proposals, and a final raw payload troubleshooting disclosure.
+- **Completed**:
+  - Replaced the repeated linear identity table with compact summary metrics
+    plus two-column grouped inspectors.
+  - Added ordered batch action rows sourced from `input.write_actions` and
+    `preview.actions`.
+  - Added warning, blocker, needs-input, preflight-blocker, action-count, and
+    audit-event counts to the detail surface.
+  - Moved raw caller/input/preview JSON behind bounded code blocks at the end
+    of the page.
+  - Updated admin surface docs, operability docs, static contracts, and
+    translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php`
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+  - Browser check on `proposal_id=7f35cf40-dc44-46b4-a07d-7c47fec07cf0`:
+    page loaded as wp-admin, showed compact source summary, non-pending
+    executed copy, batch actions, grouped review basis, default-open audit
+    timeline, final raw payload disclosure, and no browser warning/error
+    console messages.
+- **Boundary**:
+  - This is admin display and evidence organization only. It does not add final
+    write execution, workflow runtime, queues, batch execution ownership, MCP
+    runtime, Agent Gateway catalogs, provider credentials, REST lifecycle
+    changes, or Adapter-owned product actions.
+
 ## 2026-06-17 — System settings moved to Settings tab
 
 - **Module**: Core admin settings navigation.
