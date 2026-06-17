@@ -1727,3 +1727,231 @@ msgstr ""
 #, php-format
 msgid "%s left"
 msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Pending proposals waiting for an administrator decision."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Approved proposals waiting for Adapter preflight or execution record."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Adapter-reported failures that need operator follow-up."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Recorded Core governance events."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Proposal lookup"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Find proposal"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Record execution results"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Review the governance record, action plan, and audit evidence for this proposal."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Actions"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Batch proposal"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Single proposal"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Review flags"
+msgstr ""
+
+#. translators: 1: warning count, 2: blocked item count.
+#: includes/Admin/Admin_Page.php
+#, php-format
+msgid "%1$d warnings / %2$d blocked"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Audit events"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Event history"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "No pending decision."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Governance identity"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Source and policy"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Source type"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Plan ability"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Batch ID"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Proposal mode"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Batch actions"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Ordered actions in this Core proposal. Final execution remains outside Core after approval and preflight."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Readiness"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Dependency"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Review basis"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Ability and policy"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Preview signals"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Warnings"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Preflight blockers"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Proposed change details"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Structured preview fields that need reviewer attention."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Caller, input, and preview JSON for troubleshooting."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Review context is ready before approval or rejection."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Approved; Adapter can continue after commit preflight."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Executed outside Core after approval and preflight."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Execution failed after handoff; inspect audit evidence."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Rejected; no execution handoff should continue."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Reopen before making a decision."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Review the audit timeline for current state."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "This proposal has already been executed outside Core. Use the audit timeline to verify approval, preflight, and execution evidence."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "This proposal is approved. Use the audit timeline to verify the approval and preflight handoff."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "This proposal reported an execution failure after handoff. Use the audit timeline and Adapter logs for follow-up."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "This proposal was rejected and should not continue to execution."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "This proposal is not eligible for approval until it is reopened."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "This proposal is no longer pending. Review the audit timeline for lifecycle evidence."
+msgstr ""
+
+#. translators: %s: dependency action ids.
+#: includes/Admin/Admin_Page.php
+#, php-format
+msgid "Depends on: %s"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "No dependency"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Blocked"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Ready"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Commit requested"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Dry run; Core execution disabled"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Core execution disabled"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Executed"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Execution failed"
+msgstr ""
