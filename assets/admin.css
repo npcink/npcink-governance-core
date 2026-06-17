@@ -508,7 +508,7 @@
 .npcink-governance-core-decision-bar {
 	display: flex;
 	align-items: flex-start;
-	justify-content: space-between;
+	justify-content: flex-end;
 	gap: 16px;
 	box-sizing: border-box;
 	margin: 0 0 16px;
@@ -516,18 +516,6 @@
 	background: #fff;
 	border: 1px solid #dcdcde;
 	border-left: 4px solid #2271b1;
-}
-
-.npcink-governance-core-decision-summary {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	flex-wrap: wrap;
-	min-width: 0;
-}
-
-.npcink-governance-core-decision-summary .npcink-governance-core-summary-label {
-	flex-basis: 100%;
 }
 
 .npcink-governance-core-decision-form {
@@ -573,6 +561,15 @@
 
 .npcink-governance-core-reject-panel textarea {
 	margin-bottom: 8px;
+}
+
+.npcink-governance-core-evidence-ok {
+	display: inline-block;
+	padding: 4px 8px;
+	border: 1px solid #68de7c;
+	background: #edfaef;
+	color: #0a5f1d;
+	font-weight: 600;
 }
 
 .npcink-governance-core-detail-tabs {

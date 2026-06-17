@@ -2363,7 +2363,9 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Review ID' ), 'Admin proposal detail leads the summary with the operator-facing review id.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_summary_request_meta' ), 'Admin proposal detail keeps the top request summary compact.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-decision-bar' ), 'Admin proposal detail raises pending approve/reject controls into a top decision bar.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'npcink-governance-core-decision-summary' ), 'Admin proposal detail decision bar does not repeat review id or status.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-reject-disclosure' ) && false !== strpos( $admin_page, 'Confirm rejection' ), 'Admin proposal detail keeps rejection notes behind a secondary disclosure.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'No risk signals' ), 'Admin proposal detail summarizes zero evidence signals without showing undeclared risk.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_proposal_detail_tabs' ), 'Admin proposal detail splits dense content into tabs.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_tab' ), 'Admin proposal detail preserves the active tab in the URL.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Action plan' ) && false !== strpos( $admin_page, 'Audit evidence' ) && false !== strpos( $admin_page, 'Technical info' ), 'Admin proposal detail exposes action, evidence, and technical tabs.' );
@@ -2412,6 +2414,7 @@ npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-risk-badge' ), 'Admin CSS styles proposal risk badges.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-detail-groups' ), 'Admin CSS renders proposal detail inspectors as grouped columns.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-decision-bar' ) && false !== strpos( $admin_css, '.npcink-governance-core-reject-panel' ), 'Admin CSS styles the proposal detail top decision bar.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-evidence-ok' ), 'Admin CSS styles the zero-risk evidence summary.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-detail-tabs' ) && false !== strpos( $admin_css, '.npcink-governance-core-tab-panel' ), 'Admin CSS styles the proposal detail tab shell.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-action-plan-table' ), 'Admin CSS keeps batch action rows vertically aligned.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-display-id-primary' ), 'Admin CSS emphasizes the proposal detail review id.' );

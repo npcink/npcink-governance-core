@@ -83,9 +83,13 @@ Proposal detail should be a focused review surface:
 - top proposal summary panel with three default blocks: review id, status, and
   evidence with warning/blocker counts. Source, full ids, action counts, long
   summaries, audit event counts, and policy internals stay out of the first
-  scan while visual status badges preserve proposal lifecycle state;
+  scan while visual status badges preserve proposal lifecycle state. When
+  evidence has no warnings, blocked items, required input, or preflight
+  blockers, show one `No risk signals` conclusion instead of undeclared risk
+  plus zero counts;
 - pending proposals must show a top decision bar directly below the summary and
-  before the detail tabs. `Approve` is the primary always-visible action;
+  before the detail tabs. The decision bar should not repeat review id or
+  status from the summary. `Approve` is the primary always-visible action;
   rejection is a secondary disclosure that reveals the rejection note and
   confirm action only when needed;
 - proposal detail tabs after the summary:
