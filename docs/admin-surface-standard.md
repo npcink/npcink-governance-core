@@ -83,7 +83,7 @@ Proposal detail should be a focused review surface:
 - top proposal summary panel with four default blocks: compact request, status,
   action count, and evidence with warning/blocker counts. Source, full ids, long
   summaries, and policy internals stay out of the first scan while visual
-  status badges preserve proposal lifecycle state;
+  visual status badges preserve proposal lifecycle state;
 - proposal detail tabs after the summary:
   `Overview`, `Action plan`, `Audit evidence`, and `Technical info`. The
   default overview tab keeps the decision context short; action, audit, and
