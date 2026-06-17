@@ -2572,7 +2572,7 @@ final class Admin_Page {
 
 		foreach ( $events as $event ) {
 			$event_name = (string) ( $event['event_name'] ?? '' );
-			if ( '' === $event_name ) {
+			if ( '' === $event_name || in_array( $event_name, array( 'proposal.viewed', 'proposal.listed' ), true ) ) {
 				continue;
 			}
 
