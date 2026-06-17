@@ -1643,12 +1643,8 @@ msgid "Open expired records"
 msgstr "打开过期记录"
 
 #: includes/Admin/Admin_Page.php
-msgid "System settings"
-msgstr "系统设置"
-
-#: includes/Admin/Admin_Page.php
-msgid "Development policy and trusted client access."
-msgstr "开发策略和可信客户端访问。"
+msgid "Development approval policy and trusted governance client access."
+msgstr "开发批准策略和可信治理客户端访问。"
 
 #: includes/Admin/Admin_Page.php
 msgid "Open a Core proposal by display ID or full proposal ID."

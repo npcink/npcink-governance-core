@@ -320,8 +320,11 @@ final class Admin_Page {
 			<?php elseif ( 'archive' === $view ) : ?>
 				<?php $this->render_admin_tabs( 'archive' ); ?>
 				<?php $this->render_archive_view(); ?>
+			<?php elseif ( 'settings' === $view ) : ?>
+				<?php $this->render_admin_tabs( 'settings' ); ?>
+				<?php $this->render_system_settings_page(); ?>
 			<?php elseif ( 'app-keys' === $view ) : ?>
-				<?php $this->render_admin_tabs( '' ); ?>
+				<?php $this->render_admin_tabs( 'settings' ); ?>
 				<?php $this->render_external_access(); ?>
 			<?php else : ?>
 				<?php $this->render_admin_tabs( 'review' ); ?>
@@ -351,6 +354,10 @@ final class Admin_Page {
 				'label' => __( 'Expired / Archived', 'npcink-governance-core' ),
 				'url'   => $this->view_url( 'archive' ),
 			),
+			'settings' => array(
+				'label' => __( 'Settings', 'npcink-governance-core' ),
+				'url'   => $this->view_url( 'settings' ),
+			),
 		);
 		?>
 		<nav class="nav-tab-wrapper npcink-governance-core-tabs" aria-label="<?php echo esc_attr__( 'Core admin sections', 'npcink-governance-core' ); ?>">
@@ -376,7 +383,6 @@ final class Admin_Page {
 		<?php $this->render_queue_summary( $pending_count ); ?>
 		<?php $this->render_workbench_toolbar( $lookup_id ); ?>
 		<?php $this->render_pending_proposals( $pending, $pending_count, $page ); ?>
-		<?php $this->render_system_settings_entry(); ?>
 		<?php
 	}
 
@@ -462,7 +468,7 @@ final class Admin_Page {
 	 *
 	 * @return void
 	 */
-	private function render_approval_policy_entry(): void {
+	private function render_approval_policy_entry( bool $open = false ): void {
 		$stored_mode       = Approval_Policy_Evaluator::stored_policy_mode();
 		$current           = Approval_Policy_Evaluator::sanitize_policy_mode( $stored_mode );
 		$invalid_stored    = ! Approval_Policy_Evaluator::is_allowed_policy_mode( $stored_mode );
@@ -472,7 +478,7 @@ final class Admin_Page {
 			Approval_Policy_Evaluator::MODE_DEV_ALLOW_ALL   => __( 'Allow all (development only)', 'npcink-governance-core' ),
 		);
 		?>
-		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide">
+		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide" <?php echo $open ? 'open' : ''; ?>>
 			<summary>
 				<strong><?php echo esc_html__( 'Development Approval Policy', 'npcink-governance-core' ); ?></strong>
 				<span class="npcink-governance-core-muted">
@@ -526,22 +532,18 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Renders low-frequency system settings below the main review workflow.
+	 * Renders low-frequency system settings as their own tab.
 	 *
 	 * @return void
 	 */
-	private function render_system_settings_entry(): void {
+	private function render_system_settings_page(): void {
 		?>
-		<details class="npcink-governance-core-disclosure npcink-governance-core-disclosure-top npcink-governance-core-max-wide">
-			<summary>
-				<strong><?php echo esc_html__( 'System settings', 'npcink-governance-core' ); ?></strong>
-				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Development policy and trusted client access.', 'npcink-governance-core' ); ?></span>
-			</summary>
-			<div class="npcink-governance-core-system-settings">
-				<?php $this->render_approval_policy_entry(); ?>
-				<?php $this->render_advanced_access_entry(); ?>
-			</div>
-		</details>
+		<h2><?php echo esc_html__( 'Settings', 'npcink-governance-core' ); ?></h2>
+		<p class="npcink-governance-core-subtle"><?php echo esc_html__( 'Development approval policy and trusted governance client access.', 'npcink-governance-core' ); ?></p>
+		<div class="npcink-governance-core-system-settings">
+			<?php $this->render_approval_policy_entry( true ); ?>
+			<?php $this->render_advanced_access_entry(); ?>
+		</div>
 		<?php
 	}
 

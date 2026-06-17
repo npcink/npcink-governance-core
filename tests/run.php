@@ -2160,7 +2160,7 @@ foreach (
 		'technical details',
 		'Activity Log',
 		'Expired / Archived',
-		'System settings',
+		'Settings',
 		'Development Approval Policy',
 		'Advanced Access',
 		'paginated',
@@ -2169,6 +2169,10 @@ foreach (
 		'visual status badges',
 		'reviewer sees the basis',
 		'low-frequency fallback action',
+		'Settings tab',
+		'keeping these controls out of the default review queue',
+		'default open because it is the primary setting',
+		'default collapsed',
 		'compact contextual action bar',
 		'collapsed disclosure fallback for no-JavaScript',
 		'general policy rules UI',
@@ -2259,9 +2263,14 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'No requests need 
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Open activity log' ), 'Admin review queue empty state links to audit context.' );
 npcink_governance_core_assert( false === strpos( $admin_page, "name=\"note\" value=\"<?php echo esc_attr__( 'Superseded by batch cleanup proposal.'" ), 'Admin review queue does not prefill bulk rejection with technical cleanup copy.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'plan_ability_id' ), 'Admin review queue can show plan-to-proposal source metadata.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'render_system_settings_entry' ), 'Admin default page folds low-frequency settings behind one system disclosure.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'System settings' ), 'Admin default page labels low-frequency settings as system settings.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Advanced Access' ), 'Admin page folds Core app-key management behind advanced access.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_system_settings_page' ), 'Admin page renders low-frequency settings in a dedicated settings tab.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "'settings' => array" ), 'Admin page exposes Settings as a first-level Core tab.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "'settings' === \$view" ), 'Admin page routes the Settings tab independently from the review queue.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "\$this->render_admin_tabs( 'settings' );" ), 'Admin page highlights Settings for settings and advanced access views.' );
+npcink_governance_core_assert( false === strpos( $admin_page, '$this->render_system_settings_entry();' ), 'Admin review queue no longer renders system settings at the bottom.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Development approval policy and trusted governance client access.' ), 'Admin Settings tab explains its narrow configuration scope.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_approval_policy_entry( true )' ), 'Admin Settings tab opens the primary approval policy setting by default.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Advanced Access' ), 'Admin page keeps Core app-key management behind advanced access.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Development Approval Policy' ), 'Admin page exposes lightweight development approval policy mode.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'MODE_SMART_GUARDED' ), 'Admin page exposes smart approval mode.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'MODE_DEV_ALLOW_ALL' ), 'Admin page exposes development allow-all approval mode.' );
@@ -2275,6 +2284,7 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'nav-tab-wrapper' 
 npcink_governance_core_assert( false === strpos( $admin_page, "'app-keys' => array" ), 'Admin page does not expose Core App Keys as a first-level tab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Review Queue' ), 'Admin page defaults to the review queue tab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Expired / Archived' ), 'Admin page exposes stale proposal archive tab.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Settings' ), 'Admin page exposes the Settings tab.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'render_summary_strip' ), 'Admin default page does not use the removed legacy summary strip helper.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'render_status_metric' ), 'Admin default page removes metric cards from the review surface.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_pagination' ), 'Admin page paginates long governance lists.' );

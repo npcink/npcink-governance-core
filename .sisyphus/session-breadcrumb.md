@@ -1,5 +1,36 @@
 # Session Breadcrumb
 
+## 2026-06-17 — System settings moved to Settings tab
+
+- **Module**: Core admin settings navigation.
+- **Status**: Low-frequency development approval policy and trusted client
+  access controls now live under a first-level `Settings` tab. The default
+  `Review Queue` no longer renders the system settings disclosure at the
+  bottom.
+- **Completed**:
+  - Added `Settings` to the Core admin tabs and routed `view=settings`.
+  - Moved system settings rendering out of the review workbench.
+  - Kept app-key management behind `Advanced Access`, with `view=app-keys`
+    highlighting `Settings`.
+  - Opened `Development Approval Policy` by default on the Settings tab and
+    kept `Advanced Access` collapsed.
+  - Updated admin surface docs, static contracts, and translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php`
+  - `php -l tests/run.php`
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+  - Browser visual check was attempted, but Playwright could not attach because
+    the shared browser user-data directory was locked by another active browser
+    instance.
+- **Boundary**:
+  - This is admin navigation and display behavior only. It does not add a
+    general policy rules UI, workflow approval configuration center, workflow
+    runtime, queues, MCP runtime, Agent Gateway catalogs, provider credentials,
+    REST lifecycle changes, Adapter execution, or final writes.
+
 ## 2026-06-17 — Pending review pagination and list controls tightened
 
 - **Module**: Core admin review queue pagination and bulk-selection controls.

@@ -14,7 +14,8 @@ The page is split into focused admin tabs:
 
 - `Review Queue`;
 - `Activity Log`;
-- `Expired / Archived`.
+- `Expired / Archived`;
+- `Settings`.
 
 The default `Review Queue` tab must stay focused on the current governance
 queue:
@@ -64,15 +65,16 @@ queue:
 - stale proposals available from the expired/archive tab;
 - useful empty state that points to proposal lookup, activity log, and expired
   records instead of only saying that the queue is empty;
-- `System settings` disclosure for low-frequency development policy and trusted
-  client access;
-- nested `Development Approval Policy` disclosure for the lightweight require
-  approval for all, smart approval, and local-development allow-all modes;
+- `Settings` tab for low-frequency development policy and trusted client
+  access, keeping these controls out of the default review queue;
+- `Development Approval Policy` disclosure in the Settings tab for the
+  lightweight require approval for all, smart approval, and local-development
+  allow-all modes. It should default open because it is the primary setting;
 - stale or invalid stored approval policy option values must show an inline
   warning that Core is treating the value as require approval for all until a
   supported mode is saved;
-- nested `Advanced Access` disclosure for low-frequency client access key
-  management.
+- `Advanced Access` disclosure in the Settings tab for low-frequency client
+  access key management. It should default collapsed.
 
 ## Detail Views
 
@@ -93,9 +95,9 @@ inline on the default workbench. Long lists in `Review Queue`, `Activity Log`,
 `Expired / Archived`, and advanced app-key management must be paginated.
 
 Core app-key creation is a low-frequency fallback action. It should stay behind
-the default workbench's `Advanced Access` disclosure and then behind an
-explicit creation disclosure on the advanced access page. It must not appear as
-a first-level Core tab.
+the Settings tab's `Advanced Access` disclosure and then behind an explicit
+creation disclosure on the advanced access page. It must not appear as a
+first-level Core tab.
 
 The review queue must not remove proposal identity from the page, but the
 default row should lead with the user-facing request label. Keep `Proposal ID`

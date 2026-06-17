@@ -1645,11 +1645,7 @@ msgid "Open expired records"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php
-msgid "System settings"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Development policy and trusted client access."
+msgid "Development approval policy and trusted governance client access."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php
