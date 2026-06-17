@@ -360,6 +360,26 @@ msgstr "批量操作"
 msgid "Reject selected requests when they are no longer needed."
 msgstr "当所选请求不再需要时批量拒绝。"
 
+#: includes/Admin/Admin_Page.php:662
+msgid "Selected requests: %d"
+msgstr "已选请求：%d"
+
+#: includes/Admin/Admin_Page.php:668
+msgid "Bulk rejection closes selected Core proposals without executing writes."
+msgstr "批量拒绝只会关闭所选 Core 提案，不会执行写入。"
+
+#: includes/Admin/Admin_Page.php:675
+msgid "Bulk rejection ready."
+msgstr "批量拒绝已就绪。"
+
+#: includes/Admin/Admin_Page.php:678
+msgid "Review the selection before rejecting. Core records the rejection and does not execute writes."
+msgstr "拒绝前请核对所选请求。Core 会记录拒绝决定，不会执行写入。"
+
+#: includes/Admin/Admin_Page.php:681
+msgid "Add rejection note"
+msgstr "添加拒绝备注"
+
 #: includes/Admin/Admin_Page.php:673
 msgid "Bulk rejection note"
 msgstr "批量拒绝备注"
@@ -375,6 +395,10 @@ msgstr "填写拒绝这些请求的原因。"
 #: includes/Admin/Admin_Page.php:731
 msgid "Rejected from bulk review."
 msgstr "已从批量审核中拒绝。"
+
+#: includes/Admin/Admin_Page.php:688
+msgid "Clear selection"
+msgstr "清空选择"
 
 #: includes/Admin/Admin_Page.php:677
 msgid "Reject selected"

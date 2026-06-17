@@ -2166,6 +2166,8 @@ foreach (
 		'visual status badges',
 		'reviewer sees the basis',
 		'low-frequency fallback action',
+		'compact contextual action bar',
+		'collapsed disclosure fallback for no-JavaScript',
 		'general policy rules UI',
 		'OpenClaw onboarding',
 		'ability definitions',
@@ -2199,6 +2201,11 @@ npcink_governance_core_assert( false !== strpos( $admin_page, "\$this->display_d
 npcink_governance_core_assert( false === strpos( $admin_page, "echo esc_html( (string) \$event['created_at']" ), 'Admin page does not output raw UTC audit timestamps.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Reject selected' ), 'Admin review queue exposes bulk rejection.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Bulk actions' ), 'Admin review queue folds bulk rejection behind a low-frequency disclosure.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'data-npcink-bulk-disclosure' ), 'Admin review queue keeps bulk rejection as a no-JavaScript disclosure fallback.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'data-npcink-bulk-action-bar' ), 'Admin review queue renders a contextual bulk action bar.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Selected requests: %d' ), 'Admin review queue shows selected proposal counts in bulk actions.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Clear selection' ), 'Admin review queue lets operators clear bulk selection.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Add rejection note' ), 'Admin review queue keeps bulk rejection notes optional until needed.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'array_slice( $proposal_ids, 0, 50 )' ), 'Admin bulk rejection is bounded.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_proposal_lookup' ), 'Admin review queue exposes proposal lookup.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "plugins_url( 'assets/admin.js'" ), 'Admin page enqueues the Core admin interaction script.' );
@@ -2351,9 +2358,14 @@ npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-status-badge' ), 'Admin CSS styles proposal status badges.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-risk-badge' ), 'Admin CSS styles proposal risk badges.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-empty-state' ), 'Admin CSS styles the active queue empty state.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-bulk-action-bar' ), 'Admin CSS styles the contextual bulk action bar.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-bulk-disclosure[hidden]' ), 'Admin CSS hides bulk actions until JavaScript reveals selection context.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'data-npcink-details-target' ), 'Admin JS toggles row details by explicit target id.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'aria-expanded' ), 'Admin JS maintains details toggle accessibility state.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'target.hidden = expanded' ), 'Admin JS shows and hides inline technical detail rows.' );
+npcink_governance_core_assert( false !== strpos( $admin_js, 'updateBulkActions' ), 'Admin JS updates bulk action visibility from row selection.' );
+npcink_governance_core_assert( false !== strpos( $admin_js, 'disclosure.hidden = count === 0' ), 'Admin JS hides bulk actions until at least one proposal is selected.' );
+npcink_governance_core_assert( false !== strpos( $admin_js, 'data-npcink-bulk-clear' ), 'Admin JS clears selected bulk proposal checkboxes.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_article_workflow_review_context' ), 'Admin proposal detail renders article workflow review context.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_field_patch_review_context' ), 'Admin proposal detail renders field-level proposal patches.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'field_patch'" ), 'Admin proposal detail reads preview.field_patch before raw payload.' );

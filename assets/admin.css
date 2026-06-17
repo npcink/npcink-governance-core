@@ -140,6 +140,59 @@
 	flex-wrap: wrap;
 }
 
+.npcink-governance-core-bulk-disclosure {
+	max-width: 1100px;
+}
+
+.npcink-governance-core-bulk-disclosure[hidden] {
+	display: none;
+}
+
+.npcink-governance-core-bulk-disclosure summary {
+	padding: 8px 0;
+}
+
+.npcink-governance-core-bulk-action-bar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 12px;
+	align-items: center;
+	box-sizing: border-box;
+	padding: 10px 12px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-left: 4px solid #dba617;
+}
+
+.npcink-governance-core-bulk-action-main {
+	flex: 1 1 320px;
+	min-width: 0;
+}
+
+.npcink-governance-core-bulk-action-main strong {
+	display: block;
+	color: #1d2327;
+}
+
+.npcink-governance-core-bulk-note {
+	flex: 1 1 320px;
+	min-width: 260px;
+}
+
+.npcink-governance-core-bulk-note summary {
+	padding: 0;
+	color: #2271b1;
+}
+
+.npcink-governance-core-bulk-note[open] {
+	flex-basis: 100%;
+	order: 2;
+}
+
+.npcink-governance-core-bulk-note .npcink-governance-core-block-label {
+	margin-top: 8px;
+}
+
 .npcink-governance-core-secondary-row {
 	display: flex;
 	flex-wrap: wrap;
@@ -506,5 +559,10 @@
 
 	.npcink-governance-core-row-details-panel {
 		grid-template-columns: 1fr;
+	}
+
+	.npcink-governance-core-bulk-note {
+		flex-basis: 100%;
+		min-width: 0;
 	}
 }

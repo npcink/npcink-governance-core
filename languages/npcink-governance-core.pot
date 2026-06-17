@@ -362,6 +362,26 @@ msgstr ""
 msgid "Reject selected requests when they are no longer needed."
 msgstr ""
 
+#: includes/Admin/Admin_Page.php:662
+msgid "Selected requests: %d"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:668
+msgid "Bulk rejection closes selected Core proposals without executing writes."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:675
+msgid "Bulk rejection ready."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:678
+msgid "Review the selection before rejecting. Core records the rejection and does not execute writes."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:681
+msgid "Add rejection note"
+msgstr ""
+
 #: includes/Admin/Admin_Page.php:673
 msgid "Bulk rejection note"
 msgstr ""
@@ -376,6 +396,10 @@ msgstr ""
 
 #: includes/Admin/Admin_Page.php:731
 msgid "Rejected from bulk review."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:688
+msgid "Clear selection"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:677

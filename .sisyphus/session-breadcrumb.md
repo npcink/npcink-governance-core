@@ -1,5 +1,35 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Pending bulk rejection moved behind selection
+
+- **Module**: Core admin review queue bulk rejection affordance.
+- **Status**: Bulk rejection remains available as a no-JavaScript disclosure
+  fallback, but JavaScript-enabled admin sessions now hide it until one or more
+  pending rows are selected. Once selected, the queue shows a compact contextual
+  action bar with selected count, clear selection, optional rejection note, and
+  reject selected action.
+- **Completed**:
+  - Reworked the bulk rejection markup into a contextual action bar inside the
+    existing bounded bulk-reject form.
+  - Added admin JavaScript to show/hide the action bar, update selected count,
+    and clear selected checkboxes.
+  - Added compact CSS for the selection action bar and optional note disclosure.
+  - Updated admin surface docs, static contracts, and translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php && node -c assets/admin.js`
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `git diff --check`
+  - `composer test:all`
+  - Browser check: default hidden, row selection reveals the contextual bulk bar,
+    clear selection hides it again, and no browser console errors were reported.
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This is admin display and interaction behavior only. It does not change bulk
+    reject permission checks, nonce enforcement, the 50-proposal bound,
+    proposal lifecycle semantics, REST routes, Adapter execution, workflow
+    runtime, queues, MCP runtime, Agent Gateway catalogs, provider credentials,
+    or final writes.
+
 ## 2026-06-17 — Pending row details converted to grouped inspector
 
 - **Module**: Core admin review queue pending request details.

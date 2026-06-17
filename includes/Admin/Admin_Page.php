@@ -654,20 +654,39 @@ final class Admin_Page {
 				</tbody>
 			</table>
 			<?php if ( ! empty( $pending ) ) : ?>
-				<details class="npcink-governance-core-disclosure npcink-governance-core-disclosure-top">
+				<details class="npcink-governance-core-disclosure npcink-governance-core-disclosure-top npcink-governance-core-bulk-disclosure" data-npcink-bulk-disclosure>
 					<summary>
-						<strong><?php echo esc_html__( 'Bulk actions', 'npcink-governance-core' ); ?></strong>
-						<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Reject selected requests when they are no longer needed.', 'npcink-governance-core' ); ?></span>
+						<strong
+							data-npcink-bulk-count-label
+							data-default-label="<?php echo esc_attr__( 'Bulk actions', 'npcink-governance-core' ); ?>"
+							data-selected-label="<?php echo esc_attr__( 'Selected requests: %d', 'npcink-governance-core' ); ?>"
+						><?php echo esc_html__( 'Bulk actions', 'npcink-governance-core' ); ?></strong>
+						<span
+							class="npcink-governance-core-muted"
+							data-npcink-bulk-help
+							data-default-help="<?php echo esc_attr__( 'Reject selected requests when they are no longer needed.', 'npcink-governance-core' ); ?>"
+							data-selected-help="<?php echo esc_attr__( 'Bulk rejection closes selected Core proposals without executing writes.', 'npcink-governance-core' ); ?>"
+						><?php echo esc_html__( 'Reject selected requests when they are no longer needed.', 'npcink-governance-core' ); ?></span>
 					</summary>
-					<p class="npcink-governance-core-inline-actions">
-						<label class="npcink-governance-core-flex-field">
-							<?php echo esc_html__( 'Rejection note', 'npcink-governance-core' ); ?><br />
-							<input type="text" class="large-text" name="note" value="" placeholder="<?php echo esc_attr__( 'Describe why these requests should be rejected.', 'npcink-governance-core' ); ?>" />
-						</label>
+					<div class="npcink-governance-core-bulk-action-bar" data-npcink-bulk-action-bar>
+						<div class="npcink-governance-core-bulk-action-main">
+							<strong><?php echo esc_html__( 'Bulk rejection ready.', 'npcink-governance-core' ); ?></strong>
+							<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Review the selection before rejecting. Core records the rejection and does not execute writes.', 'npcink-governance-core' ); ?></span>
+						</div>
+						<details class="npcink-governance-core-bulk-note">
+							<summary><?php echo esc_html__( 'Add rejection note', 'npcink-governance-core' ); ?></summary>
+							<label class="npcink-governance-core-block-label">
+								<?php echo esc_html__( 'Rejection note', 'npcink-governance-core' ); ?><br />
+								<input type="text" class="large-text" name="note" value="" placeholder="<?php echo esc_attr__( 'Describe why these requests should be rejected.', 'npcink-governance-core' ); ?>" />
+							</label>
+						</details>
+						<button type="button" class="button" data-npcink-bulk-clear>
+							<?php echo esc_html__( 'Clear selection', 'npcink-governance-core' ); ?>
+						</button>
 						<button type="submit" class="button">
 							<?php echo esc_html__( 'Reject selected', 'npcink-governance-core' ); ?>
 						</button>
-					</p>
+					</div>
 				</details>
 			<?php endif; ?>
 		</form>
