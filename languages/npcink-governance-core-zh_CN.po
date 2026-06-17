@@ -1594,10 +1594,6 @@ msgstr "开发策略和可信客户端访问。"
 msgid "Open a Core proposal by display ID or full proposal ID."
 msgstr "通过展示 ID 或完整提案 ID 打开 Core 提案。"
 
-#: includes/Admin/Admin_Page.php
-msgid "Display ID:"
-msgstr "展示 ID："
-
 #. translators: %s: full proposal id.
 #: includes/Admin/Admin_Page.php
 #, php-format

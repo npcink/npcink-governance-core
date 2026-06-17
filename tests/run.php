@@ -2146,7 +2146,7 @@ foreach (
 		'compact status summary',
 		'pending request list',
 		'compact source summary',
-		'two-line actor/context structure',
+		'source attribution should default to the actor only',
 		'stable display id',
 		'dedicated `Details` column',
 		'inline full-width key-value details table',
@@ -2217,7 +2217,8 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_source_s
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-source-cell' ), 'Admin review queue moves source attribution into a dedicated column.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-source-summary' ), 'Admin review queue renders compact source attribution separately from request identity.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-source-actor' ), 'Admin review queue shows the source actor before source context.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-source-context' ), 'Admin review queue shows app/source context on a separate source line.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'Display ID:' ), 'Admin review queue does not repeat the display id label in every default row.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'npcink-governance-core-source-context' ), 'Admin review queue keeps app/source context out of default source rows.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_display_id( $proposal )' ), 'Admin review queue shows stable display ids in the default row.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-detail-cell' ), 'Admin review queue moves technical detail access into a dedicated column.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-row-details-toggle' ), 'Admin review queue toggles row details explicitly.' );
@@ -2333,7 +2334,7 @@ npcink_governance_core_assert( false !== strpos( $admin_css, 'white-space: nowra
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-source-cell' ), 'Admin CSS sizes the dedicated source column.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-source-summary' ), 'Admin CSS styles compact source attribution.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-source-actor' ), 'Admin CSS styles the source actor line.' );
-npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-source-context' ), 'Admin CSS styles the source context line.' );
+npcink_governance_core_assert( false === strpos( $admin_css, '.npcink-governance-core-source-context' ), 'Admin CSS does not reserve a default row line for source context.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-display-id' ), 'Admin CSS styles proposal display ids.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-policy-warning' ), 'Admin CSS spaces stale approval policy warnings.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-detail-cell' ), 'Admin CSS styles the dedicated details column.' );

@@ -608,18 +608,12 @@ final class Admin_Page {
 							<td class="npcink-governance-core-request-cell">
 								<div class="npcink-governance-core-request-title"><?php echo esc_html( $this->proposal_request_label( $proposal ) ); ?></div>
 								<div class="npcink-governance-core-request-meta">
-									<span>
-										<?php echo esc_html__( 'Display ID:', 'npcink-governance-core' ); ?>
-										<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>" title="<?php echo esc_attr( $display_title ); ?>"><code class="npcink-governance-core-display-id"><?php echo esc_html( $display_id ); ?></code></a>
-									</span>
+									<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>" title="<?php echo esc_attr( $display_title ); ?>"><code class="npcink-governance-core-display-id"><?php echo esc_html( $display_id ); ?></code></a>
 								</div>
 							</td>
 							<td class="npcink-governance-core-source-cell">
 								<span class="npcink-governance-core-source-summary" title="<?php echo esc_attr( '' !== $source_trace ? $source_trace : $this->proposal_source_summary( $proposal ) ); ?>">
 									<span class="npcink-governance-core-source-actor"><?php echo esc_html( $source_summary['actor'] ); ?></span>
-									<?php if ( '' !== $source_summary['context'] ) : ?>
-										<span class="npcink-governance-core-source-context"><?php echo esc_html( $source_summary['context'] ); ?></span>
-									<?php endif; ?>
 								</span>
 							</td>
 							<td class="npcink-governance-core-status-cell">

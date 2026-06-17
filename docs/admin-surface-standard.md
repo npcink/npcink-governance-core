@@ -30,8 +30,10 @@ queue:
   id, ability id, app id, and source trace stay behind technical details;
 - default pending rows should keep request identity, source attribution, status,
   created time, details, and action columns left-aligned except the final action
-  column; display ids should remain single-line, and source attribution should
-  use a two-line actor/context structure instead of a wrapped delimiter chain;
+  column; display ids should remain single-line and should not repeat a
+  `Display ID:` label in the row; source attribution should default to the actor only,
+  with app id and source context kept in the details table or title text instead
+  of the main row;
 - default pending rows must not place the technical detail disclosure inside
   the request column. Use a dedicated `Details` column that toggles an inline full-width key-value details table below the row;
 - default pending rows do not render an undeclared-risk badge. Risk appears in

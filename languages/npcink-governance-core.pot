@@ -1596,10 +1596,6 @@ msgstr ""
 msgid "Open a Core proposal by display ID or full proposal ID."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php
-msgid "Display ID:"
-msgstr ""
-
 #. translators: %s: full proposal id.
 #: includes/Admin/Admin_Page.php
 #, php-format

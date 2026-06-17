@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Pending row default metadata reduced
+
+- **Module**: Core admin review queue pending request list.
+- **Status**: The default pending row now removes the repeated `Display ID:`
+  label and shows only the source actor in the Source column. App id, smoke
+  source context, full proposal id, caller type, and source trace remain in the
+  row details table or hover title for troubleshooting.
+- **Completed**:
+  - Removed the repeated display-id label from each default row.
+  - Folded app/source context out of the default Source column.
+  - Tightened request and source column widths after reducing default metadata.
+  - Updated admin surface docs, static contracts, and translation artifacts.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php && node -c assets/admin.js`
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This is admin display behavior only. It does not change proposal ids,
+    proposal TTL, approval semantics, REST routes, Adapter execution, workflow
+    runtime, queues, MCP runtime, Agent Gateway catalogs, provider credentials,
+    or final writes.
+
 ## 2026-06-17 — Adapter handoff and approval policy acceptance documented
 
 - **Module**: Core handoff documentation, next-stage planning, and static

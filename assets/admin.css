@@ -172,11 +172,11 @@
 }
 
 .npcink-governance-core-request-cell {
-	width: 260px;
+	width: 220px;
 }
 
 .npcink-governance-core-source-cell {
-	width: 260px;
+	width: 130px;
 }
 
 .npcink-governance-core-status-cell {
@@ -222,17 +222,13 @@
 	color: #50575e;
 	font-size: 12px;
 	line-height: 1.5;
-	word-break: break-word;
+	white-space: nowrap;
 }
 
 .npcink-governance-core-source-actor {
 	display: block;
 	color: #3c434a;
 	font-weight: 600;
-}
-
-.npcink-governance-core-source-context {
-	display: block;
 }
 
 .npcink-governance-core-display-id {
