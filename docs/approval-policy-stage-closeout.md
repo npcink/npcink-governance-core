@@ -32,8 +32,8 @@ Current supported modes:
   `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL` and still requires commit
   preflight before Adapter-owned execution.
 
-The historical `dry_run_guarded` and `local_guarded` values remain accepted as
-legacy stored configuration values.
+Old approval policy values are not accepted; stale stored values fall back to
+`manual`.
 
 Adapter remains thin. It reads Core proposal state, calls Core commit preflight,
 and executes only already approved proposals whose preflight passes. Adapter
@@ -51,8 +51,6 @@ The stage delivered these Core-side pieces:
 - duplicate pending proposal reuse based on sanitized input hash;
 - pending proposal quotas and stale pending expiration;
 - separate hourly and daily auto-approval quotas;
-- legacy `dry_run_guarded` candidate detection for trusted cleanup and
-  create-draft proposals without status changes;
 - `smart_guarded` auto approval for trusted nonproduction cleanup
   `trash-post` batches;
 - `smart_guarded` auto approval for a single direct draft-only

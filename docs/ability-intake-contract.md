@@ -186,9 +186,10 @@ theme files, navigation entities, global styles, or execute WordPress writes.
 For `customize_template_layout`, Core additionally requires a passing
 `template_layout_contract` with a bounded profile such as `article_standard`,
 `page_standard`, or `homepage_landing`. The layout contract must declare
-`compiler_version=block_theme_profile_compiler@0.2`,
+`compiler_version=block_theme_profile_compiler@0.3`,
 `forbidden_policy_version=block_theme_safe_core_blocks@0.2`, and accepted
-versioned profiles such as `article_standard@0.4` and `homepage_landing@0.2`;
+versioned profiles such as `article_standard@0.4`, `page_standard@0.2`, and
+`homepage_landing@0.3`;
 each profile row must carry the matching profile version, operation, modules,
 and forbidden-output policy.
 Template upserts are limited to

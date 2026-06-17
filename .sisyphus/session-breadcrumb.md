@@ -1,5 +1,195 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Adapter handoff and approval policy acceptance documented
+
+- **Module**: Core handoff documentation, next-stage planning, and static
+  contracts.
+- **Status**: The next approve-and-execute work is now explicitly assigned to
+  Magick AI Adapter or another channel adapter. Core keeps proposal, approval,
+  commit preflight, app-key policy, and audit truth only. A local manual
+  acceptance checklist now covers `manual`, `smart_guarded`, `dev_allow_all`,
+  stale stored policy values, display-id lookup, audit timeline, and
+  `commit_execution=false` handoff behavior.
+- **Completed**:
+  - Added `docs/adapter-handoff-and-approval-policy-acceptance.md`.
+  - Linked the new handoff and manual acceptance checklist from README and the
+    next-stage plan.
+  - Added static contracts for Adapter-owned approve-and-execute, Core
+    non-execution boundaries, and approval policy manual acceptance coverage.
+- **Verification**:
+  - `php tests/run.php`
+  - `git diff --check`
+  - `composer test:all`
+- **Boundary**:
+  - This is documentation and contract coverage only. It does not add Core
+    execution routes, Adapter implementation, workflow runtime, queues, MCP
+    runtime, Agent Gateway catalogs, provider credentials, approval-token
+    compatibility, or final WordPress writes.
+
+## 2026-06-17 — Pending row table density tightened
+
+- **Module**: Core admin review queue pending request list.
+- **Status**: The default pending row now uses tighter fixed column widths,
+  left-aligned headers/cells, single-line display ids, and a two-line source
+  actor/context structure. This reduces wasted horizontal space and avoids
+  source summaries wrapping with a leading delimiter.
+- **Completed**:
+  - Split source summary rendering into actor and context lines.
+  - Tightened request, source, status, details, and action column widths.
+  - Kept display ids on one line in default rows.
+  - Updated admin surface docs and static contracts for the denser layout.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php && node -c assets/admin.js`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This is admin display behavior only. It does not change proposal ids,
+    proposal TTL, approval semantics, REST routes, Adapter execution, workflow
+    runtime, queues, MCP runtime, Agent Gateway catalogs, provider credentials,
+    or final writes.
+
+## 2026-06-17 — Pending row source moved to its own column
+
+- **Module**: Core admin review queue pending request list.
+- **Status**: The default pending row now separates request identity from
+  caller/app attribution. `Request` keeps the user-facing action and display
+  id, while a dedicated `Source` column shows the compact external app or
+  caller summary. Full app id and source trace remain in the row details table.
+- **Completed**:
+  - Added the pending row `Source` column between request and status.
+  - Moved compact source attribution out of the request metadata block.
+  - Added CSS and static contracts for the dedicated source column.
+  - Updated the admin surface standard for the request/source split.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php && node -c assets/admin.js`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This is admin display behavior only. It does not change proposal ids,
+    proposal TTL, approval semantics, REST routes, Adapter execution, workflow
+    runtime, queues, MCP runtime, Agent Gateway catalogs, provider credentials,
+    or final writes.
+
+## 2026-06-17 — Approval policy contract fallback made visible
+
+- **Module**: Core approval policy evaluator, Core admin system settings, and
+  approval policy contract docs.
+- **Status**: The supported approval policy mode set is explicitly closed to
+  `manual`, `smart_guarded`, and `dev_allow_all`. The evaluator now exposes
+  the stored mode before fallback and a supported-mode predicate so the admin
+  surface can warn when a stale or invalid stored value is being treated as
+  `manual`.
+- **Completed**:
+  - Added `stored_policy_mode()` and `is_allowed_policy_mode()` to the bounded
+    evaluator surface.
+  - Added an inline admin warning for unsupported stored policy modes without
+    restoring legacy alias behavior.
+  - Froze the closed mode set and legacy-alias rejection in governance, REST,
+    approval policy, admin surface docs, and static contracts.
+  - Updated translation artifacts for the warning text.
+- **Verification**:
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `node -c assets/admin.js`
+  - `php -l includes/Admin/Admin_Page.php && php -l includes/Governance/Approval_Policy_Evaluator.php && php -l tests/run.php`
+  - `git diff --check`
+  - `composer validate --no-check-publish`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This changes policy configuration visibility and contract tests only. It
+    does not reintroduce removed policy modes, add approval-token
+    compatibility, execute proposals, add workflow runtime, task queues, MCP
+    runtime, Agent Gateway catalogs, provider credentials, or final WordPress
+    writes.
+
+## 2026-06-17 — Pending row details moved to a dedicated column
+
+- **Module**: Core admin review queue pending request list.
+- **Status**: The pending request row no longer embeds technical details inside
+  the request column. A dedicated `Details` column now toggles an inline
+  full-width key-value table under the row. The default row stays focused on
+  request label, display id, source summary, status, created time, and review
+  action.
+- **Completed**:
+  - Added the row `Details` column and full-width hidden details rows.
+  - Added a small admin script to toggle details rows with `aria-expanded`.
+  - Rendered technical fields as a key-value table with display id, full
+    proposal id, target ability, source, caller/app attribution, timestamps,
+    and policy fields.
+  - Updated admin CSS, admin surface standard, static contracts, and zh_CN
+    translations.
+- **Verification**:
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php`
+  - `node -c assets/admin.js`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This is admin display behavior only. It does not change proposal ids,
+    proposal TTL, approval semantics, REST route identifiers, Adapter
+    execution, workflow runtime, queues, MCP runtime, Agent Gateway catalogs,
+    provider credentials, or final writes.
+
+## 2026-06-17 — Proposal display IDs added
+
+- **Module**: Core proposal identity display and admin lookup.
+- **Status**: Proposal rows now expose a deterministic human-facing
+  `display_id` such as `P-1234ABCD-EF90`, derived from the stable
+  `proposal_id`. The admin review list and proposal detail show the display id
+  by default, while the full proposal UUID remains available in detail and
+  technical fields. Admin lookup accepts either the display id or full
+  proposal id.
+- **Completed**:
+  - Added repository display-id derivation and display-id lookup without adding
+    a database column.
+  - Added `display_id` to normalized proposal rows and documented it as an
+    additive REST response field.
+  - Updated admin UI copy, CSS, static contracts, REST/governance/database
+    docs, and zh_CN translations.
+- **Verification**:
+  - `php -l includes/Governance/Proposal_Repository.php && php -l includes/Admin/Admin_Page.php && php -l tests/run.php`
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+  - `git diff --check`
+- **Boundary**:
+  - This adds a human-facing alias only. It does not replace `proposal_id`,
+    alter REST route identifiers, add database columns, change proposal TTL,
+    change approval semantics, or add Adapter execution, workflow runtime,
+    queues, MCP runtime, Agent Gateway catalogs, provider credentials, or final
+    writes.
+
+## 2026-06-17 — Approval policy legacy modes removed
+
+- **Module**: Core approval policy evaluator, development policy admin setting,
+  and policy smoke coverage.
+- **Status**: The approval policy mode set is now only `manual`,
+  `smart_guarded`, and `dev_allow_all`. Removed policy mode strings now fall
+  back to `manual` instead of acting as compatibility aliases. WordPress smoke
+  now exercises `smart_guarded` as the main auto-approval path and verifies
+  `dev_allow_all` both disabled and enabled.
+- **Completed**:
+  - Removed prior guarded mode constants, sanitize compatibility, dry-run-only
+    branch behavior, and old auto-approval reason keys.
+  - Removed legacy policy labels from the Core admin setting.
+  - Updated policy docs, static contracts, fail-closed coverage, smoke coverage,
+    and zh_CN translation artifacts.
+  - Verified `dev_allow_all` still requires the explicit local development
+    constant, proposal approval authority, audit, and commit preflight.
+- **Verification**:
+  - `php -l includes/Governance/Approval_Policy_Evaluator.php`
+  - `php -l tests/smoke-wp.php`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This changes approval policy selection and tests only. It does not add
+    workflow runtime, task queues, MCP runtime, Agent Gateway catalogs, provider
+    credentials, Adapter execution, approval-token compatibility, or final
+    WordPress writes.
+
 ## 2026-06-17 — Approval policy strategy modes added
 
 - **Module**: Core approval policy evaluator and development policy admin

@@ -50,6 +50,8 @@ Optional fields:
 Core-generated fields:
 
 - `proposal_id`
+- `display_id`: deterministic human-facing alias derived from `proposal_id`
+  for operator display and admin lookup. It is not a replacement primary id.
 - `status`
 - `policy_decision`
 - `policy_profile`
@@ -249,9 +251,9 @@ actions limited to
 `npcink-abilities-toolkit/update-template-blocks` or
 `npcink-abilities-toolkit/upsert-template-blocks`. Layout customization plans
 must include a passing bounded `template_layout_contract` with accepted compiler,
-policy, and profile versions (`block_theme_profile_compiler@0.2`,
+policy, and profile versions (`block_theme_profile_compiler@0.3`,
 `block_theme_safe_core_blocks@0.2`, and versioned profiles such as
-`homepage_landing@0.2`). Core stores
+`page_standard@0.2`, `homepage_landing@0.3`). Core stores
 `preview.block_theme_site` and the reviewed block tree, but does not edit theme
 files, navigation entities, global styles, approve proposals, or execute
 WordPress writes.
@@ -319,6 +321,9 @@ and input schema. Commit preflight fails closed if the live fingerprint no
 longer matches the approved proposal.
 
 Core evaluates a lightweight approval policy decision during proposal creation.
+The supported approval policy mode set is closed to `manual`,
+`smart_guarded`, and `dev_allow_all`. Unrecognized stored values, including
+removed legacy mode names, fall back to `manual` and must not act as aliases.
 The default `manual` mode records `manual_required` for every proposal with
 `policy_profile=manual` and `policy_version=core-approval-policy-v1`.
 Mode `smart_guarded` may return `auto_approved` only for trusted

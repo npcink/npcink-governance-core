@@ -383,6 +383,17 @@ Current-stage acceptance:
 - avoid adding final WordPress mutation routes as an incidental extension of
   commit preflight.
 
+Next implementation location:
+
+- continue approve-and-execute implementation in Magick AI Adapter or another
+  channel adapter, not in Core;
+- use
+  [Adapter Handoff And Approval Policy Acceptance](adapter-handoff-and-approval-policy-acceptance.md)
+  as the Core-side handoff and manual acceptance checklist;
+- Core changes in this stage should be limited to contract clarification,
+  audit/preflight hardening, and regression fixes when Adapter acceptance
+  reveals a Core governance defect.
+
 ### 9. AI Provider Log Correlation Acceptance
 
 Status: Core contract documented; Adapter implementation required.
@@ -472,6 +483,15 @@ Recommended next slice:
   media delete, settings, or published-content update auto approval;
 - do not add a rules DSL, scheduler, workflow runtime, UI configuration center,
   or final execution path.
+
+Manual local acceptance:
+
+- verify `manual`, `smart_guarded`, and `dev_allow_all` through
+  [Adapter Handoff And Approval Policy Acceptance](adapter-handoff-and-approval-policy-acceptance.md);
+- verify stale stored values such as `local_guarded` and `dry_run_guarded`
+  show the admin warning and fall back to `manual`;
+- verify commit preflight still returns `commit_execution=false` and Adapter
+  handoff metadata instead of executing the target ability.
 
 ## Stop Conditions
 

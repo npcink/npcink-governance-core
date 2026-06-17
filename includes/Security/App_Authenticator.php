@@ -253,7 +253,7 @@ final class App_Authenticator {
 			return $this->error( 'npcink_governance_core_app_scope_forbidden', __( 'App key does not have the required scope.', 'npcink-governance-core' ), 403 );
 		}
 
-		$this->set_context( $app, $scope, $route_family );
+		$this->set_context( $app, $scope, $route_family, $request );
 		$rate = $this->rate_limiter->consume( $app, $route_family );
 		if ( empty( $rate['allowed'] ) ) {
 			Request_Context::mark_scope_decision( 'rate_limited' );
@@ -305,17 +305,33 @@ final class App_Authenticator {
 	 * @param string              $route_family Route family.
 	 * @return void
 	 */
-	private function set_context( array $app, string $scope, string $route_family ): void {
+	private function set_context( array $app, string $scope, string $route_family, ?WP_REST_Request $request = null ): void {
 		Request_Context::set_app(
 			array(
-				'app_id'       => (string) $app['app_id'],
-				'key_id'       => (string) $app['key_id'],
-				'caller_type'  => (string) $app['caller_type'],
-				'scope'        => $scope,
-				'scopes'       => (array) ( $app['scopes'] ?? array() ),
-				'route_family' => $route_family,
+				'app_id'                    => (string) $app['app_id'],
+				'key_id'                    => (string) $app['key_id'],
+				'caller_type'               => (string) $app['caller_type'],
+				'scope'                     => $scope,
+				'scopes'                    => (array) ( $app['scopes'] ?? array() ),
+				'route_family'              => $route_family,
+				'signed_client_fingerprint' => $request instanceof WP_REST_Request ? $this->signed_client_fingerprint_from_request( $request ) : '',
 			)
 		);
+	}
+
+	/**
+	 * Returns the Adapter-authenticated client fingerprint forwarded by a trusted app key.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return string
+	 */
+	private function signed_client_fingerprint_from_request( WP_REST_Request $request ): string {
+		$fingerprint = sanitize_text_field( (string) $request->get_header( 'x_npcink_adapter_signed_client_fingerprint' ) );
+		if ( '' === $fingerprint ) {
+			$fingerprint = sanitize_text_field( (string) $request->get_header( 'x_npcink_adapter_client_key_fingerprint' ) );
+		}
+
+		return 1 === preg_match( '/^sha256:[a-f0-9]{64}$/', $fingerprint ) ? $fingerprint : '';
 	}
 
 	/**

@@ -21,6 +21,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Verifies approval-commit readiness without executing abilities.
  */
 final class Commit_Preflight_Service {
+	const PREFLIGHT_TTL_SECONDS = 300;
+
 	/**
 	 * Proposal repository.
 	 *
@@ -190,6 +192,8 @@ final class Commit_Preflight_Service {
 		$approved_preview_hash = $this->payload_hash( $proposal['preview'] ?? array() );
 		$policy_version        = 'core-preflight-v1';
 		$site_binding          = $this->site_binding_context();
+		$client_binding        = Request_Context::signed_client_context();
+		$expires_at            = gmdate( 'c', time() + self::PREFLIGHT_TTL_SECONDS );
 		$approval_context = array(
 			'approval_commit_authorized' => true,
 			'confirmation_state'        => 'approved_commit',
@@ -200,7 +204,8 @@ final class Commit_Preflight_Service {
 			'approved_preview_hash'      => $approved_preview_hash,
 			'approval_updated_at'        => (string) ( $proposal['updated_at'] ?? '' ),
 			'policy_version'             => $policy_version,
-		) + $site_binding;
+			'expires_at'                  => $expires_at,
+		) + $client_binding + $site_binding;
 		$execution_handoff = array(
 			'executor'           => 'adapter_after_core_preflight',
 			'execution_surface' => 'wp_abilities_rest',
@@ -209,9 +214,10 @@ final class Commit_Preflight_Service {
 			'correlation_id'    => $correlation_id,
 			'approved_input_hash' => $approved_input_hash,
 			'policy_version'    => $policy_version,
+			'expires_at'        => $expires_at,
 			'core_proxy_execute' => false,
 			'commit_execution'  => false,
-		) + $site_binding;
+		) + $client_binding + $site_binding;
 
 		$event_id = $this->audit->record(
 			'commit.preflighted',
@@ -223,9 +229,10 @@ final class Commit_Preflight_Service {
 				'correlation_id'        => $correlation_id,
 				'approved_input_hash'   => $approved_input_hash,
 				'policy_version'        => $policy_version,
+				'expires_at'            => $expires_at,
 				'ability_contract_hash' => (string) ( $contract_preflight['current_contract_hash'] ?? '' ),
 				'capability'            => (string) ( $permission_preflight['capability'] ?? '' ),
-			),
+			) + $client_binding,
 			$proposal_id
 		);
 

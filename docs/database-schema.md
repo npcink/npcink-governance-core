@@ -26,6 +26,10 @@ records; they are not workflow runtime state.
 | `created_at` | `datetime` | no | UTC time from `current_time( 'mysql', true )`. |
 | `updated_at` | `datetime` | no | UTC time from `current_time( 'mysql', true )`. |
 
+`display_id` is not stored as a column. Proposal responses and the admin UI
+derive it deterministically from `proposal_id` for human display and lookup,
+while `proposal_id` remains the unique persisted identifier.
+
 Indexes:
 
 - primary key: `id`

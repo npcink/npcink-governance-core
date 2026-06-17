@@ -70,8 +70,8 @@ writes, own workflow runtime, own queues, own MCP runtime, own Agent Gateway
 catalogs, or store provider credentials. It also reports Adapter-facing
 runtime compatibility, Core truth ownership, and context binding support.
 Commit preflight and sensitive-read preflight bind returned contexts to the
-current `site_url`, `home_url`, and `blog_id`; client-key fingerprint binding
-remains pending until Core emits a signed client identity field.
+current `site_url`, `home_url`, `blog_id`, and, when a trusted Adapter forwards
+one, the signed local client fingerprint.
 
 ## Development
 
@@ -90,6 +90,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Agent MCP Entry Contract](docs/agent-mcp-entry-contract.md)
 - [App Auth Scope Policy](docs/app-auth-scope-policy.md)
 - [Approval Policy Evaluator Standard](docs/approval-policy-evaluator-standard.md)
+- [Adapter Handoff And Approval Policy Acceptance](docs/adapter-handoff-and-approval-policy-acceptance.md)
 - [Core Governance Operability](docs/core-governance-operability.md)
 - [AI Provider Log Correlation](docs/ai-provider-log-correlation.md)
 - [Core Governance Handoff Validation](docs/core-governance-handoff-validation.md)

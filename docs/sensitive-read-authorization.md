@@ -94,6 +94,8 @@ Successful read preflight returns:
     "data_classes": ["logs", "diagnostics"],
     "redaction_level": "strict",
     "expires_at": "2026-06-09 12:00:00",
+    "signed_client_fingerprint": "sha256:...",
+    "client_key_fingerprint": "sha256:...",
     "bounds": {
       "max_rows": 50,
       "tail_lines": 100,
@@ -116,10 +118,11 @@ The context is not a write approval, not a prompt-derived permission, and not an
 execution token for any other ability or input.
 
 The `site_url`, `home_url`, and `blog_id` fields bind the read grant to the
-current WordPress site. Adapter must fail closed if those fields are present and
-do not match the site where it would execute the read ability. Client-key
-fingerprint binding remains pending until Core emits a signed
-`client_key_fingerprint` field in read authorization contexts.
+current WordPress site. When a trusted Adapter forwards a signed local client
+fingerprint, Core returns both `signed_client_fingerprint` and the compatible
+`client_key_fingerprint` alias with the same value. Adapter must fail closed if
+any present site or signed-client binding does not match where it would execute
+the read ability.
 
 ## Audit Semantics
 
@@ -148,7 +151,8 @@ Adapter must:
 - call `read_authorization_request_route` to create the request when needed;
 - call `read_authorization_status_route` to poll or display review state;
 - call `read_authorization_preflight_route` immediately before execution;
-- verify `ability_id`, `approved_input_hash`, `expires_at`, bounds,
+- verify `ability_id`, `approved_input_hash`, `expires_at`,
+  `signed_client_fingerprint` or `client_key_fingerprint`, bounds,
   `read_authorization_granted=true`, and
   `core_authorization_truth=npcink_governance_core`;
 - apply `redaction_level`, `allowed_fields`, `denied_fields`, `max_rows`, and

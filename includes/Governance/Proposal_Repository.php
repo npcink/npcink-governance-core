@@ -323,6 +323,43 @@ final class Proposal_Repository {
 	}
 
 	/**
+	 * Finds a proposal by its human-facing display id.
+	 *
+	 * Display ids are deterministic aliases derived from proposal_id. They are
+	 * for operator lookup only; proposal_id remains the public stable id.
+	 *
+	 * @param string $display_id Display id such as P-1234ABCD-EF90.
+	 * @return array<string,mixed>|null
+	 */
+	public function find_by_display_id( string $display_id ): ?array {
+		global $wpdb;
+
+		$parts = $this->display_id_parts( $display_id );
+		if ( null === $parts ) {
+			return null;
+		}
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM %i WHERE proposal_id LIKE %s AND proposal_id LIKE %s ORDER BY id DESC LIMIT 2',
+				$this->table_name(),
+				$wpdb->esc_like( strtolower( $parts['prefix'] ) ) . '%',
+				'%' . $wpdb->esc_like( strtolower( $parts['suffix'] ) )
+			),
+			ARRAY_A
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		if ( ! is_array( $rows ) || 1 !== count( $rows ) ) {
+			return null;
+		}
+
+		$row = $rows[0];
+		return is_array( $row ) ? $this->normalize_row( $row ) : null;
+	}
+
+	/**
 	 * Updates proposal status.
 	 *
 	 * @param string $proposal_id Proposal id.
@@ -578,9 +615,11 @@ final class Proposal_Repository {
 	private function normalize_row( array $row ): array {
 		$caller = $this->decode_json_field( $row['caller_json'] ?? '' );
 		$policy = $this->policy_fields_from_caller( is_array( $caller ) ? $caller : array() );
+		$proposal_id = sanitize_text_field( (string) ( $row['proposal_id'] ?? '' ) );
 
 		return array(
-			'proposal_id'     => sanitize_text_field( (string) ( $row['proposal_id'] ?? '' ) ),
+			'proposal_id'     => $proposal_id,
+			'display_id'      => self::display_id_for_proposal_id( $proposal_id ),
 			'ability_id'      => sanitize_text_field( (string) ( $row['ability_id'] ?? '' ) ),
 			'status'          => sanitize_key( (string) ( $row['status'] ?? '' ) ),
 			'title'           => sanitize_text_field( (string) ( $row['title'] ?? '' ) ),
@@ -595,6 +634,44 @@ final class Proposal_Repository {
 			'created_by'      => (int) ( $row['created_by'] ?? 0 ),
 			'created_at'      => sanitize_text_field( (string) ( $row['created_at'] ?? '' ) ),
 			'updated_at'      => sanitize_text_field( (string) ( $row['updated_at'] ?? '' ) ),
+		);
+	}
+
+	/**
+	 * Returns a stable display id for human communication.
+	 *
+	 * @param string $proposal_id Stable proposal id.
+	 * @return string
+	 */
+	public static function display_id_for_proposal_id( string $proposal_id ): string {
+		$compact = preg_replace( '/[^A-Za-z0-9]/', '', $proposal_id );
+		$compact = is_string( $compact ) ? strtoupper( $compact ) : '';
+		if ( '' === $compact ) {
+			return '';
+		}
+
+		if ( strlen( $compact ) <= 12 ) {
+			return 'P-' . $compact;
+		}
+
+		return 'P-' . substr( $compact, 0, 8 ) . '-' . substr( $compact, -4 );
+	}
+
+	/**
+	 * Parses a display id into proposal id lookup parts.
+	 *
+	 * @param string $display_id Display id.
+	 * @return array{prefix:string,suffix:string}|null
+	 */
+	private function display_id_parts( string $display_id ): ?array {
+		$display_id = strtoupper( trim( $display_id ) );
+		if ( ! preg_match( '/^P-([A-Z0-9]{4,32})(?:-([A-Z0-9]{2,16}))?$/', $display_id, $matches ) ) {
+			return null;
+		}
+
+		return array(
+			'prefix' => $matches[1],
+			'suffix' => (string) ( $matches[2] ?? $matches[1] ),
 		);
 	}
 

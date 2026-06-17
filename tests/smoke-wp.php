@@ -1221,8 +1221,9 @@ npcink_governance_core_smoke_assert( array( 'site_url', 'home_url', 'blog_id' ) 
 npcink_governance_core_smoke_assert( untrailingslashit( site_url() ) === (string) ( $runtime_contract['context_bindings']['site_binding']['site_url'] ?? '' ), 'runtime contract binds current site_url' );
 npcink_governance_core_smoke_assert( untrailingslashit( home_url() ) === (string) ( $runtime_contract['context_bindings']['site_binding']['home_url'] ?? '' ), 'runtime contract binds current home_url' );
 npcink_governance_core_smoke_assert( get_current_blog_id() === (int) ( $runtime_contract['context_bindings']['site_binding']['blog_id'] ?? 0 ), 'runtime contract binds current blog id' );
-npcink_governance_core_smoke_assert( false === (bool) ( $runtime_contract['context_bindings']['client_key_fingerprint']['emitted'] ?? true ), 'runtime contract marks client fingerprint binding pending' );
-npcink_governance_core_smoke_assert( 'pending_signed_client_identity_contract' === (string) ( $runtime_contract['context_bindings']['client_key_fingerprint']['status'] ?? '' ), 'runtime contract names pending client identity contract' );
+npcink_governance_core_smoke_assert( true === (bool) ( $runtime_contract['context_bindings']['client_key_fingerprint']['emitted'] ?? false ), 'runtime contract marks Adapter-forwarded client fingerprint binding supported' );
+npcink_governance_core_smoke_assert( 'signed_client_fingerprint' === (string) ( $runtime_contract['context_bindings']['client_key_fingerprint']['field'] ?? '' ), 'runtime contract names signed client fingerprint field' );
+npcink_governance_core_smoke_assert( 'supported_when_forwarded_by_trusted_adapter' === (string) ( $runtime_contract['context_bindings']['client_key_fingerprint']['status'] ?? '' ), 'runtime contract names supported client identity contract' );
 npcink_governance_core_smoke_assert( 'adapter_or_host_after_core_preflight' === (string) ( $runtime_contract['boundary']['final_write_authority'] ?? '' ), 'runtime contract leaves final writes with adapter or host after preflight' );
 
 $app = npcink_governance_core_smoke_rest(
@@ -1909,129 +1910,170 @@ npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/trash-post' === (
 npcink_governance_core_smoke_assert( 'manual_required' === (string) ( $cleanup_plan_proposal['policy_decision'] ?? '' ), 'manual policy keeps cleanup batch manual by default' );
 npcink_governance_core_smoke_approve_and_preflight_plan_proposal( (string) ( $cleanup_plan_proposal['proposal_id'] ?? '' ) );
 
-update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_DRY_RUN_GUARDED, false );
-$dry_guarded_pattern = 'Core Dry Guarded Test Cleanup Candidate ' . $npcink_governance_core_smoke_run_id;
-$dry_guarded_post_id = wp_insert_post(
-	array(
-		'post_title'   => $dry_guarded_pattern . ' A',
-		'post_content' => 'This ' . $dry_guarded_pattern . ' A should be detected as test content for dry-run guarded cleanup.',
-		'post_status'  => 'draft',
-		'post_type'    => 'post',
-	),
-	true
-);
-npcink_governance_core_smoke_assert( ! is_wp_error( $dry_guarded_post_id ) && (int) $dry_guarded_post_id > 0, 'dry-run guarded cleanup fixture post is created' );
-npcink_governance_core_smoke_register_post_fixture( (int) $dry_guarded_post_id );
-$dry_guarded_plan_input = array(
-	'patterns'    => array( $dry_guarded_pattern ),
-	'max_actions' => 5,
-);
-$dry_guarded_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan', $dry_guarded_plan_input );
-$dry_guarded_result = npcink_governance_core_smoke_create_proposals_from_plan( 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan', $dry_guarded_plan, $dry_guarded_plan_input );
-npcink_governance_core_smoke_assert( 1 === (int) ( $dry_guarded_result['proposal_count'] ?? 0 ), 'dry-run guarded cleanup plan generates one batch Core proposal' );
-$dry_guarded_proposal = is_array( $dry_guarded_result['proposals'][0] ?? null ) ? $dry_guarded_result['proposals'][0] : array();
-npcink_governance_core_smoke_assert( 'pending' === (string) ( $dry_guarded_proposal['status'] ?? '' ), 'dry-run guarded cleanup remains pending' );
-npcink_governance_core_smoke_assert( 'manual_required' === (string) ( $dry_guarded_proposal['policy_decision'] ?? '' ), 'dry-run guarded cleanup remains manual_required' );
-npcink_governance_core_smoke_assert( 'guarded' === (string) ( $dry_guarded_proposal['policy_profile'] ?? '' ), 'dry-run guarded cleanup records guarded profile' );
-npcink_governance_core_smoke_assert( in_array( 'guarded_cleanup_candidate', (array) ( $dry_guarded_proposal['policy_reasons'] ?? array() ), true ), 'dry-run guarded cleanup records candidate reason' );
-npcink_governance_core_smoke_assert( in_array( 'auto_approval_dry_run_only', (array) ( $dry_guarded_proposal['policy_reasons'] ?? array() ), true ), 'dry-run guarded cleanup records dry-run-only reason' );
-npcink_governance_core_smoke_approve_and_preflight_plan_proposal( (string) ( $dry_guarded_proposal['proposal_id'] ?? '' ) );
-
-$local_guarded_app = npcink_governance_core_smoke_rest(
+$smart_guarded_app = npcink_governance_core_smoke_rest(
 	'POST',
 	'/npcink-governance-core/v1/apps',
 	array(
-		'app_label'           => 'Local Guarded Approval Smoke ' . $npcink_governance_core_smoke_run_id,
+		'app_label'           => 'Smart Guarded Approval Smoke ' . $npcink_governance_core_smoke_run_id,
 		'caller_type'         => 'trusted_adapter',
 		'scopes'              => array( 'capabilities:read', 'proposals:create', 'proposals:read', 'proposals:approve', 'commit:preflight', 'audit:read' ),
 		'rate_limit'          => 20,
 		'rate_window_seconds' => 3600,
 	)
 );
-$local_guarded_token = (string) ( $local_guarded_app['token'] ?? '' );
-npcink_governance_core_smoke_assert( '' !== $local_guarded_token, 'local guarded app key is created for auto approval smoke' );
+$smart_guarded_token = (string) ( $smart_guarded_app['token'] ?? '' );
+npcink_governance_core_smoke_assert( '' !== $smart_guarded_token, 'smart guarded app key is created for auto approval smoke' );
 
-update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_LOCAL_GUARDED, false );
-$local_guarded_pattern = 'Core Local Guarded Test Cleanup Candidate ' . $npcink_governance_core_smoke_run_id;
-$local_guarded_post_id = wp_insert_post(
+update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_SMART_GUARDED, false );
+$smart_guarded_pattern = 'Core Smart Guarded Test Cleanup Candidate ' . $npcink_governance_core_smoke_run_id;
+$smart_guarded_post_id = wp_insert_post(
 	array(
-		'post_title'   => $local_guarded_pattern . ' A',
-		'post_content' => 'This ' . $local_guarded_pattern . ' A should be detected as test content for local guarded cleanup.',
+		'post_title'   => $smart_guarded_pattern . ' A',
+		'post_content' => 'This ' . $smart_guarded_pattern . ' A should be detected as test content for smart guarded cleanup.',
 		'post_status'  => 'draft',
 		'post_type'    => 'post',
 	),
 	true
 );
-npcink_governance_core_smoke_assert( ! is_wp_error( $local_guarded_post_id ) && (int) $local_guarded_post_id > 0, 'local guarded cleanup fixture post is created' );
-npcink_governance_core_smoke_register_post_fixture( (int) $local_guarded_post_id );
-$local_guarded_plan_input = array(
-	'patterns'    => array( $local_guarded_pattern ),
+npcink_governance_core_smoke_assert( ! is_wp_error( $smart_guarded_post_id ) && (int) $smart_guarded_post_id > 0, 'smart guarded cleanup fixture post is created' );
+npcink_governance_core_smoke_register_post_fixture( (int) $smart_guarded_post_id );
+$smart_guarded_plan_input = array(
+	'patterns'    => array( $smart_guarded_pattern ),
 	'max_actions' => 5,
 );
-$local_guarded_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan', $local_guarded_plan_input );
-$local_guarded_result = npcink_governance_core_smoke_create_proposals_from_plan_as_app( 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan', $local_guarded_plan, $local_guarded_plan_input, $local_guarded_token );
-npcink_governance_core_smoke_assert( 1 === (int) ( $local_guarded_result['proposal_count'] ?? 0 ), 'local guarded cleanup plan generates one batch Core proposal' );
-$local_guarded_proposal = is_array( $local_guarded_result['proposals'][0] ?? null ) ? $local_guarded_result['proposals'][0] : array();
-$local_guarded_proposal_id = (string) ( $local_guarded_proposal['proposal_id'] ?? '' );
-npcink_governance_core_smoke_assert( 'approved' === (string) ( $local_guarded_proposal['status'] ?? '' ), 'local guarded cleanup is auto-approved' );
-npcink_governance_core_smoke_assert( 'auto_approved' === (string) ( $local_guarded_proposal['policy_decision'] ?? '' ), 'local guarded cleanup records auto-approved decision' );
-npcink_governance_core_smoke_assert( 'trusted_local' === (string) ( $local_guarded_proposal['policy_profile'] ?? '' ), 'local guarded cleanup records trusted_local profile' );
-npcink_governance_core_smoke_assert( in_array( 'local_guarded_cleanup_auto_approved', (array) ( $local_guarded_proposal['policy_reasons'] ?? array() ), true ), 'local guarded cleanup records auto-approved reason' );
-$local_guarded_preflight = npcink_governance_core_smoke_rest_as_app( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( $local_guarded_proposal_id ) . '/commit-preflight', $local_guarded_token );
-npcink_governance_core_smoke_assert( true === (bool) ( $local_guarded_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'local guarded cleanup preflight passes without manual approval' );
-$local_guarded_audit = npcink_governance_core_smoke_rest_as_app(
+$smart_guarded_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan', $smart_guarded_plan_input );
+$smart_guarded_result = npcink_governance_core_smoke_create_proposals_from_plan_as_app( 'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan', $smart_guarded_plan, $smart_guarded_plan_input, $smart_guarded_token );
+npcink_governance_core_smoke_assert( 1 === (int) ( $smart_guarded_result['proposal_count'] ?? 0 ), 'smart guarded cleanup plan generates one batch Core proposal' );
+$smart_guarded_proposal = is_array( $smart_guarded_result['proposals'][0] ?? null ) ? $smart_guarded_result['proposals'][0] : array();
+$smart_guarded_proposal_id = (string) ( $smart_guarded_proposal['proposal_id'] ?? '' );
+npcink_governance_core_smoke_assert( 'approved' === (string) ( $smart_guarded_proposal['status'] ?? '' ), 'smart guarded cleanup is auto-approved' );
+npcink_governance_core_smoke_assert( 'auto_approved' === (string) ( $smart_guarded_proposal['policy_decision'] ?? '' ), 'smart guarded cleanup records auto-approved decision' );
+npcink_governance_core_smoke_assert( 'trusted_local' === (string) ( $smart_guarded_proposal['policy_profile'] ?? '' ), 'smart guarded cleanup records trusted_local profile' );
+npcink_governance_core_smoke_assert( in_array( 'smart_guarded_cleanup_auto_approved', (array) ( $smart_guarded_proposal['policy_reasons'] ?? array() ), true ), 'smart guarded cleanup records auto-approved reason' );
+$smart_guarded_preflight = npcink_governance_core_smoke_rest_as_app( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( $smart_guarded_proposal_id ) . '/commit-preflight', $smart_guarded_token );
+npcink_governance_core_smoke_assert( true === (bool) ( $smart_guarded_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'smart guarded cleanup preflight passes without manual approval' );
+$smart_guarded_audit = npcink_governance_core_smoke_rest_as_app(
 	'GET',
 	'/npcink-governance-core/v1/audit',
-	$local_guarded_token,
+	$smart_guarded_token,
 	array(
-		'proposal_id' => $local_guarded_proposal_id,
+		'proposal_id' => $smart_guarded_proposal_id,
 		'limit'       => 20,
 	)
 );
-$local_guarded_events = array_values( array_map(
+$smart_guarded_events = array_values( array_map(
 	static function ( $item ): string {
 		return is_array( $item ) ? (string) ( $item['event_name'] ?? '' ) : '';
 	},
-	(array) ( $local_guarded_audit['items'] ?? array() )
+	(array) ( $smart_guarded_audit['items'] ?? array() )
 ) );
-npcink_governance_core_smoke_assert( in_array( 'proposal.auto_approved', $local_guarded_events, true ), 'local guarded cleanup writes auto approval audit event' );
+npcink_governance_core_smoke_assert( in_array( 'proposal.auto_approved', $smart_guarded_events, true ), 'smart guarded cleanup writes auto approval audit event' );
 
-$local_guarded_draft_title = 'Core Local Guarded Draft ' . $npcink_governance_core_smoke_run_id;
-$local_guarded_draft = npcink_governance_core_smoke_rest_as_app(
+$smart_guarded_draft_title = 'Core Smart Guarded Draft ' . $npcink_governance_core_smoke_run_id;
+$smart_guarded_draft = npcink_governance_core_smoke_rest_as_app(
 	'POST',
 	'/npcink-governance-core/v1/proposals',
-	$local_guarded_token,
+	$smart_guarded_token,
 	array(
 		'ability_id' => 'npcink-abilities-toolkit/create-draft',
-		'title'      => 'Local guarded draft proposal ' . $npcink_governance_core_smoke_run_id,
-		'summary'    => 'Created by local guarded draft smoke test.',
+		'title'      => 'Smart guarded draft proposal ' . $npcink_governance_core_smoke_run_id,
+		'summary'    => 'Created by smart guarded draft smoke test.',
 		'input'      => array(
 			'post_type'       => 'post',
 			'status'          => 'draft',
-			'title'           => $local_guarded_draft_title,
-			'content'         => '<p>Local guarded draft content.</p>',
+			'title'           => $smart_guarded_draft_title,
+			'content'         => '<p>Smart guarded draft content.</p>',
 			'dry_run'         => true,
 			'commit'          => false,
-			'idempotency_key' => 'local-guarded-draft-' . $npcink_governance_core_smoke_run_id,
+			'idempotency_key' => 'smart-guarded-draft-' . $npcink_governance_core_smoke_run_id,
 		),
 		'preview'    => array(
 			'dry_run'          => true,
-			'after_suggestion' => 'Local guarded draft content.',
+			'after_suggestion' => 'Smart guarded draft content.',
 		),
 		'caller'     => array(
-			'source' => 'local-guarded-draft-smoke:' . $npcink_governance_core_smoke_run_id,
+			'source' => 'smart-guarded-draft-smoke:' . $npcink_governance_core_smoke_run_id,
 		),
 	)
 );
-$local_guarded_draft_id = (string) ( $local_guarded_draft['proposal_id'] ?? '' );
-npcink_governance_core_smoke_assert( '' !== $local_guarded_draft_id, 'local guarded create-draft proposal is created' );
-npcink_governance_core_smoke_assert( 'approved' === (string) ( $local_guarded_draft['status'] ?? '' ), 'local guarded create-draft is auto-approved' );
-npcink_governance_core_smoke_assert( 'auto_approved' === (string) ( $local_guarded_draft['policy_decision'] ?? '' ), 'local guarded create-draft records auto-approved decision' );
-npcink_governance_core_smoke_assert( 'trusted_local' === (string) ( $local_guarded_draft['policy_profile'] ?? '' ), 'local guarded create-draft records trusted_local profile' );
-npcink_governance_core_smoke_assert( in_array( 'local_guarded_create_draft_auto_approved', (array) ( $local_guarded_draft['policy_reasons'] ?? array() ), true ), 'local guarded create-draft records auto-approved reason' );
-$local_guarded_draft_preflight = npcink_governance_core_smoke_rest_as_app( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( $local_guarded_draft_id ) . '/commit-preflight', $local_guarded_token );
-npcink_governance_core_smoke_assert( true === (bool) ( $local_guarded_draft_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'local guarded create-draft preflight passes without manual approval' );
-npcink_governance_core_smoke_assert( null === get_page_by_title( $local_guarded_draft_title, OBJECT, 'post' ), 'local guarded create-draft preflight does not create the post draft' );
+$smart_guarded_draft_id = (string) ( $smart_guarded_draft['proposal_id'] ?? '' );
+npcink_governance_core_smoke_assert( '' !== $smart_guarded_draft_id, 'smart guarded create-draft proposal is created' );
+npcink_governance_core_smoke_assert( 'approved' === (string) ( $smart_guarded_draft['status'] ?? '' ), 'smart guarded create-draft is auto-approved' );
+npcink_governance_core_smoke_assert( 'auto_approved' === (string) ( $smart_guarded_draft['policy_decision'] ?? '' ), 'smart guarded create-draft records auto-approved decision' );
+npcink_governance_core_smoke_assert( 'trusted_local' === (string) ( $smart_guarded_draft['policy_profile'] ?? '' ), 'smart guarded create-draft records trusted_local profile' );
+npcink_governance_core_smoke_assert( in_array( 'smart_guarded_create_draft_auto_approved', (array) ( $smart_guarded_draft['policy_reasons'] ?? array() ), true ), 'smart guarded create-draft records auto-approved reason' );
+$smart_guarded_draft_preflight = npcink_governance_core_smoke_rest_as_app( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( $smart_guarded_draft_id ) . '/commit-preflight', $smart_guarded_token );
+npcink_governance_core_smoke_assert( true === (bool) ( $smart_guarded_draft_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'smart guarded create-draft preflight passes without manual approval' );
+npcink_governance_core_smoke_assert( null === get_page_by_title( $smart_guarded_draft_title, OBJECT, 'post' ), 'smart guarded create-draft preflight does not create the post draft' );
+
+update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_DEV_ALLOW_ALL, false );
+$dev_allow_all_disabled = npcink_governance_core_smoke_rest_as_app(
+	'POST',
+	'/npcink-governance-core/v1/proposals',
+	$smart_guarded_token,
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/approve-comment',
+		'title'      => 'Dev allow all disabled comment proposal ' . $npcink_governance_core_smoke_run_id,
+		'summary'    => 'Created by disabled dev allow all smoke test.',
+		'input'      => array(
+			'comment_id'      => $pending_comment['comment_id'],
+			'dry_run'         => true,
+			'commit'          => false,
+			'idempotency_key' => 'dev-allow-all-disabled-' . $npcink_governance_core_smoke_run_id,
+		),
+		'preview'    => array(
+			'comment_id'       => $pending_comment['comment_id'],
+			'target_action'    => 'approve',
+			'dry_run'          => true,
+			'commit_execution' => false,
+		),
+		'caller'     => array(
+			'source' => 'dev-allow-all-disabled-smoke:' . $npcink_governance_core_smoke_run_id,
+		),
+	)
+);
+npcink_governance_core_smoke_assert( 'pending' === (string) ( $dev_allow_all_disabled['status'] ?? '' ), 'dev allow all remains pending when the constant is disabled' );
+npcink_governance_core_smoke_assert( 'manual_required' === (string) ( $dev_allow_all_disabled['policy_decision'] ?? '' ), 'dev allow all disabled records manual decision' );
+npcink_governance_core_smoke_assert( in_array( 'dev_allow_all_rejected_disabled', (array) ( $dev_allow_all_disabled['policy_reasons'] ?? array() ), true ), 'dev allow all disabled records disabled reason' );
+
+if ( ! defined( 'NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL' ) ) {
+	define( 'NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL', true );
+}
+
+$dev_allow_all_enabled = npcink_governance_core_smoke_rest_as_app(
+	'POST',
+	'/npcink-governance-core/v1/proposals',
+	$smart_guarded_token,
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/approve-comment',
+		'title'      => 'Dev allow all enabled comment proposal ' . $npcink_governance_core_smoke_run_id,
+		'summary'    => 'Created by enabled dev allow all smoke test.',
+		'input'      => array(
+			'comment_id'      => $pending_comment['comment_id'],
+			'dry_run'         => true,
+			'commit'          => false,
+			'idempotency_key' => 'dev-allow-all-enabled-' . $npcink_governance_core_smoke_run_id,
+		),
+		'preview'    => array(
+			'comment_id'       => $pending_comment['comment_id'],
+			'target_action'    => 'approve',
+			'dry_run'          => true,
+			'commit_execution' => false,
+		),
+		'caller'     => array(
+			'source' => 'dev-allow-all-enabled-smoke:' . $npcink_governance_core_smoke_run_id,
+		),
+	)
+);
+$dev_allow_all_enabled_id = (string) ( $dev_allow_all_enabled['proposal_id'] ?? '' );
+npcink_governance_core_smoke_assert( 'approved' === (string) ( $dev_allow_all_enabled['status'] ?? '' ), 'dev allow all enabled auto-approves non-smart proposal' );
+npcink_governance_core_smoke_assert( 'auto_approved' === (string) ( $dev_allow_all_enabled['policy_decision'] ?? '' ), 'dev allow all enabled records auto-approved decision' );
+npcink_governance_core_smoke_assert( in_array( 'dev_allow_all_auto_approved', (array) ( $dev_allow_all_enabled['policy_reasons'] ?? array() ), true ), 'dev allow all enabled records auto approval reason' );
+npcink_governance_core_smoke_assert( in_array( 'commit_preflight_still_required', (array) ( $dev_allow_all_enabled['policy_reasons'] ?? array() ), true ), 'dev allow all enabled records preflight requirement' );
+$dev_allow_all_preflight = npcink_governance_core_smoke_rest_as_app( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( $dev_allow_all_enabled_id ) . '/commit-preflight', $smart_guarded_token );
+npcink_governance_core_smoke_assert( true === (bool) ( $dev_allow_all_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'dev allow all enabled still requires commit preflight' );
+$comment_after_dev_allow_all = get_comment( $pending_comment['comment_id'] );
+npcink_governance_core_smoke_assert( $comment_after_dev_allow_all instanceof WP_Comment && $pending_comment['current_status'] === (string) $comment_after_dev_allow_all->comment_approved, 'dev allow all preflight does not mutate comment status' );
 update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_MANUAL, false );
 
 $plan_attachment_title = 'Core Plan Bridge Media Candidate ' . $npcink_governance_core_smoke_run_id;

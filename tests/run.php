@@ -312,6 +312,8 @@ npcink_governance_core_assert( false !== strpos( $governance, 'read_request.pref
 npcink_governance_core_assert( false !== strpos( $governance, 'core_authorization_truth=npcink_governance_core' ), 'Governance contract keeps Core as sensitive read authorization truth.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'currently discoverable ability id' ), 'Governance contract requires real discoverable proposal ability ids.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'must not reintroduce' ), 'Governance contract rejects legacy confirmation parameters.' );
+npcink_governance_core_assert( false !== strpos( $governance, 'supported approval policy mode set is closed to `manual`' ) && false !== strpos( $governance, '`smart_guarded`, and `dev_allow_all`' ), 'Governance contract freezes the supported approval policy mode set.' );
+npcink_governance_core_assert( false !== strpos( $governance, 'removed legacy mode names, fall back to `manual` and must not act as aliases' ), 'Governance contract rejects legacy approval policy aliases.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'core/categories' ), 'Governance contract documents safe categories block for homepage layouts.' );
 
 $approval_policy_standard = npcink_governance_core_read( $root . '/docs/approval-policy-evaluator-standard.md' );
@@ -323,8 +325,6 @@ foreach (
 		'dev_allow_all',
 		'Approval_Policy_Strategy',
 		'NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL',
-		'dry_run_guarded',
-		'local_guarded',
 		'manual_required',
 		'auto_approved',
 		'blocked',
@@ -341,6 +341,8 @@ foreach (
 		'smart_guarded_create_draft_auto_approved',
 		'dev_allow_all_auto_approved',
 		'dev_allow_all_rejected_disabled',
+		'supported policy mode enum is closed',
+		'Admin settings must make that fallback visible',
 		'trusted test-content',
 		'include_unattached_nonproduction_media',
 		'npcink-abilities-toolkit/delete-media-permanently',
@@ -391,7 +393,8 @@ foreach (
 		'site_url',
 		'home_url',
 		'blog_id',
-		'pending_signed_client_identity_contract',
+		'supported_when_forwarded_by_trusted_adapter',
+		'signed_client_fingerprint',
 		'client_key_fingerprint',
 		'write_execution=false',
 		'read_authorization_required',
@@ -419,11 +422,15 @@ foreach (
 		'archived',
 		'audit_timeline',
 		'correlation_id',
+		'display_id',
+		'deterministic human-facing alias',
 		'policy_decision',
 		'policy_profile',
 		'policy_reasons',
 		'approved_input_hash',
 		'approved_preview_hash',
+		'mode set is closed to `manual`, `smart_guarded`, and `dev_allow_all`',
+		'removed legacy mode names, fall back to',
 		'policy_version',
 		'$outputs.<prior_action_id>.<field>',
 		'ordered batch proposal',
@@ -505,6 +512,7 @@ foreach (
 		'input_hash',
 		'pending_quota_key',
 		'status_quota',
+		'`display_id` is not stored as a column',
 		'consumed',
 	) as $required
 ) {
@@ -664,6 +672,9 @@ npcink_governance_core_assert( false === strpos( $next_stage_plan, 'revocation U
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'OpenClaw Adapter / Agent Gateway Planning' ), 'Next stage plan keeps OpenClaw adapter planning outside Core.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'OpenClaw Execution Guidance' ), 'Next stage plan links OpenClaw execution guidance.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'productized acceptance in Magick AI Adapter' ), 'Next stage plan points productized OpenClaw acceptance to Adapter.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Adapter Handoff And Approval Policy Acceptance' ), 'Next stage plan links Adapter handoff and policy acceptance.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'continue approve-and-execute implementation in Magick AI Adapter' ), 'Next stage plan moves approve-and-execute implementation to Adapter.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Manual local acceptance' ), 'Next stage plan records manual approval policy acceptance.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, '/Users/muze/gitee/npcink-openclaw-adapter/docs/openclaw-consumer-acceptance.md' ), 'Next stage plan links Adapter acceptance checklist.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'AI Provider Log Correlation Acceptance' ), 'Next stage plan includes AI provider log correlation acceptance.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'real AI provider request log correlation is implemented and tested in' ), 'Next stage plan keeps provider log correlation implementation in Adapter.' );
@@ -680,6 +691,7 @@ npcink_governance_core_assert( false !== strpos( $readme, 'Core 0.4 Consumer Rea
 npcink_governance_core_assert( false !== strpos( $readme, 'Core Governance Operability' ), 'README links Core Governance Operability.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'AI Provider Log Correlation' ), 'README links AI Provider Log Correlation.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'OpenClaw Execution Guidance' ), 'README links OpenClaw Execution Guidance.' );
+npcink_governance_core_assert( false !== strpos( $readme, 'Adapter Handoff And Approval Policy Acceptance' ), 'README links Adapter handoff and approval policy acceptance.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'ADR-003: Keep Final Execution Outside Core For The Current Stage' ), 'README links ADR-003.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Productized OpenClaw acceptance should be run from Magick AI Adapter' ), 'README points OpenClaw productized acceptance to Adapter.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Create Draft Governance Scenario' ), 'README links Create Draft Governance Scenario.' );
@@ -688,6 +700,34 @@ npcink_governance_core_assert( false !== strpos( $readme, 'Approve Comment Gover
 npcink_governance_core_assert( false !== strpos( $readme, 'Taxonomy Terms Preview Governance Scenario' ), 'README links Taxonomy Terms Preview Governance Scenario.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Article writing is now treated as local Ability recipe orchestration' ), 'README documents local Ability recipe orchestration boundary.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Cloud must not generate article drafts' ), 'README prohibits Cloud writing generation.' );
+
+$adapter_policy_acceptance = npcink_governance_core_read( $root . '/docs/adapter-handoff-and-approval-policy-acceptance.md' );
+foreach (
+	array(
+		'Adapter Handoff And Approval Policy Acceptance',
+		'The next execution work belongs in Magick AI Adapter',
+		'/Users/muze/gitee/npcink-openclaw-adapter',
+		'Adapter should implement or verify this approve-and-execute sequence',
+		'Discover Core capability guidance',
+		'create a Core proposal with',
+		'Poll or display Core proposal status',
+		'Call Core commit preflight',
+		'Execute the target WordPress ability through WordPress Abilities API',
+		'Record the result back to Core with',
+		'Adapter must fail closed',
+		'Adapter must not',
+		'add Core `/execute`, `/proxy-execute`, scheduler, queue, workflow runtime',
+		'Manual Approval Policy Acceptance',
+		'Require Approval For All',
+		'Smart Approval',
+		'Allow All Development Mode',
+		'Stale Stored Policy Value',
+		'commit_execution=false',
+		'no Core code path executes a target ability',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $adapter_policy_acceptance, $required ), 'Adapter handoff acceptance doc contains required text: ' . $required );
+}
 
 $third_party_provider_guide = npcink_governance_core_read( $root . '/docs/third-party-ability-provider-guide.md' );
 foreach (
@@ -1499,7 +1539,8 @@ npcink_governance_core_assert( false !== strpos( $contract_controller, "'provide
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'minimum_adapter_contract_version' ), 'Runtime contract exposes Adapter compatibility floor.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'context_bindings' ), 'Runtime contract exposes context binding metadata.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, "'fields'       => array( 'site_url', 'home_url', 'blog_id' )" ), 'Runtime contract declares site binding fields.' );
-npcink_governance_core_assert( false !== strpos( $contract_controller, 'pending_signed_client_identity_contract' ), 'Runtime contract declares pending client fingerprint binding.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, 'supported_when_forwarded_by_trusted_adapter' ), 'Runtime contract declares supported Adapter-forwarded client fingerprint binding.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'field'      => 'signed_client_fingerprint'" ), 'Runtime contract declares the signed client fingerprint field.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'forbidden_payloads' ), 'Runtime contract declares forbidden payload families.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'adapter_or_host_after_core_preflight' ), 'Runtime contract leaves final writes with the adapter or host after preflight.' );
 
@@ -1548,6 +1589,8 @@ foreach (
 		'commit_execution',
 		'write_execution',
 		'approved_input_hash',
+		'signed_client_context',
+		'signed_client_fingerprint',
 		'site_binding_context',
 		"function_exists( 'site_url' ) ? site_url() : ''",
 		"function_exists( 'home_url' ) ? home_url() : ''",
@@ -1590,21 +1633,18 @@ foreach (
 		'OPTION_POLICY_MODE',
 		'MODE_SMART_GUARDED',
 		'MODE_DEV_ALLOW_ALL',
-		'MODE_DRY_RUN_GUARDED',
-		'MODE_LOCAL_GUARDED',
+		'stored_policy_mode',
+		'is_allowed_policy_mode',
 		'CLEANUP_BATCH_MAX_ACTIONS',
 		'CREATE_DRAFT_MAX_CONTENT_BYTES',
 		'AUTO_APPROVAL_HOURLY_LIMIT',
 		'AUTO_APPROVAL_DAILY_LIMIT',
-		'auto_approval_dry_run_only',
 		'smart_guarded_cleanup_auto_approved',
 		'smart_guarded_create_draft_auto_approved',
 		'dev_allow_all_auto_approved',
 		'dev_allow_all_rejected_disabled',
 		'commit_preflight_still_required',
 		'NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL',
-		'local_guarded_cleanup_auto_approved',
-		'local_guarded_create_draft_auto_approved',
 		'guarded_create_draft_rejected_status',
 		'guarded_cleanup_rejected_missing_test_content_evidence',
 		'build-nonproduction-content-cleanup-plan',
@@ -1616,6 +1656,11 @@ foreach (
 ) {
 	npcink_governance_core_assert( false !== strpos( $approval_policy_evaluator, $required ), 'Approval policy evaluator contains required text: ' . $required );
 }
+npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'MODE_DRY_RUN_GUARDED' ), 'Approval policy evaluator removes dry-run guarded mode.' );
+npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'MODE_LOCAL_GUARDED' ), 'Approval policy evaluator removes local guarded mode.' );
+npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'auto_approval_dry_run_only' ), 'Approval policy evaluator removes dry-run-only approval reason.' );
+npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'local_guarded_cleanup_auto_approved' ), 'Approval policy evaluator removes local guarded cleanup reason.' );
+npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'local_guarded_create_draft_auto_approved' ), 'Approval policy evaluator removes local guarded create-draft reason.' );
 npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'set_transient( $prefixed_key' ), 'Approval policy evaluator does not pass variable-only transient keys.' );
 npcink_governance_core_assert( false !== strpos( $wporg_guard, 'variable-only key' ), 'WordPress.org guard rejects variable-only transient keys.' );
 npcink_governance_core_assert( false !== strpos( $wporg_guard, 'prefix visible at the call site' ), 'WordPress.org guard requires transient prefixes at the call site.' );
@@ -1631,6 +1676,10 @@ npcink_governance_core_assert( false !== strpos( $proposal_repository, 'count_by
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'OFFSET %d' ), 'Proposal repository supports paginated admin lists.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'npcink_governance_core_proposal_insert_failed' ), 'Proposal repository returns a stable insert failure error.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'delete_by_proposal_id' ), 'Proposal repository can remove unaudited created proposals.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'display_id_for_proposal_id' ), 'Proposal repository derives stable human-facing display ids.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, "'display_id'" ), 'Proposal rows expose a display id without replacing proposal_id.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'find_by_display_id' ), 'Proposal repository supports admin lookup by display id.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'ORDER BY id DESC LIMIT 2' ), 'Proposal display id lookup detects non-unique aliases instead of choosing an arbitrary row.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'policy_fields_from_caller' ), 'Proposal repository promotes stored policy fields into responses.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'policy_decision' ), 'Proposal repository returns policy_decision.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'policy_reasons' ), 'Proposal repository returns policy_reasons.' );
@@ -1702,6 +1751,8 @@ npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'cor
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'approved_input_hash' ), 'Commit preflight binds approval context to approved input hash.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'approved_preview_hash' ), 'Commit preflight binds approval context to approved preview hash.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'policy_version' ), 'Commit preflight returns a policy version for Adapter binding.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'PREFLIGHT_TTL_SECONDS' ), 'Commit preflight declares a bounded handoff TTL.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'signed_client_context' ), 'Commit preflight binds signed Adapter client fingerprint when present.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'site_binding_context' ), 'Commit preflight has a site binding helper.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "function_exists( 'site_url' ) ? site_url() : ''" ), 'Commit preflight binds site_url.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "function_exists( 'home_url' ) ? home_url() : ''" ), 'Commit preflight binds home_url.' );
@@ -1832,10 +1883,11 @@ foreach (
 		'npcink_governance_core_block_theme_site_template_rejected',
 		'customize_template_layout',
 		'template_layout_contract',
-		'block_theme_profile_compiler@0.2',
+		'block_theme_profile_compiler@0.3',
 		'block_theme_safe_core_blocks@0.2',
 		'accepted_profile_versions',
-		'homepage_landing@0.2',
+		'page_standard@0.2',
+		'homepage_landing@0.3',
 		'replace_template_layout_with_preserved_template_parts',
 		'article_standard',
 		'homepage_landing',
@@ -2069,6 +2121,9 @@ npcink_governance_core_assert( false !== strpos( $request_context, 'scope_decisi
 npcink_governance_core_assert( false !== strpos( $request_context, 'mark_scope_decision' ), 'Request context can update scope decision for denials.' );
 npcink_governance_core_assert( false !== strpos( $request_context, "'scopes'" ), 'Request context stores app scopes for smart guarded auto approval.' );
 npcink_governance_core_assert( false !== strpos( $request_context, 'in_array( $scope' ), 'Request context can check any app scope, not only the current route scope.' );
+npcink_governance_core_assert( false !== strpos( $request_context, 'signed_client_context' ), 'Request context can expose signed Adapter client bindings.' );
+npcink_governance_core_assert( false !== strpos( $request_context, 'signed_client_fingerprint' ), 'Request context stores the signed Adapter client fingerprint.' );
+npcink_governance_core_assert( false !== strpos( $request_context, 'client_key_fingerprint' ), 'Request context stores the compatible client key fingerprint alias.' );
 
 $observability = npcink_governance_core_read( $root . '/includes/Observability.php' );
 foreach ( array( 'Observability', 'npcink_governance_core_observability_event', 'schema_version', 'plugin_slug', 'source', 'local', 'event_kind', 'event_id', 'sanitize_payload', 'proposal_count', 'blocked_count' ) as $required ) {
@@ -2082,6 +2137,7 @@ foreach ( array( 'core.proposal.create', 'core.proposal.plan_ingest', 'core.prop
 
 $admin_page = npcink_governance_core_read( $root . '/includes/Admin/Admin_Page.php' );
 $admin_css = npcink_governance_core_read( $root . '/assets/admin.css' );
+$admin_js = npcink_governance_core_read( $root . '/assets/admin.js' );
 $admin_surface_standard = npcink_governance_core_read( $root . '/docs/admin-surface-standard.md' );
 foreach (
 	array(
@@ -2090,9 +2146,12 @@ foreach (
 		'compact status summary',
 		'pending request list',
 		'compact source summary',
-		'shortened proposal id',
+		'two-line actor/context structure',
+		'stable display id',
+		'dedicated `Details` column',
+		'inline full-width key-value details table',
 		'undeclared-risk badge',
-		'read-only `Proposal ID` lookup',
+		'read-only lookup',
 		'technical details',
 		'Activity Log',
 		'Expired / Archived',
@@ -2140,6 +2199,7 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Reject selected' 
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Bulk actions' ), 'Admin review queue folds bulk rejection behind a low-frequency disclosure.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'array_slice( $proposal_ids, 0, 50 )' ), 'Admin bulk rejection is bounded.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_proposal_lookup' ), 'Admin review queue exposes proposal lookup.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "plugins_url( 'assets/admin.js'" ), 'Admin page enqueues the Core admin interaction script.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-proposal-lookup' ), 'Admin proposal lookup uses a stable field id.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "method=\"get\" action=\"<?php echo esc_url( admin_url( 'admin.php' ) ); ?>\"" ), 'Admin proposal lookup is read-only GET navigation.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Find proposal' ), 'Admin proposal lookup opens an existing proposal detail by id.' );
@@ -2149,20 +2209,33 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'render_workbench_
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-workbench-toolbar' ), 'Admin default page separates utility lookup from the main queue.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Pending requests' ), 'Admin review queue uses user-facing pending request copy.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-review-table' ), 'Admin review queue uses the compact review table.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Status' ) && false !== strpos( $admin_page, 'Created' ) && false !== strpos( $admin_page, 'Action' ), 'Admin review queue uses compact status, created, and action columns.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Source' ) && false !== strpos( $admin_page, 'Status' ) && false !== strpos( $admin_page, 'Created' ) && false !== strpos( $admin_page, 'Details' ) && false !== strpos( $admin_page, 'Action' ), 'Admin review queue uses compact source, status, created, details, and action columns.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_risk_label' ), 'Admin review queue summarizes proposal risk in the default row.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_has_declared_risk' ), 'Admin review queue hides undeclared-risk noise from default rows.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_source_summary' ), 'Admin review queue summarizes proposal source in the default row.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'compact_identifier( $proposal_id )' ), 'Admin review queue shortens proposal ids in the default row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_source_summary_parts' ), 'Admin review queue separates source actor and context for scanability.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-source-cell' ), 'Admin review queue moves source attribution into a dedicated column.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-source-summary' ), 'Admin review queue renders compact source attribution separately from request identity.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-source-actor' ), 'Admin review queue shows the source actor before source context.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-source-context' ), 'Admin review queue shows app/source context on a separate source line.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_display_id( $proposal )' ), 'Admin review queue shows stable display ids in the default row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-detail-cell' ), 'Admin review queue moves technical detail access into a dedicated column.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-row-details-toggle' ), 'Admin review queue toggles row details explicitly.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-row-details-row' ), 'Admin review queue renders inline full-width detail rows.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-row-details-table' ), 'Admin review queue renders technical details as a key-value table.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'pending_proposal_technical_detail_rows' ), 'Admin review queue centralizes row technical detail fields.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'find_proposal_for_lookup' ), 'Admin proposal lookup accepts display ids as well as full proposal ids.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'find_by_display_id( $lookup_id )' ), 'Admin proposal lookup resolves display ids through the repository.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'P-1234ABCD-EF90' ), 'Admin proposal lookup teaches the display id format.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_due_label( $proposal )' ), 'Admin review queue shows compact remaining time in the default row.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "__( '%s left', 'npcink-governance-core' )" ), 'Admin review queue avoids spelling the fixed TTL as repeated dominant text.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Review' ), 'Admin review queue uses a compact review row action.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Technical details' ), 'Admin review queue folds machine identifiers behind technical details.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Proposal ID:' ), 'Admin review queue keeps proposal ids visible in the default row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Details' ), 'Admin review queue folds machine identifiers behind an explicit details entry.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Proposal ID' ), 'Admin technical details keep proposal ids visible.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "(string) \$proposal['proposal_id']" ), 'Admin technical details keep the full proposal id available.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Describe why these requests should be rejected.' ), 'Admin bulk rejection asks for a user-entered reason without prefilled technical copy.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Rejected from bulk review.' ), 'Admin bulk rejection fallback note uses neutral governance copy.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Target ability:' ), 'Admin review queue keeps ability ids available in technical details.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Target ability' ), 'Admin review queue keeps ability ids available in technical details.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_request_label' ), 'Admin review queue maps ability ids to user-facing request labels.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'pending_proposal_trace_parts' ), 'Admin review queue summarizes source trace metadata.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'Review this WordPress change before it can run.' ), 'Admin review queue avoids repeating generic instructions on every row.' );
@@ -2176,6 +2249,9 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Advanced Access' 
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Development Approval Policy' ), 'Admin page exposes lightweight development approval policy mode.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'MODE_SMART_GUARDED' ), 'Admin page exposes smart approval mode.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'MODE_DEV_ALLOW_ALL' ), 'Admin page exposes development allow-all approval mode.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'stored_policy_mode' ), 'Admin page checks the stored approval policy mode before fallback.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'is_allowed_policy_mode' ), 'Admin page detects stale or invalid stored approval policy modes.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Stored approval policy mode "%1$s" is no longer supported.' ), 'Admin page warns when stored approval policy mode falls back to manual.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'update_option( Approval_Policy_Evaluator::OPTION_POLICY_MODE' ), 'Admin page persists approval policy mode through a bounded option.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'app-keys'" ), 'Admin page keeps app-key management available behind an advanced view.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_admin_tabs' ), 'Admin page exposes tabbed Core sections.' );
@@ -2251,11 +2327,25 @@ npcink_governance_core_assert( false !== $decision_call_position && false !== $c
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-summary-strip' ), 'Admin CSS styles the compact status summary.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-workbench-toolbar' ), 'Admin CSS styles the utility toolbar.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-review-table' ), 'Admin CSS styles the compact review list.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-review-table th' ) && false !== strpos( $admin_css, 'text-align: left' ), 'Admin CSS left-aligns review table headers and cells.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-request-meta' ), 'Admin CSS styles compact request metadata.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, 'white-space: nowrap' ), 'Admin CSS keeps display ids from wrapping in default rows.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-source-cell' ), 'Admin CSS sizes the dedicated source column.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-source-summary' ), 'Admin CSS styles compact source attribution.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-source-actor' ), 'Admin CSS styles the source actor line.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-source-context' ), 'Admin CSS styles the source context line.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-display-id' ), 'Admin CSS styles proposal display ids.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-policy-warning' ), 'Admin CSS spaces stale approval policy warnings.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-detail-cell' ), 'Admin CSS styles the dedicated details column.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-row-details-row' ), 'Admin CSS styles inline details rows.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-row-details-table' ), 'Admin CSS styles row technical details tables.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-due-label' ), 'Admin CSS styles compact due labels.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-status-badge' ), 'Admin CSS styles proposal status badges.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-risk-badge' ), 'Admin CSS styles proposal risk badges.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-empty-state' ), 'Admin CSS styles the active queue empty state.' );
+npcink_governance_core_assert( false !== strpos( $admin_js, 'data-npcink-details-target' ), 'Admin JS toggles row details by explicit target id.' );
+npcink_governance_core_assert( false !== strpos( $admin_js, 'aria-expanded' ), 'Admin JS maintains details toggle accessibility state.' );
+npcink_governance_core_assert( false !== strpos( $admin_js, 'target.hidden = expanded' ), 'Admin JS shows and hides inline technical detail rows.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_article_workflow_review_context' ), 'Admin proposal detail renders article workflow review context.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_field_patch_review_context' ), 'Admin proposal detail renders field-level proposal patches.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'field_patch'" ), 'Admin proposal detail reads preview.field_patch before raw payload.' );
