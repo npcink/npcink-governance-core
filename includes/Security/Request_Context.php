@@ -49,6 +49,12 @@ final class Request_Context {
 			'scope_decision' => sanitize_key( (string) ( $context['scope_decision'] ?? 'allowed' ) ),
 			'route_family'   => sanitize_key( (string) ( $context['route_family'] ?? '' ) ),
 		);
+
+		$fingerprint = self::sanitize_client_fingerprint( (string) ( $context['signed_client_fingerprint'] ?? $context['client_key_fingerprint'] ?? '' ) );
+		if ( '' !== $fingerprint ) {
+			self::$app['signed_client_fingerprint'] = $fingerprint;
+			self::$app['client_key_fingerprint']    = $fingerprint;
+		}
 	}
 
 	/**
@@ -103,5 +109,37 @@ final class Request_Context {
 		}
 
 		return self::$app;
+	}
+
+	/**
+	 * Returns signed Adapter client context fields for Core handoff contexts.
+	 *
+	 * @return array<string,string>
+	 */
+	public static function signed_client_context(): array {
+		$fingerprint = self::sanitize_client_fingerprint( (string) ( self::$app['signed_client_fingerprint'] ?? self::$app['client_key_fingerprint'] ?? '' ) );
+		if ( '' === $fingerprint ) {
+			return array();
+		}
+
+		return array(
+			'signed_client_fingerprint' => $fingerprint,
+			'client_key_fingerprint'    => $fingerprint,
+		);
+	}
+
+	/**
+	 * Sanitizes a signed Adapter client fingerprint.
+	 *
+	 * @param string $fingerprint Fingerprint.
+	 * @return string
+	 */
+	private static function sanitize_client_fingerprint( string $fingerprint ): string {
+		$fingerprint = sanitize_text_field( $fingerprint );
+		if ( 1 !== preg_match( '/^sha256:[a-f0-9]{64}$/', $fingerprint ) ) {
+			return '';
+		}
+
+		return $fingerprint;
 	}
 }

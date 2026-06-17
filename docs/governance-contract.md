@@ -251,9 +251,9 @@ actions limited to
 `npcink-abilities-toolkit/update-template-blocks` or
 `npcink-abilities-toolkit/upsert-template-blocks`. Layout customization plans
 must include a passing bounded `template_layout_contract` with accepted compiler,
-policy, and profile versions (`block_theme_profile_compiler@0.2`,
+policy, and profile versions (`block_theme_profile_compiler@0.3`,
 `block_theme_safe_core_blocks@0.2`, and versioned profiles such as
-`homepage_landing@0.2`). Core stores
+`page_standard@0.2`, `homepage_landing@0.3`). Core stores
 `preview.block_theme_site` and the reviewed block tree, but does not edit theme
 files, navigation entities, global styles, approve proposals, or execute
 WordPress writes.

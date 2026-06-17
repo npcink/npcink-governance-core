@@ -131,10 +131,17 @@ Response `200`:
       "fail_closed": true
     },
     "client_key_fingerprint": {
-      "field": "client_key_fingerprint",
-      "emitted": false,
-      "status": "pending_signed_client_identity_contract",
-      "owner": "npcink-governance-core"
+      "field": "signed_client_fingerprint",
+      "aliases": ["client_key_fingerprint"],
+      "emitted": true,
+      "emitted_in": [
+        "approval_context",
+        "execution_handoff",
+        "read_authorization_context"
+      ],
+      "status": "supported_when_forwarded_by_trusted_adapter",
+      "owner": "npcink-governance-core",
+      "fail_closed": true
     }
   },
   "handoff_routes": {
@@ -174,10 +181,10 @@ write execution results.
 
 Core-issued commit preflight and sensitive-read authorization contexts include
 the current `site_url`, `home_url`, and `blog_id` so adapters can fail closed
-when a handoff is replayed on the wrong WordPress site. Client-key fingerprint
-binding remains pending until Core emits a signed `client_key_fingerprint`
-field in those contexts; the contract advertises that state as
-`pending_signed_client_identity_contract`.
+when a handoff is replayed on the wrong WordPress site. When a trusted Adapter
+forwards a signed local client fingerprint, Core also emits
+`signed_client_fingerprint` and the compatible `client_key_fingerprint` alias
+in commit-preflight and sensitive-read authorization contexts.
 
 ## `GET /apps`
 
@@ -849,8 +856,9 @@ For `intent=customize_template_layout`, Core additionally requires a passing
 `template_layout_contract` whose profile rows use accepted profiles such as
 `article_standard`, `page_standard`, or `homepage_landing`. The contract must
 also declare accepted compiler, policy, and profile versions, including
-`block_theme_profile_compiler@0.2`, `block_theme_safe_core_blocks@0.2`, and
-profile ids such as `article_standard@0.4` and `homepage_landing@0.2`.
+`block_theme_profile_compiler@0.3`, `block_theme_safe_core_blocks@0.2`, and
+profile ids such as `article_standard@0.4`, `page_standard@0.2`, and
+`homepage_landing@0.3`.
 Core accepts only bounded template slugs (`front-page`, `home`, `index`,
 `page`, and `single`), requires parser roundtrip validation evidence, and
 allows homepage layout reader modules such as `core/latest-posts` and

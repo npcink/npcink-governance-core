@@ -2394,8 +2394,8 @@ final class Plan_Proposal_Service {
 		);
 		$allowed_profile_versions = array(
 			'article_standard' => 'article_standard@0.4',
-			'page_standard'    => 'page_standard@0.1',
-			'homepage_landing' => 'homepage_landing@0.2',
+			'page_standard'    => 'page_standard@0.2',
+			'homepage_landing' => 'homepage_landing@0.3',
 		);
 		$layout_profile   = sanitize_key( (string) ( $plan['layout_profile'] ?? '' ) );
 		$layout_contract  = is_array( $plan['template_layout_contract'] ?? null ) ? $plan['template_layout_contract'] : array();
@@ -2419,7 +2419,7 @@ final class Plan_Proposal_Service {
 		if (
 			'pass' !== $contract_status
 			|| 'bounded_template_layout_profile' !== $contract_model
-			|| 'block_theme_profile_compiler@0.2' !== $compiler_version
+			|| 'block_theme_profile_compiler@0.3' !== $compiler_version
 			|| 'block_theme_safe_core_blocks@0.2' !== $policy_version
 		) {
 			return new WP_Error(

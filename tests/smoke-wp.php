@@ -1221,8 +1221,9 @@ npcink_governance_core_smoke_assert( array( 'site_url', 'home_url', 'blog_id' ) 
 npcink_governance_core_smoke_assert( untrailingslashit( site_url() ) === (string) ( $runtime_contract['context_bindings']['site_binding']['site_url'] ?? '' ), 'runtime contract binds current site_url' );
 npcink_governance_core_smoke_assert( untrailingslashit( home_url() ) === (string) ( $runtime_contract['context_bindings']['site_binding']['home_url'] ?? '' ), 'runtime contract binds current home_url' );
 npcink_governance_core_smoke_assert( get_current_blog_id() === (int) ( $runtime_contract['context_bindings']['site_binding']['blog_id'] ?? 0 ), 'runtime contract binds current blog id' );
-npcink_governance_core_smoke_assert( false === (bool) ( $runtime_contract['context_bindings']['client_key_fingerprint']['emitted'] ?? true ), 'runtime contract marks client fingerprint binding pending' );
-npcink_governance_core_smoke_assert( 'pending_signed_client_identity_contract' === (string) ( $runtime_contract['context_bindings']['client_key_fingerprint']['status'] ?? '' ), 'runtime contract names pending client identity contract' );
+npcink_governance_core_smoke_assert( true === (bool) ( $runtime_contract['context_bindings']['client_key_fingerprint']['emitted'] ?? false ), 'runtime contract marks Adapter-forwarded client fingerprint binding supported' );
+npcink_governance_core_smoke_assert( 'signed_client_fingerprint' === (string) ( $runtime_contract['context_bindings']['client_key_fingerprint']['field'] ?? '' ), 'runtime contract names signed client fingerprint field' );
+npcink_governance_core_smoke_assert( 'supported_when_forwarded_by_trusted_adapter' === (string) ( $runtime_contract['context_bindings']['client_key_fingerprint']['status'] ?? '' ), 'runtime contract names supported client identity contract' );
 npcink_governance_core_smoke_assert( 'adapter_or_host_after_core_preflight' === (string) ( $runtime_contract['boundary']['final_write_authority'] ?? '' ), 'runtime contract leaves final writes with adapter or host after preflight' );
 
 $app = npcink_governance_core_smoke_rest(

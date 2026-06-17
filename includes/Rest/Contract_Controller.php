@@ -114,10 +114,13 @@ final class Contract_Controller {
 						'fail_closed'  => true,
 					),
 					'client_key_fingerprint' => array(
-						'field'      => 'client_key_fingerprint',
-						'emitted'    => false,
-						'status'     => 'pending_signed_client_identity_contract',
+						'field'      => 'signed_client_fingerprint',
+						'aliases'    => array( 'client_key_fingerprint' ),
+						'emitted'    => true,
+						'emitted_in' => array( 'approval_context', 'execution_handoff', 'read_authorization_context' ),
+						'status'     => 'supported_when_forwarded_by_trusted_adapter',
 						'owner'      => 'npcink-governance-core',
+						'fail_closed' => true,
 					),
 				),
 				'handoff_routes'                         => array(

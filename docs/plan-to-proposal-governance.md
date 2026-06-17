@@ -178,8 +178,9 @@ non-empty Gutenberg `blocks` tree.
 For `customize_template_layout`, Core also requires a passing bounded
 `template_layout_contract` with accepted profile rows. The contract must include
 the accepted compiler and forbidden policy versions
-(`block_theme_profile_compiler@0.2` and `block_theme_safe_core_blocks@0.2`),
-accepted versioned profiles such as `homepage_landing@0.2`, and profile rows
+(`block_theme_profile_compiler@0.3` and `block_theme_safe_core_blocks@0.2`),
+accepted versioned profiles such as `page_standard@0.2` and
+`homepage_landing@0.3`, and profile rows
 with matching profile version, operation, modules, and forbidden-output policy.
 Template upserts are limited to accepted template slugs (`front-page`, `home`,
 `index`, `page`, and `single`). The reviewed block tree must declare parser

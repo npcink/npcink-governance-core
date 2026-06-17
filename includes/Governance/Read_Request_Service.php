@@ -360,6 +360,8 @@ final class Read_Request_Service {
 			$grant_request = $consumed;
 		}
 
+		// Emits signed_client_fingerprint and client_key_fingerprint when a trusted Adapter forwarded one.
+		$client_binding = Request_Context::signed_client_context();
 		$context = array(
 			'request_id'               => (string) $request['request_id'],
 			'ability_id'               => $ability_id,
@@ -375,7 +377,7 @@ final class Read_Request_Service {
 			'core_authorization_truth' => 'npcink_governance_core',
 			'commit_execution'         => false,
 			'write_execution'          => false,
-		) + $this->site_binding_context();
+		) + $client_binding + $this->site_binding_context();
 
 		$event_id = $this->audit->record(
 			'read_request.preflighted',
@@ -387,7 +389,7 @@ final class Read_Request_Service {
 					'read_authorization_granted' => true,
 					'commit_execution'           => false,
 					'write_execution'            => false,
-				)
+				) + $client_binding
 			),
 			(string) $request['request_id']
 		);

@@ -393,7 +393,8 @@ foreach (
 		'site_url',
 		'home_url',
 		'blog_id',
-		'pending_signed_client_identity_contract',
+		'supported_when_forwarded_by_trusted_adapter',
+		'signed_client_fingerprint',
 		'client_key_fingerprint',
 		'write_execution=false',
 		'read_authorization_required',
@@ -1538,7 +1539,8 @@ npcink_governance_core_assert( false !== strpos( $contract_controller, "'provide
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'minimum_adapter_contract_version' ), 'Runtime contract exposes Adapter compatibility floor.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'context_bindings' ), 'Runtime contract exposes context binding metadata.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, "'fields'       => array( 'site_url', 'home_url', 'blog_id' )" ), 'Runtime contract declares site binding fields.' );
-npcink_governance_core_assert( false !== strpos( $contract_controller, 'pending_signed_client_identity_contract' ), 'Runtime contract declares pending client fingerprint binding.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, 'supported_when_forwarded_by_trusted_adapter' ), 'Runtime contract declares supported Adapter-forwarded client fingerprint binding.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'field'      => 'signed_client_fingerprint'" ), 'Runtime contract declares the signed client fingerprint field.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'forbidden_payloads' ), 'Runtime contract declares forbidden payload families.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'adapter_or_host_after_core_preflight' ), 'Runtime contract leaves final writes with the adapter or host after preflight.' );
 
@@ -1587,6 +1589,8 @@ foreach (
 		'commit_execution',
 		'write_execution',
 		'approved_input_hash',
+		'signed_client_context',
+		'signed_client_fingerprint',
 		'site_binding_context',
 		"function_exists( 'site_url' ) ? site_url() : ''",
 		"function_exists( 'home_url' ) ? home_url() : ''",
@@ -1747,6 +1751,8 @@ npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'cor
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'approved_input_hash' ), 'Commit preflight binds approval context to approved input hash.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'approved_preview_hash' ), 'Commit preflight binds approval context to approved preview hash.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'policy_version' ), 'Commit preflight returns a policy version for Adapter binding.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'PREFLIGHT_TTL_SECONDS' ), 'Commit preflight declares a bounded handoff TTL.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'signed_client_context' ), 'Commit preflight binds signed Adapter client fingerprint when present.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'site_binding_context' ), 'Commit preflight has a site binding helper.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "function_exists( 'site_url' ) ? site_url() : ''" ), 'Commit preflight binds site_url.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "function_exists( 'home_url' ) ? home_url() : ''" ), 'Commit preflight binds home_url.' );
@@ -1877,10 +1883,11 @@ foreach (
 		'npcink_governance_core_block_theme_site_template_rejected',
 		'customize_template_layout',
 		'template_layout_contract',
-		'block_theme_profile_compiler@0.2',
+		'block_theme_profile_compiler@0.3',
 		'block_theme_safe_core_blocks@0.2',
 		'accepted_profile_versions',
-		'homepage_landing@0.2',
+		'page_standard@0.2',
+		'homepage_landing@0.3',
 		'replace_template_layout_with_preserved_template_parts',
 		'article_standard',
 		'homepage_landing',
@@ -2114,6 +2121,9 @@ npcink_governance_core_assert( false !== strpos( $request_context, 'scope_decisi
 npcink_governance_core_assert( false !== strpos( $request_context, 'mark_scope_decision' ), 'Request context can update scope decision for denials.' );
 npcink_governance_core_assert( false !== strpos( $request_context, "'scopes'" ), 'Request context stores app scopes for smart guarded auto approval.' );
 npcink_governance_core_assert( false !== strpos( $request_context, 'in_array( $scope' ), 'Request context can check any app scope, not only the current route scope.' );
+npcink_governance_core_assert( false !== strpos( $request_context, 'signed_client_context' ), 'Request context can expose signed Adapter client bindings.' );
+npcink_governance_core_assert( false !== strpos( $request_context, 'signed_client_fingerprint' ), 'Request context stores the signed Adapter client fingerprint.' );
+npcink_governance_core_assert( false !== strpos( $request_context, 'client_key_fingerprint' ), 'Request context stores the compatible client key fingerprint alias.' );
 
 $observability = npcink_governance_core_read( $root . '/includes/Observability.php' );
 foreach ( array( 'Observability', 'npcink_governance_core_observability_event', 'schema_version', 'plugin_slug', 'source', 'local', 'event_kind', 'event_id', 'sanitize_payload', 'proposal_count', 'blocked_count' ) as $required ) {

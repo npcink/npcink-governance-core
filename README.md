@@ -70,8 +70,8 @@ writes, own workflow runtime, own queues, own MCP runtime, own Agent Gateway
 catalogs, or store provider credentials. It also reports Adapter-facing
 runtime compatibility, Core truth ownership, and context binding support.
 Commit preflight and sensitive-read preflight bind returned contexts to the
-current `site_url`, `home_url`, and `blog_id`; client-key fingerprint binding
-remains pending until Core emits a signed client identity field.
+current `site_url`, `home_url`, `blog_id`, and, when a trusted Adapter forwards
+one, the signed local client fingerprint.
 
 ## Development
 

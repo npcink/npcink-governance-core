@@ -2198,13 +2198,13 @@ function npcink_governance_core_fail_closed_block_theme_layout_plan(): array {
 	$plan['template_layout_contract'] = array(
 		'catalog_id'                => 'gutenberg_native_v1',
 		'catalog_version'           => '1.0',
-		'compiler_version'          => 'block_theme_profile_compiler@0.2',
+		'compiler_version'          => 'block_theme_profile_compiler@0.3',
 		'forbidden_policy_version'  => 'block_theme_safe_core_blocks@0.2',
 		'surface'                   => 'template',
 		'intent'                    => 'customize_template_layout',
 		'placement_model'           => 'bounded_template_layout_profile',
 		'accepted_profiles'         => array( 'article_standard', 'page_standard', 'homepage_landing' ),
-		'accepted_profile_versions' => array( 'article_standard@0.4', 'page_standard@0.1', 'homepage_landing@0.2' ),
+		'accepted_profile_versions' => array( 'article_standard@0.4', 'page_standard@0.2', 'homepage_landing@0.3' ),
 		'forbidden_outputs'         => array( 'raw_template_html', 'core/html', 'core/freeform', 'non_core_blocks', 'custom_css', 'theme_json', 'global_styles', 'navigation_write', 'template_part_write' ),
 		'contract_status'           => 'pass',
 		'violation_codes'           => array(),
@@ -2214,7 +2214,7 @@ function npcink_governance_core_fail_closed_block_theme_layout_plan(): array {
 				'layout_profile'    => 'article_standard',
 				'profile_id'        => 'article_standard@0.4',
 				'profile_version'   => 'article_standard@0.4',
-				'compiler_version'  => 'block_theme_profile_compiler@0.2',
+				'compiler_version'  => 'block_theme_profile_compiler@0.3',
 				'operation'         => 'replace_template_layout_with_preserved_template_parts',
 				'profile_allowed'   => true,
 				'modules'           => array( 'header', 'breadcrumbs', 'post_title', 'author_date', 'post_categories', 'featured_image', 'post_content', 'post_tags', 'post_navigation', 'comments', 'related_posts', 'footer' ),
@@ -2282,9 +2282,9 @@ function npcink_governance_core_fail_closed_block_theme_homepage_layout_plan(): 
 	$plan['template_layout_contract']['profiles'][0] = array(
 		'slug'              => 'front-page',
 		'layout_profile'    => 'homepage_landing',
-		'profile_id'        => 'homepage_landing@0.2',
-		'profile_version'   => 'homepage_landing@0.2',
-		'compiler_version'  => 'block_theme_profile_compiler@0.2',
+		'profile_id'        => 'homepage_landing@0.3',
+		'profile_version'   => 'homepage_landing@0.3',
+		'compiler_version'  => 'block_theme_profile_compiler@0.3',
 		'operation'         => 'replace_template_layout_with_preserved_template_parts',
 		'profile_allowed'   => true,
 		'modules'           => array( 'header', 'hero', 'entry_columns', 'primary_cta', 'latest_posts', 'category_links', 'final_cta', 'footer' ),
@@ -3781,6 +3781,18 @@ npcink_governance_core_fail_closed_assert( ! in_array( 'cookie', (array) ( $appr
 npcink_governance_core_fail_closed_assert( in_array( 'authorization', (array) ( $approved_read['bounds']['denied_fields'] ?? array() ), true ), 'Sensitive read approval preserves denied fields.' );
 npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $read_request['request_id'], 'read_request.approved' ) ), 'Sensitive read approval is audited.' );
 
+$read_signed_client_fingerprint = 'sha256:' . str_repeat( 'b', 64 );
+\Npcink\GovernanceCore\Security\Request_Context::set_app(
+	array(
+		'app_id'                    => 'adapter_app_read_preflight',
+		'key_id'                    => 'adapter_key_read_preflight',
+		'caller_type'               => 'openclaw_adapter',
+		'scope'                     => 'read_requests:preflight',
+		'scopes'                    => array( 'read_requests:preflight' ),
+		'route_family'              => 'read_requests_preflight',
+		'signed_client_fingerprint' => $read_signed_client_fingerprint,
+	)
+);
 $grant = $stack['service']->preflight(
 	(string) $read_request['request_id'],
 	array(
@@ -3795,6 +3807,8 @@ npcink_governance_core_fail_closed_assert( 'npcink_governance_core' === (string)
 npcink_governance_core_fail_closed_assert( false === (bool) ( $grant_context['commit_execution'] ?? true ), 'Grant context has commit_execution=false.' );
 npcink_governance_core_fail_closed_assert( false === (bool) ( $grant_context['write_execution'] ?? true ), 'Grant context has write_execution=false.' );
 npcink_governance_core_fail_closed_assert( (string) ( $approved_read['input_hash'] ?? '' ) === (string) ( $grant_context['approved_input_hash'] ?? '' ), 'Grant context binds approved input hash.' );
+npcink_governance_core_fail_closed_assert( $read_signed_client_fingerprint === (string) ( $grant_context['signed_client_fingerprint'] ?? '' ), 'Grant context binds signed client fingerprint.' );
+npcink_governance_core_fail_closed_assert( $read_signed_client_fingerprint === (string) ( $grant_context['client_key_fingerprint'] ?? '' ), 'Grant context binds client key fingerprint alias.' );
 npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $read_request['request_id'], 'read_request.preflighted' ) ), 'Sensitive read preflight/grant is audited.' );
 
 $wrong_ability = $stack['service']->preflight(
@@ -4232,9 +4246,24 @@ foreach ( $representative_ability_ids as $ability_id ) {
 	$approved = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'negative_smoke_approval' ) );
 	npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ) && 'approved' === (string) ( $approved['status'] ?? '' ), $ability_id . ' proposal can be approved.' );
 
+	$signed_client_fingerprint = 'sha256:' . str_repeat( 'a', 64 );
+	\Npcink\GovernanceCore\Security\Request_Context::set_app(
+		array(
+			'app_id'                    => 'adapter_app_preflight',
+			'key_id'                    => 'adapter_key_preflight',
+			'caller_type'               => 'openclaw_adapter',
+			'scope'                     => 'commit:preflight',
+			'scopes'                    => array( 'commit:preflight' ),
+			'route_family'              => 'commit_preflight',
+			'signed_client_fingerprint' => $signed_client_fingerprint,
+		)
+	);
 	$preflight = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
 	npcink_governance_core_fail_closed_assert( ! is_wp_error( $preflight ), $ability_id . ' approved proposal passes commit preflight.' );
 	npcink_governance_core_fail_closed_assert( false === (bool) ( $preflight['commit_execution'] ?? true ), $ability_id . ' preflight does not execute commits.' );
+	npcink_governance_core_fail_closed_assert( $signed_client_fingerprint === (string) ( $preflight['approval_context']['signed_client_fingerprint'] ?? '' ), $ability_id . ' approval context binds signed client fingerprint.' );
+	npcink_governance_core_fail_closed_assert( $signed_client_fingerprint === (string) ( $preflight['execution_handoff']['client_key_fingerprint'] ?? '' ), $ability_id . ' execution handoff binds client key fingerprint alias.' );
+	npcink_governance_core_fail_closed_assert( '' !== (string) ( $preflight['approval_context']['expires_at'] ?? '' ), $ability_id . ' approval context carries handoff expiry.' );
 	npcink_governance_core_fail_closed_assert( true === (bool) ( $preflight['idempotency_required'] ?? false ), $ability_id . ' preflight requires idempotency.' );
 	npcink_governance_core_fail_closed_assert( true === (bool) ( $preflight['contract_preflight']['contract_matches'] ?? false ), $ability_id . ' preflight confirms ability contract match.' );
 	npcink_governance_core_fail_closed_assert( true === (bool) ( $preflight['permission_preflight']['allowed'] ?? false ), $ability_id . ' preflight confirms permission.' );
