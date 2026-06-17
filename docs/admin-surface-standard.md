@@ -80,14 +80,27 @@ queue:
 
 Proposal detail should be a focused review surface:
 
-- proposal summary panel with request, status, risk, and source before the
-  lower-level identity table;
-- proposal identity and status with visual status badges;
-- review context from ability intake and preview metadata;
+- top proposal summary panel with request, status, source, action count,
+  warning/blocker counts, and audit event count before lower-level technical
+  identity, while keeping visual status badges for proposal lifecycle state;
+- grouped proposal identity inspector with display id, full proposal id, target
+  ability, created/updated time, source trace, caller/app attribution, and
+  policy fields without repeating the same summary fields as a second linear
+  table;
+- explicit non-pending outcome notice for approved, executed, rejected,
+  expired, archived, or execution-failed proposals so the page explains why
+  approve/reject controls are absent;
+- batch action table for plan-to-proposal or other multi-action proposal rows,
+  showing ordered action id, target ability, readiness, and dependencies while
+  keeping final execution outside Core;
+- review basis from ability intake and preview metadata rendered as grouped
+  `Ability and policy` and `Preview signals` inspectors;
 - approve/reject decision controls for pending proposals after the review
   context, so the reviewer sees the basis before choosing;
-- raw proposal payload behind a disclosure;
-- proposal audit timeline behind a disclosure.
+- proposal audit timeline before raw payload, default-open for non-pending
+  proposals because it is the lifecycle evidence for approved, executed,
+  rejected, expired, archived, and execution-failed records;
+- raw proposal payload behind a final troubleshooting disclosure with bounded code blocks;
 - lifecycle controls for expired or archived proposals.
 
 Full `Activity Log` and `Expired / Archived` belong in dedicated tabs, not

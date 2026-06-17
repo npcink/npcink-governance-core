@@ -486,7 +486,7 @@
 
 .npcink-governance-core-proposal-summary {
 	display: grid;
-	grid-template-columns: minmax(280px, 2fr) repeat(3, minmax(140px, 1fr));
+	grid-template-columns: minmax(260px, 2fr) repeat(5, minmax(120px, 1fr));
 	gap: 12px;
 	box-sizing: border-box;
 	margin: 0 0 16px;
@@ -495,8 +495,40 @@
 	border: 1px solid #dcdcde;
 }
 
+.npcink-governance-core-proposal-summary > div {
+	min-width: 0;
+}
+
+.npcink-governance-core-summary-count {
+	display: block;
+	margin: 0 0 4px;
+	color: #1d2327;
+	font-size: 20px;
+	font-weight: 600;
+	line-height: 1.25;
+}
+
 .npcink-governance-core-detail-table {
 	max-width: 1100px;
+}
+
+.npcink-governance-core-detail-groups {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+	margin: 0 0 16px;
+}
+
+.npcink-governance-core-detail-group {
+	min-width: 0;
+}
+
+.npcink-governance-core-outcome-notice {
+	margin-top: 12px;
+}
+
+.npcink-governance-core-action-plan-table td {
+	vertical-align: top;
 }
 
 .npcink-governance-core-flex-field {
@@ -607,7 +639,8 @@
 @media screen and (max-width: 960px) {
 	.npcink-governance-core-summary-strip,
 	.npcink-governance-core-workbench-toolbar,
-	.npcink-governance-core-proposal-summary {
+	.npcink-governance-core-proposal-summary,
+	.npcink-governance-core-detail-groups {
 		grid-template-columns: 1fr;
 	}
 
