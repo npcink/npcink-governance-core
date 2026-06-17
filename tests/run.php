@@ -2168,12 +2168,12 @@ foreach (
 			'proposal summary panel',
 			'action count',
 			'warning/blocker counts',
-			'grouped proposal identity inspector',
+			'collapsed technical identity inspector',
 			'non-pending outcome notice',
 			'batch action table',
 			'Ability and policy',
 			'Preview signals',
-			'audit timeline before raw payload',
+			'audit evidence before raw payload',
 			'bounded code blocks',
 			'visual status badges',
 			'reviewer sees the basis',
@@ -2359,9 +2359,10 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'app.revoked' ), '
 npcink_governance_core_assert( false !== strpos( $admin_page, 'button-link-delete' ), 'Admin page exposes a key disable action.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Review basis' ), 'Admin proposal detail renders summary-first review basis.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_proposal_summary_panel' ), 'Admin proposal detail opens with a compact summary panel.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-proposal-summary' ), 'Admin proposal detail displays request, status, source, action, review flag, and audit summary.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-proposal-summary' ), 'Admin proposal detail displays request, status, action, and evidence summary.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_proposal_identity_panel' ), 'Admin proposal detail groups proposal identity and source metadata.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_proposal_detail_groups' ), 'Admin proposal detail uses grouped inspectors instead of a repeated linear identity table.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Technical identity' ), 'Admin proposal detail folds full ids and source-policy metadata behind technical identity.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Governance identity' ) && false !== strpos( $admin_page, 'Source and policy' ), 'Admin proposal detail labels identity and source-policy inspector groups.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_proposal_outcome_notice' ), 'Admin proposal detail explains why non-pending proposals no longer show approve/reject controls.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'No pending decision.' ), 'Admin proposal detail renders non-pending outcome copy.' );
@@ -2370,10 +2371,11 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_batch_ac
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Batch actions' ) && false !== strpos( $admin_page, 'Target ability' ) && false !== strpos( $admin_page, 'Readiness' ) && false !== strpos( $admin_page, 'Dependency' ), 'Admin proposal detail exposes batch action columns.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_warning_count' ) && false !== strpos( $admin_page, 'proposal_blocked_count' ), 'Admin proposal detail surfaces warning and blocker counts.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_action_count' ), 'Admin proposal detail summarizes batch versus single proposal action count.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Ability and policy' ) && false !== strpos( $admin_page, 'Preview signals' ), 'Admin proposal detail groups review basis into ability-policy and preview signal inspectors.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Ability and policy' ) && false !== strpos( $admin_page, 'Preview signals' ), 'Admin proposal detail groups review basis into ability-policy and non-empty preview signal inspectors.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Preview signals: no warnings, no blocked items, no required input, and no preflight blockers.' ), 'Admin proposal detail compresses zero-value preview signals into one line.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Proposed change details' ), 'Admin proposal detail moves structured preview details behind a disclosure.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, '$this->render_audit_timeline( $timeline, ! $is_pending );' ), 'Admin proposal detail opens audit evidence by default for non-pending proposals.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, '$this->render_raw_proposal_payload( $proposal );' ) && strpos( $admin_page, '$this->render_audit_timeline( $timeline, ! $is_pending );' ) < strpos( $admin_page, '$this->render_raw_proposal_payload( $proposal );' ), 'Admin proposal detail places audit evidence before raw payload.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_lifecycle_summary' ), 'Admin proposal detail shows compact lifecycle evidence before the full audit table.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, '$this->render_raw_proposal_payload( $proposal );' ) && strpos( $admin_page, '$this->render_audit_timeline( $timeline );' ) < strpos( $admin_page, '$this->render_raw_proposal_payload( $proposal );' ), 'Admin proposal detail places audit evidence before raw payload.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_status_badge' ), 'Admin proposal status uses visual badges.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_risk_badge' ), 'Admin proposal risk uses visual badges.' );
 $decision_call_position = strpos( $admin_page, '$this->render_decision_controls( $proposal );' );
@@ -2402,6 +2404,8 @@ npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-detail-groups' ), 'Admin CSS renders proposal detail inspectors as grouped columns.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-action-plan-table' ), 'Admin CSS keeps batch action rows vertically aligned.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-summary-count' ), 'Admin CSS styles proposal detail summary counts.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-signal-summary' ), 'Admin CSS styles compressed zero-value review signals.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-lifecycle-summary' ), 'Admin CSS styles compact proposal lifecycle evidence.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-empty-state' ), 'Admin CSS styles the active queue empty state.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-bulk-action-bar' ), 'Admin CSS styles the contextual bulk action bar.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-bulk-disclosure[hidden]' ), 'Admin CSS hides bulk actions until JavaScript reveals selection context.' );
@@ -2427,14 +2431,14 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'article_goal_brie
 npcink_governance_core_assert( false !== strpos( $admin_page, 'article_risk_report' ), 'Admin proposal detail shows article risk artifact availability.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Raw proposal payload' ), 'Admin proposal detail folds raw JSON payload behind a disclosure.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-code-block' ), 'Admin proposal detail renders raw JSON in bounded code blocks.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Audit Timeline' ), 'Admin proposal detail renders audit timeline.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Proposal event history.' ), 'Admin proposal detail folds audit timeline behind a secondary disclosure.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Lifecycle summary' ), 'Admin proposal detail renders lifecycle evidence before the full audit table.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Full audit timeline' ), 'Admin proposal detail folds audit timeline behind a secondary disclosure.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'scope_decision' ), 'Admin proposal detail shows scope decision attribution.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'correlation_id' ), 'Admin proposal detail shows correlation id attribution.' );
 npcink_governance_core_assert( false !== strpos( $core_operability, 'article workflow summary' ), 'Core governance operability documents article workflow summary.' );
 npcink_governance_core_assert( false !== strpos( $core_operability, 'final write ability' ), 'Core governance operability documents article final write ability.' );
 npcink_governance_core_assert( false !== strpos( $core_operability, 'batch action details' ), 'Core governance operability documents batch action detail review.' );
-npcink_governance_core_assert( false !== strpos( $core_operability, 'opens the timeline by default' ), 'Core governance operability documents non-pending audit priority.' );
+npcink_governance_core_assert( false !== strpos( $core_operability, 'audit lifecycle summary' ), 'Core governance operability documents visible lifecycle evidence.' );
 
 $forbidden_runtime_terms = array(
 	'Agent Gateway',

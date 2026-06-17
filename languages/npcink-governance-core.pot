@@ -9,15 +9,15 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-06T17:00:50+00:00\n"
+"POT-Creation-Date: 2026-06-17T12:13:33+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: npcink-governance-core\n"
 
 #. Plugin Name of the plugin
 #: npcink-governance-core.php
-#: includes/Admin/Admin_Page.php:126
-#: includes/Admin/Admin_Page.php:298
+#: includes/Admin/Admin_Page.php:114
+#: includes/Admin/Admin_Page.php:291
 msgid "npcink-governance-core"
 msgstr ""
 
@@ -31,350 +31,311 @@ msgstr ""
 msgid "Npcink"
 msgstr ""
 
-#: includes/Plugin.php:189
-msgid "Settings"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:127
-#: includes/Admin/Admin_Page.php:219
+#: includes/Admin/Admin_Page.php:115
+#: includes/Admin/Admin_Page.php:215
 msgid "Core"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:165
-#: includes/Admin/Admin_Page.php:166
-#: includes/Admin/Admin_Page.php:213
+#: includes/Admin/Admin_Page.php:161
+#: includes/Admin/Admin_Page.php:162
+#: includes/Admin/Admin_Page.php:209
 msgid "Npcink AI"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:176
+#: includes/Admin/Admin_Page.php:172
 msgid "Npcink AI Overview"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:177
+#: includes/Admin/Admin_Page.php:173
 msgid "Overview"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:209
-#: includes/Admin/Admin_Page.php:279
+#: includes/Admin/Admin_Page.php:205
+#: includes/Admin/Admin_Page.php:275
 msgid "You do not have permission to access this page."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:214
+#: includes/Admin/Admin_Page.php:210
 msgid "Local WordPress entry points for Npcink governance, connections, cloud access, and ability packages."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:215
+#: includes/Admin/Admin_Page.php:211
 msgid "Installed Surfaces"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:219
+#: includes/Admin/Admin_Page.php:215
 msgid "Review proposals, approval decisions, commit preflight, audit, and Core app keys."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:220
+#: includes/Admin/Admin_Page.php:216
 msgid "Adapter"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:220
+#: includes/Admin/Admin_Page.php:216
 msgid "Connect OpenClaw through the Adapter surface."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:221
+#: includes/Admin/Admin_Page.php:217
 msgid "Abilities"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:221
+#: includes/Admin/Admin_Page.php:217
 msgid "Verify WordPress Abilities API packages and demo ability controls."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:222
+#: includes/Admin/Admin_Page.php:218
 msgid "Cloud Addon"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:222
+#: includes/Admin/Admin_Page.php:218
 msgid "Connect this site to cloud services without moving local control-plane truth."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:245
+#: includes/Admin/Admin_Page.php:241
 msgid "Open"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:247
+#: includes/Admin/Admin_Page.php:243
 msgid "Not installed"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:288
+#: includes/Admin/Admin_Page.php:292
 msgid "Review WordPress requests before they run."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:317
+#: includes/Admin/Admin_Page.php:310
 msgid "Selected proposal was not found."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:353
-#: includes/Admin/Admin_Page.php:571
+#: includes/Admin/Admin_Page.php:346
 msgid "Review Queue"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:339
-#: includes/Admin/Admin_Page.php:1598
+#: includes/Admin/Admin_Page.php:350
+#: includes/Admin/Admin_Page.php:2598
 msgid "Activity Log"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:361
-#: includes/Admin/Admin_Page.php:1193
+#: includes/Admin/Admin_Page.php:354
+#: includes/Admin/Admin_Page.php:1569
 msgid "Expired / Archived"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:365
-msgid "Media Policy"
+#: includes/Admin/Admin_Page.php:358
+#: includes/Admin/Admin_Page.php:541
+#: includes/Plugin.php:190
+msgid "Settings"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:370
+#: includes/Admin/Admin_Page.php:363
 msgid "Core admin sections"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:409
+#: includes/Admin/Admin_Page.php:401
+#: includes/Admin/Admin_Page.php:3055
+msgid "Needs review"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:401
+msgid "Pending proposals waiting for an administrator decision."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:402
+#: includes/Admin/Admin_Page.php:3056
+msgid "Approved"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:402
+msgid "Approved proposals waiting for Adapter preflight or execution record."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:403
+#: includes/Admin/Admin_Page.php:2812
+#: includes/Admin/Admin_Page.php:3061
+msgid "Execution failed"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:403
+msgid "Adapter-reported failures that need operator follow-up."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:404
+msgid "Audit events"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:404
+msgid "Recorded Core governance events."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:453
+msgid "Proposal lookup"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:454
+msgid "Open a Core proposal by display ID or full proposal ID."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:458
+#: includes/Admin/Admin_Page.php:851
+#: includes/Admin/Admin_Page.php:1959
+#: includes/Admin/Admin_Page.php:2612
+msgid "Proposal ID"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:460
+#: includes/Admin/Admin_Page.php:587
+msgid "Find proposal"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:476
 msgid "Require approval for all"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:410
+#: includes/Admin/Admin_Page.php:477
 msgid "Smart approval"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:411
+#: includes/Admin/Admin_Page.php:478
 msgid "Allow all (development only)"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:416
+#: includes/Admin/Admin_Page.php:483
 msgid "Development Approval Policy"
 msgstr ""
 
 #. translators: %s: current policy mode.
-#: includes/Admin/Admin_Page.php:421
+#: includes/Admin/Admin_Page.php:488
 #, php-format
 msgid "Current mode: %s"
 msgstr ""
 
 #. translators: 1: stored policy mode, 2: effective manual policy label.
-#: includes/Admin/Admin_Page.php:489
+#: includes/Admin/Admin_Page.php:500
 #, php-format
 msgid "Stored approval policy mode \"%1$s\" is no longer supported. Core is treating it as \"%2$s\" until you save one of the supported modes."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:490
+#: includes/Admin/Admin_Page.php:501
 msgid "empty"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:433
+#: includes/Admin/Admin_Page.php:514
 msgid "Policy mode"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:442
+#: includes/Admin/Admin_Page.php:523
 msgid "Smart approval only auto-approves trusted test-content cleanup trash batches and single draft-only create-draft proposals. Allow all is local-development only and requires NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL; commit preflight is still required and Core still does not execute writes."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:447
+#: includes/Admin/Admin_Page.php:528
 msgid "Save approval policy"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:461
-msgid "Media Optimization Policy"
+#: includes/Admin/Admin_Page.php:542
+msgid "Development approval policy and trusted governance client access."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:462
-msgid "Core stores the local site policy for optimized media derivatives. Toolbox may use these defaults for one-run handoffs, and Cloud Addon may execute them when available, but final WordPress writes still require local proposal governance."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:468
-msgid "Media optimization"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:472
-msgid "Enable local media derivative policy"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:474
-msgid "This stores defaults only. It does not optimize files, approve proposals, or write attachment metadata."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:478
-msgid "Output format"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:490
-msgid "Maximum width"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:493
-#: includes/Admin/Admin_Page.php:538
-msgid "px"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:497
-msgid "Quality"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:503
-msgid "Watermark"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:507
-msgid "Use image watermark when a logo attachment is configured"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:510
-msgid "Logo attachment ID"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:514
-msgid "Watermark placement"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:516
-msgid "Position"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:526
-msgid "Opacity"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:528
-#: includes/Admin/Admin_Page.php:533
-msgid "%"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:531
-msgid "Scale"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:536
-msgid "Margin"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:544
-msgid "Execution preference"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:548
-msgid "Use Cloud execution when Cloud Addon is installed and verified"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:550
-msgid "Cloud remains an optional runtime. Core keeps the policy and final local write decision."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:555
-msgid "Save media policy"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:573
-#: includes/Admin/Admin_Page.php:2150
-msgid "Needs review"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:574
-#: includes/Admin/Admin_Page.php:1986
-#: includes/Admin/Admin_Page.php:2153
-#: includes/Admin/Admin_Page.php:2220
-#: includes/Admin/Admin_Page.php:2230
-msgid "Expired"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:575
-#: includes/Admin/Admin_Page.php:1987
-#: includes/Admin/Admin_Page.php:2154
-msgid "Archived"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:576
-msgid "Available abilities"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:622
-msgid "Needs Review"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:477
+#: includes/Admin/Admin_Page.php:560
 msgid "Pending requests"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:630
-#: includes/Admin/Admin_Page.php:646
-msgid "Select proposal"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:486
-msgid "Request"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:631
-#: includes/Admin/Admin_Page.php:789
-#: includes/Admin/Admin_Page.php:1208
-#: includes/Admin/Admin_Page.php:1805
-msgid "Proposal"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:632
-msgid "Created"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:633
-#: includes/Admin/Admin_Page.php:846
-#: includes/Admin/Admin_Page.php:1138
-#: includes/Admin/Admin_Page.php:1212
-msgid "Action"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:488
-msgid "Decide"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:639
-msgid "No active proposals. Expired items are moved out of the review queue automatically."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:651
-msgid "Proposal ID:"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:519
-msgid "Target ability:"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:655
-msgid "Ability:"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:663
-msgid "Review"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:567
+#: includes/Admin/Admin_Page.php:569
 msgid "Select all proposals on this page"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:511
-msgid "View and decide"
+#: includes/Admin/Admin_Page.php:571
+#: includes/Admin/Admin_Page.php:1810
+#: includes/Admin/Admin_Page.php:2661
+msgid "Request"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:525
+#: includes/Admin/Admin_Page.php:572
+#: includes/Admin/Admin_Page.php:864
+msgid "Source"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:573
+#: includes/Admin/Admin_Page.php:1511
+#: includes/Admin/Admin_Page.php:1585
+#: includes/Admin/Admin_Page.php:1816
+msgid "Status"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:574
+#: includes/Admin/Admin_Page.php:882
+#: includes/Admin/Admin_Page.php:1969
+msgid "Created"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:575
+#: includes/Admin/Admin_Page.php:640
+#: includes/Admin/Admin_Page.php:643
+msgid "Details"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:576
+#: includes/Admin/Admin_Page.php:1222
+#: includes/Admin/Admin_Page.php:1514
+#: includes/Admin/Admin_Page.php:1588
+#: includes/Admin/Admin_Page.php:2051
+msgid "Action"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:584
+msgid "No requests need review."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:585
+msgid "Find a proposal by ID, inspect recent activity, or open expired and archived records when you need audit context."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:588
+msgid "Open activity log"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:589
+msgid "Open expired records"
+msgstr ""
+
+#. translators: %s: full proposal id.
+#: includes/Admin/Admin_Page.php:604
+#, php-format
+msgid "Full proposal ID: %s"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:610
+msgid "Select proposal"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:641
+msgid "Hide details"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:648
+msgid "Review"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:665
+#: includes/Admin/Admin_Page.php:667
+#: includes/Admin/Admin_Page.php:723
 msgid "Bulk actions"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:526
-msgid "Reject selected requests when they are no longer needed."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:662
+#: includes/Admin/Admin_Page.php:666
+#, php-format
 msgid "Selected requests: %d"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:668
+#: includes/Admin/Admin_Page.php:671
+#: includes/Admin/Admin_Page.php:673
+msgid "Reject selected requests when they are no longer needed."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:672
 msgid "Bulk rejection closes selected Core proposals without executing writes."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:675
+#: includes/Admin/Admin_Page.php:677
 msgid "Bulk rejection ready."
 msgstr ""
 
@@ -386,1193 +347,2011 @@ msgstr ""
 msgid "Add rejection note"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:673
-msgid "Bulk rejection note"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:531
+#: includes/Admin/Admin_Page.php:683
 msgid "Rejection note"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:492
+#: includes/Admin/Admin_Page.php:684
 msgid "Describe why these requests should be rejected."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:731
-msgid "Rejected from bulk review."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:688
 msgid "Clear selection"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:677
+#: includes/Admin/Admin_Page.php:691
+#: includes/Admin/Admin_Page.php:724
 msgid "Reject selected"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:719
+#: includes/Admin/Admin_Page.php:721
 msgid "Bulk action"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:724
+#: includes/Admin/Admin_Page.php:726
 msgid "Apply"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:733
+#. translators: %s: total item count.
+#: includes/Admin/Admin_Page.php:735
+#, php-format
 msgid "%s items"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:740
+#: includes/Admin/Admin_Page.php:742
 msgid "First page"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:741
+#: includes/Admin/Admin_Page.php:743
 msgid "Previous page"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:747
+#. translators: 1: current page, 2: total pages.
+#: includes/Admin/Admin_Page.php:749
+#, php-format
 msgid "Page %1$d of %2$d"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:754
+#: includes/Admin/Admin_Page.php:756
 msgid "Next page"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:755
+#: includes/Admin/Admin_Page.php:757
 msgid "Last page"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:701
-msgid "Source:"
+#: includes/Admin/Admin_Page.php:846
+#: includes/Admin/Admin_Page.php:1954
+msgid "Display ID"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:512
-msgid "Technical details"
+#: includes/Admin/Admin_Page.php:856
+#: includes/Admin/Admin_Page.php:1964
+#: includes/Admin/Admin_Page.php:2052
+#: includes/Admin/Admin_Page.php:2235
+msgid "Target ability"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:553
+#: includes/Admin/Admin_Page.php:869
+#: includes/Admin/Admin_Page.php:1477
+#: includes/Admin/Admin_Page.php:2006
+#: includes/Admin/Admin_Page.php:2628
+msgid "Caller type"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:874
+#: includes/Admin/Admin_Page.php:1509
+#: includes/Admin/Admin_Page.php:1676
+#: includes/Admin/Admin_Page.php:2011
+#: includes/Admin/Admin_Page.php:2624
+msgid "App ID"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:887
+#: includes/Admin/Admin_Page.php:1587
+#: includes/Admin/Admin_Page.php:1973
+msgid "Updated"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:892
+#: includes/Admin/Admin_Page.php:2016
+#: includes/Admin/Admin_Page.php:2253
+msgid "Policy decision"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:897
+#: includes/Admin/Admin_Page.php:2021
+msgid "Policy profile"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:902
+#: includes/Admin/Admin_Page.php:2026
+msgid "Policy reasons"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:925
+msgid "Identity and source"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:929
+msgid "Time and policy"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:964
 msgid "Create draft"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:554
+#: includes/Admin/Admin_Page.php:965
 msgid "Update SEO fields"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:555
+#: includes/Admin/Admin_Page.php:966
 msgid "Approve comment"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:556
+#: includes/Admin/Admin_Page.php:967
 msgid "Update taxonomy terms"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:557
+#: includes/Admin/Admin_Page.php:968
 msgid "Update post"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:558
+#: includes/Admin/Admin_Page.php:969
 msgid "Update media details"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:559
+#: includes/Admin/Admin_Page.php:970
 msgid "Rename media file"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:560
+#: includes/Admin/Admin_Page.php:971
 msgid "Delete media permanently"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:561
+#: includes/Admin/Admin_Page.php:972
 msgid "Import media"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:562
+#: includes/Admin/Admin_Page.php:973
 msgid "Set featured image"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:563
+#: includes/Admin/Admin_Page.php:974
 msgid "Update post content"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:575
+#: includes/Admin/Admin_Page.php:986
 msgid "Review WordPress change"
 msgstr ""
 
 #. translators: %s: plan ability id.
-#: includes/Admin/Admin_Page.php:727
+#: includes/Admin/Admin_Page.php:1009
 #, php-format
 msgid "plan %s"
 msgstr ""
 
 #. translators: %s: batch id.
-#: includes/Admin/Admin_Page.php:736
+#: includes/Admin/Admin_Page.php:1018
 #, php-format
 msgid "batch %s"
 msgstr ""
 
 #. translators: %s: action id.
-#: includes/Admin/Admin_Page.php:745
+#: includes/Admin/Admin_Page.php:1027
 #, php-format
 msgid "action %s"
 msgstr ""
 
 #. translators: %s: caller type.
-#: includes/Admin/Admin_Page.php:754
+#: includes/Admin/Admin_Page.php:1036
 #, php-format
 msgid "caller %s"
 msgstr ""
 
 #. translators: %s: app id.
-#: includes/Admin/Admin_Page.php:763
+#: includes/Admin/Admin_Page.php:1045
 #, php-format
 msgid "app %s"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:781
+#: includes/Admin/Admin_Page.php:1105
+#: includes/Admin/Admin_Page.php:3175
+msgid "Direct request"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1137
+msgid "External app"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1138
+msgid "Product adapter"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1139
+#: includes/Admin/Admin_Page.php:1140
+msgid "WordPress admin"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1154
+msgid "Smoke quota"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1158
+msgid "Plan batch"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1175
 msgid "Recent Activity"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:782
+#: includes/Admin/Admin_Page.php:1176
 msgid "Latest Core governance events. Full audit is in its own tab."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:787
-#: includes/Admin/Admin_Page.php:1706
-#: includes/Admin/Admin_Page.php:1803
-msgid "Time"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:788
-#: includes/Admin/Admin_Page.php:1707
-#: includes/Admin/Admin_Page.php:1760
-#: includes/Admin/Admin_Page.php:1804
-msgid "Event"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:790
-#: includes/Admin/Admin_Page.php:1708
-#: includes/Admin/Admin_Page.php:1806
-msgid "Actor"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:796
+#: includes/Admin/Admin_Page.php:1180
 msgid "No recent governance activity."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:808
-#: includes/Admin/Admin_Page.php:1830
+#: includes/Admin/Admin_Page.php:1188
+#: includes/Admin/Admin_Page.php:2683
 msgid "System"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:816
+#: includes/Admin/Admin_Page.php:1192
 msgid "Open full audit"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:832
-#: includes/Admin/Admin_Page.php:1083
+#: includes/Admin/Admin_Page.php:1208
+#: includes/Admin/Admin_Page.php:1459
 msgid "Advanced Access"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:690
+#: includes/Admin/Admin_Page.php:1209
 msgid "Client access keys for trusted governance clients."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:838
+#: includes/Admin/Admin_Page.php:1214
 msgid "Active app keys"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:842
-#: includes/Admin/Admin_Page.php:1137
+#: includes/Admin/Admin_Page.php:1218
+#: includes/Admin/Admin_Page.php:1513
 msgid "Last used"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:843
-#: includes/Admin/Admin_Page.php:1152
+#: includes/Admin/Admin_Page.php:1219
+#: includes/Admin/Admin_Page.php:1528
 msgid "Never"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:847
+#: includes/Admin/Admin_Page.php:1223
 msgid "Manage Core app keys"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:880
-#: includes/Admin/Admin_Page.php:1331
-#: includes/Admin/Admin_Page.php:1357
+#: includes/Admin/Admin_Page.php:1256
+#: includes/Admin/Admin_Page.php:1708
+#: includes/Admin/Admin_Page.php:1734
 msgid "You do not have permission to update proposals."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:954
+#: includes/Admin/Admin_Page.php:1267
+msgid "Rejected from bulk review."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1330
 msgid "You do not have permission to update approval policy."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:982
+#: includes/Admin/Admin_Page.php:1358
 msgid "You do not have permission to create app keys."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1041
+#: includes/Admin/Admin_Page.php:1417
 msgid "You do not have permission to revoke app keys."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1082
-#: includes/Admin/Admin_Page.php:1400
+#: includes/Admin/Admin_Page.php:1458
+#: includes/Admin/Admin_Page.php:1777
 msgid "Back to review queue"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1084
+#: includes/Admin/Admin_Page.php:1460
 msgid "Use this only for trusted Core governance clients. Productized OpenClaw setup belongs in a trusted adapter."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1088
-#: includes/Admin/Admin_Page.php:1123
+#: includes/Admin/Admin_Page.php:1464
+#: includes/Admin/Admin_Page.php:1499
 msgid "Create Core App Key"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1089
+#: includes/Admin/Admin_Page.php:1465
 msgid "Issue a scoped token for a trusted governance client."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1097
+#: includes/Admin/Admin_Page.php:1473
 msgid "App label"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1101
-#: includes/Admin/Admin_Page.php:1772
-msgid "Caller type"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1105
-#: includes/Admin/Admin_Page.php:1136
+#: includes/Admin/Admin_Page.php:1481
+#: includes/Admin/Admin_Page.php:1512
 msgid "Scopes"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1109
+#: includes/Admin/Admin_Page.php:1485
 msgid "Rate limit"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1112
+#: includes/Admin/Admin_Page.php:1488
 msgid "Requests"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1116
+#: includes/Admin/Admin_Page.php:1492
 msgid "Window seconds"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1127
+#: includes/Admin/Admin_Page.php:1503
 msgid "Core App Keys"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1132
+#: includes/Admin/Admin_Page.php:1508
 msgid "Label"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1133
-#: includes/Admin/Admin_Page.php:1299
-#: includes/Admin/Admin_Page.php:1768
-msgid "App ID"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1134
-#: includes/Admin/Admin_Page.php:1303
+#: includes/Admin/Admin_Page.php:1510
+#: includes/Admin/Admin_Page.php:1680
 msgid "Key ID"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1135
-#: includes/Admin/Admin_Page.php:1209
-#: includes/Admin/Admin_Page.php:1409
-msgid "Status"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1143
+#: includes/Admin/Admin_Page.php:1519
 msgid "No app keys yet."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1159
+#: includes/Admin/Admin_Page.php:1535
 msgid "Disable this app key? Existing clients using this token will receive 401."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1159
+#: includes/Admin/Admin_Page.php:1535
 msgid "Disable"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1162
+#: includes/Admin/Admin_Page.php:1538
 msgid "Disabled"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1194
+#: includes/Admin/Admin_Page.php:1570
 msgid "Stale requests are kept for audit but removed from the active review queue."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1210
-#: includes/Admin/Admin_Page.php:1413
+#: includes/Admin/Admin_Page.php:1584
+msgid "Proposal"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1586
 msgid "Age"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1211
-msgid "Updated"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1218
+#: includes/Admin/Admin_Page.php:1594
 msgid "No expired or archived proposals."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1249
+#: includes/Admin/Admin_Page.php:1625
 msgid "Read capabilities"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1250
+#: includes/Admin/Admin_Page.php:1626
 msgid "Create proposals"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1251
+#: includes/Admin/Admin_Page.php:1627
 msgid "Read proposals"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1252
+#: includes/Admin/Admin_Page.php:1628
 msgid "Commit preflight"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1253
+#: includes/Admin/Admin_Page.php:1629
 msgid "Approve proposals"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1254
+#: includes/Admin/Admin_Page.php:1630
 msgid "Reject proposals"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1255
-msgid "Read audit log"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1283
-#: includes/Admin/Admin_Page.php:1291
-msgid "Core App Key Created"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1293
-msgid "Copy this token now. It is shown only once and is not stored in raw form."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1294
-msgid "Use this token only in a trusted adapter or internal governance client secret store."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1307
-msgid "App token"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1311
-msgid "Core env"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1316
-msgid "Back to Advanced Access"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1401
-msgid "Proposal Detail"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1405
-#: includes/Admin/Admin_Page.php:1756
-msgid "Proposal ID"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1417
-msgid "Expiry"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1421
-#: includes/Admin/Admin_Page.php:1807
-msgid "Ability"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1425
-msgid "Summary"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1435
-msgid "Decision"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1440
-msgid "Decision note"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1445
-msgid "Approve"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1448
-msgid "Reject"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1476
-msgid "Lifecycle"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1477
-msgid "Expired and archived proposals are not eligible for approval until reopened."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1483
-msgid "Archive"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1485
-msgid "Reopen for review"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1525
-#: includes/Admin/Admin_Page.php:1550
-#: includes/Admin/Admin_Page.php:1609
-#: includes/Admin/Admin_Page.php:1614
-msgid "yes"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1525
-#: includes/Admin/Admin_Page.php:1550
-#: includes/Admin/Admin_Page.php:1609
-#: includes/Admin/Admin_Page.php:1614
-msgid "no"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1526
-msgid "not declared"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1532
-msgid "Review Context"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1537
-msgid "The target ability is not currently discoverable. Commit preflight will fail closed until the provider exposes it again."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1541
-msgid "Target ability"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1545
-msgid "Risk"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1549
-msgid "Requires approval"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1553
-msgid "Proposal ready"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1558
-msgid "Reason"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1564
-msgid "Before"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1567
-msgid "After suggestion"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1570
-msgid "Needs input"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1573
-msgid "Blocked items"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1458
-msgid "Field changes"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1464
-msgid "Field"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1465
-msgid "Proposed value"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1603
-msgid "Article workflow"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1629
-msgid "included"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1629
-msgid "missing"
+#: includes/Admin/Admin_Page.php:1631
+msgid "Record execution results"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:1632
-msgid "Article artifacts"
+msgid "Read audit log"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1635
-msgid "Blocked claims"
+#: includes/Admin/Admin_Page.php:1660
+#: includes/Admin/Admin_Page.php:1668
+msgid "Core App Key Created"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1670
+msgid "Copy this token now. It is shown only once and is not stored in raw form."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:1671
+msgid "Use this token only in a trusted adapter or internal governance client secret store."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1684
+msgid "App token"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1688
+msgid "Core env"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1693
+msgid "Back to Advanced Access"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1778
+msgid "Proposal Detail"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1779
+msgid "Review the governance record, action plan, and audit evidence for this proposal."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1822
+msgid "Actions"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1824
+msgid "Batch proposal"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1824
+msgid "Single proposal"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1827
+msgid "Evidence"
+msgstr ""
+
+#. translators: 1: warning count, 2: blocked item count.
+#: includes/Admin/Admin_Page.php:1833
+#, php-format
+msgid "%1$d warnings / %2$d blocked"
+msgstr ""
+
+#. translators: %d: audit event count.
+#: includes/Admin/Admin_Page.php:1843
+#, php-format
+msgid "%d audit events"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1863
+msgid "Technical identity"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1864
+msgid "Full proposal id, ability id, source trace, caller, app, and policy fields."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1885
+msgid "No pending decision."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1951
+msgid "Governance identity"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1977
+msgid "Expiry"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1983
+msgid "Source and policy"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1986
+msgid "Source type"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1991
+msgid "Plan ability"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1996
+msgid "Batch ID"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2001
+msgid "Proposal mode"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2046
+msgid "Batch actions"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2047
+msgid "Ordered actions in this Core proposal. Final execution remains outside Core after approval and preflight."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2053
+msgid "Readiness"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2054
+msgid "Dependency"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2091
+msgid "Decision"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2096
+msgid "Decision note"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2101
+msgid "Approve"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2104
+msgid "Reject"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2128
+msgid "Lifecycle"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2129
+msgid "Expired and archived proposals are not eligible for approval until reopened."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2135
+msgid "Archive"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2137
+msgid "Reopen for review"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2173
+#: includes/Admin/Admin_Page.php:3087
+#: includes/Admin/Admin_Page.php:3101
+#: includes/Admin/Admin_Page.php:3153
+msgid "Not declared"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2177
+#: includes/Admin/Admin_Page.php:2246
+#: includes/Admin/Admin_Page.php:2388
+#: includes/Admin/Admin_Page.php:2393
+#: includes/Admin/Admin_Page.php:2448
+msgid "yes"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2177
+#: includes/Admin/Admin_Page.php:2246
+#: includes/Admin/Admin_Page.php:2388
+#: includes/Admin/Admin_Page.php:2393
+#: includes/Admin/Admin_Page.php:2448
+msgid "no"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2178
+msgid "not declared"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2191
+msgid "Reason"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2198
+msgid "Warnings"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2202
+#: includes/Admin/Admin_Page.php:2300
+msgid "Blocked items"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2206
+#: includes/Admin/Admin_Page.php:2297
+#: includes/Admin/Admin_Page.php:3443
+msgid "Needs input"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2210
+msgid "Preflight blockers"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2223
+msgid "Review basis"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2226
+msgid "The target ability is not currently discoverable. Commit preflight will fail closed until the provider exposes it again."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2232
+msgid "Ability and policy"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2240
+msgid "Risk"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2245
+msgid "Requires approval"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2249
+msgid "Proposal ready"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2262
+msgid "Preview signals"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2269
+msgid "Preview signals: no warnings, no blocked items, no required input, and no preflight blockers."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2284
+msgid "Proposed change details"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2285
+msgid "Structured preview fields that need reviewer attention."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2291
+msgid "Before"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2294
+msgid "After suggestion"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2343
+msgid "Field changes"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2348
+msgid "Field"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2349
+msgid "Proposed value"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2382
+msgid "Article workflow"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2408
+msgid "included"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2408
+msgid "missing"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2411
+msgid "Article artifacts"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2414
+msgid "Blocked claims"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2470
 msgid "Raw proposal payload"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1672
-msgid "Caller, input, and preview JSON."
+#: includes/Admin/Admin_Page.php:2471
+msgid "Caller, input, and preview JSON for troubleshooting."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1677
+#: includes/Admin/Admin_Page.php:2476
 msgid "Caller"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1681
+#: includes/Admin/Admin_Page.php:2480
 msgid "Input"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1685
+#: includes/Admin/Admin_Page.php:2484
 msgid "Preview"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1702
-msgid "Audit Timeline"
+#: includes/Admin/Admin_Page.php:2505
+msgid "Full audit timeline"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1576
-msgid "Proposal event history."
+#: includes/Admin/Admin_Page.php:2506
+msgid "Complete event table with actor and technical attribution."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1709
-#: includes/Admin/Admin_Page.php:1808
+#: includes/Admin/Admin_Page.php:2511
+#: includes/Admin/Admin_Page.php:2659
+msgid "Time"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2512
+#: includes/Admin/Admin_Page.php:2616
+msgid "Event"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2513
+msgid "Actor"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2514
 msgid "Detail"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1715
+#: includes/Admin/Admin_Page.php:2520
+#: includes/Admin/Admin_Page.php:2549
 msgid "No audit events recorded for this proposal yet."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1599
+#: includes/Admin/Admin_Page.php:2546
+#: includes/Admin/Admin_Page.php:2547
+msgid "Lifecycle summary"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2599
 msgid "Recent approval and access activity. Technical filters are available when you need to trace a specific request."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1603
+#: includes/Admin/Admin_Page.php:2603
 msgid "Technical filters"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1604
+#: includes/Admin/Admin_Page.php:2604
 msgid "Find a request by ID, event name, ability, client, or correlation ID."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1764
+#: includes/Admin/Admin_Page.php:2620
 msgid "Ability ID"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1776
+#: includes/Admin/Admin_Page.php:2632
 msgid "Correlation ID"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1780
+#: includes/Admin/Admin_Page.php:2636
 msgid "Per page"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1784
+#: includes/Admin/Admin_Page.php:2640
 msgid "Read events"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1788
+#: includes/Admin/Admin_Page.php:2644
 msgid "Include list/view noise events"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1651
+#: includes/Admin/Admin_Page.php:2651
 msgid "Apply filters"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1652
+#: includes/Admin/Admin_Page.php:2652
 msgid "Reset"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1663
+#: includes/Admin/Admin_Page.php:2660
 msgid "Activity"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1665
+#: includes/Admin/Admin_Page.php:2662
 msgid "Context"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1668
+#: includes/Admin/Admin_Page.php:2668
 msgid "No activity matches the current filters."
 msgstr ""
 
+#: includes/Admin/Admin_Page.php:2715
+msgid "System event"
+msgstr ""
+
 #. translators: %s: actor id.
-#: includes/Admin/Admin_Page.php:1723
+#: includes/Admin/Admin_Page.php:2723
 #, php-format
 msgid "Actor: %s"
 msgstr ""
 
 #. translators: %s: ability id.
-#: includes/Admin/Admin_Page.php:1734
+#: includes/Admin/Admin_Page.php:2734
 #, php-format
 msgid "Ability: %s"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1862
-msgid "System event"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1801
-msgid "Request created"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1802
-msgid "Policy checked"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1803
-msgid "Request auto-approved"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1804
-msgid "Request approved"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1805
-msgid "Request rejected"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1806
-msgid "Request expired"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1807
-msgid "Request archived"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1808
-msgid "Request reopened"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1809
-msgid "Duplicate request reused"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1810
-msgid "Request quota blocked"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1811
-msgid "Commit preflight checked"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1812
-msgid "Client access created"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1813
-msgid "Client access revoked"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1814
-msgid "Client access denied"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1815
-msgid "Client rate limited"
-msgstr ""
-
 #. translators: 1: app id, 2: caller type.
-#: includes/Admin/Admin_Page.php:1870
+#: includes/Admin/Admin_Page.php:2745
 #, php-format
 msgid "App: %1$s / %2$s"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1871
-#: includes/Admin/Admin_Page.php:1872
-#: includes/Admin/Admin_Page.php:1883
-#: includes/Admin/Admin_Page.php:1884
+#: includes/Admin/Admin_Page.php:2746
+#: includes/Admin/Admin_Page.php:2747
+#: includes/Admin/Admin_Page.php:2758
+#: includes/Admin/Admin_Page.php:2759
 msgid "unknown"
 msgstr ""
 
 #. translators: 1: scope, 2: scope decision.
-#: includes/Admin/Admin_Page.php:1882
+#: includes/Admin/Admin_Page.php:2757
 #, php-format
 msgid "Scope: %1$s / %2$s"
 msgstr ""
 
 #. translators: %s: correlation id.
-#: includes/Admin/Admin_Page.php:1894
+#: includes/Admin/Admin_Page.php:2769
 #, php-format
 msgid "Correlation: %s"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1902
+#: includes/Admin/Admin_Page.php:2777
 msgid "No extra context"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1985
+#: includes/Admin/Admin_Page.php:2801
+msgid "Request created"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2802
+msgid "Policy checked"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2803
+msgid "Request auto-approved"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2804
+msgid "Request approved"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2805
+msgid "Request rejected"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2806
+msgid "Request expired"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2807
+msgid "Request archived"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2808
+msgid "Request reopened"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2809
+msgid "Duplicate request reused"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2810
+msgid "Request quota blocked"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2811
+msgid "Request executed"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2813
+msgid "Commit preflight checked"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2814
+msgid "Client access created"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2815
+msgid "Client access revoked"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2816
+msgid "Client access denied"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2817
+msgid "Client rate limited"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2890
 msgid "All"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2090
+#: includes/Admin/Admin_Page.php:2891
+#: includes/Admin/Admin_Page.php:3058
+#: includes/Admin/Admin_Page.php:3546
+#: includes/Admin/Admin_Page.php:3556
+#: includes/Admin/Admin_Page.php:3585
+msgid "Expired"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2892
+#: includes/Admin/Admin_Page.php:3059
+msgid "Archived"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:2995
 msgid "No matching records."
 msgstr ""
 
 #. translators: 1: first row number, 2: last row number, 3: total row count.
-#: includes/Admin/Admin_Page.php:2098
+#: includes/Admin/Admin_Page.php:3003
 #, php-format
 msgid "Showing %1$d-%2$d of %3$d."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2128
+#: includes/Admin/Admin_Page.php:3033
 msgid "Previous"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2129
+#: includes/Admin/Admin_Page.php:3034
 msgid "Next"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2151
-msgid "Approved"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:2152
+#: includes/Admin/Admin_Page.php:3057
 msgid "Rejected"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2198
-#: includes/Admin/Admin_Page.php:2215
+#: includes/Admin/Admin_Page.php:3060
+msgid "Executed"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3187
+msgid "Review context is ready before approval or rejection."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3189
+msgid "Approved; Adapter can continue after commit preflight."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3191
+msgid "Executed outside Core after approval and preflight."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3193
+msgid "Execution failed after handoff; inspect audit evidence."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3195
+msgid "Rejected; no execution handoff should continue."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3198
+msgid "Reopen before making a decision."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3201
+msgid "Review the audit timeline for current state."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3213
+msgid "This proposal has already been executed outside Core. Use the audit timeline to verify approval, preflight, and execution evidence."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3215
+msgid "This proposal is approved. Use the audit timeline to verify the approval and preflight handoff."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3217
+msgid "This proposal reported an execution failure after handoff. Use the audit timeline and Adapter logs for follow-up."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3219
+msgid "This proposal was rejected and should not continue to execution."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3222
+msgid "This proposal is not eligible for approval until it is reopened."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3225
+msgid "This proposal is no longer pending. Review the audit timeline for lifecycle evidence."
+msgstr ""
+
+#. translators: %s: dependency action ids.
+#: includes/Admin/Admin_Page.php:3419
+#, php-format
+msgid "Depends on: %s"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3422
+msgid "No dependency"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3440
+#: includes/Admin/Admin_Page.php:3446
+msgid "Blocked"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3446
+#: includes/Admin/Admin_Page.php:3449
+msgid "Ready"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3461
+msgid "Commit requested"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3465
+msgid "Dry run; Core execution disabled"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3468
+msgid "Core execution disabled"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3524
+#: includes/Admin/Admin_Page.php:3541
+#: includes/Admin/Admin_Page.php:3576
 msgid "Unknown"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2223
+#: includes/Admin/Admin_Page.php:3549
 msgid "Not applicable"
 msgstr ""
 
 #. translators: %s: remaining duration.
-#: includes/Admin/Admin_Page.php:2235
+#: includes/Admin/Admin_Page.php:3561
 #, php-format
 msgid "Expires in %s"
 msgstr ""
 
+#. translators: %s: remaining duration.
+#: includes/Admin/Admin_Page.php:3590
+#, php-format
+msgid "%s left"
+msgstr ""
+
 #. translators: %d: minutes.
-#: includes/Admin/Admin_Page.php:2250
+#: includes/Admin/Admin_Page.php:3630
 #, php-format
 msgid "%d min"
 msgstr ""
 
 #. translators: %d: hours.
-#: includes/Admin/Admin_Page.php:2258
+#: includes/Admin/Admin_Page.php:3638
 #, php-format
 msgid "%d hr"
 msgstr ""
 
 #. translators: %d: days.
-#: includes/Admin/Admin_Page.php:2265
+#: includes/Admin/Admin_Page.php:3645
 #, php-format
 msgid "%d days"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2398
+#: includes/Admin/Admin_Page.php:3751
 msgid "Proposal approved."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2399
+#: includes/Admin/Admin_Page.php:3752
 msgid "Proposal rejected."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2400
+#: includes/Admin/Admin_Page.php:3753
 msgid "Selected proposals rejected."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2401
+#: includes/Admin/Admin_Page.php:3754
 msgid "Proposal archived."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2402
+#: includes/Admin/Admin_Page.php:3755
 msgid "Proposal reopened for review."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2403
+#: includes/Admin/Admin_Page.php:3756
 msgid "App key disabled."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2404
+#: includes/Admin/Admin_Page.php:3757
 msgid "Approval policy mode updated."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2405
+#: includes/Admin/Admin_Page.php:3758
 msgid "App key is missing or already disabled."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2406
+#: includes/Admin/Admin_Page.php:3759
 msgid "App key could not be disabled."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2407
-#: includes/Governance/Commit_Preflight_Service.php:87
-#: includes/Governance/Proposal_Service.php:762
+#: includes/Admin/Admin_Page.php:3760
+#: includes/Governance/Commit_Preflight_Service.php:90
+#: includes/Governance/Proposal_Service.php:939
 msgid "Proposal was not found."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2408
-#: includes/Governance/Proposal_Service.php:788
+#: includes/Admin/Admin_Page.php:3761
+#: includes/Governance/Proposal_Service.php:965
 msgid "Proposal expired before a decision was made."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2409
-#: includes/Governance/Proposal_Service.php:346
+#: includes/Admin/Admin_Page.php:3762
+#: includes/Governance/Proposal_Service.php:432
 msgid "Only expired proposals can be archived."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2410
-#: includes/Governance/Proposal_Service.php:397
+#: includes/Admin/Admin_Page.php:3763
+#: includes/Governance/Proposal_Service.php:483
 msgid "Only expired or archived proposals can be reopened."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2411
-#: includes/Governance/Proposal_Service.php:796
+#: includes/Admin/Admin_Page.php:3764
+#: includes/Governance/Proposal_Service.php:973
 msgid "Only pending proposals can be approved or rejected."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2412
-#: includes/Governance/Proposal_Service.php:872
+#: includes/Admin/Admin_Page.php:3765
+#: includes/Governance/Proposal_Service.php:1049
 msgid "Proposal status could not be updated."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2413
+#: includes/Admin/Admin_Page.php:3766
 msgid "Select at least one pending proposal to reject."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2416
+#: includes/Admin/Admin_Page.php:3769
 msgid "Proposal action could not be completed."
 msgstr ""
 
-#: includes/Governance/Commit_Preflight_Service.php:68
+#: includes/Governance/Commit_Preflight_Service.php:71
 msgid "Legacy confirmation parameters are not accepted by npcink-governance-core."
 msgstr ""
 
-#: includes/Governance/Commit_Preflight_Service.php:76
+#: includes/Governance/Commit_Preflight_Service.php:79
 msgid "You do not have permission to preflight this proposal."
 msgstr ""
 
-#: includes/Governance/Commit_Preflight_Service.php:95
+#: includes/Governance/Commit_Preflight_Service.php:98
 msgid "Only approved proposals can pass commit preflight."
 msgstr ""
 
-#: includes/Governance/Commit_Preflight_Service.php:109
+#: includes/Governance/Commit_Preflight_Service.php:112
 msgid "The proposal target ability is no longer available."
 msgstr ""
 
-#: includes/Governance/Commit_Preflight_Service.php:123
+#: includes/Governance/Commit_Preflight_Service.php:126
 msgid "The proposal target ability contract has changed since approval."
 msgstr ""
 
-#: includes/Governance/Commit_Preflight_Service.php:139
+#: includes/Governance/Commit_Preflight_Service.php:142
 msgid "The current caller no longer has permission for this ability."
 msgstr ""
 
-#: includes/Governance/Commit_Preflight_Service.php:155
+#: includes/Governance/Commit_Preflight_Service.php:158
 msgid "Proposal contains blocked items or missing required input."
 msgstr ""
 
-#: includes/Governance/Commit_Preflight_Service.php:176
+#: includes/Governance/Commit_Preflight_Service.php:179
 msgid "Commit preflight has already issued an execution handoff for this approved proposal."
 msgstr ""
 
-#: includes/Governance/Commit_Preflight_Service.php:233
+#: includes/Governance/Commit_Preflight_Service.php:242
 msgid "Commit preflight could not be audited."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:93
+#: includes/Governance/Plan_Proposal_Service.php:108
 msgid "This planning ability is not accepted by the Core plan-to-proposal bridge."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:102
+#: includes/Governance/Plan_Proposal_Service.php:117
 msgid "The planning ability is not currently discoverable."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:110
+#: includes/Governance/Plan_Proposal_Service.php:125
 msgid "Plan-to-proposal intake accepts only direct-read planning abilities."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:311
+#: includes/Governance/Plan_Proposal_Service.php:382
 msgid "Only successful plan outputs can be converted into proposals."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:320
+#: includes/Governance/Plan_Proposal_Service.php:391
 msgid "Plan payload must be an object."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:338
+#: includes/Governance/Plan_Proposal_Service.php:409
 msgid "Plan output must require approval."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:346
+#: includes/Governance/Plan_Proposal_Service.php:417
 msgid "Plan output must not execute commits."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:354
+#: includes/Governance/Plan_Proposal_Service.php:425
 msgid "Plan output must be dry-run only."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:362
+#: includes/Governance/Plan_Proposal_Service.php:433
 msgid "Plan output must include write_actions."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:381
+#: includes/Governance/Plan_Proposal_Service.php:442
+msgid "Plan output is too large for Core proposal intake."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:454
+msgid "Plan output includes too many write actions for one Core intake request."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:476
 msgid "Article batch write plans must declare artifact_type=article_batch_write_plan."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:389
+#: includes/Governance/Plan_Proposal_Service.php:484
 msgid "Article batch write plans must explicitly request batch proposal approval."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:398
+#: includes/Governance/Plan_Proposal_Service.php:493
 msgid "Article batch write plans must contain a bounded group of draft actions."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:410
+#: includes/Governance/Plan_Proposal_Service.php:505
 msgid "Article batch write plans must include one reviewed article artifact set per draft action."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:419
+#: includes/Governance/Plan_Proposal_Service.php:514
 msgid "Article batch entries must be objects."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:436
+#: includes/Governance/Plan_Proposal_Service.php:531
 msgid "Article batch write actions must be objects."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:463
+#: includes/Governance/Plan_Proposal_Service.php:558
 msgid "Article media batch write plans must declare artifact_type=article_media_batch_write_plan."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:471
+#: includes/Governance/Plan_Proposal_Service.php:566
 msgid "Article media batch write plans must explicitly request batch proposal approval."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:480
+#: includes/Governance/Plan_Proposal_Service.php:575
 msgid "Article media batch write plans must include 1 to 5 reviewed articles."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:492
+#: includes/Governance/Plan_Proposal_Service.php:587
 msgid "Article media batch entries must be objects."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:506
+#: includes/Governance/Plan_Proposal_Service.php:601
 msgid "Article media batch entries must preserve the selected image-source candidate."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:519
+#: includes/Governance/Plan_Proposal_Service.php:614
 msgid "Article media batch write plans must contain a bounded group of draft, media upload, and featured-image actions."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:544
+#: includes/Governance/Plan_Proposal_Service.php:639
 msgid "Article media batch write actions must be objects."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:556
+#: includes/Governance/Plan_Proposal_Service.php:651
 msgid "Article media batch plans may target only draft and allowlisted media actions."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:578
+#: includes/Governance/Plan_Proposal_Service.php:673
 msgid "Article media batch plans must include create, upload, and featured-image actions for every article."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:601
+#: includes/Governance/Plan_Proposal_Service.php:696
 msgid "Image candidate adoption plans must declare artifact_type=image_candidate_adoption_plan."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:610
+#: includes/Governance/Plan_Proposal_Service.php:705
 msgid "Image candidate adoption plans must preserve a selected image_candidate.v1 candidate."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:619
+#: includes/Governance/Plan_Proposal_Service.php:714
 msgid "Image candidate adoption plans must contain upload, metadata, and optional featured-image actions only."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:634
+#: includes/Governance/Plan_Proposal_Service.php:729
 msgid "Image candidate adoption actions must be objects."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:645
+#: includes/Governance/Plan_Proposal_Service.php:740
 msgid "Image candidate adoption plans may target only media import, metadata, and featured-image abilities."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:664
+#: includes/Governance/Plan_Proposal_Service.php:759
 msgid "Image candidate adoption plans must include exactly one media upload and one metadata action, plus at most one featured-image action."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:684
+#: includes/Governance/Plan_Proposal_Service.php:779
 msgid "Image candidate adoption action input must remain dry-run and must not request commit."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:697
+#: includes/Governance/Plan_Proposal_Service.php:792
 msgid "Image candidate upload actions must include a reviewed candidate URL."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:708
+#: includes/Governance/Plan_Proposal_Service.php:803
 msgid "Image candidate source_type must be owned, ai_generated, stock, external, or test."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:722
+#: includes/Governance/Plan_Proposal_Service.php:817
 msgid "Image candidate metadata actions must include attachment_id or an approved output reference."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:736
+#: includes/Governance/Plan_Proposal_Service.php:831
 msgid "Image candidate featured-image actions must include attachment_id or an approved output reference."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:746
+#: includes/Governance/Plan_Proposal_Service.php:841
 msgid "Image candidate featured-image actions must include post_id or an approved output reference."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:769
-msgid "Media optimization plans must declare artifact_type=media_optimization_plan."
+#: includes/Governance/Plan_Proposal_Service.php:864
+msgid "Site Knowledge review plans must declare artifact_type=site_knowledge_review_plan."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:777
-msgid "Media optimization plans must explicitly request one batch proposal approval."
+#: includes/Governance/Plan_Proposal_Service.php:872
+msgid "Site Knowledge review plans must not claim direct WordPress write authority."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:786
-msgid "Media optimization plans must include metadata and derivative adoption actions."
+#: includes/Governance/Plan_Proposal_Service.php:881
+msgid "Site Knowledge review plans must preserve evidence_refs from the Cloud handoff."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:801
-msgid "Media optimization plans must include npcink-abilities-toolkit/update-media-details."
+#: includes/Governance/Plan_Proposal_Service.php:890
+msgid "Site Knowledge review plans must contain exactly one blocked create-draft review action."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:818
-msgid "Media optimization plans must include a governed derivative adoption action."
+#: includes/Governance/Plan_Proposal_Service.php:899
+msgid "Site Knowledge review plans may target only create-draft as a non-ready review proposal."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:825
-msgid "Media optimization plans must not split post-content media reference repair into a separate write action."
+#: includes/Governance/Plan_Proposal_Service.php:907
+msgid "Site Knowledge review plans must remain not ready until a human supplies the draft fields."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:842
-msgid "Media optimization plans must pair metadata and derivative actions for each attachment."
+#: includes/Governance/Plan_Proposal_Service.php:917
+msgid "Site Knowledge review plans must require human title and content input."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:861
-msgid "Media rename plans must declare artifact_type=media_rename_plan."
+#: includes/Governance/Plan_Proposal_Service.php:931
+msgid "Site Knowledge review plans may prepare draft proposals only."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:870
-msgid "Media rename plans must include exactly one rename-media-file action."
+#: includes/Governance/Plan_Proposal_Service.php:939
+msgid "Site Knowledge review action input must remain dry-run and must not request commit."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:879
-msgid "Media rename plans may target only npcink-abilities-toolkit/rename-media-file."
+#: includes/Governance/Plan_Proposal_Service.php:958
+msgid "Nightly Inspection review plans must declare artifact_type=nightly_site_inspection_review_plan."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:889
-msgid "Media rename plans must target exactly one attachment."
+#: includes/Governance/Plan_Proposal_Service.php:967
+msgid "Nightly Inspection review plans must use the v1 Core review plan contract."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:897
-msgid "Media rename plans must include a reviewed target_file_name."
+#: includes/Governance/Plan_Proposal_Service.php:975
+msgid "Nightly Inspection review plans must not claim direct WordPress write authority."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:905
-msgid "Media rename action input must remain dry-run and must not request commit."
-msgstr ""
-
-#: includes/Governance/Plan_Proposal_Service.php:924
-msgid "Article write plans must declare artifact_type=article_write_plan."
-msgstr ""
-
-#: includes/Governance/Plan_Proposal_Service.php:932
-msgid "Article write plans must declare version 1 or newer."
-msgstr ""
-
-#: includes/Governance/Plan_Proposal_Service.php:946
-msgid "P0 article write plans must contain exactly one create-draft action."
-msgstr ""
-
-#: includes/Governance/Plan_Proposal_Service.php:972
-msgid "Article write plans must include every required workflow artifact."
-msgstr ""
-
-#: includes/Governance/Plan_Proposal_Service.php:985
-msgid "Article write plans must pass risk review before proposal intake."
+#: includes/Governance/Plan_Proposal_Service.php:984
+msgid "Nightly Inspection review plans must preserve Cloud evidence_refs."
 msgstr ""
 
 #: includes/Governance/Plan_Proposal_Service.php:993
-msgid "High-risk article plans must be revised before draft proposal intake."
+msgid "Nightly Inspection review plans must contain exactly one blocked create-draft review action."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:1001
-msgid "Article write plans with blocked claims cannot create proposals."
+#: includes/Governance/Plan_Proposal_Service.php:1002
+msgid "Nightly Inspection review plans may target only create-draft as a non-ready review proposal."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1010
+msgid "Nightly Inspection review plans must remain not ready until a human supplies draft fields."
 msgstr ""
 
 #: includes/Governance/Plan_Proposal_Service.php:1020
-msgid "P0 article write plans may target only npcink-abilities-toolkit/create-draft."
+msgid "Nightly Inspection review plans must require human title and content input."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:1030
-msgid "Article write plans may create drafts only."
+#: includes/Governance/Plan_Proposal_Service.php:1034
+msgid "Nightly Inspection review plans may prepare draft proposals only."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:1038
-msgid "Article write plan input must remain dry-run and must not request commit."
+#: includes/Governance/Plan_Proposal_Service.php:1042
+msgid "Nightly Inspection review action input must remain dry-run and must not request commit."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:1063
-msgid "Article media batch action input must remain dry-run and must not request commit."
+#: includes/Governance/Plan_Proposal_Service.php:1061
+msgid "Content metadata apply plans must declare artifact_type=content_metadata_apply_plan."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:1075
-msgid "Article media upload actions must include a reviewed media URL."
+#: includes/Governance/Plan_Proposal_Service.php:1069
+msgid "Content metadata apply plans must not claim direct WordPress write authority."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:1089
-msgid "Article media metadata actions must include attachment_id or an approved output reference."
+#: includes/Governance/Plan_Proposal_Service.php:1077
+msgid "Content metadata apply plans must explicitly request one batch proposal approval."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:1103
-msgid "Article featured-image actions must include post_id or an approved output reference."
+#: includes/Governance/Plan_Proposal_Service.php:1088
+msgid "Content metadata apply plans submitted to Core must classify as Core proposal required."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:1113
-msgid "Article featured-image actions must include attachment_id, media_url, or an approved output reference."
+#: includes/Governance/Plan_Proposal_Service.php:1101
+msgid "Content metadata apply plans must target one post."
 msgstr ""
 
-#: includes/Governance/Plan_Proposal_Service.php:1127
-msgid "Article inline-image patch actions must include post_id or an approved output reference."
+#: includes/Governance/Plan_Proposal_Service.php:1110
+msgid "Content metadata apply plans must include one to three reviewed metadata actions."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1125
+msgid "Content metadata apply actions must be objects."
 msgstr ""
 
 #: includes/Governance/Plan_Proposal_Service.php:1137
+msgid "Content metadata apply plans may target only excerpt updates and existing taxonomy term assignment."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1150
+msgid "Content metadata apply actions must target the plan post."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1161
+msgid "Content metadata apply actions must remain dry-run and must not request commit."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1173
+msgid "Content metadata apply plans may include at most one excerpt update action."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1194
+msgid "Content metadata update-post actions may update only the excerpt."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1206
+msgid "Content metadata update-post actions must include a reviewed excerpt."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1231
+msgid "Content metadata term actions may assign only reviewed existing term ids."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1245
+msgid "Content metadata term actions may target only category or post_tag."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1256
+msgid "Content metadata apply plans may include at most one action per taxonomy."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1270
+msgid "Content metadata term actions may append or replace existing terms only."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1285
+msgid "Content metadata term actions must include reviewed existing term_ids."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1296
+msgid "Content metadata term actions must not create or name missing terms."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1319
+msgid "Media optimization plans must declare artifact_type=media_optimization_plan."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1327
+msgid "Media optimization plans must explicitly request one batch proposal approval."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1336
+msgid "Media optimization plans must include metadata and derivative adoption actions."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1343
+msgid "Media optimization plans must keep reviewed metadata and derivative actions bounded."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1361
+msgid "Media optimization plans must include npcink-abilities-toolkit/update-media-details."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1378
+msgid "Media optimization plans must include a governed derivative adoption action."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1385
+msgid "Media optimization plans must not split post-content media reference repair into a separate write action."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1405
+#: includes/Governance/Plan_Proposal_Service.php:1427
+msgid "Media optimization plans must pair metadata and derivative actions for each attachment."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1447
+msgid "Media adoption enhancement plans must declare artifact_type=media_adoption_enhancement_plan."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1455
+msgid "Media adoption enhancement plans must explicitly request one batch proposal approval."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1463
+msgid "Media adoption enhancement plans must not claim direct WordPress write authority."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1472
+msgid "Media adoption enhancement plans must contain upload, optimize, and optional reference repair actions only."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1487
+msgid "Media adoption enhancement actions must be objects."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1499
+msgid "Media adoption enhancement plans may target only media upload, local optimization, and post-content reference repair abilities."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1518
+msgid "Media adoption enhancement plans must include exactly one upload and one optimize action, plus at most one reference repair action."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1538
+msgid "Media adoption enhancement action input must remain dry-run and must not request commit."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1551
+msgid "Media adoption enhancement upload actions must include a reviewed media URL."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1565
+msgid "Media adoption enhancement optimize actions must include attachment_id or an approved output reference."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1579
+msgid "Media adoption enhancement reference repair actions must include post_id or an approved output reference."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1590
+msgid "Media adoption enhancement reference repair actions must include operations."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1601
+msgid "Media adoption enhancement reference repair operations must replace one reviewed URL with an approved output reference."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1625
+msgid "Media rename plans must declare artifact_type=media_rename_plan."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1634
+msgid "Media rename plans must include exactly one rename-media-file action."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1643
+msgid "Media rename plans may target only npcink-abilities-toolkit/rename-media-file."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1653
+msgid "Media rename plans must target exactly one attachment."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1661
+msgid "Media rename plans must include a reviewed target_file_name."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1669
+msgid "Media rename action input must remain dry-run and must not request commit."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1688
+msgid "Article optimization apply plans must declare artifact_type=article_optimization_apply_plan."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1697
+msgid "Article optimization apply plans must target one post."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1706
+msgid "Article optimization apply plans must include a bounded set of reviewed write actions."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1722
+msgid "Article optimization write actions must be objects."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1734
+msgid "Article optimization apply plans may target only reviewed post update actions."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1747
+msgid "Article optimization write actions must target the plan post."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1758
+msgid "Article optimization write actions must remain dry-run and must not request commit."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1781
+msgid "Article block plans must declare artifact_type=article_block_plan."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1789
+msgid "Article block plans must request batch proposal mode."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1797
+msgid "Article block plans must not claim direct WordPress write authority."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1811
+msgid "Article block plans must use an allowlisted article template."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1822
+msgid "Article block plans must use the article_standard responsive profile."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1832
+msgid "Article block plans must use native Gutenberg blocks without custom CSS requirements."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1839
+msgid "Article block responsive quality must not require custom CSS."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1848
+msgid "Article block plans must contain create-draft and update-post-blocks actions."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1850
+msgid "Article block plans must first create a post draft."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1852
+msgid "Article block plans must then update Gutenberg blocks."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1855
+msgid "Article block create action must create only a draft post."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1857
+msgid "Article block create action must include a reviewed title."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1859
+msgid "Article block create action must remain dry-run and must not request commit."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1862
+msgid "Article block update action must use the draft post output reference."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1863
+msgid "Article block update action must remain dry-run and must not request commit."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1865
+msgid "Article block update action must include Gutenberg blocks."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1876
+msgid "Article block plans must not rely on custom CSS classes."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1895
+msgid "Pattern page plans must declare artifact_type=pattern_page_plan."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1903
+msgid "Pattern page plans must request batch proposal mode."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1911
+msgid "Pattern page plans must not claim direct WordPress write authority."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1927
+msgid "Pattern page plans must use an allowlisted pattern and style preset."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1940
+msgid "Pattern page plans must contain create-draft and update-post-blocks actions."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1942
+msgid "Pattern page plans must first create a page draft."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1944
+msgid "Pattern page plans must then update Gutenberg blocks."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1947
+msgid "Pattern page create action must create only a draft page."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1949
+msgid "Pattern page create action must include a reviewed title."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1951
+msgid "Pattern page create action must remain dry-run and must not request commit."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1954
+msgid "Pattern page update action must use the draft page output reference."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1955
+msgid "Pattern page block update action must remain dry-run and must not request commit."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1957
+msgid "Pattern page block update action must include Gutenberg blocks."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1977
+msgid "Pattern page plans must include a CSS class allowlist."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:1986
+msgid "Pattern page blocks may use only allowlisted CSS classes."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2009
+msgid "Block theme site plans must declare artifact_type=block_theme_site_plan."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2022
+msgid "Block theme site plans currently must use intent=add_breadcrumbs or intent=customize_template_layout."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2036
+msgid "Block theme site plans must request batch proposal mode."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2044
+msgid "Block theme site plans must not claim direct WordPress write authority."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2054
+msgid "Block theme site plans must identify the active theme stylesheet."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2063
+msgid "Block theme site plans must contain at least one template write action."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2070
+msgid "Block theme site plans must keep template write actions bounded."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2086
+msgid "Block theme site write actions must be objects."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2095
+msgid "Block theme site plans may only target governed template block write abilities."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2108
+msgid "Block theme site template actions must use mode=replace."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2118
+msgid "Block theme site template actions must remain dry-run and must not request commit."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2128
+msgid "Block theme site template actions must include reviewed Gutenberg blocks."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2142
+msgid "Existing template updates must include post_id."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2155
+msgid "Template override upserts must include slug and theme."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2165
+msgid "Block theme site template overrides may only target accepted template slugs."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2176
+msgid "Template override upserts must target the active theme."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2202
+msgid "Block theme site template actions must declare parser roundtrip validation."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2223
+msgid "Block theme site template block trees must stay bounded."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2250
+msgid "Block theme site plans may only contain reviewed block objects."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2261
+msgid "Block theme site plans may only use accepted safe core blocks."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2273
+msgid "Block theme site block attributes must stay bounded."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2284
+msgid "Block theme site plans must not contain scriptable or embedded raw HTML."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2412
+#: includes/Governance/Plan_Proposal_Service.php:2475
+msgid "Block theme layout plans may only use accepted bounded layout profiles."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2427
+msgid "Block theme layout plans must include a passing bounded template layout contract with accepted compiler and policy versions."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2441
+msgid "Block theme layout plans must declare all accepted versioned profile contracts."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2452
+msgid "Block theme layout plans must include reviewed layout profile rows."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2460
+msgid "Block theme layout profile rows must be objects."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2490
+msgid "Block theme layout profile rows must use accepted profile versions, operations, and modules."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2504
+msgid "Block theme layout profile rows must preserve the forbidden output policy."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2660
+msgid "Article write plans must declare artifact_type=article_write_plan."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2668
+msgid "Article write plans must declare version 1 or newer."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2682
+msgid "P0 article write plans must contain exactly one create-draft action."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2708
+msgid "Article write plans must include every required workflow artifact."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2721
+msgid "Article write plans must pass risk review before proposal intake."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2729
+msgid "High-risk article plans must be revised before draft proposal intake."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2737
+msgid "Article write plans with blocked claims cannot create proposals."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2756
+msgid "P0 article write plans may target only npcink-abilities-toolkit/create-draft."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2766
+msgid "Article write plans may create drafts only."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2774
+msgid "Article write plan input must remain dry-run and must not request commit."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2799
+msgid "Article media batch action input must remain dry-run and must not request commit."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2811
+msgid "Article media upload actions must include a reviewed media URL."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2825
+msgid "Article media metadata actions must include attachment_id or an approved output reference."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2839
+msgid "Article featured-image actions must include post_id or an approved output reference."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2849
+msgid "Article featured-image actions must include attachment_id, media_url, or an approved output reference."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2863
+msgid "Article inline-image patch actions must include post_id or an approved output reference."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:2873
 msgid "Article inline-image patch actions must include operations."
 msgstr ""
 
 #. translators: 1: target ability id, 2: action id.
-#: includes/Governance/Plan_Proposal_Service.php:1426
+#: includes/Governance/Plan_Proposal_Service.php:3403
 #, php-format
 msgid "Plan proposal: %1$s (%2$s)"
 msgstr ""
 
 #. translators: 1: plan ability id, 2: batch id.
-#: includes/Governance/Plan_Proposal_Service.php:1436
+#: includes/Governance/Plan_Proposal_Service.php:3413
 #, php-format
 msgid "Created from %1$s batch %2$s. Final execution remains outside Core."
 msgstr ""
 
-#. translators: 1: plan ability id, 2: batch id.
-#: includes/Governance/Plan_Proposal_Service.php:1624
-#, php-format
-msgid "Plan batch proposal: %1$s (%2$s)"
-msgstr ""
-
 #. translators: 1: plan ability id, 2: action count.
-#: includes/Governance/Plan_Proposal_Service.php:1630
+#: includes/Governance/Plan_Proposal_Service.php:3626
 #, php-format
 msgid "Created from %1$s as an ordered batch with %2$d actions. Final execution remains outside Core."
 msgstr ""
 
-#: includes/Governance/Proposal_Repository.php:107
+#. translators: 1: plan ability id, 2: batch id.
+#: includes/Governance/Plan_Proposal_Service.php:3638
+#, php-format
+msgid "Plan batch proposal: %1$s (%2$s)"
+msgstr ""
+
+#. translators: 1: attachment id, 2: source MIME type, 3: target MIME type.
+#: includes/Governance/Plan_Proposal_Service.php:3749
+#, php-format
+msgid "Optimize attachment %1$d: replace %2$s with %3$s."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:3751
+msgid "the current file"
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:3752
+msgid "the reviewed derivative"
+msgstr ""
+
+#. translators: %d: attachment id.
+#: includes/Governance/Plan_Proposal_Service.php:3757
+#, php-format
+msgid "Optimize attachment %d with the reviewed media derivative."
+msgstr ""
+
+#. translators: 1: width, 2: height.
+#: includes/Governance/Plan_Proposal_Service.php:3767
+#, php-format
+msgid "Reviewed derivative dimensions: %1$d x %2$d."
+msgstr ""
+
+#. translators: %s: reviewed file basename.
+#: includes/Governance/Plan_Proposal_Service.php:3775
+#, php-format
+msgid "Reviewed derivative filename: %s."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:3780
+msgid "Update reviewed media title, alt text, caption, description, or source metadata."
+msgstr ""
+
+#. translators: 1: post count, 2: replacement count.
+#: includes/Governance/Plan_Proposal_Service.php:3788
+#, php-format
+msgid "Repair inline references in %1$d post(s), with %2$d actual replacement(s) expected."
+msgstr ""
+
+#. translators: %d: action count.
+#: includes/Governance/Plan_Proposal_Service.php:3796
+#, php-format
+msgid "Create one Core approval for %d ordered action(s); final execution remains outside Core."
+msgstr ""
+
+#: includes/Governance/Plan_Proposal_Service.php:3799
+msgid "Preserve the original file as a local backup for rollback."
+msgstr ""
+
+#: includes/Governance/Proposal_Repository.php:120
 msgid "Proposal could not be stored."
 msgstr ""
 
@@ -1592,366 +2371,141 @@ msgstr ""
 msgid "Auto approval quota could not be consumed."
 msgstr ""
 
-#: includes/Governance/Proposal_Service.php:886
+#: includes/Governance/Proposal_Service.php:354
+msgid "Only approved proposals can record final execution results."
+msgstr ""
+
+#: includes/Governance/Proposal_Service.php:367
+msgid "Execution status must be succeeded or failed."
+msgstr ""
+
+#: includes/Governance/Proposal_Service.php:377
+msgid "Execution records must include the approved input hash and preflight correlation id."
+msgstr ""
+
+#: includes/Governance/Proposal_Service.php:385
+msgid "Execution record does not match a Core commit-preflight handoff."
+msgstr ""
+
+#: includes/Governance/Proposal_Service.php:1063
 msgid "Proposal lifecycle could not be audited."
 msgstr ""
 
-#: includes/Rest/Apps_Controller.php:171
+#: includes/Governance/Read_Request_Repository.php:124
+msgid "Sensitive read request could not be stored."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:74
+msgid "A namespaced read ability_id is required."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:83
+#: includes/Governance/Read_Request_Service.php:186
+#: includes/Governance/Read_Request_Service.php:332
+msgid "Sensitive read target ability is not available."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:91
+msgid "This ability does not require Core sensitive read authorization."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:100
+msgid "A read request must bind to an input or input_hash."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:109
+msgid "Sensitive read requests must declare at least one data class for review."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:118
+msgid "Sensitive read requests must include a review purpose."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:284
+msgid "Only approved sensitive read requests can grant read authorization."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:300
+msgid "Sensitive read request grant has expired."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:310
+msgid "Sensitive read grant does not match the approved ability."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:321
+msgid "Sensitive read grant does not match the approved input hash."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:345
+msgid "One-time sensitive read request could not be consumed before grant."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:465
+msgid "Sensitive read request was not found."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:491
+msgid "Sensitive read request expired before a decision was made."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:499
+msgid "Only pending sensitive read requests can be approved or rejected."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:692
+msgid "Sensitive read authorization cannot disable redaction."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:894
+msgid "Sensitive read request status could not be updated."
+msgstr ""
+
+#: includes/Governance/Read_Request_Service.php:908
+msgid "Sensitive read request lifecycle could not be audited."
+msgstr ""
+
+#: includes/Plugin.php:221
+msgid "Unsupported local admin consent audit event."
+msgstr ""
+
+#: includes/Plugin.php:234
+msgid "Local admin consent could not be audited."
+msgstr ""
+
+#: includes/Rest/Apps_Controller.php:184
 msgid "App key creation could not be audited."
 msgstr ""
 
-#: includes/Security/App_Authenticator.php:154
+#: includes/Security/App_Authenticator.php:214
 msgid "App authentication is required."
 msgstr ""
 
-#: includes/Security/App_Authenticator.php:159
+#: includes/Security/App_Authenticator.php:219
 msgid "App authentication token is malformed."
 msgstr ""
 
-#: includes/Security/App_Authenticator.php:167
+#: includes/Security/App_Authenticator.php:227
+#: includes/Security/App_Authenticator.php:240
 msgid "App authentication token is invalid."
 msgstr ""
 
-#: includes/Security/App_Authenticator.php:180
+#: includes/Security/App_Authenticator.php:253
 msgid "App key does not have the required scope."
 msgstr ""
 
-#: includes/Security/App_Authenticator.php:198
+#: includes/Security/App_Authenticator.php:271
 msgid "App key rate limit exceeded."
 msgstr ""
 
-#: includes/Security/App_Key_Repository.php:125
+#: includes/Security/App_Key_Repository.php:142
+msgid "App keys must include at least one valid scope."
+msgstr ""
+
+#: includes/Security/App_Key_Repository.php:151
 msgid "App key secret could not be protected."
 msgstr ""
 
-#: includes/Security/App_Key_Repository.php:155
+#: includes/Security/App_Key_Repository.php:188
 msgid "App key could not be stored."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "No requests need review."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Find a proposal by ID, inspect recent activity, or open expired and archived records when you need audit context."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Open activity log"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Open expired records"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Development approval policy and trusted governance client access."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Open a Core proposal by display ID or full proposal ID."
-msgstr ""
-
-#. translators: %s: full proposal id.
-#: includes/Admin/Admin_Page.php
-#, php-format
-msgid "Full proposal ID: %s"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Display ID"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Details"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Hide details"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Identity and source"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Time and policy"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Policy decision"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Policy profile"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Policy reasons"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Source"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Not declared"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Direct request"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "External app"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Product adapter"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "WordPress admin"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Smoke quota"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Plan batch"
-msgstr ""
-
-#. translators: %s: remaining duration.
-#: includes/Admin/Admin_Page.php
-#, php-format
-msgid "%s left"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Pending proposals waiting for an administrator decision."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Approved proposals waiting for Adapter preflight or execution record."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Adapter-reported failures that need operator follow-up."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Recorded Core governance events."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Proposal lookup"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Find proposal"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Record execution results"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Review the governance record, action plan, and audit evidence for this proposal."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Actions"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Batch proposal"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Single proposal"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Review flags"
-msgstr ""
-
-#. translators: 1: warning count, 2: blocked item count.
-#: includes/Admin/Admin_Page.php
-#, php-format
-msgid "%1$d warnings / %2$d blocked"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Audit events"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Event history"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "No pending decision."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Governance identity"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Source and policy"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Source type"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Plan ability"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Batch ID"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Proposal mode"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Batch actions"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Ordered actions in this Core proposal. Final execution remains outside Core after approval and preflight."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Readiness"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Dependency"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Review basis"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Ability and policy"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Preview signals"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Warnings"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Preflight blockers"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Proposed change details"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Structured preview fields that need reviewer attention."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Caller, input, and preview JSON for troubleshooting."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Review context is ready before approval or rejection."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Approved; Adapter can continue after commit preflight."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Executed outside Core after approval and preflight."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Execution failed after handoff; inspect audit evidence."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Rejected; no execution handoff should continue."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Reopen before making a decision."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Review the audit timeline for current state."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "This proposal has already been executed outside Core. Use the audit timeline to verify approval, preflight, and execution evidence."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "This proposal is approved. Use the audit timeline to verify the approval and preflight handoff."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "This proposal reported an execution failure after handoff. Use the audit timeline and Adapter logs for follow-up."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "This proposal was rejected and should not continue to execution."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "This proposal is not eligible for approval until it is reopened."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "This proposal is no longer pending. Review the audit timeline for lifecycle evidence."
-msgstr ""
-
-#. translators: %s: dependency action ids.
-#: includes/Admin/Admin_Page.php
-#, php-format
-msgid "Depends on: %s"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "No dependency"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Blocked"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Ready"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Commit requested"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Dry run; Core execution disabled"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Core execution disabled"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Executed"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php
-msgid "Execution failed"
 msgstr ""
