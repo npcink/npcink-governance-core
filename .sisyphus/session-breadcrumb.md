@@ -1,5 +1,34 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Proposal display IDs added
+
+- **Module**: Core proposal identity display and admin lookup.
+- **Status**: Proposal rows now expose a deterministic human-facing
+  `display_id` such as `P-1234ABCD-EF90`, derived from the stable
+  `proposal_id`. The admin review list and proposal detail show the display id
+  by default, while the full proposal UUID remains available in detail and
+  technical fields. Admin lookup accepts either the display id or full
+  proposal id.
+- **Completed**:
+  - Added repository display-id derivation and display-id lookup without adding
+    a database column.
+  - Added `display_id` to normalized proposal rows and documented it as an
+    additive REST response field.
+  - Updated admin UI copy, CSS, static contracts, REST/governance/database
+    docs, and zh_CN translations.
+- **Verification**:
+  - `php -l includes/Governance/Proposal_Repository.php && php -l includes/Admin/Admin_Page.php && php -l tests/run.php`
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+  - `git diff --check`
+- **Boundary**:
+  - This adds a human-facing alias only. It does not replace `proposal_id`,
+    alter REST route identifiers, add database columns, change proposal TTL,
+    change approval semantics, or add Adapter execution, workflow runtime,
+    queues, MCP runtime, Agent Gateway catalogs, provider credentials, or final
+    writes.
+
 ## 2026-06-17 — Approval policy legacy modes removed
 
 - **Module**: Core approval policy evaluator, development policy admin setting,
