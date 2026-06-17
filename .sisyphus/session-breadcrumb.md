@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Pending row table density tightened
+
+- **Module**: Core admin review queue pending request list.
+- **Status**: The default pending row now uses tighter fixed column widths,
+  left-aligned headers/cells, single-line display ids, and a two-line source
+  actor/context structure. This reduces wasted horizontal space and avoids
+  source summaries wrapping with a leading delimiter.
+- **Completed**:
+  - Split source summary rendering into actor and context lines.
+  - Tightened request, source, status, details, and action column widths.
+  - Kept display ids on one line in default rows.
+  - Updated admin surface docs and static contracts for the denser layout.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php && node -c assets/admin.js`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This is admin display behavior only. It does not change proposal ids,
+    proposal TTL, approval semantics, REST routes, Adapter execution, workflow
+    runtime, queues, MCP runtime, Agent Gateway catalogs, provider credentials,
+    or final writes.
+
 ## 2026-06-17 — Pending row source moved to its own column
 
 - **Module**: Core admin review queue pending request list.

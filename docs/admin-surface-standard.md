@@ -28,6 +28,10 @@ queue:
 - default pending rows use a dedicated `Source` column for compact caller/app
   attribution and a stable display id such as `P-1234ABCD-EF90`; full proposal
   id, ability id, app id, and source trace stay behind technical details;
+- default pending rows should keep request identity, source attribution, status,
+  created time, details, and action columns left-aligned except the final action
+  column; display ids should remain single-line, and source attribution should
+  use a two-line actor/context structure instead of a wrapped delimiter chain;
 - default pending rows must not place the technical detail disclosure inside
   the request column. Use a dedicated `Details` column that toggles an inline full-width key-value details table below the row;
 - default pending rows do not render an undeclared-risk badge. Risk appears in

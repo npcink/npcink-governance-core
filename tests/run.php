@@ -2104,6 +2104,7 @@ foreach (
 		'compact status summary',
 		'pending request list',
 		'compact source summary',
+		'two-line actor/context structure',
 		'stable display id',
 		'dedicated `Details` column',
 		'inline full-width key-value details table',
@@ -2170,8 +2171,11 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Source' ) && fals
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_risk_label' ), 'Admin review queue summarizes proposal risk in the default row.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_has_declared_risk' ), 'Admin review queue hides undeclared-risk noise from default rows.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_source_summary' ), 'Admin review queue summarizes proposal source in the default row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_source_summary_parts' ), 'Admin review queue separates source actor and context for scanability.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-source-cell' ), 'Admin review queue moves source attribution into a dedicated column.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-source-summary' ), 'Admin review queue renders compact source attribution separately from request identity.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-source-actor' ), 'Admin review queue shows the source actor before source context.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-source-context' ), 'Admin review queue shows app/source context on a separate source line.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_display_id( $proposal )' ), 'Admin review queue shows stable display ids in the default row.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-detail-cell' ), 'Admin review queue moves technical detail access into a dedicated column.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-row-details-toggle' ), 'Admin review queue toggles row details explicitly.' );
@@ -2281,9 +2285,13 @@ npcink_governance_core_assert( false !== $decision_call_position && false !== $c
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-summary-strip' ), 'Admin CSS styles the compact status summary.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-workbench-toolbar' ), 'Admin CSS styles the utility toolbar.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-review-table' ), 'Admin CSS styles the compact review list.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-review-table th' ) && false !== strpos( $admin_css, 'text-align: left' ), 'Admin CSS left-aligns review table headers and cells.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-request-meta' ), 'Admin CSS styles compact request metadata.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, 'white-space: nowrap' ), 'Admin CSS keeps display ids from wrapping in default rows.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-source-cell' ), 'Admin CSS sizes the dedicated source column.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-source-summary' ), 'Admin CSS styles compact source attribution.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-source-actor' ), 'Admin CSS styles the source actor line.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-source-context' ), 'Admin CSS styles the source context line.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-display-id' ), 'Admin CSS styles proposal display ids.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-policy-warning' ), 'Admin CSS spaces stale approval policy warnings.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-detail-cell' ), 'Admin CSS styles the dedicated details column.' );

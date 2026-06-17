@@ -161,20 +161,26 @@
 	table-layout: fixed;
 }
 
+.npcink-governance-core-review-table th,
+.npcink-governance-core-review-table td {
+	text-align: left;
+	vertical-align: top;
+}
+
 .npcink-governance-core-review-table .check-column {
 	width: 42px;
 }
 
 .npcink-governance-core-request-cell {
-	width: auto;
+	width: 260px;
 }
 
 .npcink-governance-core-source-cell {
-	width: 190px;
+	width: 260px;
 }
 
 .npcink-governance-core-status-cell {
-	width: 148px;
+	width: 112px;
 }
 
 .npcink-governance-core-time-cell {
@@ -183,11 +189,11 @@
 }
 
 .npcink-governance-core-detail-cell {
-	width: 92px;
+	width: 72px;
 }
 
 .npcink-governance-core-action-cell {
-	width: 96px;
+	width: 88px;
 	text-align: right;
 }
 
@@ -199,11 +205,12 @@
 
 .npcink-governance-core-request-meta {
 	display: flex;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
 	gap: 4px 12px;
 	color: #646970;
 	font-size: 12px;
 	line-height: 1.5;
+	white-space: nowrap;
 }
 
 .npcink-governance-core-request-meta code {
@@ -218,9 +225,20 @@
 	word-break: break-word;
 }
 
+.npcink-governance-core-source-actor {
+	display: block;
+	color: #3c434a;
+	font-weight: 600;
+}
+
+.npcink-governance-core-source-context {
+	display: block;
+}
+
 .npcink-governance-core-display-id {
 	font-weight: 600;
 	letter-spacing: 0;
+	white-space: nowrap;
 }
 
 .npcink-governance-core-policy-warning {
@@ -467,6 +485,7 @@
 	.npcink-governance-core-time-cell,
 	.npcink-governance-core-detail-cell,
 	.npcink-governance-core-action-cell,
+	.npcink-governance-core-request-cell,
 	.npcink-governance-core-source-cell,
 	.npcink-governance-core-status-cell {
 		width: auto;

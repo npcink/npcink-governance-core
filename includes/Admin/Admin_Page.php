@@ -592,6 +592,7 @@ final class Admin_Page {
 						<?php $proposal_id = (string) $proposal['proposal_id']; ?>
 						<?php $display_id = $this->proposal_display_id( $proposal ); ?>
 						<?php $details_id = 'npcink-governance-core-row-details-' . substr( md5( $proposal_id ), 0, 12 ); ?>
+						<?php $source_summary = $this->proposal_source_summary_parts( $proposal ); ?>
 						<?php $source_trace = implode( ' · ', $this->pending_proposal_trace_parts( $proposal ) ); ?>
 						<?php
 						$display_title = sprintf(
@@ -615,7 +616,10 @@ final class Admin_Page {
 							</td>
 							<td class="npcink-governance-core-source-cell">
 								<span class="npcink-governance-core-source-summary" title="<?php echo esc_attr( '' !== $source_trace ? $source_trace : $this->proposal_source_summary( $proposal ) ); ?>">
-									<?php echo esc_html( $this->proposal_source_summary( $proposal ) ); ?>
+									<span class="npcink-governance-core-source-actor"><?php echo esc_html( $source_summary['actor'] ); ?></span>
+									<?php if ( '' !== $source_summary['context'] ) : ?>
+										<span class="npcink-governance-core-source-context"><?php echo esc_html( $source_summary['context'] ); ?></span>
+									<?php endif; ?>
 								</span>
 							</td>
 							<td class="npcink-governance-core-status-cell">
@@ -892,13 +896,31 @@ final class Admin_Page {
 	 * @return string
 	 */
 	private function proposal_source_summary( array $proposal ): string {
+		$summary = $this->proposal_source_summary_parts( $proposal );
+		$parts   = array( $summary['actor'] );
+
+		if ( '' !== $summary['context'] ) {
+			$parts[] = $summary['context'];
+		}
+
+		return implode( ' · ', $parts );
+	}
+
+	/**
+	 * Returns compact source summary parts for the default review row.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return array{actor:string,context:string}
+	 */
+	private function proposal_source_summary_parts( array $proposal ): array {
 		$caller = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
 		$auth   = is_array( $caller['auth'] ?? null ) ? $caller['auth'] : array();
+		$actor  = '';
 		$parts  = array();
 
 		$caller_type = (string) ( $auth['caller_type'] ?? $caller['caller_type'] ?? '' );
 		if ( '' !== $caller_type ) {
-			$parts[] = $this->source_actor_label( $caller_type );
+			$actor = $this->source_actor_label( $caller_type );
 		}
 
 		$app_id = (string) ( $auth['app_id'] ?? $caller['app_id'] ?? '' );
@@ -918,11 +940,14 @@ final class Admin_Page {
 			$parts[] = $this->source_short_label( $source_type );
 		}
 
-		if ( empty( $parts ) ) {
-			$parts[] = __( 'Direct request', 'npcink-governance-core' );
+		if ( '' === $actor ) {
+			$actor = __( 'Direct request', 'npcink-governance-core' );
 		}
 
-		return implode( ' · ', array_slice( array_values( array_unique( $parts ) ), 0, 3 ) );
+		return array(
+			'actor'   => $actor,
+			'context' => implode( ' · ', array_slice( array_values( array_unique( $parts ) ), 0, 2 ) ),
+		);
 	}
 
 	/**
