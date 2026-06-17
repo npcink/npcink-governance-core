@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Pending row details converted to grouped inspector
+
+- **Module**: Core admin review queue pending request details.
+- **Status**: The row details panel now uses a two-column grouped inspector:
+  identity/source on the left and time/policy on the right. The Source row
+  shows only the raw source value, while caller type and app id remain separate
+  fields to avoid repeated trace text.
+- **Completed**:
+  - Converted the long row details table into grouped detail tables.
+  - Split identity/source fields from time/policy fields.
+  - Removed caller/app duplication from the Source field.
+  - Updated admin CSS, admin surface docs, static contracts, and translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php && node -c assets/admin.js`
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This is admin display behavior only. It does not change proposal ids,
+    proposal TTL, approval semantics, REST routes, Adapter execution, workflow
+    runtime, queues, MCP runtime, Agent Gateway catalogs, provider credentials,
+    or final writes.
+
 ## 2026-06-17 — Pending row default metadata reduced
 
 - **Module**: Core admin review queue pending request list.

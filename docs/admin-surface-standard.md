@@ -44,9 +44,13 @@ queue:
   opens the existing Core proposal detail route without adding Adapter
   execution actions;
 - display id visible in each default row as the governance lookup handle;
-- full proposal id, ability id, source trace, caller/app attribution, created
+- full proposal id, ability id, raw source, caller/app attribution, created
   and updated time, and policy fields preserved behind the per-row inline
   technical details table for Adapter/OpenClaw handoff lookup;
+- per-row technical details should render as a two-column grouped inspector on
+  desktop, with identity/source fields separated from time/policy fields;
+  Source should show the raw source value only, while caller type and app id
+  remain separate fields to avoid duplicate trace text;
 - bounded bulk rejection for selected pending proposals;
 - stale proposals available from the expired/archive tab;
 - useful empty state that points to proposal lookup, activity log, and expired

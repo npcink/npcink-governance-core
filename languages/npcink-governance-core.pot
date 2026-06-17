@@ -1615,6 +1615,14 @@ msgid "Hide details"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php
+msgid "Identity and source"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Time and policy"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
 msgid "Policy decision"
 msgstr ""
 

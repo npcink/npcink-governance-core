@@ -2150,6 +2150,8 @@ foreach (
 		'stable display id',
 		'dedicated `Details` column',
 		'inline full-width key-value details table',
+		'two-column grouped inspector',
+		'Source should show the raw source value only',
 		'undeclared-risk badge',
 		'read-only lookup',
 		'technical details',
@@ -2224,6 +2226,9 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-row-details-toggle' ), 'Admin review queue toggles row details explicitly.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-row-details-row' ), 'Admin review queue renders inline full-width detail rows.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-row-details-table' ), 'Admin review queue renders technical details as a key-value table.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-row-details-group' ), 'Admin review queue groups row technical details.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Identity and source' ) && false !== strpos( $admin_page, 'Time and policy' ), 'Admin review queue labels row technical detail groups.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'pending_proposal_source_value' ), 'Admin review queue shows raw source separately from caller and app fields.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'pending_proposal_technical_detail_rows' ), 'Admin review queue centralizes row technical detail fields.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'find_proposal_for_lookup' ), 'Admin proposal lookup accepts display ids as well as full proposal ids.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'find_by_display_id( $lookup_id )' ), 'Admin proposal lookup resolves display ids through the repository.' );
@@ -2339,6 +2344,8 @@ npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-policy-warning' ), 'Admin CSS spaces stale approval policy warnings.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-detail-cell' ), 'Admin CSS styles the dedicated details column.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-row-details-row' ), 'Admin CSS styles inline details rows.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-row-details-panel' ) && false !== strpos( $admin_css, 'grid-template-columns: minmax(0, 1fr) minmax(0, 1fr)' ), 'Admin CSS renders row details as a two-column inspector.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-row-details-heading' ), 'Admin CSS styles row detail group headings.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-row-details-table' ), 'Admin CSS styles row technical details tables.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-due-label' ), 'Admin CSS styles compact due labels.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-status-badge' ), 'Admin CSS styles proposal status badges.' );

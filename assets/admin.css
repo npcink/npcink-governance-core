@@ -248,8 +248,21 @@
 
 .npcink-governance-core-row-details-panel {
 	box-sizing: border-box;
-	max-width: 980px;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	gap: 12px;
+	max-width: 1120px;
 	border-left: 3px solid #72aee6;
+}
+
+.npcink-governance-core-row-details-group {
+	min-width: 0;
+}
+
+.npcink-governance-core-row-details-heading {
+	margin: 0 0 6px;
+	color: #1d2327;
+	font-weight: 600;
 }
 
 .npcink-governance-core-row-details-table {
@@ -258,7 +271,7 @@
 }
 
 .npcink-governance-core-row-details-table th {
-	width: 160px;
+	width: 132px;
 	color: #50575e;
 	font-weight: 600;
 }
@@ -489,5 +502,9 @@
 
 	.npcink-governance-core-row-details-row td {
 		padding-left: 12px;
+	}
+
+	.npcink-governance-core-row-details-panel {
+		grid-template-columns: 1fr;
 	}
 }

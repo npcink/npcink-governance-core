@@ -682,40 +682,56 @@ final class Admin_Page {
 	 * @return void
 	 */
 	private function render_pending_proposal_technical_details( array $proposal ): void {
-		$rows = $this->pending_proposal_technical_detail_rows( $proposal );
+		$groups = $this->pending_proposal_technical_detail_rows( $proposal );
 		?>
 		<div class="npcink-governance-core-row-details-panel">
-			<table class="widefat npcink-governance-core-row-details-table">
-				<tbody>
-					<?php foreach ( $rows as $row ) : ?>
-						<tr>
-							<th scope="row"><?php echo esc_html( $row['label'] ); ?></th>
-							<td>
-								<?php if ( ! empty( $row['code'] ) ) : ?>
-									<code><?php echo esc_html( $row['value'] ); ?></code>
-								<?php else : ?>
-									<?php echo esc_html( $row['value'] ); ?>
-								<?php endif; ?>
-							</td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
+			<?php foreach ( $groups as $group ) : ?>
+				<div class="npcink-governance-core-row-details-group">
+					<div class="npcink-governance-core-row-details-heading"><?php echo esc_html( $group['label'] ); ?></div>
+					<?php $this->render_pending_proposal_technical_detail_table( $group['rows'] ); ?>
+				</div>
+			<?php endforeach; ?>
 		</div>
 		<?php
 	}
 
 	/**
-	 * Returns row-level technical details for the inline details table.
+	 * Renders one row details group table.
+	 *
+	 * @param array<int,array{label:string,value:string,code:bool}> $rows Rows.
+	 * @return void
+	 */
+	private function render_pending_proposal_technical_detail_table( array $rows ): void {
+		?>
+		<table class="widefat npcink-governance-core-row-details-table">
+			<tbody>
+				<?php foreach ( $rows as $row ) : ?>
+					<tr>
+						<th scope="row"><?php echo esc_html( $row['label'] ); ?></th>
+						<td>
+							<?php if ( ! empty( $row['code'] ) ) : ?>
+								<code><?php echo esc_html( $row['value'] ); ?></code>
+							<?php else : ?>
+								<?php echo esc_html( $row['value'] ); ?>
+							<?php endif; ?>
+						</td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<?php
+	}
+
+	/**
+	 * Returns row-level technical details for the inline details inspector.
 	 *
 	 * @param array<string,mixed> $proposal Proposal.
-	 * @return array<int,array{label:string,value:string,code:bool}>
+	 * @return array<int,array{label:string,rows:array<int,array{label:string,value:string,code:bool}>}>
 	 */
 	private function pending_proposal_technical_detail_rows( array $proposal ): array {
 		$caller = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
 		$auth   = is_array( $caller['auth'] ?? null ) ? $caller['auth'] : array();
-		$trace  = $this->pending_proposal_trace_parts( $proposal );
-		$rows   = array(
+		$identity_rows = array(
 			array(
 				'label' => __( 'Display ID', 'npcink-governance-core' ),
 				'value' => $this->proposal_display_id( $proposal ),
@@ -733,10 +749,10 @@ final class Admin_Page {
 			),
 		);
 
-		$optional_rows = array(
+		$identity_optional_rows = array(
 			array(
 				'label' => __( 'Source', 'npcink-governance-core' ),
-				'value' => implode( ' · ', $trace ),
+				'value' => $this->pending_proposal_source_value( $proposal ),
 				'code'  => false,
 			),
 			array(
@@ -749,6 +765,9 @@ final class Admin_Page {
 				'value' => (string) ( $auth['app_id'] ?? $caller['app_id'] ?? '' ),
 				'code'  => true,
 			),
+		);
+
+		$policy_rows = array(
 			array(
 				'label' => __( 'Created', 'npcink-governance-core' ),
 				'value' => $this->display_datetime( (string) ( $proposal['created_at'] ?? '' ) ),
@@ -776,13 +795,51 @@ final class Admin_Page {
 			),
 		);
 
-		foreach ( $optional_rows as $row ) {
+		foreach ( $identity_optional_rows as $row ) {
 			if ( '' !== trim( $row['value'] ) ) {
-				$rows[] = $row;
+				$identity_rows[] = $row;
 			}
 		}
 
-		return $rows;
+		$policy_rows = array_values(
+			array_filter(
+				$policy_rows,
+				static function ( array $row ): bool {
+					return '' !== trim( $row['value'] );
+				}
+			)
+		);
+
+		return array(
+			array(
+				'label' => __( 'Identity and source', 'npcink-governance-core' ),
+				'rows'  => $identity_rows,
+			),
+			array(
+				'label' => __( 'Time and policy', 'npcink-governance-core' ),
+				'rows'  => $policy_rows,
+			),
+		);
+	}
+
+	/**
+	 * Returns the raw source value for the row details inspector.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return string
+	 */
+	private function pending_proposal_source_value( array $proposal ): string {
+		$caller = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
+		$source = trim( (string) ( $caller['source'] ?? '' ) );
+
+		if ( '' !== $source ) {
+			return $source;
+		}
+
+		$preview        = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
+		$preview_source = is_array( $preview['source'] ?? null ) ? $preview['source'] : array();
+
+		return trim( (string) ( $preview_source['type'] ?? '' ) );
 	}
 
 	/**

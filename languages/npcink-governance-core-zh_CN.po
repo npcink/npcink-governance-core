@@ -1613,6 +1613,14 @@ msgid "Hide details"
 msgstr "收起详情"
 
 #: includes/Admin/Admin_Page.php
+msgid "Identity and source"
+msgstr "身份与来源"
+
+#: includes/Admin/Admin_Page.php
+msgid "Time and policy"
+msgstr "时间与策略"
+
+#: includes/Admin/Admin_Page.php
 msgid "Policy decision"
 msgstr "策略决策"
 
