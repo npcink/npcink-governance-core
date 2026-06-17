@@ -987,6 +987,40 @@ final class Admin_Page {
 	}
 
 	/**
+	 * Returns a short request label for the proposal detail summary.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return string
+	 */
+	private function proposal_summary_request_label( array $proposal ): string {
+		$action_count = $this->proposal_action_count( $proposal );
+		if ( $action_count > 1 ) {
+			return __( 'Batch proposal', 'npcink-governance-core' );
+		}
+
+		return $this->proposal_request_label( $proposal );
+	}
+
+	/**
+	 * Returns compact request metadata for the proposal detail summary.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return string
+	 */
+	private function proposal_summary_request_meta( array $proposal ): string {
+		$action_count = $this->proposal_action_count( $proposal );
+		if ( $action_count > 1 ) {
+			return sprintf(
+				/* translators: %d: number of proposal actions. */
+				_n( '%d governed action', '%d governed actions', $action_count, 'npcink-governance-core' ),
+				$action_count
+			);
+		}
+
+		return __( 'Single governed action', 'npcink-governance-core' );
+	}
+
+	/**
 	 * Builds compact source trace parts for a pending proposal.
 	 *
 	 * @param array<string,mixed> $proposal Proposal.
@@ -1766,6 +1800,7 @@ final class Admin_Page {
 	private function render_proposal_detail( array $proposal ): void {
 		$proposal_id = (string) $proposal['proposal_id'];
 		$capability  = $this->abilities->find( (string) $proposal['ability_id'] );
+		$active_tab  = $this->proposal_detail_tab_from_request();
 		$timeline    = $this->audit->list_filtered(
 			array(
 				'proposal_id' => $proposal_id,
@@ -1778,18 +1813,138 @@ final class Admin_Page {
 		<h2><?php echo esc_html__( 'Proposal Detail', 'npcink-governance-core' ); ?></h2>
 		<p class="npcink-governance-core-subtle npcink-governance-core-copy-width"><?php echo esc_html__( 'Review the governance record, action plan, and audit evidence for this proposal.', 'npcink-governance-core' ); ?></p>
 		<?php $this->render_proposal_summary_panel( $proposal, $timeline ); ?>
-
-		<?php $this->render_lifecycle_actions( $proposal ); ?>
-
-		<?php $this->render_proposal_outcome_notice( $proposal ); ?>
-		<?php $this->render_proposal_batch_actions( $proposal ); ?>
-		<?php $this->render_review_context( $proposal, $capability ); ?>
-		<?php $this->render_decision_controls( $proposal ); ?>
-
-		<?php $this->render_proposal_identity_panel( $proposal ); ?>
-		<?php $this->render_audit_timeline( $timeline ); ?>
-		<?php $this->render_raw_proposal_payload( $proposal ); ?>
+		<?php $this->render_proposal_detail_tabs( $proposal, $active_tab ); ?>
+		<div class="npcink-governance-core-tab-panel npcink-governance-core-max-wide">
+			<?php $this->render_proposal_detail_tab_panel( $active_tab, $proposal, $capability, $timeline ); ?>
+		</div>
 		<?php
+	}
+
+	/**
+	 * Returns the active proposal detail tab.
+	 *
+	 * @return string
+	 */
+	private function proposal_detail_tab_from_request(): string {
+		$requested = $this->admin_query_key( 'proposal_tab', 'overview' );
+		$tabs      = array_keys( $this->proposal_detail_tabs() );
+
+		return in_array( $requested, $tabs, true ) ? $requested : 'overview';
+	}
+
+	/**
+	 * Returns proposal detail tabs.
+	 *
+	 * @return array<string,string>
+	 */
+	private function proposal_detail_tabs(): array {
+		return array(
+			'overview'  => __( 'Overview', 'npcink-governance-core' ),
+			'actions'   => __( 'Action plan', 'npcink-governance-core' ),
+			'evidence'  => __( 'Audit evidence', 'npcink-governance-core' ),
+			'technical' => __( 'Technical info', 'npcink-governance-core' ),
+		);
+	}
+
+	/**
+	 * Renders proposal detail tab navigation.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @param string              $active_tab Active tab.
+	 * @return void
+	 */
+	private function render_proposal_detail_tabs( array $proposal, string $active_tab ): void {
+		?>
+		<nav class="nav-tab-wrapper npcink-governance-core-detail-tabs" aria-label="<?php echo esc_attr__( 'Proposal detail sections', 'npcink-governance-core' ); ?>">
+			<?php foreach ( $this->proposal_detail_tabs() as $tab => $label ) : ?>
+				<a
+					class="nav-tab<?php echo $active_tab === $tab ? ' nav-tab-active' : ''; ?>"
+					href="<?php echo esc_url( $this->proposal_detail_tab_url( $proposal, $tab ) ); ?>"
+					<?php echo $active_tab === $tab ? 'aria-current="page"' : ''; ?>
+				><?php echo esc_html( $label ); ?></a>
+			<?php endforeach; ?>
+		</nav>
+		<?php
+	}
+
+	/**
+	 * Renders the active proposal detail tab.
+	 *
+	 * @param string                         $active_tab Active tab.
+	 * @param array<string,mixed>            $proposal Proposal.
+	 * @param array<string,mixed>|null       $capability Capability row.
+	 * @param array<int,array<string,mixed>> $timeline Proposal audit timeline.
+	 * @return void
+	 */
+	private function render_proposal_detail_tab_panel( string $active_tab, array $proposal, ?array $capability, array $timeline ): void {
+		if ( 'actions' === $active_tab ) {
+			$this->render_proposal_actions_tab( $proposal );
+			return;
+		}
+
+		if ( 'evidence' === $active_tab ) {
+			$this->render_audit_timeline( $timeline );
+			return;
+		}
+
+		if ( 'technical' === $active_tab ) {
+			$this->render_proposal_identity_panel( $proposal );
+			$this->render_raw_proposal_payload( $proposal );
+			return;
+		}
+
+		$this->render_proposal_overview_tab( $proposal, $capability );
+	}
+
+	/**
+	 * Renders the proposal detail overview tab.
+	 *
+	 * @param array<string,mixed>      $proposal Proposal.
+	 * @param array<string,mixed>|null $capability Capability row.
+	 * @return void
+	 */
+	private function render_proposal_overview_tab( array $proposal, ?array $capability ): void {
+		$this->render_lifecycle_actions( $proposal );
+		$this->render_proposal_outcome_notice( $proposal );
+		$this->render_review_context( $proposal, $capability );
+		$this->render_decision_controls( $proposal );
+	}
+
+	/**
+	 * Renders the proposal detail action-plan tab.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return void
+	 */
+	private function render_proposal_actions_tab( array $proposal ): void {
+		$has_batch_actions = ! empty( $this->proposal_batch_action_rows( $proposal ) );
+		$has_details       = $this->proposal_has_proposed_change_details( $proposal );
+
+		if ( ! $has_batch_actions && ! $has_details ) {
+			?>
+			<p class="npcink-governance-core-subtle"><?php echo esc_html__( 'No structured action plan or proposed change detail was recorded for this proposal.', 'npcink-governance-core' ); ?></p>
+			<?php
+			return;
+		}
+
+		$this->render_proposal_batch_actions( $proposal );
+		$this->render_proposed_change_details( $proposal );
+	}
+
+	/**
+	 * Builds a tab URL for proposal detail.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @param string              $tab Tab key.
+	 * @return string
+	 */
+	private function proposal_detail_tab_url( array $proposal, string $tab ): string {
+		return $this->admin_url(
+			array(
+				'proposal_id'  => (string) ( $proposal['proposal_id'] ?? '' ),
+				'proposal_tab' => $tab,
+			)
+		);
 	}
 
 	/**
@@ -1808,8 +1963,8 @@ final class Admin_Page {
 		<div class="npcink-governance-core-proposal-summary npcink-governance-core-max-wide">
 			<div>
 				<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Request', 'npcink-governance-core' ); ?></div>
-				<strong><?php echo esc_html( $this->proposal_request_label( $proposal ) ); ?></strong>
-				<div class="npcink-governance-core-muted"><?php echo esc_html( (string) ( $proposal['summary'] ?? '' ) ); ?></div>
+				<strong><?php echo esc_html( $this->proposal_summary_request_label( $proposal ) ); ?></strong>
+				<div class="npcink-governance-core-muted"><?php echo esc_html( $this->proposal_summary_request_meta( $proposal ) ); ?></div>
 				<code class="npcink-governance-core-display-id"><?php echo esc_html( $this->proposal_display_id( $proposal ) ); ?></code>
 			</div>
 			<div>
