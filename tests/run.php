@@ -149,6 +149,9 @@ $readme = npcink_governance_core_read( $root . '/README.md' );
 foreach (
 	array(
 		'Npcink AI governance layer for WordPress operations',
+		'local WordPress AI operation governance control',
+		'plane: it classifies, records, approves, preflights, and audits AI-initiated',
+		'It does not plan, execute, route models, run workflows, or own',
 		'It does not generate content',
 		'Current Stage Governance Reliability',
 		'Approval Policy Evaluator Standard',
@@ -1163,6 +1166,10 @@ foreach (
 		'set one displayed existing WordPress image attachment as',
 		'reviewed article plus image batch handoff',
 		'plan_to_proposal_batch',
+		'Any classification that selects or rejects an',
+		'evidence surfaces before execution or rejection is reported as final',
+		'Operation_Classifier` must remain side-effect free',
+		'caller owns persistence and must fail closed',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $operation_classification, $required ), 'Operation classification contract contains required text: ' . $required );
@@ -1370,6 +1377,12 @@ npcink_governance_core_assert( false !== strpos( $testing_strategy, 'proposal.po
 npcink_governance_core_assert( false !== strpos( $testing_strategy, 'proposal.auto_approved' ), 'Testing strategy records auto approval audit failure coverage.' );
 npcink_governance_core_assert( false !== strpos( $testing_strategy, 'workflow/task queue, batch execution, or operator runtime console logic' ), 'Testing strategy bans runtime queue and batch execution ownership precisely.' );
 npcink_governance_core_assert( false !== strpos( $testing_strategy, 'Allowed governance terms such as Review Queue' ), 'Testing strategy distinguishes governance review terms from runtime queues.' );
+npcink_governance_core_assert( false !== strpos( $testing_strategy, 'Governance Hardening Matrix' ), 'Testing strategy records the governance hardening matrix.' );
+npcink_governance_core_assert( false !== strpos( $testing_strategy, 'Proposal state transition matrix' ), 'Testing strategy prioritizes lifecycle state transition matrix coverage.' );
+npcink_governance_core_assert( false !== strpos( $testing_strategy, 'Commit preflight race and duplicate handoff' ), 'Testing strategy prioritizes commit preflight race and duplicate handoff coverage.' );
+npcink_governance_core_assert( false !== strpos( $testing_strategy, 'Ability drift' ), 'Testing strategy prioritizes ability drift coverage.' );
+npcink_governance_core_assert( false !== strpos( $testing_strategy, 'Audit completeness' ), 'Testing strategy prioritizes durable audit completeness coverage.' );
+npcink_governance_core_assert( false !== strpos( $testing_strategy, 'Do not satisfy this matrix by adding Core execution' ), 'Testing strategy keeps hardening matrix inside Core non-execution boundary.' );
 
 $reliability_standard = npcink_governance_core_read( $root . '/docs/current-stage-governance-reliability.md' );
 foreach (
@@ -2362,7 +2375,8 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'render_proposal_s
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-proposal-summary' ), 'Admin proposal detail displays review id, status, and evidence summary.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Review ID' ), 'Admin proposal detail leads the summary with the operator-facing review id.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_summary_request_meta' ), 'Admin proposal detail keeps the top request summary compact.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-decision-bar' ), 'Admin proposal detail raises pending approve/reject controls into a top decision bar.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-summary-actions' ), 'Admin proposal detail integrates pending approve/reject controls into the summary panel.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'npcink-governance-core-decision-bar' ), 'Admin proposal detail does not render a separate empty decision bar.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'npcink-governance-core-decision-summary' ), 'Admin proposal detail decision bar does not repeat review id or status.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-reject-disclosure' ) && false !== strpos( $admin_page, 'Confirm rejection' ), 'Admin proposal detail keeps rejection notes behind a secondary disclosure.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'No risk signals' ), 'Admin proposal detail summarizes zero evidence signals without showing undeclared risk.' );
@@ -2387,11 +2401,15 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_life
 npcink_governance_core_assert( false !== strpos( $admin_page, '$this->render_audit_timeline( $timeline );' ) && false !== strpos( $admin_page, '$this->render_raw_proposal_payload( $proposal );' ), 'Admin proposal detail separates audit evidence from raw payload.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_status_badge' ), 'Admin proposal status uses visual badges.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_risk_badge' ), 'Admin proposal risk uses visual badges.' );
-$decision_call_position = strpos( $admin_page, '$this->render_decision_controls( $proposal );' );
-$context_call_position  = strpos( $admin_page, '$this->render_review_context( $proposal, $capability );' );
-$tabs_call_position     = strpos( $admin_page, '$this->render_proposal_detail_tabs( $proposal, $active_tab );' );
-npcink_governance_core_assert( false !== $decision_call_position && false !== $tabs_call_position && $decision_call_position < $tabs_call_position, 'Admin proposal detail places approve/reject controls before detail tabs.' );
-npcink_governance_core_assert( false !== $decision_call_position && false !== $context_call_position && $decision_call_position < $context_call_position, 'Admin proposal detail keeps the primary decision action above review context.' );
+$decision_call_position        = strpos( $admin_page, '$this->render_decision_controls( $proposal );' );
+$summary_function_position     = strpos( $admin_page, 'private function render_proposal_summary_panel' );
+$identity_function_position    = strpos( $admin_page, 'private function render_proposal_identity_panel' );
+$summary_action_label_position = strpos( $admin_page, "esc_html__( 'Decision', 'npcink-governance-core' )" );
+$summary_call_position         = strpos( $admin_page, '$this->render_proposal_summary_panel( $proposal );' );
+$tabs_call_position            = strpos( $admin_page, '$this->render_proposal_detail_tabs( $proposal, $active_tab );' );
+npcink_governance_core_assert( false !== $summary_call_position && false !== $tabs_call_position && $summary_call_position < $tabs_call_position, 'Admin proposal detail places the summary with approve/reject controls before detail tabs.' );
+npcink_governance_core_assert( false !== $summary_function_position && false !== $identity_function_position && false !== $decision_call_position && $summary_function_position < $decision_call_position && $decision_call_position < $identity_function_position, 'Admin proposal detail renders decision controls inside the summary panel.' );
+npcink_governance_core_assert( false !== $summary_function_position && false !== $summary_action_label_position && $summary_function_position < $summary_action_label_position, 'Admin proposal detail labels the inline summary decision slot.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-summary-strip' ), 'Admin CSS styles the compact status summary.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-workbench-toolbar' ), 'Admin CSS styles the utility toolbar.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-review-table' ), 'Admin CSS styles the compact review list.' );
@@ -2413,7 +2431,8 @@ npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-status-badge' ), 'Admin CSS styles proposal status badges.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-risk-badge' ), 'Admin CSS styles proposal risk badges.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-detail-groups' ), 'Admin CSS renders proposal detail inspectors as grouped columns.' );
-npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-decision-bar' ) && false !== strpos( $admin_css, '.npcink-governance-core-reject-panel' ), 'Admin CSS styles the proposal detail top decision bar.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-summary-actions' ) && false !== strpos( $admin_css, '.npcink-governance-core-reject-panel' ), 'Admin CSS styles the proposal detail inline summary actions.' );
+npcink_governance_core_assert( false === strpos( $admin_css, '.npcink-governance-core-decision-bar' ), 'Admin CSS does not keep obsolete separate decision bar styling.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-evidence-ok' ), 'Admin CSS styles the zero-risk evidence summary.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-detail-tabs' ) && false !== strpos( $admin_css, '.npcink-governance-core-tab-panel' ), 'Admin CSS styles the proposal detail tab shell.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-action-plan-table' ), 'Admin CSS keeps batch action rows vertically aligned.' );

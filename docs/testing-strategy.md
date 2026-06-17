@@ -217,6 +217,26 @@ Fail-closed governance paths must be covered when changed:
 - sensitive read grants are never returned when approval, expiry, ability, input,
   or audit requirements fail.
 
+## Governance Hardening Matrix
+
+The next Core hardening work should add tests that prove non-escalation rather
+than broadening product behavior. These are the priority groups:
+
+| Test group | Required proof |
+| --- | --- |
+| Proposal state transition matrix | Pending, approved, rejected, expired, archived, executed, and execution-failed records cannot jump to invalid lifecycle states. |
+| Commit preflight race and duplicate handoff | Repeated or stale commit-preflight attempts must fail closed when they would reuse an expired, mismatched, or already-consumed handoff context. |
+| Ability drift | Changed ability schema, permission, risk metadata, or fingerprint evidence must block preflight or execution handoff instead of silently trusting stale approval. |
+| App-key scope isolation | Trusted Adapter scopes stay additive; `proposals:approve`, `commit:preflight`, and `commit:record_execution` remain separately authorized. |
+| Redaction persistence | Secret-shaped values, authorization headers, cookies, app tokens, and provider credentials are redacted before proposal or audit persistence. |
+| Sensitive read one-time consumption | One-time read grants can be consumed once, and changed ability/input/expiry evidence blocks reuse. |
+| Block theme malicious fixtures | Scriptable blocks, custom HTML/freeform, iframe/embed/shortcode, unknown blocks, oversized trees, and non-allowlisted templates are rejected before proposal storage. |
+| From-plan static contracts | Plans outside allowlisted artifact types, target abilities, scopes, payload sizes, or action counts fail before proposal creation. |
+| Audit completeness | Every approval, rejection, preflight, record-execution, policy denial, and fail-closed lifecycle decision has durable audit evidence or returns failure. |
+
+Do not satisfy this matrix by adding Core execution, queues, workflow runtime,
+MCP runtime, product recommendation logic, or final WordPress writes.
+
 ## Required Verification
 
 For documentation-only changes:

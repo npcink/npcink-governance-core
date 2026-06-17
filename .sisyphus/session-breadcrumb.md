@@ -1,5 +1,53 @@
 # Session Breadcrumb
 
+## 2026-06-18 — Proposal detail actions integrated into summary
+
+- **Module**: Core admin proposal detail.
+- **Status**: Pending proposal approve/reject controls now live inside the top
+  summary panel as a right-side decision slot. The separate empty decision bar
+  below the summary has been removed.
+- **Completed**:
+  - Moved pending decision controls into the compact summary panel.
+  - Kept `Approve` as the always-visible primary action.
+  - Kept rejection behind the existing secondary disclosure with rejection
+    note and confirm action.
+  - Updated admin surface docs, operability docs, and static contracts.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php` passed.
+  - `git diff --check` passed.
+  - `composer test:all` passed.
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp` passed.
+- **Boundary**:
+  - Admin presentation only. Core proposal lifecycle, approval/rejection
+    behavior, commit preflight, audit semantics, Adapter behavior, and final
+    execution remain unchanged.
+
+## 2026-06-18 — Governance semantics and hardening matrix locked
+
+- **Module**: Core positioning, operation classification evidence, and test
+  hardening plan.
+- **Status**: Core now carries the explicit control-plane positioning sentence,
+  the operation classifier contract requires callers to persist decision
+  envelopes before final execution or rejection, and the testing strategy names
+  the next non-escalation hardening matrix.
+- **Completed**:
+  - Added the concise Core positioning sentence to README and static
+    contracts.
+  - Tightened the operation classification contract so authorization-path
+    decisions must be persisted in proposal preview, local consent audit, or
+    product activity evidence, while keeping the classifier side-effect free.
+  - Added the governance hardening matrix for lifecycle transitions,
+    preflight race/duplicate handoff, ability drift, app-key scope isolation,
+    redaction, one-time reads, malicious block fixtures, from-plan contracts,
+    and audit completeness.
+- **Verification**:
+  - `composer test:all`
+  - `git diff --check`
+- **Boundary**:
+  - This pass is docs and static contracts only. It does not add Core final
+    execution, workflow runtime, queues, MCP runtime, product recommendation
+    logic, REST routes, or WordPress writes.
+
 ## 2026-06-17 — Proposal detail duplicate summary removed
 
 - **Module**: Core admin proposal detail.
