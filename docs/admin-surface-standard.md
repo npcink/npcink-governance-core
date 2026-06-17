@@ -80,29 +80,36 @@ queue:
 
 Proposal detail should be a focused review surface:
 
-- top proposal summary panel with four default blocks: request, status, action count,
-  and evidence with warning/blocker counts. Source, full ids, and policy internals stay out of the
-  first scan while visual status badges preserve proposal lifecycle state;
-- collapsed technical identity inspector with display id, full proposal id,
-  target ability, created/updated time, source trace, caller/app attribution,
-  and policy fields without repeating the same summary fields as a second
-  linear table;
+- top proposal summary panel with four default blocks: compact request, status,
+  action count, and evidence with warning/blocker counts. Source, full ids, long
+  summaries, and policy internals stay out of the first scan while visual
+  status badges preserve proposal lifecycle state;
+- proposal detail tabs after the summary:
+  `Overview`, `Action plan`, `Audit evidence`, and `Technical info`. The
+  default overview tab keeps the decision context short; action, audit, and
+  troubleshooting data move out of the first scan;
 - explicit non-pending outcome notice for approved, executed, rejected,
   expired, archived, or execution-failed proposals so the page explains why
   approve/reject controls are absent;
-- batch action table for plan-to-proposal or other multi-action proposal rows,
-  showing ordered action id, target ability, readiness, and dependencies while
-  keeping final execution outside Core;
+- batch action table in the `Action plan` tab for plan-to-proposal or other
+  multi-action proposal rows, showing ordered action id, target ability,
+  readiness, and dependencies while keeping final execution outside Core;
 - review basis from ability intake and preview metadata rendered as a grouped
   `Ability and policy` inspector. `Preview signals` should appear only when a
   reason, warning, blocked item, required input, or preflight blocker exists;
   otherwise show one concise no-issues line instead of a table of zero values;
 - approve/reject decision controls for pending proposals after the review
   context, so the reviewer sees the basis before choosing;
-- proposal audit evidence before raw payload, with a compact lifecycle summary
-  visible by default and the full audit timeline collapsed for technical
-  attribution;
-- raw proposal payload behind a final troubleshooting disclosure with bounded code blocks;
+- collapsed technical identity inspector in the `Technical info` tab with
+  display id, full proposal id, target ability, created/updated time, source
+  trace, caller/app attribution, and policy fields without repeating the same
+  summary fields as a second linear table;
+- proposal audit evidence in the `Audit evidence` tab, with a compact lifecycle
+  summary visible by default and the full audit timeline collapsed for
+  technical attribution. Keep audit evidence before raw payload in the
+  information architecture even when the two surfaces live in separate tabs;
+- raw proposal payload behind a troubleshooting disclosure in the `Technical
+  info` tab with bounded code blocks;
 - lifecycle controls for expired or archived proposals.
 
 Full `Activity Log` and `Expired / Archived` belong in dedicated tabs, not

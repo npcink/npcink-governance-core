@@ -1,5 +1,27 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Proposal detail split into tabs
+
+- **Module**: Core admin proposal detail.
+- **Status**: Proposal detail now keeps the compact operator summary at the top
+  and splits dense content into `Overview`, `Action plan`, `Audit evidence`,
+  and `Technical info` tabs.
+- **Completed**:
+  - Shortened the summary request block to avoid long ability/source prose in
+    the first scan.
+  - Kept outcome copy, review basis, lifecycle controls, and decision controls
+    in the overview tab.
+  - Moved batch actions and structured proposed-change details into the action
+    plan tab.
+  - Moved lifecycle/full audit evidence into the audit evidence tab and full
+    ids/raw payload into the technical tab.
+- **Verification**:
+  - Pending.
+- **Boundary**:
+  - Admin presentation only. Core still owns governance records, approval
+    status, and audit evidence; no workflow runtime, batch execution console,
+    provider routing, or WordPress product workflow UX was added.
+
 ## 2026-06-17 — Proposal detail review surface reorganized
 
 - **Module**: Core admin proposal detail.
