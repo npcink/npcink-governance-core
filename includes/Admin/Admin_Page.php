@@ -2323,7 +2323,6 @@ final class Admin_Page {
 	 */
 	private function render_review_context( array $proposal, ?array $capability ): void {
 		$preview               = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
-		$article_workflow      = is_array( $preview['article_workflow'] ?? null ) ? $preview['article_workflow'] : array();
 		$risk_label            = $this->proposal_risk_label( $proposal );
 		$undeclared_risk_label = __( 'Not declared', 'npcink-governance-core' );
 		$target_ability        = (string) ( $preview['target_ability_id'] ?? $proposal['ability_id'] );
@@ -2336,7 +2335,6 @@ final class Admin_Page {
 		$needs_input_count     = $this->proposal_needs_input_count( $proposal );
 		$preflight_count       = $this->proposal_preflight_blocker_count( $proposal );
 		$signal_rows           = array();
-		$detail_rows           = false;
 
 		if ( $undeclared_risk_label === $risk_label && null !== $capability ) {
 			$risk_label = (string) $capability['risk_level'];
@@ -2426,14 +2424,40 @@ final class Admin_Page {
 		endif;
 		?>
 		<?php
-		$detail_rows = array_key_exists( 'before', $preview )
+	}
+
+	/**
+	 * Returns whether structured proposed-change detail exists.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return bool
+	 */
+	private function proposal_has_proposed_change_details( array $proposal ): bool {
+		$preview          = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
+		$article_workflow = is_array( $preview['article_workflow'] ?? null ) ? $preview['article_workflow'] : array();
+
+		return array_key_exists( 'before', $preview )
 			|| array_key_exists( 'after_suggestion', $preview )
 			|| ! empty( $preview['needs_input'] )
 			|| ! empty( $preview['blocked_items'] )
 			|| ! empty( $preview['field_patch'] )
 			|| ! empty( $article_workflow );
+	}
+
+	/**
+	 * Renders structured proposed-change detail.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return void
+	 */
+	private function render_proposed_change_details( array $proposal ): void {
+		if ( ! $this->proposal_has_proposed_change_details( $proposal ) ) {
+			return;
+		}
+
+		$preview          = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
+		$article_workflow = is_array( $preview['article_workflow'] ?? null ) ? $preview['article_workflow'] : array();
 		?>
-		<?php if ( $detail_rows ) : ?>
 			<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide npcink-governance-core-disclosure-top">
 				<summary>
 					<strong><?php echo esc_html__( 'Proposed change details', 'npcink-governance-core' ); ?></strong>
@@ -2464,7 +2488,6 @@ final class Admin_Page {
 					</tbody>
 				</table>
 			</details>
-		<?php endif; ?>
 		<?php
 	}
 
