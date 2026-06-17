@@ -157,19 +157,6 @@
 	min-width: 260px;
 }
 
-.npcink-governance-core-row-details {
-	margin-top: 6px;
-	color: #646970;
-}
-
-.npcink-governance-core-row-details summary {
-	cursor: pointer;
-}
-
-.npcink-governance-core-row-details div {
-	margin-top: 4px;
-}
-
 .npcink-governance-core-review-table {
 	table-layout: fixed;
 }
@@ -189,6 +176,10 @@
 .npcink-governance-core-time-cell {
 	width: 170px;
 	white-space: nowrap;
+}
+
+.npcink-governance-core-detail-cell {
+	width: 92px;
 }
 
 .npcink-governance-core-action-cell {
@@ -218,6 +209,40 @@
 .npcink-governance-core-display-id {
 	font-weight: 600;
 	letter-spacing: 0;
+}
+
+.npcink-governance-core-policy-warning {
+	margin: 12px 0;
+}
+
+.npcink-governance-core-row-details-row td {
+	padding: 0 12px 12px 54px;
+	background: #fff;
+}
+
+.npcink-governance-core-row-details-panel {
+	box-sizing: border-box;
+	max-width: 980px;
+	border-left: 3px solid #72aee6;
+}
+
+.npcink-governance-core-row-details-table {
+	margin: 0;
+	background: #fff;
+}
+
+.npcink-governance-core-row-details-table th {
+	width: 160px;
+	color: #50575e;
+	font-weight: 600;
+}
+
+.npcink-governance-core-row-details-table th,
+.npcink-governance-core-row-details-table td {
+	padding: 8px 10px;
+	background: #fff;
+	vertical-align: top;
+	word-break: break-word;
 }
 
 .npcink-governance-core-due-label {
@@ -428,8 +453,13 @@
 	}
 
 	.npcink-governance-core-time-cell,
+	.npcink-governance-core-detail-cell,
 	.npcink-governance-core-action-cell,
 	.npcink-governance-core-status-cell {
 		width: auto;
+	}
+
+	.npcink-governance-core-row-details-row td {
+		padding-left: 12px;
 	}
 }

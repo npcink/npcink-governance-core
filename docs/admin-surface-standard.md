@@ -28,6 +28,8 @@ queue:
 - default pending rows use a compact source summary and a stable display id
   such as `P-1234ABCD-EF90`; full proposal id, ability id, and source trace
   stay behind technical details;
+- default pending rows must not place the technical detail disclosure inside
+  the request column. Use a dedicated `Details` column that toggles an inline full-width key-value details table below the row;
 - default pending rows do not render an undeclared-risk badge. Risk appears in
   the list only when the proposal declares risk metadata;
 - default pending rows should show remaining time compactly and avoid spelling
@@ -36,8 +38,9 @@ queue:
   opens the existing Core proposal detail route without adding Adapter
   execution actions;
 - display id visible in each default row as the governance lookup handle;
-- full proposal id, ability id, and source trace preserved behind per-row
-  technical details for Adapter/OpenClaw handoff lookup;
+- full proposal id, ability id, source trace, caller/app attribution, created
+  and updated time, and policy fields preserved behind the per-row inline
+  technical details table for Adapter/OpenClaw handoff lookup;
 - bounded bulk rejection for selected pending proposals;
 - stale proposals available from the expired/archive tab;
 - useful empty state that points to proposal lookup, activity log, and expired
@@ -46,6 +49,9 @@ queue:
   client access;
 - nested `Development Approval Policy` disclosure for the lightweight require
   approval for all, smart approval, and local-development allow-all modes;
+- stale or invalid stored approval policy option values must show an inline
+  warning that Core is treating the value as require approval for all until a
+  supported mode is saved;
 - nested `Advanced Access` disclosure for low-frequency client access key
   management.
 

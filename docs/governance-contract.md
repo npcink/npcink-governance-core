@@ -321,6 +321,9 @@ and input schema. Commit preflight fails closed if the live fingerprint no
 longer matches the approved proposal.
 
 Core evaluates a lightweight approval policy decision during proposal creation.
+The supported approval policy mode set is closed to `manual`,
+`smart_guarded`, and `dev_allow_all`. Unrecognized stored values, including
+removed legacy mode names, fall back to `manual` and must not act as aliases.
 The default `manual` mode records `manual_required` for every proposal with
 `policy_profile=manual` and `policy_version=core-approval-policy-v1`.
 Mode `smart_guarded` may return `auto_approved` only for trusted

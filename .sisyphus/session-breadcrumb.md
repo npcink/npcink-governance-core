@@ -1,5 +1,66 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Approval policy contract fallback made visible
+
+- **Module**: Core approval policy evaluator, Core admin system settings, and
+  approval policy contract docs.
+- **Status**: The supported approval policy mode set is explicitly closed to
+  `manual`, `smart_guarded`, and `dev_allow_all`. The evaluator now exposes
+  the stored mode before fallback and a supported-mode predicate so the admin
+  surface can warn when a stale or invalid stored value is being treated as
+  `manual`.
+- **Completed**:
+  - Added `stored_policy_mode()` and `is_allowed_policy_mode()` to the bounded
+    evaluator surface.
+  - Added an inline admin warning for unsupported stored policy modes without
+    restoring legacy alias behavior.
+  - Froze the closed mode set and legacy-alias rejection in governance, REST,
+    approval policy, admin surface docs, and static contracts.
+  - Updated translation artifacts for the warning text.
+- **Verification**:
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `node -c assets/admin.js`
+  - `php -l includes/Admin/Admin_Page.php && php -l includes/Governance/Approval_Policy_Evaluator.php && php -l tests/run.php`
+  - `git diff --check`
+  - `composer validate --no-check-publish`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This changes policy configuration visibility and contract tests only. It
+    does not reintroduce removed policy modes, add approval-token
+    compatibility, execute proposals, add workflow runtime, task queues, MCP
+    runtime, Agent Gateway catalogs, provider credentials, or final WordPress
+    writes.
+
+## 2026-06-17 — Pending row details moved to a dedicated column
+
+- **Module**: Core admin review queue pending request list.
+- **Status**: The pending request row no longer embeds technical details inside
+  the request column. A dedicated `Details` column now toggles an inline
+  full-width key-value table under the row. The default row stays focused on
+  request label, display id, source summary, status, created time, and review
+  action.
+- **Completed**:
+  - Added the row `Details` column and full-width hidden details rows.
+  - Added a small admin script to toggle details rows with `aria-expanded`.
+  - Rendered technical fields as a key-value table with display id, full
+    proposal id, target ability, source, caller/app attribution, timestamps,
+    and policy fields.
+  - Updated admin CSS, admin surface standard, static contracts, and zh_CN
+    translations.
+- **Verification**:
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php`
+  - `node -c assets/admin.js`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This is admin display behavior only. It does not change proposal ids,
+    proposal TTL, approval semantics, REST route identifiers, Adapter
+    execution, workflow runtime, queues, MCP runtime, Agent Gateway catalogs,
+    provider credentials, or final writes.
+
 ## 2026-06-17 — Proposal display IDs added
 
 - **Module**: Core proposal identity display and admin lookup.

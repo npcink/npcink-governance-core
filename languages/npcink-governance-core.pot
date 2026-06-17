@@ -156,6 +156,16 @@ msgstr ""
 msgid "Current mode: %s"
 msgstr ""
 
+#. translators: 1: stored policy mode, 2: effective manual policy label.
+#: includes/Admin/Admin_Page.php:489
+#, php-format
+msgid "Stored approval policy mode \"%1$s\" is no longer supported. Core is treating it as \"%2$s\" until you save one of the supported modes."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:490
+msgid "empty"
+msgstr ""
+
 #: includes/Admin/Admin_Page.php:433
 msgid "Policy mode"
 msgstr ""
@@ -1598,6 +1608,26 @@ msgstr ""
 
 #: includes/Admin/Admin_Page.php
 msgid "Display ID"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Details"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Hide details"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Policy decision"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Policy profile"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Policy reasons"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php

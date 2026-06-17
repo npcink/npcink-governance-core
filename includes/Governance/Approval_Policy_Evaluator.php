@@ -195,6 +195,16 @@ final class Approval_Policy_Evaluator {
 	}
 
 	/**
+	 * Returns whether a policy mode is part of the closed supported set.
+	 *
+	 * @param string $mode Raw mode.
+	 * @return bool
+	 */
+	public static function is_allowed_policy_mode( string $mode ): bool {
+		return in_array( sanitize_key( $mode ), self::allowed_policy_modes(), true );
+	}
+
+	/**
 	 * Sanitizes a policy mode.
 	 *
 	 * @param string $mode Raw mode.
@@ -202,7 +212,17 @@ final class Approval_Policy_Evaluator {
 	 */
 	public static function sanitize_policy_mode( string $mode ): string {
 		$mode = sanitize_key( $mode );
-		return in_array( $mode, self::allowed_policy_modes(), true ) ? $mode : self::MODE_MANUAL;
+		return self::is_allowed_policy_mode( $mode ) ? $mode : self::MODE_MANUAL;
+	}
+
+	/**
+	 * Returns the stored site policy mode before fallback.
+	 *
+	 * @return string
+	 */
+	public static function stored_policy_mode(): string {
+		$mode = function_exists( 'get_option' ) ? (string) get_option( self::OPTION_POLICY_MODE, self::MODE_MANUAL ) : self::MODE_MANUAL;
+		return sanitize_key( $mode );
 	}
 
 	/**
@@ -211,8 +231,7 @@ final class Approval_Policy_Evaluator {
 	 * @return string
 	 */
 	public static function current_policy_mode(): string {
-		$mode = function_exists( 'get_option' ) ? (string) get_option( self::OPTION_POLICY_MODE, self::MODE_MANUAL ) : self::MODE_MANUAL;
-		return self::sanitize_policy_mode( $mode );
+		return self::sanitize_policy_mode( self::stored_policy_mode() );
 	}
 
 	/**

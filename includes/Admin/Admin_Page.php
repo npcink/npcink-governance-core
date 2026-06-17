@@ -137,6 +137,14 @@ final class Admin_Page {
 			array(),
 			NPCINK_GOVERNANCE_CORE_VERSION
 		);
+
+		wp_enqueue_script(
+			'npcink-governance-core-admin',
+			plugins_url( 'assets/admin.js', NPCINK_GOVERNANCE_CORE_FILE ),
+			array(),
+			NPCINK_GOVERNANCE_CORE_VERSION,
+			true
+		);
 	}
 
 	/**
@@ -455,8 +463,10 @@ final class Admin_Page {
 	 * @return void
 	 */
 	private function render_approval_policy_entry(): void {
-		$current = Approval_Policy_Evaluator::current_policy_mode();
-		$labels  = array(
+		$stored_mode       = Approval_Policy_Evaluator::stored_policy_mode();
+		$current           = Approval_Policy_Evaluator::sanitize_policy_mode( $stored_mode );
+		$invalid_stored    = ! Approval_Policy_Evaluator::is_allowed_policy_mode( $stored_mode );
+		$labels            = array(
 			Approval_Policy_Evaluator::MODE_MANUAL          => __( 'Require approval for all', 'npcink-governance-core' ),
 			Approval_Policy_Evaluator::MODE_SMART_GUARDED   => __( 'Smart approval', 'npcink-governance-core' ),
 			Approval_Policy_Evaluator::MODE_DEV_ALLOW_ALL   => __( 'Allow all (development only)', 'npcink-governance-core' ),
@@ -475,6 +485,20 @@ final class Admin_Page {
 					?>
 				</span>
 			</summary>
+			<?php if ( $invalid_stored ) : ?>
+				<div class="notice notice-warning inline npcink-governance-core-policy-warning">
+					<p>
+						<?php
+						printf(
+							/* translators: 1: stored policy mode, 2: effective manual policy label. */
+							esc_html__( 'Stored approval policy mode "%1$s" is no longer supported. Core is treating it as "%2$s" until you save one of the supported modes.', 'npcink-governance-core' ),
+							esc_html( '' !== $stored_mode ? $stored_mode : __( 'empty', 'npcink-governance-core' ) ),
+							esc_html( (string) ( $labels[ Approval_Policy_Evaluator::MODE_MANUAL ] ?? Approval_Policy_Evaluator::MODE_MANUAL ) )
+						);
+						?>
+					</p>
+				</div>
+			<?php endif; ?>
 			<form class="npcink-governance-core-form-spaced" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<input type="hidden" name="action" value="npcink_governance_core_update_approval_policy" />
 				<?php wp_nonce_field( 'npcink_governance_core_update_approval_policy' ); ?>
@@ -543,13 +567,14 @@ final class Admin_Page {
 						<th scope="col"><?php echo esc_html__( 'Request', 'npcink-governance-core' ); ?></th>
 						<th scope="col"><?php echo esc_html__( 'Status', 'npcink-governance-core' ); ?></th>
 						<th scope="col"><?php echo esc_html__( 'Created', 'npcink-governance-core' ); ?></th>
+						<th scope="col"><?php echo esc_html__( 'Details', 'npcink-governance-core' ); ?></th>
 						<th scope="col"><?php echo esc_html__( 'Action', 'npcink-governance-core' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php if ( empty( $pending ) ) : ?>
 						<tr>
-							<td colspan="5">
+							<td colspan="6">
 								<div class="npcink-governance-core-empty-state">
 									<strong><?php echo esc_html__( 'No requests need review.', 'npcink-governance-core' ); ?></strong>
 									<span><?php echo esc_html__( 'Find a proposal by ID, inspect recent activity, or open expired and archived records when you need audit context.', 'npcink-governance-core' ); ?></span>
@@ -565,6 +590,7 @@ final class Admin_Page {
 					<?php foreach ( $pending as $proposal ) : ?>
 						<?php $proposal_id = (string) $proposal['proposal_id']; ?>
 						<?php $display_id = $this->proposal_display_id( $proposal ); ?>
+						<?php $details_id = 'npcink-governance-core-row-details-' . substr( md5( $proposal_id ), 0, 12 ); ?>
 						<?php
 						$display_title = sprintf(
 							/* translators: %s: full proposal id. */
@@ -585,7 +611,6 @@ final class Admin_Page {
 									</span>
 									<span><?php echo esc_html( $this->proposal_source_summary( $proposal ) ); ?></span>
 								</div>
-								<?php $this->render_pending_proposal_technical_details( $proposal ); ?>
 							</td>
 							<td class="npcink-governance-core-status-cell">
 								<?php $this->render_status_badge( (string) $proposal['status'] ); ?>
@@ -597,10 +622,28 @@ final class Admin_Page {
 								<span><?php echo esc_html( $this->display_datetime( (string) $proposal['created_at'] ) ); ?></span><br />
 								<span class="<?php echo esc_attr( $this->proposal_due_class( $proposal ) ); ?>"><?php echo esc_html( $this->proposal_due_label( $proposal ) ); ?></span>
 							</td>
+							<td class="npcink-governance-core-detail-cell">
+								<button
+									type="button"
+									class="button button-small npcink-governance-core-row-details-toggle"
+									aria-expanded="false"
+									aria-controls="<?php echo esc_attr( $details_id ); ?>"
+									data-npcink-details-target="<?php echo esc_attr( $details_id ); ?>"
+									data-show-label="<?php echo esc_attr__( 'Details', 'npcink-governance-core' ); ?>"
+									data-hide-label="<?php echo esc_attr__( 'Hide details', 'npcink-governance-core' ); ?>"
+								>
+									<?php echo esc_html__( 'Details', 'npcink-governance-core' ); ?>
+								</button>
+							</td>
 							<td class="npcink-governance-core-action-cell">
 								<a class="button button-secondary" href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>">
 									<?php echo esc_html__( 'Review', 'npcink-governance-core' ); ?>
 								</a>
+							</td>
+						</tr>
+						<tr id="<?php echo esc_attr( $details_id ); ?>" class="npcink-governance-core-row-details-row" hidden>
+							<td colspan="6">
+								<?php $this->render_pending_proposal_technical_details( $proposal ); ?>
 							</td>
 						</tr>
 					<?php endforeach; ?>
@@ -635,30 +678,107 @@ final class Admin_Page {
 	 * @return void
 	 */
 	private function render_pending_proposal_technical_details( array $proposal ): void {
-		$trace = $this->pending_proposal_trace_parts( $proposal );
+		$rows = $this->pending_proposal_technical_detail_rows( $proposal );
 		?>
-		<details class="npcink-governance-core-row-details">
-			<summary><?php echo esc_html__( 'Technical details', 'npcink-governance-core' ); ?></summary>
-			<div>
-				<?php echo esc_html__( 'Display ID:', 'npcink-governance-core' ); ?>
-				<code><?php echo esc_html( $this->proposal_display_id( $proposal ) ); ?></code>
-			</div>
-			<div>
-				<?php echo esc_html__( 'Proposal ID:', 'npcink-governance-core' ); ?>
-				<code><?php echo esc_html( (string) $proposal['proposal_id'] ); ?></code>
-			</div>
-			<div>
-				<?php echo esc_html__( 'Target ability:', 'npcink-governance-core' ); ?>
-				<code><?php echo esc_html( (string) $proposal['ability_id'] ); ?></code>
-			</div>
-			<?php if ( ! empty( $trace ) ) : ?>
-				<div>
-					<?php echo esc_html__( 'Source:', 'npcink-governance-core' ); ?>
-					<?php echo esc_html( implode( ' · ', $trace ) ); ?>
-				</div>
-			<?php endif; ?>
-		</details>
+		<div class="npcink-governance-core-row-details-panel">
+			<table class="widefat npcink-governance-core-row-details-table">
+				<tbody>
+					<?php foreach ( $rows as $row ) : ?>
+						<tr>
+							<th scope="row"><?php echo esc_html( $row['label'] ); ?></th>
+							<td>
+								<?php if ( ! empty( $row['code'] ) ) : ?>
+									<code><?php echo esc_html( $row['value'] ); ?></code>
+								<?php else : ?>
+									<?php echo esc_html( $row['value'] ); ?>
+								<?php endif; ?>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</div>
 		<?php
+	}
+
+	/**
+	 * Returns row-level technical details for the inline details table.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return array<int,array{label:string,value:string,code:bool}>
+	 */
+	private function pending_proposal_technical_detail_rows( array $proposal ): array {
+		$caller = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
+		$auth   = is_array( $caller['auth'] ?? null ) ? $caller['auth'] : array();
+		$trace  = $this->pending_proposal_trace_parts( $proposal );
+		$rows   = array(
+			array(
+				'label' => __( 'Display ID', 'npcink-governance-core' ),
+				'value' => $this->proposal_display_id( $proposal ),
+				'code'  => true,
+			),
+			array(
+				'label' => __( 'Proposal ID', 'npcink-governance-core' ),
+				'value' => (string) ( $proposal['proposal_id'] ?? '' ),
+				'code'  => true,
+			),
+			array(
+				'label' => __( 'Target ability', 'npcink-governance-core' ),
+				'value' => (string) ( $proposal['ability_id'] ?? '' ),
+				'code'  => true,
+			),
+		);
+
+		$optional_rows = array(
+			array(
+				'label' => __( 'Source', 'npcink-governance-core' ),
+				'value' => implode( ' · ', $trace ),
+				'code'  => false,
+			),
+			array(
+				'label' => __( 'Caller type', 'npcink-governance-core' ),
+				'value' => (string) ( $auth['caller_type'] ?? $caller['caller_type'] ?? '' ),
+				'code'  => true,
+			),
+			array(
+				'label' => __( 'App ID', 'npcink-governance-core' ),
+				'value' => (string) ( $auth['app_id'] ?? $caller['app_id'] ?? '' ),
+				'code'  => true,
+			),
+			array(
+				'label' => __( 'Created', 'npcink-governance-core' ),
+				'value' => $this->display_datetime( (string) ( $proposal['created_at'] ?? '' ) ),
+				'code'  => false,
+			),
+			array(
+				'label' => __( 'Updated', 'npcink-governance-core' ),
+				'value' => $this->display_datetime( (string) ( $proposal['updated_at'] ?? '' ) ),
+				'code'  => false,
+			),
+			array(
+				'label' => __( 'Policy decision', 'npcink-governance-core' ),
+				'value' => (string) ( $proposal['policy_decision'] ?? '' ),
+				'code'  => true,
+			),
+			array(
+				'label' => __( 'Policy profile', 'npcink-governance-core' ),
+				'value' => (string) ( $proposal['policy_profile'] ?? '' ),
+				'code'  => true,
+			),
+			array(
+				'label' => __( 'Policy reasons', 'npcink-governance-core' ),
+				'value' => implode( ', ', array_map( 'strval', (array) ( $proposal['policy_reasons'] ?? array() ) ) ),
+				'code'  => false,
+			),
+		);
+
+		foreach ( $optional_rows as $row ) {
+			if ( '' !== trim( $row['value'] ) ) {
+				$rows[] = $row;
+			}
+		}
+
+		return $rows;
 	}
 
 	/**

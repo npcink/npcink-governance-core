@@ -154,6 +154,16 @@ msgstr "开发批准策略"
 msgid "Current mode: %s"
 msgstr "当前模式：%s"
 
+#. translators: 1: stored policy mode, 2: effective manual policy label.
+#: includes/Admin/Admin_Page.php:489
+#, php-format
+msgid "Stored approval policy mode \"%1$s\" is no longer supported. Core is treating it as \"%2$s\" until you save one of the supported modes."
+msgstr "已存储的批准策略模式“%1$s”不再受支持。Core 会按“%2$s”处理，直到您保存一个受支持的模式。"
+
+#: includes/Admin/Admin_Page.php:490
+msgid "empty"
+msgstr "空"
+
 #: includes/Admin/Admin_Page.php:433
 msgid "Policy mode"
 msgstr "策略模式"
@@ -1597,6 +1607,26 @@ msgstr "完整提案 ID：%s"
 #: includes/Admin/Admin_Page.php
 msgid "Display ID"
 msgstr "展示 ID"
+
+#: includes/Admin/Admin_Page.php
+msgid "Details"
+msgstr "详情"
+
+#: includes/Admin/Admin_Page.php
+msgid "Hide details"
+msgstr "收起详情"
+
+#: includes/Admin/Admin_Page.php
+msgid "Policy decision"
+msgstr "策略决策"
+
+#: includes/Admin/Admin_Page.php
+msgid "Policy profile"
+msgstr "策略配置"
+
+#: includes/Admin/Admin_Page.php
+msgid "Policy reasons"
+msgstr "策略原因"
 
 #: includes/Admin/Admin_Page.php
 msgid "Source"

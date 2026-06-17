@@ -10,7 +10,8 @@ engine or workflow runtime.
 
 ## Current State
 
-The evaluator supports three site policy modes stored in
+The supported policy mode enum is closed. The evaluator supports exactly three
+site policy modes stored in
 `npcink_governance_core_approval_policy_mode`:
 
 - `manual`: default. Core records `manual_required` for every proposal with
@@ -26,7 +27,9 @@ The evaluator supports three site policy modes stored in
   mandatory.
 
 Any unrecognized stored value falls back to `manual`. Old approval policy modes
-are intentionally not accepted.
+are intentionally not accepted. Admin settings must make that fallback visible
+to operators when the stored option is stale or invalid, but must not restore
+alias behavior.
 
 Every successful proposal creation writes `proposal.policy_evaluated`. If that
 audit event cannot be recorded, Core fails closed by deleting the created

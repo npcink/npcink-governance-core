@@ -462,8 +462,11 @@ Proposal rows include policy fields:
 | `policy_reasons` | array | Stable, sanitized reason keys. |
 
 The policy evaluator stores `caller.core_policy`, promotes the same fields into
-proposal responses, and records `proposal.policy_evaluated`. `manual` remains
-the default and does not auto-approve. `smart_guarded` may auto-approve only
+proposal responses, and records `proposal.policy_evaluated`. The supported
+mode set is closed to `manual`, `smart_guarded`, and `dev_allow_all`;
+unrecognized stored values, including removed legacy mode names, fall back to
+`manual` and are not accepted as aliases. `manual` remains the default and does
+not auto-approve. `smart_guarded` may auto-approve only
 trusted `build-nonproduction-content-cleanup-plan` `plan_to_proposal_batch` proposals
 whose actions all target `npcink-abilities-toolkit/trash-post`, or a single
 direct `npcink-abilities-toolkit/create-draft` proposal that creates only a
