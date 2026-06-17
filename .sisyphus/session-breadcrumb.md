@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Proposal detail decision action moved up
+
+- **Module**: Core admin proposal detail.
+- **Status**: Pending proposal detail now shows the primary approve action in a
+  top decision bar directly below the compact summary and before the detail
+  tabs. Rejection remains available as a secondary disclosure with a rejection
+  note and confirm action.
+- **Completed**:
+  - Reduced the summary panel to review id, status, and evidence.
+  - Removed the separate action-count/audit-count summary blocks from the first
+    scan.
+  - Moved pending approve/reject controls out of the lower overview body.
+  - Kept review basis in the overview tab and detailed action/audit/technical
+    material in their existing tabs.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php`
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - Admin presentation and form placement only. Core still only owns proposal
+    records, approval/rejection status, preflight boundaries, and audit
+    evidence; no execution path, workflow runtime, queues, Adapter behavior, or
+    product workflow UX was added.
+
 ## 2026-06-17 — Proposal detail split into tabs
 
 - **Module**: Core admin proposal detail.

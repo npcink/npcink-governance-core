@@ -80,10 +80,14 @@ queue:
 
 Proposal detail should be a focused review surface:
 
-- top proposal summary panel with four default blocks: compact request, status,
-  action count, and evidence with warning/blocker counts. Source, full ids, long
-  summaries, and policy internals stay out of the first scan while visual
-  visual status badges preserve proposal lifecycle state;
+- top proposal summary panel with three default blocks: review id, status, and
+  evidence with warning/blocker counts. Source, full ids, action counts, long
+  summaries, audit event counts, and policy internals stay out of the first
+  scan while visual status badges preserve proposal lifecycle state;
+- pending proposals must show a top decision bar directly below the summary and
+  before the detail tabs. `Approve` is the primary always-visible action;
+  rejection is a secondary disclosure that reveals the rejection note and
+  confirm action only when needed;
 - proposal detail tabs after the summary:
   `Overview`, `Action plan`, `Audit evidence`, and `Technical info`. The
   default overview tab keeps the decision context short; action, audit, and
@@ -94,12 +98,12 @@ Proposal detail should be a focused review surface:
 - batch action table in the `Action plan` tab for plan-to-proposal or other
   multi-action proposal rows, showing ordered action id, target ability,
   readiness, and dependencies while keeping final execution outside Core;
-- review basis from ability intake and preview metadata rendered as a grouped
-  `Ability and policy` inspector. `Preview signals` should appear only when a
-  reason, warning, blocked item, required input, or preflight blocker exists;
-  otherwise show one concise no-issues line instead of a table of zero values;
-- approve/reject decision controls for pending proposals after the review
-  context, so the reviewer sees the basis before choosing;
+- review basis from ability intake and preview metadata rendered in the
+  overview tab as a grouped `Ability and policy` inspector. `Preview signals`
+  should appear only when a reason, warning, blocked item, required input, or
+  preflight blocker exists; otherwise show one concise no-issues line. Keep
+  this basis close to the decision bar so the reviewer sees the basis, but it
+  must not push the primary approval action below the first screen;
 - collapsed technical identity inspector in the `Technical info` tab with
   display id, full proposal id, target ability, created/updated time, source
   trace, caller/app attribution, and policy fields without repeating the same
