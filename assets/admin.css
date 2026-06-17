@@ -486,7 +486,7 @@
 
 .npcink-governance-core-proposal-summary {
 	display: grid;
-	grid-template-columns: minmax(280px, 2fr) repeat(3, minmax(150px, 1fr));
+	grid-template-columns: minmax(260px, 1.4fr) minmax(180px, 1fr) minmax(180px, 1fr);
 	gap: 12px;
 	box-sizing: border-box;
 	margin: 0 0 16px;
@@ -499,6 +499,79 @@
 	min-width: 0;
 }
 
+.npcink-governance-core-display-id-primary {
+	display: inline-block;
+	margin-bottom: 4px;
+	font-size: 14px;
+}
+
+.npcink-governance-core-decision-bar {
+	display: flex;
+	align-items: flex-start;
+	justify-content: flex-end;
+	gap: 16px;
+	box-sizing: border-box;
+	margin: 0 0 16px;
+	padding: 12px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-left: 4px solid #2271b1;
+}
+
+.npcink-governance-core-decision-form {
+	display: flex;
+	align-items: flex-start;
+	justify-content: flex-end;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin: 0;
+}
+
+.npcink-governance-core-reject-disclosure {
+	position: relative;
+}
+
+.npcink-governance-core-reject-disclosure > summary {
+	cursor: pointer;
+	list-style: none;
+}
+
+.npcink-governance-core-reject-disclosure > summary::-webkit-details-marker {
+	display: none;
+}
+
+.npcink-governance-core-reject-panel {
+	position: absolute;
+	z-index: 2;
+	right: 0;
+	box-sizing: border-box;
+	width: min(360px, calc(100vw - 48px));
+	margin-top: 8px;
+	padding: 10px;
+	background: #f6f7f7;
+	border: 1px solid #c3c4c7;
+	box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+}
+
+.npcink-governance-core-reject-panel label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 600;
+}
+
+.npcink-governance-core-reject-panel textarea {
+	margin-bottom: 8px;
+}
+
+.npcink-governance-core-evidence-ok {
+	display: inline-block;
+	padding: 4px 8px;
+	border: 1px solid #68de7c;
+	background: #edfaef;
+	color: #0a5f1d;
+	font-weight: 600;
+}
+
 .npcink-governance-core-detail-tabs {
 	margin-top: 4px;
 	margin-bottom: 0;
@@ -508,15 +581,6 @@
 .npcink-governance-core-tab-panel {
 	box-sizing: border-box;
 	margin-top: 12px;
-}
-
-.npcink-governance-core-summary-count {
-	display: block;
-	margin: 0 0 4px;
-	color: #1d2327;
-	font-size: 20px;
-	font-weight: 600;
-	line-height: 1.25;
 }
 
 .npcink-governance-core-detail-table {
@@ -700,9 +764,24 @@
 @media screen and (max-width: 960px) {
 	.npcink-governance-core-summary-strip,
 	.npcink-governance-core-workbench-toolbar,
+	.npcink-governance-core-decision-bar,
 	.npcink-governance-core-proposal-summary,
 	.npcink-governance-core-detail-groups {
 		grid-template-columns: 1fr;
+	}
+
+	.npcink-governance-core-decision-bar {
+		display: block;
+	}
+
+	.npcink-governance-core-decision-form {
+		justify-content: flex-start;
+		margin-top: 10px;
+	}
+
+	.npcink-governance-core-reject-panel {
+		right: auto;
+		left: 0;
 	}
 
 	.npcink-governance-core-review-table {

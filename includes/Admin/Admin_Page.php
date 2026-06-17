@@ -1812,7 +1812,8 @@ final class Admin_Page {
 		<p><a href="<?php echo esc_url( $this->admin_url() ); ?>">&larr; <?php echo esc_html__( 'Back to review queue', 'npcink-governance-core' ); ?></a></p>
 		<h2><?php echo esc_html__( 'Proposal Detail', 'npcink-governance-core' ); ?></h2>
 		<p class="npcink-governance-core-subtle npcink-governance-core-copy-width"><?php echo esc_html__( 'Review the governance record, action plan, and audit evidence for this proposal.', 'npcink-governance-core' ); ?></p>
-		<?php $this->render_proposal_summary_panel( $proposal, $timeline ); ?>
+		<?php $this->render_proposal_summary_panel( $proposal ); ?>
+		<?php $this->render_decision_controls( $proposal ); ?>
 		<?php $this->render_proposal_detail_tabs( $proposal, $active_tab ); ?>
 		<div class="npcink-governance-core-tab-panel npcink-governance-core-max-wide">
 			<?php $this->render_proposal_detail_tab_panel( $active_tab, $proposal, $capability, $timeline ); ?>
@@ -1907,7 +1908,6 @@ final class Admin_Page {
 		$this->render_lifecycle_actions( $proposal );
 		$this->render_proposal_outcome_notice( $proposal );
 		$this->render_review_context( $proposal, $capability );
-		$this->render_decision_controls( $proposal );
 	}
 
 	/**
@@ -1950,22 +1950,26 @@ final class Admin_Page {
 	/**
 	 * Renders the proposal detail summary panel.
 	 *
-	 * @param array<string,mixed>            $proposal Proposal.
-	 * @param array<int,array<string,mixed>> $timeline Proposal audit timeline.
+	 * @param array<string,mixed> $proposal Proposal.
 	 * @return void
 	 */
-	private function render_proposal_summary_panel( array $proposal, array $timeline ): void {
-		$action_count  = $this->proposal_action_count( $proposal );
+	private function render_proposal_summary_panel( array $proposal ): void {
 		$warning_count = $this->proposal_warning_count( $proposal );
 		$blocked_count = $this->proposal_blocked_count( $proposal );
-		$audit_count   = count( $timeline );
+		$has_signals   = $warning_count > 0
+			|| $blocked_count > 0
+			|| $this->proposal_needs_input_count( $proposal ) > 0
+			|| $this->proposal_preflight_blocker_count( $proposal ) > 0;
 		?>
 		<div class="npcink-governance-core-proposal-summary npcink-governance-core-max-wide">
 			<div>
-				<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Request', 'npcink-governance-core' ); ?></div>
-				<strong><?php echo esc_html( $this->proposal_summary_request_label( $proposal ) ); ?></strong>
-				<div class="npcink-governance-core-muted"><?php echo esc_html( $this->proposal_summary_request_meta( $proposal ) ); ?></div>
-				<code class="npcink-governance-core-display-id"><?php echo esc_html( $this->proposal_display_id( $proposal ) ); ?></code>
+				<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Review ID', 'npcink-governance-core' ); ?></div>
+				<code class="npcink-governance-core-display-id npcink-governance-core-display-id-primary"><?php echo esc_html( $this->proposal_display_id( $proposal ) ); ?></code>
+				<div class="npcink-governance-core-muted">
+					<?php echo esc_html( $this->proposal_summary_request_label( $proposal ) ); ?>
+					<span aria-hidden="true">&middot;</span>
+					<?php echo esc_html( $this->proposal_summary_request_meta( $proposal ) ); ?>
+				</div>
 			</div>
 			<div>
 				<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Status', 'npcink-governance-core' ); ?></div>
@@ -1974,32 +1978,22 @@ final class Admin_Page {
 				<div class="npcink-governance-core-summary-detail"><?php echo esc_html( $this->display_datetime( (string) ( $proposal['created_at'] ?? '' ) ) ); ?></div>
 			</div>
 			<div>
-				<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Actions', 'npcink-governance-core' ); ?></div>
-				<strong class="npcink-governance-core-summary-count"><?php echo esc_html( number_format_i18n( $action_count ) ); ?></strong>
-				<div class="npcink-governance-core-summary-detail"><?php echo esc_html( $action_count > 1 ? __( 'Batch proposal', 'npcink-governance-core' ) : __( 'Single proposal', 'npcink-governance-core' ) ); ?></div>
-			</div>
-			<div>
 				<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Evidence', 'npcink-governance-core' ); ?></div>
-				<?php $this->render_risk_badge( $this->proposal_risk_label( $proposal ) ); ?>
-				<div class="npcink-governance-core-summary-detail">
-					<?php
-					printf(
-						/* translators: 1: warning count, 2: blocked item count. */
-						esc_html__( '%1$d warnings / %2$d blocked', 'npcink-governance-core' ),
-						$warning_count,
-						$blocked_count
-					);
-					?>
-				</div>
-				<div class="npcink-governance-core-summary-detail">
-					<?php
-					printf(
-						/* translators: %d: audit event count. */
-						esc_html__( '%d audit events', 'npcink-governance-core' ),
-						$audit_count
-					);
-					?>
-				</div>
+				<?php if ( $has_signals ) : ?>
+					<?php $this->render_risk_badge( $this->proposal_risk_label( $proposal ) ); ?>
+					<div class="npcink-governance-core-summary-detail">
+						<?php
+						printf(
+							/* translators: 1: warning count, 2: blocked item count. */
+							esc_html__( '%1$d warnings / %2$d blocked', 'npcink-governance-core' ),
+							$warning_count,
+							$blocked_count
+						);
+						?>
+					</div>
+				<?php else : ?>
+					<span class="npcink-governance-core-evidence-ok"><?php echo esc_html__( 'No risk signals', 'npcink-governance-core' ); ?></span>
+				<?php endif; ?>
 			</div>
 		</div>
 		<?php
@@ -2243,23 +2237,25 @@ final class Admin_Page {
 			return;
 		}
 		?>
-		<h3><?php echo esc_html__( 'Decision', 'npcink-governance-core' ); ?></h3>
-		<form class="npcink-governance-core-form-width" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="proposal_id" value="<?php echo esc_attr( $proposal_id ); ?>" />
-			<?php wp_nonce_field( 'npcink_governance_core_decide_proposal_' . $proposal_id ); ?>
-			<p>
-				<label for="npcink-governance-core-note"><?php echo esc_html__( 'Decision note', 'npcink-governance-core' ); ?></label><br />
-				<textarea id="npcink-governance-core-note" name="note" rows="3" class="large-text"></textarea>
-			</p>
-			<p>
+		<section class="npcink-governance-core-decision-bar npcink-governance-core-max-wide" aria-label="<?php echo esc_attr__( 'Decision', 'npcink-governance-core' ); ?>">
+			<form class="npcink-governance-core-decision-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<input type="hidden" name="proposal_id" value="<?php echo esc_attr( $proposal_id ); ?>" />
+				<?php wp_nonce_field( 'npcink_governance_core_decide_proposal_' . $proposal_id ); ?>
 				<button type="submit" class="button button-primary" name="action" value="npcink_governance_core_approve_proposal">
 					<?php echo esc_html__( 'Approve', 'npcink-governance-core' ); ?>
 				</button>
-				<button type="submit" class="button" name="action" value="npcink_governance_core_reject_proposal">
-					<?php echo esc_html__( 'Reject', 'npcink-governance-core' ); ?>
-				</button>
-			</p>
-		</form>
+				<details class="npcink-governance-core-reject-disclosure">
+					<summary class="button"><?php echo esc_html__( 'Reject', 'npcink-governance-core' ); ?></summary>
+					<div class="npcink-governance-core-reject-panel">
+						<label for="npcink-governance-core-note"><?php echo esc_html__( 'Rejection note', 'npcink-governance-core' ); ?></label>
+						<textarea id="npcink-governance-core-note" name="note" rows="3" class="large-text"></textarea>
+						<button type="submit" class="button" name="action" value="npcink_governance_core_reject_proposal">
+							<?php echo esc_html__( 'Confirm rejection', 'npcink-governance-core' ); ?>
+						</button>
+					</div>
+				</details>
+			</form>
+		</section>
 		<?php
 	}
 

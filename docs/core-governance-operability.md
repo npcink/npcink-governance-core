@@ -60,8 +60,12 @@ row plus `audit_timeline`, ordered oldest to newest for the selected proposal.
 
 The WordPress admin proposal detail also shows:
 
-- compact proposal request, status, action count, warning/blocker counts, and
-  audit-event count in the top operator summary;
+- compact review id, status, risk, and warning/blocker counts in the top
+  operator summary, with a single no-risk conclusion when preview evidence has
+  no warnings, blocked items, required input, or preflight blockers;
+- top pending-decision bar with always-visible approval and a secondary
+  rejection disclosure for rejection notes, without repeating the review id or
+  status already shown in the summary;
 - proposal detail tabs for overview, action plan, audit evidence, and technical
   information so dense action/audit/troubleshooting data is not shown in the
   first scan;
@@ -84,7 +88,7 @@ The WordPress admin proposal detail also shows:
   actor and compact technical metadata;
 - raw caller, input, and preview JSON behind a troubleshooting disclosure in the
   technical tab;
-- approve/reject form for pending proposals.
+- approve/reject controls for pending proposals before the detail tabs.
 - archive/reopen controls for expired or archived proposals.
 
 The default review queue keeps each pending proposal traceable without leading
