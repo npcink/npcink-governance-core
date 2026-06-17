@@ -348,6 +348,10 @@ msgstr "能力："
 msgid "Review"
 msgstr "审核"
 
+#: includes/Admin/Admin_Page.php:567
+msgid "Select all proposals on this page"
+msgstr "选择本页所有提案"
+
 #: includes/Admin/Admin_Page.php:511
 msgid "View and decide"
 msgstr "查看并决定"
@@ -359,6 +363,26 @@ msgstr "批量操作"
 #: includes/Admin/Admin_Page.php:526
 msgid "Reject selected requests when they are no longer needed."
 msgstr "当所选请求不再需要时批量拒绝。"
+
+#: includes/Admin/Admin_Page.php:662
+msgid "Selected requests: %d"
+msgstr "已选请求：%d"
+
+#: includes/Admin/Admin_Page.php:668
+msgid "Bulk rejection closes selected Core proposals without executing writes."
+msgstr "批量拒绝只会关闭所选 Core 提案，不会执行写入。"
+
+#: includes/Admin/Admin_Page.php:675
+msgid "Bulk rejection ready."
+msgstr "批量拒绝已就绪。"
+
+#: includes/Admin/Admin_Page.php:678
+msgid "Review the selection before rejecting. Core records the rejection and does not execute writes."
+msgstr "拒绝前请核对所选请求。Core 会记录拒绝决定，不会执行写入。"
+
+#: includes/Admin/Admin_Page.php:681
+msgid "Add rejection note"
+msgstr "添加拒绝备注"
 
 #: includes/Admin/Admin_Page.php:673
 msgid "Bulk rejection note"
@@ -376,9 +400,45 @@ msgstr "填写拒绝这些请求的原因。"
 msgid "Rejected from bulk review."
 msgstr "已从批量审核中拒绝。"
 
+#: includes/Admin/Admin_Page.php:688
+msgid "Clear selection"
+msgstr "清空选择"
+
 #: includes/Admin/Admin_Page.php:677
 msgid "Reject selected"
 msgstr "拒绝所选项"
+
+#: includes/Admin/Admin_Page.php:719
+msgid "Bulk action"
+msgstr "批量操作"
+
+#: includes/Admin/Admin_Page.php:724
+msgid "Apply"
+msgstr "应用"
+
+#: includes/Admin/Admin_Page.php:733
+msgid "%s items"
+msgstr "%s 项"
+
+#: includes/Admin/Admin_Page.php:740
+msgid "First page"
+msgstr "第一页"
+
+#: includes/Admin/Admin_Page.php:741
+msgid "Previous page"
+msgstr "上一页"
+
+#: includes/Admin/Admin_Page.php:747
+msgid "Page %1$d of %2$d"
+msgstr "第 %1$d 页，共 %2$d 页"
+
+#: includes/Admin/Admin_Page.php:754
+msgid "Next page"
+msgstr "下一页"
+
+#: includes/Admin/Admin_Page.php:755
+msgid "Last page"
+msgstr "最后一页"
 
 #: includes/Admin/Admin_Page.php:701
 msgid "Source:"
@@ -1583,20 +1643,12 @@ msgid "Open expired records"
 msgstr "打开过期记录"
 
 #: includes/Admin/Admin_Page.php
-msgid "System settings"
-msgstr "系统设置"
-
-#: includes/Admin/Admin_Page.php
-msgid "Development policy and trusted client access."
-msgstr "开发策略和可信客户端访问。"
+msgid "Development approval policy and trusted governance client access."
+msgstr "开发批准策略和可信治理客户端访问。"
 
 #: includes/Admin/Admin_Page.php
 msgid "Open a Core proposal by display ID or full proposal ID."
 msgstr "通过展示 ID 或完整提案 ID 打开 Core 提案。"
-
-#: includes/Admin/Admin_Page.php
-msgid "Display ID:"
-msgstr "展示 ID："
 
 #. translators: %s: full proposal id.
 #: includes/Admin/Admin_Page.php
@@ -1615,6 +1667,14 @@ msgstr "详情"
 #: includes/Admin/Admin_Page.php
 msgid "Hide details"
 msgstr "收起详情"
+
+#: includes/Admin/Admin_Page.php
+msgid "Identity and source"
+msgstr "身份与来源"
+
+#: includes/Admin/Admin_Page.php
+msgid "Time and policy"
+msgstr "时间与策略"
 
 #: includes/Admin/Admin_Page.php
 msgid "Policy decision"
@@ -1665,3 +1725,231 @@ msgstr "计划批次"
 #, php-format
 msgid "%s left"
 msgstr "剩余 %s"
+
+#: includes/Admin/Admin_Page.php
+msgid "Pending proposals waiting for an administrator decision."
+msgstr "等待管理员决策的待审提案。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Approved proposals waiting for Adapter preflight or execution record."
+msgstr "已批准，等待 Adapter 预检或执行记录的提案。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Adapter-reported failures that need operator follow-up."
+msgstr "Adapter 上报且需要操作员跟进的失败。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Recorded Core governance events."
+msgstr "已记录的 Core 治理事件。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Proposal lookup"
+msgstr "提案查询"
+
+#: includes/Admin/Admin_Page.php
+msgid "Find proposal"
+msgstr "查找提案"
+
+#: includes/Admin/Admin_Page.php
+msgid "Record execution results"
+msgstr "记录执行结果"
+
+#: includes/Admin/Admin_Page.php
+msgid "Review the governance record, action plan, and audit evidence for this proposal."
+msgstr "查看该提案的治理记录、动作计划和审计证据。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Actions"
+msgstr "动作"
+
+#: includes/Admin/Admin_Page.php
+msgid "Batch proposal"
+msgstr "批量提案"
+
+#: includes/Admin/Admin_Page.php
+msgid "Single proposal"
+msgstr "单项提案"
+
+#: includes/Admin/Admin_Page.php
+msgid "Review flags"
+msgstr "审核标记"
+
+#. translators: 1: warning count, 2: blocked item count.
+#: includes/Admin/Admin_Page.php
+#, php-format
+msgid "%1$d warnings / %2$d blocked"
+msgstr "%1$d 个警告 / %2$d 个阻塞"
+
+#: includes/Admin/Admin_Page.php
+msgid "Audit events"
+msgstr "审计事件"
+
+#: includes/Admin/Admin_Page.php
+msgid "Event history"
+msgstr "事件历史"
+
+#: includes/Admin/Admin_Page.php
+msgid "No pending decision."
+msgstr "无待处理决策。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Governance identity"
+msgstr "治理标识"
+
+#: includes/Admin/Admin_Page.php
+msgid "Source and policy"
+msgstr "来源和策略"
+
+#: includes/Admin/Admin_Page.php
+msgid "Source type"
+msgstr "来源类型"
+
+#: includes/Admin/Admin_Page.php
+msgid "Plan ability"
+msgstr "计划能力"
+
+#: includes/Admin/Admin_Page.php
+msgid "Batch ID"
+msgstr "批次 ID"
+
+#: includes/Admin/Admin_Page.php
+msgid "Proposal mode"
+msgstr "提案模式"
+
+#: includes/Admin/Admin_Page.php
+msgid "Batch actions"
+msgstr "批量动作"
+
+#: includes/Admin/Admin_Page.php
+msgid "Ordered actions in this Core proposal. Final execution remains outside Core after approval and preflight."
+msgstr "该 Core 提案中的有序动作。最终执行仍在批准和预检后的 Core 之外完成。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Readiness"
+msgstr "就绪状态"
+
+#: includes/Admin/Admin_Page.php
+msgid "Dependency"
+msgstr "依赖"
+
+#: includes/Admin/Admin_Page.php
+msgid "Review basis"
+msgstr "审核依据"
+
+#: includes/Admin/Admin_Page.php
+msgid "Ability and policy"
+msgstr "能力和策略"
+
+#: includes/Admin/Admin_Page.php
+msgid "Preview signals"
+msgstr "预览信号"
+
+#: includes/Admin/Admin_Page.php
+msgid "Warnings"
+msgstr "警告"
+
+#: includes/Admin/Admin_Page.php
+msgid "Preflight blockers"
+msgstr "预检阻塞项"
+
+#: includes/Admin/Admin_Page.php
+msgid "Proposed change details"
+msgstr "拟变更详情"
+
+#: includes/Admin/Admin_Page.php
+msgid "Structured preview fields that need reviewer attention."
+msgstr "需要审核人关注的结构化预览字段。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Caller, input, and preview JSON for troubleshooting."
+msgstr "用于排障的调用方、输入和预览 JSON。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Review context is ready before approval or rejection."
+msgstr "批准或拒绝前可先查看审核上下文。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Approved; Adapter can continue after commit preflight."
+msgstr "已批准；Adapter 可在提交预检后继续。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Executed outside Core after approval and preflight."
+msgstr "已在批准和预检后由 Core 之外执行。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Execution failed after handoff; inspect audit evidence."
+msgstr "交接后执行失败；请检查审计证据。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Rejected; no execution handoff should continue."
+msgstr "已拒绝；不应继续执行交接。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Reopen before making a decision."
+msgstr "需要重新打开后才能决策。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Review the audit timeline for current state."
+msgstr "查看审计时间线了解当前状态。"
+
+#: includes/Admin/Admin_Page.php
+msgid "This proposal has already been executed outside Core. Use the audit timeline to verify approval, preflight, and execution evidence."
+msgstr "该提案已在 Core 之外执行。请通过审计时间线核对批准、预检和执行证据。"
+
+#: includes/Admin/Admin_Page.php
+msgid "This proposal is approved. Use the audit timeline to verify the approval and preflight handoff."
+msgstr "该提案已批准。请通过审计时间线核对批准和预检交接。"
+
+#: includes/Admin/Admin_Page.php
+msgid "This proposal reported an execution failure after handoff. Use the audit timeline and Adapter logs for follow-up."
+msgstr "该提案在交接后上报执行失败。请结合审计时间线和 Adapter 日志跟进。"
+
+#: includes/Admin/Admin_Page.php
+msgid "This proposal was rejected and should not continue to execution."
+msgstr "该提案已拒绝，不应继续执行。"
+
+#: includes/Admin/Admin_Page.php
+msgid "This proposal is not eligible for approval until it is reopened."
+msgstr "该提案重新打开前不能批准。"
+
+#: includes/Admin/Admin_Page.php
+msgid "This proposal is no longer pending. Review the audit timeline for lifecycle evidence."
+msgstr "该提案不再处于待审状态。请查看审计时间线获取生命周期证据。"
+
+#. translators: %s: dependency action ids.
+#: includes/Admin/Admin_Page.php
+#, php-format
+msgid "Depends on: %s"
+msgstr "依赖：%s"
+
+#: includes/Admin/Admin_Page.php
+msgid "No dependency"
+msgstr "无依赖"
+
+#: includes/Admin/Admin_Page.php
+msgid "Blocked"
+msgstr "已阻塞"
+
+#: includes/Admin/Admin_Page.php
+msgid "Ready"
+msgstr "已就绪"
+
+#: includes/Admin/Admin_Page.php
+msgid "Commit requested"
+msgstr "已请求提交"
+
+#: includes/Admin/Admin_Page.php
+msgid "Dry run; Core execution disabled"
+msgstr "仅预演；Core 执行已禁用"
+
+#: includes/Admin/Admin_Page.php
+msgid "Core execution disabled"
+msgstr "Core 执行已禁用"
+
+#: includes/Admin/Admin_Page.php
+msgid "Executed"
+msgstr "已执行"
+
+#: includes/Admin/Admin_Page.php
+msgid "Execution failed"
+msgstr "执行失败"

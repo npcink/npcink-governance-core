@@ -1,5 +1,180 @@
 # Session Breadcrumb
 
+## 2026-06-17 — Proposal detail review surface reorganized
+
+- **Module**: Core admin proposal detail.
+- **Status**: Proposal detail now opens with an operator summary, grouped
+  identity/source/policy inspectors, non-pending outcome copy, batch action
+  review, grouped review basis, default-open audit evidence for non-pending
+  proposals, and a final raw payload troubleshooting disclosure.
+- **Completed**:
+  - Replaced the repeated linear identity table with compact summary metrics
+    plus two-column grouped inspectors.
+  - Added ordered batch action rows sourced from `input.write_actions` and
+    `preview.actions`.
+  - Added warning, blocker, needs-input, preflight-blocker, action-count, and
+    audit-event counts to the detail surface.
+  - Moved raw caller/input/preview JSON behind bounded code blocks at the end
+    of the page.
+  - Updated admin surface docs, operability docs, static contracts, and
+    translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php`
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+  - Browser check on `proposal_id=7f35cf40-dc44-46b4-a07d-7c47fec07cf0`:
+    page loaded as wp-admin, showed compact source summary, non-pending
+    executed copy, batch actions, grouped review basis, default-open audit
+    timeline, final raw payload disclosure, and no browser warning/error
+    console messages.
+- **Boundary**:
+  - This is admin display and evidence organization only. It does not add final
+    write execution, workflow runtime, queues, batch execution ownership, MCP
+    runtime, Agent Gateway catalogs, provider credentials, REST lifecycle
+    changes, or Adapter-owned product actions.
+
+## 2026-06-17 — System settings moved to Settings tab
+
+- **Module**: Core admin settings navigation.
+- **Status**: Low-frequency development approval policy and trusted client
+  access controls now live under a first-level `Settings` tab. The default
+  `Review Queue` no longer renders the system settings disclosure at the
+  bottom.
+- **Completed**:
+  - Added `Settings` to the Core admin tabs and routed `view=settings`.
+  - Moved system settings rendering out of the review workbench.
+  - Kept app-key management behind `Advanced Access`, with `view=app-keys`
+    highlighting `Settings`.
+  - Opened `Development Approval Policy` by default on the Settings tab and
+    kept `Advanced Access` collapsed.
+  - Updated admin surface docs, static contracts, and translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php`
+  - `php -l tests/run.php`
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+  - Browser visual check was attempted, but Playwright could not attach because
+    the shared browser user-data directory was locked by another active browser
+    instance.
+- **Boundary**:
+  - This is admin navigation and display behavior only. It does not add a
+    general policy rules UI, workflow approval configuration center, workflow
+    runtime, queues, MCP runtime, Agent Gateway catalogs, provider credentials,
+    REST lifecycle changes, Adapter execution, or final writes.
+
+## 2026-06-17 — Pending review pagination and list controls tightened
+
+- **Module**: Core admin review queue pagination and bulk-selection controls.
+- **Status**: The pending review queue now shows 10 proposals per page. The
+  review list uses a WordPress-style table navigation row with bulk action
+  controls on the left and item count plus square first/previous/next/last
+  pagination buttons on the right. The old loose numbered pagination links no
+  longer render on the review queue.
+- **Completed**:
+  - Changed review queue page size from 20 to 10.
+  - Added review-queue-specific table navigation and square pagination buttons.
+  - Added a visible bulk-action select/apply control and page-level select-all
+    checkbox while keeping the contextual bulk rejection confirmation.
+  - Updated admin CSS, admin JavaScript, admin surface docs, static contracts,
+    and translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php && node -c assets/admin.js`
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+  - Browser visual check was attempted, but Playwright could not attach because
+    the shared browser user-data directory was locked by another active browser
+    instance.
+- **Boundary**:
+  - This is admin display and interaction behavior only. It does not change
+    proposal lifecycle semantics, bulk reject permission checks, nonce
+    enforcement, the 50-proposal bulk-reject bound, REST routes, Adapter
+    execution, workflow runtime, queues, MCP runtime, Agent Gateway catalogs,
+    provider credentials, or final writes.
+
+## 2026-06-17 — Pending bulk rejection moved behind selection
+
+- **Module**: Core admin review queue bulk rejection affordance.
+- **Status**: Bulk rejection remains available as a no-JavaScript disclosure
+  fallback, but JavaScript-enabled admin sessions now hide it until one or more
+  pending rows are selected. Once selected, the queue shows a compact contextual
+  action bar with selected count, clear selection, optional rejection note, and
+  reject selected action.
+- **Completed**:
+  - Reworked the bulk rejection markup into a contextual action bar inside the
+    existing bounded bulk-reject form.
+  - Added admin JavaScript to show/hide the action bar, update selected count,
+    and clear selected checkboxes.
+  - Added compact CSS for the selection action bar and optional note disclosure.
+  - Updated admin surface docs, static contracts, and translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php && node -c assets/admin.js`
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `git diff --check`
+  - `composer test:all`
+  - Browser check: default hidden, row selection reveals the contextual bulk bar,
+    clear selection hides it again, and no browser console errors were reported.
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This is admin display and interaction behavior only. It does not change bulk
+    reject permission checks, nonce enforcement, the 50-proposal bound,
+    proposal lifecycle semantics, REST routes, Adapter execution, workflow
+    runtime, queues, MCP runtime, Agent Gateway catalogs, provider credentials,
+    or final writes.
+
+## 2026-06-17 — Pending row details converted to grouped inspector
+
+- **Module**: Core admin review queue pending request details.
+- **Status**: The row details panel now uses a two-column grouped inspector:
+  identity/source on the left and time/policy on the right. The Source row
+  shows only the raw source value, while caller type and app id remain separate
+  fields to avoid repeated trace text.
+- **Completed**:
+  - Converted the long row details table into grouped detail tables.
+  - Split identity/source fields from time/policy fields.
+  - Removed caller/app duplication from the Source field.
+  - Updated admin CSS, admin surface docs, static contracts, and translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php && node -c assets/admin.js`
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This is admin display behavior only. It does not change proposal ids,
+    proposal TTL, approval semantics, REST routes, Adapter execution, workflow
+    runtime, queues, MCP runtime, Agent Gateway catalogs, provider credentials,
+    or final writes.
+
+## 2026-06-17 — Pending row default metadata reduced
+
+- **Module**: Core admin review queue pending request list.
+- **Status**: The default pending row now removes the repeated `Display ID:`
+  label and shows only the source actor in the Source column. App id, smoke
+  source context, full proposal id, caller type, and source trace remain in the
+  row details table or hover title for troubleshooting.
+- **Completed**:
+  - Removed the repeated display-id label from each default row.
+  - Folded app/source context out of the default Source column.
+  - Tightened request and source column widths after reducing default metadata.
+  - Updated admin surface docs, static contracts, and translation artifacts.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php && node -c assets/admin.js`
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po`
+  - `git diff --check`
+  - `composer test:all`
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp`
+- **Boundary**:
+  - This is admin display behavior only. It does not change proposal ids,
+    proposal TTL, approval semantics, REST routes, Adapter execution, workflow
+    runtime, queues, MCP runtime, Agent Gateway catalogs, provider credentials,
+    or final writes.
+
 ## 2026-06-17 — Adapter handoff and approval policy acceptance documented
 
 - **Module**: Core handoff documentation, next-stage planning, and static

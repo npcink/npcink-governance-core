@@ -60,14 +60,24 @@ row plus `audit_timeline`, ordered oldest to newest for the selected proposal.
 
 The WordPress admin proposal detail also shows:
 
-- proposal status, age, expiry, and summary;
-- review context from live ability intake and preview metadata, including
-  before/after suggestions when present;
+- proposal status, source, action count, warning/blocker counts, audit-event
+  count, and summary in the top operator summary;
+- grouped identity/source/policy inspectors for display id, full proposal id,
+  target ability, timestamps, source trace, caller/app attribution, and policy
+  reasons;
+- explicit non-pending outcome copy when approval/rejection controls are absent;
+- batch action details for plan-to-proposal rows, including ordered action id,
+  target ability, readiness, and dependency information while final execution
+  remains outside Core;
+- grouped review basis from live ability intake and preview metadata, including
+  before/after suggestions when present behind structured preview detail;
 - article workflow summary when `preview.article_workflow` exists, including
   title/topic, risk level, readiness, blocked-claim count, final write ability,
   final write path, direct-write state, and required artifact availability;
-- raw caller, input, and preview JSON behind an explicit disclosure;
-- audit timeline with event, actor, and compact detail metadata;
+- audit timeline with event, actor, and compact detail metadata. For
+  non-pending proposals, the admin detail opens the timeline by default because
+  lifecycle evidence is the primary task;
+- raw caller, input, and preview JSON behind a final troubleshooting disclosure;
 - approve/reject form for pending proposals.
 - archive/reopen controls for expired or archived proposals.
 

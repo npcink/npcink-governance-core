@@ -14,7 +14,8 @@ The page is split into focused admin tabs:
 
 - `Review Queue`;
 - `Activity Log`;
-- `Expired / Archived`.
+- `Expired / Archived`;
+- `Settings`.
 
 The default `Review Queue` tab must stay focused on the current governance
 queue:
@@ -23,15 +24,21 @@ queue:
   and audit-event state;
 - lookup and recent activity grouped as secondary utilities below the status
   summary, not as first-level review work;
-- paginated pending request list with user-facing request labels, compact source summary,
-  compact status, compact age/expiry, and a clear review entry;
+- paginated pending request list with 10 proposals per page, user-facing request
+  labels, compact source summary, compact status, compact age/expiry, and a
+  clear review entry;
+- review queue pagination and bulk selection should use a WordPress-style table navigation row:
+  bulk action controls on the left, item count and square
+  first/previous/next/last page buttons on the right;
 - default pending rows use a dedicated `Source` column for compact caller/app
   attribution and a stable display id such as `P-1234ABCD-EF90`; full proposal
   id, ability id, app id, and source trace stay behind technical details;
 - default pending rows should keep request identity, source attribution, status,
   created time, details, and action columns left-aligned except the final action
-  column; display ids should remain single-line, and source attribution should
-  use a two-line actor/context structure instead of a wrapped delimiter chain;
+  column; display ids should remain single-line and should not repeat a
+  `Display ID:` label in the row; source attribution should default to the actor only,
+  with app id and source context kept in the details table or title text instead
+  of the main row;
 - default pending rows must not place the technical detail disclosure inside
   the request column. Use a dedicated `Details` column that toggles an inline full-width key-value details table below the row;
 - default pending rows do not render an undeclared-risk badge. Risk appears in
@@ -42,35 +49,58 @@ queue:
   opens the existing Core proposal detail route without adding Adapter
   execution actions;
 - display id visible in each default row as the governance lookup handle;
-- full proposal id, ability id, source trace, caller/app attribution, created
+- full proposal id, ability id, raw source, caller/app attribution, created
   and updated time, and policy fields preserved behind the per-row inline
   technical details table for Adapter/OpenClaw handoff lookup;
-- bounded bulk rejection for selected pending proposals;
+- per-row technical details should render as a two-column grouped inspector on
+  desktop, with identity/source fields separated from time/policy fields;
+  Source should show the raw source value only, while caller type and app id
+  remain separate fields to avoid duplicate trace text;
+- bounded bulk rejection for selected pending proposals. Because it is a
+  low-frequency destructive action, the default JavaScript-enabled view should
+  hide it until one or more rows are selected, then show a compact contextual action bar
+  with selected count, clear selection, optional rejection note, and
+  reject selected action. Keep a collapsed disclosure fallback for no-JavaScript
+  admin sessions;
 - stale proposals available from the expired/archive tab;
 - useful empty state that points to proposal lookup, activity log, and expired
   records instead of only saying that the queue is empty;
-- `System settings` disclosure for low-frequency development policy and trusted
-  client access;
-- nested `Development Approval Policy` disclosure for the lightweight require
-  approval for all, smart approval, and local-development allow-all modes;
+- `Settings` tab for low-frequency development policy and trusted client
+  access, keeping these controls out of the default review queue;
+- `Development Approval Policy` disclosure in the Settings tab for the
+  lightweight require approval for all, smart approval, and local-development
+  allow-all modes. It should default open because it is the primary setting;
 - stale or invalid stored approval policy option values must show an inline
   warning that Core is treating the value as require approval for all until a
   supported mode is saved;
-- nested `Advanced Access` disclosure for low-frequency client access key
-  management.
+- `Advanced Access` disclosure in the Settings tab for low-frequency client
+  access key management. It should default collapsed.
 
 ## Detail Views
 
 Proposal detail should be a focused review surface:
 
-- proposal summary panel with request, status, risk, and source before the
-  lower-level identity table;
-- proposal identity and status with visual status badges;
-- review context from ability intake and preview metadata;
+- top proposal summary panel with request, status, source, action count,
+  warning/blocker counts, and audit event count before lower-level technical
+  identity, while keeping visual status badges for proposal lifecycle state;
+- grouped proposal identity inspector with display id, full proposal id, target
+  ability, created/updated time, source trace, caller/app attribution, and
+  policy fields without repeating the same summary fields as a second linear
+  table;
+- explicit non-pending outcome notice for approved, executed, rejected,
+  expired, archived, or execution-failed proposals so the page explains why
+  approve/reject controls are absent;
+- batch action table for plan-to-proposal or other multi-action proposal rows,
+  showing ordered action id, target ability, readiness, and dependencies while
+  keeping final execution outside Core;
+- review basis from ability intake and preview metadata rendered as grouped
+  `Ability and policy` and `Preview signals` inspectors;
 - approve/reject decision controls for pending proposals after the review
   context, so the reviewer sees the basis before choosing;
-- raw proposal payload behind a disclosure;
-- proposal audit timeline behind a disclosure.
+- proposal audit timeline before raw payload, default-open for non-pending
+  proposals because it is the lifecycle evidence for approved, executed,
+  rejected, expired, archived, and execution-failed records;
+- raw proposal payload behind a final troubleshooting disclosure with bounded code blocks;
 - lifecycle controls for expired or archived proposals.
 
 Full `Activity Log` and `Expired / Archived` belong in dedicated tabs, not
@@ -78,9 +108,9 @@ inline on the default workbench. Long lists in `Review Queue`, `Activity Log`,
 `Expired / Archived`, and advanced app-key management must be paginated.
 
 Core app-key creation is a low-frequency fallback action. It should stay behind
-the default workbench's `Advanced Access` disclosure and then behind an
-explicit creation disclosure on the advanced access page. It must not appear as
-a first-level Core tab.
+the Settings tab's `Advanced Access` disclosure and then behind an explicit
+creation disclosure on the advanced access page. It must not appear as a
+first-level Core tab.
 
 The review queue must not remove proposal identity from the page, but the
 default row should lead with the user-facing request label. Keep `Proposal ID`
