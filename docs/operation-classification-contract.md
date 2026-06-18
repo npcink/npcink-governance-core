@@ -21,7 +21,9 @@ proposals, execute writes, record audit events, or decide product UI copy.
 Every result also includes a stable `decision_envelope` so consumers can store
 the same auditable evidence in proposal previews, local admin consent audit
 metadata, or product-side activity records without inventing their own
-classification shape.
+classification shape. Any classification that selects or rejects an
+authorization path must be persisted by the caller in one of those governance
+evidence surfaces before execution or rejection is reported as final.
 
 ## Classification Values
 
@@ -104,9 +106,21 @@ also returns:
 }
 ```
 
-Consumers should persist the `decision_envelope` when the classification
-affects whether a WordPress write uses local admin consent or Core proposal
-review.
+Consumers must persist the `decision_envelope` when the classification affects
+whether a WordPress write uses local admin consent, strong local confirmation,
+Core proposal review, or a policy rejection. The persistence owner depends on
+the chosen path:
+
+| Classification | Required persistence surface |
+| --- | --- |
+| `suggestion_only` | Product-side activity or recommendation evidence when the suggestion later becomes an apply request. |
+| `local_admin_consent` | Core-owned `local_admin_consent.*` audit metadata or an equivalent product activity record that also calls the Core audit hook. |
+| `strong_local_confirmation` | Product activity plus either Core local-consent audit evidence or a Core proposal preview, depending on the product's selected authorization path. |
+| `core_proposal_required` | Core proposal `preview` metadata before any Adapter or product execution. |
+
+The Core `Operation_Classifier` must remain side-effect free. It returns the
+decision envelope; the caller owns persistence and must fail closed if the
+selected evidence surface cannot be written.
 
 For `local_admin_consent`, Core records audit evidence through the
 `npcink_governance_core_record_local_admin_consent` filter. This is an

@@ -1819,7 +1819,6 @@ final class Admin_Page {
 		<h2><?php echo esc_html__( 'Proposal Detail', 'npcink-governance-core' ); ?></h2>
 		<p class="npcink-governance-core-subtle npcink-governance-core-copy-width"><?php echo esc_html__( 'Review the governance record, action plan, and audit evidence for this proposal.', 'npcink-governance-core' ); ?></p>
 		<?php $this->render_proposal_summary_panel( $proposal ); ?>
-		<?php $this->render_decision_controls( $proposal ); ?>
 		<?php $this->render_proposal_detail_tabs( $proposal, $active_tab ); ?>
 		<div class="npcink-governance-core-tab-panel npcink-governance-core-max-wide">
 			<?php $this->render_proposal_detail_tab_panel( $active_tab, $proposal, $capability, $timeline ); ?>
@@ -1962,12 +1961,17 @@ final class Admin_Page {
 	private function render_proposal_summary_panel( array $proposal ): void {
 		$warning_count = $this->proposal_warning_count( $proposal );
 		$blocked_count = $this->proposal_blocked_count( $proposal );
+		$is_pending    = Proposal_Repository::STATUS_PENDING === (string) ( $proposal['status'] ?? '' );
 		$has_signals   = $warning_count > 0
 			|| $blocked_count > 0
 			|| $this->proposal_needs_input_count( $proposal ) > 0
 			|| $this->proposal_preflight_blocker_count( $proposal ) > 0;
+		$classes       = 'npcink-governance-core-proposal-summary npcink-governance-core-max-wide';
+		if ( $is_pending ) {
+			$classes .= ' npcink-governance-core-proposal-summary-with-actions';
+		}
 		?>
-		<div class="npcink-governance-core-proposal-summary npcink-governance-core-max-wide">
+		<div class="<?php echo esc_attr( $classes ); ?>">
 			<div>
 				<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Review ID', 'npcink-governance-core' ); ?></div>
 				<code class="npcink-governance-core-display-id npcink-governance-core-display-id-primary"><?php echo esc_html( $this->proposal_display_id( $proposal ) ); ?></code>
@@ -2001,6 +2005,12 @@ final class Admin_Page {
 					<span class="npcink-governance-core-evidence-ok"><?php echo esc_html__( 'No risk signals', 'npcink-governance-core' ); ?></span>
 				<?php endif; ?>
 			</div>
+			<?php if ( $is_pending ) : ?>
+				<div class="npcink-governance-core-summary-actions">
+					<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Decision', 'npcink-governance-core' ); ?></div>
+					<?php $this->render_decision_controls( $proposal ); ?>
+				</div>
+			<?php endif; ?>
 		</div>
 		<?php
 	}
@@ -2243,25 +2253,23 @@ final class Admin_Page {
 			return;
 		}
 		?>
-		<section class="npcink-governance-core-decision-bar npcink-governance-core-max-wide" aria-label="<?php echo esc_attr__( 'Decision', 'npcink-governance-core' ); ?>">
-			<form class="npcink-governance-core-decision-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-				<input type="hidden" name="proposal_id" value="<?php echo esc_attr( $proposal_id ); ?>" />
-				<?php wp_nonce_field( 'npcink_governance_core_decide_proposal_' . $proposal_id ); ?>
-				<button type="submit" class="button button-primary" name="action" value="npcink_governance_core_approve_proposal">
-					<?php echo esc_html__( 'Approve', 'npcink-governance-core' ); ?>
-				</button>
-				<details class="npcink-governance-core-reject-disclosure">
-					<summary class="button"><?php echo esc_html__( 'Reject', 'npcink-governance-core' ); ?></summary>
-					<div class="npcink-governance-core-reject-panel">
-						<label for="npcink-governance-core-note"><?php echo esc_html__( 'Rejection note', 'npcink-governance-core' ); ?></label>
-						<textarea id="npcink-governance-core-note" name="note" rows="3" class="large-text"></textarea>
-						<button type="submit" class="button" name="action" value="npcink_governance_core_reject_proposal">
-							<?php echo esc_html__( 'Confirm rejection', 'npcink-governance-core' ); ?>
-						</button>
-					</div>
-				</details>
-			</form>
-		</section>
+		<form class="npcink-governance-core-decision-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<input type="hidden" name="proposal_id" value="<?php echo esc_attr( $proposal_id ); ?>" />
+			<?php wp_nonce_field( 'npcink_governance_core_decide_proposal_' . $proposal_id ); ?>
+			<button type="submit" class="button button-primary" name="action" value="npcink_governance_core_approve_proposal">
+				<?php echo esc_html__( 'Approve', 'npcink-governance-core' ); ?>
+			</button>
+			<details class="npcink-governance-core-reject-disclosure">
+				<summary class="button"><?php echo esc_html__( 'Reject', 'npcink-governance-core' ); ?></summary>
+				<div class="npcink-governance-core-reject-panel">
+					<label for="npcink-governance-core-note"><?php echo esc_html__( 'Rejection note', 'npcink-governance-core' ); ?></label>
+					<textarea id="npcink-governance-core-note" name="note" rows="3" class="large-text"></textarea>
+					<button type="submit" class="button" name="action" value="npcink_governance_core_reject_proposal">
+						<?php echo esc_html__( 'Confirm rejection', 'npcink-governance-core' ); ?>
+					</button>
+				</div>
+			</details>
+		</form>
 		<?php
 	}
 

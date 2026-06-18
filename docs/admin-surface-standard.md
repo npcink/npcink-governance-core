@@ -87,11 +87,11 @@ Proposal detail should be a focused review surface:
   evidence has no warnings, blocked items, required input, or preflight
   blockers, show one `No risk signals` conclusion instead of undeclared risk
   plus zero counts;
-- pending proposals must show a top decision bar directly below the summary and
-  before the detail tabs. The decision bar should not repeat review id or
-  status from the summary. `Approve` is the primary always-visible action;
-  rejection is a secondary disclosure that reveals the rejection note and
-  confirm action only when needed;
+- pending proposals must show decision controls inside the top summary panel,
+  as a right-side `Decision` action slot. Do not render a separate empty
+  decision bar. `Approve` is the primary always-visible action; rejection is a
+  secondary disclosure that reveals the rejection note and confirm action only
+  when needed;
 - proposal detail tabs after the summary:
   `Overview`, `Action plan`, `Audit evidence`, and `Technical info`. The
   default overview tab keeps the decision context short; action, audit, and

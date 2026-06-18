@@ -63,9 +63,9 @@ The WordPress admin proposal detail also shows:
 - compact review id, status, risk, and warning/blocker counts in the top
   operator summary, with a single no-risk conclusion when preview evidence has
   no warnings, blocked items, required input, or preflight blockers;
-- top pending-decision bar with always-visible approval and a secondary
-  rejection disclosure for rejection notes, without repeating the review id or
-  status already shown in the summary;
+- inline pending-decision slot in the top summary with always-visible approval
+  and a secondary rejection disclosure for rejection notes, without a separate
+  empty action bar;
 - proposal detail tabs for overview, action plan, audit evidence, and technical
   information so dense action/audit/troubleshooting data is not shown in the
   first scan;
