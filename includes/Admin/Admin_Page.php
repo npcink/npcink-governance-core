@@ -1128,6 +1128,12 @@ final class Admin_Page {
 			$parts[] = $this->source_short_label( $source );
 		}
 
+		$plan_ability_id = (string) ( $caller['plan_ability_id'] ?? '' );
+		if ( 'npcink-toolbox/build-nightly-inspection-review-plan' === $plan_ability_id ) {
+			$actor   = __( 'Nightly Inspection', 'npcink-governance-core' );
+			$parts[] = __( 'Morning Brief', 'npcink-governance-core' );
+		}
+
 		$preview        = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
 		$preview_source = is_array( $preview['source'] ?? null ) ? $preview['source'] : array();
 		$source_type    = (string) ( $preview_source['type'] ?? '' );
@@ -2439,13 +2445,15 @@ final class Admin_Page {
 	private function proposal_has_proposed_change_details( array $proposal ): bool {
 		$preview          = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
 		$article_workflow = is_array( $preview['article_workflow'] ?? null ) ? $preview['article_workflow'] : array();
+		$nightly_review   = is_array( $preview['nightly_inspection_review'] ?? null ) ? $preview['nightly_inspection_review'] : array();
 
 		return array_key_exists( 'before', $preview )
 			|| array_key_exists( 'after_suggestion', $preview )
 			|| ! empty( $preview['needs_input'] )
 			|| ! empty( $preview['blocked_items'] )
 			|| ! empty( $preview['field_patch'] )
-			|| ! empty( $article_workflow );
+			|| ! empty( $article_workflow )
+			|| ! empty( $nightly_review );
 	}
 
 	/**
@@ -2461,6 +2469,7 @@ final class Admin_Page {
 
 		$preview          = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
 		$article_workflow = is_array( $preview['article_workflow'] ?? null ) ? $preview['article_workflow'] : array();
+		$nightly_review   = is_array( $preview['nightly_inspection_review'] ?? null ) ? $preview['nightly_inspection_review'] : array();
 		?>
 			<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide npcink-governance-core-disclosure-top">
 				<summary>
@@ -2487,6 +2496,9 @@ final class Admin_Page {
 						}
 						if ( ! empty( $article_workflow ) ) {
 							$this->render_article_workflow_review_context( $article_workflow, (string) $proposal['ability_id'] );
+						}
+						if ( ! empty( $nightly_review ) ) {
+							$this->render_nightly_inspection_review_context( $nightly_review );
 						}
 						?>
 					</tbody>
@@ -2595,6 +2607,55 @@ final class Admin_Page {
 		if ( ! empty( $blocked_claims ) ) {
 			$this->render_review_value_row( __( 'Blocked claims', 'npcink-governance-core' ), $blocked_claims );
 		}
+	}
+
+	/**
+	 * Renders the selected Morning Brief review item preserved by Nightly Inspection handoff.
+	 *
+	 * @param array<string,mixed> $nightly_review Nightly inspection preview payload.
+	 * @return void
+	 */
+	private function render_nightly_inspection_review_context( array $nightly_review ): void {
+		$selected_items      = is_array( $nightly_review['selected_review_items'] ?? null ) ? array_values( $nightly_review['selected_review_items'] ) : array();
+		$core_intake_package = is_array( $nightly_review['core_intake_package'] ?? null ) ? $nightly_review['core_intake_package'] : array();
+		$first_item          = is_array( $selected_items[0] ?? null ) ? $selected_items[0] : array();
+
+		$this->render_review_value_row(
+			__( 'Nightly review item', 'npcink-governance-core' ),
+			array(
+				'action_id'               => (string) ( $first_item['action_id'] ?? '' ),
+				'title'                   => (string) ( $first_item['title'] ?? '' ),
+				'object_type'             => (string) ( $first_item['object_type'] ?? '' ),
+				'object_id'               => (string) ( $first_item['object_id'] ?? '' ),
+				'score'                   => $first_item['score'] ?? null,
+				'severity'                => (string) ( $first_item['severity'] ?? '' ),
+				'reason_codes'            => is_array( $first_item['reason_codes'] ?? null ) ? array_values( $first_item['reason_codes'] ) : array(),
+				'recommended_next_action' => (string) ( $first_item['recommended_next_action'] ?? '' ),
+				'evidence_ref_count'      => absint( $nightly_review['evidence_ref_count'] ?? 0 ),
+			)
+		);
+
+		$this->render_review_value_row(
+			__( 'Morning Brief handoff', 'npcink-governance-core' ),
+			array(
+				'contract_version'             => (string) ( $nightly_review['contract_version'] ?? '' ),
+				'cloud_run_id'                 => (string) ( $nightly_review['cloud_run_id'] ?? '' ),
+				'handoff_surface'              => (string) ( $core_intake_package['handoff_surface'] ?? 'morning_brief_review_queue' ),
+				'selected_item_count'          => count( $selected_items ),
+				'operator_next_action'         => (string) ( $nightly_review['operator_next_action'] ?? '' ),
+				'needs_input_resolution_owner' => (string) ( $nightly_review['needs_input_resolution_owner'] ?? '' ),
+				'resubmission_required'        => ! empty( $nightly_review['resubmission_required'] ) ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ),
+				'core_amendment_supported'     => ! empty( $nightly_review['core_amendment_supported'] ) ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ),
+				'final_write_path'             => (string) ( $nightly_review['final_write_path'] ?? '' ),
+				'direct_wordpress_write'       => ! empty( $nightly_review['direct_wordpress_write'] ) ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ),
+				'cloud_scheduler_truth'        => ! empty( $nightly_review['cloud_scheduler_truth'] ) ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ),
+			)
+		);
+
+		$this->render_review_value_row(
+			__( 'Required next step', 'npcink-governance-core' ),
+			__( 'Return to Toolbox Morning Brief, draft the title and content for the selected review item, then resubmit a complete Core proposal. Core does not generate or edit missing draft fields.', 'npcink-governance-core' )
+		);
 	}
 
 	/**
