@@ -82,6 +82,7 @@ abilities:
 - `npcink-toolbox/build-article-media-batch-write-plan`
 - `npcink-toolbox/build-image-candidate-adoption-plan`
 - `npcink-toolbox/build-site-knowledge-review-plan`
+- `npcink-toolbox/build-nightly-inspection-review-plan`
 - `npcink-toolbox/build-content-metadata-apply-plan`
 
 They must remain discoverable as `governance_mode=direct_read` with
@@ -128,6 +129,16 @@ Knowledge agent handoff owned by Toolbox. Core accepts it only as a
 `npcink-abilities-toolkit/create-draft` review action that requires human
 `title` and `content` input. It does not move Cloud Site Knowledge into a
 write owner, article generator, approval store, or preflight bypass.
+
+`npcink-toolbox/build-nightly-inspection-review-plan` is the Morning Brief
+review-item handoff owned by Toolbox after a user selects one or more review
+items from Nightly Inspection output. Core accepts it only as a
+`nightly_site_inspection_review_plan` that preserves Cloud evidence refs and
+the selected Morning Brief review item, creates one blocked
+`npcink-abilities-toolkit/create-draft` review proposal, and requires human
+`title` and `content` input before commit preflight can pass. It does not move
+Nightly Inspection, Morning Brief organization, Cloud scheduling, retry state,
+article generation, approval, or WordPress writes into Core.
 
 `npcink-toolbox/build-content-metadata-apply-plan` is the reviewed content
 metadata handoff owned by Toolbox. Core accepts it only as a

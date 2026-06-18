@@ -1820,6 +1820,8 @@ foreach (
 		'block_theme_site_preview',
 		'site_knowledge_review_preview',
 		'nightly_inspection_review_preview',
+		'nightly_inspection_core_intake_package',
+		'nightly_inspection_selected_review_items',
 		'content_metadata_apply_preview',
 		'article_workflow_artifact_keys',
 		'article_write_plan',
@@ -1838,6 +1840,11 @@ foreach (
 		'npcink_governance_core_site_knowledge_evidence_missing',
 		'npcink_governance_core_nightly_inspection_ready_rejected',
 		'npcink_governance_core_nightly_inspection_evidence_missing',
+		'npcink_governance_core_nightly_inspection_review_item_missing',
+		'draft_selected_review_item_before_commit_preflight',
+		'selected_review_item_ids',
+		'selected_review_items',
+		'cloud_core_intake_package',
 		'npcink_governance_core_content_metadata_create_missing_rejected',
 		'npcink_governance_core_content_metadata_authorization_rejected',
 		'npcink_governance_core_content_metadata_update_field_rejected',
@@ -1959,8 +1966,10 @@ npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-article-batch-write-plan' ), 'Plan-to-proposal docs include the Toolbox article batch writing handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-article-media-batch-write-plan' ), 'Plan-to-proposal docs include the Toolbox article media batch handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-site-knowledge-review-plan' ), 'Plan-to-proposal docs include the Toolbox Site Knowledge review handoff.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-nightly-inspection-review-plan' ), 'Plan-to-proposal docs include the Toolbox Nightly Inspection review handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-content-metadata-apply-plan' ), 'Plan-to-proposal docs include the Toolbox content metadata apply handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'blocked draft-review proposal' ), 'Plan-to-proposal docs keep Site Knowledge review non-executable before human input.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'review this Morning Brief item in Core' ) && false !== strpos( $plan_to_proposal_docs, 'preview.nightly_inspection_review' ) && false !== strpos( $plan_to_proposal_docs, 'selected Morning Brief review item ids/items' ), 'Plan-to-proposal docs preserve Nightly Morning Brief selected-item review context.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-media-optimization-plan' ), 'Plan-to-proposal docs include the media optimization handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-media-adoption-enhancement-plan' ), 'Plan-to-proposal docs include the media adoption enhancement handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-media-rename-plan' ), 'Plan-to-proposal docs include the media rename handoff.' );
@@ -2088,6 +2097,15 @@ foreach (
 ) {
 	npcink_governance_core_assert( false !== strpos( $cloud_bulk_article_contract, $required ), 'Cloud bulk article run contract contains required text: ' . $required );
 }
+
+$rest_api_contract = npcink_governance_core_read( $root . '/docs/rest-api-contract.md' );
+npcink_governance_core_assert( false !== strpos( $rest_api_contract, 'npcink-toolbox/build-nightly-inspection-review-plan' ) && false !== strpos( $rest_api_contract, 'source_context.cloud_core_intake_package.selected_review_items' ) && false !== strpos( $rest_api_contract, 'preview.nightly_inspection_review' ), 'REST API contract documents Nightly Morning Brief Core intake shape.' );
+$ability_intake_contract = npcink_governance_core_read( $root . '/docs/ability-intake-contract.md' );
+npcink_governance_core_assert( false !== strpos( $ability_intake_contract, 'npcink-toolbox/build-nightly-inspection-review-plan' ) && false !== strpos( $ability_intake_contract, 'selected Morning Brief review item' ) && false !== strpos( $ability_intake_contract, 'Cloud scheduling, retry state' ), 'Ability intake contract documents Nightly Inspection as selected-item review handoff only.' );
+
+$admin_page = npcink_governance_core_read( $root . '/includes/Admin/Admin_Page.php' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_nightly_inspection_review_context' ) && false !== strpos( $admin_page, 'Nightly review item' ) && false !== strpos( $admin_page, 'Morning Brief handoff' ), 'Admin proposal detail renders Nightly Morning Brief selected review item context.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-toolbox/build-nightly-inspection-review-plan' ) && false !== strpos( $admin_page, 'Nightly Inspection' ) && false !== strpos( $admin_page, 'Morning Brief' ), 'Admin review queue summarizes Nightly Inspection proposal source as Morning Brief.' );
 
 $audit_repository = npcink_governance_core_read( $root . '/includes/Audit/Audit_Log_Repository.php' );
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'sanitize_text_field( $event_name )' ), 'Audit repository preserves dotted event names.' );

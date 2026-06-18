@@ -25,6 +25,7 @@ an execution bridge.
 - `npcink-toolbox/build-article-media-batch-write-plan`
 - `npcink-toolbox/build-image-candidate-adoption-plan`
 - `npcink-toolbox/build-site-knowledge-review-plan`
+- `npcink-toolbox/build-nightly-inspection-review-plan`
 - `npcink-toolbox/build-content-metadata-apply-plan`
 
 The `npcink-abilities-toolkit/*` planning abilities belong to `npcink-abilities-toolkit`; the
@@ -39,6 +40,16 @@ Cloud Site Knowledge agent handoff into local Core review. The plan must carry
 evidence refs and create only a blocked draft-review proposal with human
 `title` and `content` input still required. It is not an autonomous article
 writer, Cloud write path, or approval/preflight bypass.
+
+`npcink-toolbox/build-nightly-inspection-review-plan` is the Morning Brief
+review-item bridge from Nightly Inspection into local Core review. The operator
+must select review items in the Morning Brief surface before Toolbox submits
+the plan to `POST /proposals/from-plan`. The plan must preserve the selected
+review item ids/items, Cloud evidence refs, and Core intake package context,
+then create only one blocked `npcink-abilities-toolkit/create-draft` review
+proposal with human `title` and `content` input still required. It is not a
+Nightly runtime, Cloud scheduler, retry store, article writer, approval bypass,
+or WordPress write path.
 
 `npcink-toolbox/build-content-metadata-apply-plan` is the reviewed metadata
 choice handoff from the Toolbox editor. It may package accepted excerpt,
@@ -227,6 +238,26 @@ target post id, accepted choices, evidence refs, classification decision
 evidence, new-term candidate count, and `direct_wordpress_write=false`. Core
 does not generate metadata suggestions, approve the proposal, execute the
 write, create taxonomy terms, store feedback, or maintain a learning loop.
+
+`npcink-toolbox/build-nightly-inspection-review-plan` is the bounded handoff for
+the user intent "review this Morning Brief item in Core" after Nightly
+Inspection has produced reviewable items and the operator has selected one or
+more of them. It must return
+`artifact_type=nightly_site_inspection_review_plan`,
+`contract_version=nightly_site_inspection_core_review_plan.v1`,
+`requires_approval=true`, `dry_run=true`, `commit_execution=false`,
+`direct_wordpress_write=false`, non-empty `evidence_refs`, and one blocked
+`npcink-abilities-toolkit/create-draft` review action with
+`proposal_ready=false`, `requires_input=["title","content"]`, `status=draft`,
+`dry_run=true`, and `commit=false`.
+
+The generated proposal preserves `preview.nightly_inspection_review` with the
+Cloud run id, evidence refs, selected Morning Brief review item ids/items, Core
+intake package context, blocked output classes, `final_write_path`, and
+`cloud_scheduler_truth=false`. Core does not run the nightly inspection,
+organize Morning Brief queues, own Cloud job status, approve the proposal,
+generate draft content, pass commit preflight while input is missing, or
+execute WordPress writes.
 
 Article writing is a local Ability recipe, not a Cloud writing feature. Cloud
 must not produce article drafts, `article_write_plan` candidates, or bulk
