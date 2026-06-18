@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: npcink-governance-core 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/npcink-governance-core\n"
-"POT-Creation-Date: 2026-06-18T05:54:11+00:00\n"
+"POT-Creation-Date: 2026-06-18T06:31:03+00:00\n"
 "PO-Revision-Date: 2026-06-07 00:00+0800\n"
 "Last-Translator: Npcink <translate@npcink.local>\n"
 "Language-Team: Chinese (Simplified) <translate@npcink.local>\n"
@@ -43,7 +43,7 @@ msgstr "Npcink AI"
 msgid "Npcink AI Overview"
 msgstr "Npcink AI 概览"
 
-#: includes/Admin/Admin_Page.php:173 includes/Admin/Admin_Page.php:1848
+#: includes/Admin/Admin_Page.php:173 includes/Admin/Admin_Page.php:1925
 msgid "Overview"
 msgstr "概览"
 
@@ -107,11 +107,11 @@ msgstr "未找到所选提案。"
 msgid "Review Queue"
 msgstr "审核队列"
 
-#: includes/Admin/Admin_Page.php:350 includes/Admin/Admin_Page.php:2886
+#: includes/Admin/Admin_Page.php:350 includes/Admin/Admin_Page.php:2963
 msgid "Activity Log"
 msgstr "活动记录"
 
-#: includes/Admin/Admin_Page.php:354 includes/Admin/Admin_Page.php:1609
+#: includes/Admin/Admin_Page.php:354 includes/Admin/Admin_Page.php:1686
 msgid "Expired / Archived"
 msgstr "已过期 / 已归档"
 
@@ -124,7 +124,7 @@ msgstr "设置"
 msgid "Core admin sections"
 msgstr "Core 管理区段"
 
-#: includes/Admin/Admin_Page.php:401 includes/Admin/Admin_Page.php:3578
+#: includes/Admin/Admin_Page.php:401 includes/Admin/Admin_Page.php:3742
 msgid "Needs review"
 msgstr "待审核"
 
@@ -132,7 +132,7 @@ msgstr "待审核"
 msgid "Pending proposals waiting for an administrator decision."
 msgstr "等待管理员决策的待审提案。"
 
-#: includes/Admin/Admin_Page.php:402 includes/Admin/Admin_Page.php:3579
+#: includes/Admin/Admin_Page.php:402 includes/Admin/Admin_Page.php:3743
 msgid "Approved"
 msgstr "已批准"
 
@@ -140,8 +140,8 @@ msgstr "已批准"
 msgid "Approved proposals waiting for Adapter preflight or execution record."
 msgstr "已批准，等待 Adapter 预检或执行记录的提案。"
 
-#: includes/Admin/Admin_Page.php:403 includes/Admin/Admin_Page.php:3122
-#: includes/Admin/Admin_Page.php:3146 includes/Admin/Admin_Page.php:3584
+#: includes/Admin/Admin_Page.php:403 includes/Admin/Admin_Page.php:3286
+#: includes/Admin/Admin_Page.php:3310 includes/Admin/Admin_Page.php:3748
 msgid "Execution failed"
 msgstr "执行失败"
 
@@ -165,9 +165,9 @@ msgstr "提案查询"
 msgid "Open a Core proposal by display ID or full proposal ID."
 msgstr "通过展示 ID 或完整提案 ID 打开 Core 提案。"
 
-#: includes/Admin/Admin_Page.php:458 includes/Admin/Admin_Page.php:851
-#: includes/Admin/Admin_Page.php:2124 includes/Admin/Admin_Page.php:2936
-#: includes/Admin/Admin_Page.php:3323
+#: includes/Admin/Admin_Page.php:458 includes/Admin/Admin_Page.php:928
+#: includes/Admin/Admin_Page.php:2201 includes/Admin/Admin_Page.php:3013
+#: includes/Admin/Admin_Page.php:3204 includes/Admin/Admin_Page.php:3487
 msgid "Proposal ID"
 msgstr "提案 ID"
 
@@ -231,32 +231,33 @@ msgstr "待处理请求"
 msgid "Select all proposals on this page"
 msgstr "选择本页所有提案"
 
-#: includes/Admin/Admin_Page.php:571 includes/Admin/Admin_Page.php:2971
+#: includes/Admin/Admin_Page.php:571 includes/Admin/Admin_Page.php:3046
 msgid "Request"
 msgstr "请求"
 
-#: includes/Admin/Admin_Page.php:572 includes/Admin/Admin_Page.php:864
+#: includes/Admin/Admin_Page.php:572 includes/Admin/Admin_Page.php:941
 msgid "Source"
 msgstr "来源"
 
-#: includes/Admin/Admin_Page.php:573 includes/Admin/Admin_Page.php:1551
-#: includes/Admin/Admin_Page.php:1625 includes/Admin/Admin_Page.php:1985
+#: includes/Admin/Admin_Page.php:573 includes/Admin/Admin_Page.php:1628
+#: includes/Admin/Admin_Page.php:1702 includes/Admin/Admin_Page.php:2062
 msgid "Status"
 msgstr "状态"
 
-#: includes/Admin/Admin_Page.php:574 includes/Admin/Admin_Page.php:882
-#: includes/Admin/Admin_Page.php:2134
+#: includes/Admin/Admin_Page.php:574 includes/Admin/Admin_Page.php:959
+#: includes/Admin/Admin_Page.php:2211
 msgid "Created"
 msgstr "已创建"
 
 #: includes/Admin/Admin_Page.php:575 includes/Admin/Admin_Page.php:640
-#: includes/Admin/Admin_Page.php:643
+#: includes/Admin/Admin_Page.php:643 includes/Admin/Admin_Page.php:3048
+#: includes/Admin/Admin_Page.php:3077
 msgid "Details"
 msgstr "详情"
 
-#: includes/Admin/Admin_Page.php:576 includes/Admin/Admin_Page.php:1262
-#: includes/Admin/Admin_Page.php:1554 includes/Admin/Admin_Page.php:1628
-#: includes/Admin/Admin_Page.php:2216
+#: includes/Admin/Admin_Page.php:576 includes/Admin/Admin_Page.php:1339
+#: includes/Admin/Admin_Page.php:1631 includes/Admin/Admin_Page.php:1705
+#: includes/Admin/Admin_Page.php:2293
 msgid "Action"
 msgstr "操作"
 
@@ -324,7 +325,7 @@ msgstr "拒绝前请核对所选请求。Core 会记录拒绝决定，不会执�
 msgid "Add rejection note"
 msgstr "添加拒绝备注"
 
-#: includes/Admin/Admin_Page.php:683 includes/Admin/Admin_Page.php:2265
+#: includes/Admin/Admin_Page.php:683 includes/Admin/Admin_Page.php:2342
 msgid "Rejection note"
 msgstr "拒绝备注"
 
@@ -349,1231 +350,1239 @@ msgid "Apply"
 msgstr "应用"
 
 #. translators: %s: total item count.
-#: includes/Admin/Admin_Page.php:735
+#: includes/Admin/Admin_Page.php:735 includes/Admin/Admin_Page.php:812
 #, php-format
 msgid "%s items"
 msgstr "%s 项"
 
-#: includes/Admin/Admin_Page.php:742
+#: includes/Admin/Admin_Page.php:742 includes/Admin/Admin_Page.php:819
 msgid "First page"
 msgstr "第一页"
 
-#: includes/Admin/Admin_Page.php:743
+#: includes/Admin/Admin_Page.php:743 includes/Admin/Admin_Page.php:820
 msgid "Previous page"
 msgstr "上一页"
 
 #. translators: 1: current page, 2: total pages.
-#: includes/Admin/Admin_Page.php:749
+#: includes/Admin/Admin_Page.php:749 includes/Admin/Admin_Page.php:826
 #, php-format
 msgid "Page %1$d of %2$d"
 msgstr "第 %1$d 页，共 %2$d 页"
 
-#: includes/Admin/Admin_Page.php:756
+#: includes/Admin/Admin_Page.php:756 includes/Admin/Admin_Page.php:833
 msgid "Next page"
 msgstr "下一页"
 
-#: includes/Admin/Admin_Page.php:757
+#: includes/Admin/Admin_Page.php:757 includes/Admin/Admin_Page.php:834
 msgid "Last page"
 msgstr "最后一页"
 
-#: includes/Admin/Admin_Page.php:846 includes/Admin/Admin_Page.php:2119
+#: includes/Admin/Admin_Page.php:923 includes/Admin/Admin_Page.php:2196
 msgid "Display ID"
 msgstr "展示 ID"
 
-#: includes/Admin/Admin_Page.php:856 includes/Admin/Admin_Page.php:2129
-#: includes/Admin/Admin_Page.php:2217 includes/Admin/Admin_Page.php:2398
+#: includes/Admin/Admin_Page.php:933 includes/Admin/Admin_Page.php:2206
+#: includes/Admin/Admin_Page.php:2294 includes/Admin/Admin_Page.php:2475
 msgid "Target ability"
 msgstr "目标能力"
 
-#: includes/Admin/Admin_Page.php:869 includes/Admin/Admin_Page.php:1517
-#: includes/Admin/Admin_Page.php:2171 includes/Admin/Admin_Page.php:2948
-#: includes/Admin/Admin_Page.php:3326
+#: includes/Admin/Admin_Page.php:946 includes/Admin/Admin_Page.php:1594
+#: includes/Admin/Admin_Page.php:2248 includes/Admin/Admin_Page.php:3025
+#: includes/Admin/Admin_Page.php:3208 includes/Admin/Admin_Page.php:3490
 msgid "Caller type"
 msgstr "调用方类型"
 
-#: includes/Admin/Admin_Page.php:874 includes/Admin/Admin_Page.php:1549
-#: includes/Admin/Admin_Page.php:1716 includes/Admin/Admin_Page.php:2176
-#: includes/Admin/Admin_Page.php:2944 includes/Admin/Admin_Page.php:3325
+#: includes/Admin/Admin_Page.php:951 includes/Admin/Admin_Page.php:1626
+#: includes/Admin/Admin_Page.php:1793 includes/Admin/Admin_Page.php:2253
+#: includes/Admin/Admin_Page.php:3021 includes/Admin/Admin_Page.php:3207
+#: includes/Admin/Admin_Page.php:3489
 msgid "App ID"
 msgstr "应用 ID"
 
-#: includes/Admin/Admin_Page.php:887 includes/Admin/Admin_Page.php:1627
-#: includes/Admin/Admin_Page.php:2138
+#: includes/Admin/Admin_Page.php:964 includes/Admin/Admin_Page.php:1704
+#: includes/Admin/Admin_Page.php:2215
 msgid "Updated"
 msgstr "已更新"
 
-#: includes/Admin/Admin_Page.php:892 includes/Admin/Admin_Page.php:2181
-#: includes/Admin/Admin_Page.php:2416
+#: includes/Admin/Admin_Page.php:969 includes/Admin/Admin_Page.php:2258
+#: includes/Admin/Admin_Page.php:2493
 msgid "Policy decision"
 msgstr "策略决策"
 
-#: includes/Admin/Admin_Page.php:897 includes/Admin/Admin_Page.php:2186
+#: includes/Admin/Admin_Page.php:974 includes/Admin/Admin_Page.php:2263
 msgid "Policy profile"
 msgstr "策略配置"
 
-#: includes/Admin/Admin_Page.php:902 includes/Admin/Admin_Page.php:2191
+#: includes/Admin/Admin_Page.php:979 includes/Admin/Admin_Page.php:2268
 msgid "Policy reasons"
 msgstr "策略原因"
 
-#: includes/Admin/Admin_Page.php:925
+#: includes/Admin/Admin_Page.php:1002
 msgid "Identity and source"
 msgstr "身份与来源"
 
-#: includes/Admin/Admin_Page.php:929
+#: includes/Admin/Admin_Page.php:1006
 msgid "Time and policy"
 msgstr "时间与策略"
 
-#: includes/Admin/Admin_Page.php:964
+#: includes/Admin/Admin_Page.php:1041
 msgid "Create draft"
 msgstr "创建草稿"
 
-#: includes/Admin/Admin_Page.php:965
+#: includes/Admin/Admin_Page.php:1042
 msgid "Update SEO fields"
 msgstr "更新 SEO 字段"
 
-#: includes/Admin/Admin_Page.php:966
+#: includes/Admin/Admin_Page.php:1043
 msgid "Approve comment"
 msgstr "批准评论"
 
-#: includes/Admin/Admin_Page.php:967
+#: includes/Admin/Admin_Page.php:1044
 msgid "Update taxonomy terms"
 msgstr "更新分类项"
 
-#: includes/Admin/Admin_Page.php:968
+#: includes/Admin/Admin_Page.php:1045
 msgid "Update post"
 msgstr "更新文章"
 
-#: includes/Admin/Admin_Page.php:969
+#: includes/Admin/Admin_Page.php:1046
 msgid "Update media details"
 msgstr "更新媒体详情"
 
-#: includes/Admin/Admin_Page.php:970
+#: includes/Admin/Admin_Page.php:1047
 msgid "Rename media file"
 msgstr "重命名媒体文件"
 
-#: includes/Admin/Admin_Page.php:971
+#: includes/Admin/Admin_Page.php:1048
 msgid "Delete media permanently"
 msgstr "永久删除媒体"
 
-#: includes/Admin/Admin_Page.php:972
+#: includes/Admin/Admin_Page.php:1049
 msgid "Import media"
 msgstr "导入媒体"
 
-#: includes/Admin/Admin_Page.php:973
+#: includes/Admin/Admin_Page.php:1050
 msgid "Set featured image"
 msgstr "设置特色图片"
 
-#: includes/Admin/Admin_Page.php:974
+#: includes/Admin/Admin_Page.php:1051
 msgid "Update post content"
 msgstr "更新文章内容"
 
-#: includes/Admin/Admin_Page.php:986
+#: includes/Admin/Admin_Page.php:1063
 msgid "Review WordPress change"
 msgstr "审核 WordPress 更改"
 
-#: includes/Admin/Admin_Page.php:998
+#: includes/Admin/Admin_Page.php:1075
 msgid "Batch proposal"
 msgstr "批量提案"
 
 #. translators: %d: number of proposal actions.
-#: includes/Admin/Admin_Page.php:1015
+#: includes/Admin/Admin_Page.php:1092
 #, php-format
 msgid "%d governed action"
 msgid_plural "%d governed actions"
 msgstr[0] "%d 个治理动作"
 msgstr[1] "%d 个治理动作"
 
-#: includes/Admin/Admin_Page.php:1020
+#: includes/Admin/Admin_Page.php:1097
 msgid "Single governed action"
 msgstr "单个治理动作"
 
 #. translators: %s: plan ability id.
-#: includes/Admin/Admin_Page.php:1043
+#: includes/Admin/Admin_Page.php:1120
 #, php-format
 msgid "plan %s"
 msgstr "计划 %s"
 
 #. translators: %s: batch id.
-#: includes/Admin/Admin_Page.php:1052
+#: includes/Admin/Admin_Page.php:1129
 #, php-format
 msgid "batch %s"
 msgstr "批次 %s"
 
 #. translators: %s: action id.
-#: includes/Admin/Admin_Page.php:1061
+#: includes/Admin/Admin_Page.php:1138
 #, php-format
 msgid "action %s"
 msgstr "操作 %s"
 
 #. translators: %s: caller type.
-#: includes/Admin/Admin_Page.php:1070
+#: includes/Admin/Admin_Page.php:1147
 #, php-format
 msgid "caller %s"
 msgstr "调用方 %s"
 
 #. translators: %s: app id.
-#: includes/Admin/Admin_Page.php:1079
+#: includes/Admin/Admin_Page.php:1156
 #, php-format
 msgid "app %s"
 msgstr "应用 %s"
 
-#: includes/Admin/Admin_Page.php:1133
+#: includes/Admin/Admin_Page.php:1210
 msgid "Nightly Inspection"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1134
+#: includes/Admin/Admin_Page.php:1211
 msgid "Morning Brief"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1145 includes/Admin/Admin_Page.php:3698
+#: includes/Admin/Admin_Page.php:1222 includes/Admin/Admin_Page.php:3862
 msgid "Direct request"
 msgstr "直接请求"
 
-#: includes/Admin/Admin_Page.php:1177 includes/Admin/Admin_Page.php:3164
+#: includes/Admin/Admin_Page.php:1254 includes/Admin/Admin_Page.php:3328
 msgid "External app"
 msgstr "外部应用"
 
-#: includes/Admin/Admin_Page.php:1178 includes/Admin/Admin_Page.php:3165
+#: includes/Admin/Admin_Page.php:1255 includes/Admin/Admin_Page.php:3329
 msgid "Product adapter"
 msgstr "产品适配器"
 
-#: includes/Admin/Admin_Page.php:1179 includes/Admin/Admin_Page.php:1180
+#: includes/Admin/Admin_Page.php:1256 includes/Admin/Admin_Page.php:1257
 msgid "WordPress admin"
 msgstr "WordPress 管理员"
 
-#: includes/Admin/Admin_Page.php:1194
+#: includes/Admin/Admin_Page.php:1271
 msgid "Smoke quota"
 msgstr "Smoke 测试"
 
-#: includes/Admin/Admin_Page.php:1198
+#: includes/Admin/Admin_Page.php:1275
 msgid "Plan batch"
 msgstr "计划批次"
 
-#: includes/Admin/Admin_Page.php:1215
+#: includes/Admin/Admin_Page.php:1292
 msgid "Recent Activity"
 msgstr "最近活动"
 
-#: includes/Admin/Admin_Page.php:1216
+#: includes/Admin/Admin_Page.php:1293
 msgid "Latest Core governance events. Full audit is in its own tab."
 msgstr "最新 Core 治理事件。完整审计位于单独标签页。"
 
-#: includes/Admin/Admin_Page.php:1220
+#: includes/Admin/Admin_Page.php:1297
 msgid "No recent governance activity."
 msgstr "没有最近的治理活动。"
 
-#: includes/Admin/Admin_Page.php:1228 includes/Admin/Admin_Page.php:2993
-#: includes/Admin/Admin_Page.php:3168
+#: includes/Admin/Admin_Page.php:1305 includes/Admin/Admin_Page.php:3071
+#: includes/Admin/Admin_Page.php:3332
 msgid "System"
 msgstr "系统"
 
-#: includes/Admin/Admin_Page.php:1232
+#: includes/Admin/Admin_Page.php:1309
 msgid "Open full audit"
 msgstr "打开完整审计"
 
-#: includes/Admin/Admin_Page.php:1248 includes/Admin/Admin_Page.php:1499
+#: includes/Admin/Admin_Page.php:1325 includes/Admin/Admin_Page.php:1576
 msgid "Advanced Access"
 msgstr "高级访问"
 
-#: includes/Admin/Admin_Page.php:1249
+#: includes/Admin/Admin_Page.php:1326
 msgid "Client access keys for trusted governance clients."
 msgstr "用于受信任治理客户端的访问密钥。"
 
-#: includes/Admin/Admin_Page.php:1254
+#: includes/Admin/Admin_Page.php:1331
 msgid "Active app keys"
 msgstr "活动应用密钥"
 
-#: includes/Admin/Admin_Page.php:1258 includes/Admin/Admin_Page.php:1553
+#: includes/Admin/Admin_Page.php:1335 includes/Admin/Admin_Page.php:1630
 msgid "Last used"
 msgstr "上次使用"
 
-#: includes/Admin/Admin_Page.php:1259 includes/Admin/Admin_Page.php:1568
+#: includes/Admin/Admin_Page.php:1336 includes/Admin/Admin_Page.php:1645
 msgid "Never"
 msgstr "从未"
 
-#: includes/Admin/Admin_Page.php:1263
+#: includes/Admin/Admin_Page.php:1340
 msgid "Manage Core app keys"
 msgstr "管理 Core 应用密钥"
 
-#: includes/Admin/Admin_Page.php:1296 includes/Admin/Admin_Page.php:1748
-#: includes/Admin/Admin_Page.php:1774
+#: includes/Admin/Admin_Page.php:1373 includes/Admin/Admin_Page.php:1825
+#: includes/Admin/Admin_Page.php:1851
 msgid "You do not have permission to update proposals."
 msgstr "您没有权限更新提案。"
 
-#: includes/Admin/Admin_Page.php:1307
+#: includes/Admin/Admin_Page.php:1384
 msgid "Rejected from bulk review."
 msgstr "已从批量审核中拒绝。"
 
-#: includes/Admin/Admin_Page.php:1370
+#: includes/Admin/Admin_Page.php:1447
 msgid "You do not have permission to update approval policy."
 msgstr "您没有权限更新批准策略。"
 
-#: includes/Admin/Admin_Page.php:1398
+#: includes/Admin/Admin_Page.php:1475
 msgid "You do not have permission to create app keys."
 msgstr "您没有权限创建应用密钥。"
 
-#: includes/Admin/Admin_Page.php:1457
+#: includes/Admin/Admin_Page.php:1534
 msgid "You do not have permission to revoke app keys."
 msgstr "您没有权限吊销应用密钥。"
 
-#: includes/Admin/Admin_Page.php:1498 includes/Admin/Admin_Page.php:1818
+#: includes/Admin/Admin_Page.php:1575 includes/Admin/Admin_Page.php:1895
 msgid "Back to review queue"
 msgstr "返回审核队列"
 
-#: includes/Admin/Admin_Page.php:1500
+#: includes/Admin/Admin_Page.php:1577
 msgid "Use this only for trusted Core governance clients. Productized OpenClaw setup belongs in a trusted adapter."
 msgstr "仅将此用于受信任的 Core 治理客户端。产品化 OpenClaw 设置属于受信任的 adapter。"
 
-#: includes/Admin/Admin_Page.php:1504 includes/Admin/Admin_Page.php:1539
+#: includes/Admin/Admin_Page.php:1581 includes/Admin/Admin_Page.php:1616
 msgid "Create Core App Key"
 msgstr "创建 Core 应用密钥"
 
-#: includes/Admin/Admin_Page.php:1505
+#: includes/Admin/Admin_Page.php:1582
 msgid "Issue a scoped token for a trusted governance client."
 msgstr "为受信任的治理客户端签发限定范围的令牌。"
 
-#: includes/Admin/Admin_Page.php:1513
+#: includes/Admin/Admin_Page.php:1590
 msgid "App label"
 msgstr "应用标签"
 
-#: includes/Admin/Admin_Page.php:1521 includes/Admin/Admin_Page.php:1552
+#: includes/Admin/Admin_Page.php:1598 includes/Admin/Admin_Page.php:1629
 msgid "Scopes"
 msgstr "权限范围"
 
-#: includes/Admin/Admin_Page.php:1525
+#: includes/Admin/Admin_Page.php:1602
 msgid "Rate limit"
 msgstr "速率限制"
 
-#: includes/Admin/Admin_Page.php:1528
+#: includes/Admin/Admin_Page.php:1605
 msgid "Requests"
 msgstr "请求数"
 
-#: includes/Admin/Admin_Page.php:1532
+#: includes/Admin/Admin_Page.php:1609
 msgid "Window seconds"
 msgstr "窗口秒数"
 
-#: includes/Admin/Admin_Page.php:1543
+#: includes/Admin/Admin_Page.php:1620
 msgid "Core App Keys"
 msgstr "Core 应用密钥"
 
-#: includes/Admin/Admin_Page.php:1548
+#: includes/Admin/Admin_Page.php:1625
 msgid "Label"
 msgstr "标签"
 
-#: includes/Admin/Admin_Page.php:1550 includes/Admin/Admin_Page.php:1720
+#: includes/Admin/Admin_Page.php:1627 includes/Admin/Admin_Page.php:1797
 msgid "Key ID"
 msgstr "密钥 ID"
 
-#: includes/Admin/Admin_Page.php:1559
+#: includes/Admin/Admin_Page.php:1636
 msgid "No app keys yet."
 msgstr "尚无应用密钥。"
 
-#: includes/Admin/Admin_Page.php:1575
+#: includes/Admin/Admin_Page.php:1652
 msgid "Disable this app key? Existing clients using this token will receive 401."
 msgstr "要禁用此应用密钥吗？使用此令牌的现有客户端将收到 401。"
 
-#: includes/Admin/Admin_Page.php:1575
+#: includes/Admin/Admin_Page.php:1652
 msgid "Disable"
 msgstr "禁用"
 
-#: includes/Admin/Admin_Page.php:1578
+#: includes/Admin/Admin_Page.php:1655
 msgid "Disabled"
 msgstr "已禁用"
 
-#: includes/Admin/Admin_Page.php:1610
+#: includes/Admin/Admin_Page.php:1687
 msgid "Stale requests are kept for audit but removed from the active review queue."
 msgstr "陈旧请求会保留用于审计，但会从活动审核队列中移除。"
 
-#: includes/Admin/Admin_Page.php:1624
+#: includes/Admin/Admin_Page.php:1701
 msgid "Proposal"
 msgstr "提案"
 
-#: includes/Admin/Admin_Page.php:1626
+#: includes/Admin/Admin_Page.php:1703
 msgid "Age"
 msgstr "时间"
 
-#: includes/Admin/Admin_Page.php:1634
+#: includes/Admin/Admin_Page.php:1711
 msgid "No expired or archived proposals."
 msgstr "没有已过期或已归档的提案。"
 
-#: includes/Admin/Admin_Page.php:1665
+#: includes/Admin/Admin_Page.php:1742
 msgid "Read capabilities"
 msgstr "读取能力"
 
-#: includes/Admin/Admin_Page.php:1666
+#: includes/Admin/Admin_Page.php:1743
 msgid "Create proposals"
 msgstr "创建提案"
 
-#: includes/Admin/Admin_Page.php:1667
+#: includes/Admin/Admin_Page.php:1744
 msgid "Read proposals"
 msgstr "读取提案"
 
-#: includes/Admin/Admin_Page.php:1668
+#: includes/Admin/Admin_Page.php:1745
 msgid "Commit preflight"
 msgstr "提交前检查"
 
-#: includes/Admin/Admin_Page.php:1669
+#: includes/Admin/Admin_Page.php:1746
 msgid "Approve proposals"
 msgstr "批准提案"
 
-#: includes/Admin/Admin_Page.php:1670
+#: includes/Admin/Admin_Page.php:1747
 msgid "Reject proposals"
 msgstr "拒绝提案"
 
-#: includes/Admin/Admin_Page.php:1671
+#: includes/Admin/Admin_Page.php:1748
 msgid "Record execution results"
 msgstr "记录执行结果"
 
-#: includes/Admin/Admin_Page.php:1672
+#: includes/Admin/Admin_Page.php:1749
 msgid "Read audit log"
 msgstr "读取审计日志"
 
-#: includes/Admin/Admin_Page.php:1700 includes/Admin/Admin_Page.php:1708
+#: includes/Admin/Admin_Page.php:1777 includes/Admin/Admin_Page.php:1785
 msgid "Core App Key Created"
 msgstr "Core 应用密钥已创建"
 
-#: includes/Admin/Admin_Page.php:1710
+#: includes/Admin/Admin_Page.php:1787
 msgid "Copy this token now. It is shown only once and is not stored in raw form."
 msgstr "请立即复制此令牌。它只显示一次，且不会以原始形式保存。"
 
-#: includes/Admin/Admin_Page.php:1711
+#: includes/Admin/Admin_Page.php:1788
 msgid "Use this token only in a trusted adapter or internal governance client secret store."
 msgstr "仅在受信任的 adapter 或内部治理客户端密钥存储中使用此令牌。"
 
-#: includes/Admin/Admin_Page.php:1724
+#: includes/Admin/Admin_Page.php:1801
 msgid "App token"
 msgstr "应用令牌"
 
-#: includes/Admin/Admin_Page.php:1728
+#: includes/Admin/Admin_Page.php:1805
 msgid "Core env"
 msgstr "Core 环境变量"
 
-#: includes/Admin/Admin_Page.php:1733
+#: includes/Admin/Admin_Page.php:1810
 msgid "Back to Advanced Access"
 msgstr "返回高级访问"
 
-#: includes/Admin/Admin_Page.php:1819
+#: includes/Admin/Admin_Page.php:1896
 msgid "Proposal Detail"
 msgstr "提案详情"
 
-#: includes/Admin/Admin_Page.php:1820
+#: includes/Admin/Admin_Page.php:1897
 msgid "Review the governance record, action plan, and audit evidence for this proposal."
 msgstr "查看该提案的治理记录、动作计划和审计证据。"
 
-#: includes/Admin/Admin_Page.php:1849
+#: includes/Admin/Admin_Page.php:1926
 msgid "Action plan"
 msgstr "动作计划"
 
-#: includes/Admin/Admin_Page.php:1850
+#: includes/Admin/Admin_Page.php:1927
 msgid "Audit evidence"
 msgstr "审计证据"
 
-#: includes/Admin/Admin_Page.php:1851
+#: includes/Admin/Admin_Page.php:1928
 msgid "Technical info"
 msgstr "技术信息"
 
-#: includes/Admin/Admin_Page.php:1864
+#: includes/Admin/Admin_Page.php:1941
 msgid "Proposal detail sections"
 msgstr "提案详情分区"
 
-#: includes/Admin/Admin_Page.php:1930
+#: includes/Admin/Admin_Page.php:2007
 msgid "No structured action plan or proposed change detail was recorded for this proposal."
 msgstr "此提案没有记录结构化动作计划或拟变更详情。"
 
-#: includes/Admin/Admin_Page.php:1976
+#: includes/Admin/Admin_Page.php:2053
 msgid "Review ID"
 msgstr "审核标识"
 
-#: includes/Admin/Admin_Page.php:1991
+#: includes/Admin/Admin_Page.php:2068
 msgid "Evidence"
 msgstr "证据"
 
 #. translators: 1: warning count, 2: blocked item count.
-#: includes/Admin/Admin_Page.php:1998
+#: includes/Admin/Admin_Page.php:2075
 #, php-format
 msgid "%1$d warnings / %2$d blocked"
 msgstr "%1$d 个警告 / %2$d 个阻塞"
 
-#: includes/Admin/Admin_Page.php:2005
+#: includes/Admin/Admin_Page.php:2082
 msgid "No risk signals"
 msgstr "无风险信号"
 
-#: includes/Admin/Admin_Page.php:2010
+#: includes/Admin/Admin_Page.php:2087
 msgid "Decision"
 msgstr "决策"
 
-#: includes/Admin/Admin_Page.php:2028
+#: includes/Admin/Admin_Page.php:2105
 msgid "Technical identity"
 msgstr "技术标识"
 
-#: includes/Admin/Admin_Page.php:2029
+#: includes/Admin/Admin_Page.php:2106
 msgid "Full proposal id, ability id, source trace, caller, app, and policy fields."
 msgstr "完整提案 ID、能力 ID、来源追踪、调用方、应用和策略字段。"
 
-#: includes/Admin/Admin_Page.php:2050
+#: includes/Admin/Admin_Page.php:2127
 msgid "No pending decision."
 msgstr "无待处理决策。"
 
-#: includes/Admin/Admin_Page.php:2116
+#: includes/Admin/Admin_Page.php:2193
 msgid "Governance identity"
 msgstr "治理标识"
 
-#: includes/Admin/Admin_Page.php:2142
+#: includes/Admin/Admin_Page.php:2219
 msgid "Expiry"
 msgstr "过期时间"
 
-#: includes/Admin/Admin_Page.php:2148
+#: includes/Admin/Admin_Page.php:2225
 msgid "Source and policy"
 msgstr "来源和策略"
 
-#: includes/Admin/Admin_Page.php:2151
+#: includes/Admin/Admin_Page.php:2228
 msgid "Source type"
 msgstr "来源类型"
 
-#: includes/Admin/Admin_Page.php:2156
+#: includes/Admin/Admin_Page.php:2233
 msgid "Plan ability"
 msgstr "计划能力"
 
-#: includes/Admin/Admin_Page.php:2161
+#: includes/Admin/Admin_Page.php:2238
 msgid "Batch ID"
 msgstr "批次 ID"
 
-#: includes/Admin/Admin_Page.php:2166
+#: includes/Admin/Admin_Page.php:2243
 msgid "Proposal mode"
 msgstr "提案模式"
 
-#: includes/Admin/Admin_Page.php:2211
+#: includes/Admin/Admin_Page.php:2288
 msgid "Batch actions"
 msgstr "批量动作"
 
-#: includes/Admin/Admin_Page.php:2212
+#: includes/Admin/Admin_Page.php:2289
 msgid "Ordered actions in this Core proposal. Final execution remains outside Core after approval and preflight."
 msgstr "该 Core 提案中的有序动作。最终执行仍在批准和预检后的 Core 之外完成。"
 
-#: includes/Admin/Admin_Page.php:2218
+#: includes/Admin/Admin_Page.php:2295
 msgid "Readiness"
 msgstr "就绪状态"
 
-#: includes/Admin/Admin_Page.php:2219
+#: includes/Admin/Admin_Page.php:2296
 msgid "Dependency"
 msgstr "依赖"
 
-#: includes/Admin/Admin_Page.php:2260
+#: includes/Admin/Admin_Page.php:2337
 msgid "Approve"
 msgstr "批准"
 
-#: includes/Admin/Admin_Page.php:2263
+#: includes/Admin/Admin_Page.php:2340
 msgid "Reject"
 msgstr "拒绝"
 
-#: includes/Admin/Admin_Page.php:2268
+#: includes/Admin/Admin_Page.php:2345
 msgid "Confirm rejection"
 msgstr "确认拒绝"
 
-#: includes/Admin/Admin_Page.php:2293
+#: includes/Admin/Admin_Page.php:2370
 msgid "Lifecycle"
 msgstr "生命周期"
 
-#: includes/Admin/Admin_Page.php:2294
+#: includes/Admin/Admin_Page.php:2371
 msgid "Expired and archived proposals are not eligible for approval until reopened."
 msgstr "过期和已归档的提案重新打开前不能批准。"
 
-#: includes/Admin/Admin_Page.php:2300
+#: includes/Admin/Admin_Page.php:2377
 msgid "Archive"
 msgstr "归档"
 
-#: includes/Admin/Admin_Page.php:2302
+#: includes/Admin/Admin_Page.php:2379
 msgid "Reopen for review"
 msgstr "重新打开以审核"
 
-#: includes/Admin/Admin_Page.php:2337 includes/Admin/Admin_Page.php:3610
-#: includes/Admin/Admin_Page.php:3624 includes/Admin/Admin_Page.php:3676
+#: includes/Admin/Admin_Page.php:2414 includes/Admin/Admin_Page.php:3774
+#: includes/Admin/Admin_Page.php:3788 includes/Admin/Admin_Page.php:3840
 msgid "Not declared"
 msgstr "未声明"
 
-#: includes/Admin/Admin_Page.php:2341 includes/Admin/Admin_Page.php:2409
-#: includes/Admin/Admin_Page.php:2582 includes/Admin/Admin_Page.php:2587
-#: includes/Admin/Admin_Page.php:2649 includes/Admin/Admin_Page.php:2652
-#: includes/Admin/Admin_Page.php:2690 includes/Admin/Admin_Page.php:2691
-#: includes/Admin/Admin_Page.php:2693 includes/Admin/Admin_Page.php:2694
-#: includes/Admin/Admin_Page.php:2736
+#: includes/Admin/Admin_Page.php:2418 includes/Admin/Admin_Page.php:2486
+#: includes/Admin/Admin_Page.php:2659 includes/Admin/Admin_Page.php:2664
+#: includes/Admin/Admin_Page.php:2726 includes/Admin/Admin_Page.php:2729
+#: includes/Admin/Admin_Page.php:2767 includes/Admin/Admin_Page.php:2768
+#: includes/Admin/Admin_Page.php:2770 includes/Admin/Admin_Page.php:2771
+#: includes/Admin/Admin_Page.php:2813
 msgid "yes"
 msgstr "是"
 
-#: includes/Admin/Admin_Page.php:2341 includes/Admin/Admin_Page.php:2409
-#: includes/Admin/Admin_Page.php:2582 includes/Admin/Admin_Page.php:2587
-#: includes/Admin/Admin_Page.php:2649 includes/Admin/Admin_Page.php:2652
-#: includes/Admin/Admin_Page.php:2690 includes/Admin/Admin_Page.php:2691
-#: includes/Admin/Admin_Page.php:2693 includes/Admin/Admin_Page.php:2694
-#: includes/Admin/Admin_Page.php:2736
+#: includes/Admin/Admin_Page.php:2418 includes/Admin/Admin_Page.php:2486
+#: includes/Admin/Admin_Page.php:2659 includes/Admin/Admin_Page.php:2664
+#: includes/Admin/Admin_Page.php:2726 includes/Admin/Admin_Page.php:2729
+#: includes/Admin/Admin_Page.php:2767 includes/Admin/Admin_Page.php:2768
+#: includes/Admin/Admin_Page.php:2770 includes/Admin/Admin_Page.php:2771
+#: includes/Admin/Admin_Page.php:2813
 msgid "no"
 msgstr "否"
 
-#: includes/Admin/Admin_Page.php:2342
+#: includes/Admin/Admin_Page.php:2419
 msgid "not declared"
 msgstr "未声明"
 
-#: includes/Admin/Admin_Page.php:2354
+#: includes/Admin/Admin_Page.php:2431
 msgid "Reason"
 msgstr "原因"
 
-#: includes/Admin/Admin_Page.php:2361
+#: includes/Admin/Admin_Page.php:2438
 msgid "Warnings"
 msgstr "警告"
 
-#: includes/Admin/Admin_Page.php:2365 includes/Admin/Admin_Page.php:2492
+#: includes/Admin/Admin_Page.php:2442 includes/Admin/Admin_Page.php:2569
 msgid "Blocked items"
 msgstr "被阻止项目"
 
-#: includes/Admin/Admin_Page.php:2369 includes/Admin/Admin_Page.php:2489
-#: includes/Admin/Admin_Page.php:3966
+#: includes/Admin/Admin_Page.php:2446 includes/Admin/Admin_Page.php:2566
+#: includes/Admin/Admin_Page.php:4130
 msgid "Needs input"
 msgstr "需要输入"
 
-#: includes/Admin/Admin_Page.php:2373
+#: includes/Admin/Admin_Page.php:2450
 msgid "Preflight blockers"
 msgstr "预检阻塞项"
 
-#: includes/Admin/Admin_Page.php:2386
+#: includes/Admin/Admin_Page.php:2463
 msgid "Review basis"
 msgstr "审核依据"
 
-#: includes/Admin/Admin_Page.php:2389
+#: includes/Admin/Admin_Page.php:2466
 msgid "The target ability is not currently discoverable. Commit preflight will fail closed until the provider exposes it again."
 msgstr "当前无法发现目标能力。在提供方再次公开该能力前，提交前检查将以关闭方式失败。"
 
-#: includes/Admin/Admin_Page.php:2395
+#: includes/Admin/Admin_Page.php:2472
 msgid "Ability and policy"
 msgstr "能力和策略"
 
-#: includes/Admin/Admin_Page.php:2403
+#: includes/Admin/Admin_Page.php:2480
 msgid "Risk"
 msgstr "风险"
 
-#: includes/Admin/Admin_Page.php:2408
+#: includes/Admin/Admin_Page.php:2485
 msgid "Requires approval"
 msgstr "需要批准"
 
-#: includes/Admin/Admin_Page.php:2412
+#: includes/Admin/Admin_Page.php:2489
 msgid "Proposal ready"
 msgstr "提案就绪"
 
-#: includes/Admin/Admin_Page.php:2425
+#: includes/Admin/Admin_Page.php:2502
 msgid "Preview signals"
 msgstr "预览信号"
 
-#: includes/Admin/Admin_Page.php:2432
+#: includes/Admin/Admin_Page.php:2509
 msgid "Preview signals: no warnings, no blocked items, no required input, and no preflight blockers."
 msgstr "预览信号：无警告、无阻塞项、无需补充输入，且无预检阻塞。"
 
-#: includes/Admin/Admin_Page.php:2476
+#: includes/Admin/Admin_Page.php:2553
 msgid "Proposed change details"
 msgstr "拟变更详情"
 
-#: includes/Admin/Admin_Page.php:2477
+#: includes/Admin/Admin_Page.php:2554
 msgid "Structured preview fields that need reviewer attention."
 msgstr "需要审核人关注的结构化预览字段。"
 
-#: includes/Admin/Admin_Page.php:2483
+#: includes/Admin/Admin_Page.php:2560
 msgid "Before"
 msgstr "之前"
 
-#: includes/Admin/Admin_Page.php:2486
+#: includes/Admin/Admin_Page.php:2563
 msgid "After suggestion"
 msgstr "建议后"
 
-#: includes/Admin/Admin_Page.php:2537
+#: includes/Admin/Admin_Page.php:2614
 msgid "Field changes"
 msgstr "字段变更"
 
-#: includes/Admin/Admin_Page.php:2542
+#: includes/Admin/Admin_Page.php:2619
 msgid "Field"
 msgstr "字段"
 
-#: includes/Admin/Admin_Page.php:2543
+#: includes/Admin/Admin_Page.php:2620
 msgid "Proposed value"
 msgstr "拟议值"
 
-#: includes/Admin/Admin_Page.php:2576
+#: includes/Admin/Admin_Page.php:2653
 msgid "Article workflow"
 msgstr "文章工作流"
 
-#: includes/Admin/Admin_Page.php:2602
+#: includes/Admin/Admin_Page.php:2679
 msgid "included"
 msgstr "已包含"
 
-#: includes/Admin/Admin_Page.php:2602
+#: includes/Admin/Admin_Page.php:2679
 msgid "missing"
 msgstr "缺失"
 
-#: includes/Admin/Admin_Page.php:2605
+#: includes/Admin/Admin_Page.php:2682
 msgid "Article artifacts"
 msgstr "文章工件"
 
-#: includes/Admin/Admin_Page.php:2608
+#: includes/Admin/Admin_Page.php:2685
 msgid "Blocked claims"
 msgstr "被阻止声明"
 
-#: includes/Admin/Admin_Page.php:2628
+#: includes/Admin/Admin_Page.php:2705
 msgid "Nightly review item"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2656
+#: includes/Admin/Admin_Page.php:2733
 msgid "Morning Brief source"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2662
+#: includes/Admin/Admin_Page.php:2739
 #, fuzzy
 msgid "Selected review items"
 msgstr "已选请求：%d"
 
-#: includes/Admin/Admin_Page.php:2669
+#: includes/Admin/Admin_Page.php:2746
 #, fuzzy
 msgid "Evidence refs"
 msgstr "证据"
 
-#: includes/Admin/Admin_Page.php:2676
+#: includes/Admin/Admin_Page.php:2753
 #, fuzzy
 msgid "Completed draft input"
 msgstr "创建草稿"
 
-#: includes/Admin/Admin_Page.php:2682
+#: includes/Admin/Admin_Page.php:2759
 msgid "Morning Brief handoff"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2699
+#: includes/Admin/Admin_Page.php:2776
 msgid "Required next step"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2701
+#: includes/Admin/Admin_Page.php:2778
 msgid "Review the completed Morning Brief draft in Core, approve only if the selected evidence and draft are acceptable, then run commit preflight before Adapter execution. Core still does not generate or edit draft fields."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2702
+#: includes/Admin/Admin_Page.php:2779
 msgid "Return to Toolbox Morning Brief, draft the title and content for the selected review item, then resubmit a complete Core proposal. Core does not generate or edit missing draft fields."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2758
+#: includes/Admin/Admin_Page.php:2835
 msgid "Raw proposal payload"
 msgstr "原始提案载荷"
 
-#: includes/Admin/Admin_Page.php:2759
+#: includes/Admin/Admin_Page.php:2836
 msgid "Caller, input, and preview JSON for troubleshooting."
 msgstr "用于排障的调用方、输入和预览 JSON。"
 
-#: includes/Admin/Admin_Page.php:2764
+#: includes/Admin/Admin_Page.php:2841
 msgid "Caller"
 msgstr "调用方"
 
-#: includes/Admin/Admin_Page.php:2768
+#: includes/Admin/Admin_Page.php:2845
 msgid "Input"
 msgstr "输入"
 
-#: includes/Admin/Admin_Page.php:2772
+#: includes/Admin/Admin_Page.php:2849
 msgid "Preview"
 msgstr "预览"
 
-#: includes/Admin/Admin_Page.php:2793
+#: includes/Admin/Admin_Page.php:2870
 msgid "Full audit timeline"
 msgstr "完整审计时间线"
 
-#: includes/Admin/Admin_Page.php:2794
+#: includes/Admin/Admin_Page.php:2871
 msgid "Complete event table with actor and technical attribution."
 msgstr "包含操作者和技术归因的完整事件表。"
 
-#: includes/Admin/Admin_Page.php:2799 includes/Admin/Admin_Page.php:2969
+#: includes/Admin/Admin_Page.php:2876 includes/Admin/Admin_Page.php:3044
 msgid "Time"
 msgstr "时间"
 
-#: includes/Admin/Admin_Page.php:2800
+#: includes/Admin/Admin_Page.php:2877
 msgid "Event"
 msgstr "事件"
 
-#: includes/Admin/Admin_Page.php:2801
+#: includes/Admin/Admin_Page.php:2878 includes/Admin/Admin_Page.php:3205
 msgid "Actor"
 msgstr "操作者"
 
-#: includes/Admin/Admin_Page.php:2802
+#: includes/Admin/Admin_Page.php:2879
 msgid "Detail"
 msgstr "详情"
 
-#: includes/Admin/Admin_Page.php:2808 includes/Admin/Admin_Page.php:2837
+#: includes/Admin/Admin_Page.php:2885 includes/Admin/Admin_Page.php:2914
 msgid "No audit events recorded for this proposal yet."
 msgstr "此提案尚无审计事件记录。"
 
-#: includes/Admin/Admin_Page.php:2834 includes/Admin/Admin_Page.php:2835
+#: includes/Admin/Admin_Page.php:2911 includes/Admin/Admin_Page.php:2912
 msgid "Lifecycle summary"
 msgstr "生命周期摘要"
 
-#: includes/Admin/Admin_Page.php:2887
+#: includes/Admin/Admin_Page.php:2964
 msgid "Recent approval and access activity. Use the search bar for common lookups; open advanced filters only when tracing a specific technical request."
 msgstr "最近的审批和访问活动。常用查询请使用搜索栏；只有追踪特定技术请求时再展开高级筛选。"
 
-#: includes/Admin/Admin_Page.php:2893
+#: includes/Admin/Admin_Page.php:2970
 msgid "Search activity"
 msgstr "搜索活动"
 
-#: includes/Admin/Admin_Page.php:2894
+#: includes/Admin/Admin_Page.php:2971
 msgid "Proposal, event, ability, client, or correlation ID"
 msgstr "提案、事件、能力、客户端或关联 ID"
 
-#: includes/Admin/Admin_Page.php:2897 includes/Admin/Admin_Page.php:3321
+#: includes/Admin/Admin_Page.php:2974 includes/Admin/Admin_Page.php:3485
 msgid "Event type"
 msgstr "事件类型"
 
-#: includes/Admin/Admin_Page.php:2905 includes/Admin/Admin_Page.php:3322
+#: includes/Admin/Admin_Page.php:2982 includes/Admin/Admin_Page.php:3486
 msgid "Time range"
 msgstr "时间范围"
 
-#: includes/Admin/Admin_Page.php:2913
+#: includes/Admin/Admin_Page.php:2990
 msgid "Per page"
 msgstr "每页"
 
-#: includes/Admin/Admin_Page.php:2922
+#: includes/Admin/Admin_Page.php:2999
 msgid "Include list/view noise events"
 msgstr "包含列表/查看噪声事件"
 
-#: includes/Admin/Admin_Page.php:2925
+#: includes/Admin/Admin_Page.php:3002
 msgid "Apply filters"
 msgstr "应用筛选"
 
-#: includes/Admin/Admin_Page.php:2926
+#: includes/Admin/Admin_Page.php:3003
 msgid "Reset"
 msgstr "重置"
 
-#: includes/Admin/Admin_Page.php:2931
+#: includes/Admin/Admin_Page.php:3008
 msgid "Advanced filters"
 msgstr "高级筛选"
 
-#: includes/Admin/Admin_Page.php:2932
+#: includes/Admin/Admin_Page.php:3009
 msgid "Narrow by exact proposal, ability, client, caller, or correlation values."
 msgstr "按精确提案、能力、客户端、调用方或关联值缩小范围。"
 
-#: includes/Admin/Admin_Page.php:2940 includes/Admin/Admin_Page.php:3324
+#: includes/Admin/Admin_Page.php:3017 includes/Admin/Admin_Page.php:3206
+#: includes/Admin/Admin_Page.php:3488
 msgid "Ability ID"
 msgstr "能力 ID"
 
-#: includes/Admin/Admin_Page.php:2956 includes/Admin/Admin_Page.php:3327
+#: includes/Admin/Admin_Page.php:3033 includes/Admin/Admin_Page.php:3211
+#: includes/Admin/Admin_Page.php:3491
 msgid "Correlation ID"
 msgstr "关联 ID"
 
-#: includes/Admin/Admin_Page.php:2970
+#: includes/Admin/Admin_Page.php:3045
 msgid "Activity"
 msgstr "活动"
 
-#: includes/Admin/Admin_Page.php:2972
+#: includes/Admin/Admin_Page.php:3047 includes/Admin/Admin_Page.php:3227
 msgid "Context"
 msgstr "上下文"
 
-#: includes/Admin/Admin_Page.php:2978
+#: includes/Admin/Admin_Page.php:3054
 msgid "No activity matches the current filters."
 msgstr "没有活动匹配当前筛选条件。"
 
-#: includes/Admin/Admin_Page.php:3025
+#: includes/Admin/Admin_Page.php:3107
 msgid "System event"
 msgstr "系统事件"
 
 #. translators: %s: actor id.
-#: includes/Admin/Admin_Page.php:3033
+#: includes/Admin/Admin_Page.php:3115
 #, php-format
 msgid "Actor: %s"
 msgstr "执行者：%s"
 
 #. translators: %s: ability id.
-#: includes/Admin/Admin_Page.php:3044
+#: includes/Admin/Admin_Page.php:3126
 #, php-format
 msgid "Ability: %s"
 msgstr "能力：%s"
 
 #. translators: 1: app id, 2: caller type.
-#: includes/Admin/Admin_Page.php:3055
+#: includes/Admin/Admin_Page.php:3137
 #, php-format
 msgid "App: %1$s / %2$s"
 msgstr "应用：%1$s / %2$s"
 
-#: includes/Admin/Admin_Page.php:3056 includes/Admin/Admin_Page.php:3057
-#: includes/Admin/Admin_Page.php:3068 includes/Admin/Admin_Page.php:3069
+#: includes/Admin/Admin_Page.php:3138 includes/Admin/Admin_Page.php:3139
 msgid "unknown"
 msgstr "未知"
 
-#. translators: 1: scope, 2: scope decision.
-#: includes/Admin/Admin_Page.php:3067
-#, php-format
-msgid "Scope: %1$s / %2$s"
-msgstr "权限范围：%1$s / %2$s"
-
 #. translators: %s: correlation id.
-#: includes/Admin/Admin_Page.php:3079
+#: includes/Admin/Admin_Page.php:3149
 #, php-format
 msgid "Correlation: %s"
 msgstr "关联：%s"
 
-#: includes/Admin/Admin_Page.php:3087
+#: includes/Admin/Admin_Page.php:3157 includes/Admin/Admin_Page.php:3228
 msgid "No extra context"
 msgstr "没有额外上下文"
 
-#: includes/Admin/Admin_Page.php:3111 includes/Admin/Admin_Page.php:3141
+#: includes/Admin/Admin_Page.php:3203
+msgid "Event name"
+msgstr "事件名"
+
+#: includes/Admin/Admin_Page.php:3209
+msgid "Scope"
+msgstr "权限范围"
+
+#: includes/Admin/Admin_Page.php:3210
+msgid "Scope decision"
+msgstr "权限决策"
+
+#: includes/Admin/Admin_Page.php:3275 includes/Admin/Admin_Page.php:3305
 msgid "Request created"
 msgstr "请求已创建"
 
-#: includes/Admin/Admin_Page.php:3112
+#: includes/Admin/Admin_Page.php:3276
 msgid "Policy checked"
 msgstr "策略已检查"
 
-#: includes/Admin/Admin_Page.php:3113
+#: includes/Admin/Admin_Page.php:3277
 msgid "Request auto-approved"
 msgstr "请求已自动批准"
 
-#: includes/Admin/Admin_Page.php:3114 includes/Admin/Admin_Page.php:3142
+#: includes/Admin/Admin_Page.php:3278 includes/Admin/Admin_Page.php:3306
 msgid "Request approved"
 msgstr "请求已批准"
 
-#: includes/Admin/Admin_Page.php:3115 includes/Admin/Admin_Page.php:3143
+#: includes/Admin/Admin_Page.php:3279 includes/Admin/Admin_Page.php:3307
 msgid "Request rejected"
 msgstr "请求已拒绝"
 
-#: includes/Admin/Admin_Page.php:3116
+#: includes/Admin/Admin_Page.php:3280
 msgid "Request expired"
 msgstr "请求已过期"
 
-#: includes/Admin/Admin_Page.php:3117
+#: includes/Admin/Admin_Page.php:3281
 msgid "Request archived"
 msgstr "请求已归档"
 
-#: includes/Admin/Admin_Page.php:3118
+#: includes/Admin/Admin_Page.php:3282
 msgid "Request reopened"
 msgstr "请求已重新打开"
 
-#: includes/Admin/Admin_Page.php:3119
+#: includes/Admin/Admin_Page.php:3283
 msgid "Duplicate request reused"
 msgstr "已复用重复请求"
 
-#: includes/Admin/Admin_Page.php:3120
+#: includes/Admin/Admin_Page.php:3284
 msgid "Request quota blocked"
 msgstr "请求因配额被阻止"
 
-#: includes/Admin/Admin_Page.php:3121 includes/Admin/Admin_Page.php:3145
+#: includes/Admin/Admin_Page.php:3285 includes/Admin/Admin_Page.php:3309
 msgid "Request executed"
 msgstr "请求已执行"
 
-#: includes/Admin/Admin_Page.php:3123 includes/Admin/Admin_Page.php:3144
+#: includes/Admin/Admin_Page.php:3287 includes/Admin/Admin_Page.php:3308
 msgid "Commit preflight checked"
 msgstr "提交预检已检查"
 
-#: includes/Admin/Admin_Page.php:3124 includes/Admin/Admin_Page.php:3149
+#: includes/Admin/Admin_Page.php:3288 includes/Admin/Admin_Page.php:3313
 msgid "Client access created"
 msgstr "客户端访问已创建"
 
-#: includes/Admin/Admin_Page.php:3125 includes/Admin/Admin_Page.php:3150
+#: includes/Admin/Admin_Page.php:3289 includes/Admin/Admin_Page.php:3314
 msgid "Client access revoked"
 msgstr "客户端访问已撤销"
 
-#: includes/Admin/Admin_Page.php:3126 includes/Admin/Admin_Page.php:3151
+#: includes/Admin/Admin_Page.php:3290 includes/Admin/Admin_Page.php:3315
 msgid "Client access denied"
 msgstr "客户端访问被拒绝"
 
-#: includes/Admin/Admin_Page.php:3127 includes/Admin/Admin_Page.php:3152
+#: includes/Admin/Admin_Page.php:3291 includes/Admin/Admin_Page.php:3316
 msgid "Client rate limited"
 msgstr "客户端已被限流"
 
-#: includes/Admin/Admin_Page.php:3140
+#: includes/Admin/Admin_Page.php:3304
 msgid "All events"
 msgstr "全部事件"
 
-#: includes/Admin/Admin_Page.php:3147
+#: includes/Admin/Admin_Page.php:3311
 msgid "Proposal viewed"
 msgstr "提案已查看"
 
-#: includes/Admin/Admin_Page.php:3148
+#: includes/Admin/Admin_Page.php:3312
 msgid "Proposal listed"
 msgstr "提案已列表读取"
 
-#: includes/Admin/Admin_Page.php:3163
+#: includes/Admin/Admin_Page.php:3327
 msgid "All callers"
 msgstr "全部调用方"
 
-#: includes/Admin/Admin_Page.php:3166
+#: includes/Admin/Admin_Page.php:3330
 msgid "OpenClaw Adapter"
 msgstr "OpenClaw 适配器"
 
-#: includes/Admin/Admin_Page.php:3167
+#: includes/Admin/Admin_Page.php:3331
 msgid "MCP adapter"
 msgstr "MCP 适配器"
 
-#: includes/Admin/Admin_Page.php:3179
+#: includes/Admin/Admin_Page.php:3343
 msgid "Last 24 hours"
 msgstr "最近 24 小时"
 
-#: includes/Admin/Admin_Page.php:3180
+#: includes/Admin/Admin_Page.php:3344
 msgid "Last 7 days"
 msgstr "最近 7 天"
 
-#: includes/Admin/Admin_Page.php:3181
+#: includes/Admin/Admin_Page.php:3345
 msgid "Last 30 days"
 msgstr "最近 30 天"
 
-#: includes/Admin/Admin_Page.php:3182
+#: includes/Admin/Admin_Page.php:3346
 msgid "All time"
 msgstr "全部时间"
 
-#: includes/Admin/Admin_Page.php:3293
+#: includes/Admin/Admin_Page.php:3457
 msgid "Active activity filters"
 msgstr "当前活动筛选"
 
-#: includes/Admin/Admin_Page.php:3320
+#: includes/Admin/Admin_Page.php:3484
 msgid "Search"
 msgstr "搜索"
 
 #. translators: %s: filter label.
-#: includes/Admin/Admin_Page.php:3342
+#: includes/Admin/Admin_Page.php:3506
 #, fuzzy, php-format
 msgid "Clear %s filter"
 msgstr "清除 %s 筛选"
 
-#: includes/Admin/Admin_Page.php:3350
+#: includes/Admin/Admin_Page.php:3514
 msgid "Read events"
 msgstr "读取事件"
 
-#: includes/Admin/Admin_Page.php:3351
+#: includes/Admin/Admin_Page.php:3515
 msgid "Included"
 msgstr "已包含"
 
-#: includes/Admin/Admin_Page.php:3353
+#: includes/Admin/Admin_Page.php:3517
 msgid "Clear read events filter"
 msgstr "清除读取事件筛选"
 
-#: includes/Admin/Admin_Page.php:3411
+#: includes/Admin/Admin_Page.php:3575
 msgid "All"
 msgstr "全部"
 
-#: includes/Admin/Admin_Page.php:3412 includes/Admin/Admin_Page.php:3581
-#: includes/Admin/Admin_Page.php:4069 includes/Admin/Admin_Page.php:4079
-#: includes/Admin/Admin_Page.php:4108
+#: includes/Admin/Admin_Page.php:3576 includes/Admin/Admin_Page.php:3745
+#: includes/Admin/Admin_Page.php:4233 includes/Admin/Admin_Page.php:4243
+#: includes/Admin/Admin_Page.php:4272
 msgid "Expired"
 msgstr "已过期"
 
-#: includes/Admin/Admin_Page.php:3413 includes/Admin/Admin_Page.php:3582
+#: includes/Admin/Admin_Page.php:3577 includes/Admin/Admin_Page.php:3746
 msgid "Archived"
 msgstr "已归档"
 
-#: includes/Admin/Admin_Page.php:3518
+#: includes/Admin/Admin_Page.php:3682
 msgid "No matching records."
 msgstr "没有匹配记录。"
 
 #. translators: 1: first row number, 2: last row number, 3: total row count.
-#: includes/Admin/Admin_Page.php:3526
+#: includes/Admin/Admin_Page.php:3690
 #, php-format
 msgid "Showing %1$d-%2$d of %3$d."
 msgstr "显示第 %1$d-%2$d 条，共 %3$d 条。"
 
-#: includes/Admin/Admin_Page.php:3556
+#: includes/Admin/Admin_Page.php:3720
 msgid "Previous"
 msgstr "上一页"
 
-#: includes/Admin/Admin_Page.php:3557
+#: includes/Admin/Admin_Page.php:3721
 msgid "Next"
 msgstr "下一页"
 
-#: includes/Admin/Admin_Page.php:3580
+#: includes/Admin/Admin_Page.php:3744
 msgid "Rejected"
 msgstr "已拒绝"
 
-#: includes/Admin/Admin_Page.php:3583
+#: includes/Admin/Admin_Page.php:3747
 msgid "Executed"
 msgstr "已执行"
 
-#: includes/Admin/Admin_Page.php:3710
+#: includes/Admin/Admin_Page.php:3874
 msgid "Review context is ready before approval or rejection."
 msgstr "批准或拒绝前可先查看审核上下文。"
 
-#: includes/Admin/Admin_Page.php:3712
+#: includes/Admin/Admin_Page.php:3876
 msgid "Approved; Adapter can continue after commit preflight."
 msgstr "已批准；Adapter 可在提交预检后继续。"
 
-#: includes/Admin/Admin_Page.php:3714
+#: includes/Admin/Admin_Page.php:3878
 msgid "Executed outside Core after approval and preflight."
 msgstr "已在批准和预检后由 Core 之外执行。"
 
-#: includes/Admin/Admin_Page.php:3716
+#: includes/Admin/Admin_Page.php:3880
 msgid "Execution failed after handoff; inspect audit evidence."
 msgstr "交接后执行失败；请检查审计证据。"
 
-#: includes/Admin/Admin_Page.php:3718
+#: includes/Admin/Admin_Page.php:3882
 msgid "Rejected; no execution handoff should continue."
 msgstr "已拒绝；不应继续执行交接。"
 
-#: includes/Admin/Admin_Page.php:3721
+#: includes/Admin/Admin_Page.php:3885
 msgid "Reopen before making a decision."
 msgstr "需要重新打开后才能决策。"
 
-#: includes/Admin/Admin_Page.php:3724
+#: includes/Admin/Admin_Page.php:3888
 msgid "Review the audit timeline for current state."
 msgstr "查看审计时间线了解当前状态。"
 
-#: includes/Admin/Admin_Page.php:3736
+#: includes/Admin/Admin_Page.php:3900
 msgid "This proposal has already been executed outside Core. Use the audit timeline to verify approval, preflight, and execution evidence."
 msgstr "该提案已在 Core 之外执行。请通过审计时间线核对批准、预检和执行证据。"
 
-#: includes/Admin/Admin_Page.php:3738
+#: includes/Admin/Admin_Page.php:3902
 msgid "This proposal is approved. Use the audit timeline to verify the approval and preflight handoff."
 msgstr "该提案已批准。请通过审计时间线核对批准和预检交接。"
 
-#: includes/Admin/Admin_Page.php:3740
+#: includes/Admin/Admin_Page.php:3904
 msgid "This proposal reported an execution failure after handoff. Use the audit timeline and Adapter logs for follow-up."
 msgstr "该提案在交接后上报执行失败。请结合审计时间线和 Adapter 日志跟进。"
 
-#: includes/Admin/Admin_Page.php:3742
+#: includes/Admin/Admin_Page.php:3906
 msgid "This proposal was rejected and should not continue to execution."
 msgstr "该提案已拒绝，不应继续执行。"
 
-#: includes/Admin/Admin_Page.php:3745
+#: includes/Admin/Admin_Page.php:3909
 msgid "This proposal is not eligible for approval until it is reopened."
 msgstr "该提案重新打开前不能批准。"
 
-#: includes/Admin/Admin_Page.php:3748
+#: includes/Admin/Admin_Page.php:3912
 msgid "This proposal is no longer pending. Review the audit timeline for lifecycle evidence."
 msgstr "该提案不再处于待审状态。请查看审计时间线获取生命周期证据。"
 
 #. translators: %s: dependency action ids.
-#: includes/Admin/Admin_Page.php:3942
+#: includes/Admin/Admin_Page.php:4106
 #, php-format
 msgid "Depends on: %s"
 msgstr "依赖：%s"
 
-#: includes/Admin/Admin_Page.php:3945
+#: includes/Admin/Admin_Page.php:4109
 msgid "No dependency"
 msgstr "无依赖"
 
-#: includes/Admin/Admin_Page.php:3963 includes/Admin/Admin_Page.php:3969
+#: includes/Admin/Admin_Page.php:4127 includes/Admin/Admin_Page.php:4133
 msgid "Blocked"
 msgstr "已阻塞"
 
-#: includes/Admin/Admin_Page.php:3969 includes/Admin/Admin_Page.php:3972
+#: includes/Admin/Admin_Page.php:4133 includes/Admin/Admin_Page.php:4136
 msgid "Ready"
 msgstr "已就绪"
 
-#: includes/Admin/Admin_Page.php:3984
+#: includes/Admin/Admin_Page.php:4148
 msgid "Commit requested"
 msgstr "已请求提交"
 
-#: includes/Admin/Admin_Page.php:3988
+#: includes/Admin/Admin_Page.php:4152
 msgid "Dry run; Core execution disabled"
 msgstr "仅预演；Core 执行已禁用"
 
-#: includes/Admin/Admin_Page.php:3991
+#: includes/Admin/Admin_Page.php:4155
 msgid "Core execution disabled"
 msgstr "Core 执行已禁用"
 
-#: includes/Admin/Admin_Page.php:4047 includes/Admin/Admin_Page.php:4064
-#: includes/Admin/Admin_Page.php:4099
+#: includes/Admin/Admin_Page.php:4211 includes/Admin/Admin_Page.php:4228
+#: includes/Admin/Admin_Page.php:4263
 msgid "Unknown"
 msgstr "未知"
 
-#: includes/Admin/Admin_Page.php:4072
+#: includes/Admin/Admin_Page.php:4236
 msgid "Not applicable"
 msgstr "不适用"
 
 #. translators: %s: remaining duration.
-#: includes/Admin/Admin_Page.php:4084
+#: includes/Admin/Admin_Page.php:4248
 #, php-format
 msgid "Expires in %s"
 msgstr "%s 后过期"
 
 #. translators: %s: remaining duration.
-#: includes/Admin/Admin_Page.php:4113
+#: includes/Admin/Admin_Page.php:4277
 #, php-format
 msgid "%s left"
 msgstr "剩余 %s"
 
 #. translators: %d: minutes.
-#: includes/Admin/Admin_Page.php:4153
+#: includes/Admin/Admin_Page.php:4317
 #, php-format
 msgid "%d min"
 msgstr "%d 分钟"
 
 #. translators: %d: hours.
-#: includes/Admin/Admin_Page.php:4161
+#: includes/Admin/Admin_Page.php:4325
 #, php-format
 msgid "%d hr"
 msgstr "%d 小时"
 
 #. translators: %d: days.
-#: includes/Admin/Admin_Page.php:4168
+#: includes/Admin/Admin_Page.php:4332
 #, php-format
 msgid "%d days"
 msgstr "%d 天"
 
-#: includes/Admin/Admin_Page.php:4274
+#: includes/Admin/Admin_Page.php:4438
 msgid "Proposal approved."
 msgstr "提案已批准。"
 
-#: includes/Admin/Admin_Page.php:4275
+#: includes/Admin/Admin_Page.php:4439
 msgid "Proposal rejected."
 msgstr "提案已拒绝。"
 
-#: includes/Admin/Admin_Page.php:4276
+#: includes/Admin/Admin_Page.php:4440
 msgid "Selected proposals rejected."
 msgstr "所选提案已拒绝。"
 
-#: includes/Admin/Admin_Page.php:4277
+#: includes/Admin/Admin_Page.php:4441
 msgid "Proposal archived."
 msgstr "提案已归档。"
 
-#: includes/Admin/Admin_Page.php:4278
+#: includes/Admin/Admin_Page.php:4442
 msgid "Proposal reopened for review."
 msgstr "提案已重新打开以审核。"
 
-#: includes/Admin/Admin_Page.php:4279
+#: includes/Admin/Admin_Page.php:4443
 msgid "App key disabled."
 msgstr "应用密钥已禁用。"
 
-#: includes/Admin/Admin_Page.php:4280
+#: includes/Admin/Admin_Page.php:4444
 msgid "Approval policy mode updated."
 msgstr "批准策略模式已更新。"
 
-#: includes/Admin/Admin_Page.php:4281
+#: includes/Admin/Admin_Page.php:4445
 msgid "App key is missing or already disabled."
 msgstr "应用密钥缺失或已禁用。"
 
-#: includes/Admin/Admin_Page.php:4282
+#: includes/Admin/Admin_Page.php:4446
 msgid "App key could not be disabled."
 msgstr "无法禁用应用密钥。"
 
-#: includes/Admin/Admin_Page.php:4283
+#: includes/Admin/Admin_Page.php:4447
 #: includes/Governance/Commit_Preflight_Service.php:90
 #: includes/Governance/Proposal_Service.php:939
 msgid "Proposal was not found."
 msgstr "未找到提案。"
 
-#: includes/Admin/Admin_Page.php:4284
+#: includes/Admin/Admin_Page.php:4448
 #: includes/Governance/Proposal_Service.php:965
 msgid "Proposal expired before a decision was made."
 msgstr "提案在作出决策前已过期。"
 
-#: includes/Admin/Admin_Page.php:4285
+#: includes/Admin/Admin_Page.php:4449
 #: includes/Governance/Proposal_Service.php:432
 msgid "Only expired proposals can be archived."
 msgstr "只有已过期的提案可以归档。"
 
-#: includes/Admin/Admin_Page.php:4286
+#: includes/Admin/Admin_Page.php:4450
 #: includes/Governance/Proposal_Service.php:483
 msgid "Only expired or archived proposals can be reopened."
 msgstr "只有已过期或已归档的提案可以重新打开。"
 
-#: includes/Admin/Admin_Page.php:4287
+#: includes/Admin/Admin_Page.php:4451
 #: includes/Governance/Proposal_Service.php:973
 msgid "Only pending proposals can be approved or rejected."
 msgstr "只有待处理提案可以批准或拒绝。"
 
-#: includes/Admin/Admin_Page.php:4288
+#: includes/Admin/Admin_Page.php:4452
 #: includes/Governance/Proposal_Service.php:1049
 msgid "Proposal status could not be updated."
 msgstr "无法更新提案状态。"
 
-#: includes/Admin/Admin_Page.php:4289
+#: includes/Admin/Admin_Page.php:4453
 msgid "Select at least one pending proposal to reject."
 msgstr "请至少选择一个待处理提案进行拒绝。"
 
-#: includes/Admin/Admin_Page.php:4292
+#: includes/Admin/Admin_Page.php:4456
 msgid "Proposal action could not be completed."
 msgstr "无法完成提案操作。"
 
@@ -2680,6 +2689,10 @@ msgstr "无法保护应用密钥 secret。"
 #: includes/Security/App_Key_Repository.php:188
 msgid "App key could not be stored."
 msgstr "无法存储应用密钥。"
+
+#, php-format
+#~ msgid "Scope: %1$s / %2$s"
+#~ msgstr "权限范围：%1$s / %2$s"
 
 #~ msgid "Technical filters"
 #~ msgstr "技术筛选"

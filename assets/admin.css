@@ -221,6 +221,90 @@
 	color: #50575e;
 }
 
+.npcink-governance-core-audit-table {
+	table-layout: fixed;
+}
+
+.npcink-governance-core-audit-table th,
+.npcink-governance-core-audit-table td {
+	text-align: left;
+	vertical-align: top;
+}
+
+.npcink-governance-core-audit-table th:nth-child(1),
+.npcink-governance-core-audit-time {
+	width: 128px;
+}
+
+.npcink-governance-core-audit-table th:nth-child(2),
+.npcink-governance-core-audit-activity {
+	width: 170px;
+}
+
+.npcink-governance-core-audit-table th:nth-child(3),
+.npcink-governance-core-audit-request {
+	width: 150px;
+}
+
+.npcink-governance-core-audit-table th:nth-child(5),
+.npcink-governance-core-audit-detail-cell {
+	width: 96px;
+}
+
+.npcink-governance-core-audit-request code,
+.npcink-governance-core-audit-detail-table code {
+	white-space: nowrap;
+}
+
+.npcink-governance-core-audit-context {
+	min-width: 0;
+}
+
+.npcink-governance-core-audit-row-details {
+	position: relative;
+}
+
+.npcink-governance-core-audit-row-details summary {
+	display: inline-flex;
+	align-items: center;
+	min-height: 28px;
+	list-style: none;
+	cursor: pointer;
+}
+
+.npcink-governance-core-audit-row-details summary::-webkit-details-marker {
+	display: none;
+}
+
+.npcink-governance-core-audit-detail-table {
+	position: absolute;
+	z-index: 20;
+	top: 34px;
+	right: 0;
+	box-sizing: border-box;
+	width: min(720px, calc(100vw - 320px));
+	margin-top: 8px;
+	background: #fff;
+	box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.npcink-governance-core-audit-detail-table th {
+	width: 108px;
+	white-space: nowrap;
+}
+
+.npcink-governance-core-audit-detail-table td code {
+	display: inline-block;
+	max-width: 100%;
+	overflow-wrap: anywhere;
+	white-space: normal;
+}
+
+.npcink-governance-core-audit-row-details[open] summary {
+	border-color: #2271b1;
+	color: #135e96;
+}
+
 .npcink-governance-core-bulk-disclosure {
 	max-width: 1100px;
 }
@@ -866,6 +950,10 @@
 		table-layout: auto;
 	}
 
+	.npcink-governance-core-audit-table {
+		table-layout: auto;
+	}
+
 	.npcink-governance-core-time-cell,
 	.npcink-governance-core-detail-cell,
 	.npcink-governance-core-action-cell,
@@ -881,6 +969,12 @@
 
 	.npcink-governance-core-row-details-panel {
 		grid-template-columns: 1fr;
+	}
+
+	.npcink-governance-core-audit-detail-table {
+		position: static;
+		width: 100%;
+		box-shadow: none;
 	}
 
 	.npcink-governance-core-bulk-note {

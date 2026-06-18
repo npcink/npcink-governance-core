@@ -2367,7 +2367,11 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Advanced filters'
 npcink_governance_core_assert( false !== strpos( $admin_page, 'has_active_audit_advanced_filters' ), 'Admin audit opens the advanced filter disclosure only for technical filters.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_filter_chips' ), 'Admin audit renders active filters as clearable chips.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_include_read_events' ), 'Admin audit hides read noise by default with an opt-in filter.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_detail' ), 'Admin audit combines optional app/scope/correlation metadata into a detail cell.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_table_nav' ) && false !== strpos( $admin_page, 'render_audit_page_button' ), 'Admin audit renders WordPress-style top and bottom table navigation.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-audit-table' ), 'Admin audit renders a compact fixed-layout activity table.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Proposal_Repository::display_id_for_proposal_id( $proposal_id )' ), 'Admin audit shows stable display ids instead of full proposal ids in the default row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_context_summary' ), 'Admin audit keeps the default context column concise.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-audit-row-details' ) && false !== strpos( $admin_page, 'audit_detail_rows' ), 'Admin audit moves full technical metadata behind a row details disclosure.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_event_label' ), 'Admin audit renders user-facing activity labels instead of leading with raw event names.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_filters_from_request' ), 'Admin page reads governance audit filters.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_proposal_id' ), 'Admin page exposes proposal audit filter.' );
@@ -2449,6 +2453,8 @@ npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-audit-filter-toolbar' ), 'Admin CSS styles activity filters as a compact toolbar.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-audit-advanced-grid' ), 'Admin CSS styles advanced activity filters as a compact grid.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-audit-filter-chips' ), 'Admin CSS styles activity filter chips.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-audit-table' ) && false !== strpos( $admin_css, 'table-layout: fixed' ), 'Admin CSS keeps the activity table compact and stable.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-audit-row-details' ) && false !== strpos( $admin_css, '.npcink-governance-core-audit-detail-table' ), 'Admin CSS styles activity row disclosures and detail tables.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-workbench-toolbar' ), 'Admin CSS styles the utility toolbar.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-review-table' ), 'Admin CSS styles the compact review list.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-review-table th' ) && false !== strpos( $admin_css, 'text-align: left' ), 'Admin CSS left-aligns review table headers and cells.' );

@@ -1,5 +1,35 @@
 # Session Breadcrumb
 
+## 2026-06-18 — Activity log list navigation tightened
+
+- **Module**: Core admin activity log.
+- **Status**: The full activity log now uses WordPress-style top and bottom
+  table navigation, short proposal display ids in the default row, concise
+  context badges, and a row-level details disclosure for full technical
+  metadata.
+- **Completed**:
+  - Replaced the loose activity pagination links with square
+    first/previous/next/last controls while preserving active filters.
+  - Moved full proposal ids, raw event names, actor, ability, app, caller,
+    scope, and correlation values behind per-row details.
+  - Kept scope decisions out of the default context column to reduce list
+    crowding.
+  - Updated admin surface docs, operability docs, static contracts, CSS, and
+    translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php` passed.
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po` passed.
+  - `git diff --check` passed.
+  - `composer test:all` passed.
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp` passed.
+  - Browser check loaded `view=audit`, showed short display ids, top/bottom
+    nav, compact context, and an expandable details table without console
+    warnings.
+- **Boundary**:
+  - Admin read/list presentation only. Core audit storage, proposal lifecycle,
+    approval/rejection behavior, commit preflight, Adapter behavior, queues,
+    workflow runtime, and final execution remain unchanged.
+
 ## 2026-06-18 — Activity log filters compacted
 
 - **Module**: Core admin activity log.

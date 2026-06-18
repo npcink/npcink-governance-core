@@ -786,6 +786,83 @@ final class Admin_Page {
 	}
 
 	/**
+	 * Renders the WordPress-style activity log navigation row.
+	 *
+	 * @param int                  $total Total matching events.
+	 * @param int                  $page Current page.
+	 * @param int                  $per_page Rows per page.
+	 * @param array<string,string> $args Preserved query args.
+	 * @return void
+	 */
+	private function render_audit_table_nav( int $total, int $page, int $per_page, array $args ): void {
+		$total_pages = max( 1, (int) ceil( $total / max( 1, $per_page ) ) );
+		$page        = min( max( 1, $page ), $total_pages );
+		$base_url    = remove_query_arg( 'audit_page', $this->admin_url( $args ) );
+		?>
+		<div class="tablenav npcink-governance-core-list-nav npcink-governance-core-audit-list-nav npcink-governance-core-max-wide">
+			<div class="alignleft actions npcink-governance-core-list-nav-bulk">
+				<span class="displaying-num"><?php echo esc_html( $this->pagination_summary( $total, $page, $per_page ) ); ?></span>
+			</div>
+			<div class="tablenav-pages npcink-governance-core-list-nav-pages">
+				<span class="displaying-num">
+					<?php
+					echo esc_html(
+						sprintf(
+							/* translators: %s: total item count. */
+							__( '%s items', 'npcink-governance-core' ),
+							number_format_i18n( $total )
+						)
+					);
+					?>
+				</span>
+				<span class="pagination-links">
+					<?php $this->render_audit_page_button( 1, $page > 1, $base_url, __( 'First page', 'npcink-governance-core' ), '&laquo;' ); ?>
+					<?php $this->render_audit_page_button( max( 1, $page - 1 ), $page > 1, $base_url, __( 'Previous page', 'npcink-governance-core' ), '&lsaquo;' ); ?>
+					<span class="paging-input">
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: 1: current page, 2: total pages. */
+								__( 'Page %1$d of %2$d', 'npcink-governance-core' ),
+								$page,
+								$total_pages
+							)
+						);
+						?>
+					</span>
+					<?php $this->render_audit_page_button( min( $total_pages, $page + 1 ), $page < $total_pages, $base_url, __( 'Next page', 'npcink-governance-core' ), '&rsaquo;' ); ?>
+					<?php $this->render_audit_page_button( $total_pages, $page < $total_pages, $base_url, __( 'Last page', 'npcink-governance-core' ), '&raquo;' ); ?>
+				</span>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Renders one activity log pagination button.
+	 *
+	 * @param int    $target_page Target page.
+	 * @param bool   $enabled Whether the button should be clickable.
+	 * @param string $base_url Base URL without audit_page.
+	 * @param string $label Accessible label.
+	 * @param string $symbol Visible symbol entity.
+	 * @return void
+	 */
+	private function render_audit_page_button( int $target_page, bool $enabled, string $base_url, string $label, string $symbol ): void {
+		if ( ! $enabled ) {
+			?>
+			<span class="tablenav-pages-navspan button disabled npcink-governance-core-page-button" aria-hidden="true"><?php echo wp_kses_post( $symbol ); ?></span>
+			<?php
+			return;
+		}
+
+		$url = add_query_arg( 'audit_page', (string) $target_page, $base_url );
+		?>
+		<a class="button npcink-governance-core-page-button" href="<?php echo esc_url( $url ); ?>" aria-label="<?php echo esc_attr( $label ); ?>"><?php echo wp_kses_post( $symbol ); ?></a>
+		<?php
+	}
+
+	/**
 	 * Renders technical proposal fields behind a row disclosure.
 	 *
 	 * @param array<string,mixed> $proposal Proposal.
@@ -2960,55 +3037,62 @@ final class Admin_Page {
 			</details>
 		</form>
 		<?php $this->render_audit_filter_chips( $filters ); ?>
-		<div class="npcink-governance-core-audit-results-bar npcink-governance-core-max-wide">
-			<span><?php echo esc_html( $this->pagination_summary( $total, (int) $filters['page'], (int) $filters['limit'] ) ); ?></span>
-		</div>
-		<table class="widefat striped" style="max-width: 1100px;">
+		<?php $this->render_audit_table_nav( $total, (int) $filters['page'], (int) $filters['limit'], $this->audit_query_args( $filters ) ); ?>
+		<table class="widefat striped npcink-governance-core-audit-table npcink-governance-core-max-wide">
 			<thead>
 				<tr>
 					<th scope="col"><?php echo esc_html__( 'Time', 'npcink-governance-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'Activity', 'npcink-governance-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'Request', 'npcink-governance-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'Context', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Details', 'npcink-governance-core' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php if ( empty( $events ) ) : ?>
 					<tr>
-						<td colspan="4"><?php echo esc_html__( 'No activity matches the current filters.', 'npcink-governance-core' ); ?></td>
+						<td colspan="5"><?php echo esc_html__( 'No activity matches the current filters.', 'npcink-governance-core' ); ?></td>
 					</tr>
 				<?php endif; ?>
 				<?php foreach ( $events as $event ) : ?>
 					<?php
-					$metadata       = is_array( $event['metadata'] ?? null ) ? $event['metadata'] : array();
-					$proposal_id    = (string) ( $event['proposal_id'] ?? '' );
+					$proposal_id = (string) ( $event['proposal_id'] ?? '' );
+					$display_id  = '' !== $proposal_id ? Proposal_Repository::display_id_for_proposal_id( $proposal_id ) : '';
 					?>
 					<tr>
-						<td><?php echo esc_html( $this->display_datetime( (string) $event['created_at'] ) ); ?></td>
-						<td><?php echo esc_html( $this->audit_event_label( (string) $event['event_name'] ) ); ?></td>
-						<td>
+						<td class="npcink-governance-core-audit-time"><?php echo esc_html( $this->display_datetime( (string) $event['created_at'] ) ); ?></td>
+						<td class="npcink-governance-core-audit-activity">
+							<strong><?php echo esc_html( $this->audit_event_label( (string) $event['event_name'] ) ); ?></strong>
+						</td>
+						<td class="npcink-governance-core-audit-request">
 							<?php if ( '' !== $proposal_id ) : ?>
-								<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
+								<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code class="npcink-governance-core-display-id"><?php echo esc_html( $display_id ); ?></code></a>
 							<?php else : ?>
 								<?php echo esc_html__( 'System', 'npcink-governance-core' ); ?>
 							<?php endif; ?>
 						</td>
-						<td><?php $this->render_audit_detail( $event ); ?></td>
+						<td class="npcink-governance-core-audit-context"><?php $this->render_audit_context_summary( $event ); ?></td>
+						<td class="npcink-governance-core-audit-detail-cell">
+							<details class="npcink-governance-core-audit-row-details">
+								<summary class="button button-small"><?php echo esc_html__( 'Details', 'npcink-governance-core' ); ?></summary>
+								<?php $this->render_audit_detail( $event ); ?>
+							</details>
+						</td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
 		</table>
-		<?php $this->render_pagination( $total, (int) $filters['page'], (int) $filters['limit'], 'audit_page', $this->audit_query_args( $filters ) ); ?>
+		<?php $this->render_audit_table_nav( $total, (int) $filters['page'], (int) $filters['limit'], $this->audit_query_args( $filters ) ); ?>
 		<?php
 	}
 
 	/**
-	 * Renders compact optional audit metadata.
+	 * Renders compact audit metadata for the table context column.
 	 *
 	 * @param array<string,mixed> $event Audit event.
 	 * @return void
 	 */
-	private function render_audit_detail( array $event ): void {
+	private function render_audit_context_summary( array $event ): void {
 		$metadata       = is_array( $event['metadata'] ?? null ) ? $event['metadata'] : array();
 		$auth           = is_array( $metadata['auth'] ?? null ) ? $metadata['auth'] : array();
 		$proposal_id    = (string) ( $event['proposal_id'] ?? '' );
@@ -3016,8 +3100,6 @@ final class Admin_Page {
 		$ability_id     = (string) ( $metadata['ability_id'] ?? '' );
 		$app_id         = (string) ( $auth['app_id'] ?? '' );
 		$caller_type    = (string) ( $auth['caller_type'] ?? '' );
-		$scope          = (string) ( $auth['scope'] ?? '' );
-		$scope_decision = (string) ( $auth['scope_decision'] ?? '' );
 		$correlation_id = (string) ( $metadata['correlation_id'] ?? '' );
 		$has_detail     = false;
 
@@ -3042,7 +3124,7 @@ final class Admin_Page {
 				sprintf(
 					/* translators: %s: ability id. */
 					__( 'Ability: %s', 'npcink-governance-core' ),
-					$ability_id
+					$this->audit_short_ability_label( $ability_id )
 				)
 			);
 			$has_detail = true;
@@ -3053,20 +3135,8 @@ final class Admin_Page {
 				sprintf(
 					/* translators: 1: app id, 2: caller type. */
 					__( 'App: %1$s / %2$s', 'npcink-governance-core' ),
-					'' !== $app_id ? $app_id : __( 'unknown', 'npcink-governance-core' ),
+					'' !== $app_id ? $this->compact_identifier( $app_id ) : __( 'unknown', 'npcink-governance-core' ),
 					'' !== $caller_type ? $caller_type : __( 'unknown', 'npcink-governance-core' )
-				)
-			);
-			$has_detail = true;
-		}
-
-		if ( '' !== $scope || '' !== $scope_decision ) {
-			$this->render_audit_badge(
-				sprintf(
-					/* translators: 1: scope, 2: scope decision. */
-					__( 'Scope: %1$s / %2$s', 'npcink-governance-core' ),
-					'' !== $scope ? $scope : __( 'unknown', 'npcink-governance-core' ),
-					'' !== $scope_decision ? $scope_decision : __( 'unknown', 'npcink-governance-core' )
 				)
 			);
 			$has_detail = true;
@@ -3077,7 +3147,7 @@ final class Admin_Page {
 				sprintf(
 					/* translators: %s: correlation id. */
 					__( 'Correlation: %s', 'npcink-governance-core' ),
-					$correlation_id
+					$this->compact_identifier( $correlation_id )
 				)
 			);
 			$has_detail = true;
@@ -3089,6 +3159,100 @@ final class Admin_Page {
 	}
 
 	/**
+	 * Renders full audit metadata behind the row disclosure.
+	 *
+	 * @param array<string,mixed> $event Audit event.
+	 * @return void
+	 */
+	private function render_audit_detail( array $event ): void {
+		$rows = $this->audit_detail_rows( $event );
+		?>
+		<table class="widefat npcink-governance-core-audit-detail-table">
+			<tbody>
+				<?php foreach ( $rows as $row ) : ?>
+					<tr>
+						<th scope="row"><?php echo esc_html( $row['label'] ); ?></th>
+						<td><code><?php echo esc_html( $row['value'] ); ?></code></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<?php
+	}
+
+	/**
+	 * Returns full audit metadata rows for the row disclosure.
+	 *
+	 * @param array<string,mixed> $event Audit event.
+	 * @return array<int,array{label:string,value:string}>
+	 */
+	private function audit_detail_rows( array $event ): array {
+		$metadata       = is_array( $event['metadata'] ?? null ) ? $event['metadata'] : array();
+		$auth           = is_array( $metadata['auth'] ?? null ) ? $metadata['auth'] : array();
+		$rows           = array();
+		$proposal_id    = (string) ( $event['proposal_id'] ?? '' );
+		$actor_id       = (string) ( $event['actor_id'] ?? '' );
+		$ability_id     = (string) ( $metadata['ability_id'] ?? '' );
+		$app_id         = (string) ( $auth['app_id'] ?? '' );
+		$caller_type    = (string) ( $auth['caller_type'] ?? '' );
+		$scope          = (string) ( $auth['scope'] ?? '' );
+		$scope_decision = (string) ( $auth['scope_decision'] ?? '' );
+		$correlation_id = (string) ( $metadata['correlation_id'] ?? '' );
+
+		$candidates = array(
+			array( __( 'Event name', 'npcink-governance-core' ), (string) ( $event['event_name'] ?? '' ) ),
+			array( __( 'Proposal ID', 'npcink-governance-core' ), $proposal_id ),
+			array( __( 'Actor', 'npcink-governance-core' ), $actor_id ),
+			array( __( 'Ability ID', 'npcink-governance-core' ), $ability_id ),
+			array( __( 'App ID', 'npcink-governance-core' ), $app_id ),
+			array( __( 'Caller type', 'npcink-governance-core' ), $caller_type ),
+			array( __( 'Scope', 'npcink-governance-core' ), $scope ),
+			array( __( 'Scope decision', 'npcink-governance-core' ), $scope_decision ),
+			array( __( 'Correlation ID', 'npcink-governance-core' ), $correlation_id ),
+		);
+
+		foreach ( $candidates as $candidate ) {
+			if ( '' === $candidate[1] ) {
+				continue;
+			}
+
+			$rows[] = array(
+				'label' => $candidate[0],
+				'value' => $candidate[1],
+			);
+		}
+
+		if ( empty( $rows ) ) {
+			$rows[] = array(
+				'label' => __( 'Context', 'npcink-governance-core' ),
+				'value' => __( 'No extra context', 'npcink-governance-core' ),
+			);
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * Returns a compact user-facing ability label.
+	 *
+	 * @param string $ability_id Ability identifier.
+	 * @return string
+	 */
+	private function audit_short_ability_label( string $ability_id ): string {
+		$ability_id = trim( $ability_id );
+		if ( false !== strpos( $ability_id, '/' ) ) {
+			$parts = explode( '/', $ability_id );
+			$last  = (string) end( $parts );
+
+			if ( '' !== $last ) {
+				return $last;
+			}
+		}
+
+		return $this->compact_identifier( $ability_id );
+	}
+
+	/**
 	 * Renders one audit detail badge.
 	 *
 	 * @param string $label Badge label.
@@ -3096,7 +3260,7 @@ final class Admin_Page {
 	 */
 	private function render_audit_badge( string $label ): void {
 		?>
-		<code style="display: inline-block; margin: 0 4px 4px 0;"><?php echo esc_html( $label ); ?></code>
+		<code class="npcink-governance-core-audit-badge"><?php echo esc_html( $label ); ?></code>
 		<?php
 	}
 

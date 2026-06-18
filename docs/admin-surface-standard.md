@@ -141,7 +141,17 @@ The full activity table should suppress low-value read/list events by default,
 use user-facing activity labels instead of raw event names in the main column,
 and must not render placeholder-only columns such as `- / -`. Optional actor,
 ability, app, scope, and correlation metadata belongs in a compact context cell
-or technical filter disclosure and should appear only when it exists.
+or technical filter disclosure and should appear only when it exists. The table
+should use the same WordPress-style top and bottom table navigation as the
+review queue: item count and square first/previous/next/last controls on the
+right, with the current result range visible on the left.
+
+Activity rows should lead with the short governance display id for linked
+proposals, not the full UUID. Full proposal id, raw event name, actor id,
+ability id, app id, caller type, scope decision, and correlation id stay behind
+a per-row `Details` disclosure so the first scan stays compact while technical
+handoff remains available.
+
 The activity filter surface should default to one compact toolbar with a broad
 search field, event-type dropdown, time-range dropdown, read-noise toggle, per
 page control, and apply/reset actions. Exact proposal, ability, app, caller,

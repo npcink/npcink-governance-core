@@ -145,9 +145,14 @@ Read-only admin navigation uses short GET URLs without nonce parameters.
 Nonces stay on POST forms that change approval, lifecycle, policy, or app-key
 state.
 
-The result table shows time, event, proposal link, actor, ability, and compact
-detail metadata. Empty app, scope, and correlation fields are omitted instead
-of rendered as placeholder-only columns. AI Request Logs remain owned by the
+The result table shows time, user-facing event label, short proposal display id,
+compact context, and a row-level details disclosure. It uses WordPress-style
+top and bottom table navigation with item count plus first/previous/next/last
+page controls so long audit histories can be scanned like other admin lists.
+Empty app, scope, and correlation fields are omitted instead of rendered as
+placeholder-only columns. Full proposal id, raw event name, actor, ability,
+app, caller, scope, and correlation values remain available in the per-row
+details table for troubleshooting. AI Request Logs remain owned by the
 WordPress `ai` plugin; operators should correlate the two systems with
 `proposal_id` or `correlation_id` rather than merging their storage.
 
