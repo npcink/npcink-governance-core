@@ -142,6 +142,12 @@ use user-facing activity labels instead of raw event names in the main column,
 and must not render placeholder-only columns such as `- / -`. Optional actor,
 ability, app, scope, and correlation metadata belongs in a compact context cell
 or technical filter disclosure and should appear only when it exists.
+The activity filter surface should default to one compact toolbar with a broad
+search field, event-type dropdown, time-range dropdown, read-noise toggle, per
+page control, and apply/reset actions. Exact proposal, ability, app, caller,
+and correlation filters belong in an `Advanced filters` disclosure that opens
+only when those technical filters are active. Active filters should be shown as
+clearable chips above the table.
 
 Admin tab, pagination, detail, archive, and filter links are read-only GET
 navigation and must not append a nonce to the URL. Nonces belong on POST forms

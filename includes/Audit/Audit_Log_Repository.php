@@ -229,6 +229,9 @@ final class Audit_Log_Repository {
 	 * @return array{where:array<int,string>,args:array<int,mixed>}
 	 */
 	private function filtered_query_parts( array $filters ): array {
+		global $wpdb;
+
+		$search         = sanitize_text_field( (string) ( $filters['search'] ?? '' ) );
 		$proposal_id    = sanitize_text_field( (string) ( $filters['proposal_id'] ?? '' ) );
 		$event_name     = sanitize_text_field( (string) ( $filters['event_name'] ?? '' ) );
 		$ability_id     = sanitize_text_field( (string) ( $filters['ability_id'] ?? '' ) );
@@ -236,9 +239,18 @@ final class Audit_Log_Repository {
 		$key_id         = sanitize_text_field( (string) ( $filters['key_id'] ?? '' ) );
 		$caller_type    = sanitize_key( (string) ( $filters['caller_type'] ?? '' ) );
 		$correlation_id = sanitize_text_field( (string) ( $filters['correlation_id'] ?? '' ) );
+		$created_after  = sanitize_text_field( (string) ( $filters['created_after'] ?? '' ) );
 		$exclude_events = is_array( $filters['exclude_event_names'] ?? null ) ? $this->sanitize_event_names( (array) $filters['exclude_event_names'] ) : array();
 		$where          = array();
 		$args           = array();
+
+		if ( '' !== $search ) {
+			$like    = '%' . $wpdb->esc_like( $search ) . '%';
+			$where[] = '(proposal_id LIKE %s OR event_name LIKE %s OR ability_id LIKE %s OR app_id LIKE %s OR key_id LIKE %s OR caller_type LIKE %s OR correlation_id LIKE %s)';
+			for ( $index = 0; $index < 7; $index++ ) {
+				$args[] = $like;
+			}
+		}
 
 		if ( '' !== $proposal_id ) {
 			$where[] = 'proposal_id = %s';
@@ -268,6 +280,11 @@ final class Audit_Log_Repository {
 				$where[] = sanitize_key( (string) $column ) . ' = %s';
 				$args[]  = $value;
 			}
+		}
+
+		if ( '' !== $created_after ) {
+			$where[] = 'created_at >= %s';
+			$args[]  = $created_after;
 		}
 
 		return array(

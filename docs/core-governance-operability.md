@@ -127,17 +127,19 @@ view over Core audit records, not an AI request log viewer.
 The default view shows one latest recent activity row and links to the full
 activity log instead of rendering another audit table on the review workbench.
 The full activity view keeps low-value read/list events hidden by default,
-shows user-facing activity labels in the main table, and keeps technical
-filters collapsed for:
+shows user-facing activity labels in the main table, and opens with a compact
+filter toolbar for:
 
-- proposal id;
-- event name;
-- ability id;
-- app id;
-- caller type;
-- correlation id;
-- limit.
-- include read events.
+- broad search across proposal, event, ability, client, caller, and correlation
+  identifiers;
+- event type;
+- time range;
+- per-page display count;
+- optional read/list noise events.
+
+Exact proposal id, ability id, app id, caller type, and correlation id remain
+inside an `Advanced filters` disclosure. Active filters render as chips so the
+operator can see and clear the current narrowing without reading a long form.
 
 Read-only admin navigation uses short GET URLs without nonce parameters.
 Nonces stay on POST forms that change approval, lifecycle, policy, or app-key

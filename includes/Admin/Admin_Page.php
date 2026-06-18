@@ -2884,63 +2884,85 @@ final class Admin_Page {
 	private function render_governance_audit( array $events, array $filters, int $total ): void {
 		?>
 		<h2><?php echo esc_html__( 'Activity Log', 'npcink-governance-core' ); ?></h2>
-		<p><?php echo esc_html__( 'Recent approval and access activity. Technical filters are available when you need to trace a specific request.', 'npcink-governance-core' ); ?></p>
-		<p><?php echo esc_html( $this->pagination_summary( $total, (int) $filters['page'], (int) $filters['limit'] ) ); ?></p>
-		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide" <?php echo $this->has_active_audit_filters( $filters ) ? 'open' : ''; ?>>
-			<summary>
-				<strong><?php echo esc_html__( 'Technical filters', 'npcink-governance-core' ); ?></strong>
-				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Find a request by ID, event name, ability, client, or correlation ID.', 'npcink-governance-core' ); ?></span>
-			</summary>
-			<form class="npcink-governance-core-form-spaced" method="get">
-				<input type="hidden" name="page" value="npcink-governance-core" />
-				<input type="hidden" name="view" value="audit" />
-				<table class="form-table" role="presentation">
-					<tbody>
-						<tr>
-							<th scope="row"><label for="npcink-governance-core-audit-proposal"><?php echo esc_html__( 'Proposal ID', 'npcink-governance-core' ); ?></label></th>
-							<td><input id="npcink-governance-core-audit-proposal" class="regular-text" type="text" name="audit_proposal_id" value="<?php echo esc_attr( (string) $filters['proposal_id'] ); ?>" /></td>
-						</tr>
-						<tr>
-							<th scope="row"><label for="npcink-governance-core-audit-event"><?php echo esc_html__( 'Event', 'npcink-governance-core' ); ?></label></th>
-							<td><input id="npcink-governance-core-audit-event" class="regular-text" type="text" name="audit_event_name" value="<?php echo esc_attr( (string) $filters['event_name'] ); ?>" placeholder="proposal.created" /></td>
-						</tr>
-						<tr>
-							<th scope="row"><label for="npcink-governance-core-audit-ability"><?php echo esc_html__( 'Ability ID', 'npcink-governance-core' ); ?></label></th>
-							<td><input id="npcink-governance-core-audit-ability" class="regular-text" type="text" name="audit_ability_id" value="<?php echo esc_attr( (string) $filters['ability_id'] ); ?>" placeholder="npcink-abilities-toolkit/create-draft" /></td>
-						</tr>
-						<tr>
-							<th scope="row"><label for="npcink-governance-core-audit-app"><?php echo esc_html__( 'App ID', 'npcink-governance-core' ); ?></label></th>
-							<td><input id="npcink-governance-core-audit-app" class="regular-text" type="text" name="audit_app_id" value="<?php echo esc_attr( (string) $filters['app_id'] ); ?>" /></td>
-						</tr>
-						<tr>
-							<th scope="row"><label for="npcink-governance-core-audit-caller"><?php echo esc_html__( 'Caller type', 'npcink-governance-core' ); ?></label></th>
-							<td><input id="npcink-governance-core-audit-caller" class="regular-text" type="text" name="audit_caller_type" value="<?php echo esc_attr( (string) $filters['caller_type'] ); ?>" placeholder="product_adapter" /></td>
-						</tr>
-						<tr>
-							<th scope="row"><label for="npcink-governance-core-audit-correlation"><?php echo esc_html__( 'Correlation ID', 'npcink-governance-core' ); ?></label></th>
-							<td><input id="npcink-governance-core-audit-correlation" class="regular-text" type="text" name="audit_correlation_id" value="<?php echo esc_attr( (string) $filters['correlation_id'] ); ?>" /></td>
-						</tr>
-						<tr>
-							<th scope="row"><label for="npcink-governance-core-audit-limit"><?php echo esc_html__( 'Per page', 'npcink-governance-core' ); ?></label></th>
-							<td><input id="npcink-governance-core-audit-limit" type="number" min="1" max="200" name="audit_limit" value="<?php echo esc_attr( (string) $filters['limit'] ); ?>" /></td>
-						</tr>
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Read events', 'npcink-governance-core' ); ?></th>
-							<td>
-								<label>
-									<input type="checkbox" name="audit_include_read_events" value="1" <?php checked( ! empty( $filters['include_read_events'] ) ); ?> />
-									<?php echo esc_html__( 'Include list/view noise events', 'npcink-governance-core' ); ?>
-								</label>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<p>
-					<button type="submit" class="button"><?php echo esc_html__( 'Apply filters', 'npcink-governance-core' ); ?></button>
-					<a class="button button-link" href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Reset', 'npcink-governance-core' ); ?></a>
-				</p>
-			</form>
-		</details>
+		<p><?php echo esc_html__( 'Recent approval and access activity. Use the search bar for common lookups; open advanced filters only when tracing a specific technical request.', 'npcink-governance-core' ); ?></p>
+		<form class="npcink-governance-core-audit-filter-shell npcink-governance-core-max-wide" method="get">
+			<input type="hidden" name="page" value="npcink-governance-core" />
+			<input type="hidden" name="view" value="audit" />
+			<div class="npcink-governance-core-audit-filter-toolbar">
+				<label class="npcink-governance-core-audit-search-field" for="npcink-governance-core-audit-search">
+					<span class="npcink-governance-core-block-label"><?php echo esc_html__( 'Search activity', 'npcink-governance-core' ); ?></span>
+					<input id="npcink-governance-core-audit-search" class="regular-text" type="search" name="audit_search" value="<?php echo esc_attr( (string) $filters['search'] ); ?>" placeholder="<?php echo esc_attr__( 'Proposal, event, ability, client, or correlation ID', 'npcink-governance-core' ); ?>" />
+				</label>
+				<label for="npcink-governance-core-audit-event">
+					<span class="npcink-governance-core-block-label"><?php echo esc_html__( 'Event type', 'npcink-governance-core' ); ?></span>
+					<select id="npcink-governance-core-audit-event" name="audit_event_name">
+						<?php foreach ( $this->audit_event_filter_options() as $value => $label ) : ?>
+							<option value="<?php echo esc_attr( (string) $value ); ?>" <?php selected( (string) $filters['event_name'], (string) $value ); ?>><?php echo esc_html( $label ); ?></option>
+						<?php endforeach; ?>
+					</select>
+				</label>
+				<label for="npcink-governance-core-audit-range">
+					<span class="npcink-governance-core-block-label"><?php echo esc_html__( 'Time range', 'npcink-governance-core' ); ?></span>
+					<select id="npcink-governance-core-audit-range" name="audit_time_range">
+						<?php foreach ( $this->audit_time_range_options() as $value => $label ) : ?>
+							<option value="<?php echo esc_attr( (string) $value ); ?>" <?php selected( (string) $filters['time_range'], (string) $value ); ?>><?php echo esc_html( $label ); ?></option>
+						<?php endforeach; ?>
+					</select>
+				</label>
+				<label for="npcink-governance-core-audit-limit">
+					<span class="npcink-governance-core-block-label"><?php echo esc_html__( 'Per page', 'npcink-governance-core' ); ?></span>
+					<select id="npcink-governance-core-audit-limit" name="audit_limit">
+						<?php foreach ( array( 25, 50, 100, 200 ) as $limit ) : ?>
+							<option value="<?php echo esc_attr( (string) $limit ); ?>" <?php selected( (int) $filters['limit'], $limit ); ?>><?php echo esc_html( (string) $limit ); ?></option>
+						<?php endforeach; ?>
+					</select>
+				</label>
+				<label class="npcink-governance-core-audit-read-toggle">
+					<input type="checkbox" name="audit_include_read_events" value="1" <?php checked( ! empty( $filters['include_read_events'] ) ); ?> />
+					<span><?php echo esc_html__( 'Include list/view noise events', 'npcink-governance-core' ); ?></span>
+				</label>
+				<div class="npcink-governance-core-audit-filter-actions">
+					<button type="submit" class="button button-primary"><?php echo esc_html__( 'Apply filters', 'npcink-governance-core' ); ?></button>
+					<a class="button" href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Reset', 'npcink-governance-core' ); ?></a>
+				</div>
+			</div>
+			<details class="npcink-governance-core-disclosure npcink-governance-core-audit-advanced" <?php echo $this->has_active_audit_advanced_filters( $filters ) ? 'open' : ''; ?>>
+				<summary>
+					<strong><?php echo esc_html__( 'Advanced filters', 'npcink-governance-core' ); ?></strong>
+					<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Narrow by exact proposal, ability, client, caller, or correlation values.', 'npcink-governance-core' ); ?></span>
+				</summary>
+				<div class="npcink-governance-core-audit-advanced-grid">
+					<label for="npcink-governance-core-audit-proposal">
+						<span class="npcink-governance-core-block-label"><?php echo esc_html__( 'Proposal ID', 'npcink-governance-core' ); ?></span>
+						<input id="npcink-governance-core-audit-proposal" class="regular-text" type="text" name="audit_proposal_id" value="<?php echo esc_attr( (string) $filters['proposal_id'] ); ?>" />
+					</label>
+					<label for="npcink-governance-core-audit-ability">
+						<span class="npcink-governance-core-block-label"><?php echo esc_html__( 'Ability ID', 'npcink-governance-core' ); ?></span>
+						<input id="npcink-governance-core-audit-ability" class="regular-text" type="text" name="audit_ability_id" value="<?php echo esc_attr( (string) $filters['ability_id'] ); ?>" placeholder="npcink-abilities-toolkit/create-draft" />
+					</label>
+					<label for="npcink-governance-core-audit-app">
+						<span class="npcink-governance-core-block-label"><?php echo esc_html__( 'App ID', 'npcink-governance-core' ); ?></span>
+						<input id="npcink-governance-core-audit-app" class="regular-text" type="text" name="audit_app_id" value="<?php echo esc_attr( (string) $filters['app_id'] ); ?>" />
+					</label>
+					<label for="npcink-governance-core-audit-caller">
+						<span class="npcink-governance-core-block-label"><?php echo esc_html__( 'Caller type', 'npcink-governance-core' ); ?></span>
+						<select id="npcink-governance-core-audit-caller" name="audit_caller_type">
+							<?php foreach ( $this->audit_caller_type_filter_options() as $value => $label ) : ?>
+								<option value="<?php echo esc_attr( (string) $value ); ?>" <?php selected( (string) $filters['caller_type'], (string) $value ); ?>><?php echo esc_html( $label ); ?></option>
+							<?php endforeach; ?>
+						</select>
+					</label>
+					<label for="npcink-governance-core-audit-correlation">
+						<span class="npcink-governance-core-block-label"><?php echo esc_html__( 'Correlation ID', 'npcink-governance-core' ); ?></span>
+						<input id="npcink-governance-core-audit-correlation" class="regular-text" type="text" name="audit_correlation_id" value="<?php echo esc_attr( (string) $filters['correlation_id'] ); ?>" />
+					</label>
+				</div>
+			</details>
+		</form>
+		<?php $this->render_audit_filter_chips( $filters ); ?>
+		<div class="npcink-governance-core-audit-results-bar npcink-governance-core-max-wide">
+			<span><?php echo esc_html( $this->pagination_summary( $total, (int) $filters['page'], (int) $filters['limit'] ) ); ?></span>
+		</div>
 		<table class="widefat striped" style="max-width: 1100px;">
 			<thead>
 				<tr>
@@ -3109,6 +3131,89 @@ final class Admin_Page {
 	}
 
 	/**
+	 * Returns event filter options for the activity log toolbar.
+	 *
+	 * @return array<string,string>
+	 */
+	private function audit_event_filter_options(): array {
+		return array(
+			''                            => __( 'All events', 'npcink-governance-core' ),
+			'proposal.created'            => __( 'Request created', 'npcink-governance-core' ),
+			'proposal.approved'           => __( 'Request approved', 'npcink-governance-core' ),
+			'proposal.rejected'           => __( 'Request rejected', 'npcink-governance-core' ),
+			'commit.preflighted'          => __( 'Commit preflight checked', 'npcink-governance-core' ),
+			'proposal.executed'           => __( 'Request executed', 'npcink-governance-core' ),
+			'proposal.execution_failed'   => __( 'Execution failed', 'npcink-governance-core' ),
+			'proposal.viewed'             => __( 'Proposal viewed', 'npcink-governance-core' ),
+			'proposal.listed'             => __( 'Proposal listed', 'npcink-governance-core' ),
+			'app.created'                 => __( 'Client access created', 'npcink-governance-core' ),
+			'app.revoked'                 => __( 'Client access revoked', 'npcink-governance-core' ),
+			'app.scope_denied'            => __( 'Client access denied', 'npcink-governance-core' ),
+			'app.rate_limited'            => __( 'Client rate limited', 'npcink-governance-core' ),
+		);
+	}
+
+	/**
+	 * Returns caller type filter options for advanced activity filters.
+	 *
+	 * @return array<string,string>
+	 */
+	private function audit_caller_type_filter_options(): array {
+		return array(
+			''                 => __( 'All callers', 'npcink-governance-core' ),
+			'external_app'     => __( 'External app', 'npcink-governance-core' ),
+			'product_adapter'  => __( 'Product adapter', 'npcink-governance-core' ),
+			'openclaw_adapter' => __( 'OpenClaw Adapter', 'npcink-governance-core' ),
+			'mcp_adapter'      => __( 'MCP adapter', 'npcink-governance-core' ),
+			'system'           => __( 'System', 'npcink-governance-core' ),
+		);
+	}
+
+	/**
+	 * Returns activity time range filter options.
+	 *
+	 * @return array<string,string>
+	 */
+	private function audit_time_range_options(): array {
+		return array(
+			'24h' => __( 'Last 24 hours', 'npcink-governance-core' ),
+			'7d'  => __( 'Last 7 days', 'npcink-governance-core' ),
+			'30d' => __( 'Last 30 days', 'npcink-governance-core' ),
+			'all' => __( 'All time', 'npcink-governance-core' ),
+		);
+	}
+
+	/**
+	 * Returns a bounded activity time range key from the request.
+	 *
+	 * @return string
+	 */
+	private function audit_time_range_from_request(): string {
+		$range = $this->admin_query_key( 'audit_time_range', '30d' );
+		return array_key_exists( $range, $this->audit_time_range_options() ) ? $range : '30d';
+	}
+
+	/**
+	 * Returns UTC created-after timestamp for an activity time range.
+	 *
+	 * @param string $range Time range key.
+	 * @return string
+	 */
+	private function audit_created_after_for_range( string $range ): string {
+		$seconds = array(
+			'24h' => DAY_IN_SECONDS,
+			'7d'  => 7 * DAY_IN_SECONDS,
+			'30d' => 30 * DAY_IN_SECONDS,
+		);
+
+		if ( ! isset( $seconds[ $range ] ) ) {
+			return '';
+		}
+
+		return gmdate( 'Y-m-d H:i:s', time() - $seconds[ $range ] );
+	}
+
+	/**
 	 * Returns governance audit filters from query args.
 	 *
 	 * @return array<string,mixed>
@@ -3117,13 +3222,17 @@ final class Admin_Page {
 		$include_read_events = $this->admin_query_bool( 'audit_include_read_events' );
 		$page                = $this->page_from_request( 'audit_page' );
 		$limit               = max( 1, min( 200, $this->admin_query_absint( 'audit_limit', self::AUDIT_PAGE_SIZE ) ) );
+		$time_range          = $this->audit_time_range_from_request();
 		$filters             = array(
+			'search'         => $this->admin_query_text( 'audit_search' ),
 			'proposal_id'    => $this->admin_query_text( 'audit_proposal_id' ),
 			'event_name'     => $this->admin_query_text( 'audit_event_name' ),
 			'ability_id'     => $this->admin_query_text( 'audit_ability_id' ),
 			'app_id'         => $this->admin_query_text( 'audit_app_id' ),
 			'caller_type'    => $this->admin_query_key( 'audit_caller_type' ),
 			'correlation_id' => $this->admin_query_text( 'audit_correlation_id' ),
+			'time_range'     => $time_range,
+			'created_after'  => $this->audit_created_after_for_range( $time_range ),
 			'limit'          => $limit,
 			'page'           => $page,
 			'offset'         => $this->offset_for_page( $page, $limit ),
@@ -3144,13 +3253,137 @@ final class Admin_Page {
 	 * @return bool
 	 */
 	private function has_active_audit_filters( array $filters ): bool {
-		foreach ( array( 'proposal_id', 'event_name', 'ability_id', 'app_id', 'caller_type', 'correlation_id' ) as $key ) {
+		foreach ( array( 'search', 'proposal_id', 'event_name', 'ability_id', 'app_id', 'caller_type', 'correlation_id' ) as $key ) {
 			if ( '' !== (string) ( $filters[ $key ] ?? '' ) ) {
 				return true;
 			}
 		}
 
-		return self::AUDIT_PAGE_SIZE !== (int) ( $filters['limit'] ?? self::AUDIT_PAGE_SIZE ) || ! empty( $filters['include_read_events'] );
+		return '30d' !== (string) ( $filters['time_range'] ?? '30d' ) || self::AUDIT_PAGE_SIZE !== (int) ( $filters['limit'] ?? self::AUDIT_PAGE_SIZE ) || ! empty( $filters['include_read_events'] );
+	}
+
+	/**
+	 * Returns whether the advanced activity filter disclosure should open.
+	 *
+	 * @param array<string,mixed> $filters Audit filters.
+	 * @return bool
+	 */
+	private function has_active_audit_advanced_filters( array $filters ): bool {
+		foreach ( array( 'proposal_id', 'ability_id', 'app_id', 'caller_type', 'correlation_id' ) as $key ) {
+			if ( '' !== (string) ( $filters[ $key ] ?? '' ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Renders active activity filter chips.
+	 *
+	 * @param array<string,mixed> $filters Audit filters.
+	 * @return void
+	 */
+	private function render_audit_filter_chips( array $filters ): void {
+		$chips = $this->audit_filter_chips( $filters );
+		if ( empty( $chips ) ) {
+			return;
+		}
+		?>
+		<ul class="npcink-governance-core-filter-list npcink-governance-core-audit-filter-chips npcink-governance-core-max-wide" aria-label="<?php echo esc_attr__( 'Active activity filters', 'npcink-governance-core' ); ?>">
+			<?php foreach ( $chips as $chip ) : ?>
+				<li>
+					<span><?php echo esc_html( $chip['label'] ); ?>: <strong><?php echo esc_html( $chip['value'] ); ?></strong></span>
+					<a href="<?php echo esc_url( $chip['url'] ); ?>" aria-label="<?php echo esc_attr( $chip['clear_label'] ); ?>">&times;</a>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+		<?php
+	}
+
+	/**
+	 * Returns active activity filter chip data.
+	 *
+	 * @param array<string,mixed> $filters Audit filters.
+	 * @return array<int,array{label:string,value:string,url:string,clear_label:string}>
+	 */
+	private function audit_filter_chips( array $filters ): array {
+		$chips   = array();
+		$options = array(
+			'event_name'  => $this->audit_event_filter_options(),
+			'caller_type' => $this->audit_caller_type_filter_options(),
+			'time_range'  => $this->audit_time_range_options(),
+		);
+
+		foreach (
+			array(
+				'search'         => __( 'Search', 'npcink-governance-core' ),
+				'event_name'     => __( 'Event type', 'npcink-governance-core' ),
+				'time_range'     => __( 'Time range', 'npcink-governance-core' ),
+				'proposal_id'    => __( 'Proposal ID', 'npcink-governance-core' ),
+				'ability_id'     => __( 'Ability ID', 'npcink-governance-core' ),
+				'app_id'         => __( 'App ID', 'npcink-governance-core' ),
+				'caller_type'    => __( 'Caller type', 'npcink-governance-core' ),
+				'correlation_id' => __( 'Correlation ID', 'npcink-governance-core' ),
+			) as $key => $label
+		) {
+			$value = (string) ( $filters[ $key ] ?? '' );
+			if ( '' === $value || ( 'time_range' === $key && '30d' === $value ) ) {
+				continue;
+			}
+
+			$display_value = (string) ( $options[ $key ][ $value ] ?? $value );
+			$chips[]       = array(
+				'label'       => $label,
+				'value'       => $display_value,
+				'url'         => $this->audit_clear_filter_url( $filters, $key ),
+				'clear_label' => sprintf(
+					/* translators: %s: filter label. */
+					__( 'Clear %s filter', 'npcink-governance-core' ),
+					$label
+				),
+			);
+		}
+
+		if ( ! empty( $filters['include_read_events'] ) ) {
+			$chips[] = array(
+				'label'       => __( 'Read events', 'npcink-governance-core' ),
+				'value'       => __( 'Included', 'npcink-governance-core' ),
+				'url'         => $this->audit_clear_filter_url( $filters, 'include_read_events' ),
+				'clear_label' => __( 'Clear read events filter', 'npcink-governance-core' ),
+			);
+		}
+
+		return $chips;
+	}
+
+	/**
+	 * Returns a URL that clears one audit filter.
+	 *
+	 * @param array<string,mixed> $filters Audit filters.
+	 * @param string              $filter_key Filter key.
+	 * @return string
+	 */
+	private function audit_clear_filter_url( array $filters, string $filter_key ): string {
+		$args    = $this->audit_query_args( $filters );
+		$mapping = array(
+			'search'              => 'audit_search',
+			'event_name'          => 'audit_event_name',
+			'time_range'          => 'audit_time_range',
+			'proposal_id'         => 'audit_proposal_id',
+			'ability_id'          => 'audit_ability_id',
+			'app_id'              => 'audit_app_id',
+			'caller_type'         => 'audit_caller_type',
+			'correlation_id'      => 'audit_correlation_id',
+			'include_read_events' => 'audit_include_read_events',
+		);
+
+		unset( $args['audit_page'] );
+		if ( isset( $mapping[ $filter_key ] ) ) {
+			unset( $args[ $mapping[ $filter_key ] ] );
+		}
+
+		return $this->admin_url( $args );
 	}
 
 	/**
@@ -3189,11 +3422,13 @@ final class Admin_Page {
 	 */
 	private function audit_query_args( array $filters ): array {
 		$args = array(
-			'view'        => 'audit',
-			'audit_limit' => (string) (int) ( $filters['limit'] ?? self::AUDIT_PAGE_SIZE ),
+			'view'             => 'audit',
+			'audit_limit'      => (string) (int) ( $filters['limit'] ?? self::AUDIT_PAGE_SIZE ),
+			'audit_time_range' => (string) ( $filters['time_range'] ?? '30d' ),
 		);
 
 		$mapping = array(
+			'search'         => 'audit_search',
 			'proposal_id'    => 'audit_proposal_id',
 			'event_name'     => 'audit_event_name',
 			'ability_id'     => 'audit_ability_id',

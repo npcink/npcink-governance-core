@@ -1,5 +1,33 @@
 # Session Breadcrumb
 
+## 2026-06-18 — Activity log filters compacted
+
+- **Module**: Core admin activity log.
+- **Status**: Activity filtering now opens as a compact toolbar with broad
+  search, event type, time range, per-page count, read-noise toggle, and
+  apply/reset actions. Exact proposal, ability, app, caller, and correlation
+  filters live in an advanced disclosure, and active filters render as
+  clearable chips.
+- **Completed**:
+  - Added broad indexed search across proposal, event, ability, client,
+    caller, and correlation columns.
+  - Added bounded activity time range filtering.
+  - Replaced free-text event and caller filtering with dropdown options.
+  - Moved low-frequency technical filters behind `Advanced filters`.
+  - Updated admin surface docs, operability docs, static contracts, and
+    translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l includes/Audit/Audit_Log_Repository.php && php -l tests/run.php` passed.
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po` passed.
+  - `git diff --check` passed.
+  - `composer test:all` passed.
+  - `WP_PATH="/Users/muze/Local Sites/magick-ai/app/public" WP_CLI_MYSQL_SOCKET="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock" composer smoke:wp` passed.
+  - Browser check loaded `view=audit` and showed the compact search/event/time/per-page/read-noise toolbar with `Advanced filters` collapsed and localized.
+- **Boundary**:
+  - Admin read/list presentation and indexed audit filtering only. Core
+    proposal lifecycle, approval/rejection behavior, commit preflight, Adapter
+    behavior, workflow runtime, queues, and final execution remain unchanged.
+
 ## 2026-06-18 — Project history summary written
 
 - **Module**: Local project handoff documentation.
