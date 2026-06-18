@@ -711,12 +711,64 @@ final class Admin_Page {
 			return;
 		}
 
-		$total_pages = max( 1, (int) ceil( $total / self::REVIEW_PAGE_SIZE ) );
+		$this->render_table_nav(
+			$total,
+			$page,
+			self::REVIEW_PAGE_SIZE,
+			'review_page',
+			array(),
+			array(
+				'show_bulk'  => $show_bulk,
+				'show_range' => false,
+			)
+		);
+	}
+
+	/**
+	 * Renders the WordPress-style activity log navigation row.
+	 *
+	 * @param int                  $total Total matching events.
+	 * @param int                  $page Current page.
+	 * @param int                  $per_page Rows per page.
+	 * @param array<string,string> $args Preserved query args.
+	 * @return void
+	 */
+	private function render_audit_table_nav( int $total, int $page, int $per_page, array $args ): void {
+		$this->render_table_nav(
+			$total,
+			$page,
+			$per_page,
+			'audit_page',
+			$args,
+			array(
+				'classes'    => 'npcink-governance-core-audit-list-nav npcink-governance-core-max-wide',
+				'show_range' => true,
+			)
+		);
+	}
+
+	/**
+	 * Renders a WordPress-style navigation row for Core admin tables.
+	 *
+	 * @param int                  $total Total matching rows.
+	 * @param int                  $page Current page.
+	 * @param int                  $per_page Rows per page.
+	 * @param string               $page_arg Query arg storing page number.
+	 * @param array<string,string> $args Preserved query args.
+	 * @param array<string,mixed>  $options Navigation options.
+	 * @return void
+	 */
+	private function render_table_nav( int $total, int $page, int $per_page, string $page_arg, array $args, array $options = array() ): void {
+		$total_pages = max( 1, (int) ceil( $total / max( 1, $per_page ) ) );
 		$page        = min( max( 1, $page ), $total_pages );
-		$base_url    = remove_query_arg( 'review_page', $this->admin_url( array() ) );
+		$base_url    = remove_query_arg( $page_arg, $this->admin_url( $args ) );
+		$classes      = trim( 'tablenav npcink-governance-core-list-nav ' . (string) ( $options['classes'] ?? '' ) );
+		$show_bulk    = ! empty( $options['show_bulk'] );
+		$show_range   = ! empty( $options['show_range'] );
+		$left_classes = trim( 'alignleft actions ' . ( $show_bulk ? 'bulkactions ' : '' ) . 'npcink-governance-core-list-nav-bulk' );
 		?>
-		<div class="tablenav npcink-governance-core-list-nav">
-			<div class="alignleft actions bulkactions npcink-governance-core-list-nav-bulk">
+		<div class="<?php echo esc_attr( $classes ); ?>">
+			<div class="<?php echo esc_attr( $left_classes ); ?>">
 				<?php if ( $show_bulk ) : ?>
 					<label class="screen-reader-text" for="npcink-governance-core-bulk-action"><?php echo esc_html__( 'Bulk action', 'npcink-governance-core' ); ?></label>
 					<select id="npcink-governance-core-bulk-action" data-npcink-bulk-select>
@@ -724,6 +776,8 @@ final class Admin_Page {
 						<option value="reject"><?php echo esc_html__( 'Reject selected', 'npcink-governance-core' ); ?></option>
 					</select>
 					<button type="button" class="button" data-npcink-bulk-apply><?php echo esc_html__( 'Apply', 'npcink-governance-core' ); ?></button>
+				<?php elseif ( $show_range ) : ?>
+					<span class="displaying-num"><?php echo esc_html( $this->pagination_summary( $total, $page, $per_page ) ); ?></span>
 				<?php endif; ?>
 			</div>
 			<div class="tablenav-pages npcink-governance-core-list-nav-pages">
@@ -739,8 +793,8 @@ final class Admin_Page {
 					?>
 				</span>
 				<span class="pagination-links">
-					<?php $this->render_review_queue_page_button( 1, $page > 1, $base_url, __( 'First page', 'npcink-governance-core' ), '&laquo;' ); ?>
-					<?php $this->render_review_queue_page_button( max( 1, $page - 1 ), $page > 1, $base_url, __( 'Previous page', 'npcink-governance-core' ), '&lsaquo;' ); ?>
+					<?php $this->render_table_page_button( 1, $page > 1, $base_url, $page_arg, __( 'First page', 'npcink-governance-core' ), '&laquo;' ); ?>
+					<?php $this->render_table_page_button( max( 1, $page - 1 ), $page > 1, $base_url, $page_arg, __( 'Previous page', 'npcink-governance-core' ), '&lsaquo;' ); ?>
 					<span class="paging-input">
 						<?php
 						echo esc_html(
@@ -753,8 +807,8 @@ final class Admin_Page {
 						);
 						?>
 					</span>
-					<?php $this->render_review_queue_page_button( min( $total_pages, $page + 1 ), $page < $total_pages, $base_url, __( 'Next page', 'npcink-governance-core' ), '&rsaquo;' ); ?>
-					<?php $this->render_review_queue_page_button( $total_pages, $page < $total_pages, $base_url, __( 'Last page', 'npcink-governance-core' ), '&raquo;' ); ?>
+					<?php $this->render_table_page_button( min( $total_pages, $page + 1 ), $page < $total_pages, $base_url, $page_arg, __( 'Next page', 'npcink-governance-core' ), '&rsaquo;' ); ?>
+					<?php $this->render_table_page_button( $total_pages, $page < $total_pages, $base_url, $page_arg, __( 'Last page', 'npcink-governance-core' ), '&raquo;' ); ?>
 				</span>
 			</div>
 		</div>
@@ -762,16 +816,17 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Renders one review queue pagination button.
+	 * Renders one table pagination button.
 	 *
 	 * @param int    $target_page Target page.
 	 * @param bool   $enabled Whether the button should be clickable.
-	 * @param string $base_url Base URL without review_page.
+	 * @param string $base_url Base URL without the current page argument.
+	 * @param string $page_arg Query arg storing page number.
 	 * @param string $label Accessible label.
 	 * @param string $symbol Visible symbol entity.
 	 * @return void
 	 */
-	private function render_review_queue_page_button( int $target_page, bool $enabled, string $base_url, string $label, string $symbol ): void {
+	private function render_table_page_button( int $target_page, bool $enabled, string $base_url, string $page_arg, string $label, string $symbol ): void {
 		if ( ! $enabled ) {
 			?>
 			<span class="tablenav-pages-navspan button disabled npcink-governance-core-page-button" aria-hidden="true"><?php echo wp_kses_post( $symbol ); ?></span>
@@ -779,84 +834,7 @@ final class Admin_Page {
 			return;
 		}
 
-		$url = add_query_arg( 'review_page', (string) $target_page, $base_url );
-		?>
-		<a class="button npcink-governance-core-page-button" href="<?php echo esc_url( $url ); ?>" aria-label="<?php echo esc_attr( $label ); ?>"><?php echo wp_kses_post( $symbol ); ?></a>
-		<?php
-	}
-
-	/**
-	 * Renders the WordPress-style activity log navigation row.
-	 *
-	 * @param int                  $total Total matching events.
-	 * @param int                  $page Current page.
-	 * @param int                  $per_page Rows per page.
-	 * @param array<string,string> $args Preserved query args.
-	 * @return void
-	 */
-	private function render_audit_table_nav( int $total, int $page, int $per_page, array $args ): void {
-		$total_pages = max( 1, (int) ceil( $total / max( 1, $per_page ) ) );
-		$page        = min( max( 1, $page ), $total_pages );
-		$base_url    = remove_query_arg( 'audit_page', $this->admin_url( $args ) );
-		?>
-		<div class="tablenav npcink-governance-core-list-nav npcink-governance-core-audit-list-nav npcink-governance-core-max-wide">
-			<div class="alignleft actions npcink-governance-core-list-nav-bulk">
-				<span class="displaying-num"><?php echo esc_html( $this->pagination_summary( $total, $page, $per_page ) ); ?></span>
-			</div>
-			<div class="tablenav-pages npcink-governance-core-list-nav-pages">
-				<span class="displaying-num">
-					<?php
-					echo esc_html(
-						sprintf(
-							/* translators: %s: total item count. */
-							__( '%s items', 'npcink-governance-core' ),
-							number_format_i18n( $total )
-						)
-					);
-					?>
-				</span>
-				<span class="pagination-links">
-					<?php $this->render_audit_page_button( 1, $page > 1, $base_url, __( 'First page', 'npcink-governance-core' ), '&laquo;' ); ?>
-					<?php $this->render_audit_page_button( max( 1, $page - 1 ), $page > 1, $base_url, __( 'Previous page', 'npcink-governance-core' ), '&lsaquo;' ); ?>
-					<span class="paging-input">
-						<?php
-						echo esc_html(
-							sprintf(
-								/* translators: 1: current page, 2: total pages. */
-								__( 'Page %1$d of %2$d', 'npcink-governance-core' ),
-								$page,
-								$total_pages
-							)
-						);
-						?>
-					</span>
-					<?php $this->render_audit_page_button( min( $total_pages, $page + 1 ), $page < $total_pages, $base_url, __( 'Next page', 'npcink-governance-core' ), '&rsaquo;' ); ?>
-					<?php $this->render_audit_page_button( $total_pages, $page < $total_pages, $base_url, __( 'Last page', 'npcink-governance-core' ), '&raquo;' ); ?>
-				</span>
-			</div>
-		</div>
-		<?php
-	}
-
-	/**
-	 * Renders one activity log pagination button.
-	 *
-	 * @param int    $target_page Target page.
-	 * @param bool   $enabled Whether the button should be clickable.
-	 * @param string $base_url Base URL without audit_page.
-	 * @param string $label Accessible label.
-	 * @param string $symbol Visible symbol entity.
-	 * @return void
-	 */
-	private function render_audit_page_button( int $target_page, bool $enabled, string $base_url, string $label, string $symbol ): void {
-		if ( ! $enabled ) {
-			?>
-			<span class="tablenav-pages-navspan button disabled npcink-governance-core-page-button" aria-hidden="true"><?php echo wp_kses_post( $symbol ); ?></span>
-			<?php
-			return;
-		}
-
-		$url = add_query_arg( 'audit_page', (string) $target_page, $base_url );
+		$url = add_query_arg( $page_arg, (string) $target_page, $base_url );
 		?>
 		<a class="button npcink-governance-core-page-button" href="<?php echo esc_url( $url ); ?>" aria-label="<?php echo esc_attr( $label ); ?>"><?php echo wp_kses_post( $symbol ); ?></a>
 		<?php
@@ -1618,7 +1596,16 @@ final class Admin_Page {
 		</details>
 
 		<h3><?php echo esc_html__( 'Core App Keys', 'npcink-governance-core' ); ?></h3>
-		<p><?php echo esc_html( $this->pagination_summary( $total, $page, self::APP_KEY_PAGE_SIZE ) ); ?></p>
+		<?php
+		$this->render_table_nav(
+			$total,
+			$page,
+			self::APP_KEY_PAGE_SIZE,
+			'app_key_page',
+			array( 'view' => 'app-keys' ),
+			array( 'show_range' => true )
+		);
+		?>
 		<table class="widefat striped" style="max-width: 1100px;">
 			<thead>
 				<tr>
@@ -1659,7 +1646,16 @@ final class Admin_Page {
 				<?php endforeach; ?>
 			</tbody>
 		</table>
-		<?php $this->render_pagination( $total, $page, self::APP_KEY_PAGE_SIZE, 'app_key_page', array( 'view' => 'app-keys' ) ); ?>
+		<?php
+		$this->render_table_nav(
+			$total,
+			$page,
+			self::APP_KEY_PAGE_SIZE,
+			'app_key_page',
+			array( 'view' => 'app-keys' ),
+			array( 'show_range' => true )
+		);
+		?>
 		<?php
 	}
 
@@ -1694,7 +1690,19 @@ final class Admin_Page {
 				</li>
 			<?php endforeach; ?>
 		</ul>
-		<p><?php echo esc_html( $this->pagination_summary( $total, $page, self::ARCHIVE_PAGE_SIZE ) ); ?></p>
+		<?php
+		$this->render_table_nav(
+			$total,
+			$page,
+			self::ARCHIVE_PAGE_SIZE,
+			'archive_page',
+			array(
+				'view'           => 'archive',
+				'archive_status' => $status_filter,
+			),
+			array( 'show_range' => true )
+		);
+		?>
 		<table class="widefat striped" style="max-width: 1100px;">
 			<thead>
 				<tr>
@@ -1727,7 +1735,19 @@ final class Admin_Page {
 				<?php endforeach; ?>
 			</tbody>
 		</table>
-		<?php $this->render_pagination( $total, $page, self::ARCHIVE_PAGE_SIZE, 'archive_page', array( 'view' => 'archive', 'archive_status' => $status_filter ) ); ?>
+		<?php
+		$this->render_table_nav(
+			$total,
+			$page,
+			self::ARCHIVE_PAGE_SIZE,
+			'archive_page',
+			array(
+				'view'           => 'archive',
+				'archive_status' => $status_filter,
+			),
+			array( 'show_range' => true )
+		);
+		?>
 		<?php
 	}
 
@@ -3692,43 +3712,6 @@ final class Admin_Page {
 			$end,
 			$total
 		);
-	}
-
-	/**
-	 * Renders pagination links for admin lists.
-	 *
-	 * @param int                  $total Total rows.
-	 * @param int                  $page Current page.
-	 * @param int                  $per_page Rows per page.
-	 * @param string               $page_arg Query arg storing page number.
-	 * @param array<string,string> $args Preserved query args.
-	 * @return void
-	 */
-	private function render_pagination( int $total, int $page, int $per_page, string $page_arg, array $args ): void {
-		$total_pages = (int) ceil( $total / max( 1, $per_page ) );
-		if ( $total_pages <= 1 ) {
-			return;
-		}
-
-		$base_url = remove_query_arg( $page_arg, $this->admin_url( $args ) );
-		$links    = paginate_links(
-			array(
-				'base'      => add_query_arg( $page_arg, '%#%', $base_url ),
-				'format'    => '',
-				'current'   => max( 1, $page ),
-				'total'     => $total_pages,
-				'prev_text' => __( 'Previous', 'npcink-governance-core' ),
-				'next_text' => __( 'Next', 'npcink-governance-core' ),
-			)
-		);
-
-		if ( is_string( $links ) && '' !== $links ) {
-			?>
-			<div class="tablenav" style="max-width: 1100px;">
-				<div class="tablenav-pages"><?php echo wp_kses_post( $links ); ?></div>
-			</div>
-			<?php
-		}
 	}
 
 	/**

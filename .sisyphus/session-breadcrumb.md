@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-06-19 — Admin long-list pagination unified
+
+- **Module**: Core admin long-list navigation.
+- **Status**: Review Queue, Activity Log, Expired / Archived, and Core App
+  Keys now share the WordPress-style table navigation pattern with current
+  range on the left and square first/previous/next/last controls on the right.
+- **Completed**:
+  - Extracted shared table navigation and page-button helpers for Core admin
+    lists.
+  - Kept Review Queue bulk selection and rejection controls scoped to the only
+    list with a real bulk lifecycle action.
+  - Moved Expired / Archived and Core App Keys from the older
+    `paginate_links()` footer style to top and bottom table navigation.
+  - Updated admin surface docs and static contracts to lock the shared
+    pagination pattern while keeping multi-select opt-in by action semantics.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php` passed.
+  - `php -l tests/run.php` passed.
+  - `composer test:contracts` passed.
+  - `composer test:all` passed.
+  - `git diff --check` passed.
+- **Boundary**:
+  - Admin read/list presentation only. Core proposal lifecycle,
+    approval/rejection behavior, commit preflight, audit persistence, Adapter
+    behavior, workflow runtime, queues, and final execution remain unchanged.
+
 ## 2026-06-18 — Activity log list navigation tightened
 
 - **Module**: Core admin activity log.

@@ -122,7 +122,11 @@ Proposal detail should be a focused review surface:
 
 Full `Activity Log` and `Expired / Archived` belong in dedicated tabs, not
 inline on the default workbench. Long lists in `Review Queue`, `Activity Log`,
-`Expired / Archived`, and advanced app-key management must be paginated.
+`Expired / Archived`, and advanced app-key management must be paginated with
+the same WordPress-style top and bottom table navigation: current result range
+on the left, item count plus square first/previous/next/last page buttons on
+the right. Selection checkboxes and bulk action controls should appear only on
+lists with real bulk lifecycle actions, such as bounded Review Queue rejection.
 
 Core app-key creation is a low-frequency fallback action. It should stay behind
 the Settings tab's `Advanced Access` disclosure and then behind an explicit

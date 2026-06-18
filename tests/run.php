@@ -2339,13 +2339,14 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Expired / Archive
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Settings' ), 'Admin page exposes the Settings tab.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'render_summary_strip' ), 'Admin default page does not use the removed legacy summary strip helper.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'render_status_metric' ), 'Admin default page removes metric cards from the review surface.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'render_pagination' ), 'Admin page paginates long governance lists.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_table_nav' ), 'Admin page uses a shared WordPress-style table navigation helper for long governance lists.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_table_page_button' ), 'Admin page renders compact square pagination buttons through the shared helper.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'paginate_links(' ), 'Admin page does not use the older text-link pagination style for Core admin lists.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'review_page' ), 'Admin page paginates review queue.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'REVIEW_PAGE_SIZE  = 10' ), 'Admin review queue shows ten pending proposals per page.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_review_queue_nav' ), 'Admin review queue renders a WordPress-style table navigation row.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'data-npcink-bulk-toggle-all' ), 'Admin review queue supports selecting all visible pending proposals.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'data-npcink-bulk-select' ) && false !== strpos( $admin_page, 'data-npcink-bulk-apply' ), 'Admin review queue exposes compact bulk action controls.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'render_review_queue_page_button' ), 'Admin review queue renders square pagination buttons.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Page %1$d of %2$d' ), 'Admin review queue renders compact page position text.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'archive_page' ), 'Admin page paginates expired and archived proposals.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_page' ), 'Admin page paginates governance audit.' );
@@ -2367,7 +2368,7 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Advanced filters'
 npcink_governance_core_assert( false !== strpos( $admin_page, 'has_active_audit_advanced_filters' ), 'Admin audit opens the advanced filter disclosure only for technical filters.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_filter_chips' ), 'Admin audit renders active filters as clearable chips.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_include_read_events' ), 'Admin audit hides read noise by default with an opt-in filter.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_table_nav' ) && false !== strpos( $admin_page, 'render_audit_page_button' ), 'Admin audit renders WordPress-style top and bottom table navigation.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_table_nav' ) && false !== strpos( $admin_page, "'audit_page'" ), 'Admin audit renders WordPress-style top and bottom table navigation.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-audit-table' ), 'Admin audit renders a compact fixed-layout activity table.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Proposal_Repository::display_id_for_proposal_id( $proposal_id )' ), 'Admin audit shows stable display ids instead of full proposal ids in the default row.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_context_summary' ), 'Admin audit keeps the default context column concise.' );
