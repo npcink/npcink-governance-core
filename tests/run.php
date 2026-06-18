@@ -2185,6 +2185,7 @@ $admin_surface_standard = npcink_governance_core_read( $root . '/docs/admin-surf
 foreach (
 	array(
 		'local governance workbench',
+		'operator-facing module name `Governance Core`',
 		'Review Queue',
 		'compact status summary',
 		'pending request list',
@@ -2203,24 +2204,25 @@ foreach (
 		'technical details',
 		'Activity Log',
 		'Expired / Archived',
+		'top list navigation row with counts',
 		'Settings',
 		'Development Approval Policy',
 		'Advanced Access',
 		'paginated',
-			'useful empty state',
-			'proposal summary panel',
-			'action count',
-			'warning/blocker counts',
-			'collapsed technical identity inspector',
-			'non-pending outcome notice',
-			'batch action table',
-			'Ability and policy',
-			'Preview signals',
-			'audit evidence before raw payload',
-			'bounded code blocks',
-			'visual status badges',
-			'reviewer sees the basis',
-			'low-frequency fallback action',
+		'useful empty state',
+		'proposal summary panel',
+		'action count',
+		'warning/blocker counts',
+		'collapsed technical identity inspector',
+		'non-pending outcome notice',
+		'batch action table',
+		'Ability and policy',
+		'Preview signals',
+		'audit evidence before raw payload',
+		'bounded code blocks',
+		'visual status badges',
+		'reviewer sees the basis',
+		'low-frequency fallback action',
 		'Settings tab',
 		'keeping these controls out of the default review queue',
 		'default open because it is the primary setting',
@@ -2253,6 +2255,9 @@ npcink_governance_core_assert( false === strpos( $admin_page, 'ADMIN_REQUEST_NON
 npcink_governance_core_assert( false === strpos( $admin_page, 'has_valid_admin_request_nonce' ), 'Admin GET filters rely on capability checks and sanitization instead of URL nonce gating.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "current_user_can( 'manage_options' )" ), 'Admin proposal actions enforce capability.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "DATETIME_DISPLAY_FORMAT = 'Y-m-d H:i:s'" ), 'Admin page standardizes visible datetime format.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Governance Core', 'npcink-governance-core' )" ), 'Admin page title uses the operator-facing module name.' );
+npcink_governance_core_assert( false === strpos( $admin_page, "<h1><?php echo esc_html__( 'npcink-governance-core'" ), 'Admin page title does not expose the plugin slug as the primary heading.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Review, approve, and audit AI-initiated WordPress operations.' ), 'Admin page intro describes the governance job.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'display_datetime' ), 'Admin page centralizes visible datetime formatting.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'wp_date( self::DATETIME_DISPLAY_FORMAT, $timestamp )' ), 'Admin page formats stored UTC timestamps with the WordPress timezone.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "\$this->display_datetime( (string) \$proposal['created_at'] )" ), 'Admin review queue formats proposal creation time through WordPress time.' );
@@ -2355,6 +2360,9 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_archive_primary_action' ), 'Admin archive keeps one primary lifecycle action in the default action column.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_archive_row_actions' ), 'Admin archive keeps secondary archive actions low-emphasis in row metadata.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, '$this->proposal_display_id( $proposal )' ), 'Admin archive shows display ids instead of raw full proposal ids in the default row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'archive_status_filter_links' ), 'Admin archive renders status filter links with counts.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_table_filter_links' ), 'Admin archive places status filters inside the table navigation row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "__( '%1\$s (%2\$s)', 'npcink-governance-core' )" ), 'Admin table filters render WordPress-style labels with counts.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_page' ), 'Admin page paginates governance audit.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'app_key_page' ), 'Admin page paginates advanced app-key management.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'archive_status' ), 'Admin page filters expired and archived proposal lists.' );
@@ -2494,6 +2502,7 @@ npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-bulk-action-bar' ), 'Admin CSS styles the contextual bulk action bar.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-bulk-disclosure[hidden]' ), 'Admin CSS hides bulk actions until JavaScript reveals selection context.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-list-nav' ), 'Admin CSS styles the review queue table navigation row.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-table-filter-links' ), 'Admin CSS styles status filters inside table navigation rows.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-page-button' ), 'Admin CSS styles compact square pagination buttons.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'data-npcink-details-target' ), 'Admin JS toggles row details by explicit target id.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'aria-expanded' ), 'Admin JS maintains details toggle accessibility state.' );

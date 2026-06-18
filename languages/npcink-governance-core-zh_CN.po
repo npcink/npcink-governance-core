@@ -95,9 +95,17 @@ msgstr "打开"
 msgid "Not installed"
 msgstr "未安装"
 
+#: includes/Admin/Admin_Page.php:862
+msgid "%1$s (%2$s)"
+msgstr "%1$s（%2$s）"
+
+#: includes/Admin/Admin_Page.php:291
+msgid "Governance Core"
+msgstr "治理核心"
+
 #: includes/Admin/Admin_Page.php:292
-msgid "Review WordPress requests before they run."
-msgstr "在 WordPress 请求执行前进行审核。"
+msgid "Review, approve, and audit AI-initiated WordPress operations."
+msgstr "审核、批准并审计 AI 发起的 WordPress 操作。"
 
 #: includes/Admin/Admin_Page.php:310
 msgid "Selected proposal was not found."

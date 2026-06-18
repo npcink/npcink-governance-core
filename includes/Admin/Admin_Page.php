@@ -288,8 +288,8 @@ final class Admin_Page {
 		$error          = $this->admin_query_key( 'npcink_governance_core_error' );
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html__( 'npcink-governance-core', 'npcink-governance-core' ); ?></h1>
-			<p><?php echo esc_html__( 'Review WordPress requests before they run.', 'npcink-governance-core' ); ?></p>
+			<h1><?php echo esc_html__( 'Governance Core', 'npcink-governance-core' ); ?></h1>
+			<p><?php echo esc_html__( 'Review, approve, and audit AI-initiated WordPress operations.', 'npcink-governance-core' ); ?></p>
 
 			<?php if ( '' !== $message ) : ?>
 				<div class="notice notice-success is-dismissible">
@@ -765,6 +765,7 @@ final class Admin_Page {
 		$classes      = trim( 'tablenav npcink-governance-core-list-nav ' . (string) ( $options['classes'] ?? '' ) );
 		$show_bulk    = ! empty( $options['show_bulk'] );
 		$show_range   = ! empty( $options['show_range'] );
+		$filter_links = is_array( $options['filter_links'] ?? null ) ? $options['filter_links'] : array();
 		$left_classes = trim( 'alignleft actions ' . ( $show_bulk ? 'bulkactions ' : '' ) . 'npcink-governance-core-list-nav-bulk' );
 		?>
 		<div class="<?php echo esc_attr( $classes ); ?>">
@@ -778,6 +779,9 @@ final class Admin_Page {
 					<button type="button" class="button" data-npcink-bulk-apply><?php echo esc_html__( 'Apply', 'npcink-governance-core' ); ?></button>
 				<?php elseif ( $show_range ) : ?>
 					<span class="displaying-num"><?php echo esc_html( $this->pagination_summary( $total, $page, $per_page ) ); ?></span>
+				<?php endif; ?>
+				<?php if ( ! empty( $filter_links ) ) : ?>
+					<?php $this->render_table_filter_links( $filter_links ); ?>
 				<?php endif; ?>
 			</div>
 			<div class="tablenav-pages npcink-governance-core-list-nav-pages">
@@ -837,6 +841,35 @@ final class Admin_Page {
 		$url = add_query_arg( $page_arg, (string) $target_page, $base_url );
 		?>
 		<a class="button npcink-governance-core-page-button" href="<?php echo esc_url( $url ); ?>" aria-label="<?php echo esc_attr( $label ); ?>"><?php echo wp_kses_post( $symbol ); ?></a>
+		<?php
+	}
+
+	/**
+	 * Renders compact view filters inside a table navigation row.
+	 *
+	 * @param array<int,array{label:string,count:int,url:string,current:bool}> $links Filter links.
+	 * @return void
+	 */
+	private function render_table_filter_links( array $links ): void {
+		?>
+		<ul class="subsubsub npcink-governance-core-table-filter-links">
+			<?php foreach ( $links as $index => $link ) : ?>
+				<li>
+					<a href="<?php echo esc_url( $link['url'] ); ?>" class="<?php echo ! empty( $link['current'] ) ? 'current' : ''; ?>" <?php echo ! empty( $link['current'] ) ? 'aria-current="page"' : ''; ?>>
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: 1: filter label, 2: item count. */
+								__( '%1$s (%2$s)', 'npcink-governance-core' ),
+								$link['label'],
+								number_format_i18n( (int) $link['count'] )
+							)
+						);
+						?>
+					</a><?php echo $index < count( $links ) - 1 ? ' |' : ''; ?>
+				</li>
+			<?php endforeach; ?>
+		</ul>
 		<?php
 	}
 
@@ -1671,7 +1704,12 @@ final class Admin_Page {
 		$statuses      = 'all' === $status_filter
 			? array( Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_ARCHIVED )
 			: array( $status_filter );
-		$total          = $this->proposals->count_by_statuses( $statuses );
+		$status_counts = array(
+			Proposal_Repository::STATUS_EXPIRED  => $this->proposals->count_by_statuses( array( Proposal_Repository::STATUS_EXPIRED ) ),
+			Proposal_Repository::STATUS_ARCHIVED => $this->proposals->count_by_statuses( array( Proposal_Repository::STATUS_ARCHIVED ) ),
+		);
+		$status_counts['all'] = $status_counts[ Proposal_Repository::STATUS_EXPIRED ] + $status_counts[ Proposal_Repository::STATUS_ARCHIVED ];
+		$total                = 'all' === $status_filter ? $status_counts['all'] : $status_counts[ $status_filter ];
 		$page           = $this->bounded_page( $total, $page, self::ARCHIVE_PAGE_SIZE );
 		$proposals      = $this->proposals->list_by_statuses(
 			$statuses,
@@ -1681,15 +1719,6 @@ final class Admin_Page {
 		?>
 		<h2><?php echo esc_html__( 'Expired / Archived', 'npcink-governance-core' ); ?></h2>
 		<p><?php echo esc_html__( 'Stale requests are kept for audit but removed from the active review queue.', 'npcink-governance-core' ); ?></p>
-		<ul class="subsubsub" style="float: none; margin: 0 0 12px;">
-			<?php foreach ( $this->archive_status_filters() as $key => $label ) : ?>
-				<li>
-					<a href="<?php echo esc_url( $this->admin_url( array( 'view' => 'archive', 'archive_status' => $key ) ) ); ?>" class="<?php echo $status_filter === $key ? 'current' : ''; ?>" <?php echo $status_filter === $key ? 'aria-current="page"' : ''; ?>>
-						<?php echo esc_html( $label ); ?>
-					</a>
-				</li>
-			<?php endforeach; ?>
-		</ul>
 		<?php
 		$this->render_table_nav(
 			$total,
@@ -1700,7 +1729,10 @@ final class Admin_Page {
 				'view'           => 'archive',
 				'archive_status' => $status_filter,
 			),
-			array( 'show_range' => true )
+			array(
+				'filter_links' => $this->archive_status_filter_links( $status_filter, $status_counts ),
+				'show_range'   => true,
+			)
 		);
 		?>
 		<table class="widefat striped npcink-governance-core-archive-table" style="max-width: 1100px;">
@@ -3665,6 +3697,33 @@ final class Admin_Page {
 			Proposal_Repository::STATUS_EXPIRED  => __( 'Expired', 'npcink-governance-core' ),
 			Proposal_Repository::STATUS_ARCHIVED => __( 'Archived', 'npcink-governance-core' ),
 		);
+	}
+
+	/**
+	 * Returns archive status filter link data with counts.
+	 *
+	 * @param string            $active Active status filter.
+	 * @param array<string,int> $counts Status counts.
+	 * @return array<int,array{label:string,count:int,url:string,current:bool}>
+	 */
+	private function archive_status_filter_links( string $active, array $counts ): array {
+		$links = array();
+
+		foreach ( $this->archive_status_filters() as $key => $label ) {
+			$links[] = array(
+				'label'   => $label,
+				'count'   => (int) ( $counts[ $key ] ?? 0 ),
+				'url'     => $this->admin_url(
+					array(
+						'view'           => 'archive',
+						'archive_status' => $key,
+					)
+				),
+				'current' => $active === $key,
+			);
+		}
+
+		return $links;
 	}
 
 	/**

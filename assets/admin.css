@@ -375,6 +375,7 @@
 
 .npcink-governance-core-list-nav-bulk {
 	display: flex;
+	flex-wrap: wrap;
 	gap: 6px;
 	align-items: center;
 	min-height: 32px;
@@ -384,6 +385,16 @@
 .npcink-governance-core-list-nav-bulk select {
 	min-width: 138px;
 	max-width: 180px;
+}
+
+.npcink-governance-core-table-filter-links {
+	float: none;
+	margin: 0 0 0 8px;
+	white-space: nowrap;
+}
+
+.npcink-governance-core-table-filter-links li {
+	margin: 0;
 }
 
 .npcink-governance-core-list-nav-pages {

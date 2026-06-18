@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-06-19 — Admin title and archive filters refined
+
+- **Module**: Core admin page shell and expired/archive list controls.
+- **Status**: The Core admin page now uses the operator-facing module title
+  `Governance Core` / `治理核心`, and the Expired / Archived status filters sit
+  inside the top WordPress-style list navigation row with counts.
+- **Completed**:
+  - Replaced the plugin slug heading with the localized module name.
+  - Updated the page intro to describe review, approval, and audit work.
+  - Moved archive status filters out of the standalone row and into the shared
+    table navigation pattern.
+  - Added filter counts for All, Expired, and Archived.
+  - Updated admin CSS, admin surface docs, static contracts, and Chinese
+    translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php` passed.
+  - `php -l tests/run.php` passed.
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po` passed.
+  - `composer test:all` passed.
+  - `git diff --check` passed.
+- **Boundary**:
+  - Admin presentation, list controls, documentation, and localization only.
+    Core proposal lifecycle, approval/rejection behavior, commit preflight,
+    audit persistence, Adapter behavior, workflow runtime, queues, and final
+    execution remain unchanged.
+
 ## 2026-06-19 — Archive list rows compacted
 
 - **Module**: Core admin expired/archive list.

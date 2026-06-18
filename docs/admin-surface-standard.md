@@ -7,6 +7,8 @@ Status: active for `Npcink AI -> Core`.
 The Core admin page is the local governance workbench for WordPress ability
 proposals. It helps an administrator review pending proposals, make approval
 decisions, inspect commit-preflight readiness, and trace Core audit evidence.
+The page title should use the operator-facing module name `Governance Core`
+rather than the plugin slug.
 
 ## Default View
 
@@ -125,7 +127,9 @@ Proposal detail should be a focused review surface:
   full proposal id, ability id, source, time, and policy fields, and a short
   primary `Reopen` action in the default action column. Keep
   secondary archive actions low-emphasis and do not show raw ability ids in the
-  default row.
+  default row. Status filters for `All`, `Expired`, and `Archived` should live
+  in the top list navigation row with counts, not as a separate filter row
+  between the page description and list controls.
 
 Full `Activity Log` and `Expired / Archived` belong in dedicated tabs, not
 inline on the default workbench. Long lists in `Review Queue`, `Activity Log`,
