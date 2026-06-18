@@ -691,6 +691,7 @@ abilities:
 - `npcink-toolbox/build-article-media-batch-write-plan`
 - `npcink-toolbox/build-image-candidate-adoption-plan`
 - `npcink-toolbox/build-site-knowledge-review-plan`
+- `npcink-toolbox/build-nightly-inspection-review-plan`
 - `npcink-toolbox/build-content-metadata-apply-plan`
 
 Permission: `manage_options` or app scope `proposals:create`.
@@ -753,6 +754,20 @@ For `npcink-toolbox/build-site-knowledge-review-plan`, the plan must declare
 `direct_wordpress_write=false`. This creates a Core review proposal only; it
 does not generate article content, approve the proposal, pass commit preflight,
 or execute WordPress writes.
+
+For `npcink-toolbox/build-nightly-inspection-review-plan`, the plan must
+declare `artifact_type=nightly_site_inspection_review_plan`, use
+`contract_version=nightly_site_inspection_core_review_plan.v1`, preserve
+non-empty `evidence_refs`, preserve the selected Morning Brief review item from
+`source_context.cloud_core_intake_package.selected_review_items` or equivalent
+plan evidence, and contain exactly one blocked
+`npcink-abilities-toolkit/create-draft` review action. The action must remain
+`proposal_ready=false`, require human `title` and `content` input, stay
+`status=draft`, and keep `dry_run=true`, `commit=false`, and
+`direct_wordpress_write=false`. Core stores the selected review item under
+`preview.nightly_inspection_review` for proposal review, but it does not run
+Nightly Inspection, organize Morning Brief output, schedule or retry Cloud
+jobs, approve the proposal, pass commit preflight, or execute WordPress writes.
 
 For `npcink-toolbox/build-content-metadata-apply-plan`, the plan must declare
 `artifact_type=content_metadata_apply_plan`, `proposal_mode=batch`,

@@ -986,6 +986,15 @@ final class Plan_Proposal_Service {
 			);
 		}
 
+		$selected_items = $this->nightly_inspection_selected_review_items( $plan );
+		if ( empty( $selected_items ) ) {
+			return new WP_Error(
+				'npcink_governance_core_nightly_inspection_review_item_missing',
+				__( 'Nightly Inspection review plans must preserve the selected Morning Brief review item.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
 		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
 		if ( 1 !== count( $write_actions ) || ! is_array( $write_actions[0] ?? null ) ) {
 			return new WP_Error(
@@ -3181,6 +3190,9 @@ final class Plan_Proposal_Service {
 	 * @return array<string,mixed>
 	 */
 	private function nightly_inspection_review_preview( array $plan ): array {
+		$core_intake_package = $this->nightly_inspection_core_intake_package( $plan );
+		$selected_items      = $this->nightly_inspection_selected_review_items( $plan );
+
 		return array(
 			'artifact_type'          => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
 			'contract_version'       => sanitize_text_field( (string) ( $plan['contract_version'] ?? '' ) ),
@@ -3194,11 +3206,96 @@ final class Plan_Proposal_Service {
 			'local_next_action'      => sanitize_key( (string) ( $plan['local_next_action'] ?? '' ) ),
 			'evidence_gate_status'   => sanitize_key( (string) ( $plan['evidence_gate_status'] ?? '' ) ),
 			'evidence_refs'          => $this->sanitize_payload( $plan['evidence_refs'] ?? array() ),
+			'evidence_ref_count'     => count( is_array( $plan['evidence_refs'] ?? null ) ? $plan['evidence_refs'] : array() ),
+			'core_intake_package'    => $this->sanitize_payload( $core_intake_package ),
+			'selected_review_item_ids' => array_values(
+				array_filter(
+					array_map(
+						static function ( array $item ): string {
+							return sanitize_text_field( (string) ( $item['action_id'] ?? ( $item['item_id'] ?? '' ) ) );
+						},
+						$selected_items
+					)
+				)
+			),
+			'selected_review_items'  => $this->sanitize_payload( $selected_items ),
 			'blocked_outputs'        => $this->sanitize_payload( $plan['blocked_outputs'] ?? array() ),
+			'operator_next_action'   => 'draft_selected_review_item_before_commit_preflight',
 			'final_write_path'       => 'core_proposal_required',
 			'direct_wordpress_write' => false,
 			'cloud_scheduler_truth'  => false,
 		);
+	}
+
+	/**
+	 * Returns the Core intake package embedded by Cloud or Toolbox.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function nightly_inspection_core_intake_package( array $plan ): array {
+		$source_context = is_array( $plan['source_context'] ?? null ) ? $plan['source_context'] : array();
+		if ( is_array( $source_context['cloud_core_intake_package'] ?? null ) ) {
+			return $source_context['cloud_core_intake_package'];
+		}
+
+		if ( is_array( $plan['core_intake_package'] ?? null ) ) {
+			return $plan['core_intake_package'];
+		}
+
+		$handoff = is_array( $plan['handoff'] ?? null ) ? $plan['handoff'] : array();
+		if ( is_array( $handoff['core_intake_package'] ?? null ) ) {
+			return $handoff['core_intake_package'];
+		}
+
+		return array();
+	}
+
+	/**
+	 * Returns selected Morning Brief review items from the v1 Core handoff shape.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function nightly_inspection_selected_review_items( array $plan ): array {
+		$core_intake_package = $this->nightly_inspection_core_intake_package( $plan );
+		$selected_items      = is_array( $core_intake_package['selected_review_items'] ?? null ) ? array_values( $core_intake_package['selected_review_items'] ) : array();
+
+		if ( empty( $selected_items ) ) {
+			$selected_items = is_array( $plan['selected_review_items'] ?? null ) ? array_values( $plan['selected_review_items'] ) : array();
+		}
+
+		if ( empty( $selected_items ) ) {
+			$selected_items = is_array( $plan['evidence_refs'] ?? null ) ? array_values( $plan['evidence_refs'] ) : array();
+		}
+
+		$items = array();
+		foreach ( $selected_items as $item ) {
+			if ( ! is_array( $item ) ) {
+				continue;
+			}
+
+			$action_id = sanitize_text_field( (string) ( $item['action_id'] ?? ( $item['item_id'] ?? ( $item['id'] ?? '' ) ) ) );
+			if ( '' === $action_id ) {
+				continue;
+			}
+
+			$items[] = array(
+				'action_id'               => $action_id,
+				'title'                   => sanitize_text_field( (string) ( $item['title'] ?? __( 'Morning Brief review item', 'npcink-governance-core' ) ) ),
+				'object_type'             => sanitize_key( (string) ( $item['object_type'] ?? '' ) ),
+				'object_id'               => sanitize_text_field( (string) ( $item['object_id'] ?? '' ) ),
+				'post_id'                 => absint( $item['post_id'] ?? 0 ),
+				'score'                   => is_numeric( $item['score'] ?? null ) ? (float) $item['score'] : null,
+				'severity'                => sanitize_key( (string) ( $item['severity'] ?? '' ) ),
+				'reason_codes'            => array_values( array_map( 'sanitize_key', (array) ( $item['reason_codes'] ?? array() ) ) ),
+				'evidence_summary'        => sanitize_textarea_field( (string) ( $item['evidence_summary'] ?? '' ) ),
+				'recommended_next_action' => sanitize_key( (string) ( $item['recommended_next_action'] ?? '' ) ),
+				'direct_wordpress_write'  => false,
+			);
+		}
+
+		return array_slice( $items, 0, 5 );
 	}
 
 	/**
