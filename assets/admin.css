@@ -33,6 +33,10 @@
 	margin: 16px 0;
 }
 
+.npcink-governance-core-token-summary {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .npcink-governance-core-summary-item {
 	box-sizing: border-box;
 	min-height: 104px;
@@ -74,6 +78,11 @@
 	font-size: 24px;
 	font-weight: 600;
 	line-height: 1.2;
+}
+
+.npcink-governance-core-summary-value-compact {
+	font-size: 18px;
+	line-height: 1.35;
 }
 
 .npcink-governance-core-summary-detail {
@@ -459,14 +468,17 @@
 	table-layout: fixed;
 }
 
-.npcink-governance-core-archive-table {
+.npcink-governance-core-archive-table,
+.npcink-governance-core-token-table {
 	table-layout: fixed;
 }
 
 .npcink-governance-core-review-table th,
 .npcink-governance-core-review-table td,
 .npcink-governance-core-archive-table th,
-.npcink-governance-core-archive-table td {
+.npcink-governance-core-archive-table td,
+.npcink-governance-core-token-table th,
+.npcink-governance-core-token-table td {
 	text-align: left;
 	vertical-align: top;
 }
@@ -477,6 +489,10 @@
 
 .npcink-governance-core-request-cell {
 	width: 220px;
+}
+
+.npcink-governance-core-token-client-cell {
+	width: 250px;
 }
 
 .npcink-governance-core-source-cell {
@@ -499,6 +515,10 @@
 .npcink-governance-core-action-cell {
 	width: 88px;
 	text-align: right;
+}
+
+.npcink-governance-core-token-table .npcink-governance-core-action-cell {
+	width: 96px;
 }
 
 .npcink-governance-core-request-title {
@@ -605,6 +625,10 @@
 	word-break: break-word;
 }
 
+.npcink-governance-core-token-detail-table {
+	margin-top: 8px;
+}
+
 .npcink-governance-core-due-label {
 	color: #646970;
 	font-size: 12px;
@@ -656,6 +680,7 @@
 	color: #553b00;
 }
 
+.npcink-governance-core-status-active,
 .npcink-governance-core-status-approved,
 .npcink-governance-core-status-executed,
 .npcink-governance-core-risk-read,
@@ -668,6 +693,7 @@
 .npcink-governance-core-status-rejected,
 .npcink-governance-core-status-expired,
 .npcink-governance-core-status-archived,
+.npcink-governance-core-status-revoked,
 .npcink-governance-core-risk-not-declared {
 	border-color: #c3c4c7;
 	background: #f6f7f7;
@@ -956,6 +982,7 @@
 
 @media screen and (max-width: 960px) {
 	.npcink-governance-core-summary-strip,
+	.npcink-governance-core-token-summary,
 	.npcink-governance-core-audit-filter-toolbar,
 	.npcink-governance-core-audit-advanced-grid,
 	.npcink-governance-core-workbench-toolbar,

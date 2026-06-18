@@ -215,7 +215,7 @@ final class Admin_Page {
 			<table class="widefat striped npcink-governance-core-table-narrow">
 				<tbody>
 					<?php
-					$this->render_overview_row( __( 'Core', 'npcink-governance-core' ), __( 'Review proposals, approval decisions, commit preflight, audit, and Core app keys.', 'npcink-governance-core' ), self::MENU_SLUG );
+					$this->render_overview_row( __( 'Core', 'npcink-governance-core' ), __( 'Review proposals, approval decisions, commit preflight, audit, and client access tokens.', 'npcink-governance-core' ), self::MENU_SLUG );
 					$this->render_overview_row( __( 'Adapter', 'npcink-governance-core' ), __( 'Connect OpenClaw through the Adapter surface.', 'npcink-governance-core' ), 'npcink-openclaw-adapter' );
 					$this->render_overview_row( __( 'Abilities', 'npcink-governance-core' ), __( 'Verify WordPress Abilities API packages and demo ability controls.', 'npcink-governance-core' ), 'npcink-abilities-toolkit' );
 					$this->render_overview_row( __( 'Cloud Addon', 'npcink-governance-core' ), __( 'Connect this site to cloud services without moving local control-plane truth.', 'npcink-governance-core' ), 'npcink-cloud-addon' );
@@ -1316,12 +1316,12 @@ final class Admin_Page {
 		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide npcink-governance-core-disclosure-top">
 			<summary>
 				<strong><?php echo esc_html__( 'Advanced Access', 'npcink-governance-core' ); ?></strong>
-				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Client access keys for trusted governance clients.', 'npcink-governance-core' ); ?></span>
+				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Client access tokens for trusted governance clients.', 'npcink-governance-core' ); ?></span>
 			</summary>
 			<table class="widefat striped npcink-governance-core-table-spaced">
 				<tbody>
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Active app keys', 'npcink-governance-core' ); ?></th>
+						<th scope="row"><?php echo esc_html__( 'Active tokens', 'npcink-governance-core' ); ?></th>
 						<td><?php echo esc_html( (string) $active_count ); ?></td>
 					</tr>
 					<tr>
@@ -1330,7 +1330,7 @@ final class Admin_Page {
 					</tr>
 					<tr>
 						<th scope="row"><?php echo esc_html__( 'Action', 'npcink-governance-core' ); ?></th>
-						<td><a class="button" href="<?php echo esc_url( $this->view_url( 'app-keys' ) ); ?>"><?php echo esc_html__( 'Manage Core app keys', 'npcink-governance-core' ); ?></a></td>
+						<td><a class="button" href="<?php echo esc_url( $this->view_url( 'app-keys' ) ); ?>"><?php echo esc_html__( 'Client access tokens', 'npcink-governance-core' ); ?></a></td>
 					</tr>
 				</tbody>
 			</table>
@@ -1560,23 +1560,43 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Renders Core app key access section.
+	 * Renders client access token section backed by Core app keys.
 	 *
 	 * @return void
 	 */
 	private function render_external_access(): void {
-		$page  = $this->page_from_request( 'app_key_page' );
-		$total = $this->apps->count();
-		$page  = $this->bounded_page( $total, $page, self::APP_KEY_PAGE_SIZE );
-		$apps  = $this->apps->list_recent( self::APP_KEY_PAGE_SIZE, $this->offset_for_page( $page, self::APP_KEY_PAGE_SIZE ) );
-		?>
-		<p><a href="<?php echo esc_url( $this->admin_url() ); ?>">&larr; <?php echo esc_html__( 'Back to review queue', 'npcink-governance-core' ); ?></a></p>
-		<h2><?php echo esc_html__( 'Advanced Access', 'npcink-governance-core' ); ?></h2>
-		<p><?php echo esc_html__( 'Use this only for trusted Core governance clients. Productized OpenClaw setup belongs in a trusted adapter.', 'npcink-governance-core' ); ?></p>
+		$page         = $this->page_from_request( 'app_key_page' );
+		$total        = $this->apps->count();
+		$active_count = $this->apps->count( 'active' );
+		$last_used    = $this->apps->latest_last_used_at();
+		$page         = $this->bounded_page( $total, $page, self::APP_KEY_PAGE_SIZE );
+		$apps         = $this->apps->list_recent( self::APP_KEY_PAGE_SIZE, $this->offset_for_page( $page, self::APP_KEY_PAGE_SIZE ) );
+	?>
+		<p><a href="<?php echo esc_url( $this->view_url( 'settings' ) ); ?>">&larr; <?php echo esc_html__( 'Back to settings', 'npcink-governance-core' ); ?></a></p>
+		<h2><?php echo esc_html__( 'Client Access Tokens', 'npcink-governance-core' ); ?></h2>
+		<p><?php echo esc_html__( 'Issue limited REST access tokens for trusted Adapter or internal governance clients. These are not model API keys or productized OpenClaw connection settings.', 'npcink-governance-core' ); ?></p>
+
+		<div class="npcink-governance-core-summary-strip npcink-governance-core-token-summary">
+			<div class="npcink-governance-core-summary-item npcink-governance-core-summary-ok">
+				<span class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Active tokens', 'npcink-governance-core' ); ?></span>
+				<div class="npcink-governance-core-summary-value"><?php echo esc_html( (string) $active_count ); ?></div>
+				<div class="npcink-governance-core-summary-detail"><?php echo esc_html__( 'Can authenticate scoped REST requests.', 'npcink-governance-core' ); ?></div>
+			</div>
+			<div class="npcink-governance-core-summary-item npcink-governance-core-summary-inactive">
+				<span class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Total tokens', 'npcink-governance-core' ); ?></span>
+				<div class="npcink-governance-core-summary-value"><?php echo esc_html( (string) $total ); ?></div>
+				<div class="npcink-governance-core-summary-detail"><?php echo esc_html__( 'Kept for audit attribution.', 'npcink-governance-core' ); ?></div>
+			</div>
+			<div class="npcink-governance-core-summary-item npcink-governance-core-summary-neutral">
+				<span class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Last used', 'npcink-governance-core' ); ?></span>
+				<div class="npcink-governance-core-summary-value npcink-governance-core-summary-value-compact"><?php echo esc_html( '' !== $last_used ? $this->display_datetime( $last_used ) : __( 'Never', 'npcink-governance-core' ) ); ?></div>
+				<div class="npcink-governance-core-summary-detail"><?php echo esc_html__( 'Latest successful token authentication.', 'npcink-governance-core' ); ?></div>
+			</div>
+		</div>
 
 		<details style="max-width: 1100px; margin: 0 0 16px;">
 			<summary style="cursor: pointer;">
-				<strong><?php echo esc_html__( 'Create Core App Key', 'npcink-governance-core' ); ?></strong>
+				<strong><?php echo esc_html__( 'Issue client access token', 'npcink-governance-core' ); ?></strong>
 				<span style="color: #646970;"><?php echo esc_html__( 'Issue a scoped token for a trusted governance client.', 'npcink-governance-core' ); ?></span>
 			</summary>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top: 8px;">
@@ -1585,7 +1605,7 @@ final class Admin_Page {
 				<table class="form-table" role="presentation">
 					<tbody>
 						<tr>
-							<th scope="row"><label for="npcink-governance-core-app-label"><?php echo esc_html__( 'App label', 'npcink-governance-core' ); ?></label></th>
+							<th scope="row"><label for="npcink-governance-core-app-label"><?php echo esc_html__( 'Client label', 'npcink-governance-core' ); ?></label></th>
 							<td><input id="npcink-governance-core-app-label" class="regular-text" type="text" name="app_label" value="Adapter Client" /></td>
 						</tr>
 						<tr>
@@ -1611,61 +1631,75 @@ final class Admin_Page {
 						</tr>
 					</tbody>
 				</table>
-				<p><button type="submit" class="button button-secondary"><?php echo esc_html__( 'Create Core App Key', 'npcink-governance-core' ); ?></button></p>
+				<p><button type="submit" class="button button-secondary"><?php echo esc_html__( 'Issue client access token', 'npcink-governance-core' ); ?></button></p>
 			</form>
 		</details>
 
-		<h3><?php echo esc_html__( 'Core App Keys', 'npcink-governance-core' ); ?></h3>
-		<?php
-		$this->render_table_nav(
-			$total,
-			$page,
-			self::APP_KEY_PAGE_SIZE,
-			'app_key_page',
-			array( 'view' => 'app-keys' ),
-			array( 'show_range' => true )
-		);
-		?>
-		<table class="widefat striped" style="max-width: 1100px;">
+		<h3><?php echo esc_html__( 'Access tokens', 'npcink-governance-core' ); ?></h3>
+	<?php
+	$this->render_table_nav(
+		$total,
+		$page,
+		self::APP_KEY_PAGE_SIZE,
+		'app_key_page',
+		array( 'view' => 'app-keys' ),
+		array( 'show_range' => true )
+	);
+	?>
+		<table class="widefat striped npcink-governance-core-token-table npcink-governance-core-max-wide">
 			<thead>
 				<tr>
-					<th scope="col"><?php echo esc_html__( 'Label', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'App ID', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Key ID', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Status', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Scopes', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Last used', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Action', 'npcink-governance-core' ); ?></th>
+					<th class="npcink-governance-core-token-client-cell" scope="col"><?php echo esc_html__( 'Client', 'npcink-governance-core' ); ?></th>
+					<th class="npcink-governance-core-status-cell" scope="col"><?php echo esc_html__( 'Status', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Permissions', 'npcink-governance-core' ); ?></th>
+					<th class="npcink-governance-core-time-cell" scope="col"><?php echo esc_html__( 'Last used', 'npcink-governance-core' ); ?></th>
+					<th class="npcink-governance-core-action-cell" scope="col"><?php echo esc_html__( 'Action', 'npcink-governance-core' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php if ( empty( $apps ) ) : ?>
-					<tr><td colspan="7"><?php echo esc_html__( 'No app keys yet.', 'npcink-governance-core' ); ?></td></tr>
+					<tr><td colspan="5"><?php echo esc_html__( 'No client access tokens yet.', 'npcink-governance-core' ); ?></td></tr>
 				<?php endif; ?>
-				<?php foreach ( $apps as $app ) : ?>
+				<?php foreach ( $apps as $index => $app ) : ?>
+					<?php $details_id = 'npcink-governance-core-token-details-' . (string) ( $index + 1 ); ?>
 					<tr>
-						<td><?php echo esc_html( (string) $app['app_label'] ); ?></td>
-						<td><code><?php echo esc_html( (string) $app['app_id'] ); ?></code></td>
-						<td><code><?php echo esc_html( (string) $app['key_id'] ); ?></code></td>
-						<td><?php echo esc_html( (string) $app['status'] ); ?></td>
-						<td><?php echo esc_html( implode( ', ', (array) $app['scopes'] ) ); ?></td>
-						<td><?php echo esc_html( '' !== (string) $app['last_used_at'] ? $this->display_datetime( (string) $app['last_used_at'] ) : __( 'Never', 'npcink-governance-core' ) ); ?></td>
+						<td>
+							<div class="npcink-governance-core-request-title"><?php echo esc_html( (string) $app['app_label'] ); ?></div>
+							<div class="npcink-governance-core-request-meta">
+								<span><?php echo esc_html__( 'App', 'npcink-governance-core' ); ?> <code title="<?php echo esc_attr( (string) $app['app_id'] ); ?>"><?php echo esc_html( $this->compact_identifier( (string) $app['app_id'] ) ); ?></code></span>
+							</div>
+						</td>
+						<td><?php $this->render_token_status_badge( $app ); ?></td>
+						<td>
+							<div><?php echo esc_html( $this->token_scope_summary( (array) $app['scopes'] ) ); ?></div>
+							<details class="npcink-governance-core-audit-row-details" id="<?php echo esc_attr( $details_id ); ?>">
+								<summary><?php echo esc_html__( 'Details', 'npcink-governance-core' ); ?></summary>
+								<?php $this->render_token_detail_table( $app ); ?>
+							</details>
+						</td>
+						<td>
+							<?php if ( '' !== (string) $app['last_used_at'] ) : ?>
+								<?php echo esc_html( $this->display_datetime( (string) $app['last_used_at'] ) ); ?>
+							<?php else : ?>
+								<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Never', 'npcink-governance-core' ); ?></span>
+							<?php endif; ?>
+						</td>
 						<td>
 							<?php if ( 'active' === (string) $app['status'] ) : ?>
 								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 									<input type="hidden" name="action" value="npcink_governance_core_revoke_app_key" />
 									<input type="hidden" name="key_id" value="<?php echo esc_attr( (string) $app['key_id'] ); ?>" />
 									<?php wp_nonce_field( 'npcink_governance_core_revoke_app_key_' . (string) $app['key_id'] ); ?>
-									<button type="submit" class="button button-link-delete" onclick="return confirm('<?php echo esc_js( __( 'Disable this app key? Existing clients using this token will receive 401.', 'npcink-governance-core' ) ); ?>');"><?php echo esc_html__( 'Disable', 'npcink-governance-core' ); ?></button>
+									<button type="submit" class="button button-link-delete" onclick="return confirm('<?php echo esc_js( __( 'Disable this access token? Existing clients using this token will receive 401.', 'npcink-governance-core' ) ); ?>');"><?php echo esc_html__( 'Disable', 'npcink-governance-core' ); ?></button>
 								</form>
-							<?php else : ?>
-								<?php echo esc_html__( 'Disabled', 'npcink-governance-core' ); ?>
-							<?php endif; ?>
-						</td>
-					</tr>
-				<?php endforeach; ?>
-			</tbody>
-		</table>
+								<?php else : ?>
+									<?php echo esc_html__( 'Disabled', 'npcink-governance-core' ); ?>
+								<?php endif; ?>
+					</td>
+				</tr>
+			<?php endforeach; ?>
+		</tbody>
+	</table>
 		<?php
 		$this->render_table_nav(
 			$total,
@@ -1791,28 +1825,167 @@ final class Admin_Page {
 	}
 
 	/**
+	 * Renders token status.
+	 *
+	 * @param array<string,mixed> $app App row.
+	 * @return void
+	 */
+	private function render_token_status_badge( array $app ): void {
+		$status = (string) ( $app['status'] ?? '' );
+		if ( 'active' === $status && $this->apps->is_expired( $app ) ) {
+			$status = 'expired';
+		}
+
+		$labels = array(
+			'active'  => __( 'Active', 'npcink-governance-core' ),
+			'expired' => __( 'Expired', 'npcink-governance-core' ),
+			'revoked' => __( 'Disabled', 'npcink-governance-core' ),
+		);
+		$label  = (string) ( $labels[ $status ] ?? ucfirst( $status ) );
+		$class  = 'npcink-governance-core-status-' . sanitize_html_class( $status );
+		?>
+		<span class="npcink-governance-core-status-badge <?php echo esc_attr( $class ); ?>"><?php echo esc_html( $label ); ?></span>
+		<?php
+	}
+
+	/**
+	 * Returns compact scope summary text.
+	 *
+	 * @param array<int|string,mixed> $scopes Scopes.
+	 * @return string
+	 */
+	private function token_scope_summary( array $scopes ): string {
+		$scopes = $this->apps->sanitize_scopes( $scopes );
+		$count  = count( $scopes );
+		$summary = sprintf(
+			/* translators: %d: permission scope count. */
+			_n( '%d permission', '%d permissions', $count, 'npcink-governance-core' ),
+			$count
+		);
+
+		$high_signal_scopes = array_values(
+			array_filter(
+				array(
+					in_array( 'proposals:approve', $scopes, true ) ? __( 'approval', 'npcink-governance-core' ) : '',
+					in_array( 'commit:record_execution', $scopes, true ) ? __( 'execution record', 'npcink-governance-core' ) : '',
+					in_array( 'audit:read', $scopes, true ) ? __( 'audit read', 'npcink-governance-core' ) : '',
+				)
+			)
+		);
+
+		if ( ! empty( $high_signal_scopes ) ) {
+			$summary .= ' · ' . sprintf(
+				/* translators: %s: comma-separated sensitive scope labels. */
+				__( 'Includes %s', 'npcink-governance-core' ),
+				implode( ', ', $high_signal_scopes )
+			);
+		}
+
+		return $summary;
+	}
+
+	/**
+	 * Renders token technical details.
+	 *
+	 * @param array<string,mixed> $app App row.
+	 * @return void
+	 */
+	private function render_token_detail_table( array $app ): void {
+		$scopes = array();
+		foreach ( (array) ( $app['scopes'] ?? array() ) as $scope ) {
+			$scope    = (string) $scope;
+			$scopes[] = sprintf( '%1$s (%2$s)', $this->scope_label( $scope ), $scope );
+		}
+		?>
+		<table class="widefat npcink-governance-core-row-details-table npcink-governance-core-token-detail-table">
+			<tbody>
+				<tr>
+					<th scope="row"><?php echo esc_html__( 'App ID', 'npcink-governance-core' ); ?></th>
+					<td><code><?php echo esc_html( (string) $app['app_id'] ); ?></code></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php echo esc_html__( 'Key ID', 'npcink-governance-core' ); ?></th>
+					<td><code><?php echo esc_html( (string) $app['key_id'] ); ?></code></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php echo esc_html__( 'Caller type', 'npcink-governance-core' ); ?></th>
+					<td><code><?php echo esc_html( (string) $app['caller_type'] ); ?></code></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php echo esc_html__( 'Permissions', 'npcink-governance-core' ); ?></th>
+					<td><?php echo esc_html( implode( ', ', $scopes ) ); ?></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php echo esc_html__( 'Rate limit', 'npcink-governance-core' ); ?></th>
+					<td>
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: 1: request count, 2: window in seconds. */
+								__( '%1$d requests per %2$d seconds', 'npcink-governance-core' ),
+								(int) ( $app['rate_limit'] ?? App_Key_Repository::DEFAULT_RATE_LIMIT ),
+								(int) ( $app['rate_window_seconds'] ?? App_Key_Repository::DEFAULT_RATE_WINDOW )
+							)
+						);
+						?>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><?php echo esc_html__( 'Created', 'npcink-governance-core' ); ?></th>
+					<td><?php echo esc_html( '' !== (string) $app['created_at'] ? $this->display_datetime( (string) $app['created_at'] ) : __( 'Unknown', 'npcink-governance-core' ) ); ?></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php echo esc_html__( 'Expires', 'npcink-governance-core' ); ?></th>
+					<td><?php echo esc_html( '' !== (string) $app['expires_at'] ? $this->display_datetime( (string) $app['expires_at'] ) : __( 'No expiry', 'npcink-governance-core' ) ); ?></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php echo esc_html__( 'Revoked', 'npcink-governance-core' ); ?></th>
+					<td><?php echo esc_html( '' !== (string) $app['revoked_at'] ? $this->display_datetime( (string) $app['revoked_at'] ) : __( 'No', 'npcink-governance-core' ) ); ?></td>
+				</tr>
+			</tbody>
+		</table>
+		<?php
+	}
+
+	/**
+	 * Returns a user-facing scope label.
+	 *
+	 * @param string $scope Scope.
+	 * @return string
+	 */
+	private function scope_label( string $scope ): string {
+		$labels = array(
+			'capabilities:read'        => __( 'Read capabilities', 'npcink-governance-core' ),
+			'proposals:create'         => __( 'Create proposals', 'npcink-governance-core' ),
+			'proposals:read'           => __( 'Read proposals', 'npcink-governance-core' ),
+			'commit:preflight'         => __( 'Commit preflight', 'npcink-governance-core' ),
+			'proposals:approve'        => __( 'Approve proposals', 'npcink-governance-core' ),
+			'proposals:reject'         => __( 'Reject proposals', 'npcink-governance-core' ),
+			'commit:record_execution' => __( 'Record execution results', 'npcink-governance-core' ),
+			'read_requests:create'     => __( 'Create read requests', 'npcink-governance-core' ),
+			'read_requests:read'       => __( 'Read read requests', 'npcink-governance-core' ),
+			'read_requests:approve'    => __( 'Approve read requests', 'npcink-governance-core' ),
+			'read_requests:reject'     => __( 'Reject read requests', 'npcink-governance-core' ),
+			'read_requests:preflight'  => __( 'Read preflight', 'npcink-governance-core' ),
+			'audit:read'               => __( 'Read audit log', 'npcink-governance-core' ),
+		);
+
+		return (string) ( $labels[ $scope ] ?? $scope );
+	}
+
+	/**
 	 * Renders scope checkboxes.
 	 *
 	 * @return void
 	 */
 	private function render_scope_checkboxes(): void {
 		$defaults = $this->apps->default_scopes();
-			$labels   = array(
-				'capabilities:read'        => __( 'Read capabilities', 'npcink-governance-core' ),
-				'proposals:create'         => __( 'Create proposals', 'npcink-governance-core' ),
-				'proposals:read'           => __( 'Read proposals', 'npcink-governance-core' ),
-				'commit:preflight'         => __( 'Commit preflight', 'npcink-governance-core' ),
-				'proposals:approve'        => __( 'Approve proposals', 'npcink-governance-core' ),
-				'proposals:reject'         => __( 'Reject proposals', 'npcink-governance-core' ),
-				'commit:record_execution' => __( 'Record execution results', 'npcink-governance-core' ),
-				'audit:read'               => __( 'Read audit log', 'npcink-governance-core' ),
-			);
 
 		foreach ( $this->apps->allowed_scopes() as $scope ) {
 			?>
 			<label style="display: block; margin: 0 0 4px;">
 				<input type="checkbox" name="scopes[]" value="<?php echo esc_attr( $scope ); ?>" <?php checked( in_array( $scope, $defaults, true ) ); ?> />
-				<?php echo esc_html( (string) ( $labels[ $scope ] ?? $scope ) ); ?>
+				<?php echo esc_html( $this->scope_label( $scope ) ); ?>
 				<code><?php echo esc_html( $scope ); ?></code>
 			</label>
 			<?php
@@ -1820,7 +1993,7 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Renders one-time app key result.
+	 * Renders one-time client access token result.
 	 *
 	 * @param array<string,mixed> $app App row with one-time token.
 	 * @return void
@@ -1833,7 +2006,7 @@ final class Admin_Page {
 		<head>
 			<meta charset="<?php echo esc_attr( get_bloginfo( 'charset' ) ); ?>" />
 			<meta name="viewport" content="width=device-width, initial-scale=1" />
-			<title><?php echo esc_html__( 'Core App Key Created', 'npcink-governance-core' ); ?></title>
+				<title><?php echo esc_html__( 'Client access token created', 'npcink-governance-core' ); ?></title>
 			<?php
 			wp_enqueue_style( 'npcink-governance-core-admin', $this->admin_stylesheet_url(), array(), NPCINK_GOVERNANCE_CORE_VERSION );
 			wp_print_styles( 'npcink-governance-core-admin' );
@@ -1841,7 +2014,7 @@ final class Admin_Page {
 		</head>
 		<body>
 			<main>
-				<h1><?php echo esc_html__( 'Core App Key Created', 'npcink-governance-core' ); ?></h1>
+					<h1><?php echo esc_html__( 'Client access token created', 'npcink-governance-core' ); ?></h1>
 				<div class="notice">
 					<p><?php echo esc_html__( 'Copy this token now. It is shown only once and is not stored in raw form.', 'npcink-governance-core' ); ?></p>
 					<p><?php echo esc_html__( 'Use this token only in a trusted adapter or internal governance client secret store.', 'npcink-governance-core' ); ?></p>
@@ -1857,7 +2030,7 @@ final class Admin_Page {
 							<td><code><?php echo esc_html( (string) $app['key_id'] ); ?></code></td>
 						</tr>
 						<tr>
-							<th scope="row"><?php echo esc_html__( 'App token', 'npcink-governance-core' ); ?></th>
+								<th scope="row"><?php echo esc_html__( 'Access token', 'npcink-governance-core' ); ?></th>
 							<td><textarea rows="3" readonly><?php echo esc_textarea( $token ); ?></textarea></td>
 						</tr>
 						<tr>
@@ -1866,7 +2039,7 @@ final class Admin_Page {
 						</tr>
 					</tbody>
 				</table>
-				<p class="actions"><a class="button" href="<?php echo esc_url( $this->view_url( 'app-keys' ) ); ?>"><?php echo esc_html__( 'Back to Advanced Access', 'npcink-governance-core' ); ?></a></p>
+					<p class="actions"><a class="button" href="<?php echo esc_url( $this->view_url( 'app-keys' ) ); ?>"><?php echo esc_html__( 'Back to client access tokens', 'npcink-governance-core' ); ?></a></p>
 			</main>
 		</body>
 		</html>

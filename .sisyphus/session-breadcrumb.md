@@ -1,5 +1,38 @@
 # Session Breadcrumb
 
+## 2026-06-19 — Client access token admin page compacted
+
+- **Module**: Core admin client access token page.
+- **Status**: The former Core app-key management UI now uses
+  operator-facing `Client Access Tokens` copy and a compact token list that
+  keeps long technical identifiers out of the default scan path.
+- **Completed**:
+  - Renamed the Settings advanced action and app-key page UI to client access
+    token language while keeping the underlying app-key REST/auth contract
+    intact.
+  - Changed the advanced access page return link to `Back to settings`.
+  - Added a compact summary strip for active tokens, total tokens, and latest
+    token use.
+  - Reworked the token table to show only client, localized status, permission
+    summary, last-used time, and disable action by default.
+  - Moved full App ID, Key ID, caller type, complete scopes, rate limit, expiry,
+    and revoked timestamp behind row `Details`.
+  - Updated admin CSS, admin surface docs, operability docs, static contracts,
+    POT/PO files, and compiled zh_CN translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php` passed.
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po` passed.
+  - `php tests/run.php` passed.
+  - `composer test:all` passed.
+  - Browser check loaded `view=app-keys` on `magick-ai.local` and confirmed
+    the Chinese title, explanatory copy, five-column token table, compact app
+    ids, permission summaries, and row `Details` controls.
+- **Boundary**:
+  - Admin presentation, documentation, and localization only. No database
+    schema, REST route, token format, scope semantics, rate limiting,
+    authentication behavior, Adapter behavior, workflow runtime, queues, or
+    final execution changed.
+
 ## 2026-06-19 — Settings primary controls simplified
 
 - **Module**: Core admin Settings tab.

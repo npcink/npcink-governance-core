@@ -623,7 +623,7 @@ foreach (
 		'audit filters',
 		'scope_decision',
 		'Activity Log',
-		'Core App Keys',
+			'Client Access Tokens',
 		'AI Request Logs remain owned by the',
 		'`proposal_id` or `correlation_id`',
 		'correlation_id',
@@ -2227,7 +2227,9 @@ foreach (
 		'bounded code blocks',
 		'visual status badges',
 		'reviewer sees the basis',
-		'low-frequency fallback action',
+			'low-frequency fallback action',
+			'Use operator-facing token',
+			'default token table',
 		'Settings tab',
 		'keeping these controls out of the default review queue',
 		'default collapsed',
@@ -2339,7 +2341,7 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'history_retention
 npcink_governance_core_assert( false !== strpos( $admin_page, 'sanitize_history_retention_days' ), 'Admin Settings tab sanitizes history retention choices.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'history_retention_days' ), 'Admin Settings tab persists the selected history retention choice.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'cleanup_scheduled'      => false" ), 'Admin Settings tab does not claim scheduled cleanup is active.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Advanced Access' ), 'Admin page keeps Core app-key management behind advanced access.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Advanced Access' ), 'Admin page keeps token management behind advanced access.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Development Approval Policy' ), 'Admin page exposes lightweight development approval policy mode.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'MODE_SMART_GUARDED' ), 'Admin page exposes smart approval mode.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'MODE_DEV_ALLOW_ALL' ), 'Admin page exposes development allow-all approval mode.' );
@@ -2348,10 +2350,10 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'is_allowed_policy
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Stored approval policy mode "%1$s" is no longer supported.' ), 'Admin page warns when stored approval policy mode falls back to manual.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'update_option( Approval_Policy_Evaluator::OPTION_POLICY_MODE' ), 'Admin page persists approval policy mode through a bounded option.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'update_option( self::OPTION_HISTORY_RETENTION_DAYS' ), 'Admin page persists history retention through a bounded option.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "'app-keys'" ), 'Admin page keeps app-key management available behind an advanced view.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "'app-keys'" ), 'Admin page keeps token management available behind an advanced view.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_admin_tabs' ), 'Admin page exposes tabbed Core sections.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'nav-tab-wrapper' ), 'Admin page uses WordPress admin tabs for Core sections.' );
-npcink_governance_core_assert( false === strpos( $admin_page, "'app-keys' => array" ), 'Admin page does not expose Core App Keys as a first-level tab.' );
+npcink_governance_core_assert( false === strpos( $admin_page, "'app-keys' => array" ), 'Admin page does not expose client access tokens as a first-level tab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Review Queue' ), 'Admin page defaults to the review queue tab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'History' ), 'Admin page exposes historical proposal records tab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Open history' ), 'Admin empty state points to historical proposal records.' );
@@ -2378,7 +2380,7 @@ npcink_governance_core_assert( false === strpos( $admin_page, 'render_archive_ro
 npcink_governance_core_assert( false === strpos( $admin_page, 'archive_status_filter_links' ), 'Admin history does not split expired and archived records into confusing filters.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'render_table_filter_links' ), 'Admin history does not render status filter links.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_page' ), 'Admin page paginates governance audit.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'app_key_page' ), 'Admin page paginates advanced app-key management.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'app_key_page' ), 'Admin page paginates advanced token management.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'archive_status' ), 'Admin history does not expose an expired versus archived status filter.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'No requests need review.' ), 'Admin page provides a clear active queue empty state.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'render_advanced_entries' ), 'Admin default page no longer renders low-frequency administration links inline.' );
@@ -2388,7 +2390,8 @@ npcink_governance_core_assert( false !== strpos( $admin_page, '$events = $this->
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Latest Core governance events. Full audit is in its own tab.' ), 'Admin default page points detailed activity to the audit tab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Activity Log' ), 'Admin page exposes a release-facing activity log view.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'Advanced: Core App Keys' ), 'Admin default page no longer folds app-key management inline.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Manage Core app keys' ), 'Admin default page exposes app-key management as a low-frequency action.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Client access tokens' ), 'Admin default page exposes token management as a low-frequency action.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'Manage Core app keys' ), 'Admin UI no longer labels the action as Core app-key management.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Search activity' ) && false !== strpos( $admin_page, 'audit_search' ), 'Admin audit exposes a broad default activity search field.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_event_filter_options' ) && false !== strpos( $admin_page, 'audit_caller_type_filter_options' ), 'Admin audit uses dropdowns for event and caller filters.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_time_range_options' ) && false !== strpos( $admin_page, 'audit_created_after_for_range' ), 'Admin audit exposes bounded time range filtering.' );
@@ -2406,10 +2409,17 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_filters_fro
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_proposal_id' ), 'Admin page exposes proposal audit filter.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_correlation_id' ), 'Admin page exposes correlation audit filter.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'AI Request Logs remain separate' ), 'Admin activity log does not lead with developer log-correlation copy.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Productized OpenClaw setup belongs in a trusted adapter' ), 'Admin page avoids presenting Core as the OpenClaw product entry point.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'productized OpenClaw connection settings' ), 'Admin page avoids presenting Core as the OpenClaw product entry point.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'Environment template' ), 'Admin default page no longer exposes an env template.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Create Core App Key' ), 'Admin page labels key creation as Core credential management.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Issue a scoped token for a trusted governance client.' ), 'Admin page folds Core app-key creation behind an explicit disclosure.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Client Access Tokens' ), 'Admin advanced access page uses client access token heading.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Issue client access token' ), 'Admin page labels token creation with operator-facing token copy.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Issue a scoped token for a trusted governance client.' ), 'Admin page folds token creation behind an explicit disclosure.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-token-table' ), 'Admin token page uses a compact token table.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'token_scope_summary' ), 'Admin token page summarizes permission scopes in the default row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_token_detail_table' ), 'Admin token page moves App ID, Key ID, caller type, and full scope strings behind details.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_token_status_badge' ), 'Admin token page renders localized token status badges.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Back to settings' ), 'Admin token page returns operators to Settings.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'Create Core App Key' ), 'Admin UI no longer exposes Core App Key creation copy.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'Reopen for review' ), 'Admin page does not expose reopen actions for historical proposals.' );
 npcink_governance_core_assert( false === strpos( $admin_page, "__( 'Archive', 'npcink-governance-core' )" ), 'Admin page does not expose archive actions for historical proposals.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Adapter Client' ), 'Admin page defaults app label to a generic adapter client.' );

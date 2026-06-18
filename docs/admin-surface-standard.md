@@ -81,7 +81,8 @@ queue:
   separate implementation and must not be implied by the admin control until it
   exists;
 - `Advanced Access` disclosure in the Settings tab for low-frequency client
-  access key management. It should default collapsed.
+  access token management. It should default collapsed. Use operator-facing token
+  language rather than leading with the internal app-key implementation name.
 
 ## Detail Views
 
@@ -138,16 +139,20 @@ Proposal detail should be a focused review surface:
 
 Full `Activity Log` and `History` belong in dedicated tabs, not
 inline on the default workbench. Long lists in `Review Queue`, `Activity Log`,
-`History`, and advanced app-key management must be paginated with
+`History`, and advanced client access token management must be paginated with
 the same WordPress-style top and bottom table navigation: current result range
 on the left, item count plus square first/previous/next/last page buttons on
 the right. Selection checkboxes and bulk action controls should appear only on
 lists with real bulk lifecycle actions, such as bounded Review Queue rejection.
 
-Core app-key creation is a low-frequency fallback action. It should stay behind
-the Settings tab's `Advanced Access` disclosure and then behind an explicit
-creation disclosure on the advanced access page. It must not appear as a
-first-level Core tab.
+Client access token creation is a low-frequency fallback action backed by
+Core's app-key contract. It should stay behind the Settings tab's
+`Advanced Access` disclosure and then behind an explicit creation disclosure on
+the client access token page. It must not appear as a first-level Core tab.
+The default token table should lead with client label, localized status,
+permission summary, last-used time, and a disable action. Full App ID, Key ID,
+caller type, rate limit, expiry, and complete scope strings belong behind a row
+`Details` disclosure so long machine identifiers do not dominate the page.
 
 The review queue must not remove proposal identity from the page, but the
 default row should lead with the user-facing request label. Keep `Proposal ID`
@@ -182,7 +187,7 @@ clearable chips above the table.
 Admin tab, pagination, detail, archive, and filter links are read-only GET
 navigation and must not append a nonce to the URL. Nonces belong on POST forms
 that change state, such as approval, rejection, lifecycle actions, policy
-updates, app-key creation, and app-key revocation.
+updates, client access token creation, and client access token revocation.
 
 ## Time Display
 
@@ -209,4 +214,4 @@ Core admin must not add:
 
 Static contracts should keep the page aligned with this standard and preserve
 the boundary that Core owns governance records, approval/rejection,
-commit-preflight, audit, and fallback app-key management only.
+commit-preflight, audit, and fallback client access token management only.

@@ -157,7 +157,7 @@ details table for troubleshooting. AI Request Logs remain owned by the
 WordPress `ai` plugin; operators should correlate the two systems with
 `proposal_id` or `correlation_id` rather than merging their storage.
 
-### Core App Keys
+### Client Access Tokens
 
 The Settings tab shows the primary `Development Approval Policy` controls
 directly instead of hiding them behind a disclosure. It also stores a bounded
@@ -166,12 +166,15 @@ directly instead of hiding them behind a disclosure. It also stores a bounded
 only at this stage; scheduled cleanup and deletion auditing require a separate
 implementation.
 
-The default review workbench keeps Core app-key management behind a collapsed
-`Advanced Access` disclosure for client access keys. The advanced access page
-handles app-key creation and paginated key disable actions. This preserves the
-Core credential fallback without turning Core's first-level tabs into OpenClaw
-onboarding or adapter configuration. Productized OpenClaw connection copy, TLS
-switches, and handoff instructions remain Adapter-owned.
+The default review workbench keeps client access token management behind a
+collapsed `Advanced Access` disclosure. The token page is backed by Core's
+app-key contract, but the admin UI uses operator-facing token language. It
+handles token issuance and paginated token disable actions, with App ID, Key ID,
+caller type, rate limits, expiry, and complete scope strings in row details
+rather than the default scan columns. This preserves the Core credential
+fallback without turning Core's first-level tabs into OpenClaw onboarding or
+adapter configuration. Productized OpenClaw connection copy, TLS switches, and
+handoff instructions remain Adapter-owned.
 
 For real AI provider requests, Adapter should inject Core `proposal_id` and
 commit-preflight `correlation_id` into the `ai` plugin request log context.
