@@ -1381,7 +1381,7 @@ function npcink_governance_core_fail_closed_assert_observability_metadata_only( 
 /**
  * Returns a plan-to-proposal service stack.
  *
- * @return array{service:\Npcink\GovernanceCore\Governance\Plan_Proposal_Service,proposals:\Npcink\GovernanceCore\Governance\Proposal_Repository}
+ * @return array{service:\Npcink\GovernanceCore\Governance\Plan_Proposal_Service,proposal_service:\Npcink\GovernanceCore\Governance\Proposal_Service,preflight:\Npcink\GovernanceCore\Governance\Commit_Preflight_Service,proposals:\Npcink\GovernanceCore\Governance\Proposal_Repository,audit:\Npcink\GovernanceCore\Audit\Audit_Log_Repository}
  */
 function npcink_governance_core_fail_closed_plan_stack(): array {
 	$proposals = new \Npcink\GovernanceCore\Governance\Proposal_Repository();
@@ -1393,10 +1393,14 @@ function npcink_governance_core_fail_closed_plan_stack(): array {
 		$audit,
 		new \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator()
 	);
+	$preflight = new \Npcink\GovernanceCore\Governance\Commit_Preflight_Service( $proposals, $abilities, $audit );
 
 	return array(
-		'service'   => new \Npcink\GovernanceCore\Governance\Plan_Proposal_Service( $abilities, $proposal_service, $audit ),
-		'proposals' => $proposals,
+		'service'          => new \Npcink\GovernanceCore\Governance\Plan_Proposal_Service( $abilities, $proposal_service, $audit ),
+		'proposal_service' => $proposal_service,
+		'preflight'        => $preflight,
+		'proposals'        => $proposals,
+		'audit'            => $audit,
 	);
 }
 
@@ -3578,6 +3582,16 @@ npcink_governance_core_fail_closed_assert( false === (bool) ( $nightly_inspectio
 npcink_governance_core_fail_closed_assert( in_array( 'title', (array) ( $nightly_inspection_proposal['preview']['needs_input'] ?? array() ), true ), 'Nightly Inspection review proposal requires title input.' );
 npcink_governance_core_fail_closed_assert( isset( $nightly_inspection_proposal['preview']['nightly_inspection_review'] ), 'Nightly Inspection review preview is preserved in the proposal.' );
 npcink_governance_core_fail_closed_assert( 'run_nightly_inspection_fault_injection' === (string) ( $nightly_inspection_proposal['preview']['nightly_inspection_review']['cloud_run_id'] ?? '' ), 'Nightly Inspection proposal preserves Cloud run id.' );
+npcink_governance_core_fail_closed_assert( 'action_001' === (string) ( $nightly_inspection_proposal['preview']['nightly_inspection_review']['selected_review_item_ids'][0] ?? '' ), 'Nightly Inspection proposal preserves selected Morning Brief review item id.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $nightly_inspection_proposal['preview']['nightly_inspection_review']['evidence_ref_count'] ?? 0 ), 'Nightly Inspection proposal preserves evidence reference count.' );
+npcink_governance_core_fail_closed_assert( 'toolbox_morning_brief_operator' === (string) ( $nightly_inspection_proposal['preview']['nightly_inspection_review']['needs_input_resolution_owner'] ?? '' ), 'Nightly Inspection proposal routes missing input back to the Toolbox Morning Brief operator.' );
+npcink_governance_core_fail_closed_assert( true === (bool) ( $nightly_inspection_proposal['preview']['nightly_inspection_review']['resubmission_required'] ?? false ), 'Nightly Inspection proposal requires complete resubmission after missing input is resolved.' );
+npcink_governance_core_fail_closed_assert( false === (bool) ( $nightly_inspection_proposal['preview']['nightly_inspection_review']['core_amendment_supported'] ?? true ), 'Nightly Inspection proposal does not allow Core-side amendment of missing draft fields.' );
+$nightly_approved = $stack['proposal_service']->approve( (string) ( $nightly_inspection_proposal['proposal_id'] ?? '' ), array( 'reason' => 'nightly_missing_input_preflight' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $nightly_approved ), 'Blocked Nightly Inspection proposal can be approved for review without becoming executable.' );
+$nightly_blocked_preflight = $stack['preflight']->preflight( (string) ( $nightly_inspection_proposal['proposal_id'] ?? '' ) );
+npcink_governance_core_fail_closed_assert( is_wp_error( $nightly_blocked_preflight ), 'Blocked Nightly Inspection proposal fails commit preflight after approval.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_proposal_items_blocked' === $nightly_blocked_preflight->get_error_code(), 'Blocked Nightly Inspection proposal uses stable preflight blocked error code.' );
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();

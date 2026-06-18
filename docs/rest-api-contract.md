@@ -768,6 +768,11 @@ plan evidence, and contain exactly one blocked
 `preview.nightly_inspection_review` for proposal review, but it does not run
 Nightly Inspection, organize Morning Brief output, schedule or retry Cloud
 jobs, approve the proposal, pass commit preflight, or execute WordPress writes.
+The preview must identify `needs_input_resolution_owner` as
+`toolbox_morning_brief_operator`, set `resubmission_required=true`, and set
+`core_amendment_supported=false`. The required operator path is to return to
+Toolbox Morning Brief, draft the title and content, and resubmit a complete
+Core proposal; Core does not generate or edit missing draft fields.
 
 For `npcink-toolbox/build-content-metadata-apply-plan`, the plan must declare
 `artifact_type=content_metadata_apply_plan`, `proposal_mode=batch`,

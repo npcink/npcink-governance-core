@@ -3194,20 +3194,20 @@ final class Plan_Proposal_Service {
 		$selected_items      = $this->nightly_inspection_selected_review_items( $plan );
 
 		return array(
-			'artifact_type'          => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
-			'contract_version'       => sanitize_text_field( (string) ( $plan['contract_version'] ?? '' ) ),
-			'version'                => absint( $plan['version'] ?? 0 ),
-			'cloud_run_id'           => sanitize_text_field( (string) ( $plan['cloud_run_id'] ?? ( $plan['batch_id'] ?? '' ) ) ),
-			'runtime_owner'          => sanitize_key( (string) ( $plan['runtime_owner'] ?? '' ) ),
-			'agent_id'               => sanitize_key( (string) ( $plan['agent_id'] ?? '' ) ),
-			'agent_version'          => sanitize_text_field( (string) ( $plan['agent_version'] ?? '' ) ),
-			'workflow'               => sanitize_key( (string) ( $plan['workflow'] ?? '' ) ),
-			'intent'                 => sanitize_key( (string) ( $plan['intent'] ?? '' ) ),
-			'local_next_action'      => sanitize_key( (string) ( $plan['local_next_action'] ?? '' ) ),
-			'evidence_gate_status'   => sanitize_key( (string) ( $plan['evidence_gate_status'] ?? '' ) ),
-			'evidence_refs'          => $this->sanitize_payload( $plan['evidence_refs'] ?? array() ),
-			'evidence_ref_count'     => count( is_array( $plan['evidence_refs'] ?? null ) ? $plan['evidence_refs'] : array() ),
-			'core_intake_package'    => $this->sanitize_payload( $core_intake_package ),
+			'artifact_type'                 => sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) ),
+			'contract_version'              => sanitize_text_field( (string) ( $plan['contract_version'] ?? '' ) ),
+			'version'                       => absint( $plan['version'] ?? 0 ),
+			'cloud_run_id'                  => sanitize_text_field( (string) ( $plan['cloud_run_id'] ?? ( $plan['batch_id'] ?? '' ) ) ),
+			'runtime_owner'                 => sanitize_key( (string) ( $plan['runtime_owner'] ?? '' ) ),
+			'agent_id'                      => sanitize_key( (string) ( $plan['agent_id'] ?? '' ) ),
+			'agent_version'                 => sanitize_text_field( (string) ( $plan['agent_version'] ?? '' ) ),
+			'workflow'                      => sanitize_key( (string) ( $plan['workflow'] ?? '' ) ),
+			'intent'                        => sanitize_key( (string) ( $plan['intent'] ?? '' ) ),
+			'local_next_action'             => sanitize_key( (string) ( $plan['local_next_action'] ?? '' ) ),
+			'evidence_gate_status'          => sanitize_key( (string) ( $plan['evidence_gate_status'] ?? '' ) ),
+			'evidence_refs'                 => $this->sanitize_payload( $plan['evidence_refs'] ?? array() ),
+			'evidence_ref_count'            => count( is_array( $plan['evidence_refs'] ?? null ) ? $plan['evidence_refs'] : array() ),
+			'core_intake_package'           => $this->sanitize_payload( $core_intake_package ),
 			'selected_review_item_ids' => array_values(
 				array_filter(
 					array_map(
@@ -3218,12 +3218,15 @@ final class Plan_Proposal_Service {
 					)
 				)
 			),
-			'selected_review_items'  => $this->sanitize_payload( $selected_items ),
-			'blocked_outputs'        => $this->sanitize_payload( $plan['blocked_outputs'] ?? array() ),
-			'operator_next_action'   => 'draft_selected_review_item_before_commit_preflight',
-			'final_write_path'       => 'core_proposal_required',
-			'direct_wordpress_write' => false,
-			'cloud_scheduler_truth'  => false,
+			'selected_review_items'         => $this->sanitize_payload( $selected_items ),
+			'blocked_outputs'               => $this->sanitize_payload( $plan['blocked_outputs'] ?? array() ),
+			'operator_next_action'          => 'draft_selected_review_item_before_commit_preflight',
+			'needs_input_resolution_owner'  => 'toolbox_morning_brief_operator',
+			'resubmission_required'         => true,
+			'core_amendment_supported'      => false,
+			'final_write_path'              => 'core_proposal_required',
+			'direct_wordpress_write'        => false,
+			'cloud_scheduler_truth'         => false,
 		);
 	}
 

@@ -254,10 +254,10 @@ more of them. It must return
 The generated proposal preserves `preview.nightly_inspection_review` with the
 Cloud run id, evidence refs, selected Morning Brief review item ids/items, Core
 intake package context, blocked output classes, `final_write_path`, and
-`cloud_scheduler_truth=false`. Core does not run the nightly inspection,
-organize Morning Brief queues, own Cloud job status, approve the proposal,
-generate draft content, pass commit preflight while input is missing, or
-execute WordPress writes.
+`cloud_scheduler_truth=false`. It also records
+`needs_input_resolution_owner=toolbox_morning_brief_operator`,
+`resubmission_required=true`, and `core_amendment_supported=false`. Return to Toolbox Morning Brief, draft the missing `title` and `content`, and resubmit a complete Core proposal; Core does not generate or edit missing draft fields.
+Core does not run the nightly inspection, organize Morning Brief queues, own Cloud job status, approve the proposal, generate draft content, pass commit preflight while input is missing, or execute WordPress writes.
 
 Article writing is a local Ability recipe, not a Cloud writing feature. Cloud
 must not produce article drafts, `article_write_plan` candidates, or bulk
