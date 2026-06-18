@@ -69,12 +69,17 @@ queue:
   history instead of only saying that the queue is empty;
 - `Settings` tab for low-frequency development policy and trusted client
   access, keeping these controls out of the default review queue;
-- `Development Approval Policy` disclosure in the Settings tab for the
+- `Development Approval Policy` as a directly visible Settings section for the
   lightweight require approval for all, smart approval, and local-development
-  allow-all modes. It should default open because it is the primary setting;
+  allow-all modes. Do not wrap this primary setting in a disclosure;
 - stale or invalid stored approval policy option values must show an inline
   warning that Core is treating the value as require approval for all until a
   supported mode is saved;
+- `History retention` as a bounded Settings option for the intended historical
+  proposal retention window: 90 days, 180 days, 365 days, or no automatic
+  deletion. This stores the retention policy only; scheduled cleanup must be a
+  separate implementation and must not be implied by the admin control until it
+  exists;
 - `Advanced Access` disclosure in the Settings tab for low-frequency client
   access key management. It should default collapsed.
 

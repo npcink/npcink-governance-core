@@ -1,5 +1,33 @@
 # Session Breadcrumb
 
+## 2026-06-19 — Settings primary controls simplified
+
+- **Module**: Core admin Settings tab.
+- **Status**: The Settings tab now shows the primary development approval
+  policy controls directly, keeps Advanced Access collapsed, and stores a
+  bounded history retention policy for future cleanup.
+- **Completed**:
+  - Removed the disclosure wrapper around `Development Approval Policy`.
+  - Added `History retention` with 90-day, 180-day, 365-day, and no automatic
+    deletion options.
+  - Persisted the retention choice in a bounded option alongside the approval
+    policy mode.
+  - Recorded settings saves through the existing
+    `core.approval_policy_updated` audit event with
+    `history_retention_days` and `cleanup_scheduled=false` metadata so the UI
+    does not imply WP-Cron cleanup exists.
+  - Updated admin CSS, admin surface docs, operability docs, static contracts,
+    and Chinese translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php` passed.
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po` passed.
+  - `composer test:all` passed.
+  - `git diff --check` passed.
+- **Boundary**:
+  - Admin settings presentation and option persistence only. No scheduled
+    cleanup, WP-Cron task, proposal deletion, REST contract, Adapter behavior,
+    workflow runtime, queues, or final execution was added.
+
 ## 2026-06-19 — Archive admin surface simplified into history
 
 - **Module**: Core admin historical proposal list.

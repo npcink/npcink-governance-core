@@ -223,13 +223,21 @@ msgstr "策略模式"
 msgid "Smart approval only auto-approves trusted test-content cleanup trash batches and single draft-only create-draft proposals. Allow all is local-development only and requires NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL; commit preflight is still required and Core still does not execute writes."
 msgstr "智能同意只会自动批准受信任的测试内容清理回收站批次和单条仅草稿的 create-draft 提案。全部允许仅限本地开发，并且需要 NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL；仍然必须通过提交预检，Core 仍不会执行写入。"
 
-#: includes/Admin/Admin_Page.php:528
-msgid "Save approval policy"
-msgstr "保存批准策略"
+#: includes/Admin/Admin_Page.php:529
+msgid "History retention"
+msgstr "历史记录保留时间"
 
-#: includes/Admin/Admin_Page.php:542
-msgid "Development approval policy and trusted governance client access."
-msgstr "开发批准策略和可信治理客户端访问。"
+#: includes/Admin/Admin_Page.php:538
+msgid "Sets how long historical proposal records should be kept. Scheduled deletion will be wired in a separate cleanup pass."
+msgstr "设置历史提案记录应保留多久。定时删除会在单独的清理实现中接入。"
+
+#: includes/Admin/Admin_Page.php:543
+msgid "Save settings"
+msgstr "保存设置"
+
+#: includes/Admin/Admin_Page.php:557
+msgid "Development approval policy, history retention, and trusted governance client access."
+msgstr "开发批准策略、历史记录保留时间和可信治理客户端访问。"
 
 #: includes/Admin/Admin_Page.php:560
 msgid "Pending requests"
@@ -1507,6 +1515,22 @@ msgstr "%d 小时"
 msgid "%d days"
 msgstr "%d 天"
 
+#: includes/Admin/Admin_Page.php:3657
+msgid "90 days"
+msgstr "90 天"
+
+#: includes/Admin/Admin_Page.php:3658
+msgid "180 days"
+msgstr "180 天"
+
+#: includes/Admin/Admin_Page.php:3659
+msgid "365 days"
+msgstr "365 天"
+
+#: includes/Admin/Admin_Page.php:3660
+msgid "Do not automatically delete"
+msgstr "不自动删除"
+
 #: includes/Admin/Admin_Page.php:4438
 msgid "Proposal approved."
 msgstr "提案已批准。"
@@ -1534,6 +1558,10 @@ msgstr "应用密钥已禁用。"
 #: includes/Admin/Admin_Page.php:4444
 msgid "Approval policy mode updated."
 msgstr "批准策略模式已更新。"
+
+#: includes/Admin/Admin_Page.php:4445
+msgid "Settings updated."
+msgstr "设置已更新。"
 
 #: includes/Admin/Admin_Page.php:4445
 msgid "App key is missing or already disabled."

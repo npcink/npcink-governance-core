@@ -2208,6 +2208,10 @@ foreach (
 		'row selection, bulk actions, archive actions, or reopen actions',
 		'Settings',
 		'Development Approval Policy',
+		'Do not wrap this primary setting in a disclosure',
+		'History retention',
+		'90 days, 180 days',
+		'This stores the retention policy only',
 		'Advanced Access',
 		'paginated',
 		'useful empty state',
@@ -2226,7 +2230,6 @@ foreach (
 		'low-frequency fallback action',
 		'Settings tab',
 		'keeping these controls out of the default review queue',
-		'default open because it is the primary setting',
 		'default collapsed',
 		'compact contextual action bar',
 		'collapsed disclosure fallback for no-JavaScript',
@@ -2326,8 +2329,16 @@ npcink_governance_core_assert( false !== strpos( $admin_page, "'settings' => arr
 npcink_governance_core_assert( false !== strpos( $admin_page, "'settings' === \$view" ), 'Admin page routes the Settings tab independently from the review queue.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "\$this->render_admin_tabs( 'settings' );" ), 'Admin page highlights Settings for settings and advanced access views.' );
 npcink_governance_core_assert( false === strpos( $admin_page, '$this->render_system_settings_entry();' ), 'Admin review queue no longer renders system settings at the bottom.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Development approval policy and trusted governance client access.' ), 'Admin Settings tab explains its narrow configuration scope.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'render_approval_policy_entry( true )' ), 'Admin Settings tab opens the primary approval policy setting by default.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Development approval policy, history retention, and trusted governance client access.' ), 'Admin Settings tab explains its narrow configuration scope.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, '<section class="npcink-governance-core-settings-section npcink-governance-core-max-wide"' ), 'Admin Settings tab renders primary settings directly instead of behind a disclosure.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'render_approval_policy_entry( true )' ), 'Admin Settings tab does not use a disclosure-open flag for the primary approval policy setting.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'OPTION_HISTORY_RETENTION_DAYS' ), 'Admin Settings tab defines a bounded history retention option.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'DEFAULT_HISTORY_RETENTION_DAYS = 90' ), 'Admin Settings tab defaults history retention to ninety days.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'HISTORY_RETENTION_DISABLED_DAYS = 0' ), 'Admin Settings tab supports disabling automatic deletion.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'history_retention_day_options' ), 'Admin Settings tab renders bounded history retention choices.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'sanitize_history_retention_days' ), 'Admin Settings tab sanitizes history retention choices.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'history_retention_days' ), 'Admin Settings tab persists the selected history retention choice.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "'cleanup_scheduled'      => false" ), 'Admin Settings tab does not claim scheduled cleanup is active.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Advanced Access' ), 'Admin page keeps Core app-key management behind advanced access.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Development Approval Policy' ), 'Admin page exposes lightweight development approval policy mode.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'MODE_SMART_GUARDED' ), 'Admin page exposes smart approval mode.' );
@@ -2336,6 +2347,7 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'stored_policy_mod
 npcink_governance_core_assert( false !== strpos( $admin_page, 'is_allowed_policy_mode' ), 'Admin page detects stale or invalid stored approval policy modes.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Stored approval policy mode "%1$s" is no longer supported.' ), 'Admin page warns when stored approval policy mode falls back to manual.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'update_option( Approval_Policy_Evaluator::OPTION_POLICY_MODE' ), 'Admin page persists approval policy mode through a bounded option.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'update_option( self::OPTION_HISTORY_RETENTION_DAYS' ), 'Admin page persists history retention through a bounded option.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'app-keys'" ), 'Admin page keeps app-key management available behind an advanced view.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_admin_tabs' ), 'Admin page exposes tabbed Core sections.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'nav-tab-wrapper' ), 'Admin page uses WordPress admin tabs for Core sections.' );
@@ -2483,6 +2495,7 @@ npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance
 npcink_governance_core_assert( false === strpos( $admin_css, '.npcink-governance-core-source-context' ), 'Admin CSS does not reserve a default row line for source context.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-display-id' ), 'Admin CSS styles proposal display ids.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-policy-warning' ), 'Admin CSS spaces stale approval policy warnings.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-settings-section' ), 'Admin CSS spaces directly visible Settings sections.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-detail-cell' ), 'Admin CSS styles the dedicated details column.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-row-details-row' ), 'Admin CSS styles inline details rows.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-row-details-panel' ) && false !== strpos( $admin_css, 'grid-template-columns: minmax(0, 1fr) minmax(0, 1fr)' ), 'Admin CSS renders row details as a two-column inspector.' );

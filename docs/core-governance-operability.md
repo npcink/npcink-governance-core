@@ -159,6 +159,13 @@ WordPress `ai` plugin; operators should correlate the two systems with
 
 ### Core App Keys
 
+The Settings tab shows the primary `Development Approval Policy` controls
+directly instead of hiding them behind a disclosure. It also stores a bounded
+`History retention` policy for historical proposal records: 90 days, 180 days,
+365 days, or no automatic deletion. The retention setting is configuration
+only at this stage; scheduled cleanup and deletion auditing require a separate
+implementation.
+
 The default review workbench keeps Core app-key management behind a collapsed
 `Advanced Access` disclosure for client access keys. The advanced access page
 handles app-key creation and paginated key disable actions. This preserves the

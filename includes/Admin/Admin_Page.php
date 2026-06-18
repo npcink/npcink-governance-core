@@ -30,6 +30,9 @@ final class Admin_Page {
 	const AUDIT_PAGE_SIZE   = 25;
 	const APP_KEY_PAGE_SIZE = 10;
 	const DATETIME_DISPLAY_FORMAT = 'Y-m-d H:i:s';
+	const OPTION_HISTORY_RETENTION_DAYS = 'npcink_governance_core_history_retention_days';
+	const DEFAULT_HISTORY_RETENTION_DAYS = 90;
+	const HISTORY_RETENTION_DISABLED_DAYS = 0;
 
 	/**
 	 * Ability adapter.
@@ -464,33 +467,32 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Renders the lightweight development approval policy setting.
+	 * Renders the primary governance settings form.
 	 *
 	 * @return void
 	 */
-	private function render_approval_policy_entry( bool $open = false ): void {
+	private function render_approval_policy_entry(): void {
 		$stored_mode       = Approval_Policy_Evaluator::stored_policy_mode();
 		$current           = Approval_Policy_Evaluator::sanitize_policy_mode( $stored_mode );
 		$invalid_stored    = ! Approval_Policy_Evaluator::is_allowed_policy_mode( $stored_mode );
+		$retention_days    = $this->stored_history_retention_days();
 		$labels            = array(
 			Approval_Policy_Evaluator::MODE_MANUAL          => __( 'Require approval for all', 'npcink-governance-core' ),
 			Approval_Policy_Evaluator::MODE_SMART_GUARDED   => __( 'Smart approval', 'npcink-governance-core' ),
 			Approval_Policy_Evaluator::MODE_DEV_ALLOW_ALL   => __( 'Allow all (development only)', 'npcink-governance-core' ),
 		);
 		?>
-		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide" <?php echo $open ? 'open' : ''; ?>>
-			<summary>
-				<strong><?php echo esc_html__( 'Development Approval Policy', 'npcink-governance-core' ); ?></strong>
-				<span class="npcink-governance-core-muted">
-					<?php
-					printf(
-						/* translators: %s: current policy mode. */
-						esc_html__( 'Current mode: %s', 'npcink-governance-core' ),
-						esc_html( (string) ( $labels[ $current ] ?? $current ) )
-					);
-					?>
-				</span>
-			</summary>
+		<section class="npcink-governance-core-settings-section npcink-governance-core-max-wide" aria-labelledby="npcink-governance-core-approval-policy-heading">
+			<h3 id="npcink-governance-core-approval-policy-heading"><?php echo esc_html__( 'Development Approval Policy', 'npcink-governance-core' ); ?></h3>
+			<p class="npcink-governance-core-muted">
+				<?php
+				printf(
+					/* translators: %s: current policy mode. */
+					esc_html__( 'Current mode: %s', 'npcink-governance-core' ),
+					esc_html( (string) ( $labels[ $current ] ?? $current ) )
+				);
+				?>
+			</p>
 			<?php if ( $invalid_stored ) : ?>
 				<div class="notice notice-warning inline npcink-governance-core-policy-warning">
 					<p>
@@ -523,11 +525,24 @@ final class Admin_Page {
 								<p class="description"><?php echo esc_html__( 'Smart approval only auto-approves trusted test-content cleanup trash batches and single draft-only create-draft proposals. Allow all is local-development only and requires NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL; commit preflight is still required and Core still does not execute writes.', 'npcink-governance-core' ); ?></p>
 							</td>
 						</tr>
+						<tr>
+							<th scope="row"><label for="npcink-governance-core-history-retention-days"><?php echo esc_html__( 'History retention', 'npcink-governance-core' ); ?></label></th>
+							<td>
+								<select id="npcink-governance-core-history-retention-days" name="history_retention_days">
+									<?php foreach ( $this->history_retention_day_options() as $days => $label ) : ?>
+										<option value="<?php echo esc_attr( (string) $days ); ?>" <?php selected( $retention_days, (int) $days ); ?>>
+											<?php echo esc_html( $label ); ?>
+										</option>
+									<?php endforeach; ?>
+								</select>
+								<p class="description"><?php echo esc_html__( 'Sets how long historical proposal records should be kept. Scheduled deletion will be wired in a separate cleanup pass.', 'npcink-governance-core' ); ?></p>
+							</td>
+						</tr>
 					</tbody>
 				</table>
-				<p><button type="submit" class="button button-secondary"><?php echo esc_html__( 'Save approval policy', 'npcink-governance-core' ); ?></button></p>
+				<p><button type="submit" class="button button-secondary"><?php echo esc_html__( 'Save settings', 'npcink-governance-core' ); ?></button></p>
 			</form>
-		</details>
+		</section>
 		<?php
 	}
 
@@ -539,9 +554,9 @@ final class Admin_Page {
 	private function render_system_settings_page(): void {
 		?>
 		<h2><?php echo esc_html__( 'Settings', 'npcink-governance-core' ); ?></h2>
-		<p class="npcink-governance-core-subtle"><?php echo esc_html__( 'Development approval policy and trusted governance client access.', 'npcink-governance-core' ); ?></p>
+		<p class="npcink-governance-core-subtle"><?php echo esc_html__( 'Development approval policy, history retention, and trusted governance client access.', 'npcink-governance-core' ); ?></p>
 		<div class="npcink-governance-core-system-settings">
-			<?php $this->render_approval_policy_entry( true ); ?>
+			<?php $this->render_approval_policy_entry(); ?>
 			<?php $this->render_advanced_access_entry(); ?>
 		</div>
 		<?php
@@ -1427,19 +1442,24 @@ final class Admin_Page {
 
 		check_admin_referer( 'npcink_governance_core_update_approval_policy' );
 
-		$raw_mode = filter_input( INPUT_POST, 'policy_mode', FILTER_UNSAFE_RAW );
-		$mode     = is_string( $raw_mode ) ? Approval_Policy_Evaluator::sanitize_policy_mode( wp_unslash( $raw_mode ) ) : Approval_Policy_Evaluator::MODE_MANUAL;
+		$raw_mode           = filter_input( INPUT_POST, 'policy_mode', FILTER_UNSAFE_RAW );
+		$raw_retention_days = filter_input( INPUT_POST, 'history_retention_days', FILTER_UNSAFE_RAW );
+		$mode               = is_string( $raw_mode ) ? Approval_Policy_Evaluator::sanitize_policy_mode( wp_unslash( $raw_mode ) ) : Approval_Policy_Evaluator::MODE_MANUAL;
+		$history_retention  = is_string( $raw_retention_days ) ? $this->sanitize_history_retention_days( wp_unslash( $raw_retention_days ) ) : self::DEFAULT_HISTORY_RETENTION_DAYS;
 		update_option( Approval_Policy_Evaluator::OPTION_POLICY_MODE, $mode, false );
+		update_option( self::OPTION_HISTORY_RETENTION_DAYS, $history_retention, false );
 
 		$this->audit->record(
 			'core.approval_policy_updated',
 			array(
-				'policy_mode'      => $mode,
-				'commit_execution' => false,
+				'policy_mode'            => $mode,
+				'history_retention_days' => $history_retention,
+				'cleanup_scheduled'      => false,
+				'commit_execution'       => false,
 			)
 		);
 
-		wp_safe_redirect( $this->admin_url( array( 'npcink_governance_core_message' => 'approval_policy_updated' ) ) );
+		wp_safe_redirect( $this->admin_url( array( 'npcink_governance_core_message' => 'settings_updated' ) ) );
 		exit;
 	}
 
@@ -3628,6 +3648,44 @@ final class Admin_Page {
 	}
 
 	/**
+	 * Returns bounded history retention choices.
+	 *
+	 * @return array<int,string>
+	 */
+	private function history_retention_day_options(): array {
+		return array(
+			90                                    => __( '90 days', 'npcink-governance-core' ),
+			180                                   => __( '180 days', 'npcink-governance-core' ),
+			365                                   => __( '365 days', 'npcink-governance-core' ),
+			self::HISTORY_RETENTION_DISABLED_DAYS => __( 'Do not automatically delete', 'npcink-governance-core' ),
+		);
+	}
+
+	/**
+	 * Sanitizes history retention days.
+	 *
+	 * @param string|int $days Raw retention days.
+	 * @return int
+	 */
+	private function sanitize_history_retention_days( $days ): int {
+		$days    = absint( $days );
+		$allowed = array_keys( $this->history_retention_day_options() );
+
+		return in_array( $days, $allowed, true ) ? $days : self::DEFAULT_HISTORY_RETENTION_DAYS;
+	}
+
+	/**
+	 * Returns stored history retention days.
+	 *
+	 * @return int
+	 */
+	private function stored_history_retention_days(): int {
+		$days = get_option( self::OPTION_HISTORY_RETENTION_DAYS, self::DEFAULT_HISTORY_RETENTION_DAYS );
+
+		return $this->sanitize_history_retention_days( is_scalar( $days ) ? $days : self::DEFAULT_HISTORY_RETENTION_DAYS );
+	}
+
+	/**
 	 * Bounds audit filters to a valid page and offset.
 	 *
 	 * @param array<string,mixed> $filters Active filters.
@@ -4379,6 +4437,7 @@ final class Admin_Page {
 			'reopened'                                      => __( 'Proposal reopened for review.', 'npcink-governance-core' ),
 			'app_key_revoked'                               => __( 'App key disabled.', 'npcink-governance-core' ),
 			'approval_policy_updated'                       => __( 'Approval policy mode updated.', 'npcink-governance-core' ),
+			'settings_updated'                              => __( 'Settings updated.', 'npcink-governance-core' ),
 			'npcink_governance_core_app_key_not_active'             => __( 'App key is missing or already disabled.', 'npcink-governance-core' ),
 			'npcink_governance_core_app_key_revoke_failed'          => __( 'App key could not be disabled.', 'npcink-governance-core' ),
 			'npcink_governance_core_proposal_not_found'             => __( 'Proposal was not found.', 'npcink-governance-core' ),

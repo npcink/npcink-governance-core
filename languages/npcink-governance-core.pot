@@ -239,12 +239,20 @@ msgstr ""
 msgid "Smart approval only auto-approves trusted test-content cleanup trash batches and single draft-only create-draft proposals. Allow all is local-development only and requires NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL; commit preflight is still required and Core still does not execute writes."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:528
-msgid "Save approval policy"
+#: includes/Admin/Admin_Page.php:529
+msgid "History retention"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:542
-msgid "Development approval policy and trusted governance client access."
+#: includes/Admin/Admin_Page.php:538
+msgid "Sets how long historical proposal records should be kept. Scheduled deletion will be wired in a separate cleanup pass."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:543
+msgid "Save settings"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:557
+msgid "Development approval policy, history retention, and trusted governance client access."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:560
@@ -1606,6 +1614,22 @@ msgstr ""
 msgid "%d days"
 msgstr ""
 
+#: includes/Admin/Admin_Page.php:3657
+msgid "90 days"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3658
+msgid "180 days"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3659
+msgid "365 days"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3660
+msgid "Do not automatically delete"
+msgstr ""
+
 #: includes/Admin/Admin_Page.php:4438
 msgid "Proposal approved."
 msgstr ""
@@ -1632,6 +1656,10 @@ msgstr ""
 
 #: includes/Admin/Admin_Page.php:4444
 msgid "Approval policy mode updated."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4445
+msgid "Settings updated."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4445
