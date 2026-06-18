@@ -2618,6 +2618,10 @@ final class Admin_Page {
 	private function render_nightly_inspection_review_context( array $nightly_review ): void {
 		$selected_items      = is_array( $nightly_review['selected_review_items'] ?? null ) ? array_values( $nightly_review['selected_review_items'] ) : array();
 		$core_intake_package = is_array( $nightly_review['core_intake_package'] ?? null ) ? $nightly_review['core_intake_package'] : array();
+		$evidence_refs       = is_array( $nightly_review['evidence_refs'] ?? null ) ? array_values( $nightly_review['evidence_refs'] ) : array();
+		$completed_draft     = is_array( $nightly_review['completed_draft'] ?? null ) ? $nightly_review['completed_draft'] : array();
+		$proposal_ready      = array_key_exists( 'proposal_ready', $nightly_review ) ? ! empty( $nightly_review['proposal_ready'] ) : null;
+		$completed_submitted = ! empty( $nightly_review['completed_draft_submitted'] );
 		$first_item          = is_array( $selected_items[0] ?? null ) ? $selected_items[0] : array();
 
 		$this->render_review_value_row(
@@ -2634,6 +2638,45 @@ final class Admin_Page {
 				'evidence_ref_count'      => absint( $nightly_review['evidence_ref_count'] ?? 0 ),
 			)
 		);
+
+		$source_summary = array(
+			'source_surface'           => (string) ( $nightly_review['source_surface'] ?? 'toolbox_morning_brief' ),
+			'source_status'            => (string) ( $nightly_review['source_status'] ?? '' ),
+			'cloud_run_id'             => (string) ( $nightly_review['cloud_run_id'] ?? '' ),
+			'selected_review_item_ids' => is_array( $nightly_review['selected_review_item_ids'] ?? null ) ? array_values( $nightly_review['selected_review_item_ids'] ) : array(),
+			'selected_item_count'      => count( $selected_items ),
+			'evidence_ref_count'       => ! empty( $evidence_refs ) ? count( $evidence_refs ) : absint( $nightly_review['evidence_ref_count'] ?? 0 ),
+			'completed_draft_submitted' => $completed_submitted ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ),
+		);
+		if ( null !== $proposal_ready ) {
+			$source_summary['proposal_ready'] = $proposal_ready ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' );
+		}
+
+		$this->render_review_value_row(
+			__( 'Morning Brief source', 'npcink-governance-core' ),
+			$source_summary
+		);
+
+		if ( ! empty( $selected_items ) ) {
+			$this->render_review_value_row(
+				__( 'Selected review items', 'npcink-governance-core' ),
+				array_slice( $selected_items, 0, 5 )
+			);
+		}
+
+		if ( ! empty( $evidence_refs ) ) {
+			$this->render_review_value_row(
+				__( 'Evidence refs', 'npcink-governance-core' ),
+				array_slice( $evidence_refs, 0, 5 )
+			);
+		}
+
+		if ( ! empty( $completed_draft ) ) {
+			$this->render_review_value_row(
+				__( 'Completed draft input', 'npcink-governance-core' ),
+				$completed_draft
+			);
+		}
 
 		$this->render_review_value_row(
 			__( 'Morning Brief handoff', 'npcink-governance-core' ),
@@ -2654,7 +2697,9 @@ final class Admin_Page {
 
 		$this->render_review_value_row(
 			__( 'Required next step', 'npcink-governance-core' ),
-			__( 'Return to Toolbox Morning Brief, draft the title and content for the selected review item, then resubmit a complete Core proposal. Core does not generate or edit missing draft fields.', 'npcink-governance-core' )
+			$completed_submitted || true === $proposal_ready
+				? __( 'Review the completed Morning Brief draft in Core, approve only if the selected evidence and draft are acceptable, then run commit preflight before Adapter execution. Core still does not generate or edit draft fields.', 'npcink-governance-core' )
+				: __( 'Return to Toolbox Morning Brief, draft the title and content for the selected review item, then resubmit a complete Core proposal. Core does not generate or edit missing draft fields.', 'npcink-governance-core' )
 		);
 	}
 
