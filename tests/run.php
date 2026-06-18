@@ -1925,6 +1925,10 @@ foreach (
 		'core-batch-review-summary-v1',
 		'operator_next_action',
 		'resolve_blocked_items_before_commit_preflight',
+		'needs_input_resolution_owner',
+		'toolbox_morning_brief_operator',
+		'resubmission_required',
+		'core_amendment_supported',
 		'final_execution_owner',
 		'plan_requires_batch_proposal',
 		'plan_to_proposal_batch',
@@ -1970,6 +1974,7 @@ npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-content-metadata-apply-plan' ), 'Plan-to-proposal docs include the Toolbox content metadata apply handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'blocked draft-review proposal' ), 'Plan-to-proposal docs keep Site Knowledge review non-executable before human input.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'review this Morning Brief item in Core' ) && false !== strpos( $plan_to_proposal_docs, 'preview.nightly_inspection_review' ) && false !== strpos( $plan_to_proposal_docs, 'selected Morning Brief review item ids/items' ), 'Plan-to-proposal docs preserve Nightly Morning Brief selected-item review context.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'needs_input_resolution_owner=toolbox_morning_brief_operator' ) && false !== strpos( $plan_to_proposal_docs, 'Return to Toolbox Morning Brief' ) && false !== strpos( $plan_to_proposal_docs, 'Core does not generate or edit missing draft fields' ), 'Plan-to-proposal docs route Nightly missing-input resolution back to Toolbox Morning Brief.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-media-optimization-plan' ), 'Plan-to-proposal docs include the media optimization handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-media-adoption-enhancement-plan' ), 'Plan-to-proposal docs include the media adoption enhancement handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-media-rename-plan' ), 'Plan-to-proposal docs include the media rename handoff.' );
@@ -2100,11 +2105,14 @@ foreach (
 
 $rest_api_contract = npcink_governance_core_read( $root . '/docs/rest-api-contract.md' );
 npcink_governance_core_assert( false !== strpos( $rest_api_contract, 'npcink-toolbox/build-nightly-inspection-review-plan' ) && false !== strpos( $rest_api_contract, 'source_context.cloud_core_intake_package.selected_review_items' ) && false !== strpos( $rest_api_contract, 'preview.nightly_inspection_review' ), 'REST API contract documents Nightly Morning Brief Core intake shape.' );
+npcink_governance_core_assert( false !== strpos( $rest_api_contract, 'needs_input_resolution_owner' ) && false !== strpos( $rest_api_contract, 'toolbox_morning_brief_operator' ) && false !== strpos( $rest_api_contract, 'Core does not generate or edit missing draft fields' ), 'REST API contract documents Nightly Morning Brief needs-input resubmission path.' );
 $ability_intake_contract = npcink_governance_core_read( $root . '/docs/ability-intake-contract.md' );
 npcink_governance_core_assert( false !== strpos( $ability_intake_contract, 'npcink-toolbox/build-nightly-inspection-review-plan' ) && false !== strpos( $ability_intake_contract, 'selected Morning Brief review item' ) && false !== strpos( $ability_intake_contract, 'Cloud scheduling, retry state' ), 'Ability intake contract documents Nightly Inspection as selected-item review handoff only.' );
+npcink_governance_core_assert( false !== strpos( $ability_intake_contract, 'Toolbox Morning Brief operator' ) && false !== strpos( $ability_intake_contract, 'complete proposal resubmission' ) && false !== strpos( $ability_intake_contract, 'Core does not generate or edit missing draft fields' ), 'Ability intake contract documents Nightly missing-input owner and Core non-amendment boundary.' );
 
 $admin_page = npcink_governance_core_read( $root . '/includes/Admin/Admin_Page.php' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_nightly_inspection_review_context' ) && false !== strpos( $admin_page, 'Nightly review item' ) && false !== strpos( $admin_page, 'Morning Brief handoff' ), 'Admin proposal detail renders Nightly Morning Brief selected review item context.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Required next step' ) && false !== strpos( $admin_page, 'Return to Toolbox Morning Brief' ) && false !== strpos( $admin_page, 'resubmit a complete Core proposal' ) && false !== strpos( $admin_page, 'Core does not generate or edit missing draft fields' ), 'Admin proposal detail gives explicit Nightly needs-input recovery guidance.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-toolbox/build-nightly-inspection-review-plan' ) && false !== strpos( $admin_page, 'Nightly Inspection' ) && false !== strpos( $admin_page, 'Morning Brief' ), 'Admin review queue summarizes Nightly Inspection proposal source as Morning Brief.' );
 
 $audit_repository = npcink_governance_core_read( $root . '/includes/Audit/Audit_Log_Repository.php' );

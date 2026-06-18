@@ -138,7 +138,7 @@ the selected Morning Brief review item, creates one blocked
 `npcink-abilities-toolkit/create-draft` review proposal, and requires human
 `title` and `content` input before commit preflight can pass. It does not move
 Nightly Inspection, Morning Brief organization, Cloud scheduling, retry state,
-article generation, approval, or WordPress writes into Core.
+article generation, approval, or WordPress writes into Core. Missing draft input is resolved by the Toolbox Morning Brief operator and requires a complete proposal resubmission; Core does not generate or edit missing draft fields.
 
 `npcink-toolbox/build-content-metadata-apply-plan` is the reviewed content
 metadata handoff owned by Toolbox. Core accepts it only as a

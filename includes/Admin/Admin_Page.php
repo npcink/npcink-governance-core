@@ -2630,15 +2630,23 @@ final class Admin_Page {
 		$this->render_review_value_row(
 			__( 'Morning Brief handoff', 'npcink-governance-core' ),
 			array(
-				'contract_version'      => (string) ( $nightly_review['contract_version'] ?? '' ),
-				'cloud_run_id'          => (string) ( $nightly_review['cloud_run_id'] ?? '' ),
-				'handoff_surface'       => (string) ( $core_intake_package['handoff_surface'] ?? 'morning_brief_review_queue' ),
-				'selected_item_count'   => count( $selected_items ),
-				'operator_next_action'  => (string) ( $nightly_review['operator_next_action'] ?? '' ),
-				'final_write_path'      => (string) ( $nightly_review['final_write_path'] ?? '' ),
-				'direct_wordpress_write' => ! empty( $nightly_review['direct_wordpress_write'] ) ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ),
-				'cloud_scheduler_truth' => ! empty( $nightly_review['cloud_scheduler_truth'] ) ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ),
+				'contract_version'             => (string) ( $nightly_review['contract_version'] ?? '' ),
+				'cloud_run_id'                 => (string) ( $nightly_review['cloud_run_id'] ?? '' ),
+				'handoff_surface'              => (string) ( $core_intake_package['handoff_surface'] ?? 'morning_brief_review_queue' ),
+				'selected_item_count'          => count( $selected_items ),
+				'operator_next_action'         => (string) ( $nightly_review['operator_next_action'] ?? '' ),
+				'needs_input_resolution_owner' => (string) ( $nightly_review['needs_input_resolution_owner'] ?? '' ),
+				'resubmission_required'        => ! empty( $nightly_review['resubmission_required'] ) ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ),
+				'core_amendment_supported'     => ! empty( $nightly_review['core_amendment_supported'] ) ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ),
+				'final_write_path'             => (string) ( $nightly_review['final_write_path'] ?? '' ),
+				'direct_wordpress_write'       => ! empty( $nightly_review['direct_wordpress_write'] ) ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ),
+				'cloud_scheduler_truth'        => ! empty( $nightly_review['cloud_scheduler_truth'] ) ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ),
 			)
+		);
+
+		$this->render_review_value_row(
+			__( 'Required next step', 'npcink-governance-core' ),
+			__( 'Return to Toolbox Morning Brief, draft the title and content for the selected review item, then resubmit a complete Core proposal. Core does not generate or edit missing draft fields.', 'npcink-governance-core' )
 		);
 	}
 
