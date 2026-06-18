@@ -119,9 +119,9 @@ msgstr "审核队列"
 msgid "Activity Log"
 msgstr "活动记录"
 
-#: includes/Admin/Admin_Page.php:354 includes/Admin/Admin_Page.php:1686
-msgid "Expired / Archived"
-msgstr "已过期 / 已归档"
+#: includes/Admin/Admin_Page.php:354 includes/Admin/Admin_Page.php:1681
+msgid "History"
+msgstr "历史记录"
 
 #: includes/Admin/Admin_Page.php:358 includes/Admin/Admin_Page.php:541
 #: includes/Plugin.php:190
@@ -274,16 +274,16 @@ msgid "No requests need review."
 msgstr "无待审核请求。"
 
 #: includes/Admin/Admin_Page.php:585
-msgid "Find a proposal by ID, inspect recent activity, or open expired and archived records when you need audit context."
-msgstr "可通过提案 ID 查找，查看最近活动，或打开过期和归档记录获取审计上下文。"
+msgid "Find a proposal by ID, inspect recent activity, or open historical records when you need audit context."
+msgstr "可通过提案 ID 查找，查看最近活动，或打开历史记录获取审计上下文。"
 
 #: includes/Admin/Admin_Page.php:588
 msgid "Open activity log"
 msgstr "打开活动日志"
 
 #: includes/Admin/Admin_Page.php:589
-msgid "Open expired records"
-msgstr "打开过期记录"
+msgid "Open history"
+msgstr "打开历史记录"
 
 #. translators: %s: full proposal id.
 #: includes/Admin/Admin_Page.php:604
@@ -701,9 +701,13 @@ msgstr "提案"
 msgid "Age"
 msgstr "时间"
 
-#: includes/Admin/Admin_Page.php:1711
-msgid "No expired or archived proposals."
-msgstr "没有已过期或已归档的提案。"
+#: includes/Admin/Admin_Page.php:1682
+msgid "Expired requests are kept as historical records after they leave the active review queue."
+msgstr "过期请求离开活动审核队列后会作为历史记录保留。"
+
+#: includes/Admin/Admin_Page.php:1709
+msgid "No historical proposals."
+msgstr "没有历史提案。"
 
 #: includes/Admin/Admin_Page.php:1742
 msgid "Read capabilities"
@@ -878,26 +882,6 @@ msgstr "拒绝"
 #: includes/Admin/Admin_Page.php:2345
 msgid "Confirm rejection"
 msgstr "确认拒绝"
-
-#: includes/Admin/Admin_Page.php:2370
-msgid "Lifecycle"
-msgstr "生命周期"
-
-#: includes/Admin/Admin_Page.php:2371
-msgid "Expired and archived proposals are not eligible for approval until reopened."
-msgstr "过期和已归档的提案重新打开前不能批准。"
-
-#: includes/Admin/Admin_Page.php:2377
-msgid "Archive"
-msgstr "归档"
-
-#: includes/Admin/Admin_Page.php:1820
-msgid "Reopen"
-msgstr "重新打开"
-
-#: includes/Admin/Admin_Page.php:2379
-msgid "Reopen for review"
-msgstr "重新打开以审核"
 
 #: includes/Admin/Admin_Page.php:2414 includes/Admin/Admin_Page.php:3774
 #: includes/Admin/Admin_Page.php:3788 includes/Admin/Admin_Page.php:3840
@@ -1422,9 +1406,9 @@ msgstr "交接后执行失败；请检查审计证据。"
 msgid "Rejected; no execution handoff should continue."
 msgstr "已拒绝；不应继续执行交接。"
 
-#: includes/Admin/Admin_Page.php:3885
-msgid "Reopen before making a decision."
-msgstr "需要重新打开后才能决策。"
+#: includes/Admin/Admin_Page.php:3914
+msgid "Historical record; no approval action is available."
+msgstr "历史记录；没有可用的批准操作。"
 
 #: includes/Admin/Admin_Page.php:3888
 msgid "Review the audit timeline for current state."
@@ -1446,9 +1430,9 @@ msgstr "该提案在交接后上报执行失败。请结合审计时间线和 Ad
 msgid "This proposal was rejected and should not continue to execution."
 msgstr "该提案已拒绝，不应继续执行。"
 
-#: includes/Admin/Admin_Page.php:3909
-msgid "This proposal is not eligible for approval until it is reopened."
-msgstr "该提案重新打开前不能批准。"
+#: includes/Admin/Admin_Page.php:3938
+msgid "This proposal is kept as a historical record and is not available for approval."
+msgstr "该提案作为历史记录保留，不能批准。"
 
 #: includes/Admin/Admin_Page.php:3912
 msgid "This proposal is no longer pending. Review the audit timeline for lifecycle evidence."

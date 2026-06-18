@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-06-19 — Archive admin surface simplified into history
+
+- **Module**: Core admin historical proposal list.
+- **Status**: The former Expired / Archived admin tab is now a read-only
+  `History` surface. It keeps expired and previously archived proposals
+  available for audit lookup without exposing status filters, multi-select,
+  archive actions, or reopen actions.
+- **Completed**:
+  - Renamed the admin tab and page heading to `History` / `历史记录`.
+  - Removed the expired-versus-archived filter row from the history list.
+  - Removed row action and lifecycle controls from historical proposal rows.
+  - Removed proposal detail reopen/archive controls for expired or archived
+    records.
+  - Updated empty-state copy, admin surface docs, operability docs, static
+    contracts, CSS, and Chinese translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php` passed.
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po` passed.
+  - `composer test:all` passed.
+  - `git diff --check` passed.
+- **Boundary**:
+  - Admin presentation and localization only. The underlying `expired` and
+    `archived` statuses, archive/reopen service transitions, proposal storage,
+    audit persistence, REST contracts, Adapter behavior, workflow runtime,
+    queues, and final execution remain unchanged.
+
 ## 2026-06-19 — Admin title and archive filters refined
 
 - **Module**: Core admin page shell and expired/archive list controls.

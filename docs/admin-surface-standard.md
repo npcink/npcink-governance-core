@@ -16,7 +16,7 @@ The page is split into focused admin tabs:
 
 - `Review Queue`;
 - `Activity Log`;
-- `Expired / Archived`;
+- `History`;
 - `Settings`.
 
 The default `Review Queue` tab must stay focused on the current governance
@@ -64,9 +64,9 @@ queue:
   with selected count, clear selection, optional rejection note, and
   reject selected action. Keep a collapsed disclosure fallback for no-JavaScript
   admin sessions;
-- stale proposals available from the expired/archive tab;
+- stale proposals available from the history tab;
 - useful empty state that points to proposal lookup, activity log, and expired
-  records instead of only saying that the queue is empty;
+  history instead of only saying that the queue is empty;
 - `Settings` tab for low-frequency development policy and trusted client
   access, keeping these controls out of the default review queue;
 - `Development Approval Policy` disclosure in the Settings tab for the
@@ -120,20 +120,20 @@ Proposal detail should be a focused review surface:
   information architecture even when the two surfaces live in separate tabs;
 - raw proposal payload behind a troubleshooting disclosure in the `Technical
   info` tab with bounded code blocks;
-- lifecycle controls for expired or archived proposals.
-- `Expired / Archived` list rows should stay compact: 10 rows per page,
+- expired or archived proposals should be presented as historical records, not
+  as active review work.
+- `History` list rows should stay compact and read-only: 10 rows per page,
   user-facing proposal label plus display id in the proposal column, status,
-  one combined updated/age column, a dedicated row `Details` disclosure for
-  full proposal id, ability id, source, time, and policy fields, and a short
-  primary `Reopen` action in the default action column. Keep
-  secondary archive actions low-emphasis and do not show raw ability ids in the
-  default row. Status filters for `All`, `Expired`, and `Archived` should live
-  in the top list navigation row with counts, not as a separate filter row
-  between the page description and list controls.
+  one combined updated/age column, and a dedicated row `Details` disclosure for
+  full proposal id, ability id, source, time, and policy fields. Do not show
+  row selection, bulk actions, archive actions, or reopen actions on this page.
+  Existing `archived` rows may still appear for backward compatibility, but the
+  admin surface should not ask operators to choose between expired and
+  archived records.
 
-Full `Activity Log` and `Expired / Archived` belong in dedicated tabs, not
+Full `Activity Log` and `History` belong in dedicated tabs, not
 inline on the default workbench. Long lists in `Review Queue`, `Activity Log`,
-`Expired / Archived`, and advanced app-key management must be paginated with
+`History`, and advanced app-key management must be paginated with
 the same WordPress-style top and bottom table navigation: current result range
 on the left, item count plus square first/previous/next/last page buttons on
 the right. Selection checkboxes and bulk action controls should appear only on

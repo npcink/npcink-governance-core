@@ -126,8 +126,8 @@ msgid "Activity Log"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:354
-#: includes/Admin/Admin_Page.php:1686
-msgid "Expired / Archived"
+#: includes/Admin/Admin_Page.php:1681
+msgid "History"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:358
@@ -299,7 +299,7 @@ msgid "No requests need review."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:585
-msgid "Find a proposal by ID, inspect recent activity, or open expired and archived records when you need audit context."
+msgid "Find a proposal by ID, inspect recent activity, or open historical records when you need audit context."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:588
@@ -307,7 +307,7 @@ msgid "Open activity log"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:589
-msgid "Open expired records"
+msgid "Open history"
 msgstr ""
 
 #. translators: %s: full proposal id.
@@ -762,8 +762,12 @@ msgstr ""
 msgid "Age"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1711
-msgid "No expired or archived proposals."
+#: includes/Admin/Admin_Page.php:1682
+msgid "Expired requests are kept as historical records after they leave the active review queue."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:1709
+msgid "No historical proposals."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:1742
@@ -939,26 +943,6 @@ msgstr ""
 
 #: includes/Admin/Admin_Page.php:2345
 msgid "Confirm rejection"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:2370
-msgid "Lifecycle"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:2371
-msgid "Expired and archived proposals are not eligible for approval until reopened."
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:2377
-msgid "Archive"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:1820
-msgid "Reopen"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:2379
-msgid "Reopen for review"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:2414
@@ -1518,8 +1502,8 @@ msgstr ""
 msgid "Rejected; no execution handoff should continue."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3885
-msgid "Reopen before making a decision."
+#: includes/Admin/Admin_Page.php:3914
+msgid "Historical record; no approval action is available."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:3888
@@ -1542,8 +1526,8 @@ msgstr ""
 msgid "This proposal was rejected and should not continue to execution."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3909
-msgid "This proposal is not eligible for approval until it is reopened."
+#: includes/Admin/Admin_Page.php:3938
+msgid "This proposal is kept as a historical record and is not available for approval."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:3912

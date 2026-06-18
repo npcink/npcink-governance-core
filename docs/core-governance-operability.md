@@ -89,7 +89,7 @@ The WordPress admin proposal detail also shows:
 - raw caller, input, and preview JSON behind a troubleshooting disclosure in the
   technical tab;
 - approve/reject controls for pending proposals before the detail tabs.
-- archive/reopen controls for expired or archived proposals.
+- read-only history for expired and previously archived proposals.
 
 The default review queue keeps each pending proposal traceable without leading
 with machine details. Every row shows a user-facing request label, created time,
@@ -105,18 +105,19 @@ proposals. Bulk rejection reuses the normal reject transition for each row so
 every proposal still records `proposal.rejected`; it is intended for obsolete
 pending proposals that have been superseded by a safer batch review.
 
-### Expired And Archived Proposals
+### Proposal History
 
 Pending proposals expire automatically after the Core pending review TTL. Core
 marks stale rows as `expired`, records `proposal.expired`, and removes them
-from the default review queue. The `Expired / Archived` admin tab keeps stale
-records visible without letting them crowd active review work.
+from the default review queue. The `History` admin tab keeps stale records
+visible without letting them crowd active review work.
 
-Administrators may archive expired proposals as low-frequency audit records.
-Archived and expired proposals may be reopened to `pending` review when a stale
-request still needs a decision. Reopening records `proposal.reopened`; archiving
-records `proposal.archived`. None of these lifecycle transitions execute an
-ability or final WordPress mutation.
+The current admin surface treats expired and previously archived proposals as
+read-only history. It does not expose row selection, bulk history actions,
+archive buttons, or reopen buttons. The underlying `archived` status and
+archive/reopen service transitions remain for backward compatibility with
+existing records and older integrations; none of those lifecycle transitions
+execute an ability or final WordPress mutation.
 
 ### Activity Log Admin View
 

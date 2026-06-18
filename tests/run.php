@@ -2203,8 +2203,9 @@ foreach (
 		'read-only lookup',
 		'technical details',
 		'Activity Log',
-		'Expired / Archived',
-		'top list navigation row with counts',
+		'History',
+		'read-only',
+		'row selection, bulk actions, archive actions, or reopen actions',
 		'Settings',
 		'Development Approval Policy',
 		'Advanced Access',
@@ -2340,7 +2341,8 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'render_admin_tabs
 npcink_governance_core_assert( false !== strpos( $admin_page, 'nav-tab-wrapper' ), 'Admin page uses WordPress admin tabs for Core sections.' );
 npcink_governance_core_assert( false === strpos( $admin_page, "'app-keys' => array" ), 'Admin page does not expose Core App Keys as a first-level tab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Review Queue' ), 'Admin page defaults to the review queue tab.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Expired / Archived' ), 'Admin page exposes stale proposal archive tab.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'History' ), 'Admin page exposes historical proposal records tab.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Open history' ), 'Admin empty state points to historical proposal records.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Settings' ), 'Admin page exposes the Settings tab.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'render_summary_strip' ), 'Admin default page does not use the removed legacy summary strip helper.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'render_status_metric' ), 'Admin default page removes metric cards from the review surface.' );
@@ -2353,19 +2355,19 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'render_review_que
 npcink_governance_core_assert( false !== strpos( $admin_page, 'data-npcink-bulk-toggle-all' ), 'Admin review queue supports selecting all visible pending proposals.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'data-npcink-bulk-select' ) && false !== strpos( $admin_page, 'data-npcink-bulk-apply' ), 'Admin review queue exposes compact bulk action controls.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Page %1$d of %2$d' ), 'Admin review queue renders compact page position text.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'archive_page' ), 'Admin page paginates expired and archived proposals.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'ARCHIVE_PAGE_SIZE = 10' ), 'Admin archive shows ten expired or archived proposals per page.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-archive-table' ), 'Admin archive renders a compact fixed-layout table.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-archive-details-' ), 'Admin archive moves technical proposal fields behind row details.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'render_archive_primary_action' ), 'Admin archive keeps one primary lifecycle action in the default action column.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'render_archive_row_actions' ), 'Admin archive keeps secondary archive actions low-emphasis in row metadata.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, '$this->proposal_display_id( $proposal )' ), 'Admin archive shows display ids instead of raw full proposal ids in the default row.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'archive_status_filter_links' ), 'Admin archive renders status filter links with counts.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'render_table_filter_links' ), 'Admin archive places status filters inside the table navigation row.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "__( '%1\$s (%2\$s)', 'npcink-governance-core' )" ), 'Admin table filters render WordPress-style labels with counts.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'archive_page' ), 'Admin page paginates historical proposals.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'ARCHIVE_PAGE_SIZE = 10' ), 'Admin history shows ten historical proposals per page.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-archive-table' ), 'Admin history renders a compact fixed-layout table.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-archive-details-' ), 'Admin history moves technical proposal fields behind row details.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, '$this->proposal_display_id( $proposal )' ), 'Admin history shows display ids instead of raw full proposal ids in the default row.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'No historical proposals.' ), 'Admin history has a clear empty state.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'render_archive_primary_action' ), 'Admin history does not expose row-level reopen actions.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'render_archive_row_actions' ), 'Admin history does not expose row-level archive actions.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'archive_status_filter_links' ), 'Admin history does not split expired and archived records into confusing filters.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'render_table_filter_links' ), 'Admin history does not render status filter links.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_page' ), 'Admin page paginates governance audit.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'app_key_page' ), 'Admin page paginates advanced app-key management.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'archive_status' ), 'Admin page filters expired and archived proposal lists.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'archive_status' ), 'Admin history does not expose an expired versus archived status filter.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'No requests need review.' ), 'Admin page provides a clear active queue empty state.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'render_advanced_entries' ), 'Admin default page no longer renders low-frequency administration links inline.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Recent Activity' ), 'Admin default page exposes a compact recent activity section.' );
@@ -2396,8 +2398,8 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Productized OpenC
 npcink_governance_core_assert( false === strpos( $admin_page, 'Environment template' ), 'Admin default page no longer exposes an env template.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Create Core App Key' ), 'Admin page labels key creation as Core credential management.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Issue a scoped token for a trusted governance client.' ), 'Admin page folds Core app-key creation behind an explicit disclosure.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Reopen for review' ), 'Admin page exposes reopen action for expired or archived proposals.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Archive' ), 'Admin page exposes archive action for expired proposals.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'Reopen for review' ), 'Admin page does not expose reopen actions for historical proposals.' );
+npcink_governance_core_assert( false === strpos( $admin_page, "__( 'Archive', 'npcink-governance-core' )" ), 'Admin page does not expose archive actions for historical proposals.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Adapter Client' ), 'Admin page defaults app label to a generic adapter client.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'product_adapter' ), 'Admin page defaults caller type to product_adapter.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'core_env_text' ), 'Admin page centralizes minimal Core env generation.' );
@@ -2502,7 +2504,7 @@ npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-bulk-action-bar' ), 'Admin CSS styles the contextual bulk action bar.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-bulk-disclosure[hidden]' ), 'Admin CSS hides bulk actions until JavaScript reveals selection context.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-list-nav' ), 'Admin CSS styles the review queue table navigation row.' );
-npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-table-filter-links' ), 'Admin CSS styles status filters inside table navigation rows.' );
+npcink_governance_core_assert( false === strpos( $admin_css, '.npcink-governance-core-table-filter-links' ), 'Admin CSS no longer carries unused history status filter styles.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-page-button' ), 'Admin CSS styles compact square pagination buttons.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'data-npcink-details-target' ), 'Admin JS toggles row details by explicit target id.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'aria-expanded' ), 'Admin JS maintains details toggle accessibility state.' );

@@ -351,7 +351,7 @@ final class Admin_Page {
 				'url'   => $this->view_url( 'audit' ),
 			),
 			'archive'  => array(
-				'label' => __( 'Expired / Archived', 'npcink-governance-core' ),
+				'label' => __( 'History', 'npcink-governance-core' ),
 				'url'   => $this->view_url( 'archive' ),
 			),
 			'settings' => array(
@@ -582,11 +582,11 @@ final class Admin_Page {
 							<td colspan="7">
 								<div class="npcink-governance-core-empty-state">
 									<strong><?php echo esc_html__( 'No requests need review.', 'npcink-governance-core' ); ?></strong>
-									<span><?php echo esc_html__( 'Find a proposal by ID, inspect recent activity, or open expired and archived records when you need audit context.', 'npcink-governance-core' ); ?></span>
+									<span><?php echo esc_html__( 'Find a proposal by ID, inspect recent activity, or open historical records when you need audit context.', 'npcink-governance-core' ); ?></span>
 									<span class="npcink-governance-core-empty-actions">
 										<a href="#npcink-governance-core-proposal-lookup"><?php echo esc_html__( 'Find proposal', 'npcink-governance-core' ); ?></a>
 										<a href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Open activity log', 'npcink-governance-core' ); ?></a>
-										<a href="<?php echo esc_url( $this->view_url( 'archive' ) ); ?>"><?php echo esc_html__( 'Open expired records', 'npcink-governance-core' ); ?></a>
+										<a href="<?php echo esc_url( $this->view_url( 'archive' ) ); ?>"><?php echo esc_html__( 'Open history', 'npcink-governance-core' ); ?></a>
 									</span>
 								</div>
 							</td>
@@ -765,7 +765,6 @@ final class Admin_Page {
 		$classes      = trim( 'tablenav npcink-governance-core-list-nav ' . (string) ( $options['classes'] ?? '' ) );
 		$show_bulk    = ! empty( $options['show_bulk'] );
 		$show_range   = ! empty( $options['show_range'] );
-		$filter_links = is_array( $options['filter_links'] ?? null ) ? $options['filter_links'] : array();
 		$left_classes = trim( 'alignleft actions ' . ( $show_bulk ? 'bulkactions ' : '' ) . 'npcink-governance-core-list-nav-bulk' );
 		?>
 		<div class="<?php echo esc_attr( $classes ); ?>">
@@ -779,9 +778,6 @@ final class Admin_Page {
 					<button type="button" class="button" data-npcink-bulk-apply><?php echo esc_html__( 'Apply', 'npcink-governance-core' ); ?></button>
 				<?php elseif ( $show_range ) : ?>
 					<span class="displaying-num"><?php echo esc_html( $this->pagination_summary( $total, $page, $per_page ) ); ?></span>
-				<?php endif; ?>
-				<?php if ( ! empty( $filter_links ) ) : ?>
-					<?php $this->render_table_filter_links( $filter_links ); ?>
 				<?php endif; ?>
 			</div>
 			<div class="tablenav-pages npcink-governance-core-list-nav-pages">
@@ -841,35 +837,6 @@ final class Admin_Page {
 		$url = add_query_arg( $page_arg, (string) $target_page, $base_url );
 		?>
 		<a class="button npcink-governance-core-page-button" href="<?php echo esc_url( $url ); ?>" aria-label="<?php echo esc_attr( $label ); ?>"><?php echo wp_kses_post( $symbol ); ?></a>
-		<?php
-	}
-
-	/**
-	 * Renders compact view filters inside a table navigation row.
-	 *
-	 * @param array<int,array{label:string,count:int,url:string,current:bool}> $links Filter links.
-	 * @return void
-	 */
-	private function render_table_filter_links( array $links ): void {
-		?>
-		<ul class="subsubsub npcink-governance-core-table-filter-links">
-			<?php foreach ( $links as $index => $link ) : ?>
-				<li>
-					<a href="<?php echo esc_url( $link['url'] ); ?>" class="<?php echo ! empty( $link['current'] ) ? 'current' : ''; ?>" <?php echo ! empty( $link['current'] ) ? 'aria-current="page"' : ''; ?>>
-						<?php
-						echo esc_html(
-							sprintf(
-								/* translators: 1: filter label, 2: item count. */
-								__( '%1$s (%2$s)', 'npcink-governance-core' ),
-								$link['label'],
-								number_format_i18n( (int) $link['count'] )
-							)
-						);
-						?>
-					</a><?php echo $index < count( $links ) - 1 ? ' |' : ''; ?>
-				</li>
-			<?php endforeach; ?>
-		</ul>
 		<?php
 	}
 
@@ -1693,32 +1660,26 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Renders expired and archived proposals.
+	 * Renders historical proposals.
 	 *
 	 * @return void
 	 */
 	private function render_archive_view(): void {
-		$page           = $this->page_from_request( 'archive_page' );
-		$status_filter = $this->admin_query_key( 'archive_status', 'all' );
-		$status_filter = in_array( $status_filter, array( 'all', Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_ARCHIVED ), true ) ? $status_filter : 'all';
-		$statuses      = 'all' === $status_filter
-			? array( Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_ARCHIVED )
-			: array( $status_filter );
-		$status_counts = array(
-			Proposal_Repository::STATUS_EXPIRED  => $this->proposals->count_by_statuses( array( Proposal_Repository::STATUS_EXPIRED ) ),
-			Proposal_Repository::STATUS_ARCHIVED => $this->proposals->count_by_statuses( array( Proposal_Repository::STATUS_ARCHIVED ) ),
+		$page      = $this->page_from_request( 'archive_page' );
+		$statuses  = array(
+			Proposal_Repository::STATUS_EXPIRED,
+			Proposal_Repository::STATUS_ARCHIVED,
 		);
-		$status_counts['all'] = $status_counts[ Proposal_Repository::STATUS_EXPIRED ] + $status_counts[ Proposal_Repository::STATUS_ARCHIVED ];
-		$total                = 'all' === $status_filter ? $status_counts['all'] : $status_counts[ $status_filter ];
-		$page           = $this->bounded_page( $total, $page, self::ARCHIVE_PAGE_SIZE );
-		$proposals      = $this->proposals->list_by_statuses(
+		$total     = $this->proposals->count_by_statuses( $statuses );
+		$page      = $this->bounded_page( $total, $page, self::ARCHIVE_PAGE_SIZE );
+		$proposals = $this->proposals->list_by_statuses(
 			$statuses,
 			self::ARCHIVE_PAGE_SIZE,
 			$this->offset_for_page( $page, self::ARCHIVE_PAGE_SIZE )
 		);
 		?>
-		<h2><?php echo esc_html__( 'Expired / Archived', 'npcink-governance-core' ); ?></h2>
-		<p><?php echo esc_html__( 'Stale requests are kept for audit but removed from the active review queue.', 'npcink-governance-core' ); ?></p>
+		<h2><?php echo esc_html__( 'History', 'npcink-governance-core' ); ?></h2>
+		<p><?php echo esc_html__( 'Expired requests are kept as historical records after they leave the active review queue.', 'npcink-governance-core' ); ?></p>
 		<?php
 		$this->render_table_nav(
 			$total,
@@ -1726,12 +1687,10 @@ final class Admin_Page {
 			self::ARCHIVE_PAGE_SIZE,
 			'archive_page',
 			array(
-				'view'           => 'archive',
-				'archive_status' => $status_filter,
+				'view' => 'archive',
 			),
 			array(
-				'filter_links' => $this->archive_status_filter_links( $status_filter, $status_counts ),
-				'show_range'   => true,
+				'show_range' => true,
 			)
 		);
 		?>
@@ -1742,13 +1701,12 @@ final class Admin_Page {
 					<th scope="col"><?php echo esc_html__( 'Status', 'npcink-governance-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'Updated', 'npcink-governance-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'Details', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Action', 'npcink-governance-core' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php if ( empty( $proposals ) ) : ?>
 					<tr>
-						<td colspan="5"><?php echo esc_html__( 'No expired or archived proposals.', 'npcink-governance-core' ); ?></td>
+						<td colspan="4"><?php echo esc_html__( 'No historical proposals.', 'npcink-governance-core' ); ?></td>
 					</tr>
 				<?php endif; ?>
 				<?php foreach ( $proposals as $proposal ) : ?>
@@ -1768,7 +1726,6 @@ final class Admin_Page {
 							</div>
 							<div class="npcink-governance-core-request-meta">
 								<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>" title="<?php echo esc_attr( $display_title ); ?>"><code class="npcink-governance-core-display-id"><?php echo esc_html( $this->proposal_display_id( $proposal ) ); ?></code></a>
-								<?php $this->render_archive_row_actions( $proposal ); ?>
 							</div>
 						</td>
 						<td><?php $this->render_status_badge( (string) $proposal['status'] ); ?></td>
@@ -1789,10 +1746,9 @@ final class Admin_Page {
 								<?php echo esc_html__( 'Details', 'npcink-governance-core' ); ?>
 							</button>
 						</td>
-						<td class="npcink-governance-core-action-cell"><?php $this->render_archive_primary_action( $proposal ); ?></td>
 					</tr>
 					<tr id="<?php echo esc_attr( $details_id ); ?>" class="npcink-governance-core-row-details-row" hidden>
-						<td colspan="5">
+						<td colspan="4">
 							<?php $this->render_pending_proposal_technical_details( $proposal ); ?>
 						</td>
 					</tr>
@@ -1806,50 +1762,12 @@ final class Admin_Page {
 			self::ARCHIVE_PAGE_SIZE,
 			'archive_page',
 			array(
-				'view'           => 'archive',
-				'archive_status' => $status_filter,
+				'view' => 'archive',
 			),
 			array( 'show_range' => true )
 		);
 		?>
 		<?php
-	}
-
-	/**
-	 * Renders secondary row actions for expired and archived proposal rows.
-	 *
-	 * @param array<string,mixed> $proposal Proposal row.
-	 * @return void
-	 */
-	private function render_archive_row_actions( array $proposal ): void {
-		$status      = (string) ( $proposal['status'] ?? '' );
-		$proposal_id = (string) ( $proposal['proposal_id'] ?? '' );
-
-		if ( '' === $proposal_id || Proposal_Repository::STATUS_EXPIRED !== $status ) {
-			return;
-		}
-		?>
-		<span class="npcink-governance-core-row-actions">
-			<?php $this->render_lifecycle_form( $proposal_id, 'archive', __( 'Archive', 'npcink-governance-core' ), 'button-link' ); ?>
-		</span>
-		<?php
-	}
-
-	/**
-	 * Renders the primary archive-row lifecycle action.
-	 *
-	 * @param array<string,mixed> $proposal Proposal row.
-	 * @return void
-	 */
-	private function render_archive_primary_action( array $proposal ): void {
-		$status      = (string) ( $proposal['status'] ?? '' );
-		$proposal_id = (string) ( $proposal['proposal_id'] ?? '' );
-
-		if ( '' === $proposal_id || ! in_array( $status, array( Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_ARCHIVED ), true ) ) {
-			return;
-		}
-
-		$this->render_lifecycle_form( $proposal_id, 'reopen', __( 'Reopen', 'npcink-governance-core' ), 'button button-secondary' );
 	}
 
 	/**
@@ -2108,7 +2026,6 @@ final class Admin_Page {
 	 * @return void
 	 */
 	private function render_proposal_overview_tab( array $proposal, ?array $capability ): void {
-		$this->render_lifecycle_actions( $proposal );
 		$this->render_proposal_outcome_notice( $proposal );
 		$this->render_review_context( $proposal, $capability );
 	}
@@ -2467,57 +2384,6 @@ final class Admin_Page {
 					</button>
 				</div>
 			</details>
-		</form>
-		<?php
-	}
-
-	/**
-	 * Renders proposal lifecycle actions.
-	 *
-	 * @param array<string,mixed> $proposal Proposal row.
-	 * @param bool                $compact Whether to render compact actions.
-	 * @return void
-	 */
-	private function render_lifecycle_actions( array $proposal, bool $compact = false ): void {
-		$status      = (string) ( $proposal['status'] ?? '' );
-		$proposal_id = (string) ( $proposal['proposal_id'] ?? '' );
-
-		if ( '' === $proposal_id || ! in_array( $status, array( Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_ARCHIVED ), true ) ) {
-			return;
-		}
-
-		if ( ! $compact ) {
-			?>
-			<h3><?php echo esc_html__( 'Lifecycle', 'npcink-governance-core' ); ?></h3>
-			<p><?php echo esc_html__( 'Expired and archived proposals are not eligible for approval until reopened.', 'npcink-governance-core' ); ?></p>
-			<?php
-		}
-		?>
-		<div style="display: flex; flex-wrap: wrap; gap: 8px;">
-			<?php if ( Proposal_Repository::STATUS_EXPIRED === $status ) : ?>
-				<?php $this->render_lifecycle_form( $proposal_id, 'archive', __( 'Archive', 'npcink-governance-core' ), 'button' ); ?>
-			<?php endif; ?>
-			<?php $this->render_lifecycle_form( $proposal_id, 'reopen', __( 'Reopen for review', 'npcink-governance-core' ), 'button button-secondary' ); ?>
-		</div>
-		<?php
-	}
-
-	/**
-	 * Renders one lifecycle action form.
-	 *
-	 * @param string $proposal_id Proposal id.
-	 * @param string $action Action key.
-	 * @param string $label Button label.
-	 * @param string $class Button class.
-	 * @return void
-	 */
-	private function render_lifecycle_form( string $proposal_id, string $action, string $label, string $class ): void {
-		?>
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin: 0;">
-			<input type="hidden" name="action" value="<?php echo esc_attr( 'npcink_governance_core_' . $action . '_proposal' ); ?>" />
-			<input type="hidden" name="proposal_id" value="<?php echo esc_attr( $proposal_id ); ?>" />
-			<?php wp_nonce_field( 'npcink_governance_core_' . $action . '_proposal_' . $proposal_id ); ?>
-			<button type="submit" class="<?php echo esc_attr( $class ); ?>"><?php echo esc_html( $label ); ?></button>
 		</form>
 		<?php
 	}
@@ -3687,46 +3553,6 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Returns archive status filter labels.
-	 *
-	 * @return array<string,string>
-	 */
-	private function archive_status_filters(): array {
-		return array(
-			'all'                                  => __( 'All', 'npcink-governance-core' ),
-			Proposal_Repository::STATUS_EXPIRED  => __( 'Expired', 'npcink-governance-core' ),
-			Proposal_Repository::STATUS_ARCHIVED => __( 'Archived', 'npcink-governance-core' ),
-		);
-	}
-
-	/**
-	 * Returns archive status filter link data with counts.
-	 *
-	 * @param string            $active Active status filter.
-	 * @param array<string,int> $counts Status counts.
-	 * @return array<int,array{label:string,count:int,url:string,current:bool}>
-	 */
-	private function archive_status_filter_links( string $active, array $counts ): array {
-		$links = array();
-
-		foreach ( $this->archive_status_filters() as $key => $label ) {
-			$links[] = array(
-				'label'   => $label,
-				'count'   => (int) ( $counts[ $key ] ?? 0 ),
-				'url'     => $this->admin_url(
-					array(
-						'view'           => 'archive',
-						'archive_status' => $key,
-					)
-				),
-				'current' => $active === $key,
-			);
-		}
-
-		return $links;
-	}
-
-	/**
 	 * Returns preserved audit query args for pagination links.
 	 *
 	 * @param array<string,mixed> $filters Active filters.
@@ -3993,7 +3819,7 @@ final class Admin_Page {
 				return __( 'Rejected; no execution handoff should continue.', 'npcink-governance-core' );
 			case Proposal_Repository::STATUS_EXPIRED:
 			case Proposal_Repository::STATUS_ARCHIVED:
-				return __( 'Reopen before making a decision.', 'npcink-governance-core' );
+				return __( 'Historical record; no approval action is available.', 'npcink-governance-core' );
 		}
 
 		return __( 'Review the audit timeline for current state.', 'npcink-governance-core' );
@@ -4017,7 +3843,7 @@ final class Admin_Page {
 				return __( 'This proposal was rejected and should not continue to execution.', 'npcink-governance-core' );
 			case Proposal_Repository::STATUS_EXPIRED:
 			case Proposal_Repository::STATUS_ARCHIVED:
-				return __( 'This proposal is not eligible for approval until it is reopened.', 'npcink-governance-core' );
+				return __( 'This proposal is kept as a historical record and is not available for approval.', 'npcink-governance-core' );
 		}
 
 		return __( 'This proposal is no longer pending. Review the audit timeline for lifecycle evidence.', 'npcink-governance-core' );
