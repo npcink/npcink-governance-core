@@ -119,6 +119,13 @@ Proposal detail should be a focused review surface:
 - raw proposal payload behind a troubleshooting disclosure in the `Technical
   info` tab with bounded code blocks;
 - lifecycle controls for expired or archived proposals.
+- `Expired / Archived` list rows should stay compact: 10 rows per page,
+  user-facing proposal label plus display id in the proposal column, status,
+  one combined updated/age column, a dedicated row `Details` disclosure for
+  full proposal id, ability id, source, time, and policy fields, and a short
+  primary `Reopen` action in the default action column. Keep
+  secondary archive actions low-emphasis and do not show raw ability ids in the
+  default row.
 
 Full `Activity Log` and `Expired / Archived` belong in dedicated tabs, not
 inline on the default workbench. Long lists in `Review Queue`, `Activity Log`,

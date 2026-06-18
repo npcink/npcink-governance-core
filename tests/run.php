@@ -2349,6 +2349,12 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'data-npcink-bulk-
 npcink_governance_core_assert( false !== strpos( $admin_page, 'data-npcink-bulk-select' ) && false !== strpos( $admin_page, 'data-npcink-bulk-apply' ), 'Admin review queue exposes compact bulk action controls.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Page %1$d of %2$d' ), 'Admin review queue renders compact page position text.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'archive_page' ), 'Admin page paginates expired and archived proposals.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'ARCHIVE_PAGE_SIZE = 10' ), 'Admin archive shows ten expired or archived proposals per page.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-archive-table' ), 'Admin archive renders a compact fixed-layout table.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-archive-details-' ), 'Admin archive moves technical proposal fields behind row details.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_archive_primary_action' ), 'Admin archive keeps one primary lifecycle action in the default action column.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_archive_row_actions' ), 'Admin archive keeps secondary archive actions low-emphasis in row metadata.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, '$this->proposal_display_id( $proposal )' ), 'Admin archive shows display ids instead of raw full proposal ids in the default row.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_page' ), 'Admin page paginates governance audit.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'app_key_page' ), 'Admin page paginates advanced app-key management.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'archive_status' ), 'Admin page filters expired and archived proposal lists.' );

@@ -26,7 +26,7 @@ final class Admin_Page {
 	const MENU_SLUG         = 'npcink-governance-core';
 	const MENU_CAPABILITY   = 'manage_options';
 	const REVIEW_PAGE_SIZE  = 10;
-	const ARCHIVE_PAGE_SIZE = 20;
+	const ARCHIVE_PAGE_SIZE = 10;
 	const AUDIT_PAGE_SIZE   = 25;
 	const APP_KEY_PAGE_SIZE = 10;
 	const DATETIME_DISPLAY_FORMAT = 'Y-m-d H:i:s';
@@ -1703,13 +1703,13 @@ final class Admin_Page {
 			array( 'show_range' => true )
 		);
 		?>
-		<table class="widefat striped" style="max-width: 1100px;">
+		<table class="widefat striped npcink-governance-core-archive-table" style="max-width: 1100px;">
 			<thead>
 				<tr>
 					<th scope="col"><?php echo esc_html__( 'Proposal', 'npcink-governance-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'Status', 'npcink-governance-core' ); ?></th>
-					<th scope="col"><?php echo esc_html__( 'Age', 'npcink-governance-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'Updated', 'npcink-governance-core' ); ?></th>
+					<th scope="col"><?php echo esc_html__( 'Details', 'npcink-governance-core' ); ?></th>
 					<th scope="col"><?php echo esc_html__( 'Action', 'npcink-governance-core' ); ?></th>
 				</tr>
 			</thead>
@@ -1720,17 +1720,49 @@ final class Admin_Page {
 					</tr>
 				<?php endif; ?>
 				<?php foreach ( $proposals as $proposal ) : ?>
+					<?php $proposal_id = (string) $proposal['proposal_id']; ?>
+					<?php $details_id = 'npcink-governance-core-archive-details-' . substr( md5( $proposal_id ), 0, 12 ); ?>
+					<?php $display_title = sprintf(
+						/* translators: %s: full proposal id. */
+						__( 'Full proposal ID: %s', 'npcink-governance-core' ),
+						$proposal_id
+					); ?>
 					<tr>
-						<td>
-							<a href="<?php echo esc_url( $this->detail_url( (string) $proposal['proposal_id'] ) ); ?>">
-								<strong><?php echo esc_html( (string) ( $proposal['title'] ?: $proposal['proposal_id'] ) ); ?></strong>
-							</a><br />
-							<code><?php echo esc_html( (string) $proposal['ability_id'] ); ?></code>
+						<td class="npcink-governance-core-request-cell">
+							<div class="npcink-governance-core-request-title">
+								<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>">
+									<?php echo esc_html( $this->proposal_request_label( $proposal ) ); ?>
+								</a>
+							</div>
+							<div class="npcink-governance-core-request-meta">
+								<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>" title="<?php echo esc_attr( $display_title ); ?>"><code class="npcink-governance-core-display-id"><?php echo esc_html( $this->proposal_display_id( $proposal ) ); ?></code></a>
+								<?php $this->render_archive_row_actions( $proposal ); ?>
+							</div>
 						</td>
 						<td><?php $this->render_status_badge( (string) $proposal['status'] ); ?></td>
-						<td><?php echo esc_html( $this->proposal_age_label( $proposal ) ); ?></td>
-						<td><?php echo esc_html( $this->display_datetime( (string) $proposal['updated_at'] ) ); ?></td>
-						<td><?php $this->render_lifecycle_actions( $proposal, true ); ?></td>
+						<td class="npcink-governance-core-time-cell">
+							<span><?php echo esc_html( $this->display_datetime( (string) $proposal['updated_at'] ) ); ?></span><br />
+							<span class="npcink-governance-core-muted"><?php echo esc_html( $this->proposal_age_label( $proposal ) ); ?></span>
+						</td>
+						<td class="npcink-governance-core-detail-cell">
+							<button
+								type="button"
+								class="button button-small npcink-governance-core-row-details-toggle"
+								aria-expanded="false"
+								aria-controls="<?php echo esc_attr( $details_id ); ?>"
+								data-npcink-details-target="<?php echo esc_attr( $details_id ); ?>"
+								data-show-label="<?php echo esc_attr__( 'Details', 'npcink-governance-core' ); ?>"
+								data-hide-label="<?php echo esc_attr__( 'Hide details', 'npcink-governance-core' ); ?>"
+							>
+								<?php echo esc_html__( 'Details', 'npcink-governance-core' ); ?>
+							</button>
+						</td>
+						<td class="npcink-governance-core-action-cell"><?php $this->render_archive_primary_action( $proposal ); ?></td>
+					</tr>
+					<tr id="<?php echo esc_attr( $details_id ); ?>" class="npcink-governance-core-row-details-row" hidden>
+						<td colspan="5">
+							<?php $this->render_pending_proposal_technical_details( $proposal ); ?>
+						</td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
@@ -1749,6 +1781,43 @@ final class Admin_Page {
 		);
 		?>
 		<?php
+	}
+
+	/**
+	 * Renders secondary row actions for expired and archived proposal rows.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return void
+	 */
+	private function render_archive_row_actions( array $proposal ): void {
+		$status      = (string) ( $proposal['status'] ?? '' );
+		$proposal_id = (string) ( $proposal['proposal_id'] ?? '' );
+
+		if ( '' === $proposal_id || Proposal_Repository::STATUS_EXPIRED !== $status ) {
+			return;
+		}
+		?>
+		<span class="npcink-governance-core-row-actions">
+			<?php $this->render_lifecycle_form( $proposal_id, 'archive', __( 'Archive', 'npcink-governance-core' ), 'button-link' ); ?>
+		</span>
+		<?php
+	}
+
+	/**
+	 * Renders the primary archive-row lifecycle action.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return void
+	 */
+	private function render_archive_primary_action( array $proposal ): void {
+		$status      = (string) ( $proposal['status'] ?? '' );
+		$proposal_id = (string) ( $proposal['proposal_id'] ?? '' );
+
+		if ( '' === $proposal_id || ! in_array( $status, array( Proposal_Repository::STATUS_EXPIRED, Proposal_Repository::STATUS_ARCHIVED ), true ) ) {
+			return;
+		}
+
+		$this->render_lifecycle_form( $proposal_id, 'reopen', __( 'Reopen', 'npcink-governance-core' ), 'button button-secondary' );
 	}
 
 	/**

@@ -1,5 +1,33 @@
 # Session Breadcrumb
 
+## 2026-06-19 — Archive list rows compacted
+
+- **Module**: Core admin expired/archive list.
+- **Status**: The Expired / Archived tab now shows 10 proposals per page and
+  uses compact rows with display ids, combined updated/age timing, row details,
+  and a short reopen action.
+- **Completed**:
+  - Changed archive pagination from 20 to 10 rows per page.
+  - Replaced default raw ability-id rows with user-facing proposal labels plus
+    stable display ids.
+  - Moved full proposal id, ability id, source, time, and policy fields behind
+    the existing row details disclosure.
+  - Kept `Reopen` as the only primary action in the default action column and
+    demoted expired-row archive to a low-emphasis row action.
+  - Updated admin CSS, admin surface docs, static contracts, and Chinese
+    translations.
+- **Verification**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php` passed.
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po` passed.
+  - `composer test:contracts` passed.
+  - `composer test:all` passed.
+  - `git diff --check` passed.
+- **Boundary**:
+  - Admin read/list presentation and localization only. Core proposal
+    lifecycle, approval/rejection behavior, commit preflight, audit
+    persistence, Adapter behavior, workflow runtime, queues, and final
+    execution remain unchanged.
+
 ## 2026-06-19 — Admin long-list pagination unified
 
 - **Module**: Core admin long-list navigation.

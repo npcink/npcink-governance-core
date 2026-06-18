@@ -450,8 +450,14 @@
 	table-layout: fixed;
 }
 
+.npcink-governance-core-archive-table {
+	table-layout: fixed;
+}
+
 .npcink-governance-core-review-table th,
-.npcink-governance-core-review-table td {
+.npcink-governance-core-review-table td,
+.npcink-governance-core-archive-table th,
+.npcink-governance-core-archive-table td {
 	text-align: left;
 	vertical-align: top;
 }
@@ -504,6 +510,23 @@
 
 .npcink-governance-core-request-meta code {
 	font-size: 12px;
+}
+
+.npcink-governance-core-row-actions {
+	display: inline-flex;
+	align-items: center;
+}
+
+.npcink-governance-core-row-actions form {
+	display: inline;
+	margin: 0;
+}
+
+.npcink-governance-core-row-actions .button-link {
+	min-height: auto;
+	padding: 0;
+	font-size: 12px;
+	line-height: 1.5;
 }
 
 .npcink-governance-core-source-summary {

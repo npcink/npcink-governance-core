@@ -945,6 +945,10 @@ msgstr ""
 msgid "Archive"
 msgstr ""
 
+#: includes/Admin/Admin_Page.php:1820
+msgid "Reopen"
+msgstr ""
+
 #: includes/Admin/Admin_Page.php:2379
 msgid "Reopen for review"
 msgstr ""

@@ -883,6 +883,10 @@ msgstr "过期和已归档的提案重新打开前不能批准。"
 msgid "Archive"
 msgstr "归档"
 
+#: includes/Admin/Admin_Page.php:1820
+msgid "Reopen"
+msgstr "重新打开"
+
 #: includes/Admin/Admin_Page.php:2379
 msgid "Reopen for review"
 msgstr "重新打开以审核"
