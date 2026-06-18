@@ -122,6 +122,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Development Workflow](docs/development-workflow.md)
 - [GitHub Development Support](docs/github-development-support.md)
 - [Solo AI Development Workflow](docs/solo-ai-development-workflow.md)
+- [Project History Summary](docs/project-history-summary.md)
 - [AI Development Handoff Summary](docs/ai-development-handoff-summary.md)
 - [AI Development Workstream Summary](docs/ai-development-workstream-summary.md)
 - [Eval Lab Quality Gate](docs/eval-lab-quality-gate.md)

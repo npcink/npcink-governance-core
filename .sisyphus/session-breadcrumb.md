@@ -1,5 +1,19 @@
 # Session Breadcrumb
 
+## 2026-06-18 — Project history summary written
+
+- **Module**: Local project handoff documentation.
+- **Status**: `docs/project-history-summary.md` now summarizes the historical
+  decisions, implemented baseline, plan-to-proposal evolution, product proof
+  status, runtime boundary, admin surface changes, verification model, and
+  recommended next moves.
+- **Completed**:
+  - Added the project history summary as a stable local handoff document.
+  - Linked it from README's development document list.
+- **Boundary**:
+  - Documentation only. No Core runtime behavior, REST surface, lifecycle
+    semantics, admin behavior, execution path, or tests were changed.
+
 ## 2026-06-18 — Proposal detail actions integrated into summary
 
 - **Module**: Core admin proposal detail.
