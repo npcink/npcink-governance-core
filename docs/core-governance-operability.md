@@ -170,16 +170,18 @@ The default review workbench keeps client access token management out of the
 daily review queue, while the Settings tab shows a directly visible `Client
 access tokens` section with active token count, last-used time, and a manage
 action. The token page is backed by Core's app-key contract, but the admin UI
-uses operator-facing token language and keeps the issuance panel directly
-visible after that navigation step. Token issuance leads with client label,
-caller type, and a purpose preset; raw scope checkboxes and rate-limit fields
-stay in an advanced disclosure for custom clients. The page also handles
-paginated token disable actions, with App ID, Key ID, caller type, rate
-limits, expiry, and complete scope strings in row details rather than the
-default scan columns. This preserves the Core credential fallback without
-turning Core's first-level tabs into OpenClaw onboarding or adapter
-configuration. Productized OpenClaw connection copy, TLS switches, and handoff
-instructions remain Adapter-owned.
+uses operator-facing token language and opens on an `Access tokens` subtab that
+lists active tokens only. A separate `Issue token` subtab contains the issuance
+form. Token issuance leads with client label, caller type, and a purpose
+preset; raw scope checkboxes and rate-limit fields stay in an advanced
+disclosure for custom clients. The page also handles paginated token revoke
+actions, with App ID, Key ID, caller type, rate limits, expiry, and complete
+scope strings in row details rather than the default scan columns. Revoked
+tokens remain stored for audit attribution and are hidden from the default
+active-token list until a separate retention cleanup removes old records. This
+preserves the Core credential fallback without turning Core's first-level tabs
+into OpenClaw onboarding or adapter configuration. Productized OpenClaw
+connection copy, TLS switches, and handoff instructions remain Adapter-owned.
 
 For real AI provider requests, Adapter should inject Core `proposal_id` and
 commit-preflight `correlation_id` into the `ai` plugin request log context.

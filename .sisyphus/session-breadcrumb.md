@@ -1,5 +1,32 @@
 # Session Breadcrumb
 
+## 2026-06-19 — Client access token subtabs
+
+- **Module**: Core admin client access token page.
+- **Status**: The token page now opens on active token management instead of
+  token issuance, while issuance remains available as a secondary subtab.
+- **Completed**:
+  - Added `Access tokens` and `Issue token` subtabs under the client access
+    token page.
+  - Made `Access tokens` the default subtab and limited the default list to
+    active token rows.
+  - Renamed the active-row action to `Revoke token` / `使令牌失效` and updated
+    the confirmation copy to explain immediate access loss.
+  - Kept revoked tokens hidden from the default list but retained in Core's
+    app-key table for audit attribution.
+  - Added status-filtered app-key listing for the admin table without changing
+    database schema, REST authentication, token format, scope semantics,
+    Adapter behavior, workflow runtime, queues, or final execution.
+- **Verified**:
+  - `php -l includes/Admin/Admin_Page.php && php -l includes/Security/App_Key_Repository.php && php -l tests/run.php` passed.
+  - `php tests/run.php` passed.
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po` passed.
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed against the LocalWP `magick-ai` site.
+  - Browser check loaded `view=app-keys` and confirmed the default
+    `访问令牌` list shows only active tokens with `使令牌失效`; it also loaded
+    `token_tab=issue` and confirmed the signing form is on the secondary tab.
+
 ## 2026-06-19 — Settings token entry made visible
 
 - **Module**: Core admin Settings client access token entry.

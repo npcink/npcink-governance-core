@@ -1567,16 +1567,18 @@ final class Admin_Page {
 	 * @return void
 	 */
 	private function render_external_access(): void {
+		$token_tab    = $this->admin_query_key( 'token_tab', 'tokens' );
+		$token_tab    = in_array( $token_tab, array( 'tokens', 'issue' ), true ) ? $token_tab : 'tokens';
 		$page         = $this->page_from_request( 'app_key_page' );
 		$total        = $this->apps->count();
 		$active_count = $this->apps->count( 'active' );
 		$last_used    = $this->apps->latest_last_used_at();
-		$page         = $this->bounded_page( $total, $page, self::APP_KEY_PAGE_SIZE );
-		$apps         = $this->apps->list_recent( self::APP_KEY_PAGE_SIZE, $this->offset_for_page( $page, self::APP_KEY_PAGE_SIZE ) );
+		$page         = $this->bounded_page( $active_count, $page, self::APP_KEY_PAGE_SIZE );
+		$apps         = $this->apps->list_recent( self::APP_KEY_PAGE_SIZE, $this->offset_for_page( $page, self::APP_KEY_PAGE_SIZE ), 'active' );
 	?>
 		<p><a href="<?php echo esc_url( $this->view_url( 'settings' ) ); ?>">&larr; <?php echo esc_html__( 'Back to settings', 'npcink-governance-core' ); ?></a></p>
 		<h2><?php echo esc_html__( 'Client Access Tokens', 'npcink-governance-core' ); ?></h2>
-		<p><?php echo esc_html__( 'Issue limited REST access tokens for trusted Adapter or internal governance clients. These are not model API keys or productized OpenClaw connection settings.', 'npcink-governance-core' ); ?></p>
+		<p><?php echo esc_html__( 'Manage limited REST access tokens for trusted Adapter or internal governance clients. These are not model API keys or productized OpenClaw connection settings.', 'npcink-governance-core' ); ?></p>
 
 		<div class="npcink-governance-core-summary-strip npcink-governance-core-token-summary">
 			<div class="npcink-governance-core-summary-item npcink-governance-core-summary-ok">
@@ -1596,6 +1598,16 @@ final class Admin_Page {
 			</div>
 		</div>
 
+		<nav class="nav-tab-wrapper npcink-governance-core-subtabs" aria-label="<?php echo esc_attr__( 'Client access token sections', 'npcink-governance-core' ); ?>">
+			<a class="nav-tab <?php echo 'tokens' === $token_tab ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( $this->admin_url( array( 'view' => 'app-keys', 'token_tab' => 'tokens' ) ) ); ?>" <?php echo 'tokens' === $token_tab ? 'aria-current="page"' : ''; ?>>
+				<?php echo esc_html__( 'Access tokens', 'npcink-governance-core' ); ?>
+			</a>
+			<a class="nav-tab <?php echo 'issue' === $token_tab ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( $this->admin_url( array( 'view' => 'app-keys', 'token_tab' => 'issue' ) ) ); ?>" <?php echo 'issue' === $token_tab ? 'aria-current="page"' : ''; ?>>
+				<?php echo esc_html__( 'Issue token', 'npcink-governance-core' ); ?>
+			</a>
+		</nav>
+
+		<?php if ( 'issue' === $token_tab ) : ?>
 		<section class="npcink-governance-core-token-issue-panel npcink-governance-core-max-wide" aria-labelledby="npcink-governance-core-token-issue-heading">
 			<div class="npcink-governance-core-token-issue-heading">
 				<h3 id="npcink-governance-core-token-issue-heading"><?php echo esc_html__( 'Issue client access token', 'npcink-governance-core' ); ?></h3>
@@ -1649,15 +1661,17 @@ final class Admin_Page {
 				<p class="submit"><button type="submit" class="button button-primary"><?php echo esc_html__( 'Issue client access token', 'npcink-governance-core' ); ?></button></p>
 			</form>
 		</section>
+		<?php else : ?>
 
 		<h3><?php echo esc_html__( 'Access tokens', 'npcink-governance-core' ); ?></h3>
+		<p class="npcink-governance-core-muted"><?php echo esc_html__( 'Only active tokens are shown here. Revoked tokens are retained for audit attribution and hidden from the default list.', 'npcink-governance-core' ); ?></p>
 	<?php
 	$this->render_table_nav(
-		$total,
+		$active_count,
 		$page,
 		self::APP_KEY_PAGE_SIZE,
 		'app_key_page',
-		array( 'view' => 'app-keys' ),
+		array( 'view' => 'app-keys', 'token_tab' => 'tokens' ),
 		array( 'show_range' => true )
 	);
 	?>
@@ -1673,7 +1687,7 @@ final class Admin_Page {
 			</thead>
 			<tbody>
 				<?php if ( empty( $apps ) ) : ?>
-					<tr><td colspan="5"><?php echo esc_html__( 'No client access tokens yet.', 'npcink-governance-core' ); ?></td></tr>
+					<tr><td colspan="5"><?php echo esc_html__( 'No active access tokens.', 'npcink-governance-core' ); ?></td></tr>
 				<?php endif; ?>
 				<?php foreach ( $apps as $index => $app ) : ?>
 					<?php $details_id = 'npcink-governance-core-token-details-' . (string) ( $index + 1 ); ?>
@@ -1705,7 +1719,7 @@ final class Admin_Page {
 									<input type="hidden" name="action" value="npcink_governance_core_revoke_app_key" />
 									<input type="hidden" name="key_id" value="<?php echo esc_attr( (string) $app['key_id'] ); ?>" />
 									<?php wp_nonce_field( 'npcink_governance_core_revoke_app_key_' . (string) $app['key_id'] ); ?>
-									<button type="submit" class="button button-link-delete" onclick="return confirm('<?php echo esc_js( __( 'Disable this access token? Existing clients using this token will receive 401.', 'npcink-governance-core' ) ); ?>');"><?php echo esc_html__( 'Disable', 'npcink-governance-core' ); ?></button>
+									<button type="submit" class="button button-link-delete" onclick="return confirm('<?php echo esc_js( __( 'Revoke this access token immediately? Clients using this token will no longer be able to access Core.', 'npcink-governance-core' ) ); ?>');"><?php echo esc_html__( 'Revoke token', 'npcink-governance-core' ); ?></button>
 								</form>
 								<?php else : ?>
 									<?php echo esc_html__( 'Disabled', 'npcink-governance-core' ); ?>
@@ -1717,14 +1731,15 @@ final class Admin_Page {
 	</table>
 		<?php
 		$this->render_table_nav(
-			$total,
+			$active_count,
 			$page,
 			self::APP_KEY_PAGE_SIZE,
 			'app_key_page',
-			array( 'view' => 'app-keys' ),
+			array( 'view' => 'app-keys', 'token_tab' => 'tokens' ),
 			array( 'show_range' => true )
 		);
 		?>
+		<?php endif; ?>
 		<?php
 	}
 

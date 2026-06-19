@@ -201,26 +201,44 @@ final class App_Key_Repository {
 	/**
 	 * Lists app keys without secrets.
 	 *
-	 * @param int $limit Max rows.
-	 * @param int $offset Rows to skip.
+	 * @param int    $limit Max rows.
+	 * @param int    $offset Rows to skip.
+	 * @param string $status Optional status filter.
 	 * @return array<int,array<string,mixed>>
 	 */
-	public function list_recent( int $limit = 50, int $offset = 0 ): array {
+	public function list_recent( int $limit = 50, int $offset = 0, string $status = '' ): array {
 		global $wpdb;
 
 		$limit  = max( 1, min( 200, $limit ) );
 		$offset = max( 0, $offset );
+		$status = sanitize_key( $status );
+		if ( '' !== $status ) {
 			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 			$rows  = $wpdb->get_results(
 				$wpdb->prepare(
-					'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, expires_at, last_used_ip_hash, revoked_at, revoked_reason, hash_algorithm_version, created_by, created_at, updated_at, last_used_at FROM %i ORDER BY id DESC LIMIT %d OFFSET %d',
+					'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, expires_at, last_used_ip_hash, revoked_at, revoked_reason, hash_algorithm_version, created_by, created_at, updated_at, last_used_at FROM %i WHERE status = %s ORDER BY id DESC LIMIT %d OFFSET %d',
 					$this->table_name(),
+					$status,
 					$limit,
 					$offset
 				),
 				ARRAY_A
 			);
 			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+			return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
+		}
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		$rows  = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, expires_at, last_used_ip_hash, revoked_at, revoked_reason, hash_algorithm_version, created_by, created_at, updated_at, last_used_at FROM %i ORDER BY id DESC LIMIT %d OFFSET %d',
+				$this->table_name(),
+				$limit,
+				$offset
+			),
+			ARRAY_A
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
 	}
