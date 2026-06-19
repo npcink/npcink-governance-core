@@ -133,7 +133,9 @@ record only when it matches an existing `commit.preflighted` handoff for the
 approved proposal input and the caller has `commit:record_execution`. A
 successful record changes proposal status to `executed`; a failed record
 changes status to `execution_failed`. If audit persistence fails, Core rolls
-the proposal back to `approved`.
+the proposal back to `approved`. Once a proposal has a terminal execution
+outcome, later execution-result records must fail closed instead of being
+treated as another successful or idempotent execution record.
 
 Generic MCP keys should not receive `proposals:approve` or
 `commit:record_execution`. Productized Magick AI Adapter may use a separately

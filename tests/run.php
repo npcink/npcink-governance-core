@@ -1666,6 +1666,7 @@ npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.re
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'record_execution_result' ), 'Proposal service records post-preflight execution results.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.executed' ), 'Proposal service records proposal.executed audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.execution_failed' ), 'Proposal service records proposal.execution_failed audit event.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_execution_record_already_recorded' ), 'Proposal service rejects duplicate terminal execution records.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_execution_record_preflight_missing' ), 'Proposal service requires execution records to bind to preflight.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_execution_record_audit_failed' ), 'Proposal service fails closed when execution record audit fails.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'PENDING_TTL_SECONDS' ), 'Proposal service defines a pending review TTL.' );

@@ -4299,6 +4299,38 @@ $approved = $stack['service']->approve( (string) $proposal['proposal_id'], array
 npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'Execution record proposal is approved.' );
 $preflight = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
 npcink_governance_core_fail_closed_assert( ! is_wp_error( $preflight ), 'Execution record proposal passes preflight.' );
+
+$missing_binding_record = $stack['service']->record_execution_result(
+	(string) $proposal['proposal_id'],
+	array(
+		'execution_status' => 'succeeded',
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $missing_binding_record ), 'Execution record without preflight binding fails.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_execution_record_binding_required' === $missing_binding_record->get_error_code(), 'Execution record missing binding uses stable error code.' );
+
+$wrong_hash_record = $stack['service']->record_execution_result(
+	(string) $proposal['proposal_id'],
+	array(
+		'execution_status'    => 'succeeded',
+		'correlation_id'      => (string) ( $preflight['correlation_id'] ?? '' ),
+		'approved_input_hash' => str_repeat( '0', 64 ),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $wrong_hash_record ), 'Execution record with mismatched approved input hash fails.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_execution_record_preflight_missing' === $wrong_hash_record->get_error_code(), 'Execution record wrong hash uses stable preflight binding error.' );
+
+$wrong_correlation_record = $stack['service']->record_execution_result(
+	(string) $proposal['proposal_id'],
+	array(
+		'execution_status'    => 'succeeded',
+		'correlation_id'      => 'wrong-correlation-id',
+		'approved_input_hash' => (string) ( $preflight['approval_context']['approved_input_hash'] ?? '' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $wrong_correlation_record ), 'Execution record with mismatched correlation id fails.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_execution_record_preflight_missing' === $wrong_correlation_record->get_error_code(), 'Execution record wrong correlation uses stable preflight binding error.' );
+
 $recorded = $stack['service']->record_execution_result(
 	(string) $proposal['proposal_id'],
 	array(
@@ -4313,6 +4345,22 @@ $recorded = $stack['service']->record_execution_result(
 );
 npcink_governance_core_fail_closed_assert( ! is_wp_error( $recorded ) && 'executed' === (string) ( $recorded['status'] ?? '' ), 'Execution record moves approved proposal to executed.' );
 npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'proposal.executed' ) ), 'Execution record success is audited.' );
+
+$duplicate_record = $stack['service']->record_execution_result(
+	(string) $proposal['proposal_id'],
+	array(
+		'execution_status'    => 'succeeded',
+		'correlation_id'      => (string) ( $preflight['correlation_id'] ?? '' ),
+		'approved_input_hash' => (string) ( $preflight['approval_context']['approved_input_hash'] ?? '' ),
+		'adapter_request_id'  => 'adapter-execution-record-duplicate',
+		'execution_mode'      => 'single_post',
+		'executed_count'      => 1,
+		'failed_count'        => 0,
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $duplicate_record ), 'Duplicate execution record fails after terminal status.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_execution_record_already_recorded' === $duplicate_record->get_error_code(), 'Duplicate execution record uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'proposal.executed' ) ), 'Duplicate execution record does not add another executed audit event.' );
 
 $wpdb     = npcink_governance_core_fail_closed_reset_db();
 $stack    = npcink_governance_core_fail_closed_governance_stack();

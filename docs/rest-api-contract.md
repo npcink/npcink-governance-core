@@ -1276,6 +1276,7 @@ Errors:
 | --- | --- | --- |
 | `npcink_governance_core_proposal_not_found` | `404` | Proposal id does not exist. |
 | `npcink_governance_core_execution_record_not_allowed` | `409` | Proposal is not approved or already in an incompatible state. |
+| `npcink_governance_core_execution_record_already_recorded` | `409` | Proposal already has a terminal execution outcome. |
 | `npcink_governance_core_invalid_execution_status` | `400` | Execution status is not supported. |
 | `npcink_governance_core_execution_record_binding_required` | `400` | Required preflight binding fields are missing. |
 | `npcink_governance_core_execution_record_preflight_missing` | `409` | No matching Core preflight handoff exists for the supplied binding. |

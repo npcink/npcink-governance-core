@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-20 — Execution-result recording tightened
+
+- **Module**: Core proposal lifecycle execution-result recording.
+- **Status**: Repeated or mismatched execution-result records now fail closed
+  more explicitly.
+- **Completed**:
+  - Changed terminal `executed` / `execution_failed` proposals to reject later
+    `record-execution` attempts with
+    `npcink_governance_core_execution_record_already_recorded` instead of
+    returning the existing row as a success-like response.
+  - Added fail-closed coverage for missing preflight binding, mismatched
+    approved input hash, mismatched preflight correlation id, successful
+    execution recording, duplicate terminal recording, and audit-failure
+    rollback.
+  - Updated REST and approval-commit docs plus static contracts for the new
+    terminal duplicate error.
+- **Verified**:
+  - `composer test:all` passed.
+- **Boundary**:
+  - Execution-result recording remains audit/lifecycle only. No target ability
+    execution, `/execute` route, proxy execution, workflow runtime, queue,
+    scheduler, Adapter behavior, provider credentials, or final WordPress write
+    behavior changed.
+
 ## 2026-06-20 — External product/runtime contracts moved out of Core
 
 - **Module**: Core boundary documentation and static contracts.
