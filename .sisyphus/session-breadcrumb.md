@@ -1,5 +1,27 @@
 # Session Breadcrumb
 
+## 2026-06-20 — App-key sensitive scope isolation covered
+
+- **Module**: Core app-key REST authorization.
+- **Status**: Sensitive app scopes now have a fail-closed isolation matrix
+  proving approval, commit-preflight, and execution-result recording scopes do
+  not substitute for each other.
+- **Completed**:
+  - Added standalone app-authenticator matrix coverage for approve-only,
+    preflight-only, and record-only app keys attempting adjacent sensitive
+    operations.
+  - Asserted each missing sensitive scope returns
+    `npcink_governance_core_app_scope_forbidden`, maps to HTTP `403`, and
+    writes denied `app.scope_denied` audit metadata with the required scope and
+    route family.
+  - Updated static contracts and testing strategy for app-key scope isolation.
+- **Verified**:
+  - `composer test:all` passed.
+- **Boundary**:
+  - This remains app-key authorization validation only. No final execution,
+    ability execution, workflow runtime, task queue, Adapter behavior,
+    provider routing, credentials, or WordPress write implementation changed.
+
 ## 2026-06-20 — Ability drift matrix covered
 
 - **Module**: Core commit-preflight ability contract drift.

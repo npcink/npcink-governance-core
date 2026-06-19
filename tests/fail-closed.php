@@ -94,12 +94,24 @@ if ( ! class_exists( 'WP_REST_Request' ) ) {
 		private $params;
 
 		/**
+		 * Headers.
+		 *
+		 * @var array<string,string>
+		 */
+		private $headers;
+
+		/**
 		 * Constructor.
 		 *
-		 * @param array<string,mixed> $params Parameters.
+		 * @param array<string,mixed>  $params Parameters.
+		 * @param array<string,string> $headers Headers.
 		 */
-		public function __construct( array $params = array() ) {
-			$this->params = $params;
+		public function __construct( array $params = array(), array $headers = array() ) {
+			$this->params  = $params;
+			$this->headers = array();
+			foreach ( $headers as $key => $value ) {
+				$this->headers[ strtolower( str_replace( '_', '-', (string) $key ) ) ] = (string) $value;
+			}
 		}
 
 		/**
@@ -128,7 +140,8 @@ if ( ! class_exists( 'WP_REST_Request' ) ) {
 		 * @return string
 		 */
 		public function get_header( string $key ): string {
-			return '';
+			$key = strtolower( str_replace( '_', '-', $key ) );
+			return (string) ( $this->headers[ $key ] ?? '' );
 		}
 	}
 }
@@ -5042,6 +5055,91 @@ $result = $apps->create( array( 'app_label' => 'Adapter Client' ) );
 npcink_governance_core_fail_closed_assert( is_wp_error( $result ), 'App-key insert failure returns WP_Error.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_app_insert_failed' === $result->get_error_code(), 'App-key insert failure uses stable error code.' );
 npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $app_table ) ), 'App-key insert failure stores no app row.' );
+
+$app_scope_isolation_matrix = array(
+	// Static contract marker: App-key scope isolation matrix.
+	'approve-only cannot preflight' => array(
+		'scopes'        => array( 'proposals:approve' ),
+		'method'        => 'can_commit_preflight',
+		'required'      => 'commit:preflight',
+		'route_family'  => 'commit_preflight',
+	),
+	'approve-only cannot record execution' => array(
+		'scopes'        => array( 'proposals:approve' ),
+		'method'        => 'can_record_execution',
+		'required'      => 'commit:record_execution',
+		'route_family'  => 'commit_record_execution',
+	),
+	'preflight-only cannot approve' => array(
+		'scopes'        => array( 'commit:preflight' ),
+		'method'        => 'can_approve_proposals',
+		'required'      => 'proposals:approve',
+		'route_family'  => 'proposals_approve',
+	),
+	'preflight-only cannot record execution' => array(
+		'scopes'        => array( 'commit:preflight' ),
+		'method'        => 'can_record_execution',
+		'required'      => 'commit:record_execution',
+		'route_family'  => 'commit_record_execution',
+	),
+	'record-only cannot approve' => array(
+		'scopes'        => array( 'commit:record_execution' ),
+		'method'        => 'can_approve_proposals',
+		'required'      => 'proposals:approve',
+		'route_family'  => 'proposals_approve',
+	),
+	'record-only cannot preflight' => array(
+		'scopes'        => array( 'commit:record_execution' ),
+		'method'        => 'can_commit_preflight',
+		'required'      => 'commit:preflight',
+		'route_family'  => 'commit_preflight',
+	),
+);
+
+foreach ( $app_scope_isolation_matrix as $scope_label => $case ) {
+	$wpdb = npcink_governance_core_fail_closed_reset_db();
+	global $npcink_governance_core_fail_closed_caps;
+	$npcink_governance_core_fail_closed_caps['manage_options'] = false;
+	$apps         = new \Npcink\GovernanceCore\Security\App_Key_Repository();
+	$audit        = new \Npcink\GovernanceCore\Audit\Audit_Log_Repository();
+	$rate_limiter = new \Npcink\GovernanceCore\Security\App_Rate_Limiter();
+	$auth         = new \Npcink\GovernanceCore\Security\App_Authenticator( $apps, $rate_limiter, $audit );
+	$app          = $apps->create(
+		array(
+			'app_label'           => 'Scope isolation ' . $scope_label,
+			'caller_type'         => 'trusted_adapter',
+			'scopes'              => (array) $case['scopes'],
+			'rate_limit'          => 50,
+			'rate_window_seconds' => 3600,
+		)
+	);
+	npcink_governance_core_fail_closed_assert( ! is_wp_error( $app ), 'App-key scope isolation ' . $scope_label . ' fixture is created.' );
+	$request = new WP_REST_Request(
+		array(),
+		array(
+			'authorization' => 'Bearer ' . (string) ( $app['token'] ?? '' ),
+		)
+	);
+	$method  = (string) $case['method'];
+	$denied  = $auth->{$method}( $request );
+	npcink_governance_core_fail_closed_assert( is_wp_error( $denied ), 'App-key scope isolation ' . $scope_label . ' fails closed.' );
+	npcink_governance_core_fail_closed_assert( 'npcink_governance_core_app_scope_forbidden' === $denied->get_error_code(), 'App-key scope isolation ' . $scope_label . ' uses stable forbidden code.' );
+	npcink_governance_core_fail_closed_assert( 403 === npcink_governance_core_fail_closed_error_http_status( $denied ), 'App-key scope isolation ' . $scope_label . ' maps to HTTP 403.' );
+	$scope_denials = array_values(
+		array_filter(
+			$wpdb->rows( $audit_table ),
+			static function ( array $row ) use ( $case ): bool {
+				$metadata = json_decode( (string) ( $row['metadata_json'] ?? '{}' ), true );
+				$auth     = is_array( $metadata['auth'] ?? null ) ? $metadata['auth'] : array();
+				return 'app.scope_denied' === (string) ( $row['event_name'] ?? '' )
+					&& (string) $case['required'] === (string) ( $metadata['required_scope'] ?? '' )
+					&& (string) $case['route_family'] === (string) ( $metadata['route_family'] ?? '' )
+					&& 'denied' === (string) ( $auth['scope_decision'] ?? '' );
+			}
+		)
+	);
+	npcink_governance_core_fail_closed_assert( 1 === count( $scope_denials ), 'App-key scope isolation ' . $scope_label . ' writes denied audit metadata.' );
+}
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();
 $wpdb->fail_insert_tables[] = $audit_table;

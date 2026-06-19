@@ -1394,6 +1394,8 @@ foreach (
 		'Expired preflight handoff cannot record execution.',
 		'Ability drift execution guidance',
 		'Ability drift required scopes',
+		'App-key scope isolation matrix',
+		'record-only cannot preflight',
 		'App creation audit failure revokes the new key.',
 	) as $required
 ) {
