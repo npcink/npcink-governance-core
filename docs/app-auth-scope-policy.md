@@ -175,12 +175,12 @@ cannot set the `Authorization` header.
 
 WordPress administrators can issue tokens from either admin-only
 `POST /wp-json/npcink-governance-core/v1/apps` or the `Npcink AI -> Core`
-`Advanced Access` entry. Both paths use the same app identity store, default
-scope policy, and one-time raw-token display rule. The admin panel keeps token
-management behind the low-frequency `Advanced Access` entry, then makes the
-issuance panel visible on the token page with purpose presets and an advanced
-custom permission area. It remains a Core credential management fallback, not
-the primary OpenClaw product setup flow.
+Settings `Client access tokens` entry. Both paths use the same app identity
+store, default scope policy, and one-time raw-token display rule. The admin
+panel shows token management as a low-frequency Settings section, then makes
+the issuance panel visible on the token page with purpose presets and an
+advanced custom permission area. It remains a Core credential management
+fallback, not the primary OpenClaw product setup flow.
 Productized OpenClaw setup should use Magick AI Adapter, which calls Core for
 governance and WordPress Abilities API for direct reads.
 

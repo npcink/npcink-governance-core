@@ -80,9 +80,11 @@ queue:
   deletion. This stores the retention policy only; scheduled cleanup must be a
   separate implementation and must not be implied by the admin control until it
   exists;
-- `Advanced Access` disclosure in the Settings tab for low-frequency client
-  access token management. It should default collapsed. Use operator-facing token
-  language rather than leading with the internal app-key implementation name.
+- `Client access tokens` as a directly visible Settings section for
+  low-frequency trusted client token management. It should show active token
+  count, last-used time, and a `Manage access tokens` action. Use
+  operator-facing token language rather than leading with the internal app-key
+  implementation name.
 
 ## Detail Views
 
@@ -146,13 +148,12 @@ the right. Selection checkboxes and bulk action controls should appear only on
 lists with real bulk lifecycle actions, such as bounded Review Queue rejection.
 
 Client access token creation is a low-frequency fallback action backed by
-Core's app-key contract. It should stay behind the Settings tab's
-`Advanced Access` disclosure, but once an administrator opens the client access
-token page the issuance panel should be directly visible instead of hidden
-behind a second disclosure. Token issuance should lead with client label,
-caller type, and a purpose preset; raw scope checkboxes and rate-limit fields
-belong in an advanced disclosure for custom clients. It must not appear as a
-first-level Core tab.
+Core's app-key contract. It should be reachable from a directly visible
+`Client access tokens` section in Settings, and once an administrator opens the
+client access token page the issuance panel should also be directly visible.
+Token issuance should lead with client label, caller type, and a purpose
+preset; raw scope checkboxes and rate-limit fields belong in an advanced
+disclosure for custom clients. It must not appear as a first-level Core tab.
 The default token table should lead with client label, localized status,
 permission summary, last-used time, and a disable action. Full App ID, Key ID,
 caller type, rate limit, expiry, and complete scope strings belong behind a row

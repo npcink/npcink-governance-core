@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-19 — Settings token entry made visible
+
+- **Module**: Core admin Settings client access token entry.
+- **Status**: Client access token management is still a Settings-level,
+  low-frequency security/configuration surface, but it is no longer hidden
+  behind an `Advanced Access` disclosure.
+- **Completed**:
+  - Replaced the collapsed Advanced Access settings disclosure with a directly
+    visible `Client access tokens` section.
+  - Kept the Settings section compact: active token count, last-used time, and
+    a `Manage access tokens` action.
+  - Updated admin surface docs, operability docs, app-auth scope docs,
+    next-stage notes, static contracts, and zh_CN translations.
+  - Kept client access tokens out of first-level Core tabs and did not change
+    token storage, REST authentication, database schema, scope semantics,
+    Adapter behavior, workflow runtime, queues, or final execution.
+- **Verified**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php` passed.
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po` passed.
+  - `php tests/run.php` passed.
+  - `composer test:all` passed.
+  - Browser check loaded `view=settings` on `magick-ai.local` and confirmed
+    the visible `客户端访问令牌` section with `活动令牌`, `上次使用`, and
+    `管理访问令牌`.
+
 ## 2026-06-19 — Client access token admin page compacted
 
 - **Module**: Core admin client access token page.

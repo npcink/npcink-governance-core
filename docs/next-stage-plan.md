@@ -253,8 +253,8 @@ Acceptance:
 Current implementation:
 
 - app keys are created by admin-only `POST /apps`;
-- app keys can also be created from `Npcink AI -> Core` under the collapsed
-  `Advanced Access` entry;
+- app keys can also be created from `Npcink AI -> Core` under the Settings
+  `Client access tokens` section;
 - the admin UI keeps Core app-key management out of first-level Core tabs while
   preserving one-time token display on the creation result page and paginated
   key disable actions;

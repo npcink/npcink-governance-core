@@ -557,7 +557,7 @@ final class Admin_Page {
 		<p class="npcink-governance-core-subtle"><?php echo esc_html__( 'Development approval policy, history retention, and trusted governance client access.', 'npcink-governance-core' ); ?></p>
 		<div class="npcink-governance-core-system-settings">
 			<?php $this->render_approval_policy_entry(); ?>
-			<?php $this->render_advanced_access_entry(); ?>
+			<?php $this->render_client_access_token_entry(); ?>
 		</div>
 		<?php
 	}
@@ -1305,19 +1305,17 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Renders the low-frequency external access entry.
+	 * Renders the low-frequency client access token entry.
 	 *
 	 * @return void
 	 */
-	private function render_advanced_access_entry(): void {
+	private function render_client_access_token_entry(): void {
 		$active_count = $this->apps->count( 'active' );
 		$last_used    = $this->apps->latest_last_used_at();
 		?>
-		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide npcink-governance-core-disclosure-top">
-			<summary>
-				<strong><?php echo esc_html__( 'Advanced Access', 'npcink-governance-core' ); ?></strong>
-				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Client access tokens for trusted governance clients.', 'npcink-governance-core' ); ?></span>
-			</summary>
+		<section class="npcink-governance-core-settings-section npcink-governance-core-max-wide" aria-labelledby="npcink-governance-core-client-token-heading">
+			<h3 id="npcink-governance-core-client-token-heading"><?php echo esc_html__( 'Client access tokens', 'npcink-governance-core' ); ?></h3>
+			<p class="npcink-governance-core-muted"><?php echo esc_html__( 'Manage access tokens for trusted Adapter or internal governance clients.', 'npcink-governance-core' ); ?></p>
 			<table class="widefat striped npcink-governance-core-table-spaced">
 				<tbody>
 					<tr>
@@ -1330,11 +1328,11 @@ final class Admin_Page {
 					</tr>
 					<tr>
 						<th scope="row"><?php echo esc_html__( 'Action', 'npcink-governance-core' ); ?></th>
-						<td><a class="button" href="<?php echo esc_url( $this->view_url( 'app-keys' ) ); ?>"><?php echo esc_html__( 'Client access tokens', 'npcink-governance-core' ); ?></a></td>
+						<td><a class="button" href="<?php echo esc_url( $this->view_url( 'app-keys' ) ); ?>"><?php echo esc_html__( 'Manage access tokens', 'npcink-governance-core' ); ?></a></td>
 					</tr>
 				</tbody>
 			</table>
-		</details>
+		</section>
 		<?php
 	}
 
