@@ -2229,6 +2229,8 @@ foreach (
 		'reviewer sees the basis',
 			'low-frequency fallback action',
 			'Use operator-facing token',
+			'purpose preset',
+			'raw scope checkboxes and rate-limit fields',
 			'default token table',
 		'Settings tab',
 		'keeping these controls out of the default review queue',
@@ -2413,7 +2415,16 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'productized OpenC
 npcink_governance_core_assert( false === strpos( $admin_page, 'Environment template' ), 'Admin default page no longer exposes an env template.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Client Access Tokens' ), 'Admin advanced access page uses client access token heading.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Issue client access token' ), 'Admin page labels token creation with operator-facing token copy.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Issue a scoped token for a trusted governance client.' ), 'Admin page folds token creation behind an explicit disclosure.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-token-issue-panel' ), 'Admin token page shows the token issuance panel directly after advanced navigation.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Issue a scoped token for a trusted governance client. Choose a purpose first; use advanced permissions only for custom clients.' ), 'Admin token creation explains purpose-first issuance.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'caller_type_options' ), 'Admin token creation uses bounded caller type choices.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, '<select id="npcink-governance-core-caller-type" name="caller_type">' ), 'Admin token creation renders caller type as a dropdown.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'token_scope_presets' ), 'Admin token creation centralizes purpose presets.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'scope_preset' ), 'Admin token creation posts a scope preset before raw custom scopes.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'adapter_default' ), 'Admin token creation includes an adapter default preset.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'read_only_discovery' ), 'Admin token creation includes a read-only discovery preset.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'trusted_approval_execution' ), 'Admin token creation includes a trusted approval/execution preset.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Advanced permissions and rate limit' ), 'Admin token creation keeps raw scopes and rate limit behind advanced controls.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-token-table' ), 'Admin token page uses a compact token table.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'token_scope_summary' ), 'Admin token page summarizes permission scopes in the default row.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_token_detail_table' ), 'Admin token page moves App ID, Key ID, caller type, and full scope strings behind details.' );

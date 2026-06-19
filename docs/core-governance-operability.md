@@ -169,12 +169,15 @@ implementation.
 The default review workbench keeps client access token management behind a
 collapsed `Advanced Access` disclosure. The token page is backed by Core's
 app-key contract, but the admin UI uses operator-facing token language. It
-handles token issuance and paginated token disable actions, with App ID, Key ID,
-caller type, rate limits, expiry, and complete scope strings in row details
-rather than the default scan columns. This preserves the Core credential
-fallback without turning Core's first-level tabs into OpenClaw onboarding or
-adapter configuration. Productized OpenClaw connection copy, TLS switches, and
-handoff instructions remain Adapter-owned.
+keeps the issuance panel directly visible after that navigation step. Token
+issuance leads with client label, caller type, and a purpose preset; raw scope
+checkboxes and rate-limit fields stay in an advanced disclosure for custom
+clients. The page also handles paginated token disable actions, with App ID,
+Key ID, caller type, rate limits, expiry, and complete scope strings in row
+details rather than the default scan columns. This preserves the Core
+credential fallback without turning Core's first-level tabs into OpenClaw
+onboarding or adapter configuration. Productized OpenClaw connection copy, TLS
+switches, and handoff instructions remain Adapter-owned.
 
 For real AI provider requests, Adapter should inject Core `proposal_id` and
 commit-preflight `correlation_id` into the `ai` plugin request log context.

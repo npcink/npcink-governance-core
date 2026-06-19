@@ -1475,20 +1475,24 @@ final class Admin_Page {
 
 		check_admin_referer( 'npcink_governance_core_create_app_key' );
 
-		$raw_scopes = array();
-		if ( isset( $_POST['scopes'] ) && is_array( $_POST['scopes'] ) ) {
-			$raw_scopes = array_map(
-				static function ( $scope ): string {
-					return sanitize_text_field( (string) $scope );
-				},
-				(array) wp_unslash( $_POST['scopes'] ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Values are sanitized item-by-item above.
-			);
+		$scope_preset = isset( $_POST['scope_preset'] ) ? sanitize_key( wp_unslash( (string) $_POST['scope_preset'] ) ) : 'adapter_default';
+		$raw_scopes   = $this->scopes_for_token_preset( $scope_preset );
+		if ( 'custom' === $this->sanitize_token_scope_preset( $scope_preset ) ) {
+			$raw_scopes = array();
+			if ( isset( $_POST['scopes'] ) && is_array( $_POST['scopes'] ) ) {
+				$raw_scopes = array_map(
+					static function ( $scope ): string {
+						return sanitize_text_field( (string) $scope );
+					},
+					(array) wp_unslash( $_POST['scopes'] ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Values are sanitized item-by-item above.
+				);
+			}
 		}
 
 		$app        = $this->apps->create(
 			array(
 				'app_label'           => isset( $_POST['app_label'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['app_label'] ) ) : 'External app',
-				'caller_type'         => isset( $_POST['caller_type'] ) ? sanitize_key( wp_unslash( (string) $_POST['caller_type'] ) ) : 'mcp_adapter',
+				'caller_type'         => $this->sanitize_caller_type( isset( $_POST['caller_type'] ) ? sanitize_key( wp_unslash( (string) $_POST['caller_type'] ) ) : 'product_adapter' ),
 				'scopes'              => $raw_scopes,
 				'rate_limit'          => isset( $_POST['rate_limit'] ) ? absint( wp_unslash( (string) $_POST['rate_limit'] ) ) : App_Key_Repository::DEFAULT_RATE_LIMIT,
 				'rate_window_seconds' => isset( $_POST['rate_window_seconds'] ) ? absint( wp_unslash( (string) $_POST['rate_window_seconds'] ) ) : App_Key_Repository::DEFAULT_RATE_WINDOW,
@@ -1594,46 +1598,59 @@ final class Admin_Page {
 			</div>
 		</div>
 
-		<details style="max-width: 1100px; margin: 0 0 16px;">
-			<summary style="cursor: pointer;">
-				<strong><?php echo esc_html__( 'Issue client access token', 'npcink-governance-core' ); ?></strong>
-				<span style="color: #646970;"><?php echo esc_html__( 'Issue a scoped token for a trusted governance client.', 'npcink-governance-core' ); ?></span>
-			</summary>
-			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top: 8px;">
+		<section class="npcink-governance-core-token-issue-panel npcink-governance-core-max-wide" aria-labelledby="npcink-governance-core-token-issue-heading">
+			<div class="npcink-governance-core-token-issue-heading">
+				<h3 id="npcink-governance-core-token-issue-heading"><?php echo esc_html__( 'Issue client access token', 'npcink-governance-core' ); ?></h3>
+				<p class="npcink-governance-core-muted"><?php echo esc_html__( 'Issue a scoped token for a trusted governance client. Choose a purpose first; use advanced permissions only for custom clients.', 'npcink-governance-core' ); ?></p>
+			</div>
+			<form class="npcink-governance-core-token-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<input type="hidden" name="action" value="npcink_governance_core_create_app_key" />
 				<?php wp_nonce_field( 'npcink_governance_core_create_app_key' ); ?>
-				<table class="form-table" role="presentation">
-					<tbody>
-						<tr>
-							<th scope="row"><label for="npcink-governance-core-app-label"><?php echo esc_html__( 'Client label', 'npcink-governance-core' ); ?></label></th>
-							<td><input id="npcink-governance-core-app-label" class="regular-text" type="text" name="app_label" value="Adapter Client" /></td>
-						</tr>
-						<tr>
-							<th scope="row"><label for="npcink-governance-core-caller-type"><?php echo esc_html__( 'Caller type', 'npcink-governance-core' ); ?></label></th>
-							<td><input id="npcink-governance-core-caller-type" class="regular-text" type="text" name="caller_type" value="product_adapter" /></td>
-						</tr>
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Scopes', 'npcink-governance-core' ); ?></th>
-							<td><?php $this->render_scope_checkboxes(); ?></td>
-						</tr>
-						<tr>
-							<th scope="row"><label for="npcink-governance-core-rate-limit"><?php echo esc_html__( 'Rate limit', 'npcink-governance-core' ); ?></label></th>
-							<td>
-								<label>
+				<div class="npcink-governance-core-token-form-grid">
+					<div class="npcink-governance-core-token-form-field">
+						<label for="npcink-governance-core-app-label"><?php echo esc_html__( 'Client label', 'npcink-governance-core' ); ?></label>
+						<input id="npcink-governance-core-app-label" class="regular-text" type="text" name="app_label" value="Adapter Client" />
+					</div>
+					<div class="npcink-governance-core-token-form-field">
+						<label for="npcink-governance-core-caller-type"><?php echo esc_html__( 'Caller type', 'npcink-governance-core' ); ?></label>
+						<select id="npcink-governance-core-caller-type" name="caller_type">
+							<?php foreach ( $this->caller_type_options() as $value => $label ) : ?>
+								<option value="<?php echo esc_attr( (string) $value ); ?>" <?php selected( 'product_adapter', (string) $value ); ?>><?php echo esc_html( $label ); ?></option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+				</div>
+				<fieldset class="npcink-governance-core-token-purpose">
+					<legend><?php echo esc_html__( 'Token purpose', 'npcink-governance-core' ); ?></legend>
+					<p class="npcink-governance-core-muted"><?php echo esc_html__( 'Token purpose controls the default permission set. Custom clients can override permissions below.', 'npcink-governance-core' ); ?></p>
+					<?php $this->render_token_scope_presets(); ?>
+				</fieldset>
+				<details class="npcink-governance-core-token-advanced">
+					<summary><?php echo esc_html__( 'Advanced permissions and rate limit', 'npcink-governance-core' ); ?></summary>
+					<div class="npcink-governance-core-token-advanced-grid">
+						<div>
+							<h4><?php echo esc_html__( 'Custom permissions', 'npcink-governance-core' ); ?></h4>
+							<p class="npcink-governance-core-muted"><?php echo esc_html__( 'Choose Custom permissions above to use the checkboxes below.', 'npcink-governance-core' ); ?></p>
+							<?php $this->render_scope_checkboxes(); ?>
+						</div>
+						<div>
+							<h4><?php echo esc_html__( 'Rate limit', 'npcink-governance-core' ); ?></h4>
+							<div class="npcink-governance-core-token-rate-fields">
+								<label for="npcink-governance-core-rate-limit">
 									<?php echo esc_html__( 'Requests', 'npcink-governance-core' ); ?>
 									<input id="npcink-governance-core-rate-limit" type="number" min="1" max="10000" name="rate_limit" value="<?php echo esc_attr( (string) App_Key_Repository::DEFAULT_RATE_LIMIT ); ?>" />
 								</label>
-								<label style="margin-left: 12px;">
+								<label for="npcink-governance-core-rate-window">
 									<?php echo esc_html__( 'Window seconds', 'npcink-governance-core' ); ?>
-									<input type="number" min="60" max="86400" name="rate_window_seconds" value="<?php echo esc_attr( (string) App_Key_Repository::DEFAULT_RATE_WINDOW ); ?>" />
+									<input id="npcink-governance-core-rate-window" type="number" min="60" max="86400" name="rate_window_seconds" value="<?php echo esc_attr( (string) App_Key_Repository::DEFAULT_RATE_WINDOW ); ?>" />
 								</label>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<p><button type="submit" class="button button-secondary"><?php echo esc_html__( 'Issue client access token', 'npcink-governance-core' ); ?></button></p>
+							</div>
+						</div>
+					</div>
+				</details>
+				<p class="submit"><button type="submit" class="button button-primary"><?php echo esc_html__( 'Issue client access token', 'npcink-governance-core' ); ?></button></p>
 			</form>
-		</details>
+		</section>
 
 		<h3><?php echo esc_html__( 'Access tokens', 'npcink-governance-core' ); ?></h3>
 	<?php
@@ -1971,6 +1988,125 @@ final class Admin_Page {
 		);
 
 		return (string) ( $labels[ $scope ] ?? $scope );
+	}
+
+	/**
+	 * Returns caller type choices for admin-issued tokens.
+	 *
+	 * @return array<string,string>
+	 */
+	private function caller_type_options(): array {
+		return array(
+			'product_adapter' => __( 'Product Adapter', 'npcink-governance-core' ),
+			'mcp_adapter'     => __( 'MCP Adapter', 'npcink-governance-core' ),
+			'agent_host'      => __( 'Agent Host', 'npcink-governance-core' ),
+			'internal'        => __( 'Internal governance client', 'npcink-governance-core' ),
+		);
+	}
+
+	/**
+	 * Sanitizes caller type for admin-issued tokens.
+	 *
+	 * @param string $caller_type Caller type.
+	 * @return string
+	 */
+	private function sanitize_caller_type( string $caller_type ): string {
+		$options = $this->caller_type_options();
+		return array_key_exists( $caller_type, $options ) ? $caller_type : 'product_adapter';
+	}
+
+	/**
+	 * Returns scope presets for the token issuance form.
+	 *
+	 * @return array<string,array<string,mixed>>
+	 */
+	private function token_scope_presets(): array {
+		return array(
+			'adapter_default'             => array(
+				'label'       => __( 'Adapter default access', 'npcink-governance-core' ),
+				'description' => __( 'Recommended for trusted Adapter clients that create proposals and request preflight.', 'npcink-governance-core' ),
+				'scopes'      => $this->apps->default_scopes(),
+			),
+			'read_only_discovery'         => array(
+				'label'       => __( 'Read-only discovery', 'npcink-governance-core' ),
+				'description' => __( 'Only reads the capability contract. Use for diagnostics or setup checks.', 'npcink-governance-core' ),
+				'scopes'      => array( 'capabilities:read' ),
+			),
+			'trusted_approval_execution' => array(
+				'label'       => __( 'Trusted approval and execution record', 'npcink-governance-core' ),
+				'description' => __( 'Use only when a trusted host policy presents approval context to an administrator.', 'npcink-governance-core' ),
+				'scopes'      => array(
+					'capabilities:read',
+					'proposals:create',
+					'proposals:read',
+					'proposals:approve',
+					'commit:preflight',
+					'commit:record_execution',
+					'read_requests:create',
+					'read_requests:read',
+					'read_requests:approve',
+					'read_requests:reject',
+					'read_requests:preflight',
+				),
+			),
+			'custom'                     => array(
+				'label'       => __( 'Custom permissions', 'npcink-governance-core' ),
+				'description' => __( 'Use the advanced permission checkboxes for a narrowly scoped custom client.', 'npcink-governance-core' ),
+				'scopes'      => array(),
+			),
+		);
+	}
+
+	/**
+	 * Sanitizes a token scope preset.
+	 *
+	 * @param string $preset Preset key.
+	 * @return string
+	 */
+	private function sanitize_token_scope_preset( string $preset ): string {
+		$presets = $this->token_scope_presets();
+		return array_key_exists( $preset, $presets ) ? $preset : 'adapter_default';
+	}
+
+	/**
+	 * Returns scopes for a token scope preset.
+	 *
+	 * @param string $preset Preset key.
+	 * @return array<int,string>
+	 */
+	private function scopes_for_token_preset( string $preset ): array {
+		$preset  = $this->sanitize_token_scope_preset( $preset );
+		$presets = $this->token_scope_presets();
+		return (array) ( $presets[ $preset ]['scopes'] ?? $this->apps->default_scopes() );
+	}
+
+	/**
+	 * Renders token scope preset choices.
+	 *
+	 * @return void
+	 */
+	private function render_token_scope_presets(): void {
+		foreach ( $this->token_scope_presets() as $value => $preset ) {
+			$scopes = $this->apps->sanitize_scopes( (array) ( $preset['scopes'] ?? array() ) );
+			?>
+			<label class="npcink-governance-core-token-preset">
+				<input type="radio" name="scope_preset" value="<?php echo esc_attr( (string) $value ); ?>" <?php checked( 'adapter_default', (string) $value ); ?> />
+				<span>
+					<strong><?php echo esc_html( (string) $preset['label'] ); ?></strong>
+					<span class="npcink-governance-core-token-preset-description"><?php echo esc_html( (string) $preset['description'] ); ?></span>
+					<span class="npcink-governance-core-token-preset-scopes">
+						<?php
+						echo esc_html(
+							empty( $scopes )
+								? __( 'Uses advanced permission checkboxes.', 'npcink-governance-core' )
+								: $this->token_scope_summary( $scopes )
+						);
+						?>
+					</span>
+				</span>
+			</label>
+			<?php
+		}
 	}
 
 	/**

@@ -129,6 +129,114 @@
 	margin-bottom: 10px;
 }
 
+.npcink-governance-core-token-issue-panel {
+	box-sizing: border-box;
+	margin: 0 0 16px;
+	padding: 12px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+}
+
+.npcink-governance-core-token-issue-heading {
+	margin-bottom: 12px;
+}
+
+.npcink-governance-core-token-issue-heading h3 {
+	margin: 0 0 4px;
+}
+
+.npcink-governance-core-token-issue-heading p {
+	margin: 0;
+}
+
+.npcink-governance-core-token-form-grid,
+.npcink-governance-core-token-advanced-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+}
+
+.npcink-governance-core-token-form-field label,
+.npcink-governance-core-token-rate-fields label {
+	display: block;
+	margin-bottom: 4px;
+	font-weight: 600;
+}
+
+.npcink-governance-core-token-form-field input,
+.npcink-governance-core-token-form-field select,
+.npcink-governance-core-token-rate-fields input {
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 100%;
+}
+
+.npcink-governance-core-token-purpose {
+	margin: 14px 0 0;
+	padding: 0;
+	border: 0;
+}
+
+.npcink-governance-core-token-purpose legend {
+	margin-bottom: 4px;
+	font-weight: 600;
+}
+
+.npcink-governance-core-token-purpose p {
+	margin: 0 0 8px;
+}
+
+.npcink-governance-core-token-preset {
+	display: grid;
+	grid-template-columns: 20px minmax(0, 1fr);
+	gap: 8px;
+	align-items: start;
+	box-sizing: border-box;
+	margin: 0 0 8px;
+	padding: 8px;
+	border: 1px solid #dcdcde;
+}
+
+.npcink-governance-core-token-preset input {
+	margin-top: 2px;
+}
+
+.npcink-governance-core-token-preset-description,
+.npcink-governance-core-token-preset-scopes {
+	display: block;
+	margin-top: 2px;
+	color: #646970;
+}
+
+.npcink-governance-core-token-preset-scopes {
+	font-size: 12px;
+}
+
+.npcink-governance-core-token-advanced {
+	margin-top: 12px;
+	padding-top: 10px;
+	border-top: 1px solid #dcdcde;
+}
+
+.npcink-governance-core-token-advanced summary {
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.npcink-governance-core-token-advanced-grid {
+	margin-top: 10px;
+}
+
+.npcink-governance-core-token-advanced-grid h4 {
+	margin: 0 0 6px;
+}
+
+.npcink-governance-core-token-rate-fields {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 10px;
+}
+
 .npcink-governance-core-disclosure {
 	margin: 0 0 16px;
 }
@@ -985,6 +1093,9 @@
 	.npcink-governance-core-token-summary,
 	.npcink-governance-core-audit-filter-toolbar,
 	.npcink-governance-core-audit-advanced-grid,
+	.npcink-governance-core-token-form-grid,
+	.npcink-governance-core-token-advanced-grid,
+	.npcink-governance-core-token-rate-fields,
 	.npcink-governance-core-workbench-toolbar,
 	.npcink-governance-core-proposal-summary,
 	.npcink-governance-core-detail-groups {

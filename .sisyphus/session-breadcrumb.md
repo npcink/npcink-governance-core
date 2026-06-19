@@ -3820,3 +3820,28 @@
     `article_standard@0.3`, execute it through Adapter commit intent, then run
     visual acceptance to confirm the article page no longer needs manual review
     for low background variety.
+
+## 2026-06-19 — Client access token issuance presets
+
+- **Module**: Core admin client access token management.
+- **Status**: Token management still lives behind Settings -> Advanced Access,
+  but the token page now shows issuance directly instead of hiding it behind a
+  second disclosure.
+- **Completed**:
+  - Reworked the admin token issuance form around client label, bounded caller
+    type choices, and purpose presets.
+  - Moved raw scope checkboxes and rate-limit fields into an advanced section
+    for custom clients.
+  - Updated admin surface docs, app-auth scope docs, static contracts, and
+    zh_CN translations.
+  - Kept the underlying Core app-key/token storage, REST authentication,
+    database schema, and Adapter/OpenClaw product setup boundary unchanged.
+- **Verified**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php` passed.
+  - `php tests/run.php` passed.
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po` passed.
+  - `composer test:all` passed.
+- **Next recommended step**:
+  - When the local browser session is free, visually smoke `Npcink AI -> Core
+    -> Settings -> Advanced Access -> Client Access Tokens` and confirm the
+    purpose presets plus advanced section match the intended operator flow.
