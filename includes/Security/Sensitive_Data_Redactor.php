@@ -62,11 +62,11 @@ final class Sensitive_Data_Redactor {
 		if ( 0 === strpos( $key, 'read_authorization' ) || 'authorization_mode' === $key ) {
 			return false;
 		}
-		if ( in_array( $key, array( 'authorization', 'authorization_header', 'cookie', 'cookies', 'password', 'secret', 'token' ), true ) ) {
+		if ( in_array( $key, array( 'authorization', 'authorization_header', 'cookie', 'cookies', 'credential', 'credentials', 'password', 'secret', 'token' ), true ) ) {
 			return true;
 		}
 
-		return 1 === preg_match( '/(^|_)(api_key|access_token|refresh_token|bearer_token|auth_token|secret|secret_key|client_secret|private_key|application_password|password|token|cookie)($|_)/', $key );
+		return 1 === preg_match( '/(^|_)(api_key|access_token|refresh_token|bearer_token|auth_token|secret|secret_key|client_secret|private_key|application_password|credential|credentials|password|token|cookie)($|_)/', $key );
 	}
 
 	/**

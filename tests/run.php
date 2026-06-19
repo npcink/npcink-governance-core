@@ -992,6 +992,7 @@ foreach (
 		'redact_secret_string',
 		'Bearer [redacted]',
 		'api_key',
+		'credentials',
 		'application_password',
 	) as $required
 ) {
@@ -1396,6 +1397,8 @@ foreach (
 		'Ability drift required scopes',
 		'App-key scope isolation matrix',
 		'record-only cannot preflight',
+		'Redaction persistence matrix',
+		'AUDIT_PROVIDER_CREDENTIALS_SECRET_SENTINEL',
 		'App creation audit failure revokes the new key.',
 	) as $required
 ) {

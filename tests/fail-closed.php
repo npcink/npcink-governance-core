@@ -3293,14 +3293,44 @@ $stack = npcink_governance_core_fail_closed_proposals_controller_stack();
 $controller = $stack['controller'];
 $create_payload = npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/create-draft' );
 $create_payload['input']['content'] = 'RAW_GENERATED_CONTENT_SENTINEL';
+$create_payload['input']['authorization_header'] = 'Bearer INPUT_AUTHORIZATION_SECRET_SENTINEL';
+$create_payload['input']['nested_provider_context'] = array(
+	'provider_api_key' => 'INPUT_PROVIDER_KEY_SECRET_SENTINEL',
+);
 $create_payload['preview']['policy_payload'] = 'POLICY_PAYLOAD_SENTINEL';
+$create_payload['preview']['headers'] = array(
+	'cookie' => 'wordpress_logged_in=PREVIEW_COOKIE_SECRET_SENTINEL',
+);
+$create_payload['preview']['provider'] = array(
+	'client_secret' => 'PREVIEW_CLIENT_SECRET_SENTINEL',
+);
 $create_payload['caller']['secret_hint'] = 'CALLER_SECRET_SENTINEL';
+$create_payload['caller']['app_token'] = 'npcink_governance_core.key.CALLER_APP_TOKEN_SECRET_SENTINEL';
+$create_payload['caller']['private_key'] = 'CALLER_PRIVATE_KEY_SECRET_SENTINEL';
+$create_payload['caller']['note'] = 'token: CALLER_INLINE_TOKEN_SECRET_SENTINEL';
+$redaction_persistence_sentinels = array(
+	// Static contract marker: Redaction persistence matrix.
+	'INPUT_AUTHORIZATION_SECRET_SENTINEL',
+	'INPUT_PROVIDER_KEY_SECRET_SENTINEL',
+	'PREVIEW_COOKIE_SECRET_SENTINEL',
+	'PREVIEW_CLIENT_SECRET_SENTINEL',
+	'CALLER_APP_TOKEN_SECRET_SENTINEL',
+	'CALLER_PRIVATE_KEY_SECRET_SENTINEL',
+	'CALLER_INLINE_TOKEN_SECRET_SENTINEL',
+);
 npcink_governance_core_fail_closed_reset_observability_events();
 $create_response = $controller->create_proposal( new WP_REST_Request( $create_payload ) );
 npcink_governance_core_fail_closed_assert( $create_response instanceof WP_REST_Response && 201 === $create_response->get_status(), 'Proposal REST create succeeds for observability smoke.' );
 $created_proposal = $create_response->get_data();
 $proposal_id      = (string) ( is_array( $created_proposal ) ? ( $created_proposal['proposal_id'] ?? '' ) : '' );
 npcink_governance_core_fail_closed_assert( false === strpos( (string) wp_json_encode( $created_proposal ), 'CALLER_SECRET_SENTINEL' ), 'Proposal response redacts secret-shaped caller metadata.' );
+$created_proposal_json = (string) wp_json_encode( $created_proposal );
+$proposal_rows_json    = (string) wp_json_encode( $wpdb->rows( $proposal_table ) );
+foreach ( $redaction_persistence_sentinels as $sentinel ) {
+	npcink_governance_core_fail_closed_assert( false === strpos( $created_proposal_json, $sentinel ), 'Redaction persistence response removes ' . $sentinel . '.' );
+	npcink_governance_core_fail_closed_assert( false === strpos( $proposal_rows_json, $sentinel ), 'Redaction persistence proposal row removes ' . $sentinel . '.' );
+}
+npcink_governance_core_fail_closed_assert( false !== strpos( $proposal_rows_json, '[redacted]' ), 'Redaction persistence proposal row stores redaction markers.' );
 $create_events    = npcink_governance_core_fail_closed_observability_events( 'core.proposal.create' );
 npcink_governance_core_fail_closed_assert( 1 === count( $create_events ), 'Proposal create emits one observability event.' );
 npcink_governance_core_fail_closed_assert( 'ok' === (string) ( $create_events[0]['status'] ?? '' ), 'Proposal create emits ok status.' );
@@ -3315,15 +3345,21 @@ $redaction_audit->record(
 	array(
 		'authorization' => 'Bearer AUDIT_BEARER_SECRET_SENTINEL',
 		'nested'        => array(
-			'api_key' => 'AUDIT_API_KEY_SECRET_SENTINEL',
+			'api_key'              => 'AUDIT_API_KEY_SECRET_SENTINEL',
+			'provider_credentials' => 'AUDIT_PROVIDER_CREDENTIALS_SECRET_SENTINEL',
+			'application_password' => 'AUDIT_APPLICATION_PASSWORD_SECRET_SENTINEL',
 		),
-		'note'          => 'cookie: AUDIT_COOKIE_SECRET_SENTINEL',
+		'note'          => 'cookie: AUDIT_COOKIE_SECRET_SENTINEL token: AUDIT_INLINE_TOKEN_SECRET_SENTINEL',
 	)
 );
 $redaction_audit_rows = wp_json_encode( $wpdb->rows( $audit_table ) );
 npcink_governance_core_fail_closed_assert( false === strpos( (string) $redaction_audit_rows, 'AUDIT_BEARER_SECRET_SENTINEL' ), 'Audit metadata redacts authorization values.' );
 npcink_governance_core_fail_closed_assert( false === strpos( (string) $redaction_audit_rows, 'AUDIT_API_KEY_SECRET_SENTINEL' ), 'Audit metadata redacts secret-shaped nested keys.' );
 npcink_governance_core_fail_closed_assert( false === strpos( (string) $redaction_audit_rows, 'AUDIT_COOKIE_SECRET_SENTINEL' ), 'Audit metadata redacts cookie-shaped strings.' );
+foreach ( array( 'AUDIT_PROVIDER_CREDENTIALS_SECRET_SENTINEL', 'AUDIT_APPLICATION_PASSWORD_SECRET_SENTINEL', 'AUDIT_INLINE_TOKEN_SECRET_SENTINEL' ) as $sentinel ) {
+	npcink_governance_core_fail_closed_assert( false === strpos( (string) $redaction_audit_rows, $sentinel ), 'Audit metadata redaction removes ' . $sentinel . '.' );
+}
+npcink_governance_core_fail_closed_assert( false !== strpos( (string) $redaction_audit_rows, '[redacted]' ), 'Audit metadata stores redaction markers.' );
 
 npcink_governance_core_fail_closed_reset_observability_events();
 $approve_response = $controller->approve_proposal(

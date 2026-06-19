@@ -232,7 +232,7 @@ than broadening product behavior. These are the priority groups:
 | Commit preflight race and duplicate handoff | Repeated or stale commit-preflight attempts must fail closed when they would reuse an expired, mismatched, or already-consumed handoff context. |
 | Ability drift | Changed input schema, risk metadata, permission capability, required scopes, approval requirement, or execution guidance must block preflight or execution handoff instead of silently trusting stale approval. |
 | App-key scope isolation | Trusted Adapter scopes stay additive; `proposals:approve`, `commit:preflight`, and `commit:record_execution` remain separately authorized, and each missing sensitive scope returns `403` with denied app-scope audit metadata. |
-| Redaction persistence | Secret-shaped values, authorization headers, cookies, app tokens, and provider credentials are redacted before proposal or audit persistence. |
+| Redaction persistence | Secret-shaped values, authorization headers, cookies, app tokens, private keys, application passwords, and provider credentials are redacted before proposal row, proposal response, or audit metadata persistence. |
 | Sensitive read one-time consumption | One-time read grants can be consumed once, and changed ability/input/expiry evidence blocks reuse. |
 | Block theme malicious fixtures | Scriptable blocks, custom HTML/freeform, iframe/embed/shortcode, unknown blocks, oversized trees, and non-allowlisted templates are rejected before proposal storage. |
 | From-plan static contracts | Plans outside allowlisted artifact types, target abilities, scopes, payload sizes, or action counts fail before proposal creation. |

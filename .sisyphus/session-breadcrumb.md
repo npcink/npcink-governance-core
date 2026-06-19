@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-06-20 — Redaction persistence matrix covered
+
+- **Module**: Core shared sensitive-data redaction and persistence guards.
+- **Status**: Proposal and audit persistence now have matrix coverage for
+  secret-shaped values across proposal input, preview, caller metadata, and
+  audit metadata.
+- **Completed**:
+  - Expanded fail-closed redaction coverage for authorization headers, provider
+    API keys, cookies, client secrets, app tokens, private keys, inline tokens,
+    provider credentials, and application passwords.
+  - Asserted redaction holds in proposal responses, raw proposal rows, and raw
+    audit rows, with `[redacted]` markers replacing secret material.
+  - Updated the shared redactor to classify `credential` and `credentials`
+    keys as sensitive.
+  - Updated static contracts and testing strategy for redaction persistence.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+- **Boundary**:
+  - This remains persistence redaction only. No provider credential storage,
+    model routing, workflow runtime, task queue, Adapter behavior, ability
+    execution, or WordPress write implementation changed.
+
 ## 2026-06-20 — App-key sensitive scope isolation covered
 
 - **Module**: Core app-key REST authorization.
