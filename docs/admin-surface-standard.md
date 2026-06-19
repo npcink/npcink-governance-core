@@ -151,18 +151,21 @@ Client access token creation is a low-frequency fallback action backed by
 Core's app-key contract. It should be reachable from a directly visible
 `Client access tokens` section in Settings, and once an administrator opens the
 client access token page the default subtab should be `Access tokens`, not
-issuance. The token page should use two subtabs: `Access tokens` for the active
-token list and `Issue token` for creating a new token. Token issuance should
-lead with client label, caller type, and a purpose preset; raw scope checkboxes
-and rate-limit fields belong in an advanced disclosure for custom clients. It
-must not appear as a first-level Core tab.
+issuance. The token page should use three subtabs: `Access tokens` for the
+active token list, `Revoked tokens` for read-only audit lookup, and
+`Issue token` for creating a new token. Token issuance should lead with client
+label, caller type, and a purpose preset; raw scope checkboxes and rate-limit fields
+belong in an advanced disclosure for custom clients. It must not appear
+as a first-level Core tab.
 The default token table should show active tokens only and lead with client
 label, localized status, permission summary, last-used time, and a revoke
-action. Revoked tokens should be hidden from the default list but retained for
-audit attribution until a separate retention cleanup removes old records. Full
-App ID, Key ID, caller type, rate limit, expiry, and complete scope strings
-belong behind a row `Details` disclosure so long machine identifiers do not
-dominate the page.
+action. Revoked tokens should be hidden from the default active-token list but
+available from the `Revoked tokens` subtab for audit attribution until a
+separate retention cleanup removes old records. The revoked-token table is
+read-only and must not expose restore, reopen, or reissue actions. Full App ID,
+Key ID, caller type, rate limit, expiry, revoked time, and complete scope
+strings belong behind a row `Details` disclosure so long machine identifiers do
+not dominate the page.
 
 The review queue must not remove proposal identity from the page, but the
 default row should lead with the user-facing request label. Keep `Proposal ID`

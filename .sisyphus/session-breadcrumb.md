@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-19 — Revoked client token audit tab
+
+- **Module**: Core admin client access token page.
+- **Status**: Revoked client access tokens now have an explicit read-only audit
+  entry instead of being retained without a visible admin path.
+- **Completed**:
+  - Added a `Revoked tokens` subtab next to `Access tokens` and `Issue token`.
+  - Kept `Access tokens` as the default active-token list.
+  - Made the revoked-token list query `status=revoked`, paginate independently,
+    and show a dedicated empty state.
+  - Kept revoked rows read-only with `No action`; no restore, reopen, reissue,
+    token format, REST auth, scope, Adapter, workflow runtime, queue, or final
+    execution behavior changed.
+  - Updated admin surface docs, operability docs, app-auth docs, static
+    contracts, POT/PO files, and compiled zh_CN translations.
+- **Verified**:
+  - `php -l includes/Admin/Admin_Page.php && php -l tests/run.php` passed.
+  - `php tests/run.php` passed.
+  - `msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po` passed.
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed against the LocalWP `magick-ai` site.
+  - Browser check loaded `view=app-keys&token_tab=revoked` and confirmed the
+    `已失效令牌` subtab, read-only audit copy, revoked-token rows, and `无操作`
+    action cells.
+
 ## 2026-06-19 — Client access token subtabs
 
 - **Module**: Core admin client access token page.

@@ -2233,9 +2233,10 @@ foreach (
 			'directly visible Settings section',
 			'operator-facing token',
 			'Access tokens',
+			'Revoked tokens',
 			'Issue token',
 			'active tokens only',
-			'Revoked tokens',
+			'read-only audit lookup',
 			'purpose',
 			'raw scope checkboxes',
 			'rate-limit fields',
@@ -2428,12 +2429,16 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Client Access Tok
 npcink_governance_core_assert( false !== strpos( $admin_page, 'token_tab' ), 'Admin token page uses subtabs for token list and issuance.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Client access token sections' ), 'Admin token page labels its token subtabs.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'token_tab' => 'tokens'" ), 'Admin token page defaults navigation to access tokens.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "'token_tab' => 'revoked'" ), 'Admin token page exposes revoked tokens as an audit subtab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'token_tab' => 'issue'" ), 'Admin token page exposes issuance as a secondary subtab.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "\$this->apps->list_recent( self::APP_KEY_PAGE_SIZE, \$this->offset_for_page( \$page, self::APP_KEY_PAGE_SIZE ), 'active' )" ), 'Admin token list queries active tokens only.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Only active tokens are shown here.' ), 'Admin token page explains revoked tokens are hidden from the default list.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "\$list_status  = 'revoked' === \$token_tab ? 'revoked' : 'active';" ), 'Admin token page maps list subtabs to bounded token statuses.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "\$this->apps->list_recent( self::APP_KEY_PAGE_SIZE, \$this->offset_for_page( \$page, self::APP_KEY_PAGE_SIZE ), \$list_status )" ), 'Admin token list queries by the selected token status.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Only active tokens are shown here.' ), 'Admin token page explains active tokens remain the default list.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Revoked tokens are shown for audit attribution only.' ), 'Admin revoked token page explains that revoked tokens are read-only audit records.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Issue client access token' ), 'Admin page labels token creation with operator-facing token copy.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'issue' === \$token_tab" ), 'Admin token page shows the issuance panel only on the Issue token subtab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'tokens' === \$token_tab" ), 'Admin token page opens on the access token list subtab.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "'revoked' === \$token_tab" ), 'Admin token page renders a separate revoked-token list subtab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Issue a scoped token for a trusted governance client. Choose a purpose first; use advanced permissions only for custom clients.' ), 'Admin token creation explains purpose-first issuance.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'caller_type_options' ), 'Admin token creation uses bounded caller type choices.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, '<select id="npcink-governance-core-caller-type" name="caller_type">' ), 'Admin token creation renders caller type as a dropdown.' );
@@ -2450,6 +2455,8 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'render_token_stat
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Revoke token' ), 'Admin active token rows expose an explicit revoke action.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Revoke this access token immediately?' ), 'Admin token revocation confirmation explains immediate access impact.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'No active access tokens.' ), 'Admin token list empty state refers to active tokens only.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'No revoked access tokens.' ), 'Admin revoked token list has a specific empty state.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'No action' ), 'Admin revoked token rows remain read-only.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Back to settings' ), 'Admin token page returns operators to Settings.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'Create Core App Key' ), 'Admin UI no longer exposes Core App Key creation copy.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'Reopen for review' ), 'Admin page does not expose reopen actions for historical proposals.' );

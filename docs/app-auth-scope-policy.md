@@ -178,17 +178,20 @@ WordPress administrators can issue tokens from either admin-only
 Settings `Client access tokens` entry. Both paths use the same app identity
 store, default scope policy, and one-time raw-token display rule. The admin
 panel shows token management as a low-frequency Settings section, then opens
-the token page on an active-token list with a separate issuance subtab using
-purpose presets and an advanced custom permission area. It remains a Core
-credential management fallback, not the primary OpenClaw product setup flow.
-Productized OpenClaw setup should use Magick AI Adapter, which calls Core for
-governance and WordPress Abilities API for direct reads.
+the token page on an active-token list with a separate read-only revoked-token
+audit subtab and a separate issuance subtab using purpose presets and an
+advanced custom permission area. It remains a Core credential management
+fallback, not the primary OpenClaw product setup flow. Productized OpenClaw
+setup should use Magick AI Adapter, which calls Core for governance and
+WordPress Abilities API for direct reads.
 
 The admin panel also exposes a minimal token revoke action for active tokens.
 Revoking a token marks its status as `revoked`; future requests with that token
 return `401`, while historical proposal and audit attribution remains intact.
-Revoked tokens are hidden from the default active-token list and retained until
-a separate retention cleanup removes old records.
+Revoked tokens are hidden from the default active-token list, available from a
+read-only `Revoked tokens` audit subtab, and retained until a separate
+retention cleanup removes old records. Revoked token rows must not expose
+restore, reopen, or reissue actions.
 
 LocalWP TLS switches, OpenClaw handoff text, and agent rules belong in
 Magick AI Adapter or another client-side adapter layer. Core does not export

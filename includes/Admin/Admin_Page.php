@@ -1568,13 +1568,15 @@ final class Admin_Page {
 	 */
 	private function render_external_access(): void {
 		$token_tab    = $this->admin_query_key( 'token_tab', 'tokens' );
-		$token_tab    = in_array( $token_tab, array( 'tokens', 'issue' ), true ) ? $token_tab : 'tokens';
+		$token_tab    = in_array( $token_tab, array( 'tokens', 'revoked', 'issue' ), true ) ? $token_tab : 'tokens';
 		$page         = $this->page_from_request( 'app_key_page' );
 		$total        = $this->apps->count();
 		$active_count = $this->apps->count( 'active' );
+		$list_status  = 'revoked' === $token_tab ? 'revoked' : 'active';
+		$list_count   = $this->apps->count( $list_status );
 		$last_used    = $this->apps->latest_last_used_at();
-		$page         = $this->bounded_page( $active_count, $page, self::APP_KEY_PAGE_SIZE );
-		$apps         = $this->apps->list_recent( self::APP_KEY_PAGE_SIZE, $this->offset_for_page( $page, self::APP_KEY_PAGE_SIZE ), 'active' );
+		$page         = $this->bounded_page( $list_count, $page, self::APP_KEY_PAGE_SIZE );
+		$apps         = $this->apps->list_recent( self::APP_KEY_PAGE_SIZE, $this->offset_for_page( $page, self::APP_KEY_PAGE_SIZE ), $list_status );
 	?>
 		<p><a href="<?php echo esc_url( $this->view_url( 'settings' ) ); ?>">&larr; <?php echo esc_html__( 'Back to settings', 'npcink-governance-core' ); ?></a></p>
 		<h2><?php echo esc_html__( 'Client Access Tokens', 'npcink-governance-core' ); ?></h2>
@@ -1601,6 +1603,9 @@ final class Admin_Page {
 		<nav class="nav-tab-wrapper npcink-governance-core-subtabs" aria-label="<?php echo esc_attr__( 'Client access token sections', 'npcink-governance-core' ); ?>">
 			<a class="nav-tab <?php echo 'tokens' === $token_tab ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( $this->admin_url( array( 'view' => 'app-keys', 'token_tab' => 'tokens' ) ) ); ?>" <?php echo 'tokens' === $token_tab ? 'aria-current="page"' : ''; ?>>
 				<?php echo esc_html__( 'Access tokens', 'npcink-governance-core' ); ?>
+			</a>
+			<a class="nav-tab <?php echo 'revoked' === $token_tab ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( $this->admin_url( array( 'view' => 'app-keys', 'token_tab' => 'revoked' ) ) ); ?>" <?php echo 'revoked' === $token_tab ? 'aria-current="page"' : ''; ?>>
+				<?php echo esc_html__( 'Revoked tokens', 'npcink-governance-core' ); ?>
 			</a>
 			<a class="nav-tab <?php echo 'issue' === $token_tab ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( $this->admin_url( array( 'view' => 'app-keys', 'token_tab' => 'issue' ) ) ); ?>" <?php echo 'issue' === $token_tab ? 'aria-current="page"' : ''; ?>>
 				<?php echo esc_html__( 'Issue token', 'npcink-governance-core' ); ?>
@@ -1663,15 +1668,20 @@ final class Admin_Page {
 		</section>
 		<?php else : ?>
 
-		<h3><?php echo esc_html__( 'Access tokens', 'npcink-governance-core' ); ?></h3>
-		<p class="npcink-governance-core-muted"><?php echo esc_html__( 'Only active tokens are shown here. Revoked tokens are retained for audit attribution and hidden from the default list.', 'npcink-governance-core' ); ?></p>
+		<?php if ( 'revoked' === $token_tab ) : ?>
+			<h3><?php echo esc_html__( 'Revoked tokens', 'npcink-governance-core' ); ?></h3>
+			<p class="npcink-governance-core-muted"><?php echo esc_html__( 'Revoked tokens are shown for audit attribution only. They cannot authenticate scoped REST requests.', 'npcink-governance-core' ); ?></p>
+		<?php else : ?>
+			<h3><?php echo esc_html__( 'Access tokens', 'npcink-governance-core' ); ?></h3>
+			<p class="npcink-governance-core-muted"><?php echo esc_html__( 'Only active tokens are shown here. Revoked tokens are available from the revoked-token subtab for audit attribution.', 'npcink-governance-core' ); ?></p>
+		<?php endif; ?>
 	<?php
 	$this->render_table_nav(
-		$active_count,
+		$list_count,
 		$page,
 		self::APP_KEY_PAGE_SIZE,
 		'app_key_page',
-		array( 'view' => 'app-keys', 'token_tab' => 'tokens' ),
+		array( 'view' => 'app-keys', 'token_tab' => $token_tab ),
 		array( 'show_range' => true )
 	);
 	?>
@@ -1687,7 +1697,7 @@ final class Admin_Page {
 			</thead>
 			<tbody>
 				<?php if ( empty( $apps ) ) : ?>
-					<tr><td colspan="5"><?php echo esc_html__( 'No active access tokens.', 'npcink-governance-core' ); ?></td></tr>
+					<tr><td colspan="5"><?php echo esc_html( 'revoked' === $token_tab ? __( 'No revoked access tokens.', 'npcink-governance-core' ) : __( 'No active access tokens.', 'npcink-governance-core' ) ); ?></td></tr>
 				<?php endif; ?>
 				<?php foreach ( $apps as $index => $app ) : ?>
 					<?php $details_id = 'npcink-governance-core-token-details-' . (string) ( $index + 1 ); ?>
@@ -1722,7 +1732,7 @@ final class Admin_Page {
 									<button type="submit" class="button button-link-delete" onclick="return confirm('<?php echo esc_js( __( 'Revoke this access token immediately? Clients using this token will no longer be able to access Core.', 'npcink-governance-core' ) ); ?>');"><?php echo esc_html__( 'Revoke token', 'npcink-governance-core' ); ?></button>
 								</form>
 								<?php else : ?>
-									<?php echo esc_html__( 'Disabled', 'npcink-governance-core' ); ?>
+									<span class="npcink-governance-core-muted"><?php echo esc_html__( 'No action', 'npcink-governance-core' ); ?></span>
 								<?php endif; ?>
 					</td>
 				</tr>
@@ -1731,11 +1741,11 @@ final class Admin_Page {
 	</table>
 		<?php
 		$this->render_table_nav(
-			$active_count,
+			$list_count,
 			$page,
 			self::APP_KEY_PAGE_SIZE,
 			'app_key_page',
-			array( 'view' => 'app-keys', 'token_tab' => 'tokens' ),
+			array( 'view' => 'app-keys', 'token_tab' => $token_tab ),
 			array( 'show_range' => true )
 		);
 		?>
@@ -1869,7 +1879,7 @@ final class Admin_Page {
 		$labels = array(
 			'active'  => __( 'Active', 'npcink-governance-core' ),
 			'expired' => __( 'Expired', 'npcink-governance-core' ),
-			'revoked' => __( 'Disabled', 'npcink-governance-core' ),
+			'revoked' => __( 'Revoked', 'npcink-governance-core' ),
 		);
 		$label  = (string) ( $labels[ $status ] ?? ucfirst( $status ) );
 		$class  = 'npcink-governance-core-status-' . sanitize_html_class( $status );
