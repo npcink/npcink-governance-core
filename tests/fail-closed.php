@@ -1884,6 +1884,23 @@ function npcink_governance_core_fail_closed_expire_preflight_handoff( string $pr
 }
 
 /**
+ * Applies one mutation to the fake ability registry.
+ *
+ * @param string   $ability_id Ability id.
+ * @param callable $mutator Mutation callback.
+ * @return void
+ */
+function npcink_governance_core_fail_closed_mutate_ability( string $ability_id, callable $mutator ): void {
+	global $npcink_governance_core_fail_closed_abilities;
+
+	$npcink_governance_core_fail_closed_abilities = npcink_abilities_toolkit_get_registered();
+	$ability = is_array( $npcink_governance_core_fail_closed_abilities[ $ability_id ] ?? null ) ? $npcink_governance_core_fail_closed_abilities[ $ability_id ] : array();
+	$ability = $mutator( $ability );
+	npcink_governance_core_fail_closed_assert( is_array( $ability ), 'Ability drift mutator returns an ability definition.' );
+	$npcink_governance_core_fail_closed_abilities[ $ability_id ] = $ability;
+}
+
+/**
  * Creates a trusted cleanup batch payload.
  *
  * @return array<string,mixed>
@@ -4903,18 +4920,57 @@ npcink_governance_core_fail_closed_assert( 'npcink_governance_core_execution_rec
 $rolled_back = $stack['proposals']->find( (string) $proposal['proposal_id'] );
 npcink_governance_core_fail_closed_assert( is_array( $rolled_back ) && 'approved' === $rolled_back['status'], 'Execution record audit failure rolls status back to approved.' );
 
-$wpdb     = npcink_governance_core_fail_closed_reset_db();
-$stack    = npcink_governance_core_fail_closed_governance_stack();
-$proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/update-post' ) );
-npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Contract drift proposal is created.' );
-$approved = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'contract_drift' ) );
-npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'Contract drift proposal is approved.' );
-$npcink_governance_core_fail_closed_abilities = npcink_abilities_toolkit_get_registered();
-$npcink_governance_core_fail_closed_abilities['npcink-abilities-toolkit/update-post']['input_schema']['properties']['unexpected_new_required_control'] = array( 'type' => 'string' );
-$drift = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
-npcink_governance_core_fail_closed_assert( is_wp_error( $drift ), 'Changed ability contract fails commit preflight.' );
-npcink_governance_core_fail_closed_assert( 'npcink_governance_core_ability_contract_changed' === $drift->get_error_code(), 'Changed ability contract uses stable error code.' );
-npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), 'Contract drift preflight failure is audited.' );
+$ability_drift_matrix = array(
+	// Static contract markers: Ability drift execution guidance; Ability drift required scopes.
+	'input schema'       => static function ( array $ability ): array {
+		$ability['input_schema']['properties']['unexpected_new_required_control'] = array( 'type' => 'string' );
+		return $ability;
+	},
+	'risk metadata'      => static function ( array $ability ): array {
+		$ability['risk_level'] = 'destructive';
+		return $ability;
+	},
+	'permission metadata' => static function ( array $ability ): array {
+		$ability['capability'] = 'delete_posts';
+		return $ability;
+	},
+	'required scope'     => static function ( array $ability ): array {
+		$ability['required_scope'] = 'post.admin';
+		return $ability;
+	},
+	'required scopes'    => static function ( array $ability ): array {
+		$ability['required_scopes'] = array( 'post.write', 'post.admin' );
+		return $ability;
+	},
+	'approval flag'      => static function ( array $ability ): array {
+		$ability['requires_approval'] = false;
+		return $ability;
+	},
+	'execution guidance' => static function ( array $ability ): array {
+		$ability['risk_level']        = 'read';
+		$ability['requires_approval'] = false;
+		return $ability;
+	},
+);
+
+foreach ( $ability_drift_matrix as $drift_label => $drift_mutator ) {
+	$wpdb     = npcink_governance_core_fail_closed_reset_db();
+	$stack    = npcink_governance_core_fail_closed_governance_stack();
+	$proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/update-post' ) );
+	npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Ability drift ' . $drift_label . ' proposal is created.' );
+	$approved = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'ability_drift_' . sanitize_key( $drift_label ) ) );
+	npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'Ability drift ' . $drift_label . ' proposal is approved.' );
+	npcink_governance_core_fail_closed_mutate_ability( 'npcink-abilities-toolkit/update-post', $drift_mutator );
+
+	$drift = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
+	npcink_governance_core_fail_closed_assert( is_wp_error( $drift ), 'Ability drift ' . $drift_label . ' fails commit preflight.' );
+	npcink_governance_core_fail_closed_assert( 'npcink_governance_core_ability_contract_changed' === $drift->get_error_code(), 'Ability drift ' . $drift_label . ' uses stable error code.' );
+	npcink_governance_core_fail_closed_assert( 409 === npcink_governance_core_fail_closed_error_http_status( $drift ), 'Ability drift ' . $drift_label . ' maps to HTTP 409.' );
+	$after_drift = $stack['proposals']->find( (string) $proposal['proposal_id'] );
+	npcink_governance_core_fail_closed_assert( is_array( $after_drift ) && 'approved' === (string) ( $after_drift['status'] ?? '' ), 'Ability drift ' . $drift_label . ' leaves proposal approved.' );
+	npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), 'Ability drift ' . $drift_label . ' preflight failure is audited.' );
+	npcink_governance_core_fail_closed_assert( 0 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflighted' ) ), 'Ability drift ' . $drift_label . ' does not issue a handoff.' );
+}
 
 $wpdb     = npcink_governance_core_fail_closed_reset_db();
 $stack    = npcink_governance_core_fail_closed_governance_stack();

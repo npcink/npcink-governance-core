@@ -1392,6 +1392,8 @@ foreach (
 		'record_execution_with_handoff',
 		'record_execution_without_handoff',
 		'Expired preflight handoff cannot record execution.',
+		'Ability drift execution guidance',
+		'Ability drift required scopes',
 		'App creation audit failure revokes the new key.',
 	) as $required
 ) {
@@ -1713,6 +1715,12 @@ npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'app
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'approved_preview_hash' ), 'Commit preflight binds approval context to approved preview hash.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'policy_version' ), 'Commit preflight returns a policy version for Adapter binding.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'PREFLIGHT_TTL_SECONDS' ), 'Commit preflight declares a bounded handoff TTL.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'ability_contract_fingerprint' ), 'Commit preflight fingerprints live ability contracts.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'requires_approval'" ), 'Commit preflight contract includes approval requirement drift.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'governance_mode'" ), 'Commit preflight contract includes governance mode drift.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'execution_surface'" ), 'Commit preflight contract includes execution surface drift.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'required_scopes'" ), 'Commit preflight contract includes required scope drift.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'input_schema'" ), 'Commit preflight contract includes input schema drift.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'signed_client_context' ), 'Commit preflight binds signed Adapter client fingerprint when present.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'site_binding_context' ), 'Commit preflight has a site binding helper.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "function_exists( 'site_url' ) ? site_url() : ''" ), 'Commit preflight binds site_url.' );

@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-06-20 — Ability drift matrix covered
+
+- **Module**: Core commit-preflight ability contract drift.
+- **Status**: Ability contract drift now has matrix coverage across
+  governance-relevant fingerprint fields before Core issues an execution
+  handoff.
+- **Completed**:
+  - Replaced the single contract drift smoke with a matrix for input schema,
+    risk metadata, permission capability, required scope, required scopes,
+    approval flag, and execution guidance drift.
+  - Asserted each drift returns
+    `npcink_governance_core_ability_contract_changed`, maps to HTTP `409`,
+    leaves the proposal approved, audits `commit.preflight_failed`, and does
+    not write `commit.preflighted`.
+  - Updated static contracts and testing strategy for ability drift coverage.
+- **Verified**:
+  - `composer test:all` passed.
+- **Boundary**:
+  - This remains commit-preflight governance validation only. No ability
+    execution, ability registration, workflow runtime, task queue, Adapter
+    behavior, provider routing, credentials, or WordPress write implementation
+    changed.
+
 ## 2026-06-20 — Commit preflight duplicate and expiry hardened
 
 - **Module**: Core commit-preflight handoff and execution-result binding.
