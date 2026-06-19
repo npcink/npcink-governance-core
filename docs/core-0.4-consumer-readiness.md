@@ -72,3 +72,13 @@ validates a read-helper-to-write-proposal handoff for existing taxonomy terms:
 the helper is executed through WordPress Abilities API, Core governs the
 generated `set-post-terms` dry-run proposal, and commit preflight still returns
 `commit_execution=false`.
+
+Core smoke now also validates the Adapter-style approval-to-result chain for
+`npcink-abilities-toolkit/create-draft`: a trusted app creates and approves a
+Core proposal, Core returns commit preflight with
+`execution_handoff.executor=adapter_after_core_preflight`, the host executes
+the approved dry-run input through WordPress Abilities API outside Core, and a
+separate execution-recorder app key records the result back to Core with
+`commit:record_execution`. This remains a dry-run external ability execution
+proof; Core still does not mutate WordPress content or add a final execution
+route.

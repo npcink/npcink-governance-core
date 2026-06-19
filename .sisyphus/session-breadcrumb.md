@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-20 — Adapter-style external execution smoke covered
+
+- **Module**: WordPress smoke integration for Core approval-to-result handoff.
+- **Status**: The trusted Adapter smoke now exercises the missing external
+  ability runtime step between Core commit preflight and Core execution-result
+  recording.
+- **Completed**:
+  - Added a smoke helper that runs approved input through the WordPress
+    Abilities API instead of Core.
+  - Updated the trusted Adapter create-draft smoke to verify the external
+    dry-run input matches Core's approved input hash, runs
+    `npcink-abilities-toolkit/create-draft` through `/wp-abilities/v1`, keeps
+    mutation disabled, and only then records the result back to Core with a
+    separate `commit:record_execution` app key.
+  - Updated static contracts and handoff/readiness/testing docs for the
+    Adapter-style external execution proof.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+- **Boundary**:
+  - Core still does not execute target abilities, add final execution routes,
+    own workflow runtime, own task queues, store provider credentials, or
+    mutate WordPress content in this flow. The smoke execution is a dry-run
+    WordPress Abilities API call outside Core.
+
 ## 2026-06-20 — Redaction persistence matrix covered
 
 - **Module**: Core shared sensitive-data redaction and persistence guards.

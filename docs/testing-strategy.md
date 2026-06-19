@@ -179,7 +179,9 @@ Use it for behavior that requires real WordPress:
   access tokens only;
 - trusted Adapter approval coverage, including an app key with
   `proposals:approve`, app-authenticated approval, app-authenticated preflight,
-  and approval audit attribution;
+  external dry-run execution through WordPress Abilities API, execution-result
+  recording with `commit:record_execution`, and approval/preflight/execution
+  audit attribution;
 - real proposal and audit persistence.
 
 The smoke test should clean up transient WordPress content fixtures on shutdown,

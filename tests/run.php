@@ -1470,6 +1470,9 @@ npcink_governance_core_assert( false !== strpos( $smoke_wp, 'proposal detail inc
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'commit preflight returns correlation id' ), 'WordPress smoke validates preflight correlation id.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'trusted Adapter app approves proposal with approval scope' ), 'WordPress smoke validates trusted Adapter approval scope.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'trusted Adapter execution handoff keeps Core final execution disabled' ), 'WordPress smoke validates trusted Adapter execution handoff.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp, 'external execution input matches Core approved input hash' ), 'WordPress smoke validates Adapter external execution input binding.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp, 'external WordPress Abilities API execution stays dry-run' ), 'WordPress smoke validates Adapter external ability execution through WordPress Abilities API.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp, 'records successful external ability result' ), 'WordPress smoke validates Adapter execution result recording after external ability run.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'trusted Adapter approval audit stores app attribution and approve scope' ), 'WordPress smoke validates trusted Adapter approval audit attribution.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'audit endpoint filters by ability id' ), 'WordPress smoke validates ability audit filtering.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'audit endpoint filters by app id' ), 'WordPress smoke validates app audit filtering.' );

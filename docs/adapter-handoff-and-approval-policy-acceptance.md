@@ -69,6 +69,14 @@ Evidence for Adapter acceptance should include:
   `correlation_id`;
 - no final WordPress mutation route added to Core.
 
+Core's own WordPress smoke provides a boundary-safe dry-run proof of this
+sequence for `npcink-abilities-toolkit/create-draft`: Core creates and approves
+the proposal, returns an Adapter handoff, the host calls WordPress Abilities API
+outside Core with the approved dry-run input, and a separate
+`commit:record_execution` key records the outcome. Product Adapter acceptance
+must still prove its own non-dry-run execution policy, idempotency, and
+user-facing approval surface outside Core.
+
 ## Manual Approval Policy Acceptance
 
 Run this checklist from the local WordPress admin surface:

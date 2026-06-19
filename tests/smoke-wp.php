@@ -937,6 +937,42 @@ function npcink_governance_core_smoke_run_plan_ability( string $ability_id, arra
 }
 
 /**
+ * Runs a target WordPress ability through the external ability runtime.
+ *
+ * This simulates the Adapter/host execution step after Core commit preflight.
+ * Core is not the executor; the request goes to the WordPress Abilities API.
+ *
+ * @param string              $ability_id Ability id.
+ * @param array<string,mixed> $input Ability input.
+ * @return array<string,mixed>
+ */
+function npcink_governance_core_smoke_run_external_ability_dry_run( string $ability_id, array $input ): array {
+	wp_set_current_user( 1 );
+
+	$request = new WP_REST_Request( 'POST', '/wp-abilities/v1/abilities/' . $ability_id . '/run' );
+	$request->set_header( 'Content-Type', 'application/json' );
+	$request->set_body(
+		wp_json_encode(
+			array(
+				'input' => $input,
+			)
+		)
+	);
+
+	$response = rest_do_request( $request );
+	$status   = (int) $response->get_status();
+	$data     = $response->get_data();
+	npcink_governance_core_smoke_assert( $status >= 200 && $status < 300, $ability_id . ' external WordPress Abilities API dry-run returns HTTP ' . $status );
+	npcink_governance_core_smoke_assert( is_array( $data ), $ability_id . ' external WordPress Abilities API dry-run returns structured data' );
+
+	if ( true === (bool) ( $data['success'] ?? false ) && is_array( $data['data'] ?? null ) ) {
+		return $data['data'];
+	}
+
+	return $data;
+}
+
+/**
  * Creates Core proposals from a planning ability output.
  *
  * @param string              $ability_id Planning ability id.
@@ -2485,6 +2521,7 @@ $trusted_adapter_token = (string) ( $trusted_adapter_app['token'] ?? '' );
 $trusted_adapter_app_id = (string) ( $trusted_adapter_app['app_id'] ?? '' );
 npcink_governance_core_smoke_assert( '' !== $trusted_adapter_token && '' !== $trusted_adapter_app_id, 'trusted Adapter app key is created for approve-and-execute smoke' );
 
+$trusted_draft_title = 'Trusted Adapter Draft ' . $npcink_governance_core_smoke_run_id;
 $trusted_created = npcink_governance_core_smoke_rest_as_app(
 	'POST',
 	'/npcink-governance-core/v1/proposals',
@@ -2494,7 +2531,7 @@ $trusted_created = npcink_governance_core_smoke_rest_as_app(
 		'title'      => 'Trusted Adapter approval proposal ' . $npcink_governance_core_smoke_run_id,
 		'summary'    => 'Created by trusted Adapter approval smoke test.',
 		'input'      => array(
-			'title'   => 'Trusted Adapter Draft ' . $npcink_governance_core_smoke_run_id,
+			'title'   => $trusted_draft_title,
 			'content' => '<p>Trusted Adapter content.</p>',
 			'dry_run' => true,
 			'commit'  => false,
@@ -2529,6 +2566,17 @@ npcink_governance_core_smoke_assert( (string) ( $trusted_preflight['approval_con
 npcink_governance_core_smoke_assert( 'core-preflight-v1' === (string) ( $trusted_preflight['execution_handoff']['policy_version'] ?? '' ), 'trusted Adapter execution handoff carries policy version' );
 npcink_governance_core_smoke_assert( false === (bool) ( $trusted_preflight['execution_handoff']['core_proxy_execute'] ?? true ), 'trusted Adapter execution handoff keeps Core proxy execution disabled' );
 npcink_governance_core_smoke_assert( false === (bool) ( $trusted_preflight['execution_handoff']['commit_execution'] ?? true ), 'trusted Adapter execution handoff keeps Core final execution disabled' );
+
+$trusted_external_input = is_array( $trusted_preflight['proposal']['input'] ?? null ) ? $trusted_preflight['proposal']['input'] : array();
+npcink_governance_core_smoke_assert( (string) ( $trusted_preflight['execution_handoff']['approved_input_hash'] ?? '' ) === hash( 'sha256', (string) wp_json_encode( $trusted_external_input ) ), 'trusted Adapter external execution input matches Core approved input hash' );
+$trusted_external_result = npcink_governance_core_smoke_run_external_ability_dry_run( 'npcink-abilities-toolkit/create-draft', $trusted_external_input );
+npcink_governance_core_smoke_assert( true === (bool) ( $trusted_external_result['dry_run'] ?? false ), 'trusted Adapter external WordPress Abilities API execution stays dry-run' );
+npcink_governance_core_smoke_assert( true === (bool) ( $trusted_external_result['host_governed'] ?? false ), 'trusted Adapter external WordPress Abilities API execution is host-governed' );
+npcink_governance_core_smoke_assert( true === (bool) ( $trusted_external_result['commit_required'] ?? false ), 'trusted Adapter external WordPress Abilities API execution still requires commit approval for mutation' );
+npcink_governance_core_smoke_assert( 0 === (int) ( $trusted_external_result['post_id'] ?? -1 ), 'trusted Adapter external dry-run does not create a post id' );
+npcink_governance_core_smoke_assert( 'dry_run' === (string) ( $trusted_external_result['status'] ?? '' ), 'trusted Adapter external execution returns dry-run status' );
+npcink_governance_core_smoke_assert( 'create_draft' === (string) ( $trusted_external_result['preview']['action'] ?? '' ), 'trusted Adapter external execution runs the target create-draft ability' );
+npcink_governance_core_smoke_assert( null === get_page_by_title( $trusted_draft_title, OBJECT, 'post' ), 'trusted Adapter external dry-run does not create the post draft' );
 
 $trusted_record_denied = npcink_governance_core_smoke_rest_result_as_app(
 	'POST',
@@ -2567,12 +2615,12 @@ $trusted_recorded = npcink_governance_core_smoke_rest_as_app(
 		'correlation_id'      => (string) ( $trusted_preflight['execution_handoff']['correlation_id'] ?? '' ),
 		'approved_input_hash' => (string) ( $trusted_preflight['execution_handoff']['approved_input_hash'] ?? '' ),
 		'adapter_request_id'  => 'trusted-record-success-' . $npcink_governance_core_smoke_run_id,
-		'execution_mode'      => 'single_post',
+		'execution_mode'      => 'wp_abilities_rest_dry_run',
 		'executed_count'      => 1,
 		'failed_count'        => 0,
 	)
 );
-npcink_governance_core_smoke_assert( 'executed' === (string) ( $trusted_recorded['status'] ?? '' ), 'execution recorder app records successful execution result' );
+npcink_governance_core_smoke_assert( 'executed' === (string) ( $trusted_recorded['status'] ?? '' ), 'execution recorder app records successful external ability result' );
 
 $rate_app = npcink_governance_core_smoke_rest(
 	'POST',
