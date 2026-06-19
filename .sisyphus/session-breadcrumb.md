@@ -1,5 +1,24 @@
 # Session Breadcrumb
 
+## 2026-06-20 — Proposal status transition matrix covered
+
+- **Module**: Core proposal lifecycle state transitions.
+- **Status**: Proposal lifecycle rules now have an executable fail-closed
+  matrix across pending, approved, rejected, expired, archived, executed, and
+  execution-failed records.
+- **Completed**:
+  - Added matrix fixtures for every terminal and non-terminal proposal status.
+  - Covered approve, reject, archive, reopen, and execution-result recording
+    without a valid handoff/preflight binding.
+  - Added a static contract so the fail-closed matrix cannot be removed
+    silently.
+- **Verified**:
+  - `composer test:all` passed.
+- **Boundary**:
+  - This remains proposal lifecycle governance only. No ability execution,
+    workflow runtime, task queue, batch execution console, Adapter behavior,
+    provider routing, credentials, or WordPress write implementation changed.
+
 ## 2026-06-20 — Execution-result recording tightened
 
 - **Module**: Core proposal lifecycle execution-result recording.

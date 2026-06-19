@@ -1387,6 +1387,8 @@ foreach (
 		'npcink_governance_core_app_audit_failed',
 		'Unaudited proposal creation is deleted.',
 		'rolls status back to pending',
+		'Status matrix',
+		'record_execution_without_handoff',
 		'App creation audit failure revokes the new key.',
 	) as $required
 ) {
