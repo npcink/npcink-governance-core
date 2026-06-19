@@ -1388,6 +1388,8 @@ foreach (
 		'Unaudited proposal creation is deleted.',
 		'rolls status back to pending',
 		'Status matrix',
+		'REST status matrix',
+		'record_execution_with_handoff',
 		'record_execution_without_handoff',
 		'App creation audit failure revokes the new key.',
 	) as $required

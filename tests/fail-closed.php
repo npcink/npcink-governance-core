@@ -1581,6 +1581,217 @@ function npcink_governance_core_fail_closed_run_status_matrix_operation( array $
 }
 
 /**
+ * Creates one controller-backed proposal fixture in a requested lifecycle status.
+ *
+ * @param string $status Proposal status.
+ * @return array{stack:array<string,mixed>,proposal:array<string,mixed>,preflight?:array<string,mixed>}
+ */
+function npcink_governance_core_fail_closed_rest_proposal_in_status( string $status ): array {
+	$stack    = npcink_governance_core_fail_closed_proposals_controller_stack();
+	$proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/update-post' ) );
+	npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'REST status matrix fixture proposal is created.' );
+
+	$proposal_id = (string) $proposal['proposal_id'];
+	if ( \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_PENDING === $status ) {
+		return array(
+			'stack'    => $stack,
+			'proposal' => $proposal,
+		);
+	}
+
+	if ( \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_APPROVED === $status ) {
+		$approved = $stack['service']->approve( $proposal_id, array( 'reason' => 'rest_status_matrix_setup' ) );
+		npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'REST status matrix fixture proposal is approved.' );
+		return array(
+			'stack'    => $stack,
+			'proposal' => $approved,
+		);
+	}
+
+	if ( \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_REJECTED === $status ) {
+		$rejected = $stack['service']->reject( $proposal_id, array( 'reason' => 'rest_status_matrix_setup' ) );
+		npcink_governance_core_fail_closed_assert( ! is_wp_error( $rejected ), 'REST status matrix fixture proposal is rejected.' );
+		return array(
+			'stack'    => $stack,
+			'proposal' => $rejected,
+		);
+	}
+
+	if ( \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_EXPIRED === $status || \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_ARCHIVED === $status ) {
+		$expired = $stack['proposals']->update_status_when(
+			$proposal_id,
+			\Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_PENDING,
+			\Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_EXPIRED
+		);
+		npcink_governance_core_fail_closed_assert( is_array( $expired ), 'REST status matrix fixture proposal is expired.' );
+		if ( \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_EXPIRED === $status ) {
+			return array(
+				'stack'    => $stack,
+				'proposal' => $expired,
+			);
+		}
+
+		$archived = $stack['service']->archive( $proposal_id, array( 'reason' => 'rest_status_matrix_setup' ) );
+		npcink_governance_core_fail_closed_assert( ! is_wp_error( $archived ), 'REST status matrix fixture proposal is archived.' );
+		return array(
+			'stack'    => $stack,
+			'proposal' => $archived,
+		);
+	}
+
+	if ( \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_EXECUTED === $status || \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_EXECUTION_FAILED === $status ) {
+		$approved = $stack['service']->approve( $proposal_id, array( 'reason' => 'rest_status_matrix_terminal_setup' ) );
+		npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'REST status matrix terminal fixture proposal is approved.' );
+		$preflight = $stack['preflight']->preflight( $proposal_id );
+		npcink_governance_core_fail_closed_assert( ! is_wp_error( $preflight ), 'REST status matrix terminal fixture proposal passes preflight.' );
+		$recorded = $stack['service']->record_execution_result(
+			$proposal_id,
+			array(
+				'execution_status'    => \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_EXECUTED === $status ? 'succeeded' : 'failed',
+				'correlation_id'      => (string) ( $preflight['correlation_id'] ?? '' ),
+				'approved_input_hash' => (string) ( $preflight['approval_context']['approved_input_hash'] ?? '' ),
+				'adapter_request_id'  => 'rest-status-matrix-terminal',
+				'execution_mode'      => 'single_post',
+				'executed_count'      => \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_EXECUTED === $status ? 1 : 0,
+				'failed_count'        => \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_EXECUTION_FAILED === $status ? 1 : 0,
+			)
+		);
+		npcink_governance_core_fail_closed_assert( ! is_wp_error( $recorded ), 'REST status matrix terminal fixture records execution result.' );
+		return array(
+			'stack'     => $stack,
+			'proposal'  => $recorded,
+			'preflight' => $preflight,
+		);
+	}
+
+	npcink_governance_core_fail_closed_assert( false, 'Unsupported REST status matrix fixture status: ' . $status );
+	return array(
+		'stack'    => $stack,
+		'proposal' => $proposal,
+	);
+}
+
+/**
+ * Returns one WP_Error status code.
+ *
+ * @param WP_Error $error Error.
+ * @return int
+ */
+function npcink_governance_core_fail_closed_error_http_status( WP_Error $error ): int {
+	$data = $error->get_error_data();
+
+	return is_array( $data ) ? (int) ( $data['status'] ?? 0 ) : 0;
+}
+
+/**
+ * Runs one public REST lifecycle operation for the proposal status matrix.
+ *
+ * @param array<string,mixed> $fixture Matrix fixture.
+ * @param string              $operation Operation key.
+ * @return mixed
+ */
+function npcink_governance_core_fail_closed_run_rest_status_matrix_operation( array $fixture, string $operation ) {
+	$stack       = $fixture['stack'];
+	$controller  = $stack['controller'];
+	$proposal_id = (string) ( $fixture['proposal']['proposal_id'] ?? '' );
+
+	if ( 'approve' === $operation ) {
+		return $controller->approve_proposal( new WP_REST_Request( array( 'proposal_id' => $proposal_id ) ) );
+	}
+	if ( 'reject' === $operation ) {
+		return $controller->reject_proposal( new WP_REST_Request( array( 'proposal_id' => $proposal_id ) ) );
+	}
+	if ( 'commit_preflight' === $operation ) {
+		return $controller->commit_preflight( new WP_REST_Request( array( 'proposal_id' => $proposal_id ) ) );
+	}
+	if ( 'record_execution_without_handoff' === $operation ) {
+		return $controller->record_execution(
+			new WP_REST_Request(
+				array(
+					'proposal_id'          => $proposal_id,
+					'execution_status'     => 'succeeded',
+					'correlation_id'       => 'rest-status-matrix-no-matching-handoff',
+					'approved_input_hash'  => str_repeat( 'e', 64 ),
+					'adapter_request_id'   => 'rest-status-matrix',
+					'execution_mode'       => 'single_post',
+					'executed_count'       => 1,
+				)
+			)
+		);
+	}
+	if ( 'record_execution_with_handoff' === $operation ) {
+		if ( \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_APPROVED !== (string) ( $fixture['proposal']['status'] ?? '' ) ) {
+			return $controller->record_execution(
+				new WP_REST_Request(
+					array(
+						'proposal_id'          => $proposal_id,
+						'execution_status'     => 'succeeded',
+						'correlation_id'       => 'rest-status-matrix-no-matching-handoff',
+						'approved_input_hash'  => str_repeat( 'e', 64 ),
+						'adapter_request_id'   => 'rest-status-matrix',
+						'execution_mode'       => 'single_post',
+						'executed_count'       => 1,
+					)
+				)
+			);
+		}
+
+		$preflight = $controller->commit_preflight( new WP_REST_Request( array( 'proposal_id' => $proposal_id ) ) );
+		if ( is_wp_error( $preflight ) ) {
+			return $preflight;
+		}
+		npcink_governance_core_fail_closed_assert( $preflight instanceof WP_REST_Response, 'REST status matrix execution fixture preflight returns a response.' );
+		$data             = $preflight->get_data();
+		$approval_context = is_array( $data ) && is_array( $data['approval_context'] ?? null ) ? $data['approval_context'] : array();
+
+		return $controller->record_execution(
+			new WP_REST_Request(
+				array(
+					'proposal_id'          => $proposal_id,
+					'execution_status'     => 'succeeded',
+					'correlation_id'       => (string) ( is_array( $data ) ? ( $data['correlation_id'] ?? '' ) : '' ),
+					'approved_input_hash'  => (string) ( $approval_context['approved_input_hash'] ?? '' ),
+					'adapter_request_id'   => 'rest-status-matrix',
+					'execution_mode'       => 'single_post',
+					'executed_count'       => 1,
+				)
+			)
+		);
+	}
+
+	npcink_governance_core_fail_closed_assert( false, 'Unsupported REST status matrix operation: ' . $operation );
+	return null;
+}
+
+/**
+ * Returns the expected REST status matrix error code for a blocked operation.
+ *
+ * @param string $status Proposal status.
+ * @param string $operation Operation key.
+ * @return string
+ */
+function npcink_governance_core_fail_closed_rest_status_matrix_error_code( string $status, string $operation ): string {
+	if ( 'approve' === $operation || 'reject' === $operation ) {
+		return 'npcink_governance_core_proposal_already_decided';
+	}
+	if ( 'commit_preflight' === $operation ) {
+		return 'npcink_governance_core_proposal_not_approved';
+	}
+	if ( in_array( $operation, array( 'record_execution_without_handoff', 'record_execution_with_handoff' ), true ) ) {
+		if ( in_array( $status, array( \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_EXECUTED, \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_EXECUTION_FAILED ), true ) ) {
+			return 'npcink_governance_core_execution_record_already_recorded';
+		}
+		if ( \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_APPROVED === $status ) {
+			return 'npcink_governance_core_execution_record_preflight_missing';
+		}
+
+		return 'npcink_governance_core_execution_record_not_allowed';
+	}
+
+	return '';
+}
+
+/**
  * Creates a representative Gutenberg block input.
  *
  * @return array<string,mixed>
@@ -4422,6 +4633,52 @@ foreach ( $proposal_status_matrix_statuses as $matrix_status ) {
 		}
 
 		npcink_governance_core_fail_closed_assert( is_wp_error( $result ), $message . ' fails closed.' );
+		npcink_governance_core_fail_closed_assert( is_array( $current ) && $matrix_status === (string) ( $current['status'] ?? '' ), $message . ' keeps original status.' );
+	}
+}
+
+$rest_status_matrix_operations = array(
+	'approve'                          => array(
+		'allowed_from' => array( \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_PENDING ),
+		'target'       => \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_APPROVED,
+	),
+	'reject'                           => array(
+		'allowed_from' => array( \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_PENDING ),
+		'target'       => \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_REJECTED,
+	),
+	'commit_preflight'                 => array(
+		'allowed_from' => array( \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_APPROVED ),
+		'target'       => \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_APPROVED,
+	),
+	'record_execution_without_handoff' => array(
+		'allowed_from' => array(),
+		'target'       => '',
+	),
+	'record_execution_with_handoff'    => array(
+		'allowed_from' => array( \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_APPROVED ),
+		'target'       => \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_EXECUTED,
+	),
+);
+
+foreach ( $proposal_status_matrix_statuses as $matrix_status ) {
+	foreach ( $rest_status_matrix_operations as $matrix_operation => $matrix_rule ) {
+		$wpdb       = npcink_governance_core_fail_closed_reset_db();
+		$fixture    = npcink_governance_core_fail_closed_rest_proposal_in_status( $matrix_status );
+		$proposal_id = (string) ( $fixture['proposal']['proposal_id'] ?? '' );
+		$result      = npcink_governance_core_fail_closed_run_rest_status_matrix_operation( $fixture, $matrix_operation );
+		$allowed     = in_array( $matrix_status, (array) $matrix_rule['allowed_from'], true );
+		$current     = $fixture['stack']['proposals']->find( $proposal_id );
+		$message     = 'REST status matrix ' . $matrix_operation . ' from ' . $matrix_status;
+
+		if ( $allowed ) {
+			npcink_governance_core_fail_closed_assert( $result instanceof WP_REST_Response && 200 === $result->get_status(), $message . ' returns HTTP 200 response.' );
+			npcink_governance_core_fail_closed_assert( is_array( $current ) && (string) $matrix_rule['target'] === (string) ( $current['status'] ?? '' ), $message . ' reaches expected status.' );
+			continue;
+		}
+
+		npcink_governance_core_fail_closed_assert( is_wp_error( $result ), $message . ' returns WP_Error.' );
+		npcink_governance_core_fail_closed_assert( npcink_governance_core_fail_closed_rest_status_matrix_error_code( $matrix_status, $matrix_operation ) === $result->get_error_code(), $message . ' returns stable error code.' );
+		npcink_governance_core_fail_closed_assert( 409 === npcink_governance_core_fail_closed_error_http_status( $result ), $message . ' maps to HTTP 409.' );
 		npcink_governance_core_fail_closed_assert( is_array( $current ) && $matrix_status === (string) ( $current['status'] ?? '' ), $message . ' keeps original status.' );
 	}
 }

@@ -1,5 +1,26 @@
 # Session Breadcrumb
 
+## 2026-06-20 — REST proposal status mapping covered
+
+- **Module**: Core proposal lifecycle REST/API mapping.
+- **Status**: Public proposal REST handlers now have fail-closed matrix
+  coverage for service-layer lifecycle outcomes and HTTP status metadata.
+- **Completed**:
+  - Added controller-backed fixtures for every proposal lifecycle status.
+  - Covered public `approve`, `reject`, `commit-preflight`,
+    `record-execution` without handoff, and `record-execution` with a valid
+    handoff.
+  - Asserted invalid public transitions return stable `WP_Error` codes with
+    HTTP `409` metadata while preserving the original proposal status.
+  - Updated testing strategy and static contracts for REST matrix coverage.
+- **Verified**:
+  - `composer test:all` passed.
+- **Boundary**:
+  - This remains REST/API contract testing for governance lifecycle only. No
+    archive/reopen REST routes, final execution route, ability execution,
+    workflow runtime, task queue, batch execution console, Adapter behavior,
+    provider routing, credentials, or WordPress write implementation changed.
+
 ## 2026-06-20 — Proposal status transition matrix covered
 
 - **Module**: Core proposal lifecycle state transitions.
