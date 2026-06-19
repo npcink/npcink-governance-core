@@ -104,8 +104,8 @@ route.
 `npcink-toolbox/build-article-write-plan` is the P0 AI-assisted writing
 handoff. It must return `artifact_type=article_write_plan`, `version>=1`,
 `requires_approval=true`, `dry_run=true`, `commit_execution=false`, and the
-standard article artifacts documented in
-[Article Writing Workflow Contract](article-writing-workflow-contract.md).
+standard article artifacts documented by the owning product or ability
+repository. Core no longer keeps the article workflow contract locally.
 
 Core accepts that plan only when `article_risk_report.ready_for_proposal=true`,
 `article_risk_report.risk_level` is not `high`,
@@ -264,9 +264,9 @@ must not produce article drafts, `article_write_plan` candidates, or bulk
 article artifacts for Core intake. If a local host runs the
 `article_draft_v1` recipe, Core still receives only the same
 `npcink-toolbox/build-article-write-plan` output and applies the same
-single-draft acceptance rules. See
-[Ability Recipe Orchestration Contract](ability-recipe-orchestration-contract.md)
-and [Cloud Bulk Article Run Contract](cloud-bulk-article-run-contract.md).
+single-draft acceptance rules. Recipe orchestration and Cloud-writing
+prohibition details belong in the owning product or ability repository; Core
+keeps only this governance intake boundary.
 
 `npcink-toolbox/build-article-batch-write-plan` is the bounded local batch
 draft handoff for the same Article Assistant Workbench. It is not a Cloud

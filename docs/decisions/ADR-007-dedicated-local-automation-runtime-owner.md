@@ -8,10 +8,9 @@ Accepted
 
 ## Context
 ADR-006 keeps unattended batch automation out of Core and the OpenClaw Adapter
-until a dedicated runtime contract exists. The
-[Local Automation Runtime Contract](../local-automation-runtime-contract.md)
-now defines the required boundary and runtime semantics, but it intentionally
-does not choose an implementation owner.
+until a dedicated runtime contract exists. Earlier Core-local runtime planning
+artifacts proved the boundary, but the implementation contract now belongs in
+the dedicated runtime owner rather than this Core repository.
 
 Without an explicit owner, future work can drift in three bad directions:
 
@@ -55,8 +54,8 @@ retry processor, dead-letter processor, or unattended approval path.
 
 This Core pass does not create the development repository, does not alter
 Toolbox packaging, and does not implement runtime code. It records the owner
-and packaging decision and provides Phase 1 schema and dry-run replay artifacts
-that the future runtime owner must consume.
+and packaging decision only. Phase 1 schema and dry-run replay artifacts must
+be created in the future runtime owner repo or isolated runtime module.
 
 ## Phase 1 Scope
 Phase 1 is contract and replay only.
@@ -103,14 +102,10 @@ before implementation begins. That boundary must repeat these hard blocks:
 - no provider key, prompt/preset, or billing truth ownership.
 
 ## Handoff Artifacts
-Core keeps planning artifacts only:
-
-- [Local Automation Runtime Contract](../local-automation-runtime-contract.md)
-- [Local Automation Runtime Phase 1 Schema](../local-automation-runtime-phase-1-schema.md)
-- `tests/fixtures/local-automation-runtime-dry-run-replay.json`
-
-These artifacts are examples and contracts for a future repo. They are not Core
-runtime inputs and are not loaded by Core plugin runtime.
+Core does not keep runtime schema, dry-run replay fixtures, worker contracts, or
+lease/retry/dead-letter contracts locally. The future runtime owner must create
+and test those artifacts in its own repository or isolated module. Core docs
+may reference only the owner decision and the governance handoff boundary.
 
 ## Alternatives Considered
 

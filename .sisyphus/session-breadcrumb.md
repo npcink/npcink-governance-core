@@ -1,5 +1,30 @@
 # Session Breadcrumb
 
+## 2026-06-20 — External product/runtime contracts moved out of Core
+
+- **Module**: Core boundary documentation and static contracts.
+- **Status**: Core no longer keeps external product workflow or future runtime
+  implementation contracts locally.
+- **Completed**:
+  - Deleted Core-local article recipe, article workflow, Cloud bulk-writing,
+    Content Metadata Delta implementation prompt, local automation runtime
+    contract/schema, and local automation dry-run replay fixture artifacts.
+  - Added a thin `External Owner Boundary Notes` document that maps each moved
+    surface to its owner and states that it is not an implementation contract.
+  - Updated README, Next Stage Plan, Plan-to-Proposal docs, project history,
+    ADR-006, and ADR-007 to treat article/product/runtime details as external
+    owner responsibilities while keeping Core proposal/preflight/audit
+    boundaries intact.
+  - Flipped static contracts from requiring those external artifacts to
+    asserting they do not reappear in Core.
+- **Verified**:
+  - `composer test:all` passed.
+- **Boundary**:
+  - Documentation and static contract cleanup only. No REST routes, database
+    schema, proposal lifecycle, Adapter behavior, workflow runtime, scheduler,
+    worker, queue, provider credential storage, Cloud writing, or final
+    execution behavior changed.
+
 ## 2026-06-19 — Bounded history cleanup activated
 
 - **Module**: Core Settings history retention and client access token cleanup.

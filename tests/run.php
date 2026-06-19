@@ -158,9 +158,7 @@ foreach (
 		'Third-Party Ability Provider Guide',
 		'Third-party ability providers can integrate without adopting',
 		'allowlisted read-only planning',
-		'Ability Recipe Orchestration Contract',
-		'Article Writing Workflow Contract',
-		'Cloud Bulk Article Run Contract',
+		'External Owner Boundary Notes',
 		'workflow/task queues, batch execution consoles',
 		'Review Queue, pending proposal queue',
 		'Those terms do not permit workflow/task queue ownership',
@@ -180,11 +178,8 @@ foreach (
 		'ADR-005: Keep Core Independent And Standardize Channel Adapters',
 		'ADR-006: Unattended Batch Automation Runtime Boundary',
 		'ADR-007: Dedicated Local Automation Runtime Owner',
-		'Local Automation Runtime Contract',
-		'Local Automation Runtime Phase 1 Schema',
 		'npcink-local-automation-runtime',
 		'modules/local-automation-runtime/',
-		'local-automation-runtime-dry-run-replay.json',
 		'Jobs, leases, retry workers, scheduler state',
 		'AI Development Workstream Summary',
 		'Operation Classification Contract',
@@ -701,8 +696,8 @@ npcink_governance_core_assert( false !== strpos( $readme, 'Create Draft Governan
 npcink_governance_core_assert( false !== strpos( $readme, 'Set Post SEO Meta Governance Scenario' ), 'README links Set Post SEO Meta Governance Scenario.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Approve Comment Governance Scenario' ), 'README links Approve Comment Governance Scenario.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Taxonomy Terms Preview Governance Scenario' ), 'README links Taxonomy Terms Preview Governance Scenario.' );
-npcink_governance_core_assert( false !== strpos( $readme, 'Article writing is now treated as local Ability recipe orchestration' ), 'README documents local Ability recipe orchestration boundary.' );
-npcink_governance_core_assert( false !== strpos( $readme, 'Cloud must not generate article drafts' ), 'README prohibits Cloud writing generation.' );
+npcink_governance_core_assert( false !== strpos( $readme, 'Article writing is an external product/ability concern' ), 'README keeps article product ownership outside Core.' );
+npcink_governance_core_assert( false !== strpos( $readme, 'Cloud must not provide Core with' ), 'README prohibits Cloud writing generation for Core intake.' );
 
 $adapter_policy_acceptance = npcink_governance_core_read( $root . '/docs/adapter-handoff-and-approval-policy-acceptance.md' );
 foreach (
@@ -1072,89 +1067,33 @@ npcink_governance_core_assert( false !== strpos( $adr_007, 'Toolbox fixed-flow' 
 npcink_governance_core_assert( false !== strpos( $adr_007, 'Phase 1 is contract and replay only' ), 'ADR-007 keeps Phase 1 contract and replay only.' );
 npcink_governance_core_assert( false !== strpos( $adr_007, 'This Core pass does not create the development repository' ), 'ADR-007 keeps this Core pass implementation-free.' );
 
-$local_automation_runtime_contract = npcink_governance_core_read( $root . '/docs/local-automation-runtime-contract.md' );
+$external_owner_boundary = npcink_governance_core_read( $root . '/docs/external-owner-boundary-notes.md' );
 foreach (
 	array(
-		'Status: planning contract',
-		'ADR-007: Dedicated Local Automation Runtime Owner',
+		'Status: active boundary note',
+		'not an implementation contract',
+		'Article recipe orchestration',
+		'Cloud or hosted article writing',
+		'Local automation runtime',
+		'Content Metadata Delta product workbench',
 		'npcink-local-automation-runtime',
 		'magick-ai-toolbox',
-		'modules/local-automation-runtime/',
-		'Toolbox fixed',
-		'does not add Core REST',
-		'Core final write execution',
-		'contract_version',
-		'npcink_local_automation_runtime.v1',
-		'job_id',
-		'idempotency_key',
-		'core_handoff',
-		'Allowed job statuses',
-		'awaiting_core_approval',
-		'awaiting_core_preflight',
-		'dead_lettered',
-		'compare-and-set style',
-		'eligibility_summary',
-		'blocked_items',
-		'Core proposal creation fails',
-		'approved_input_hash',
-		'lease_token',
-		'lease_expires_at',
-		'no infinite retries',
-		'next_retry_at',
-		'Action execution must carry an action-level idempotency key',
-		'$outputs.prior_action.field',
-		'approval scope',
-		'kill switch for all scheduled unattended runs',
-		'runtime.job.dead_lettered',
-		'runtime.action.lease_acquired',
-		'Before a supervised worker ships',
-		'Before scheduled unattended jobs ship',
-		'no unattended runtime, no scheduler, no worker, no runtime job table',
+		'Do not add these files or equivalents back to Core',
+		'docs/local-automation-runtime-contract.md',
+		'tests/fixtures/local-automation-runtime-dry-run-replay.json',
 	) as $required
 ) {
-	npcink_governance_core_assert( false !== strpos( $local_automation_runtime_contract, $required ), 'Local automation runtime contract contains required text: ' . $required );
+	npcink_governance_core_assert( false !== strpos( $external_owner_boundary, $required ), 'External owner boundary note contains required text: ' . $required );
 }
-
-$local_automation_phase_1_schema = npcink_governance_core_read( $root . '/docs/local-automation-runtime-phase-1-schema.md' );
 foreach (
 	array(
-		'Status: planning schema',
-		'npcink-local-automation-runtime',
-		'npcink_local_automation_runtime.v1',
-		'dry_run_replay',
-		'background_execution',
-		'Allowed Phase 1 `status` values',
-		'Phase 1 fixtures must not use `running`',
-		'core_execution` and `commit_execution` must both be `false`',
-		'Action execution events are intentionally excluded from Phase 1 fixtures',
-		'"phase": "phase_1_contract_only"',
-		'"worker_created": false',
-		'"scheduler_created": false',
-		'"dead_letter_processor_created": false',
-	) as $required
+		'docs/local-automation-runtime-contract.md',
+		'docs/local-automation-runtime-phase-1-schema.md',
+		'tests/fixtures/local-automation-runtime-dry-run-replay.json',
+	) as $removed_path
 ) {
-	npcink_governance_core_assert( false !== strpos( $local_automation_phase_1_schema, $required ), 'Local automation runtime Phase 1 schema contains required text: ' . $required );
+	npcink_governance_core_assert( ! file_exists( $root . '/' . $removed_path ), 'Core must not keep local automation runtime artifact: ' . $removed_path );
 }
-
-$local_automation_replay_text = npcink_governance_core_read( $root . '/tests/fixtures/local-automation-runtime-dry-run-replay.json' );
-$local_automation_replay      = json_decode( $local_automation_replay_text, true );
-npcink_governance_core_assert( is_array( $local_automation_replay ), 'Local automation runtime dry-run replay fixture is valid JSON.' );
-npcink_governance_core_assert( 'npcink_local_automation_runtime.v1' === ( $local_automation_replay['contract_version'] ?? '' ), 'Local automation runtime replay fixture declares contract version.' );
-npcink_governance_core_assert( 'dry_run_replay' === ( $local_automation_replay['mode'] ?? '' ), 'Local automation runtime replay fixture is dry-run replay only.' );
-npcink_governance_core_assert( 'npcink-local-automation-runtime' === ( $local_automation_replay['runtime_owner'] ?? '' ), 'Local automation runtime replay fixture names the future owner.' );
-npcink_governance_core_assert( false === ( $local_automation_replay['core_runtime_execution'] ?? true ), 'Local automation runtime replay fixture keeps Core runtime execution false.' );
-npcink_governance_core_assert( false === ( $local_automation_replay['background_execution'] ?? true ), 'Local automation runtime replay fixture keeps background execution false.' );
-npcink_governance_core_assert( isset( $local_automation_replay['job']['eligibility_summary'] ) && is_array( $local_automation_replay['job']['eligibility_summary'] ), 'Local automation runtime replay fixture includes eligibility summary.' );
-npcink_governance_core_assert( isset( $local_automation_replay['job']['blocked_items'] ) && is_array( $local_automation_replay['job']['blocked_items'] ), 'Local automation runtime replay fixture includes blocked items.' );
-npcink_governance_core_assert( isset( $local_automation_replay['job']['actions'] ) && 2 === count( $local_automation_replay['job']['actions'] ), 'Local automation runtime replay fixture includes two dry-run actions.' );
-npcink_governance_core_assert( false === ( $local_automation_replay['core_handoff']['core_execution'] ?? true ), 'Local automation runtime replay fixture keeps handoff core_execution false.' );
-npcink_governance_core_assert( false === ( $local_automation_replay['core_handoff']['commit_execution'] ?? true ), 'Local automation runtime replay fixture keeps handoff commit_execution false.' );
-npcink_governance_core_assert( true === ( $local_automation_replay['operator_controls']['kill_switch'] ?? false ), 'Local automation runtime replay fixture includes kill switch control.' );
-npcink_governance_core_assert( true === ( $local_automation_replay['acceptance']['schema_only'] ?? false ), 'Local automation runtime replay fixture is schema-only.' );
-npcink_governance_core_assert( true === ( $local_automation_replay['acceptance']['dry_run_replay_only'] ?? false ), 'Local automation runtime replay fixture is replay-only.' );
-npcink_governance_core_assert( false === ( $local_automation_replay['acceptance']['worker_created'] ?? true ), 'Local automation runtime replay fixture does not create a worker.' );
-npcink_governance_core_assert( false === ( $local_automation_replay['acceptance']['scheduler_created'] ?? true ), 'Local automation runtime replay fixture does not create a scheduler.' );
-npcink_governance_core_assert( false === ( $local_automation_replay['acceptance']['dead_letter_processor_created'] ?? true ), 'Local automation runtime replay fixture does not create a dead-letter processor.' );
 
 $operation_classification = npcink_governance_core_read( $root . '/docs/operation-classification-contract.md' );
 $operation_classifier = npcink_governance_core_read( $root . '/includes/Governance/Operation_Classifier.php' );
@@ -2023,103 +1962,24 @@ npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'regression-o
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'replacement rule counts versus actual replacements' ), 'Next stage plan keeps media replacement count verification in Abilities.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'stop expanding the media optimization implementation in Core' ), 'Next stage plan records the media optimization stop decision.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'classifier-driven authorization paths' ), 'Next stage plan redirects new product energy to classifier-driven authorization paths.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Core no longer keeps the' ) && false !== strpos( $next_stage_plan, 'article recipe or Cloud bulk-writing planning contracts locally' ), 'Next stage plan moves article recipe contracts outside Core.' );
 
-$article_writing_contract = npcink_governance_core_read( $root . '/docs/article-writing-workflow-contract.md' );
 foreach (
 	array(
-		'Status: active planning contract',
-		'article_draft_v1',
-		'npcink-toolbox/build-article-write-plan',
-		'npcink-toolbox/get-content-discoverability-context',
-		'npcink-abilities-toolkit/create-draft',
-		'article_goal_brief',
-		'research_evidence_pack',
-		'article_outline',
-		'article_draft_candidate',
-		'discoverability_pack',
-		'article_risk_report',
-		'article_write_plan',
-		'ready_for_proposal',
-		'blocked_claims',
-		'status',
-		'draft',
-		'commit_execution=false',
-		'Ability Recipe Orchestration Contract',
-		'Cloud Bulk Article Run Contract',
-		'Cloud must not generate article drafts',
-		'Final WordPress writes stay local and Abilities API based',
-		'Cloud Addon must not import Cloud article artifacts',
-		'not a second control',
-		'Article Assistant Workbench',
-		'not an article generation product',
-		'one article and one draft proposal per run',
-		'no batch writing',
-		'npcink-toolbox/build-article-batch-write-plan',
-		'npcink-toolbox/build-article-media-batch-write-plan',
-		'article_batch_write_plan',
-		'article_media_batch_write_plan',
-		'2 to 5 actions',
-		'featured_image_candidate',
-		'npcink-abilities-toolkit/upload-media-from-url',
-		'npcink-abilities-toolkit/set-post-featured-image',
-		'plan_to_proposal_batch',
-	) as $required
+		'docs/article-writing-workflow-contract.md',
+		'docs/ability-recipe-orchestration-contract.md',
+		'docs/cloud-bulk-article-run-contract.md',
+		'docs/content-metadata-delta-implementation-prompt.md',
+	) as $removed_path
 ) {
-	npcink_governance_core_assert( false !== strpos( $article_writing_contract, $required ), 'Article writing workflow contract contains required text: ' . $required );
+	npcink_governance_core_assert( ! file_exists( $root . '/' . $removed_path ), 'Core must not keep external product contract artifact: ' . $removed_path );
 }
-
-$ability_recipe_contract = npcink_governance_core_read( $root . '/docs/ability-recipe-orchestration-contract.md' );
-foreach (
-	array(
-		'Status: active planning contract',
-		'An ability recipe is a deterministic orchestration plan',
-		'Article drafting is the first example recipe',
-		'article_draft_v1',
-		'npcink-toolbox/get-content-discoverability-context',
-		'npcink-toolbox/build-article-write-plan',
-		'npcink-toolbox/build-article-batch-write-plan',
-		'npcink-toolbox/build-article-media-batch-write-plan',
-		'npcink-abilities-toolkit/create-draft',
-		'Cloud must not provide article writing generation',
-		'Cloud must not store article body generation jobs',
-		'Cloud must also not generate `article_batch_write_plan` or',
-		'`article_media_batch_write_plan` candidates',
-		'Core must not become article-aware beyond validating supported plan output',
-		'Do not add Cloud article import flows',
-		'local article assistant workbench',
-		'one local article at a time',
-		'article_batch_draft_v1',
-		'article_media_batch_draft_v1',
-		'hidden content-generation platform',
-	) as $required
-) {
-	npcink_governance_core_assert( false !== strpos( $ability_recipe_contract, $required ), 'Ability recipe orchestration contract contains required text: ' . $required );
-}
-
-$cloud_bulk_article_contract = npcink_governance_core_read( $root . '/docs/cloud-bulk-article-run-contract.md' );
-foreach (
-	array(
-		'Status: prohibited and deprecated planning contract',
-		'bulk_article_run_v1',
-		'article writing generation',
-		'Cloud-produced `article_write_plan` candidates',
-		'Cloud-produced `article_batch_write_plan` candidates',
-		'Cloud-produced `article_media_batch_write_plan` candidates',
-		'Ability Recipe Orchestration Contract',
-		'article_write_plan',
-		'article_batch_write_plan',
-		'article_media_batch_write_plan',
-		'npcink-toolbox/build-article-write-plan',
-		'Core POST /proposals/from-plan',
-		'Cloud must not generate, store, or return article body content',
-		'local Ability recipe orchestration',
-		'Rejected Product Language',
-		'Cloud article generator',
-		'local Article Assistant Workbench',
-	) as $required
-) {
-	npcink_governance_core_assert( false !== strpos( $cloud_bulk_article_contract, $required ), 'Cloud bulk article run contract contains required text: ' . $required );
-}
+npcink_governance_core_assert( false !== strpos( $external_owner_boundary, 'Article recipe orchestration and Article Assistant UX' ), 'External owner boundary note moves article recipe ownership out of Core.' );
+npcink_governance_core_assert( false !== strpos( $external_owner_boundary, 'Cloud must remain runtime/detail only' ), 'External owner boundary note keeps Cloud writing out of Core.' );
+npcink_governance_core_assert( false !== strpos( $external_owner_boundary, 'Govern reviewed apply plans only' ), 'External owner boundary note moves Content Metadata Delta product workbench out of Core.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'standard article artifacts documented by the owning product or ability' ), 'Plan-to-proposal docs defer article workflow contract to external owner.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'Core no longer keeps the article workflow contract locally' ), 'Plan-to-proposal docs do not keep article workflow contract in Core.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'Recipe orchestration and Cloud-writing' ), 'Plan-to-proposal docs keep recipe and Cloud-writing details outside Core.' );
 
 $rest_api_contract = npcink_governance_core_read( $root . '/docs/rest-api-contract.md' );
 npcink_governance_core_assert( false !== strpos( $rest_api_contract, 'npcink-toolbox/build-nightly-inspection-review-plan' ) && false !== strpos( $rest_api_contract, 'source_context.cloud_core_intake_package.selected_review_items' ) && false !== strpos( $rest_api_contract, 'preview.nightly_inspection_review' ), 'REST API contract documents Nightly Morning Brief Core intake shape.' );

@@ -89,13 +89,11 @@ automation, or agency adapters should consume the same Core governance
 contracts instead of inheriting OpenClaw-specific assumptions.
 
 The next article workflow priority is simplification. Article drafting should
-be treated as the local `article_draft_v1` Ability recipe documented in
-[Ability Recipe Orchestration Contract](ability-recipe-orchestration-contract.md),
-not as a special Core feature and not as a Cloud writing product. The
-[Cloud Bulk Article Run Contract](cloud-bulk-article-run-contract.md) is now a
-prohibited/deprecated planning contract that prevents Cloud article draft,
-SEO-copy, bulk-writing, `article_write_plan`, or `article_batch_write_plan`
-generation.
+be treated as a local product/ability recipe outside Core, not as a special
+Core feature and not as a Cloud writing product. Core no longer keeps the
+article recipe or Cloud bulk-writing planning contracts locally; the owning
+product or ability repository must document those details. Core keeps only the
+allowlisted plan intake, proposal, approval, preflight, and audit boundary.
 
 ## Strategic Product Boundary
 
@@ -322,18 +320,17 @@ See [Set Post SEO Meta Governance Scenario](set-post-seo-meta-governance-scenari
 See [Approve Comment Governance Scenario](approve-comment-governance-scenario.md).
 See [Taxonomy Terms Preview Governance Scenario](taxonomy-terms-preview-governance-scenario.md).
 
-### 6A. Local Ability Recipe Orchestration
+### 6A. External Article Recipe Boundary
 
-Status: contract active, Cloud writing prohibited.
+Status: moved out of Core; Cloud writing prohibited.
 
-Goal: keep article drafting as a local Ability recipe and prevent Core, Cloud
-Addon, Toolbox, Adapter, or Cloud from growing article-specific control planes.
+Goal: keep article drafting and Article Assistant UX out of Core while
+preserving the Core-governed proposal handoff for allowlisted local plans.
 
 Acceptance:
 
-- Article drafting is represented as `article_draft_v1` recipe guidance.
-- Recipe steps reference real local Ability ids.
-- Toolbox may expose recipe UX and local artifacts.
+- article recipe details live in the owning product or ability repository;
+- Toolbox or another product module may expose recipe UX and local artifacts;
 - Core accepts imported plans only through the existing
   `POST /proposals/from-plan` contract.
 - final WordPress writes remain local, proposal-governed, preflighted, audited,
@@ -343,7 +340,7 @@ Acceptance:
 - no local workflow runtime, queue, retry worker, or bulk publish console is
   added to Core.
 
-See [Ability Recipe Orchestration Contract](ability-recipe-orchestration-contract.md).
+See [External Owner Boundary Notes](external-owner-boundary-notes.md).
 
 ### 7. Core Governance Operability
 

@@ -121,11 +121,11 @@ This is the current stage.
 No unattended runtime exists in this phase.
 
 ### Phase 1: Runtime Contract Only
-Define the
-[Local Automation Runtime Contract](../local-automation-runtime-contract.md),
-job schema, event taxonomy, authorization model, failure semantics, and dry-run
-replay fixtures. Add static contracts that keep Core and Adapter out of
-runtime ownership.
+Define the runtime contract, job schema, event taxonomy, authorization model,
+failure semantics, and dry-run replay fixtures in the future
+`npcink-local-automation-runtime` owner repo or isolated runtime module. Core
+must not keep those runtime implementation contracts locally. Add static
+contracts that keep Core and Adapter out of runtime ownership.
 
 No background execution should ship in this phase.
 

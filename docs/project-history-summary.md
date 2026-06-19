@@ -62,12 +62,9 @@ evidence before they report execution or rejection as final.
 
 ADR-006 and ADR-007 stopped unattended batch automation from being implemented
 inside Core or the OpenClaw Adapter. The future owner is
-`npcink-local-automation-runtime`, with Phase 1 limited to schema and dry-run
-replay. Core keeps only handoff artifacts:
-
-- `docs/local-automation-runtime-contract.md`
-- `docs/local-automation-runtime-phase-1-schema.md`
-- `tests/fixtures/local-automation-runtime-dry-run-replay.json`
+`npcink-local-automation-runtime`. Core no longer keeps future runtime schema
+or replay fixtures locally; those artifacts belong in the future runtime owner
+repo or isolated runtime module.
 
 The future runtime may be bundled into Toolbox for distribution only if it
 keeps its own namespace, table prefix, capabilities, kill switch, tests, and

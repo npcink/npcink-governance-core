@@ -108,13 +108,9 @@ Read the project handoff docs before starting a new implementation session:
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
 - [Operation Classification Contract](docs/operation-classification-contract.md)
 - [Plan To Proposal Governance](docs/plan-to-proposal-governance.md)
-- [Local Automation Runtime Contract](docs/local-automation-runtime-contract.md)
-- [Local Automation Runtime Phase 1 Schema](docs/local-automation-runtime-phase-1-schema.md)
 - [Current Stage Closeout And Handoff](docs/current-stage-closeout-and-handoff.md)
 - [Approval Policy Stage Closeout](docs/approval-policy-stage-closeout.md)
-- [Ability Recipe Orchestration Contract](docs/ability-recipe-orchestration-contract.md)
-- [Article Writing Workflow Contract](docs/article-writing-workflow-contract.md)
-- [Cloud Bulk Article Run Contract](docs/cloud-bulk-article-run-contract.md)
+- [External Owner Boundary Notes](docs/external-owner-boundary-notes.md)
 - [Create Draft Governance Scenario](docs/create-draft-governance-scenario.md)
 - [Set Post SEO Meta Governance Scenario](docs/set-post-seo-meta-governance-scenario.md)
 - [Approve Comment Governance Scenario](docs/approve-comment-governance-scenario.md)
@@ -131,7 +127,6 @@ Read the project handoff docs before starting a new implementation session:
 - [WordPress.org Release Gate](docs/wordpress-org-release-gate.md)
 - [Next Stage Plan](docs/next-stage-plan.md)
 - [Strategy And Product Split](docs/strategy-and-product-split.md)
-- [Content Metadata Delta Implementation Prompt](docs/content-metadata-delta-implementation-prompt.md)
 - [ADR-001: Rebuild Core As A Governance Layer](docs/decisions/ADR-001-rebuild-core-as-governance-layer.md)
 - [ADR-002: No Workflow Runtime In Core](docs/decisions/ADR-002-no-workflow-runtime-in-core.md)
 - [ADR-003: Keep Final Execution Outside Core For The Current Stage](docs/decisions/ADR-003-keep-final-execution-outside-core.md)
@@ -184,27 +179,21 @@ Adapter as the first channel adapter, standardize the shared channel adapter
 contract, and use the Operation Classification Contract before moving Toolbox
 or adapter flows to local admin consent or Core proposal paths.
 
-ADR-006 keeps unattended batch automation out of Core and the OpenClaw Adapter
-until a dedicated local automation runtime contract exists. Current batch work
-is reviewed governance only: Toolkit and Toolbox can expose eligibility,
-blocked items, retry guidance, and operator next actions; Core stores
-`batch_review_summary`; Adapter projects `batch_review_feedback` and executes
-nothing until Core approval, commit preflight, and its explicit allowlist pass.
-Jobs, leases, retry workers, scheduler state, dead-letter handling, and
-unattended approval loops require a separate runtime owner and contract.
-The [Local Automation Runtime Contract](docs/local-automation-runtime-contract.md)
-defines the future runtime's job model, action model, state machine, Core
-handoff, lease/retry/dead-letter behavior, idempotency, dependency resolution,
-authorization, operator controls, audit events, and acceptance gates without
-adding Core runtime ownership.
+ADR-006 keeps unattended batch automation out of Core and the OpenClaw Adapter.
+Current batch work is reviewed governance only: Toolkit and Toolbox can expose
+eligibility, blocked items, retry guidance, and operator next actions; Core
+stores `batch_review_summary`; Adapter projects `batch_review_feedback` and
+executes nothing until Core approval, commit preflight, and its explicit
+allowlist pass. Jobs, leases, retry workers, scheduler state, dead-letter
+handling, and unattended approval loops require a separate runtime owner and
+contract outside this repository.
 ADR-007 names the dedicated runtime owner as
 `npcink-local-automation-runtime`. It should be independently developed and
 independently testable, while product release packaging may bundle it inside
 Toolbox as `modules/local-automation-runtime/` if the module keeps its own
 namespace, table prefix, capabilities, kill switch, tests, and boundary docs.
-Phase 1 is schema and dry-run replay only: Core keeps the planning schema and
-`tests/fixtures/local-automation-runtime-dry-run-replay.json` as handoff
-artifacts, while runtime implementation waits for the dedicated owner.
+Core no longer keeps the future runtime schema or replay fixture locally; the
+future runtime owner must define those artifacts in its own repository.
 
 The taxonomy terms preview extension proves the same boundary for
 `npcink-abilities-toolkit/propose-post-taxonomy-terms` -> `npcink-abilities-toolkit/set-post-terms`: adapters
@@ -263,17 +252,13 @@ instead of an absolute local path. Typical Core boundary-sensitive diffs touch
 audit evidence, proposal persistence, credentials, REST authorization, app
 scope, rate limits, eval-lab wrappers, or release packaging.
 
-Article writing is now treated as local Ability recipe orchestration, not a
-Cloud writing product. The [Ability Recipe Orchestration Contract](docs/ability-recipe-orchestration-contract.md)
-keeps article drafting as a local `article_draft_v1` recipe over standard
-Abilities and Core-governed `write_actions`. The bounded
-`article_batch_draft_v1` profile may group 2 to 5 locally reviewed draft-only
-actions into one Core batch proposal, but it remains local and does not add
-Cloud writing, a queue, automatic approval, or Core execution. The
-[Cloud Bulk Article Run Contract](docs/cloud-bulk-article-run-contract.md) is a
-prohibited/deprecated planning contract: Cloud must not generate article drafts,
-SEO copy, bulk article runs, `article_write_plan` candidates, or
-`article_batch_write_plan` candidates.
+Article writing is an external product/ability concern, not a Core product.
+Core may govern allowlisted local article handoff payloads through
+`POST /proposals/from-plan`, but recipe orchestration, Article Assistant UX,
+draft generation, research, image selection, and product-side state belong in
+Toolbox, Abilities, or another product owner. Cloud must not provide Core with
+article drafts, SEO copy, bulk article runs, `article_write_plan` candidates,
+or `article_batch_write_plan` candidates.
 The accepted product surface is a local Article Assistant Workbench: one
 article or bounded reviewed draft batch, reviewed artifacts, and
 Core-governed draft proposals, not an article generation product or Cloud
