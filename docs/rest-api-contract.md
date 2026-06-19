@@ -1280,6 +1280,7 @@ Errors:
 | `npcink_governance_core_invalid_execution_status` | `400` | Execution status is not supported. |
 | `npcink_governance_core_execution_record_binding_required` | `400` | Required preflight binding fields are missing. |
 | `npcink_governance_core_execution_record_preflight_missing` | `409` | No matching Core preflight handoff exists for the supplied binding. |
+| `npcink_governance_core_execution_record_preflight_expired` | `409` | The matching Core preflight handoff has expired. |
 | `npcink_governance_core_execution_record_audit_failed` | `500` | Execution outcome could not be audited; status is rolled back. |
 
 Audit events:

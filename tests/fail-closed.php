@@ -1858,6 +1858,32 @@ function npcink_governance_core_fail_closed_audit_rows( string $proposal_id, str
 }
 
 /**
+ * Marks the latest test preflight handoff for one proposal as expired.
+ *
+ * @param string $proposal_id Proposal id.
+ * @return void
+ */
+function npcink_governance_core_fail_closed_expire_preflight_handoff( string $proposal_id ): void {
+	global $wpdb;
+
+	$rows = npcink_governance_core_fail_closed_audit_rows( $proposal_id, 'commit.preflighted' );
+	npcink_governance_core_fail_closed_assert( 1 === count( $rows ), 'Expired preflight fixture has one handoff to expire.' );
+	$metadata = json_decode( (string) ( $rows[0]['metadata_json'] ?? '{}' ), true );
+	$metadata = is_array( $metadata ) ? $metadata : array();
+	$metadata['expires_at'] = gmdate( 'c', time() - 60 );
+
+	$updated = $wpdb->update(
+		'wp_npcink_governance_core_audit_log',
+		array( 'metadata_json' => wp_json_encode( $metadata ) ),
+		array(
+			'proposal_id' => $proposal_id,
+			'event_name'  => 'commit.preflighted',
+		)
+	);
+	npcink_governance_core_fail_closed_assert( false !== $updated && 1 <= (int) $updated, 'Expired preflight fixture updates handoff TTL.' );
+}
+
+/**
  * Creates a trusted cleanup batch payload.
  *
  * @return array<string,mixed>
@@ -4739,6 +4765,40 @@ foreach ( $representative_ability_ids as $ability_id ) {
 $wpdb     = npcink_governance_core_fail_closed_reset_db();
 $stack    = npcink_governance_core_fail_closed_governance_stack();
 $proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/update-post' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Expired handoff proposal is created.' );
+$approved = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'expired_handoff' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'Expired handoff proposal is approved.' );
+$preflight = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $preflight ), 'Expired handoff proposal gets one preflight handoff.' );
+npcink_governance_core_fail_closed_expire_preflight_handoff( (string) $proposal['proposal_id'] );
+$expired_handoff_record = $stack['service']->record_execution_result(
+	(string) $proposal['proposal_id'],
+	array(
+		'execution_status'    => 'succeeded',
+		'correlation_id'      => (string) ( $preflight['correlation_id'] ?? '' ),
+		'approved_input_hash' => (string) ( $preflight['approval_context']['approved_input_hash'] ?? '' ),
+		'adapter_request_id'  => 'adapter-expired-handoff',
+		'execution_mode'      => 'single_post',
+		'executed_count'      => 1,
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $expired_handoff_record ), 'Expired preflight handoff cannot record execution.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_execution_record_preflight_expired' === $expired_handoff_record->get_error_code(), 'Expired preflight handoff uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 409 === npcink_governance_core_fail_closed_error_http_status( $expired_handoff_record ), 'Expired preflight handoff maps to HTTP 409.' );
+$after_expired_handoff = $stack['proposals']->find( (string) $proposal['proposal_id'] );
+npcink_governance_core_fail_closed_assert( is_array( $after_expired_handoff ) && 'approved' === (string) ( $after_expired_handoff['status'] ?? '' ), 'Expired preflight handoff leaves proposal approved.' );
+npcink_governance_core_fail_closed_assert( 0 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'proposal.executed' ) ), 'Expired preflight handoff does not write executed audit.' );
+npcink_governance_core_fail_closed_assert( 0 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'proposal.execution_failed' ) ), 'Expired preflight handoff does not write execution-failed audit.' );
+$expired_handoff_replay = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
+npcink_governance_core_fail_closed_assert( is_wp_error( $expired_handoff_replay ), 'Expired preflight handoff cannot be replaced by duplicate preflight.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_commit_preflight_already_issued' === $expired_handoff_replay->get_error_code(), 'Expired preflight duplicate uses already-issued error code.' );
+npcink_governance_core_fail_closed_assert( 409 === npcink_governance_core_fail_closed_error_http_status( $expired_handoff_replay ), 'Expired preflight duplicate maps to HTTP 409.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflighted' ) ), 'Expired preflight duplicate does not issue a second handoff.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), 'Expired preflight duplicate is audited as a failed preflight.' );
+
+$wpdb     = npcink_governance_core_fail_closed_reset_db();
+$stack    = npcink_governance_core_fail_closed_governance_stack();
+$proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/update-post' ) );
 npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Execution record proposal is created.' );
 $approved = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'execution_record' ) );
 npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'Execution record proposal is approved.' );
@@ -4753,6 +4813,9 @@ $missing_binding_record = $stack['service']->record_execution_result(
 );
 npcink_governance_core_fail_closed_assert( is_wp_error( $missing_binding_record ), 'Execution record without preflight binding fails.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_execution_record_binding_required' === $missing_binding_record->get_error_code(), 'Execution record missing binding uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 400 === npcink_governance_core_fail_closed_error_http_status( $missing_binding_record ), 'Execution record missing binding maps to HTTP 400.' );
+$after_missing_binding = $stack['proposals']->find( (string) $proposal['proposal_id'] );
+npcink_governance_core_fail_closed_assert( is_array( $after_missing_binding ) && 'approved' === (string) ( $after_missing_binding['status'] ?? '' ), 'Execution record missing binding leaves proposal approved.' );
 
 $wrong_hash_record = $stack['service']->record_execution_result(
 	(string) $proposal['proposal_id'],
@@ -4764,6 +4827,9 @@ $wrong_hash_record = $stack['service']->record_execution_result(
 );
 npcink_governance_core_fail_closed_assert( is_wp_error( $wrong_hash_record ), 'Execution record with mismatched approved input hash fails.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_execution_record_preflight_missing' === $wrong_hash_record->get_error_code(), 'Execution record wrong hash uses stable preflight binding error.' );
+npcink_governance_core_fail_closed_assert( 409 === npcink_governance_core_fail_closed_error_http_status( $wrong_hash_record ), 'Execution record wrong hash maps to HTTP 409.' );
+$after_wrong_hash = $stack['proposals']->find( (string) $proposal['proposal_id'] );
+npcink_governance_core_fail_closed_assert( is_array( $after_wrong_hash ) && 'approved' === (string) ( $after_wrong_hash['status'] ?? '' ), 'Execution record wrong hash leaves proposal approved.' );
 
 $wrong_correlation_record = $stack['service']->record_execution_result(
 	(string) $proposal['proposal_id'],
@@ -4775,6 +4841,10 @@ $wrong_correlation_record = $stack['service']->record_execution_result(
 );
 npcink_governance_core_fail_closed_assert( is_wp_error( $wrong_correlation_record ), 'Execution record with mismatched correlation id fails.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_execution_record_preflight_missing' === $wrong_correlation_record->get_error_code(), 'Execution record wrong correlation uses stable preflight binding error.' );
+npcink_governance_core_fail_closed_assert( 409 === npcink_governance_core_fail_closed_error_http_status( $wrong_correlation_record ), 'Execution record wrong correlation maps to HTTP 409.' );
+$after_wrong_correlation = $stack['proposals']->find( (string) $proposal['proposal_id'] );
+npcink_governance_core_fail_closed_assert( is_array( $after_wrong_correlation ) && 'approved' === (string) ( $after_wrong_correlation['status'] ?? '' ), 'Execution record wrong correlation leaves proposal approved.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflighted' ) ), 'Mismatched execution records do not add another preflight handoff.' );
 
 $recorded = $stack['service']->record_execution_result(
 	(string) $proposal['proposal_id'],

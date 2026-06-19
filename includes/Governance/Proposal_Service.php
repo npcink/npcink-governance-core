@@ -386,7 +386,20 @@ final class Proposal_Service {
 			);
 		}
 
-		if ( ! $this->has_matching_preflight_handoff( $proposal_id, $approved_input_hash, $correlation_id ) ) {
+		$handoff_status = $this->preflight_handoff_status( $proposal_id, $approved_input_hash, $correlation_id );
+		if ( 'expired' === $handoff_status ) {
+			return new WP_Error(
+				'npcink_governance_core_execution_record_preflight_expired',
+				__( 'Execution record uses an expired Core commit-preflight handoff.', 'npcink-governance-core' ),
+				array(
+					'status'              => 409,
+					'approved_input_hash' => $approved_input_hash,
+					'correlation_id'      => $correlation_id,
+				)
+			);
+		}
+
+		if ( 'matched' !== $handoff_status ) {
 			return new WP_Error(
 				'npcink_governance_core_execution_record_preflight_missing',
 				__( 'Execution record does not match a Core commit-preflight handoff.', 'npcink-governance-core' ),
@@ -758,14 +771,14 @@ final class Proposal_Service {
 	}
 
 	/**
-	 * Returns whether the execution record matches an issued Core preflight handoff.
+	 * Returns the matching status for an issued Core preflight handoff.
 	 *
 	 * @param string $proposal_id Proposal id.
 	 * @param string $approved_input_hash Approved input hash.
 	 * @param string $correlation_id Preflight correlation id.
-	 * @return bool
+	 * @return string Matching status: matched, expired, or missing.
 	 */
-	private function has_matching_preflight_handoff( string $proposal_id, string $approved_input_hash, string $correlation_id ): bool {
+	private function preflight_handoff_status( string $proposal_id, string $approved_input_hash, string $correlation_id ): string {
 		$events = $this->audit->list_filtered(
 			array(
 				'proposal_id'    => $proposal_id,
@@ -781,11 +794,24 @@ final class Proposal_Service {
 				$approved_input_hash === sanitize_text_field( (string) ( $metadata['approved_input_hash'] ?? '' ) )
 				&& $correlation_id === sanitize_text_field( (string) ( $metadata['correlation_id'] ?? '' ) )
 			) {
-				return true;
+				return $this->is_preflight_handoff_expired( $metadata ) ? 'expired' : 'matched';
 			}
 		}
 
-		return false;
+		return 'missing';
+	}
+
+	/**
+	 * Returns whether a preflight handoff is expired or lacks a valid TTL.
+	 *
+	 * @param array<string,mixed> $metadata Preflight audit metadata.
+	 * @return bool
+	 */
+	private function is_preflight_handoff_expired( array $metadata ): bool {
+		$expires_at = sanitize_text_field( (string) ( $metadata['expires_at'] ?? '' ) );
+		$expires    = '' === $expires_at ? false : strtotime( $expires_at );
+
+		return false === $expires || $expires <= time();
 	}
 
 	/**

@@ -129,8 +129,8 @@ new proposal after fresh review.
 After Adapter executes a write through WordPress Abilities API, it should call
 Core `record-execution` with `execution_status`, `correlation_id`,
 `approved_input_hash`, and public-safe execution counters. Core accepts the
-record only when it matches an existing `commit.preflighted` handoff for the
-approved proposal input and the caller has `commit:record_execution`. A
+record only when it matches an existing, unexpired `commit.preflighted` handoff
+for the approved proposal input and the caller has `commit:record_execution`. A
 successful record changes proposal status to `executed`; a failed record
 changes status to `execution_failed`. If audit persistence fails, Core rolls
 the proposal back to `approved`. Once a proposal has a terminal execution
@@ -156,7 +156,7 @@ Commit must fail when:
 - the ability contract changed after proposal creation;
 - required permission is missing;
 - a preflight handoff was already issued for the approved input;
-- approval context is absent, stale, or mismatched;
+- approval context is absent, expired, stale, or mismatched;
 - the provider tries to bypass dry-run/proposal semantics;
 - a plan-generated proposal still has unresolved `needs_input` or
   `preflight_blockers`;

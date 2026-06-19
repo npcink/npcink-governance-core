@@ -1391,6 +1391,7 @@ foreach (
 		'REST status matrix',
 		'record_execution_with_handoff',
 		'record_execution_without_handoff',
+		'Expired preflight handoff cannot record execution.',
 		'App creation audit failure revokes the new key.',
 	) as $required
 ) {
@@ -1672,6 +1673,8 @@ npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.ex
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.execution_failed' ), 'Proposal service records proposal.execution_failed audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_execution_record_already_recorded' ), 'Proposal service rejects duplicate terminal execution records.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_execution_record_preflight_missing' ), 'Proposal service requires execution records to bind to preflight.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_execution_record_preflight_expired' ), 'Proposal service rejects expired preflight handoffs.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'is_preflight_handoff_expired' ), 'Proposal service checks preflight handoff expiry before recording execution.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_execution_record_audit_failed' ), 'Proposal service fails closed when execution record audit fails.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'PENDING_TTL_SECONDS' ), 'Proposal service defines a pending review TTL.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'PENDING_QUOTA_PER_APP' ), 'Proposal service defines an app pending proposal quota.' );

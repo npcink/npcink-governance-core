@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-20 — Commit preflight duplicate and expiry hardened
+
+- **Module**: Core commit-preflight handoff and execution-result binding.
+- **Status**: Execution-result recording now rejects expired Core
+  `commit.preflighted` handoffs, and fail-closed tests cover duplicate,
+  mismatched, and expired handoff reuse.
+- **Completed**:
+  - Added an expiry check before `record_execution_result()` accepts a matching
+    preflight handoff.
+  - Added fail-closed coverage for expired handoff record-execution rejection,
+    duplicate preflight after expiry, missing binding, mismatched input hash,
+    and mismatched correlation id preserving approved proposal status.
+  - Documented the new
+    `npcink_governance_core_execution_record_preflight_expired` REST error.
+  - Updated static contracts so handoff expiry enforcement remains covered.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+- **Boundary**:
+  - This remains approval/commit-preflight governance only. No final execution
+    route, ability execution, workflow runtime, task queue, batch execution
+    console, Adapter behavior, provider routing, credentials, or WordPress
+    write implementation changed.
+
 ## 2026-06-20 — REST proposal status mapping covered
 
 - **Module**: Core proposal lifecycle REST/API mapping.
