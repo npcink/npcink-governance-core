@@ -3,8 +3,8 @@
 Status: active for MVP.
 
 All MVP routes use the namespace `npcink-governance-core/v1`. Routes accept either a
-WordPress administrator with `manage_options` or a scoped Npcink Governance Core app key
-when the route has an app scope listed below.
+WordPress administrator with `manage_options` or a scoped Npcink Governance Core
+client access token when the route has an app scope listed below.
 
 Agent and MCP adapter entry is governed by
 [Agent MCP Entry Contract](agent-mcp-entry-contract.md). Scoped app

@@ -161,10 +161,13 @@ WordPress `ai` plugin; operators should correlate the two systems with
 
 The Settings tab shows the primary `Development Approval Policy` controls
 directly instead of hiding them behind a disclosure. It also stores a bounded
-`History retention` policy for historical proposal records: 90 days, 180 days,
-365 days, or no automatic deletion. The retention setting is configuration
-only at this stage; scheduled cleanup and deletion auditing require a separate
-implementation.
+`History retention` policy for historical proposal records and revoked client
+access tokens: 90 days, 180 days, 365 days, or no automatic deletion. Core runs
+one bounded daily cleanup pass under that policy and exposes a manual
+`Run cleanup now` action in Settings. Cleanup deletes only expired/archived
+proposal history and revoked token rows older than the selected window. The
+cleanup is audited before deletion and after completion, and does not execute
+abilities, restore records, or create workflow/runtime work.
 
 The default review workbench keeps client access token management out of the
 daily review queue, while the Settings tab shows a directly visible `Client
@@ -179,8 +182,8 @@ stay in an advanced disclosure for custom clients. The page also handles
 paginated token revoke actions, with App ID, Key ID, caller type, rate limits,
 expiry, revoked time, and complete scope strings in row details rather than the
 default scan columns. Revoked tokens remain stored for audit attribution and are
-hidden from the default active-token list until a separate retention cleanup
-removes old records. The revoked-token subtab is historical evidence only; it
+hidden from the default active-token list until the history retention cleanup
+removes old revoked rows. The revoked-token subtab is historical evidence only; it
 does not restore, reopen, or reissue tokens. This preserves the Core credential
 fallback without turning Core's first-level tabs into OpenClaw onboarding or
 adapter configuration. Productized OpenClaw connection copy, TLS switches, and

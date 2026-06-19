@@ -159,6 +159,9 @@ composer sync:wporg -- --version <version> --svn-dir /path/to/wporg-npcink-gover
 - audit REST listing;
 - proposal audit timeline, audit filters, app scope-decision attribution, and
   commit-preflight correlation id.
+- bounded history retention cleanup, including scheduled hook presence,
+  expired/archived proposal deletion, revoked client access token deletion, and
+  completion audit evidence.
 
 The smoke test deletes its local WordPress content fixtures, including posts,
 comments, terms, and media attachments, and revokes app keys created during the

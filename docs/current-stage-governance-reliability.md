@@ -24,19 +24,19 @@ WordPress writes through WordPress Abilities API after Core approval and commit
 preflight. Core must continue returning `commit_execution=false`,
 `core_proxy_execute=false`, and `execution_handoff.executor=adapter_after_core_preflight`.
 
-## App-Key Scope
+## Client Access Token Scope
 
-Core app keys are a minimal external governance identity. They let trusted
+Core client access tokens are a minimal external governance identity. They let trusted
 clients call Core governance routes with scoped access and rate limits when
 WordPress user authentication is not the right integration shape.
 
-For the current stage, app-key rotation and expiry automation are deferred.
+For the current stage, token rotation and expiry automation are deferred.
 They are not the next priority until Adapter or another real external client
 needs long-lived credential lifecycle management. Core must first keep the
 existing credential path reliable: raw secrets are shown once, stored only as
 hashes, scoped narrowly, rate limited, auditable, and revocable.
 
-App keys must not become an OpenClaw onboarding product surface, provider
+Client access tokens must not become an OpenClaw onboarding product surface, provider
 credential store, billing identity, cloud control plane, or workflow runtime
 catalog.
 

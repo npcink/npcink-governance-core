@@ -26,6 +26,7 @@ require_once NPCINK_GOVERNANCE_CORE_DIR . 'includes/Autoloader.php';
 \Npcink\GovernanceCore\Autoloader::register();
 
 register_activation_hook( __FILE__, array( \Npcink\GovernanceCore\Plugin::class, 'activate' ) );
+register_deactivation_hook( __FILE__, array( \Npcink\GovernanceCore\Plugin::class, 'deactivate' ) );
 
 add_action(
 	'plugins_loaded',

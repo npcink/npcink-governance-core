@@ -10,6 +10,7 @@ namespace Npcink\GovernanceCore\Admin;
 use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
 use Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter;
 use Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator;
+use Npcink\GovernanceCore\Governance\History_Cleanup_Service;
 use Npcink\GovernanceCore\Governance\Proposal_Repository;
 use Npcink\GovernanceCore\Governance\Proposal_Service;
 use Npcink\GovernanceCore\Security\App_Key_Repository;
@@ -30,9 +31,6 @@ final class Admin_Page {
 	const AUDIT_PAGE_SIZE   = 25;
 	const APP_KEY_PAGE_SIZE = 10;
 	const DATETIME_DISPLAY_FORMAT = 'Y-m-d H:i:s';
-	const OPTION_HISTORY_RETENTION_DAYS = 'npcink_governance_core_history_retention_days';
-	const DEFAULT_HISTORY_RETENTION_DAYS = 90;
-	const HISTORY_RETENTION_DISABLED_DAYS = 0;
 
 	/**
 	 * Ability adapter.
@@ -70,6 +68,13 @@ final class Admin_Page {
 	private $apps;
 
 	/**
+	 * History cleanup service.
+	 *
+	 * @var History_Cleanup_Service
+	 */
+	private $history_cleanup;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Ability_Registry_Adapter $abilities Ability adapter.
@@ -77,13 +82,15 @@ final class Admin_Page {
 	 * @param Audit_Log_Repository     $audit Audit repository.
 	 * @param Proposal_Service         $service Proposal service.
 	 * @param App_Key_Repository       $apps App key repository.
+	 * @param History_Cleanup_Service  $history_cleanup History cleanup service.
 	 */
-	public function __construct( Ability_Registry_Adapter $abilities, Proposal_Repository $proposals, Audit_Log_Repository $audit, Proposal_Service $service, App_Key_Repository $apps ) {
-		$this->abilities = $abilities;
-		$this->proposals = $proposals;
-		$this->audit     = $audit;
-		$this->service   = $service;
-		$this->apps      = $apps;
+	public function __construct( Ability_Registry_Adapter $abilities, Proposal_Repository $proposals, Audit_Log_Repository $audit, Proposal_Service $service, App_Key_Repository $apps, History_Cleanup_Service $history_cleanup ) {
+		$this->abilities       = $abilities;
+		$this->proposals       = $proposals;
+		$this->audit           = $audit;
+		$this->service         = $service;
+		$this->apps            = $apps;
+		$this->history_cleanup = $history_cleanup;
 	}
 
 	/**
@@ -101,6 +108,7 @@ final class Admin_Page {
 		add_action( 'admin_post_npcink_governance_core_archive_proposal', array( $this, 'handle_archive' ) );
 		add_action( 'admin_post_npcink_governance_core_reopen_proposal', array( $this, 'handle_reopen' ) );
 		add_action( 'admin_post_npcink_governance_core_update_approval_policy', array( $this, 'handle_update_approval_policy' ) );
+		add_action( 'admin_post_npcink_governance_core_run_history_cleanup', array( $this, 'handle_run_history_cleanup' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
 
@@ -475,7 +483,7 @@ final class Admin_Page {
 		$stored_mode       = Approval_Policy_Evaluator::stored_policy_mode();
 		$current           = Approval_Policy_Evaluator::sanitize_policy_mode( $stored_mode );
 		$invalid_stored    = ! Approval_Policy_Evaluator::is_allowed_policy_mode( $stored_mode );
-		$retention_days    = $this->stored_history_retention_days();
+		$retention_days    = History_Cleanup_Service::stored_retention_days();
 		$labels            = array(
 			Approval_Policy_Evaluator::MODE_MANUAL          => __( 'Require approval for all', 'npcink-governance-core' ),
 			Approval_Policy_Evaluator::MODE_SMART_GUARDED   => __( 'Smart approval', 'npcink-governance-core' ),
@@ -529,18 +537,24 @@ final class Admin_Page {
 							<th scope="row"><label for="npcink-governance-core-history-retention-days"><?php echo esc_html__( 'History retention', 'npcink-governance-core' ); ?></label></th>
 							<td>
 								<select id="npcink-governance-core-history-retention-days" name="history_retention_days">
-									<?php foreach ( $this->history_retention_day_options() as $days => $label ) : ?>
+									<?php foreach ( History_Cleanup_Service::retention_day_options() as $days => $label ) : ?>
 										<option value="<?php echo esc_attr( (string) $days ); ?>" <?php selected( $retention_days, (int) $days ); ?>>
 											<?php echo esc_html( $label ); ?>
 										</option>
 									<?php endforeach; ?>
 								</select>
-								<p class="description"><?php echo esc_html__( 'Sets how long historical proposal records should be kept. Scheduled deletion will be wired in a separate cleanup pass.', 'npcink-governance-core' ); ?></p>
+								<p class="description"><?php echo esc_html__( 'Deletes expired or archived proposal history and revoked client access tokens older than the selected retention window. Each cleanup pass is bounded and audited.', 'npcink-governance-core' ); ?></p>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 				<p><button type="submit" class="button button-secondary"><?php echo esc_html__( 'Save settings', 'npcink-governance-core' ); ?></button></p>
+			</form>
+			<form class="npcink-governance-core-inline-actions" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<input type="hidden" name="action" value="npcink_governance_core_run_history_cleanup" />
+				<?php wp_nonce_field( 'npcink_governance_core_run_history_cleanup' ); ?>
+				<button type="submit" class="button"><?php echo esc_html__( 'Run cleanup now', 'npcink-governance-core' ); ?></button>
+				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Runs one bounded cleanup pass using the saved retention policy.', 'npcink-governance-core' ); ?></span>
 			</form>
 		</section>
 		<?php
@@ -1443,21 +1457,52 @@ final class Admin_Page {
 		$raw_mode           = filter_input( INPUT_POST, 'policy_mode', FILTER_UNSAFE_RAW );
 		$raw_retention_days = filter_input( INPUT_POST, 'history_retention_days', FILTER_UNSAFE_RAW );
 		$mode               = is_string( $raw_mode ) ? Approval_Policy_Evaluator::sanitize_policy_mode( wp_unslash( $raw_mode ) ) : Approval_Policy_Evaluator::MODE_MANUAL;
-		$history_retention  = is_string( $raw_retention_days ) ? $this->sanitize_history_retention_days( wp_unslash( $raw_retention_days ) ) : self::DEFAULT_HISTORY_RETENTION_DAYS;
+		$history_retention  = is_string( $raw_retention_days ) ? History_Cleanup_Service::sanitize_retention_days( wp_unslash( $raw_retention_days ) ) : History_Cleanup_Service::DEFAULT_HISTORY_RETENTION_DAYS;
 		update_option( Approval_Policy_Evaluator::OPTION_POLICY_MODE, $mode, false );
-		update_option( self::OPTION_HISTORY_RETENTION_DAYS, $history_retention, false );
+		update_option( History_Cleanup_Service::OPTION_HISTORY_RETENTION_DAYS, $history_retention, false );
 
 		$this->audit->record(
 			'core.approval_policy_updated',
 			array(
 				'policy_mode'            => $mode,
 				'history_retention_days' => $history_retention,
-				'cleanup_scheduled'      => false,
+				'cleanup_scheduled'      => true,
 				'commit_execution'       => false,
 			)
 		);
 
 		wp_safe_redirect( $this->admin_url( array( 'npcink_governance_core_message' => 'settings_updated' ) ) );
+		exit;
+	}
+
+	/**
+	 * Handles manual history cleanup.
+	 *
+	 * @return void
+	 */
+	public function handle_run_history_cleanup(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to run history cleanup.', 'npcink-governance-core' ) );
+		}
+
+		check_admin_referer( 'npcink_governance_core_run_history_cleanup' );
+
+		$result = $this->history_cleanup->run( 'manual' );
+		if ( is_wp_error( $result ) ) {
+			wp_safe_redirect( $this->admin_url( array( 'view' => 'settings', 'npcink_governance_core_error' => $result->get_error_code() ) ) );
+			exit;
+		}
+
+		wp_safe_redirect(
+			$this->admin_url(
+				array(
+					'view'                          => 'settings',
+					'npcink_governance_core_message' => ! empty( $result['skipped'] ) ? 'history_cleanup_skipped' : 'history_cleanup_completed',
+					'deleted_proposals'             => (string) (int) ( $result['deleted_proposals'] ?? 0 ),
+					'deleted_app_keys'              => (string) (int) ( $result['deleted_app_keys'] ?? 0 ),
+				)
+			)
+		);
 		exit;
 	}
 
@@ -1562,7 +1607,7 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Renders client access token section backed by Core app keys.
+	 * Renders client access token section backed by scoped app identity rows.
 	 *
 	 * @return void
 	 */
@@ -3985,12 +4030,7 @@ final class Admin_Page {
 	 * @return array<int,string>
 	 */
 	private function history_retention_day_options(): array {
-		return array(
-			90                                    => __( '90 days', 'npcink-governance-core' ),
-			180                                   => __( '180 days', 'npcink-governance-core' ),
-			365                                   => __( '365 days', 'npcink-governance-core' ),
-			self::HISTORY_RETENTION_DISABLED_DAYS => __( 'Do not automatically delete', 'npcink-governance-core' ),
-		);
+		return History_Cleanup_Service::retention_day_options();
 	}
 
 	/**
@@ -4000,10 +4040,7 @@ final class Admin_Page {
 	 * @return int
 	 */
 	private function sanitize_history_retention_days( $days ): int {
-		$days    = absint( $days );
-		$allowed = array_keys( $this->history_retention_day_options() );
-
-		return in_array( $days, $allowed, true ) ? $days : self::DEFAULT_HISTORY_RETENTION_DAYS;
+		return History_Cleanup_Service::sanitize_retention_days( $days );
 	}
 
 	/**
@@ -4012,9 +4049,7 @@ final class Admin_Page {
 	 * @return int
 	 */
 	private function stored_history_retention_days(): int {
-		$days = get_option( self::OPTION_HISTORY_RETENTION_DAYS, self::DEFAULT_HISTORY_RETENTION_DAYS );
-
-		return $this->sanitize_history_retention_days( is_scalar( $days ) ? $days : self::DEFAULT_HISTORY_RETENTION_DAYS );
+		return History_Cleanup_Service::stored_retention_days();
 	}
 
 	/**
@@ -4770,6 +4805,11 @@ final class Admin_Page {
 			'app_key_revoked'                               => __( 'App key disabled.', 'npcink-governance-core' ),
 			'approval_policy_updated'                       => __( 'Approval policy mode updated.', 'npcink-governance-core' ),
 			'settings_updated'                              => __( 'Settings updated.', 'npcink-governance-core' ),
+			'history_cleanup_completed'                     => __( 'History cleanup completed.', 'npcink-governance-core' ),
+			'history_cleanup_skipped'                       => __( 'History cleanup is disabled by the current retention policy.', 'npcink-governance-core' ),
+			'npcink_governance_core_history_cleanup_audit_failed' => __( 'History cleanup could not be audited.', 'npcink-governance-core' ),
+			'npcink_governance_core_history_cleanup_failed'  => __( 'History cleanup could not delete all selected records.', 'npcink-governance-core' ),
+			'npcink_governance_core_history_cleanup_completion_audit_failed' => __( 'History cleanup completed, but the completion audit could not be stored.', 'npcink-governance-core' ),
 			'npcink_governance_core_app_key_not_active'             => __( 'App key is missing or already disabled.', 'npcink-governance-core' ),
 			'npcink_governance_core_app_key_revoke_failed'          => __( 'App key could not be disabled.', 'npcink-governance-core' ),
 			'npcink_governance_core_proposal_not_found'             => __( 'Proposal was not found.', 'npcink-governance-core' ),

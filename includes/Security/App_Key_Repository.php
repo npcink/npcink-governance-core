@@ -279,6 +279,59 @@ final class App_Key_Repository {
 	}
 
 	/**
+	 * Counts revoked app keys older than a cutoff.
+	 *
+	 * @param string $cutoff_utc UTC cutoff datetime.
+	 * @return int
+	 */
+	public function count_revoked_before( string $cutoff_utc ): int {
+		global $wpdb;
+
+		$cutoff_utc = sanitize_text_field( $cutoff_utc );
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		$count = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %i WHERE status = %s AND revoked_at IS NOT NULL AND revoked_at < %s',
+				$this->table_name(),
+				'revoked',
+				$cutoff_utc
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return $count;
+	}
+
+	/**
+	 * Deletes revoked app keys older than a cutoff.
+	 *
+	 * @param string $cutoff_utc UTC cutoff datetime.
+	 * @param int    $limit Maximum records to delete in one pass.
+	 * @return int|null Deleted row count, or null on database failure.
+	 */
+	public function delete_revoked_before( string $cutoff_utc, int $limit = 200 ): ?int {
+		global $wpdb;
+
+		$cutoff_utc = sanitize_text_field( $cutoff_utc );
+		$limit      = max( 1, min( 1000, $limit ) );
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table and deletes only bounded revoked token rows.
+		$deleted = $wpdb->query(
+			$wpdb->prepare(
+				'DELETE FROM %i WHERE status = %s AND revoked_at IS NOT NULL AND revoked_at < %s ORDER BY id ASC LIMIT %d',
+				$this->table_name(),
+				'revoked',
+				$cutoff_utc,
+				$limit
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return false === $deleted ? null : (int) $deleted;
+	}
+
+	/**
 	 * Returns the latest app-key use timestamp.
 	 *
 	 * @return string

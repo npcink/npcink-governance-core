@@ -539,6 +539,58 @@ final class Proposal_Repository {
 	}
 
 	/**
+	 * Counts historical proposal records older than a cutoff.
+	 *
+	 * @param string $cutoff_utc UTC cutoff datetime.
+	 * @return int
+	 */
+	public function count_historical_before( string $cutoff_utc ): int {
+		global $wpdb;
+
+		$cutoff_utc  = sanitize_text_field( $cutoff_utc );
+		$statuses    = array( self::STATUS_EXPIRED, self::STATUS_ARCHIVED );
+		$placeholders = implode( ', ', array_fill( 0, count( $statuses ), '%s' ) );
+		$args        = array_merge( array( $this->table_name() ), $statuses, array( $cutoff_utc ) );
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- SQL uses fixed clauses and Core's custom governance table.
+		return (int) $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %i WHERE status IN (' . $placeholders . ') AND updated_at < %s',
+				...$args
+			)
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+	}
+
+	/**
+	 * Deletes historical proposal records older than a cutoff.
+	 *
+	 * @param string $cutoff_utc UTC cutoff datetime.
+	 * @param int    $limit Maximum records to delete in one pass.
+	 * @return int|null Deleted row count, or null on database failure.
+	 */
+	public function delete_historical_before( string $cutoff_utc, int $limit = 200 ): ?int {
+		global $wpdb;
+
+		$cutoff_utc  = sanitize_text_field( $cutoff_utc );
+		$limit       = max( 1, min( 1000, $limit ) );
+		$statuses    = array( self::STATUS_EXPIRED, self::STATUS_ARCHIVED );
+		$placeholders = implode( ', ', array_fill( 0, count( $statuses ), '%s' ) );
+		$args        = array_merge( array( $this->table_name() ), $statuses, array( $cutoff_utc, $limit ) );
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- SQL uses fixed clauses, bounded deletion, and Core's custom governance table.
+		$deleted = $wpdb->query(
+			$wpdb->prepare(
+				'DELETE FROM %i WHERE status IN (' . $placeholders . ') AND updated_at < %s ORDER BY id ASC LIMIT %d',
+				...$args
+			)
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return false === $deleted ? null : (int) $deleted;
+	}
+
+	/**
 	 * Returns allowed proposal statuses.
 	 *
 	 * @return array<int,string>

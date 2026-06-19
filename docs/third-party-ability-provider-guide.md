@@ -83,10 +83,10 @@ Third-party providers that need plan-to-proposal support should first document:
 Until that contract is added to Core, third-party providers should create
 ordinary single-action proposals through `POST /proposals`.
 
-## App-Key Access
+## Client Access Token Access
 
-External adapters should use scoped Core app keys rather than administrator
-cookies. The default non-admin integration scopes are:
+External adapters should use scoped Core client access tokens rather than
+administrator cookies. The default non-admin integration scopes are:
 
 - `capabilities:read`;
 - `proposals:create`;

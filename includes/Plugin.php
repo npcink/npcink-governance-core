@@ -12,6 +12,7 @@ use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
 use Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter;
 use Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator;
 use Npcink\GovernanceCore\Governance\Commit_Preflight_Service;
+use Npcink\GovernanceCore\Governance\History_Cleanup_Service;
 use Npcink\GovernanceCore\Governance\Operation_Classifier;
 use Npcink\GovernanceCore\Governance\Plan_Proposal_Service;
 use Npcink\GovernanceCore\Governance\Proposal_Repository;
@@ -36,6 +37,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Main plugin container.
  */
 final class Plugin {
+	const HISTORY_CLEANUP_HOOK = 'npcink_governance_core_history_cleanup';
+
 	/**
 	 * Singleton instance.
 	 *
@@ -135,6 +138,13 @@ final class Plugin {
 	private $app_authenticator = null;
 
 	/**
+	 * History cleanup service.
+	 *
+	 * @var History_Cleanup_Service|null
+	 */
+	private $history_cleanup_service = null;
+
+	/**
 	 * Returns the singleton.
 	 *
 	 * @return self
@@ -158,6 +168,16 @@ final class Plugin {
 		self::instance()->audit_repository()->install();
 		self::instance()->app_key_repository()->install();
 		self::instance()->app_rate_limiter()->install();
+		self::instance()->ensure_history_cleanup_event();
+	}
+
+	/**
+	 * Deactivation callback.
+	 *
+	 * @return void
+	 */
+	public static function deactivate(): void {
+		self::clear_history_cleanup_event();
 	}
 
 	/**
@@ -167,12 +187,43 @@ final class Plugin {
 	 */
 	public function register(): void {
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
+		add_action( self::HISTORY_CLEANUP_HOOK, array( $this, 'run_history_cleanup' ) );
 		add_filter( 'npcink_governance_core_record_local_admin_consent', array( $this, 'record_local_admin_consent_audit' ), 10, 3 );
 		add_filter( 'plugin_action_links_' . plugin_basename( NPCINK_GOVERNANCE_CORE_FILE ), array( $this, 'filter_plugin_action_links' ) );
+		$this->ensure_history_cleanup_event();
 
 		if ( is_admin() ) {
-			( new Admin_Page( $this->ability_adapter(), $this->proposal_repository(), $this->audit_repository(), $this->proposal_service(), $this->app_key_repository() ) )->register();
+			( new Admin_Page( $this->ability_adapter(), $this->proposal_repository(), $this->audit_repository(), $this->proposal_service(), $this->app_key_repository(), $this->history_cleanup_service() ) )->register();
 		}
+	}
+
+	/**
+	 * Schedules the bounded history cleanup event when missing.
+	 *
+	 * @return void
+	 */
+	public function ensure_history_cleanup_event(): void {
+		if ( ! wp_next_scheduled( self::HISTORY_CLEANUP_HOOK ) ) {
+			wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', self::HISTORY_CLEANUP_HOOK );
+		}
+	}
+
+	/**
+	 * Clears the bounded history cleanup event.
+	 *
+	 * @return void
+	 */
+	public static function clear_history_cleanup_event(): void {
+		wp_clear_scheduled_hook( self::HISTORY_CLEANUP_HOOK );
+	}
+
+	/**
+	 * Runs the bounded history cleanup event.
+	 *
+	 * @return void
+	 */
+	public function run_history_cleanup(): void {
+		$this->history_cleanup_service()->run( 'wp_cron' );
 	}
 
 	/**
@@ -438,6 +489,19 @@ final class Plugin {
 		}
 
 		return $this->app_authenticator;
+	}
+
+	/**
+	 * Returns history cleanup service.
+	 *
+	 * @return History_Cleanup_Service
+	 */
+	public function history_cleanup_service(): History_Cleanup_Service {
+		if ( null === $this->history_cleanup_service ) {
+			$this->history_cleanup_service = new History_Cleanup_Service( $this->proposal_repository(), $this->app_key_repository(), $this->audit_repository() );
+		}
+
+		return $this->history_cleanup_service;
 	}
 
 }

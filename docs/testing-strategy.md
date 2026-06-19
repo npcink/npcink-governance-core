@@ -173,6 +173,10 @@ Use it for behavior that requires real WordPress:
 - governance operability coverage, including proposal `audit_timeline`,
   commit-preflight `correlation_id`, app `scope_decision`, and audit filters
   for ability, app, key, caller type, and correlation id;
+- bounded history retention cleanup, including WP-Cron scheduling on activation,
+  cleanup hook removal on deactivation, manual Settings cleanup action, and
+  audited deletion of expired/archived proposal history plus revoked client
+  access tokens only;
 - trusted Adapter approval coverage, including an app key with
   `proposals:approve`, app-authenticated approval, app-authenticated preflight,
   and approval audit attribution;

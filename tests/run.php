@@ -1390,7 +1390,7 @@ foreach (
 	array(
 		'Core is the Npcink AI governance layer for WordPress operations',
 		'Core does not own final execution',
-		'app-key rotation and expiry automation are deferred',
+		'token rotation and expiry automation are deferred',
 		'Adapter or another real external client',
 		'Governance must fail closed',
 		'npcink_governance_core_proposal_audit_failed',
@@ -1973,6 +1973,10 @@ npcink_governance_core_assert( false !== strpos( $smoke_wp, 'wp_delete_comment' 
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'wp_delete_attachment' ), 'Smoke test permanently deletes media attachment fixtures.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'wp_delete_term' ), 'Smoke test deletes taxonomy term fixtures.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'revoke_by_key_id' ), 'Smoke test revokes app key fixtures.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp, 'history cleanup cron event is scheduled' ), 'WordPress smoke validates history cleanup scheduling.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp, 'history cleanup deletes old historical proposals' ), 'WordPress smoke validates historical proposal cleanup.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp, 'history cleanup deletes old revoked access tokens' ), 'WordPress smoke validates revoked token cleanup.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp, 'history cleanup writes completion audit evidence' ), 'WordPress smoke validates cleanup audit evidence.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'NPCINK_GOVERNANCE_CORE_SMOKE_PURGE' ), 'Smoke test keeps governance row purge opt-in.' );
 npcink_governance_core_assert( false !== strpos( $testing_strategy, 'Proposal and audit rows remain persistent by default' ), 'Testing strategy keeps governance rows persistent by default.' );
 npcink_governance_core_assert( false !== strpos( $development_workflow, 'NPCINK_GOVERNANCE_CORE_SMOKE_PURGE=1' ), 'Development workflow documents optional smoke purge.' );
@@ -2180,6 +2184,8 @@ foreach ( array( 'core.proposal.create', 'core.proposal.plan_ingest', 'core.prop
 }
 
 $admin_page = npcink_governance_core_read( $root . '/includes/Admin/Admin_Page.php' );
+$history_cleanup_service = npcink_governance_core_read( $root . '/includes/Governance/History_Cleanup_Service.php' );
+$plugin_bootstrap = npcink_governance_core_read( $root . '/includes/Plugin.php' );
 $admin_css = npcink_governance_core_read( $root . '/assets/admin.css' );
 $admin_js = npcink_governance_core_read( $root . '/assets/admin.js' );
 $admin_surface_standard = npcink_governance_core_read( $root . '/docs/admin-surface-standard.md' );
@@ -2212,7 +2218,9 @@ foreach (
 		'Do not wrap this primary setting in a disclosure',
 		'History retention',
 		'90 days, 180 days',
-		'This stores the retention policy only',
+		'one bounded daily cleanup pass',
+		'manual cleanup action',
+		'cleanup is audited',
 		'Client access tokens',
 		'Manage access tokens',
 		'paginated',
@@ -2345,13 +2353,24 @@ npcink_governance_core_assert( false === strpos( $admin_page, '$this->render_sys
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Development approval policy, history retention, and trusted governance client access.' ), 'Admin Settings tab explains its narrow configuration scope.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, '<section class="npcink-governance-core-settings-section npcink-governance-core-max-wide"' ), 'Admin Settings tab renders primary settings directly instead of behind a disclosure.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'render_approval_policy_entry( true )' ), 'Admin Settings tab does not use a disclosure-open flag for the primary approval policy setting.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'OPTION_HISTORY_RETENTION_DAYS' ), 'Admin Settings tab defines a bounded history retention option.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'DEFAULT_HISTORY_RETENTION_DAYS = 90' ), 'Admin Settings tab defaults history retention to ninety days.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'HISTORY_RETENTION_DISABLED_DAYS = 0' ), 'Admin Settings tab supports disabling automatic deletion.' );
+npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'OPTION_HISTORY_RETENTION_DAYS' ), 'History cleanup service defines a bounded history retention option.' );
+npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'DEFAULT_HISTORY_RETENTION_DAYS = 90' ), 'History cleanup service defaults history retention to ninety days.' );
+npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'HISTORY_RETENTION_DISABLED_DAYS = 0' ), 'History cleanup service supports disabling automatic deletion.' );
+npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'CLEANUP_BATCH_LIMIT = 200' ), 'History cleanup service bounds each cleanup pass.' );
+npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'core.history_cleanup_requested' ), 'History cleanup service audits requested cleanup before deletion.' );
+npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'core.history_cleanup_completed' ), 'History cleanup service audits completed cleanup counts.' );
+npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'delete_historical_before' ), 'History cleanup service deletes old historical proposal rows.' );
+npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'delete_revoked_before' ), 'History cleanup service deletes old revoked token rows.' );
+npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'commit_execution' ) && false !== strpos( $history_cleanup_service, 'core_execution' ), 'History cleanup audit explicitly stays outside final execution.' );
+npcink_governance_core_assert( false !== strpos( $plugin_bootstrap, 'HISTORY_CLEANUP_HOOK' ), 'Plugin registers a named bounded history cleanup hook.' );
+npcink_governance_core_assert( false !== strpos( $plugin_bootstrap, 'wp_schedule_event' ), 'Plugin schedules the daily bounded history cleanup pass.' );
+npcink_governance_core_assert( false !== strpos( $plugin_bootstrap, 'wp_clear_scheduled_hook' ), 'Plugin clears the history cleanup hook on deactivation.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'admin_post_npcink_governance_core_run_history_cleanup' ), 'Admin Settings tab exposes a manual history cleanup action.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Run cleanup now' ), 'Admin Settings tab labels the manual history cleanup action.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'history_retention_day_options' ), 'Admin Settings tab renders bounded history retention choices.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'sanitize_history_retention_days' ), 'Admin Settings tab sanitizes history retention choices.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'history_retention_days' ), 'Admin Settings tab persists the selected history retention choice.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "'cleanup_scheduled'      => false" ), 'Admin Settings tab does not claim scheduled cleanup is active.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "'cleanup_scheduled'      => true" ), 'Admin Settings tab records that scheduled cleanup is active.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_client_access_token_entry' ), 'Admin Settings tab renders client access token management directly.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Manage access tokens for trusted Adapter or internal governance clients.' ), 'Admin Settings tab explains client access token scope directly.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Manage access tokens' ), 'Admin Settings tab labels token management as an action.' );
@@ -2363,7 +2382,7 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'stored_policy_mod
 npcink_governance_core_assert( false !== strpos( $admin_page, 'is_allowed_policy_mode' ), 'Admin page detects stale or invalid stored approval policy modes.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Stored approval policy mode "%1$s" is no longer supported.' ), 'Admin page warns when stored approval policy mode falls back to manual.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'update_option( Approval_Policy_Evaluator::OPTION_POLICY_MODE' ), 'Admin page persists approval policy mode through a bounded option.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'update_option( self::OPTION_HISTORY_RETENTION_DAYS' ), 'Admin page persists history retention through a bounded option.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'update_option( History_Cleanup_Service::OPTION_HISTORY_RETENTION_DAYS' ), 'Admin page persists history retention through the cleanup service option.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'app-keys'" ), 'Admin page keeps token management available behind an advanced view.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_admin_tabs' ), 'Admin page exposes tabbed Core sections.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'nav-tab-wrapper' ), 'Admin page uses WordPress admin tabs for Core sections.' );

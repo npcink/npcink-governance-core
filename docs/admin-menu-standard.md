@@ -35,7 +35,7 @@ OpenClaw handoff, Cloud configuration, or Abilities API test workflows.
 
 | Position | Menu title | Owner | Responsibility |
 | --- | --- | --- | --- |
-| 10 | `Core` | `npcink-governance-core` | Proposal review, approval/rejection, commit preflight, audit, and advanced Core app keys. |
+| 10 | `Core` | `npcink-governance-core` | Proposal review, approval/rejection, commit preflight, audit, and client access tokens. |
 | 20 | `Adapter` | `npcink-openclaw-adapter` | OpenClaw handoff, endpoint discovery, health, and client connection material. |
 | 40 | `Abilities` | `npcink-abilities-toolkit` | Abilities API package test surface, route checks, and demo ability controls. |
 | 50 | `Cloud Addon` | `npcink-cloud-addon` | Cloud Base URL/API key entry, signed verification, local connection state, and read-only entitlement summary. |

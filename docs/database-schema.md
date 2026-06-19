@@ -285,5 +285,7 @@ concurrent first writes for the same app, route family, and window.
 ## Local Smoke Data
 
 `composer smoke:wp` creates local proposal and audit records. That is expected.
-Cleanup can be done manually in local development if needed, but no automated
-cleanup is part of the MVP.
+The Settings `History retention` policy runs bounded cleanup for old
+expired/archived proposal history and revoked client access tokens. Local-only
+runs may still use smoke purge helpers for records created by a specific smoke
+run.

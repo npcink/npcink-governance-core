@@ -189,8 +189,8 @@ The admin panel also exposes a minimal token revoke action for active tokens.
 Revoking a token marks its status as `revoked`; future requests with that token
 return `401`, while historical proposal and audit attribution remains intact.
 Revoked tokens are hidden from the default active-token list, available from a
-read-only `Revoked tokens` audit subtab, and retained until a separate
-retention cleanup removes old records. Revoked token rows must not expose
+read-only `Revoked tokens` audit subtab, and retained until the Settings
+`History retention` cleanup removes old revoked records. Revoked token rows must not expose
 restore, reopen, or reissue actions.
 
 LocalWP TLS switches, OpenClaw handoff text, and agent rules belong in

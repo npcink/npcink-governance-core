@@ -255,9 +255,9 @@ Current implementation:
 - app keys are created by admin-only `POST /apps`;
 - app keys can also be created from `Npcink AI -> Core` under the Settings
   `Client access tokens` section;
-- the admin UI keeps Core app-key management out of first-level Core tabs while
+- the admin UI keeps client access token management out of first-level Core tabs while
   preserving one-time token display on the creation result page and paginated
-  key disable actions;
+  revoke actions;
 - the admin UI points productized OpenClaw setup to Magick AI Adapter and does
   not export OpenClaw handoff text, Adapter URLs, agent rules, or LocalWP TLS
   switches;

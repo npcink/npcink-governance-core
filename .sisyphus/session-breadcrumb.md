@@ -1,5 +1,32 @@
 # Session Breadcrumb
 
+## 2026-06-19 — Bounded history cleanup activated
+
+- **Module**: Core Settings history retention and client access token cleanup.
+- **Status**: The history retention setting now performs real bounded cleanup
+  instead of only storing a future policy.
+- **Completed**:
+  - Added a `History_Cleanup_Service` that deletes only expired/archived
+    proposal history and revoked client access token rows older than the saved
+    retention window.
+  - Scheduled one daily WP-Cron cleanup event on activation/register and clear
+    the hook on deactivation.
+  - Added a Settings `Run cleanup now` action for one bounded manual pass.
+  - Audited cleanup request, completion, and failure paths with explicit
+    non-execution metadata.
+  - Updated admin copy, docs, static contracts, smoke coverage, POT/PO files,
+    and compiled zh_CN translations.
+- **Verified**:
+  - `php -l tests/smoke-wp.php && composer test:all` passed.
+  - `composer smoke:wp` passed against the LocalWP `magick-ai` site, including
+    real deletion of an old expired proposal fixture and an old revoked token
+    fixture plus completion audit evidence.
+  - `composer check:wporg` passed.
+- **Boundary**:
+  - Governance record cleanup only. No workflow runtime, task queue, provider
+    credentials, Adapter behavior, final execution, token format, REST scope
+    semantics, or OpenClaw product setup changed.
+
 ## 2026-06-19 — Revoked client token audit tab
 
 - **Module**: Core admin client access token page.

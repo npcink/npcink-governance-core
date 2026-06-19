@@ -173,8 +173,8 @@ a proposal:
 - `GET /proposals/{proposal_id}`.
 
 Those adapter routes should forward to the matching Core governance routes and
-use a Core app key with `proposals:read`. This is a usability bridge, not an
-approval bridge. It lets OpenClaw see whether a proposal is `pending`,
+use a Core client access token with `proposals:read`. This is a usability
+bridge, not an approval bridge. It lets OpenClaw see whether a proposal is `pending`,
 `approved`, or `rejected`, and it may surface Core proposal detail fields such
 as preview data and `audit_timeline` when available.
 
@@ -189,7 +189,7 @@ a Core execution route:
 
 1. Adapter shows the Core proposal preview, risk, blocked/needs-input state,
    and target operation to the user.
-2. Adapter uses a separately issued trusted Core app key with
+2. Adapter uses a separately issued trusted Core client access token with
    `proposals:approve` to approve the proposal, or skips approval if it is
    already approved.
 3. Adapter calls Core commit preflight with `commit:preflight`.

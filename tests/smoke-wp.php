@@ -23,6 +23,7 @@ $npcink_governance_core_smoke_proposal_fixture_ids   = array();
 $npcink_governance_core_smoke_read_request_fixture_ids = array();
 $npcink_governance_core_smoke_cleanup_completed      = false;
 $npcink_governance_core_smoke_initial_policy_mode    = 'manual';
+$npcink_governance_core_smoke_initial_history_retention = 90;
 
 /**
  * Smoke assertion helper.
@@ -340,7 +341,7 @@ function npcink_governance_core_smoke_purge_governance_records(): void {
  * @return void
  */
 function npcink_governance_core_smoke_cleanup_fixtures(): void {
-	global $npcink_governance_core_smoke_post_fixture_ids, $npcink_governance_core_smoke_comment_fixture_ids, $npcink_governance_core_smoke_attachment_fixture_ids, $npcink_governance_core_smoke_term_fixtures, $npcink_governance_core_smoke_app_key_fixture_ids, $npcink_governance_core_smoke_cleanup_completed, $npcink_governance_core_smoke_initial_policy_mode;
+	global $npcink_governance_core_smoke_post_fixture_ids, $npcink_governance_core_smoke_comment_fixture_ids, $npcink_governance_core_smoke_attachment_fixture_ids, $npcink_governance_core_smoke_term_fixtures, $npcink_governance_core_smoke_app_key_fixture_ids, $npcink_governance_core_smoke_cleanup_completed, $npcink_governance_core_smoke_initial_policy_mode, $npcink_governance_core_smoke_initial_history_retention;
 
 	if ( $npcink_governance_core_smoke_cleanup_completed ) {
 		return;
@@ -349,6 +350,9 @@ function npcink_governance_core_smoke_cleanup_fixtures(): void {
 	$npcink_governance_core_smoke_cleanup_completed = true;
 	if ( class_exists( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::class ) ) {
 		update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::sanitize_policy_mode( (string) $npcink_governance_core_smoke_initial_policy_mode ), false );
+	}
+	if ( class_exists( \Npcink\GovernanceCore\Governance\History_Cleanup_Service::class ) ) {
+		update_option( \Npcink\GovernanceCore\Governance\History_Cleanup_Service::OPTION_HISTORY_RETENTION_DAYS, \Npcink\GovernanceCore\Governance\History_Cleanup_Service::sanitize_retention_days( $npcink_governance_core_smoke_initial_history_retention ), false );
 	}
 
 	foreach ( array_keys( (array) $npcink_governance_core_smoke_app_key_fixture_ids ) as $key_id ) {
@@ -1176,6 +1180,7 @@ npcink_governance_core_smoke_assert( ! is_wp_error( $activated ) && is_plugin_ac
 \Npcink\GovernanceCore\Plugin::instance()->register();
 
 $npcink_governance_core_smoke_initial_policy_mode = get_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_MANUAL );
+$npcink_governance_core_smoke_initial_history_retention = get_option( \Npcink\GovernanceCore\Governance\History_Cleanup_Service::OPTION_HISTORY_RETENTION_DAYS, \Npcink\GovernanceCore\Governance\History_Cleanup_Service::DEFAULT_HISTORY_RETENTION_DAYS );
 update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_MANUAL, false );
 
 global $wpdb;
@@ -1197,6 +1202,82 @@ npcink_governance_core_smoke_assert( $read_request_table === $read_request_exist
 npcink_governance_core_smoke_assert( $audit_table === $audit_exists, 'audit table exists' );
 npcink_governance_core_smoke_assert( $app_table === $app_exists, 'app key table exists' );
 npcink_governance_core_smoke_assert( $rate_table === $rate_exists, 'app rate limit table exists' );
+npcink_governance_core_smoke_assert( false !== wp_next_scheduled( \Npcink\GovernanceCore\Plugin::HISTORY_CLEANUP_HOOK ), 'history cleanup cron event is scheduled' );
+
+$history_cleanup_proposals = new \Npcink\GovernanceCore\Governance\Proposal_Repository();
+$history_cleanup_apps      = new \Npcink\GovernanceCore\Security\App_Key_Repository();
+$history_cleanup_audit     = new \Npcink\GovernanceCore\Audit\Audit_Log_Repository();
+$history_cleanup_service   = new \Npcink\GovernanceCore\Governance\History_Cleanup_Service( $history_cleanup_proposals, $history_cleanup_apps, $history_cleanup_audit );
+$history_cleanup_cutoff_fixture_time = gmdate( 'Y-m-d H:i:s', time() - ( 91 * DAY_IN_SECONDS ) );
+update_option( \Npcink\GovernanceCore\Governance\History_Cleanup_Service::OPTION_HISTORY_RETENTION_DAYS, 90, false );
+
+$history_cleanup_proposal = $history_cleanup_proposals->create(
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/create-draft',
+		'title'      => 'Historical cleanup smoke proposal ' . $npcink_governance_core_smoke_run_id,
+		'summary'    => 'Created to verify bounded historical cleanup.',
+		'input'      => array( 'title' => 'Cleanup smoke' ),
+		'preview'    => array( 'smoke' => true ),
+		'caller'     => array( 'source' => 'smoke' ),
+	)
+);
+npcink_governance_core_smoke_assert( is_array( $history_cleanup_proposal ), 'history cleanup smoke proposal fixture is created' );
+$history_cleanup_proposal_id = (string) ( $history_cleanup_proposal['proposal_id'] ?? '' );
+npcink_governance_core_smoke_register_proposal_fixture( $history_cleanup_proposal_id );
+$wpdb->update(
+	$proposal_table,
+	array(
+		'status'     => \Npcink\GovernanceCore\Governance\Proposal_Repository::STATUS_EXPIRED,
+		'created_at' => $history_cleanup_cutoff_fixture_time,
+		'updated_at' => $history_cleanup_cutoff_fixture_time,
+	),
+	array( 'proposal_id' => $history_cleanup_proposal_id ),
+	array( '%s', '%s', '%s' ),
+	array( '%s' )
+);
+
+$history_cleanup_app = $history_cleanup_apps->create(
+	array(
+		'app_label'           => 'History cleanup revoked smoke ' . $npcink_governance_core_smoke_run_id,
+		'caller_type'         => 'mcp_adapter',
+		'scopes'              => array( 'capabilities:read' ),
+		'rate_limit'          => 20,
+		'rate_window_seconds' => 3600,
+	)
+);
+npcink_governance_core_smoke_assert( is_array( $history_cleanup_app ), 'history cleanup revoked token fixture is created' );
+$history_cleanup_app_id = (string) ( $history_cleanup_app['app_id'] ?? '' );
+$history_cleanup_key_id = (string) ( $history_cleanup_app['key_id'] ?? '' );
+npcink_governance_core_smoke_register_app_fixture( $history_cleanup_app_id );
+npcink_governance_core_smoke_register_app_key_fixture( $history_cleanup_key_id );
+npcink_governance_core_smoke_assert( $history_cleanup_apps->revoke_by_key_id( $history_cleanup_key_id ), 'history cleanup token fixture is revoked' );
+$wpdb->update(
+	$app_table,
+	array(
+		'revoked_at' => $history_cleanup_cutoff_fixture_time,
+		'updated_at' => $history_cleanup_cutoff_fixture_time,
+	),
+	array( 'key_id' => $history_cleanup_key_id ),
+	array( '%s', '%s' ),
+	array( '%s' )
+);
+
+$history_cleanup_result = $history_cleanup_service->run( 'smoke' );
+npcink_governance_core_smoke_assert( ! is_wp_error( $history_cleanup_result ), 'history cleanup service runs without error' );
+npcink_governance_core_smoke_assert( (int) ( $history_cleanup_result['deleted_proposals'] ?? 0 ) >= 1, 'history cleanup deletes old historical proposals' );
+npcink_governance_core_smoke_assert( (int) ( $history_cleanup_result['deleted_app_keys'] ?? 0 ) >= 1, 'history cleanup deletes old revoked access tokens' );
+npcink_governance_core_smoke_assert( null === $history_cleanup_proposals->find( $history_cleanup_proposal_id ), 'history cleanup removes the expired proposal fixture' );
+npcink_governance_core_smoke_assert( null === $history_cleanup_apps->find_by_key_id( $history_cleanup_key_id ), 'history cleanup removes the revoked token fixture' );
+$history_cleanup_completed_count = (int) $wpdb->get_var(
+	$wpdb->prepare(
+		'SELECT COUNT(*) FROM %i WHERE event_name = %s AND metadata_json LIKE %s',
+		$audit_table,
+		'core.history_cleanup_completed',
+		'%' . $wpdb->esc_like( '"source":"smoke"' ) . '%'
+	)
+);
+npcink_governance_core_smoke_assert( $history_cleanup_completed_count > 0, 'history cleanup writes completion audit evidence' );
+update_option( \Npcink\GovernanceCore\Governance\History_Cleanup_Service::OPTION_HISTORY_RETENTION_DAYS, \Npcink\GovernanceCore\Governance\History_Cleanup_Service::sanitize_retention_days( $npcink_governance_core_smoke_initial_history_retention ), false );
 
 $capabilities = npcink_governance_core_smoke_rest( 'GET', '/npcink-governance-core/v1/capabilities' );
 $items        = is_array( $capabilities['items'] ?? null ) ? $capabilities['items'] : array();

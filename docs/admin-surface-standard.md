@@ -77,9 +77,12 @@ queue:
   supported mode is saved;
 - `History retention` as a bounded Settings option for the intended historical
   proposal retention window: 90 days, 180 days, 365 days, or no automatic
-  deletion. This stores the retention policy only; scheduled cleanup must be a
-  separate implementation and must not be implied by the admin control until it
-  exists;
+  deletion. Core runs one bounded daily cleanup pass for expired or archived
+  proposal history and revoked client access tokens older than the selected
+  retention window. The Settings page must also expose a manual `Run cleanup
+  now` action as the manual cleanup action. The cleanup is audited and must not
+  introduce workflow runtime, task queue, final execution, or product workflow
+  behavior;
 - `Client access tokens` as a directly visible Settings section for
   low-frequency trusted client token management. It should show active token
   count, last-used time, and a `Manage access tokens` action. Use
@@ -161,8 +164,8 @@ The default token table should show active tokens only and lead with client
 label, localized status, permission summary, last-used time, and a revoke
 action. Revoked tokens should be hidden from the default active-token list but
 available from the `Revoked tokens` subtab for audit attribution until a
-separate retention cleanup removes old records. The revoked-token table is
-read-only and must not expose restore, reopen, or reissue actions. Full App ID,
+history retention cleanup removes old revoked records. The revoked-token table
+is read-only and must not expose restore, reopen, or reissue actions. Full App ID,
 Key ID, caller type, rate limit, expiry, revoked time, and complete scope
 strings belong behind a row `Details` disclosure so long machine identifiers do
 not dominate the page.

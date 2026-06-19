@@ -229,16 +229,16 @@ The raw secret is returned once by `POST /wp-json/npcink-governance-core/v1/apps
 stored only as `secret_hash`. `GET /apps`, proposals, and audit rows must not
 return raw app secrets or secret hashes.
 
-Administrators can also create the same scoped app token from the `Core App
-Keys` view under `Npcink AI -> Core`. The default admin view stays focused on
-status, pending proposals, and recent activity; app-key creation and revocation
-are low-frequency fallback actions. The raw token and minimal Core environment
-variables are displayed only on the creation result screen. Productized
-OpenClaw setup, agent rules, handoff text, and local TLS client configuration
-belong in Magick AI Adapter, not Core.
+Administrators can also create the same scoped app token from the
+`Client access tokens` Settings section under `Npcink AI -> Core`. The default
+admin view stays focused on status, pending proposals, and recent activity;
+token creation and revocation are low-frequency fallback actions. The raw token
+and minimal Core environment variables are displayed only on the creation
+result screen. Productized OpenClaw setup, agent rules, handoff text, and local
+TLS client configuration belong in Magick AI Adapter, not Core.
 
-If a token is exposed, administrators should disable that app key from the same
-screen and create a replacement. Disabled keys are stored as `revoked` and must
+If a token is exposed, administrators should revoke that token from the same
+screen and create a replacement. Revoked tokens are stored as `revoked` and must
 fail future app authentication with `401`.
 
 App-authenticated requests must have the route's required scope and pass the
