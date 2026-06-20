@@ -1,5 +1,24 @@
 # Session Breadcrumb
 
+## 2026-06-20 — Narrow performance/security validation follow-up
+
+- **Module**: Core REST performance and app-key management permissions.
+- **Status**: Local WP-CLI `EXPLAIN` and timing samples show proposal summary
+  list, status list, and audit filters are using bounded/indexed paths on the
+  current local dataset; no extra schema index was added.
+- **Completed**:
+  - Measured proposal summary list versus full payload list and audit filter
+    timings through WordPress `$wpdb`.
+  - Added smoke assertions that app-authenticated tokens cannot list or rotate
+    admin-only app keys.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+- **Boundary**:
+  - This is validation and test coverage only. Core still does not execute
+    abilities, own workflow runtime, own task queues, store provider
+    credentials, or mutate WordPress content.
+
 ## 2026-06-20 — Performance and security hardening applied
 
 - **Module**: Core proposal intake, app-key lifecycle, sensitive read

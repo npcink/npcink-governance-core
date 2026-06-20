@@ -1997,6 +1997,8 @@ npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink_governance_c
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink_governance_core_smoke_register_attachment_fixture' ), 'Smoke test registers media attachment fixtures for cleanup.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink_governance_core_smoke_register_term_fixture' ), 'Smoke test registers taxonomy term fixtures for cleanup.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink_governance_core_smoke_register_app_key_fixture' ), 'Smoke test registers app key fixtures for revocation.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp, 'app-authenticated token cannot list admin-only app keys' ), 'Smoke test proves app tokens cannot list admin-only app keys.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp, 'app-authenticated token cannot rotate admin-only app keys' ), 'Smoke test proves app tokens cannot rotate admin-only app keys.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'register_shutdown_function' ), 'Smoke test runs fixture cleanup on shutdown.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'wp_delete_post' ), 'Smoke test permanently deletes post fixtures.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'wp_delete_comment' ), 'Smoke test permanently deletes comment fixtures.' );

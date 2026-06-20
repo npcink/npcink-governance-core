@@ -1426,6 +1426,10 @@ npcink_governance_core_smoke_assert( is_string( $apps_json ) && false === strpos
 
 $app_capabilities = npcink_governance_core_smoke_rest_as_app( 'GET', '/npcink-governance-core/v1/capabilities', $app_token );
 npcink_governance_core_smoke_assert( count( (array) ( $app_capabilities['items'] ?? array() ) ) > 0, 'app-authenticated capabilities read succeeds' );
+$app_manage_denied = npcink_governance_core_smoke_rest_result_as_app( 'GET', '/npcink-governance-core/v1/apps', $app_token, array( 'limit' => 1 ) );
+npcink_governance_core_smoke_assert( in_array( (int) $app_manage_denied['status'], array( 401, 403 ), true ), 'app-authenticated token cannot list admin-only app keys' );
+$app_rotate_denied = npcink_governance_core_smoke_rest_result_as_app( 'POST', '/npcink-governance-core/v1/apps/' . rawurlencode( $key_id ) . '/rotate', $app_token );
+npcink_governance_core_smoke_assert( in_array( (int) $app_rotate_denied['status'], array( 401, 403 ), true ), 'app-authenticated token cannot rotate admin-only app keys' );
 
 $revoked_app = npcink_governance_core_smoke_rest(
 	'POST',
