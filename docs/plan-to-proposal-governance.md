@@ -23,17 +23,18 @@ an execution bridge.
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
-- `npcink-toolbox/build-image-candidate-adoption-plan`
+- `npcink-abilities-toolkit/build-image-candidate-adoption-plan`
 - `npcink-toolbox/build-site-knowledge-review-plan`
 - `npcink-toolbox/build-nightly-inspection-review-plan`
-- `npcink-toolbox/build-content-metadata-apply-plan`
+- `npcink-abilities-toolkit/build-content-metadata-apply-plan`
 
-The `npcink-abilities-toolkit/*` planning abilities belong to `npcink-abilities-toolkit`; the
-Toolbox article and image candidate handoffs belong to `npcink-toolbox`. They are executed
-through the WordPress Abilities API by the host or adapter. Core only receives
-their output. The Toolbox plan is included here because Core can govern its
-write plan without owning Toolbox workflow UX, content generation, image
-search, or image generation.
+The `npcink-abilities-toolkit/*` planning abilities belong to
+`npcink-abilities-toolkit`; the Toolbox article and site-knowledge handoffs
+belong to `npcink-toolbox`. They are executed through the WordPress Abilities
+API by the host or adapter. Core only receives their output. The Toolbox plans
+are included here because Core can govern their write plans without owning
+Toolbox workflow UX, content generation, site-knowledge runtime, or Cloud
+writing.
 
 `npcink-toolbox/build-site-knowledge-review-plan` is a narrow bridge from the
 Cloud Site Knowledge agent handoff into local Core review. The plan must carry
@@ -51,11 +52,12 @@ proposal with human `title` and `content` input still required. It is not a
 Nightly runtime, Cloud scheduler, retry store, article writer, approval bypass,
 or WordPress write path.
 
-`npcink-toolbox/build-content-metadata-apply-plan` is the reviewed metadata
-choice handoff from the Toolbox editor. It may package accepted excerpt,
-existing category, and existing tag choices into dry-run `write_actions`, but it
-must not create terms, mutate SEO fields, rewrite content, or claim Toolbox
-direct write authority.
+`npcink-abilities-toolkit/build-content-metadata-apply-plan` is the reviewed metadata
+choice handoff from the Abilities Toolkit. Product surfaces such as the Toolbox
+editor may submit it after an operator accepts excerpt, existing category, and
+existing tag choices. The plan may package those choices into dry-run
+`write_actions`, but it must not create terms, mutate SEO fields, rewrite
+content, or claim direct write authority.
 
 ## Boundary
 
@@ -214,10 +216,10 @@ evidence, affected template slugs, action count, and
 theme files, navigation entities, global styles, approve the proposal, execute
 the write, or provide a generic final write path.
 
-`npcink-toolbox/build-content-metadata-apply-plan` is the bounded local handoff
-for the user intent "apply these reviewed article metadata choices" after
-Toolbox has produced a `content_metadata_delta` and the operator has accepted
-specific choices. It must return `artifact_type=content_metadata_apply_plan`,
+`npcink-abilities-toolkit/build-content-metadata-apply-plan` is the bounded local handoff
+for the user intent "apply these reviewed article metadata choices" after a
+product surface has produced a `content_metadata_delta` and the operator has
+accepted specific choices. It must return `artifact_type=content_metadata_apply_plan`,
 `proposal_mode=batch`, `batch_approval=true`, `requires_approval=true`,
 `dry_run=true`, `commit_execution=false`, `direct_wordpress_write=false`, and a
 small set of reviewed actions for one target post. Core accepts only
@@ -294,7 +296,7 @@ draft/media actions such as `npcink-abilities-toolkit/create-draft`,
 
 ## Image Candidate Adoption Handoff
 
-`npcink-toolbox/build-image-candidate-adoption-plan` is the bounded local
+`npcink-abilities-toolkit/build-image-candidate-adoption-plan` is the bounded Toolkit
 handoff for adopting one reviewed image candidate from stock, AI-generated,
 owned, external, or manual-upload sources. It is not a Cloud image registry,
 not an image generation runtime, and not a media import executor.

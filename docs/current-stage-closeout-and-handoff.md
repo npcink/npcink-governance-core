@@ -86,8 +86,9 @@ until the operator accepted specific metadata choices.
 
 ### 4. Core accepted only the governed handoff shape
 
-Core now accepts the Toolbox
-`npcink-toolbox/build-content-metadata-apply-plan` output only as a reviewed
+Core now accepts the Toolkit
+`npcink-abilities-toolkit/build-content-metadata-apply-plan` output, submitted
+by a product surface such as Toolbox, only as a reviewed
 `content_metadata_apply_plan`. It validates the plan before creating one
 pending batch proposal:
 

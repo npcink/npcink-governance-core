@@ -1,5 +1,48 @@
 # Session Breadcrumb
 
+## 2026-06-21 — WordPress.org description and FAQ expanded
+
+- **Module**: Core WordPress.org release copy.
+- **Status**: The plugin readme now explains Core's governance value, target
+  users, integrations, privacy/data handling, boundaries, and FAQ in more
+  user-readable terms.
+- **Completed**:
+  - Expanded `readme.txt` with what Core does, who should use it,
+    requirements/integrations, privacy/data, and boundary sections.
+  - Added FAQ entries for target users, non-goals, proposals, commit preflight,
+    ability-provider requirements, data storage, app keys, OpenClaw routing,
+    and third-party providers.
+  - Synced the English listing draft and added static contract assertions for
+    the expanded WordPress.org copy.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer validate --no-check-publish` passed.
+- **Boundary**:
+  - This is release copy only. Core still does not generate content, route
+    models, execute abilities, own workflow runtime, own task queues, store
+    provider credentials, or mutate WordPress content.
+
+## 2026-06-21 — Toolkit-owned plan handoff ids aligned
+
+- **Module**: Core plan-to-proposal ability ownership alignment.
+- **Status**: Core now accepts the image candidate adoption and content
+  metadata apply plan handoffs under their real
+  `npcink-abilities-toolkit/*` ability ids instead of stale Toolbox-owned plan
+  ids.
+- **Completed**:
+  - Updated the plan intake allowlist and preview routing.
+  - Updated fail-closed fixtures, static contracts, REST/governance/ability
+    docs, and closeout notes to preserve Toolkit ownership while product
+    surfaces such as Toolbox submit reviewed plan output.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+- **Boundary**:
+  - This is ability ownership and governance intake alignment only. Core still
+    does not execute plan abilities, own product workflow UX, own workflow
+    runtime, own task queues, store provider credentials, or mutate WordPress
+    content.
+
 ## 2026-06-21 — App-key rotation lifecycle audit tightened
 
 - **Module**: Core app-key rotation lifecycle auditing.

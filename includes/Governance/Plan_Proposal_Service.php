@@ -40,10 +40,10 @@ final class Plan_Proposal_Service {
 		'npcink-toolbox/build-article-write-plan'                            => true,
 		'npcink-toolbox/build-article-batch-write-plan'                      => true,
 		'npcink-toolbox/build-article-media-batch-write-plan'                => true,
-		'npcink-toolbox/build-image-candidate-adoption-plan'                 => true,
+		'npcink-abilities-toolkit/build-image-candidate-adoption-plan'        => true,
 		'npcink-toolbox/build-site-knowledge-review-plan'                    => true,
 		'npcink-toolbox/build-nightly-inspection-review-plan'                => true,
-		'npcink-toolbox/build-content-metadata-apply-plan'                   => true,
+		'npcink-abilities-toolkit/build-content-metadata-apply-plan'         => true,
 	);
 
 	private const ARTICLE_BATCH_MAX_ACTIONS = 5;
@@ -158,7 +158,7 @@ final class Plan_Proposal_Service {
 			}
 		}
 
-		if ( 'npcink-toolbox/build-image-candidate-adoption-plan' === $plan_ability_id ) {
+		if ( 'npcink-abilities-toolkit/build-image-candidate-adoption-plan' === $plan_ability_id ) {
 			$image_candidate_contract_error = $this->validate_image_candidate_adoption_plan_contract( $plan );
 			if ( is_wp_error( $image_candidate_contract_error ) ) {
 				return $image_candidate_contract_error;
@@ -179,7 +179,7 @@ final class Plan_Proposal_Service {
 			}
 		}
 
-		if ( 'npcink-toolbox/build-content-metadata-apply-plan' === $plan_ability_id ) {
+		if ( 'npcink-abilities-toolkit/build-content-metadata-apply-plan' === $plan_ability_id ) {
 			$content_metadata_contract_error = $this->validate_content_metadata_apply_plan_contract( $plan );
 			if ( is_wp_error( $content_metadata_contract_error ) ) {
 				return $content_metadata_contract_error;
@@ -1057,7 +1057,7 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
-	 * Validates a Toolbox content metadata apply plan from reviewed editor choices.
+	 * Validates a Toolkit content metadata apply plan from reviewed editor choices.
 	 *
 	 * @param array<string,mixed> $plan Plan data.
 	 * @return true|WP_Error
@@ -3493,7 +3493,7 @@ final class Plan_Proposal_Service {
 		if ( 'npcink-toolbox/build-nightly-inspection-review-plan' === $plan_ability_id ) {
 			$preview['nightly_inspection_review'] = $this->nightly_inspection_review_preview( $plan );
 		}
-		if ( 'npcink-toolbox/build-content-metadata-apply-plan' === $plan_ability_id ) {
+		if ( 'npcink-abilities-toolkit/build-content-metadata-apply-plan' === $plan_ability_id ) {
 			$preview['content_metadata_apply'] = $this->content_metadata_apply_preview( $plan );
 		}
 		$preview = array_merge( $preview, $this->block_editor_quality_preview( $plan ) );
@@ -3717,7 +3717,7 @@ final class Plan_Proposal_Service {
 		if ( 'npcink-abilities-toolkit/build-block-theme-site-plan' === $plan_ability_id ) {
 			$preview['block_theme_site'] = $this->block_theme_site_preview( $plan );
 		}
-		if ( 'npcink-toolbox/build-content-metadata-apply-plan' === $plan_ability_id ) {
+		if ( 'npcink-abilities-toolkit/build-content-metadata-apply-plan' === $plan_ability_id ) {
 			$preview['content_metadata_apply'] = $this->content_metadata_apply_preview( $plan );
 		}
 		$preview = array_merge( $preview, $this->block_editor_quality_preview( $plan ) );

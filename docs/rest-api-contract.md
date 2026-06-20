@@ -739,10 +739,10 @@ abilities:
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
-- `npcink-toolbox/build-image-candidate-adoption-plan`
+- `npcink-abilities-toolkit/build-image-candidate-adoption-plan`
 - `npcink-toolbox/build-site-knowledge-review-plan`
 - `npcink-toolbox/build-nightly-inspection-review-plan`
-- `npcink-toolbox/build-content-metadata-apply-plan`
+- `npcink-abilities-toolkit/build-content-metadata-apply-plan`
 
 Permission: `manage_options` or app scope `proposals:create`.
 
@@ -786,7 +786,7 @@ must include draft creation, `npcink-abilities-toolkit/upload-media-from-url`, a
 `npcink-abilities-toolkit/set-post-featured-image` actions for each article, with optional
 `npcink-abilities-toolkit/update-media-details` or `npcink-abilities-toolkit/patch-post-content` actions.
 
-For `npcink-toolbox/build-image-candidate-adoption-plan`, the plan must
+For `npcink-abilities-toolkit/build-image-candidate-adoption-plan`, the plan must
 declare `artifact_type=image_candidate_adoption_plan` and carry a normalized
 `image_candidate.v1` candidate through `candidate_contract_version` or
 `selected_image_candidate.contract_version`. The action set must include
@@ -824,7 +824,7 @@ The preview must identify `needs_input_resolution_owner` as
 Toolbox Morning Brief, draft the title and content, and resubmit a complete
 Core proposal; Core does not generate or edit missing draft fields.
 
-For `npcink-toolbox/build-content-metadata-apply-plan`, the plan must declare
+For `npcink-abilities-toolkit/build-content-metadata-apply-plan`, the plan must declare
 `artifact_type=content_metadata_apply_plan`, `proposal_mode=batch`,
 `batch_approval=true`, target exactly one post, and keep
 `direct_wordpress_write=false`. Core accepts only dry-run, non-commit

@@ -102,9 +102,9 @@ Core may consume these read-only planning ability outputs:
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
-- `npcink-toolbox/build-image-candidate-adoption-plan`
+- `npcink-abilities-toolkit/build-image-candidate-adoption-plan`
 - `npcink-toolbox/build-site-knowledge-review-plan`
-- `npcink-toolbox/build-content-metadata-apply-plan`
+- `npcink-abilities-toolkit/build-content-metadata-apply-plan`
 
 Plan intake does not execute the plan ability and does not execute target write
 abilities. It accepts a successful plan payload, validates that the planning
@@ -152,7 +152,7 @@ one reviewable `plan_to_proposal_batch`.
 
 The image candidate adoption handoff is separate from article generation and
 media derivative optimization. Core accepts
-`npcink-toolbox/build-image-candidate-adoption-plan` only when it is an
+`npcink-abilities-toolkit/build-image-candidate-adoption-plan` only when it is an
 `image_candidate_adoption_plan` with a normalized `image_candidate.v1`
 candidate, one `npcink-abilities-toolkit/upload-media-from-url` action, one
 `npcink-abilities-toolkit/update-media-details` action, and at most one
@@ -169,7 +169,7 @@ does not generate drafts, approve proposals, pass commit preflight, or execute
 WordPress writes from Cloud Site Knowledge output.
 
 The content metadata apply handoff is a reviewed-choice bridge. Core accepts
-`npcink-toolbox/build-content-metadata-apply-plan` only when it is a
+`npcink-abilities-toolkit/build-content-metadata-apply-plan` only when it is a
 `content_metadata_apply_plan` for one post, with explicit batch approval and
 dry-run actions limited to excerpt updates and existing category or post-tag
 assignment. One apply plan may contain at most one excerpt action, one category

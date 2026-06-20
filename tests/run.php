@@ -197,7 +197,17 @@ foreach (
 		'=== Npcink Governance Core ===',
 		'Stable tag: 0.1.0',
 		'Npcink AI governance layer for WordPress operations.',
+		'= What Core does =',
+		'= Who should use this plugin =',
+		'= Privacy and data =',
+		'= Boundaries =',
 		'Open Npcink AI > Core',
+		'= Is this an AI content generator? =',
+		'= What is commit preflight? =',
+		'= Does this plugin send data to an external AI service? =',
+		'= What data does Core store? =',
+		'Core does not call external AI services and does not send site data to third parties.',
+		'Third-party providers can expose WordPress Abilities API definitions',
 		'Requires at least: 7.0',
 		'Tested up to: 7.0',
 		'Requires PHP: 8.0',
@@ -1833,10 +1843,10 @@ foreach (
 		'npcink-toolbox/build-article-write-plan',
 		'npcink-toolbox/build-article-batch-write-plan',
 		'npcink-toolbox/build-article-media-batch-write-plan',
-		'npcink-toolbox/build-image-candidate-adoption-plan',
+		'npcink-abilities-toolkit/build-image-candidate-adoption-plan',
 		'npcink-toolbox/build-site-knowledge-review-plan',
 		'npcink-toolbox/build-nightly-inspection-review-plan',
-		'npcink-toolbox/build-content-metadata-apply-plan',
+		'npcink-abilities-toolkit/build-content-metadata-apply-plan',
 		'proposal.plan_ingested',
 		'npcink-abilities-toolkit/delete-media-permanently',
 		'destructive_media_delete_not_explicitly_included',
@@ -2023,7 +2033,7 @@ npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-article-media-batch-write-plan' ), 'Plan-to-proposal docs include the Toolbox article media batch handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-site-knowledge-review-plan' ), 'Plan-to-proposal docs include the Toolbox Site Knowledge review handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-nightly-inspection-review-plan' ), 'Plan-to-proposal docs include the Toolbox Nightly Inspection review handoff.' );
-npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-content-metadata-apply-plan' ), 'Plan-to-proposal docs include the Toolbox content metadata apply handoff.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-content-metadata-apply-plan' ), 'Plan-to-proposal docs include the Toolkit content metadata apply handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'blocked draft-review proposal' ), 'Plan-to-proposal docs keep Site Knowledge review non-executable before human input.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'review this Morning Brief item in Core' ) && false !== strpos( $plan_to_proposal_docs, 'preview.nightly_inspection_review' ) && false !== strpos( $plan_to_proposal_docs, 'selected Morning Brief review item ids/items' ), 'Plan-to-proposal docs preserve Nightly Morning Brief selected-item review context.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'needs_input_resolution_owner=toolbox_morning_brief_operator' ) && false !== strpos( $plan_to_proposal_docs, 'Return to Toolbox Morning Brief' ) && false !== strpos( $plan_to_proposal_docs, 'Core does not generate or edit missing draft fields' ), 'Plan-to-proposal docs route Nightly missing-input resolution back to Toolbox Morning Brief.' );
