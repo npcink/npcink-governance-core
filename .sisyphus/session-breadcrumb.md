@@ -1,5 +1,22 @@
 # Session Breadcrumb
 
+## 2026-06-21 — WordPress.org display name aligned
+
+- **Module**: Core WordPress.org release identity and plugin metadata.
+- **Status**: Public display name now uses `Npcink Governance Core` while the
+  package slug, text domain, REST namespace, and technical identifiers remain
+  `npcink-governance-core`.
+- **Completed**:
+  - Updated the plugin header, WordPress.org readme title, release gate docs,
+    listing copy, positioning notes, translation metadata, and static
+    contracts for the display-name change.
+- **Verified**:
+  - `composer test:all` passed.
+- **Boundary**:
+  - This is release identity copy only. Core still does not execute abilities,
+    own workflow runtime, own task queues, store provider credentials, or
+    mutate WordPress content.
+
 ## 2026-06-20 — Narrow performance/security validation follow-up
 
 - **Module**: Core REST performance and app-key management permissions.

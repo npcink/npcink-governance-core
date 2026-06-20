@@ -122,7 +122,7 @@ final class Admin_Page {
 
 		add_submenu_page(
 			self::PARENT_MENU_SLUG,
-			__( 'npcink-governance-core', 'npcink-governance-core' ),
+			__( 'Npcink Governance Core', 'npcink-governance-core' ),
 			__( 'Core', 'npcink-governance-core' ),
 			self::MENU_CAPABILITY,
 			self::MENU_SLUG,

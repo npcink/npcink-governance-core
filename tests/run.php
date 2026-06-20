@@ -122,7 +122,7 @@ function npcink_governance_core_find_forbidden_key( $value, array $forbidden_key
 }
 
 $main_plugin = npcink_governance_core_read( $root . '/npcink-governance-core.php' );
-npcink_governance_core_assert( false !== strpos( $main_plugin, 'Plugin Name: npcink-governance-core' ), 'Main plugin file declares plugin header.' );
+npcink_governance_core_assert( false !== strpos( $main_plugin, 'Plugin Name: Npcink Governance Core' ), 'Main plugin file declares plugin header.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Description: Npcink AI governance layer for WordPress operations.' ), 'Main plugin file declares the public positioning.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Text Domain: npcink-governance-core' ), 'Main plugin file keeps the canonical text domain.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Domain Path: /languages' ), 'Main plugin file declares the bundled languages path.' );
@@ -194,7 +194,7 @@ foreach (
 $wp_readme = npcink_governance_core_read( $root . '/readme.txt' );
 foreach (
 	array(
-		'=== npcink-governance-core ===',
+		'=== Npcink Governance Core ===',
 		'Stable tag: 0.1.0',
 		'Npcink AI governance layer for WordPress operations.',
 		'Open Npcink AI > Core',

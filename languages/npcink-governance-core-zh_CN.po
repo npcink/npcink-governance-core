@@ -17,8 +17,8 @@ msgstr ""
 
 #. Plugin Name of the plugin
 #: npcink-governance-core.php includes/Admin/Admin_Page.php:125
-msgid "npcink-governance-core"
-msgstr "npcink-governance-core"
+msgid "Npcink Governance Core"
+msgstr "Npcink Governance Core"
 
 #. Description of the plugin
 #: npcink-governance-core.php

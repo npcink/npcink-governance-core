@@ -2,7 +2,7 @@
 
 ## Plugin Name
 
-npcink-governance-core
+Npcink Governance Core
 
 ## Short Description
 
@@ -15,7 +15,7 @@ ai, governance, approval, audit, abilities
 
 ## Description
 
-The npcink-governance-core plugin is the WordPress AI operation governance layer for ability
+Npcink Governance Core is the WordPress AI operation governance layer for ability
 intake, proposals, approval boundaries, commit preflight, scoped app keys, and
 audit logs.
 
@@ -30,7 +30,7 @@ Ability definitions belong in Npcink Abilities Toolkit or other provider plugins
 Productized OpenClaw connection belongs in trusted adapter. Cloud service
 connection belongs in cloud connector.
 
-The npcink-governance-core plugin does not generate content, route models, run MCP or workflow
+Npcink Governance Core does not generate content, route models, run MCP or workflow
 runtimes, store provider credentials, proxy ability execution, or perform final
 WordPress mutations.
 

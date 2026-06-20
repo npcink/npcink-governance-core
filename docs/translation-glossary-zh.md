@@ -8,9 +8,8 @@ and text domain remain English public contracts.
 
 ## Identity Rules
 
-- Keep `npcink-governance-core`, `Npcink AI`, `Core`, and plugin slugs in
-  English unless a later naming session explicitly changes the public product
-  identity.
+- Keep `Npcink Governance Core`, `Npcink AI`, `Core`, and plugin slugs in
+  English. Keep `npcink-governance-core` for slug and technical identifiers.
 - Keep `npcink-governance-core`, REST paths, database table names, option names,
   transient prefixes, ability ids, app scopes, and audit event names
   untranslated.
