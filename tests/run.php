@@ -183,6 +183,7 @@ foreach (
 		'Jobs, leases, retry workers, scheduler state',
 		'AI Development Workstream Summary',
 		'Operation Classification Contract',
+		'Cross-Repo Release Acceptance',
 		'local admin consent with audit',
 	) as $required
 ) {
@@ -696,8 +697,31 @@ npcink_governance_core_assert( false !== strpos( $readme, 'Create Draft Governan
 npcink_governance_core_assert( false !== strpos( $readme, 'Set Post SEO Meta Governance Scenario' ), 'README links Set Post SEO Meta Governance Scenario.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Approve Comment Governance Scenario' ), 'README links Approve Comment Governance Scenario.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Taxonomy Terms Preview Governance Scenario' ), 'README links Taxonomy Terms Preview Governance Scenario.' );
+npcink_governance_core_assert( false !== strpos( $readme, 'Cross-Repo Release Acceptance' ), 'README links Cross-Repo Release Acceptance.' );
+npcink_governance_core_assert( false !== strpos( $readme, 'signed Adapter request through Core' ) && false !== strpos( $readme, 'Adapter status/readback without moving execution into Core' ), 'README summarizes the cross-repo release chain.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Article writing is an external product/ability concern' ), 'README keeps article product ownership outside Core.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Cloud must not provide Core with' ), 'README prohibits Cloud writing generation for Core intake.' );
+
+$cross_repo_release_acceptance = npcink_governance_core_read( $root . '/docs/cross-repo-release-acceptance.md' );
+foreach (
+	array(
+		'Cross-Repo Release Acceptance',
+		'composer acceptance:cross-repo-release',
+		'npcink-governance-core',
+		'npcink-ai-client-adapter',
+		'npcink-abilities-toolkit',
+		'Core proposal',
+		'Core commit preflight',
+		'WordPress Abilities API',
+		'Core record-execution',
+		'Adapter status/readback',
+		'Core must not add final execution routes',
+		'Adapter must not define reusable abilities',
+		'Toolkit must not store approval records',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $cross_repo_release_acceptance, $required ), 'Cross-repo release acceptance doc contains required text: ' . $required );
+}
 
 $adapter_policy_acceptance = npcink_governance_core_read( $root . '/docs/adapter-handoff-and-approval-policy-acceptance.md' );
 foreach (
@@ -1344,7 +1368,7 @@ foreach (
 }
 
 $composer_json = npcink_governance_core_read( $root . '/composer.json' );
-foreach ( array( 'test:contracts', 'test:fail-closed', 'tests/fail-closed.php' ) as $required ) {
+foreach ( array( 'test:contracts', 'test:fail-closed', 'tests/fail-closed.php', 'acceptance:cross-repo-release', 'scripts/cross-repo-release-acceptance.sh' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $composer_json, $required ), 'Composer scripts include required test command: ' . $required );
 }
 $composer_data = json_decode( $composer_json, true );
@@ -1356,7 +1380,7 @@ npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eva
 npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], 'project_label=npcink-governance-core' ), 'Project eval-lab review command passes a redacted project label.' );
 npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], 'contract=project_boundary_review_triad.v1' ), 'Project eval-lab review command pins the output contract.' );
 npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], 'mode=working_diff' ), 'Project eval-lab review command pins the default working diff mode.' );
-$default_gate_scripts = array( 'test', 'test:all', 'release:verify', 'package:release', 'prepare:release', 'plugin-check:release', 'check:wporg', 'smoke:wp', 'test:contracts', 'test:fail-closed' );
+$default_gate_scripts = array( 'test', 'test:all', 'release:verify', 'package:release', 'prepare:release', 'plugin-check:release', 'check:wporg', 'smoke:wp', 'test:contracts', 'test:fail-closed', 'acceptance:cross-repo-release' );
 foreach ( $default_gate_scripts as $script_name ) {
 	if ( ! isset( $composer_scripts[ $script_name ] ) ) {
 		continue;

@@ -16,6 +16,7 @@ Npcink Governance Core starts with a small but strict test pyramid.
 | Optional eval-lab quality gate | `composer eval:lab -- --list`, `composer eval:project:review -- dry_run=true`, or `composer eval:gutenberg:judge -- dry_run=true limit=3` | Validate local AI-output evaluation wiring without making it a Core runtime or default test dependency. |
 | WordPress.org review guard | `composer check:wporg` | Catch locally reproducible reviewer policy patterns that Plugin Check may miss. |
 | Plugin Check release scan | `composer plugin-check:release` | Catch WordPress.org packaging and runtime security blockers before release. |
+| Cross-repo release acceptance | `composer acceptance:cross-repo-release` | Prove Core, Adapter, and Toolkit still compose as governance, channel, and ability layers before cross-repository release candidates. |
 
 ## Static Contract Rules
 
@@ -318,3 +319,17 @@ Core `proposal_id` and `correlation_id`.
 
 Core static contracts only document this boundary. Core does not run provider
 requests, store model credentials, or merge AI Request Logs into Core audit.
+
+## Cross-Repo Release Acceptance
+
+Cross-repository release candidates use
+`composer acceptance:cross-repo-release`, documented in
+[Cross-Repo Release Acceptance](cross-repo-release-acceptance.md). This gate is
+not part of `composer test:all`; it is a release-candidate gate that composes
+the existing Core, Adapter, and Toolkit verification commands.
+
+The gate must remain an orchestrator only. It may call sibling repository
+Composer scripts, WP-CLI activation helpers, Plugin Check wrappers, package
+builders, and the Adapter signed local client fixture. It must not import
+Adapter or Toolkit PHP classes, copy ability definitions into Core, add Core
+execution routes, or make Core the owner of Adapter/Toolkit release artifacts.

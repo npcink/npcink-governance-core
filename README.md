@@ -125,6 +125,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Eval-Lab Triad Review Closeout](docs/eval-lab-triad-review-closeout.md)
 - [Testing Strategy](docs/testing-strategy.md)
 - [WordPress.org Release Gate](docs/wordpress-org-release-gate.md)
+- [Cross-Repo Release Acceptance](docs/cross-repo-release-acceptance.md)
 - [Next Stage Plan](docs/next-stage-plan.md)
 - [Strategy And Product Split](docs/strategy-and-product-split.md)
 - [ADR-001: Rebuild Core As A Governance Layer](docs/decisions/ADR-001-rebuild-core-as-governance-layer.md)
@@ -319,6 +320,12 @@ Productized OpenClaw acceptance should be run from Magick AI Adapter's
 `docs/openclaw-consumer-acceptance.md`. Core participates as the governance
 authority behind Adapter; OpenClaw should not use Core as its primary product
 connection.
+
+Cross-repository release candidates that depend on Core, Adapter, and Toolkit
+must run [Cross-Repo Release Acceptance](docs/cross-repo-release-acceptance.md).
+That gate proves the current chain from signed Adapter request through Core
+proposal/preflight, WordPress Abilities API execution, Core execution-result
+recording, and Adapter status/readback without moving execution into Core.
 
 Run the local static test suite:
 

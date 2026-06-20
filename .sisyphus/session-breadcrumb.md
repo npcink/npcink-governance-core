@@ -1,5 +1,24 @@
 # Session Breadcrumb
 
+## 2026-06-20 — Cross-repo release acceptance gate added
+
+- **Module**: Core release documentation and cross-repository acceptance
+  orchestration.
+- **Status**: Core now documents and exposes a local release-candidate gate
+  for the current Core + Adapter + Toolkit stack.
+- **Completed**:
+  - Added `composer acceptance:cross-repo-release`, backed by
+    `scripts/cross-repo-release-acceptance.sh`.
+  - Added a cross-repo release acceptance runbook with the compatibility
+    matrix, real-chain proof, boundary checks, and diagnostic-only skips.
+  - Linked the gate from README, Testing Strategy, WordPress.org Release Gate,
+    and Next Stage Plan.
+- **Boundary**:
+  - This is orchestration and documentation only. Core still does not execute
+    target abilities, own Adapter/Toolkit artifacts, add final execution
+    routes, own workflow runtime, own queues, store provider credentials, or
+    mutate WordPress content.
+
 ## 2026-06-20 — Adapter-style external execution smoke covered
 
 - **Module**: WordPress smoke integration for Core approval-to-result handoff.

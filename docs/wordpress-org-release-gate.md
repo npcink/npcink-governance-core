@@ -11,6 +11,19 @@ composer prepare:release
 This release gate exists because functional tests and local smoke tests can pass
 while WordPress.org rejects the package for review-policy issues.
 
+When a release candidate also depends on the current Adapter and Toolkit
+contracts, run the broader cross-repository gate before publishing or tagging:
+
+```sh
+composer acceptance:cross-repo-release
+```
+
+See [Cross-Repo Release Acceptance](cross-repo-release-acceptance.md). That
+gate is intentionally broader than the Core-only WordPress.org package check:
+it proves the Governance Core, AI Client Adapter, and Abilities Toolkit still
+compose without moving execution, ability ownership, or audit truth into the
+wrong repository.
+
 `composer prepare:release` wraps the current required local gate:
 
 ```sh
@@ -190,8 +203,10 @@ When resuming release work:
    `docs/security-model.md`.
 2. Run `git status --short --branch` and preserve unrelated user changes.
 3. Run `composer prepare:release -- --version <version>`.
-4. Run `composer sync:wporg -- --version <version> --svn-dir <checkout>` as a
+4. For cross-repository release candidates, run
+   `composer acceptance:cross-repo-release`.
+5. Run `composer sync:wporg -- --version <version> --svn-dir <checkout>` as a
    dry run, then re-run with `--apply` after reviewing the output.
-5. Inspect `build/npcink-governance-core.zip` before upload.
-6. Commit the SVN checkout only after the public identity, Plugin Check
+6. Inspect `build/npcink-governance-core.zip` before upload.
+7. Commit the SVN checkout only after the public identity, Plugin Check
    results, and SVN status match this file.

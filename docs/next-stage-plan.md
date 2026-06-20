@@ -43,6 +43,9 @@ Implemented:
   authorization paths.
 - Core-managed sensitive read request/grant flow for read abilities that
   require extra authorization, including bounded read preflight and audit.
+- cross-repository release acceptance that proves Core, Adapter, and Toolkit
+  still compose as governance, channel, and ability layers before release
+  candidates.
 
 Not implemented:
 
@@ -145,6 +148,12 @@ new Core execution or health routes: Core `composer test:all` and
 `composer smoke:wp`, Adapter `composer test:all` and `composer smoke:wp`, and
 Abilities `composer test:all` plus its local WordPress smoke gate when media
 replacement or restore behavior changes.
+
+For release candidates that depend on the full current stack, run
+[Cross-Repo Release Acceptance](cross-repo-release-acceptance.md) from Core.
+That gate wraps the current Core, Adapter, and Toolkit source/smoke/release
+checks plus the signed Adapter local client fixture. It is a release gate, not
+a new runtime responsibility for Core.
 
 Conclusion: stop expanding the media optimization implementation in Core at
 this stage. The route is already productized enough for the current boundary:
