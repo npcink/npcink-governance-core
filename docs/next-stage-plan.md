@@ -46,6 +46,8 @@ Implemented:
 - cross-repository release acceptance that proves Core, Adapter, and Toolkit
   still compose as governance, channel, and ability layers before release
   candidates.
+- release candidate version matrix checks that freeze the current Core,
+  Adapter, and Toolkit plugin versions before tag decisions.
 
 Not implemented:
 
@@ -154,6 +156,10 @@ For release candidates that depend on the full current stack, run
 That gate wraps the current Core, Adapter, and Toolkit source/smoke/release
 checks plus the signed Adapter local client fixture. It is a release gate, not
 a new runtime responsibility for Core.
+
+Then run [Release Candidate Version Matrix](release-candidate-version-matrix.md)
+to decide whether each repository can use its conventional release tag or needs
+a version bump / stack RC snapshot tag.
 
 Conclusion: stop expanding the media optimization implementation in Core at
 this stage. The route is already productized enough for the current boundary:
