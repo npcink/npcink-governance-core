@@ -191,6 +191,51 @@ final class Proposal_Repository {
 	}
 
 	/**
+	 * Lists recent proposals without loading large JSON payload columns.
+	 *
+	 * @param int    $limit Maximum rows.
+	 * @param string $status Optional status filter.
+	 * @param int    $offset Rows to skip.
+	 * @return array<int,array<string,mixed>>
+	 */
+	public function list_recent_summaries( int $limit = 50, string $status = '', int $offset = 0 ): array {
+		global $wpdb;
+
+		$limit  = max( 1, min( 200, $limit ) );
+		$offset = max( 0, $offset );
+		$status = sanitize_key( $status );
+		if ( '' !== $status ) {
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT proposal_id, ability_id, status, title, summary, created_by, created_at, updated_at FROM %i WHERE status = %s ORDER BY id DESC LIMIT %d OFFSET %d',
+					$this->table_name(),
+					$status,
+					$limit,
+					$offset
+				),
+				ARRAY_A
+			);
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+			return array_map( array( $this, 'normalize_summary_row' ), is_array( $rows ) ? $rows : array() );
+		}
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT proposal_id, ability_id, status, title, summary, created_by, created_at, updated_at FROM %i ORDER BY id DESC LIMIT %d OFFSET %d',
+				$this->table_name(),
+				$limit,
+				$offset
+			),
+			ARRAY_A
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return array_map( array( $this, 'normalize_summary_row' ), is_array( $rows ) ? $rows : array() );
+	}
+
+	/**
 	 * Lists recent proposals by status set.
 	 *
 	 * @param array<int,string> $statuses Status filters.
@@ -686,6 +731,29 @@ final class Proposal_Repository {
 			'created_by'      => (int) ( $row['created_by'] ?? 0 ),
 			'created_at'      => sanitize_text_field( (string) ( $row['created_at'] ?? '' ) ),
 			'updated_at'      => sanitize_text_field( (string) ( $row['updated_at'] ?? '' ) ),
+		);
+	}
+
+	/**
+	 * Normalizes a list summary row that intentionally excludes payload JSON.
+	 *
+	 * @param array<string,mixed> $row DB row.
+	 * @return array<string,mixed>
+	 */
+	private function normalize_summary_row( array $row ): array {
+		$proposal_id = sanitize_text_field( (string) ( $row['proposal_id'] ?? '' ) );
+
+		return array(
+			'proposal_id'      => $proposal_id,
+			'display_id'       => self::display_id_for_proposal_id( $proposal_id ),
+			'ability_id'       => sanitize_text_field( (string) ( $row['ability_id'] ?? '' ) ),
+			'status'           => sanitize_key( (string) ( $row['status'] ?? '' ) ),
+			'title'            => sanitize_text_field( (string) ( $row['title'] ?? '' ) ),
+			'summary'          => sanitize_textarea_field( (string) ( $row['summary'] ?? '' ) ),
+			'payload_included' => false,
+			'created_by'       => (int) ( $row['created_by'] ?? 0 ),
+			'created_at'       => sanitize_text_field( (string) ( $row['created_at'] ?? '' ) ),
+			'updated_at'       => sanitize_text_field( (string) ( $row['updated_at'] ?? '' ) ),
 		);
 	}
 

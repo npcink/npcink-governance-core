@@ -79,6 +79,11 @@ cookie, token, API-key, and password strings are also redacted. Non-secret Core
 authorization labels such as `read_authorization_context` and
 `authorization_mode` remain available for review and audit.
 
+Direct proposal creation is also bounded before persistence. Core rejects
+oversized proposal payloads before inserting a proposal row or audit event, so
+large dry-run previews and handoff payloads cannot turn the proposal table into
+unbounded storage.
+
 ## Sanitization And SQL
 
 - REST scalar parameters must use WordPress sanitizers.
@@ -241,6 +246,14 @@ If a token is exposed, administrators should revoke that token from the same
 screen and create a replacement. Revoked tokens are stored as `revoked` and must
 fail future app authentication with `401`.
 
+App key rows expose `expires_soon` and `rotation_recommended` hints. Admins can
+rotate an active key through Core, which issues a one-time replacement token,
+audits `app.rotated`, revokes the old key, and audits `app.revoked`. Rotation
+fails closed if the rotation audit cannot be stored, if the old key cannot be
+revoked, or if the old-key revocation audit cannot be stored. In that final
+failure case, Core also revokes the replacement key and withholds the one-time
+replacement token response.
+
 App-authenticated requests must have the route's required scope and pass the
 fixed-window rate limit. Missing auth returns `401`, missing scope returns
 `403`, and rate limit failures return `429`.
@@ -251,6 +264,11 @@ Sensitive read request app scopes are separate from proposal scopes:
 create/read/preflight sensitive read requests by default, but approval and
 rejection should be issued only to trusted host policies or WordPress
 administrators.
+
+Hash-only read request creation may bind a request when the caller cannot send
+the raw input at review time. For `sensitive` requests, read preflight must send
+the raw structured input so Core can recompute the approved input hash before
+issuing read authorization.
 
 Proposal creation also has a pending-queue guardrail. Core reuses an existing
 pending proposal when the same caller submits the same `ability_id` and
@@ -285,3 +303,10 @@ bundle paths, or local TLS test switches in their own secret stores and runtime
 configuration. Core must not copy those adapter-side onboarding values into
 proposal payloads or audit metadata, and Core admin screens must not become the
 OpenClaw setup UI.
+
+History retention may delete old low-value access/list audit events such as
+`proposal.listed`, `proposal.viewed`, `audit.listed`, and read/app list events.
+Lifecycle events such as proposal creation, approval, rejection, preflight,
+execution-result recording, app creation/rotation/revocation, and sensitive
+read decisions remain governance evidence and are not part of that access-event
+cleanup set.

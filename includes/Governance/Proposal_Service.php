@@ -23,6 +23,7 @@ final class Proposal_Service {
 	const PENDING_TTL_SECONDS = 86400;
 	const PENDING_QUOTA_PER_APP = 20;
 	const PENDING_QUOTA_PER_USER = 1000;
+	const MAX_PROPOSAL_PAYLOAD_BYTES = 262144;
 
 	/**
 	 * Proposal repository.
@@ -109,6 +110,11 @@ final class Proposal_Service {
 		$caller = is_array( $payload['caller'] ?? null ) ? $payload['caller'] : array();
 		if ( Request_Context::is_app() ) {
 			$caller['auth'] = Request_Context::audit_metadata();
+		}
+
+		$payload_size_error = $this->validate_proposal_payload_size( $ability_id, $payload, $input, $preview, $caller );
+		if ( is_wp_error( $payload_size_error ) ) {
+			return $payload_size_error;
 		}
 
 		$guardrail = $this->proposal_create_guardrail( $ability_id, $input, $capability );
@@ -603,6 +609,45 @@ final class Proposal_Service {
 			'dedupe_hash'           => $dedupe_hash,
 			'ability_contract_hash' => $this->ability_contract_hash( $capability ),
 			'ability_contract'      => $this->ability_contract_fingerprint( $capability ),
+		);
+	}
+
+	/**
+	 * Rejects direct proposal payloads that would persist oversized JSON blobs.
+	 *
+	 * @param string              $ability_id Target ability id.
+	 * @param array<string,mixed> $payload Raw request payload.
+	 * @param array<string,mixed> $input Raw proposal input.
+	 * @param array<string,mixed> $preview Raw proposal preview.
+	 * @param array<string,mixed> $caller Caller metadata.
+	 * @return true|WP_Error
+	 */
+	private function validate_proposal_payload_size( string $ability_id, array $payload, array $input, array $preview, array $caller ) {
+		$encoded = wp_json_encode(
+			$this->normalize_payload_for_hash(
+				array(
+					'ability_id' => $ability_id,
+					'title'      => sanitize_text_field( (string) ( $payload['title'] ?? '' ) ),
+					'summary'    => sanitize_textarea_field( (string) ( $payload['summary'] ?? '' ) ),
+					'input'      => $this->proposals->sanitize_input_for_ability( $ability_id, $input ),
+					'preview'    => $this->sanitize_payload_for_hash( $preview ),
+					'caller'     => $this->sanitize_payload_for_hash( $caller ),
+				)
+			)
+		);
+		$byte_count = strlen( is_string( $encoded ) ? $encoded : '' );
+
+		if ( $byte_count <= self::MAX_PROPOSAL_PAYLOAD_BYTES ) {
+			return true;
+		}
+
+		return new WP_Error(
+			'npcink_governance_core_proposal_payload_too_large',
+			__( 'Proposal payload is too large for Core governance storage.', 'npcink-governance-core' ),
+			array(
+				'status'    => 413,
+				'max_bytes' => self::MAX_PROPOSAL_PAYLOAD_BYTES,
+			)
 		);
 	}
 

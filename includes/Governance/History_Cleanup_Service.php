@@ -113,12 +113,14 @@ final class History_Cleanup_Service {
 				'history_retention_days' => $retention_days,
 				'deleted_proposals'      => 0,
 				'deleted_app_keys'       => 0,
+				'deleted_audit_events'   => 0,
 			);
 		}
 
 		$cutoff             = gmdate( 'Y-m-d H:i:s', time() - ( $retention_days * DAY_IN_SECONDS ) );
 		$planned_proposals  = $this->proposals->count_historical_before( $cutoff );
 		$planned_app_keys   = $this->apps->count_revoked_before( $cutoff );
+		$planned_audit_events = $this->audit->count_access_events_before( $cutoff );
 		$requested_event_id = $this->audit->record(
 			'core.history_cleanup_requested',
 			array(
@@ -127,6 +129,7 @@ final class History_Cleanup_Service {
 				'cutoff_utc'             => $cutoff,
 				'planned_proposals'      => $planned_proposals,
 				'planned_app_keys'       => $planned_app_keys,
+				'planned_audit_events'   => $planned_audit_events,
 				'batch_limit'            => self::CLEANUP_BATCH_LIMIT,
 				'commit_execution'       => false,
 				'core_execution'         => false,
@@ -143,7 +146,8 @@ final class History_Cleanup_Service {
 
 		$deleted_proposals = $this->proposals->delete_historical_before( $cutoff, self::CLEANUP_BATCH_LIMIT );
 		$deleted_app_keys  = $this->apps->delete_revoked_before( $cutoff, self::CLEANUP_BATCH_LIMIT );
-		if ( null === $deleted_proposals || null === $deleted_app_keys ) {
+		$deleted_audit_events = $this->audit->delete_access_events_before( $cutoff, self::CLEANUP_BATCH_LIMIT );
+		if ( null === $deleted_proposals || null === $deleted_app_keys || null === $deleted_audit_events ) {
 			$this->audit->record(
 				'core.history_cleanup_failed',
 				array(
@@ -153,6 +157,7 @@ final class History_Cleanup_Service {
 					'requested_event_id'     => $requested_event_id,
 					'deleted_proposals'      => null === $deleted_proposals ? 0 : $deleted_proposals,
 					'deleted_app_keys'       => null === $deleted_app_keys ? 0 : $deleted_app_keys,
+					'deleted_audit_events'   => null === $deleted_audit_events ? 0 : $deleted_audit_events,
 					'commit_execution'       => false,
 					'core_execution'         => false,
 				)
@@ -174,6 +179,7 @@ final class History_Cleanup_Service {
 				'requested_event_id'     => $requested_event_id,
 				'deleted_proposals'      => $deleted_proposals,
 				'deleted_app_keys'       => $deleted_app_keys,
+				'deleted_audit_events'   => $deleted_audit_events,
 				'batch_limit'            => self::CLEANUP_BATCH_LIMIT,
 				'commit_execution'       => false,
 				'core_execution'         => false,
@@ -195,6 +201,7 @@ final class History_Cleanup_Service {
 			'cutoff_utc'             => $cutoff,
 			'deleted_proposals'      => $deleted_proposals,
 			'deleted_app_keys'       => $deleted_app_keys,
+			'deleted_audit_events'   => $deleted_audit_events,
 			'requested_event_id'     => $requested_event_id,
 			'completed_event_id'     => $completed_event_id,
 		);

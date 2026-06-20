@@ -152,6 +152,7 @@ MVP event names:
 
 - `app.created`
 - `app.listed`
+- `app.rotated`
 - `app.revoked`
 - `app.rate_limited`
 - `app.scope_denied`
@@ -286,6 +287,9 @@ concurrent first writes for the same app, route family, and window.
 
 `composer smoke:wp` creates local proposal and audit records. That is expected.
 The Settings `History retention` policy runs bounded cleanup for old
-expired/archived proposal history and revoked client access tokens. Local-only
-runs may still use smoke purge helpers for records created by a specific smoke
-run.
+expired/archived proposal history, revoked client access tokens, and old
+low-value access/list audit events. Lifecycle audit events remain governance
+evidence; only explicit read/list/view noise such as `proposal.listed`,
+`proposal.viewed`, `audit.listed`, `app.listed`, and read request list/view
+events are eligible for retention cleanup. Local-only runs may still use smoke
+purge helpers for records created by a specific smoke run.

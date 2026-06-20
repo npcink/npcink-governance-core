@@ -1,5 +1,79 @@
 # Session Breadcrumb
 
+## 2026-06-21 — App-key rotation lifecycle audit tightened
+
+- **Module**: Core app-key rotation lifecycle auditing.
+- **Status**: App-key rotation now returns the one-time replacement token only
+  after `app.rotated`, old-key revocation, and `app.revoked` audit evidence all
+  succeed.
+- **Completed**:
+  - Added fail-closed handling for old-key revocation audit failure after the
+    old key has already been revoked.
+  - Revoked the replacement key and withheld the replacement token response
+    when that final lifecycle audit cannot be stored.
+  - Added fault-injection coverage and updated REST/security/testing contracts.
+- **Boundary**:
+  - This remains app-key lifecycle governance only. Core still does not execute
+    abilities, own workflow runtime, own task queues, store provider
+    credentials, or mutate WordPress content.
+
+## 2026-06-21 — WordPress.org display name aligned
+
+- **Module**: Core WordPress.org release identity and plugin metadata.
+- **Status**: Public display name now uses `Npcink Governance Core` while the
+  package slug, text domain, REST namespace, and technical identifiers remain
+  `npcink-governance-core`.
+- **Completed**:
+  - Updated the plugin header, WordPress.org readme title, release gate docs,
+    listing copy, positioning notes, translation metadata, and static
+    contracts for the display-name change.
+- **Verified**:
+  - `composer test:all` passed.
+- **Boundary**:
+  - This is release identity copy only. Core still does not execute abilities,
+    own workflow runtime, own task queues, store provider credentials, or
+    mutate WordPress content.
+
+## 2026-06-20 — Narrow performance/security validation follow-up
+
+- **Module**: Core REST performance and app-key management permissions.
+- **Status**: Local WP-CLI `EXPLAIN` and timing samples show proposal summary
+  list, status list, and audit filters are using bounded/indexed paths on the
+  current local dataset; no extra schema index was added.
+- **Completed**:
+  - Measured proposal summary list versus full payload list and audit filter
+    timings through WordPress `$wpdb`.
+  - Added smoke assertions that app-authenticated tokens cannot list or rotate
+    admin-only app keys.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+- **Boundary**:
+  - This is validation and test coverage only. Core still does not execute
+    abilities, own workflow runtime, own task queues, store provider
+    credentials, or mutate WordPress content.
+
+## 2026-06-20 — Performance and security hardening applied
+
+- **Module**: Core proposal intake, app-key lifecycle, sensitive read
+  preflight, and audit retention.
+- **Status**: Core now has bounded direct proposal payload intake, lightweight
+  proposal list responses, app-key rotation/lifecycle hints, stricter sensitive
+  read preflight hash proofing, and bounded cleanup for old low-value access
+  audit events.
+- **Completed**:
+  - Added fail-closed coverage for oversized direct proposals, app-key
+    rotation rollback, and hash-only sensitive read-preflight rejection.
+  - Added smoke coverage for proposal summary lists, explicit payload opt-in,
+    sensitive read-preflight rejection, and access audit retention cleanup.
+  - Updated REST, security, database, testing, and next-stage docs for the new
+    hardening contracts.
+- **Boundary**:
+  - This remains governance storage, REST contract, and audit lifecycle
+    hardening only. Core still does not execute abilities, own workflow
+    runtime, own task queues, store provider credentials, or mutate WordPress
+    content.
+
 ## 2026-06-20 — Release candidate version matrix prepared
 
 - **Module**: Core release candidate coordination.

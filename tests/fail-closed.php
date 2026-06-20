@@ -3469,6 +3469,15 @@ npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_t
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();
+$oversized_proposal_payload = npcink_governance_core_fail_closed_payload();
+$oversized_proposal_payload['preview']['padding'] = str_repeat( 'x', 263000 );
+$oversized_proposal_result = $stack['proposal_service']->create( $oversized_proposal_payload );
+npcink_governance_core_fail_closed_assert( is_wp_error( $oversized_proposal_result ), 'Oversized direct proposal payload is rejected.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_proposal_payload_too_large' === $oversized_proposal_result->get_error_code(), 'Oversized direct proposal payload uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Oversized direct proposal stores no proposal row.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
 $publish_plan = npcink_governance_core_fail_closed_article_write_plan();
 $publish_plan['write_actions'][0]['input']['status'] = 'publish';
 $publish_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-article-write-plan', $publish_plan );
@@ -4259,6 +4268,17 @@ npcink_governance_core_fail_closed_assert( (string) ( $approved_read['input_hash
 npcink_governance_core_fail_closed_assert( $read_signed_client_fingerprint === (string) ( $grant_context['signed_client_fingerprint'] ?? '' ), 'Grant context binds signed client fingerprint.' );
 npcink_governance_core_fail_closed_assert( $read_signed_client_fingerprint === (string) ( $grant_context['client_key_fingerprint'] ?? '' ), 'Grant context binds client key fingerprint alias.' );
 npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $read_request['request_id'], 'read_request.preflighted' ) ), 'Sensitive read preflight/grant is audited.' );
+
+$hash_only_grant = $stack['service']->preflight(
+	(string) $read_request['request_id'],
+	array(
+		'ability_id'  => 'npcink-abilities-toolkit/read-error-log',
+		'input_hash'  => (string) ( $read_request['input_hash'] ?? '' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $hash_only_grant ), 'Sensitive read preflight rejects hash-only grants.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_read_request_input_required_for_sensitive_preflight' === $hash_only_grant->get_error_code(), 'Hash-only sensitive read preflight uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $read_request['request_id'], 'read_request.preflight_failed' ) ), 'Hash-only sensitive read preflight failure is audited.' );
 
 $wrong_ability = $stack['service']->preflight(
 	(string) $read_request['request_id'],
@@ -5201,5 +5221,80 @@ $app_rows = $wpdb->rows( $app_table );
 npcink_governance_core_fail_closed_assert( 1 === count( $app_rows ), 'App row is retained for revocation evidence after audit failure.' );
 npcink_governance_core_fail_closed_assert( 'revoked' === (string) $app_rows[0]['status'], 'App creation audit failure revokes the new key.' );
 npcink_governance_core_fail_closed_assert( ! $result instanceof WP_REST_Response, 'App creation audit failure does not return the one-time token response.' );
+
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+$apps        = new \Npcink\GovernanceCore\Security\App_Key_Repository();
+$audit       = new \Npcink\GovernanceCore\Audit\Audit_Log_Repository();
+$rate_limiter = new \Npcink\GovernanceCore\Security\App_Rate_Limiter();
+$auth        = new \Npcink\GovernanceCore\Security\App_Authenticator( $apps, $rate_limiter, $audit );
+$controller  = new \Npcink\GovernanceCore\Rest\Apps_Controller( $apps, $audit, $auth );
+$old_app     = $apps->create(
+	array(
+		'app_label'           => 'Rotating Client',
+		'caller_type'         => 'product_adapter',
+		'scopes'              => array( 'capabilities:read', 'proposals:create' ),
+		'rate_limit'          => 60,
+		'rate_window_seconds' => 3600,
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $old_app ), 'App rotation fixture is created.' );
+$rotated = $controller->rotate_app( new WP_REST_Request( array( 'key_id' => (string) ( $old_app['key_id'] ?? '' ) ) ) );
+npcink_governance_core_fail_closed_assert( $rotated instanceof WP_REST_Response, 'App rotation returns a one-time replacement token response.' );
+$rotated_data = $rotated->get_data();
+npcink_governance_core_fail_closed_assert( true === (bool) ( $rotated_data['old_key_revoked'] ?? false ), 'App rotation marks the old key revoked.' );
+npcink_governance_core_fail_closed_assert( 'revoked' === (string) ( $apps->find_by_key_id( (string) ( $old_app['key_id'] ?? '' ) )['status'] ?? '' ), 'App rotation revokes the old key row.' );
+npcink_governance_core_fail_closed_assert( 'active' === (string) ( $apps->find_by_key_id( (string) ( $rotated_data['key_id'] ?? '' ) )['status'] ?? '' ), 'App rotation leaves the replacement key active.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( '', 'app.rotated' ) ), 'App rotation is audited.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( '', 'app.revoked' ) ), 'App rotation old-key revocation is audited.' );
+
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+$wpdb->fail_insert_tables[] = $audit_table;
+$apps        = new \Npcink\GovernanceCore\Security\App_Key_Repository();
+$audit       = new \Npcink\GovernanceCore\Audit\Audit_Log_Repository();
+$rate_limiter = new \Npcink\GovernanceCore\Security\App_Rate_Limiter();
+$auth        = new \Npcink\GovernanceCore\Security\App_Authenticator( $apps, $rate_limiter, $audit );
+$controller  = new \Npcink\GovernanceCore\Rest\Apps_Controller( $apps, $audit, $auth );
+$old_app     = $apps->create(
+	array(
+		'app_label'           => 'Rotation Audit Failure',
+		'caller_type'         => 'product_adapter',
+		'scopes'              => array( 'capabilities:read' ),
+		'rate_limit'          => 60,
+		'rate_window_seconds' => 3600,
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $old_app ), 'App rotation audit failure fixture is created.' );
+$rotation_failure = $controller->rotate_app( new WP_REST_Request( array( 'key_id' => (string) ( $old_app['key_id'] ?? '' ) ) ) );
+npcink_governance_core_fail_closed_assert( is_wp_error( $rotation_failure ), 'App rotation audit failure returns WP_Error.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_app_rotation_audit_failed' === $rotation_failure->get_error_code(), 'App rotation audit failure uses stable error code.' );
+$rotation_rows = $wpdb->rows( $app_table );
+npcink_governance_core_fail_closed_assert( 2 === count( $rotation_rows ), 'App rotation audit failure preserves old and replacement evidence rows.' );
+npcink_governance_core_fail_closed_assert( 'active' === (string) $rotation_rows[0]['status'] && 'revoked' === (string) $rotation_rows[1]['status'], 'App rotation audit failure leaves old key active and revokes replacement.' );
+
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+$wpdb->fail_insert_event_names[] = 'app.revoked';
+$apps        = new \Npcink\GovernanceCore\Security\App_Key_Repository();
+$audit       = new \Npcink\GovernanceCore\Audit\Audit_Log_Repository();
+$rate_limiter = new \Npcink\GovernanceCore\Security\App_Rate_Limiter();
+$auth        = new \Npcink\GovernanceCore\Security\App_Authenticator( $apps, $rate_limiter, $audit );
+$controller  = new \Npcink\GovernanceCore\Rest\Apps_Controller( $apps, $audit, $auth );
+$old_app     = $apps->create(
+	array(
+		'app_label'           => 'Rotation Revoke Audit Failure',
+		'caller_type'         => 'product_adapter',
+		'scopes'              => array( 'capabilities:read' ),
+		'rate_limit'          => 60,
+		'rate_window_seconds' => 3600,
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $old_app ), 'App rotation revoke audit failure fixture is created.' );
+$revoke_audit_failure = $controller->rotate_app( new WP_REST_Request( array( 'key_id' => (string) ( $old_app['key_id'] ?? '' ) ) ) );
+npcink_governance_core_fail_closed_assert( is_wp_error( $revoke_audit_failure ), 'App rotation revoke audit failure returns WP_Error.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_app_rotation_revoke_audit_failed' === $revoke_audit_failure->get_error_code(), 'App rotation revoke audit failure uses stable error code.' );
+$revoke_audit_rows = $wpdb->rows( $app_table );
+npcink_governance_core_fail_closed_assert( 2 === count( $revoke_audit_rows ), 'App rotation revoke audit failure preserves old and replacement evidence rows.' );
+npcink_governance_core_fail_closed_assert( 'revoked' === (string) $revoke_audit_rows[0]['status'] && 'revoked' === (string) $revoke_audit_rows[1]['status'], 'App rotation revoke audit failure revokes both old and replacement keys.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( '', 'app.rotated' ) ), 'App rotation revoke audit failure preserves rotation audit evidence.' );
+npcink_governance_core_fail_closed_assert( 0 === count( npcink_governance_core_fail_closed_audit_rows( '', 'app.revoked' ) ), 'App rotation revoke audit failure does not pretend old-key revocation was audited.' );
 
 echo "Fail-closed fault injection: ok\n";

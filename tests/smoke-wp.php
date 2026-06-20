@@ -1298,12 +1298,37 @@ $wpdb->update(
 	array( '%s' )
 );
 
+$history_cleanup_access_event_id = $history_cleanup_audit->record(
+	'audit.listed',
+	array(
+		'source' => 'smoke_old_access_event',
+		'count'  => 1,
+	)
+);
+npcink_governance_core_smoke_assert( '' !== $history_cleanup_access_event_id, 'history cleanup old access audit fixture is created' );
+$wpdb->update(
+	$audit_table,
+	array( 'created_at' => $history_cleanup_cutoff_fixture_time ),
+	array( 'event_id' => $history_cleanup_access_event_id ),
+	array( '%s' ),
+	array( '%s' )
+);
+
 $history_cleanup_result = $history_cleanup_service->run( 'smoke' );
 npcink_governance_core_smoke_assert( ! is_wp_error( $history_cleanup_result ), 'history cleanup service runs without error' );
 npcink_governance_core_smoke_assert( (int) ( $history_cleanup_result['deleted_proposals'] ?? 0 ) >= 1, 'history cleanup deletes old historical proposals' );
 npcink_governance_core_smoke_assert( (int) ( $history_cleanup_result['deleted_app_keys'] ?? 0 ) >= 1, 'history cleanup deletes old revoked access tokens' );
+npcink_governance_core_smoke_assert( (int) ( $history_cleanup_result['deleted_audit_events'] ?? 0 ) >= 1, 'history cleanup deletes old access audit events' );
 npcink_governance_core_smoke_assert( null === $history_cleanup_proposals->find( $history_cleanup_proposal_id ), 'history cleanup removes the expired proposal fixture' );
 npcink_governance_core_smoke_assert( null === $history_cleanup_apps->find_by_key_id( $history_cleanup_key_id ), 'history cleanup removes the revoked token fixture' );
+$history_cleanup_access_event_exists = (int) $wpdb->get_var(
+	$wpdb->prepare(
+		'SELECT COUNT(*) FROM %i WHERE event_id = %s',
+		$audit_table,
+		$history_cleanup_access_event_id
+	)
+);
+npcink_governance_core_smoke_assert( 0 === $history_cleanup_access_event_exists, 'history cleanup removes the old access audit fixture' );
 $history_cleanup_completed_count = (int) $wpdb->get_var(
 	$wpdb->prepare(
 		'SELECT COUNT(*) FROM %i WHERE event_name = %s AND metadata_json LIKE %s',
@@ -1401,6 +1426,10 @@ npcink_governance_core_smoke_assert( is_string( $apps_json ) && false === strpos
 
 $app_capabilities = npcink_governance_core_smoke_rest_as_app( 'GET', '/npcink-governance-core/v1/capabilities', $app_token );
 npcink_governance_core_smoke_assert( count( (array) ( $app_capabilities['items'] ?? array() ) ) > 0, 'app-authenticated capabilities read succeeds' );
+$app_manage_denied = npcink_governance_core_smoke_rest_result_as_app( 'GET', '/npcink-governance-core/v1/apps', $app_token, array( 'limit' => 1 ) );
+npcink_governance_core_smoke_assert( in_array( (int) $app_manage_denied['status'], array( 401, 403 ), true ), 'app-authenticated token cannot list admin-only app keys' );
+$app_rotate_denied = npcink_governance_core_smoke_rest_result_as_app( 'POST', '/npcink-governance-core/v1/apps/' . rawurlencode( $key_id ) . '/rotate', $app_token );
+npcink_governance_core_smoke_assert( in_array( (int) $app_rotate_denied['status'], array( 401, 403 ), true ), 'app-authenticated token cannot rotate admin-only app keys' );
 
 $revoked_app = npcink_governance_core_smoke_rest(
 	'POST',
@@ -1549,6 +1578,16 @@ $read_request_approved = npcink_governance_core_smoke_rest(
 	)
 );
 npcink_governance_core_smoke_assert( 'approved' === (string) ( $read_request_approved['status'] ?? '' ), 'sensitive read request is approved' );
+
+$read_hash_only = npcink_governance_core_smoke_rest_result(
+	'POST',
+	'/npcink-governance-core/v1/read-requests/' . rawurlencode( $read_request_id ) . '/read-preflight',
+	array(
+		'ability_id'  => $sensitive_read_ability_id,
+		'input_hash'  => (string) ( $read_request['input_hash'] ?? '' ),
+	)
+);
+npcink_governance_core_smoke_assert( 400 === (int) $read_hash_only['status'], 'sensitive read preflight rejects hash-only grant requests' );
 
 $read_wrong_input = npcink_governance_core_smoke_rest_result(
 	'POST',
@@ -2640,6 +2679,11 @@ npcink_governance_core_smoke_assert( 429 === (int) $rate_limited['status'], 'app
 
 $listed = npcink_governance_core_smoke_rest( 'GET', '/npcink-governance-core/v1/proposals', array( 'limit' => 10 ) );
 npcink_governance_core_smoke_assert( count( (array) ( $listed['items'] ?? array() ) ) > 0, 'proposal list endpoint returns proposals' );
+$listed_first = is_array( $listed['items'][0] ?? null ) ? $listed['items'][0] : array();
+npcink_governance_core_smoke_assert( false === array_key_exists( 'input', $listed_first ) && false === array_key_exists( 'preview', $listed_first ) && false === array_key_exists( 'caller', $listed_first ), 'proposal list endpoint omits large payload fields by default' );
+$listed_with_payload = npcink_governance_core_smoke_rest( 'GET', '/npcink-governance-core/v1/proposals', array( 'limit' => 1, 'include_payload' => true ) );
+$listed_payload_first = is_array( $listed_with_payload['items'][0] ?? null ) ? $listed_with_payload['items'][0] : array();
+npcink_governance_core_smoke_assert( true === array_key_exists( 'input', $listed_payload_first ) && true === (bool) ( $listed_with_payload['meta']['payload_included'] ?? false ), 'proposal list endpoint can explicitly include payload fields' );
 
 $stale = npcink_governance_core_smoke_rest(
 	'POST',

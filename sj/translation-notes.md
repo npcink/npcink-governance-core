@@ -2,7 +2,7 @@
 
 ## English
 
-The npcink-governance-core plugin uses the `npcink-governance-core` text domain in runtime PHP strings, so
+Npcink Governance Core uses the `npcink-governance-core` text domain in runtime PHP strings, so
 it is prepared for WordPress translation workflows.
 
 For WordPress.org publishing, use `listing-copy-en.md` as the primary plugin

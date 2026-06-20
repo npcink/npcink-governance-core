@@ -122,7 +122,7 @@ function npcink_governance_core_find_forbidden_key( $value, array $forbidden_key
 }
 
 $main_plugin = npcink_governance_core_read( $root . '/npcink-governance-core.php' );
-npcink_governance_core_assert( false !== strpos( $main_plugin, 'Plugin Name: npcink-governance-core' ), 'Main plugin file declares plugin header.' );
+npcink_governance_core_assert( false !== strpos( $main_plugin, 'Plugin Name: Npcink Governance Core' ), 'Main plugin file declares plugin header.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Description: Npcink AI governance layer for WordPress operations.' ), 'Main plugin file declares the public positioning.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Text Domain: npcink-governance-core' ), 'Main plugin file keeps the canonical text domain.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Domain Path: /languages' ), 'Main plugin file declares the bundled languages path.' );
@@ -194,7 +194,7 @@ foreach (
 $wp_readme = npcink_governance_core_read( $root . '/readme.txt' );
 foreach (
 	array(
-		'=== npcink-governance-core ===',
+		'=== Npcink Governance Core ===',
 		'Stable tag: 0.1.0',
 		'Npcink AI governance layer for WordPress operations.',
 		'Open Npcink AI > Core',
@@ -995,6 +995,8 @@ foreach (
 		'OFFSET %d',
 		'latest_last_used_at',
 		'expires_at',
+		'expires_soon',
+		'rotation_recommended',
 		'last_used_ip_hash',
 		'revoked_at',
 		'revoked_reason',
@@ -1002,6 +1004,7 @@ foreach (
 		'token_prefix',
 		'is_expired',
 		'sanitize_future_datetime',
+		'expires_soon',
 		'capabilities:read',
 		'proposals:create',
 		'commit:preflight',
@@ -1073,9 +1076,15 @@ foreach (
 
 $apps_controller = npcink_governance_core_read( $root . '/includes/Rest/Apps_Controller.php' );
 npcink_governance_core_assert( false !== strpos( $apps_controller, "'/apps'" ), 'Apps REST route is registered.' );
+npcink_governance_core_assert( false !== strpos( $apps_controller, "/rotate'" ), 'Apps REST route exposes app-key rotation.' );
+npcink_governance_core_assert( false !== strpos( $apps_controller, 'rotate_app' ), 'Apps REST controller registers rotation callback.' );
 npcink_governance_core_assert( false !== strpos( $apps_controller, 'app.created' ), 'Apps REST route audits app creation.' );
+npcink_governance_core_assert( false !== strpos( $apps_controller, 'app.rotated' ), 'Apps REST route audits app-key rotation.' );
 npcink_governance_core_assert( false !== strpos( $apps_controller, 'can_manage' ), 'Apps REST route remains admin-only.' );
 npcink_governance_core_assert( false !== strpos( $apps_controller, 'npcink_governance_core_app_audit_failed' ), 'Apps REST route fails app creation when audit cannot be written.' );
+npcink_governance_core_assert( false !== strpos( $apps_controller, 'npcink_governance_core_app_rotation_audit_failed' ), 'Apps REST route fails app rotation when audit cannot be written.' );
+npcink_governance_core_assert( false !== strpos( $apps_controller, 'npcink_governance_core_app_rotation_revoke_failed' ), 'Apps REST route fails app rotation when old-key revocation fails.' );
+npcink_governance_core_assert( false !== strpos( $apps_controller, 'npcink_governance_core_app_rotation_revoke_audit_failed' ), 'Apps REST route fails app rotation when old-key revocation cannot be audited.' );
 
 $adr_001 = npcink_governance_core_read( $root . '/docs/decisions/ADR-001-rebuild-core-as-governance-layer.md' );
 $adr_002 = npcink_governance_core_read( $root . '/docs/decisions/ADR-002-no-workflow-runtime-in-core.md' );
@@ -1445,7 +1454,12 @@ foreach (
 		'record-only cannot preflight',
 		'Redaction persistence matrix',
 		'AUDIT_PROVIDER_CREDENTIALS_SECRET_SENTINEL',
+		'Oversized direct proposal payload is rejected.',
+		'Hash-only sensitive read preflight uses stable error code.',
 		'App creation audit failure revokes the new key.',
+		'App rotation returns a one-time replacement token response.',
+		'App rotation audit failure uses stable error code.',
+		'App rotation revoke audit failure uses stable error code.',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $fail_closed_test, $required ), 'Fail-closed fault test contains required behavior: ' . $required );
@@ -1585,6 +1599,7 @@ npcink_governance_core_assert( false !== strpos( $read_requests_controller, "/ap
 npcink_governance_core_assert( false !== strpos( $read_requests_controller, "/reject'" ), 'Read request reject REST route is registered.' );
 npcink_governance_core_assert( false !== strpos( $read_requests_controller, "/read-preflight'" ), 'Read request preflight REST route is registered.' );
 npcink_governance_core_assert( false !== strpos( $read_requests_controller, 'read_preflight' ), 'Read request REST controller exposes read preflight callback.' );
+npcink_governance_core_assert( false !== strpos( $read_requests_controller, 'request_contains_param' ) && false !== strpos( $read_requests_controller, "'_input_provided'" ), 'Read request REST controller distinguishes supplied input from route defaults.' );
 
 $read_request_service = npcink_governance_core_read( $root . '/includes/Governance/Read_Request_Service.php' );
 $read_request_repository = npcink_governance_core_read( $root . '/includes/Governance/Read_Request_Repository.php' );
@@ -1611,6 +1626,9 @@ foreach (
 		"function_exists( 'get_current_blog_id' ) ? get_current_blog_id() : 0",
 		'ability_mismatch',
 		'input_mismatch',
+		'requires_raw_input_preflight',
+		'preflight_payload_includes_input',
+		'npcink_governance_core_read_request_input_required_for_sensitive_preflight',
 		'CORE_MAX_ROWS',
 		'CORE_MAX_TAIL_LINES',
 	) as $required
@@ -1683,6 +1701,8 @@ npcink_governance_core_assert( false !== strpos( $proposal_repository, 'STATUS_A
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'STATUS_EXECUTED' ), 'Proposal repository defines executed status.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'STATUS_EXECUTION_FAILED' ), 'Proposal repository defines execution failed status.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'list_stale_pending' ), 'Proposal repository can list stale pending proposals.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'list_recent_summaries' ), 'Proposal repository supports payload-light proposal lists.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'payload_included' ), 'Proposal repository marks payload-light list rows.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'list_pending_for_guardrail' ), 'Proposal repository can list pending proposals for create guardrails.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'pending_quota_key' ), 'Proposal repository stores indexed pending quota keys.' );
 npcink_governance_core_assert( false === strpos( $proposal_repository, 'caller_json LIKE' ), 'Proposal repository does not scan caller JSON for guardrail quota lookup.' );
@@ -1711,6 +1731,9 @@ npcink_governance_core_assert( false !== strpos( $fail_closed_test, 'update-post
 npcink_governance_core_assert( false !== strpos( $fail_closed_test, 'update-post-blocks preserves attrs contentSize key case' ), 'Fail-closed tests assert update-post-blocks attrs camelCase is not lowercased.' );
 npcink_governance_core_assert( false !== strpos( $fail_closed_test, 'batch update-post-blocks preserves blockName key case' ), 'Fail-closed tests assert batch update-post-blocks blockName is not lowercased.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.created' ), 'Proposal service records proposal.created audit event.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'MAX_PROPOSAL_PAYLOAD_BYTES' ), 'Proposal service bounds direct proposal payload size.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'validate_proposal_payload_size' ), 'Proposal service validates direct proposal payload size before persistence.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_proposal_payload_too_large' ), 'Proposal service uses a stable oversized direct proposal payload error.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.policy_evaluated' ), 'Proposal service records policy evaluation audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.auto_approved' ), 'Proposal service records auto approval audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_auto_approval_audit_failed' ), 'Proposal service fails closed when auto approval audit fails.' );
@@ -1976,6 +1999,8 @@ npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink_governance_c
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink_governance_core_smoke_register_attachment_fixture' ), 'Smoke test registers media attachment fixtures for cleanup.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink_governance_core_smoke_register_term_fixture' ), 'Smoke test registers taxonomy term fixtures for cleanup.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink_governance_core_smoke_register_app_key_fixture' ), 'Smoke test registers app key fixtures for revocation.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp, 'app-authenticated token cannot list admin-only app keys' ), 'Smoke test proves app tokens cannot list admin-only app keys.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp, 'app-authenticated token cannot rotate admin-only app keys' ), 'Smoke test proves app tokens cannot rotate admin-only app keys.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'register_shutdown_function' ), 'Smoke test runs fixture cleanup on shutdown.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'wp_delete_post' ), 'Smoke test permanently deletes post fixtures.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'wp_delete_comment' ), 'Smoke test permanently deletes comment fixtures.' );
@@ -2085,6 +2110,10 @@ npcink_governance_core_assert( false === strpos( $audit_repository, 'metadata_js
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'exclude_event_names' ), 'Audit repository can exclude noisy read events.' );
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'count_filtered' ), 'Audit repository can count filtered rows for pagination.' );
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'offset' ), 'Audit repository supports paginated admin lists.' );
+npcink_governance_core_assert( false !== strpos( $audit_repository, 'delete_access_events_before' ), 'Audit repository can clean old low-value access events.' );
+npcink_governance_core_assert( false !== strpos( $audit_repository, 'count_access_events_before' ), 'Audit repository can count old low-value access events.' );
+npcink_governance_core_assert( false !== strpos( $audit_repository, 'retention_cleanup_event_names' ), 'Audit repository scopes audit retention cleanup to explicit event names.' );
+npcink_governance_core_assert( false !== strpos( $audit_repository, '$wpdb->esc_like( $search ) . \'%\'' ), 'Audit repository uses prefix search for indexed activity search.' );
 
 $audit_controller = npcink_governance_core_read( $root . '/includes/Rest/Audit_Controller.php' );
 npcink_governance_core_assert( false !== strpos( $audit_controller, "'/audit'" ), 'Audit REST route is registered.' );
@@ -2291,6 +2320,8 @@ npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'core
 npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'core.history_cleanup_completed' ), 'History cleanup service audits completed cleanup counts.' );
 npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'delete_historical_before' ), 'History cleanup service deletes old historical proposal rows.' );
 npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'delete_revoked_before' ), 'History cleanup service deletes old revoked token rows.' );
+npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'delete_access_events_before' ), 'History cleanup service deletes old low-value audit access events.' );
+npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'deleted_audit_events' ), 'History cleanup service reports deleted audit event counts.' );
 npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'commit_execution' ) && false !== strpos( $history_cleanup_service, 'core_execution' ), 'History cleanup audit explicitly stays outside final execution.' );
 npcink_governance_core_assert( false !== strpos( $plugin_bootstrap, 'HISTORY_CLEANUP_HOOK' ), 'Plugin registers a named bounded history cleanup hook.' );
 npcink_governance_core_assert( false !== strpos( $plugin_bootstrap, 'wp_schedule_event' ), 'Plugin schedules the daily bounded history cleanup pass.' );

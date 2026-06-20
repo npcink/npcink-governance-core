@@ -524,6 +524,8 @@ final class App_Key_Repository {
 			'caller_type'         => sanitize_key( (string) ( $row['caller_type'] ?? 'external_app' ) ),
 			'token_prefix'        => self::TOKEN_PREFIX,
 			'expires_at'          => sanitize_text_field( (string) ( $row['expires_at'] ?? '' ) ),
+			'expires_soon'        => $this->expires_soon( (string) ( $row['expires_at'] ?? '' ) ),
+			'rotation_recommended' => $this->is_expired( $row ) || $this->expires_soon( (string) ( $row['expires_at'] ?? '' ) ),
 			'last_used_ip_hash'   => sanitize_text_field( (string) ( $row['last_used_ip_hash'] ?? '' ) ),
 			'revoked_at'          => sanitize_text_field( (string) ( $row['revoked_at'] ?? '' ) ),
 			'revoked_reason'      => sanitize_textarea_field( (string) ( $row['revoked_reason'] ?? '' ) ),
@@ -559,5 +561,20 @@ final class App_Key_Repository {
 		}
 
 		return gmdate( 'Y-m-d H:i:s', $timestamp );
+	}
+
+	/**
+	 * Returns whether a key expires within the rotation warning window.
+	 *
+	 * @param string $expires_at Expiry timestamp.
+	 * @return bool
+	 */
+	private function expires_soon( string $expires_at ): bool {
+		$timestamp = strtotime( $expires_at );
+		if ( false === $timestamp ) {
+			return false;
+		}
+
+		return $timestamp > time() && $timestamp <= time() + ( 14 * 86400 );
 	}
 }

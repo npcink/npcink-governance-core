@@ -86,6 +86,8 @@ evidence would be unsafe:
 - plan-to-proposal intake rejects oversized plan payloads, global
   over-25-action plans, and narrower media optimization / block theme site
   action caps before storing proposal rows;
+- direct proposal creation rejects oversized payloads before storing proposal
+  rows;
 - smart guarded cleanup and draft-only create-draft auto approval write
   `proposal.auto_approved`, and audit failure must not leave the proposal
   approved;
@@ -93,10 +95,14 @@ evidence would be unsafe:
   decision audit cannot be written;
 - app-key creation revokes the newly created key and withholds the one-time
   token when `app.created` audit cannot be written.
+- app-key rotation returns one replacement token only after `app.rotated`,
+  old-key revocation, and `app.revoked` audit all succeed, and revokes the
+  replacement on rotation audit, revoke, or revoke-audit failure;
 - sensitive read request create/approve/reject/preflight paths preserve Core as
   authorization truth, reject changed `ability_id` or `input_hash`, reject
-  expired or rejected records, consume one-time grants, audit each lifecycle
-  event, and never emit secret-shaped payload values.
+  hash-only preflight for `sensitive` requests, reject expired or rejected
+  records, consume one-time grants, audit each lifecycle event, and never emit
+  secret-shaped payload values.
 
 The test should inject failures through a fake `$wpdb` while still exercising
 the real repository, service, and REST controller classes. Source-code string
@@ -122,8 +128,9 @@ Use it for behavior that requires real WordPress:
 - current user permissions;
 - integration with `npcink-abilities-toolkit`;
 - Core-managed sensitive read authorization for diagnostics abilities, including
-  capability flags, request creation, approval, bounded read preflight, changed
-  input rejection, audit timeline, and no secret emission;
+  capability flags, request creation, approval, bounded read preflight,
+  hash-only sensitive preflight rejection, changed input rejection, audit
+  timeline, and no secret emission;
 - runtime workflow definition discovery through
   `npcink_abilities_toolkit_get_workflow_definitions()`, with fixture fallback from
   `npcink-abilities-toolkit/tests/fixtures/agent-workflow-replay.json`;
@@ -176,8 +183,10 @@ Use it for behavior that requires real WordPress:
   for ability, app, key, caller type, and correlation id;
 - bounded history retention cleanup, including WP-Cron scheduling on activation,
   cleanup hook removal on deactivation, manual Settings cleanup action, and
-  audited deletion of expired/archived proposal history plus revoked client
-  access tokens only;
+  audited deletion of expired/archived proposal history, revoked client access
+  tokens, and old low-value access/list audit events only;
+- proposal list responses omit large payload fields by default and require
+  `include_payload=true` for full payload compatibility reads;
 - trusted Adapter approval coverage, including an app key with
   `proposals:approve`, app-authenticated approval, app-authenticated preflight,
   external dry-run execution through WordPress Abilities API, execution-result
