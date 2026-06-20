@@ -75,6 +75,16 @@ The release candidate is acceptable only when all rows pass.
 | Toolkit source contracts | `composer test:all`, `composer analyse:phpstan` |
 | Toolkit release and WordPress integration | `composer release:verify`, `composer smoke:wp` |
 
+After this gate passes, run
+[Release Candidate Version Matrix](release-candidate-version-matrix.md):
+
+```bash
+composer rc:version-matrix
+```
+
+That follow-up freezes which Core, Adapter, and Toolkit plugin versions and
+commits the accepted candidate actually represents.
+
 ## Real-Chain Proof
 
 The Adapter fixture is the stack-level proof. It must show:

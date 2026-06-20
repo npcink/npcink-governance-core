@@ -1,5 +1,22 @@
 # Session Breadcrumb
 
+## 2026-06-20 — Release candidate version matrix prepared
+
+- **Module**: Core release candidate coordination.
+- **Status**: Core now has a version-matrix audit for the current Core +
+  Adapter + Toolkit release candidate.
+- **Completed**:
+  - Added `composer rc:version-matrix`, backed by
+    `scripts/check-release-candidate-version-matrix.sh`.
+  - Added a release candidate version matrix document that records current
+    expected plugin versions and tag-readiness rules.
+  - Linked the version matrix from README, Cross-Repo Release Acceptance,
+    WordPress.org Release Gate, and Next Stage Plan.
+- **Boundary**:
+  - This is release coordination only. Core still does not become a package
+    bundler, updater, dependency resolver, workflow runtime, Adapter owner, or
+    Toolkit owner.
+
 ## 2026-06-20 — Cross-repo release acceptance gate added
 
 - **Module**: Core release documentation and cross-repository acceptance

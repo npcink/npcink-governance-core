@@ -16,6 +16,7 @@ contracts, run the broader cross-repository gate before publishing or tagging:
 
 ```sh
 composer acceptance:cross-repo-release
+composer rc:version-matrix
 ```
 
 See [Cross-Repo Release Acceptance](cross-repo-release-acceptance.md). That
@@ -204,7 +205,7 @@ When resuming release work:
 2. Run `git status --short --branch` and preserve unrelated user changes.
 3. Run `composer prepare:release -- --version <version>`.
 4. For cross-repository release candidates, run
-   `composer acceptance:cross-repo-release`.
+   `composer acceptance:cross-repo-release` and `composer rc:version-matrix`.
 5. Run `composer sync:wporg -- --version <version> --svn-dir <checkout>` as a
    dry run, then re-run with `--apply` after reviewing the output.
 6. Inspect `build/npcink-governance-core.zip` before upload.
