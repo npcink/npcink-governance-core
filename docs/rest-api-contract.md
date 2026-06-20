@@ -256,6 +256,7 @@ Errors:
 | `npcink_governance_core_app_key_not_active` | `404` | The old key does not exist or is not active. |
 | `npcink_governance_core_app_rotation_audit_failed` | `500` | Rotation could not be audited; Core revokes the replacement key before failing. |
 | `npcink_governance_core_app_rotation_revoke_failed` | `500` | Core could not revoke the old key; Core revokes the replacement key before failing. |
+| `npcink_governance_core_app_rotation_revoke_audit_failed` | `500` | Core revoked the old key but could not audit that lifecycle event; Core revokes the replacement key before failing. |
 
 Audit events:
 

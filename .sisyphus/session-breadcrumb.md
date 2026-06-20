@@ -1,5 +1,22 @@
 # Session Breadcrumb
 
+## 2026-06-21 — App-key rotation lifecycle audit tightened
+
+- **Module**: Core app-key rotation lifecycle auditing.
+- **Status**: App-key rotation now returns the one-time replacement token only
+  after `app.rotated`, old-key revocation, and `app.revoked` audit evidence all
+  succeed.
+- **Completed**:
+  - Added fail-closed handling for old-key revocation audit failure after the
+    old key has already been revoked.
+  - Revoked the replacement key and withheld the replacement token response
+    when that final lifecycle audit cannot be stored.
+  - Added fault-injection coverage and updated REST/security/testing contracts.
+- **Boundary**:
+  - This remains app-key lifecycle governance only. Core still does not execute
+    abilities, own workflow runtime, own task queues, store provider
+    credentials, or mutate WordPress content.
+
 ## 2026-06-21 — WordPress.org display name aligned
 
 - **Module**: Core WordPress.org release identity and plugin metadata.

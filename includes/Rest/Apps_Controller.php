@@ -274,7 +274,7 @@ final class Apps_Controller {
 			);
 		}
 
-		$this->audit->record(
+		$revoked_event_id = $this->audit->record(
 			'app.revoked',
 			array(
 				'app_id'        => (string) ( $old['app_id'] ?? '' ),
@@ -283,6 +283,14 @@ final class Apps_Controller {
 				'revoke_reason' => 'rotated',
 			)
 		);
+		if ( '' === $revoked_event_id ) {
+			$this->apps->revoke_by_key_id( (string) $replacement['key_id'], 'rotation_revoke_audit_failed' );
+			return new WP_Error(
+				'npcink_governance_core_app_rotation_revoke_audit_failed',
+				__( 'App key rotation could not audit old-key revocation.', 'npcink-governance-core' ),
+				array( 'status' => 500 )
+			);
+		}
 
 		$replacement['rotated_from_key_id'] = $key_id;
 		$replacement['old_key_revoked']    = true;

@@ -95,8 +95,9 @@ evidence would be unsafe:
   decision audit cannot be written;
 - app-key creation revokes the newly created key and withholds the one-time
   token when `app.created` audit cannot be written.
-- app-key rotation returns one replacement token, revokes the old key after
-  `app.rotated` audit, and revokes the replacement on rotation audit failure;
+- app-key rotation returns one replacement token only after `app.rotated`,
+  old-key revocation, and `app.revoked` audit all succeed, and revokes the
+  replacement on rotation audit, revoke, or revoke-audit failure;
 - sensitive read request create/approve/reject/preflight paths preserve Core as
   authorization truth, reject changed `ability_id` or `input_hash`, reject
   hash-only preflight for `sensitive` requests, reject expired or rejected

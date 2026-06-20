@@ -248,8 +248,11 @@ fail future app authentication with `401`.
 
 App key rows expose `expires_soon` and `rotation_recommended` hints. Admins can
 rotate an active key through Core, which issues a one-time replacement token,
-audits `app.rotated`, and revokes the old key. Rotation fails closed if the
-rotation audit cannot be stored or if the old key cannot be revoked.
+audits `app.rotated`, revokes the old key, and audits `app.revoked`. Rotation
+fails closed if the rotation audit cannot be stored, if the old key cannot be
+revoked, or if the old-key revocation audit cannot be stored. In that final
+failure case, Core also revokes the replacement key and withholds the one-time
+replacement token response.
 
 App-authenticated requests must have the route's required scope and pass the
 fixed-window rate limit. Missing auth returns `401`, missing scope returns

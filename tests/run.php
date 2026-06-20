@@ -1084,6 +1084,7 @@ npcink_governance_core_assert( false !== strpos( $apps_controller, 'can_manage' 
 npcink_governance_core_assert( false !== strpos( $apps_controller, 'npcink_governance_core_app_audit_failed' ), 'Apps REST route fails app creation when audit cannot be written.' );
 npcink_governance_core_assert( false !== strpos( $apps_controller, 'npcink_governance_core_app_rotation_audit_failed' ), 'Apps REST route fails app rotation when audit cannot be written.' );
 npcink_governance_core_assert( false !== strpos( $apps_controller, 'npcink_governance_core_app_rotation_revoke_failed' ), 'Apps REST route fails app rotation when old-key revocation fails.' );
+npcink_governance_core_assert( false !== strpos( $apps_controller, 'npcink_governance_core_app_rotation_revoke_audit_failed' ), 'Apps REST route fails app rotation when old-key revocation cannot be audited.' );
 
 $adr_001 = npcink_governance_core_read( $root . '/docs/decisions/ADR-001-rebuild-core-as-governance-layer.md' );
 $adr_002 = npcink_governance_core_read( $root . '/docs/decisions/ADR-002-no-workflow-runtime-in-core.md' );
@@ -1458,6 +1459,7 @@ foreach (
 		'App creation audit failure revokes the new key.',
 		'App rotation returns a one-time replacement token response.',
 		'App rotation audit failure uses stable error code.',
+		'App rotation revoke audit failure uses stable error code.',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $fail_closed_test, $required ), 'Fail-closed fault test contains required behavior: ' . $required );
