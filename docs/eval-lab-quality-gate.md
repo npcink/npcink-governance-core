@@ -114,7 +114,7 @@ Good first candidates:
 - Core boundary-sensitive diffs and documentation changes;
 - Core audit, credential, proposal persistence, REST authorization, app scope,
   rate limit, eval-lab wrapper, or release packaging changes;
-- `npcink-toolbox/build-content-metadata-apply-plan`;
+- `npcink-abilities-toolkit/build-content-metadata-apply-plan`;
 - `npcink-abilities-toolkit/build-pattern-page-plan`;
 - `npcink-abilities-toolkit/build-article-block-plan`;
 - `npcink-abilities-toolkit/build-block-theme-site-plan`;

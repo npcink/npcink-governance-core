@@ -80,10 +80,10 @@ abilities:
 - `npcink-toolbox/build-article-write-plan`
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
-- `npcink-toolbox/build-image-candidate-adoption-plan`
+- `npcink-abilities-toolkit/build-image-candidate-adoption-plan`
 - `npcink-toolbox/build-site-knowledge-review-plan`
 - `npcink-toolbox/build-nightly-inspection-review-plan`
-- `npcink-toolbox/build-content-metadata-apply-plan`
+- `npcink-abilities-toolkit/build-content-metadata-apply-plan`
 
 They must remain discoverable as `governance_mode=direct_read` with
 `execution_surface=wp_abilities_rest`. Core does not execute them. A host or
@@ -114,8 +114,8 @@ preserved image-source candidate evidence, and allowlisted draft/media write
 actions. It does not move image search, media import, featured-image setting,
 article generation, workflow state, or Cloud writing into Core.
 
-`npcink-toolbox/build-image-candidate-adoption-plan` is the single reviewed
-image candidate adoption handoff owned by Toolbox. Core accepts it only as an
+`npcink-abilities-toolkit/build-image-candidate-adoption-plan` is the single reviewed
+image candidate adoption handoff owned by the Toolkit. Core accepts it only as an
 `image_candidate_adoption_plan` carrying a normalized `image_candidate.v1`
 candidate and dry-run actions for `npcink-abilities-toolkit/upload-media-from-url`,
 `npcink-abilities-toolkit/update-media-details`, and optional
@@ -140,13 +140,13 @@ the selected Morning Brief review item, creates one blocked
 Nightly Inspection, Morning Brief organization, Cloud scheduling, retry state,
 article generation, approval, or WordPress writes into Core. Missing draft input is resolved by the Toolbox Morning Brief operator and requires a complete proposal resubmission; Core does not generate or edit missing draft fields.
 
-`npcink-toolbox/build-content-metadata-apply-plan` is the reviewed content
-metadata handoff owned by Toolbox. Core accepts it only as a
+`npcink-abilities-toolkit/build-content-metadata-apply-plan` is the reviewed content
+metadata handoff owned by the Abilities Toolkit. Core accepts it only as a
 `content_metadata_apply_plan` for one post, grouping accepted excerpt and
 existing category/tag choices into a batch proposal with at most one action per
 metadata slot. It does not move excerpt generation, taxonomy recommendation,
 new-term governance, feedback storage, or WordPress write execution into Core
-or Toolbox. If the handoff includes operation classification evidence, it must
+or product plugins. If the handoff includes operation classification evidence, it must
 classify the Core-submitted handoff as `core_proposal_required`; local admin
 consent classifications belong to product-side present-admin flows and are not
 accepted through Core plan intake.
