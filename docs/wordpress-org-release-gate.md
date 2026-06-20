@@ -196,6 +196,30 @@ If the form field is short, use this condensed version:
 This plugin provides a local WordPress governance layer for AI-initiated actions. It creates reviewable proposals for WordPress Abilities API providers, records audit events, manages app keys, and exposes commit-preflight context under /wp-json/npcink-governance-core/v1/. It does not execute final write actions itself, does not call external services, and does not send site data to third parties. Direct database queries are intentional because the plugin owns its custom proposal, audit, app key, and rate-limit tables.
 ```
 
+## WordPress.org Translation Submission
+
+The public plugin page description, installation text, FAQ, and changelog are
+translated through translate.wordpress.org `Stable Readme` strings. Bundled
+runtime `.po` and `.mo` files do not remove the public plugin page notice that
+the plugin has not been translated into a locale.
+
+Use the drafts in `sj/wporg-readme-translations/` for the first eight public
+page locales:
+
+- `zh_CN` - Simplified Chinese;
+- `zh_TW` - Traditional Chinese, Taiwan;
+- `ja` - Japanese;
+- `ko_KR` - Korean;
+- `es_ES` - Spanish, Spain;
+- `fr_FR` - French;
+- `de_DE` - German;
+- `pt_BR` - Portuguese, Brazil.
+
+After the English `readme.txt` changes, refresh those drafts before submitting
+new `Stable Readme` strings for review. Keep `Npcink Governance Core`,
+`Npcink AI`, `npcink-governance-core`, `/wp-json/npcink-governance-core/v1/`,
+and `WordPress Abilities API` stable across locales.
+
 ## Handoff Checklist For Agents
 
 When resuming release work:

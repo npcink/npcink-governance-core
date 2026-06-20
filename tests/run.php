@@ -218,6 +218,43 @@ foreach (
 	npcink_governance_core_assert( false !== strpos( $wp_readme, $required ), 'WordPress readme contains required phrase: ' . $required );
 }
 
+$wporg_translation_readme = npcink_governance_core_read( $root . '/sj/wporg-readme-translations/README.md' );
+foreach (
+	array(
+		'Stable Readme',
+		'translate.wordpress.org',
+		'zh_CN',
+		'zh_TW',
+		'ja',
+		'ko_KR',
+		'es_ES',
+		'fr_FR',
+		'de_DE',
+		'pt_BR',
+		'Do not localize the slug or REST namespace.',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $wporg_translation_readme, $required ), 'WordPress.org translation readme contains required phrase: ' . $required );
+}
+
+foreach (
+	array(
+		'zh_CN' => '面向 AI 辅助 WordPress 操作的治理',
+		'zh_TW' => '為 AI 輔助的 WordPress 操作提供治理',
+		'ja'    => 'AI 支援の WordPress 操作',
+		'ko_KR' => 'AI 지원 WordPress 작업',
+		'es_ES' => 'operaciones de WordPress asistidas por IA',
+		'fr_FR' => 'opérations WordPress assistées par IA',
+		'de_DE' => 'KI-gestützte WordPress-Operationen',
+		'pt_BR' => 'operações WordPress assistidas por IA',
+	) as $locale => $required
+) {
+	$draft = npcink_governance_core_read( $root . '/sj/wporg-readme-translations/stable-readme-' . $locale . '.md' );
+	npcink_governance_core_assert( false !== strpos( $draft, 'Npcink Governance Core' ), 'WordPress.org readme translation draft keeps product name: ' . $locale );
+	npcink_governance_core_assert( false !== strpos( $draft, '/wp-json/npcink-governance-core/v1/' ), 'WordPress.org readme translation draft keeps REST namespace: ' . $locale );
+	npcink_governance_core_assert( false !== strpos( $draft, $required ), 'WordPress.org readme translation draft contains localized positioning: ' . $locale );
+}
+
 $platform_baseline = npcink_governance_core_read( $root . '/docs/platform-baseline.md' );
 foreach ( array( 'WordPress minimum: `7.0`', 'PHP minimum: `8.0`', '`npcink-cloud-addon`' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $platform_baseline, $required ), 'Platform baseline documents required phrase: ' . $required );

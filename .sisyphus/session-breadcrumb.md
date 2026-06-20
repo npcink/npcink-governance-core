@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-06-21 — Eight-locale WordPress.org readme drafts added
+
+- **Module**: Core WordPress.org public page translation materials.
+- **Status**: Eight `Stable Readme` translation drafts now exist for
+  translate.wordpress.org submission and review.
+- **Completed**:
+  - Added `sj/wporg-readme-translations/` with drafts for `zh_CN`, `zh_TW`,
+    `ja`, `ko_KR`, `es_ES`, `fr_FR`, `de_DE`, and `pt_BR`.
+  - Updated listing and translation notes to distinguish bundled runtime
+    `.po`/`.mo` files from WordPress.org public page `Stable Readme`
+    translations.
+  - Updated the release gate and static contracts so the eight public page
+    translation drafts stay discoverable.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer validate --no-check-publish` passed.
+- **Boundary**:
+  - This is release translation material only. The drafts do not submit,
+    approve, or publish WordPress.org translations by themselves. Core still
+    does not generate content, route models, execute abilities, own workflow
+    runtime, own task queues, store provider credentials, or mutate WordPress
+    content.
+
 ## 2026-06-21 — WordPress.org description and FAQ expanded
 
 - **Module**: Core WordPress.org release copy.
