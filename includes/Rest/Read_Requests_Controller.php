@@ -236,9 +236,33 @@ final class Read_Requests_Controller {
 	 * @return WP_REST_Response|\WP_Error
 	 */
 	public function read_preflight( WP_REST_Request $request ) {
-		$result = $this->service->preflight( (string) $request->get_param( 'request_id' ), $request->get_params() );
+		$params                     = $request->get_params();
+		$params['_input_provided']  = $this->request_contains_param( $request, 'input' );
+		$result                     = $this->service->preflight( (string) $request->get_param( 'request_id' ), $params );
 
 		return is_wp_error( $result ) ? $result : new WP_REST_Response( $result, 200 );
+	}
+
+	/**
+	 * Returns whether a request parameter was supplied by the client, not only
+	 * injected from REST route defaults.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @param string          $name Parameter name.
+	 * @return bool
+	 */
+	private function request_contains_param( WP_REST_Request $request, string $name ): bool {
+		foreach ( array( 'get_json_params', 'get_body_params', 'get_query_params' ) as $method ) {
+			if ( ! method_exists( $request, $method ) ) {
+				continue;
+			}
+			$params = $request->{$method}();
+			if ( is_array( $params ) && array_key_exists( $name, $params ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

@@ -52,9 +52,10 @@ Implemented:
 Not implemented:
 
 - final commit execution;
-- app-key rotation and expiry automation, which stays deferred until Adapter or
-  another real external client needs long-lived credential lifecycle
-  management;
+- automatic app-key rotation and expiry automation. Manual admin rotation and
+  expiry lifecycle hints are available, but unattended rotation remains
+  deferred until Adapter or another real external client needs long-lived
+  credential lifecycle management;
 
 Documented but not implemented:
 
@@ -86,7 +87,7 @@ WordPress execution outside Core for the current stage:
 The current-stage reliability baseline is documented in
 [Current Stage Governance Reliability](current-stage-governance-reliability.md).
 The next implementation priority is fail-closed governance behavior, not
-app-key rotation or expiry automation.
+automatic app-key rotation or expiry automation.
 
 ADR-005 keeps Core independent for the current stage. OpenClaw Adapter remains
 the first channel adapter, but future MCP, browser-agent, cloud-agent, local

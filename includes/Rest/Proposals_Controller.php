@@ -104,6 +104,21 @@ final class Proposals_Controller {
 							'default'           => 50,
 							'sanitize_callback' => 'absint',
 						),
+						'offset' => array(
+							'type'              => 'integer',
+							'default'           => 0,
+							'sanitize_callback' => 'absint',
+						),
+						'status' => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_key',
+						),
+						'include_payload' => array(
+							'type'              => 'boolean',
+							'default'           => false,
+							'sanitize_callback' => 'rest_sanitize_boolean',
+						),
 					),
 				),
 				array(
@@ -328,12 +343,24 @@ final class Proposals_Controller {
 	 */
 	public function list_proposals( WP_REST_Request $request ): WP_REST_Response {
 		$this->service->expire_stale_pending();
-		$items = $this->repository->list_recent( (int) $request->get_param( 'limit' ) );
+		$limit           = (int) $request->get_param( 'limit' );
+		$offset          = (int) $request->get_param( 'offset' );
+		$status          = sanitize_key( (string) $request->get_param( 'status' ) );
+		$include_payload = (bool) $request->get_param( 'include_payload' );
+		$items           = $include_payload
+			? $this->repository->list_recent( $limit, $status, $offset )
+			: $this->repository->list_recent_summaries( $limit, $status, $offset );
 		$this->service->record_listed( count( $items ) );
 
 		return new WP_REST_Response(
 			array(
 				'items' => $items,
+				'meta'  => array(
+					'limit'            => $limit,
+					'offset'           => $offset,
+					'status'           => $status,
+					'payload_included' => $include_payload,
+				),
 			),
 			200
 		);

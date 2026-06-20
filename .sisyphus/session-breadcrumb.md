@@ -1,5 +1,26 @@
 # Session Breadcrumb
 
+## 2026-06-20 — Performance and security hardening applied
+
+- **Module**: Core proposal intake, app-key lifecycle, sensitive read
+  preflight, and audit retention.
+- **Status**: Core now has bounded direct proposal payload intake, lightweight
+  proposal list responses, app-key rotation/lifecycle hints, stricter sensitive
+  read preflight hash proofing, and bounded cleanup for old low-value access
+  audit events.
+- **Completed**:
+  - Added fail-closed coverage for oversized direct proposals, app-key
+    rotation rollback, and hash-only sensitive read-preflight rejection.
+  - Added smoke coverage for proposal summary lists, explicit payload opt-in,
+    sensitive read-preflight rejection, and access audit retention cleanup.
+  - Updated REST, security, database, testing, and next-stage docs for the new
+    hardening contracts.
+- **Boundary**:
+  - This remains governance storage, REST contract, and audit lifecycle
+    hardening only. Core still does not execute abilities, own workflow
+    runtime, own task queues, store provider credentials, or mutate WordPress
+    content.
+
 ## 2026-06-20 — Release candidate version matrix prepared
 
 - **Module**: Core release candidate coordination.

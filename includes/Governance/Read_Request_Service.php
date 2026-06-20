@@ -314,6 +314,16 @@ final class Read_Request_Service {
 			);
 		}
 
+		if ( $this->requires_raw_input_preflight( $request ) && ! $this->preflight_payload_includes_input( $payload ) ) {
+			return $this->preflight_error(
+				'npcink_governance_core_read_request_input_required_for_sensitive_preflight',
+				__( 'Sensitive read preflight must include the raw input so Core can recompute the approved input hash.', 'npcink-governance-core' ),
+				400,
+				$request,
+				array( 'approved_input_hash' => (string) ( $request['input_hash'] ?? '' ) )
+			);
+		}
+
 		$input_hash = $this->input_hash_from_payload( $ability_id, $payload );
 		if ( '' === $input_hash || $input_hash !== (string) ( $request['input_hash'] ?? '' ) ) {
 			return $this->preflight_error(
@@ -517,6 +527,30 @@ final class Read_Request_Service {
 			|| ! empty( $read_authorization['required'] )
 			|| 'core_read_authorization_required' === (string) ( $capability['read_policy'] ?? '' )
 			|| 'core_read_request' === (string) ( $capability['authorization_mode'] ?? '' );
+	}
+
+	/**
+	 * Returns whether read-preflight must recompute the hash from raw input.
+	 *
+	 * @param array<string,mixed> $request Request row.
+	 * @return bool
+	 */
+	private function requires_raw_input_preflight( array $request ): bool {
+		return 'sensitive' === sanitize_key( (string) ( $request['sensitivity'] ?? '' ) );
+	}
+
+	/**
+	 * Returns whether preflight payload included a raw input object.
+	 *
+	 * @param array<string,mixed> $payload Preflight payload.
+	 * @return bool
+	 */
+	private function preflight_payload_includes_input( array $payload ): bool {
+		if ( array_key_exists( '_input_provided', $payload ) ) {
+			return ! empty( $payload['_input_provided'] ) && is_array( $payload['input'] ?? null );
+		}
+
+		return array_key_exists( 'input', $payload ) && is_array( $payload['input'] );
 	}
 
 	/**

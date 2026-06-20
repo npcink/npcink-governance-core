@@ -45,7 +45,7 @@ scope map is:
 | `POST /read-requests/{request_id}/reject` | `read_requests:reject` |
 | `POST /read-requests/{request_id}/read-preflight` | `read_requests:preflight` |
 | `GET /audit` | `audit:read` |
-| `GET /apps`, `POST /apps` | admin-only `manage_options` |
+| `GET /apps`, `POST /apps`, `POST /apps/{key_id}/rotate` | admin-only `manage_options` |
 
 Generic MCP adapters should not receive `proposals:approve` or `audit:read` by
 default. Missing or revoked app identity must return `401`; missing scope must
@@ -192,7 +192,8 @@ Purpose: list Core app identities without raw secrets or secret hashes.
 
 Permission: `manage_options`.
 
-Response `200`: app identity rows without secret material.
+Response `200`: app identity rows without secret material. Rows include
+`expires_soon` and `rotation_recommended` lifecycle hints.
 
 Audit event:
 
@@ -218,11 +219,48 @@ Request fields:
 Response `201`: app row plus `secret`, `token`, `token_prefix`, and
 `shown_once=true`. App rows expose `expires_at`, `last_used_at`,
 `last_used_ip_hash`, `revoked_at`, `revoked_reason`, and
-`hash_algorithm_version`, but never raw secrets or secret hashes.
+`hash_algorithm_version`, `expires_soon`, and `rotation_recommended`, but
+never raw secrets or secret hashes.
 
 Audit event:
 
 - `app.created`
+
+## `POST /apps/{key_id}/rotate`
+
+Purpose: issue a replacement app key with the same label, caller type, scopes,
+and rate policy, then revoke the old active key. The raw replacement secret is
+returned once.
+
+Permission: `manage_options`.
+
+Path parameters:
+
+| Name | Type | Required |
+| --- | --- | --- |
+| `key_id` | string | yes |
+
+Request fields:
+
+| Name | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `expires_at` | string | no | Optional future UTC expiry for the replacement key. Omitted requests preserve the old key expiry if still valid. |
+
+Response `201`: replacement app row plus `secret`, `token`,
+`rotated_from_key_id`, and `old_key_revoked=true`.
+
+Errors:
+
+| Code | HTTP | Meaning |
+| --- | --- | --- |
+| `npcink_governance_core_app_key_not_active` | `404` | The old key does not exist or is not active. |
+| `npcink_governance_core_app_rotation_audit_failed` | `500` | Rotation could not be audited; Core revokes the replacement key before failing. |
+| `npcink_governance_core_app_rotation_revoke_failed` | `500` | Core could not revoke the old key; Core revokes the replacement key before failing. |
+
+Audit events:
+
+- `app.rotated`
+- `app.revoked`
 
 ## `GET /capabilities`
 
@@ -329,6 +367,9 @@ Query parameters:
 | Name | Type | Default | Notes |
 | --- | --- | --- | --- |
 | `limit` | integer | `50` | Clamped by repository to `1..200`. |
+| `offset` | integer | `0` | Row offset for pagination. |
+| `status` | string | empty | Optional status filter. |
+| `include_payload` | boolean | `false` | Default list rows omit `input`, `preview`, and `caller`. Set `true` only when a compatibility client needs full payloads; proposal detail remains the preferred payload endpoint. |
 
 Response `200`:
 
@@ -342,20 +383,24 @@ Response `200`:
       "status": "pending",
       "title": "Smoke proposal",
       "summary": "Reviewable operation summary.",
-      "input": {},
-      "preview": {},
-      "caller": {},
-      "policy_decision": "manual_required",
-      "policy_profile": "manual",
-      "policy_version": "core-approval-policy-v1",
-      "policy_reasons": ["default_manual_required"],
+      "payload_included": false,
       "created_by": 1,
       "created_at": "2026-05-29 00:00:00",
       "updated_at": "2026-05-29 00:00:00"
     }
-  ]
+  ],
+  "meta": {
+    "limit": 50,
+    "offset": 0,
+    "status": "",
+    "payload_included": false
+  }
 }
 ```
+
+When `include_payload=true`, rows use the full proposal shape and may include
+`input`, `preview`, `caller`, and promoted policy fields. New clients should use
+`GET /proposals/{proposal_id}` for full review payloads.
 
 Known proposal status values are `pending`, `approved`, `rejected`, `expired`,
 `archived`, `executed`, and `execution_failed`.
@@ -445,6 +490,8 @@ such as `contentSize`, `fontSize`, `letterSpacing`, and `textTransform`.
 Block values are still sanitized recursively, and `innerHTML` / `innerContent`
 strings are filtered as WordPress safe post HTML. The same rule applies to
 nested update-post-blocks actions in plan-to-proposal batch input.
+Core rejects direct proposal payloads larger than 262144 bytes before storing a
+proposal row.
 
 Request fields:
 
@@ -489,6 +536,7 @@ Errors:
 | --- | --- | --- |
 | `npcink_governance_core_invalid_ability_id` | `400` | Missing or invalid namespaced `ability_id`. |
 | `npcink_governance_core_ability_not_available` | `404` | Target ability id is not currently discoverable. |
+| `npcink_governance_core_proposal_payload_too_large` | `413` | Direct proposal payload exceeds Core's proposal byte limit. |
 | `npcink_governance_core_proposal_insert_failed` | `500` | Proposal row could not be stored. |
 | `npcink_governance_core_proposal_audit_failed` | `500` | Proposal creation could not be audited; Core deletes the created proposal before failing. |
 | `npcink_governance_core_policy_decision_audit_failed` | `500` | Policy decision could not be audited; Core deletes the created proposal before failing. |
@@ -615,8 +663,8 @@ Request fields:
 | Name | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `ability_id` | string | yes | Must match the approved request. |
-| `input` | object | no | Structured input used to recompute hash. |
-| `input_hash` | string | no | Approved hash when the caller cannot send input. |
+| `input` | object | no | Structured input used to recompute hash. Required when the approved request has `sensitivity=sensitive`. |
+| `input_hash` | string | no | Approved hash when the caller cannot send input. Accepted for non-sensitive/internal requests only; sensitive requests must send raw input so Core can recompute the hash. |
 
 Response `200`:
 
@@ -657,6 +705,7 @@ Errors:
 | `npcink_governance_core_read_request_not_approved` | `409` | Pending, rejected, expired, or consumed requests cannot grant. |
 | `npcink_governance_core_read_request_expired` | `409` | Approved grant expired before use. |
 | `npcink_governance_core_read_request_ability_mismatch` | `409` | Requested ability differs from approved ability. |
+| `npcink_governance_core_read_request_input_required_for_sensitive_preflight` | `400` | Sensitive read-preflight attempted to use only `input_hash`; raw `input` is required. |
 | `npcink_governance_core_read_request_input_mismatch` | `409` | Requested input hash differs from approved input hash. |
 | `npcink_governance_core_read_preflight_audit_failed` | `500` | Grant could not be audited. |
 
@@ -1082,7 +1131,8 @@ Query parameters:
 
 The common metadata filters above are backed by indexed audit columns copied
 from sanitized event metadata at write time. The response still returns the
-sanitized `metadata` object.
+sanitized `metadata` object. Free-text `search` is prefix-matched against
+indexed audit columns, not arbitrary metadata JSON.
 
 Response `200`:
 

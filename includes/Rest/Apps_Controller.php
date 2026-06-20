@@ -118,6 +118,30 @@ final class Apps_Controller {
 				),
 			)
 		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/apps/(?P<key_id>[A-Za-z0-9_-]+)/rotate',
+			array(
+				array(
+					'methods'             => 'POST',
+					'callback'            => array( $this, 'rotate_app' ),
+					'permission_callback' => array( $this->auth, 'can_manage' ),
+					'args'                => array(
+						'key_id' => array(
+							'type'              => 'string',
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'expires_at' => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+					),
+				),
+			)
+		);
 	}
 
 	/**
@@ -187,5 +211,82 @@ final class Apps_Controller {
 		}
 
 		return new WP_REST_Response( $app, 201 );
+	}
+
+	/**
+	 * Rotates an active app key by issuing a replacement token and revoking the old key.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function rotate_app( WP_REST_Request $request ) {
+		$key_id = sanitize_text_field( (string) $request->get_param( 'key_id' ) );
+		$old    = '' !== $key_id ? $this->apps->find_by_key_id( $key_id ) : null;
+		if ( null === $old || 'active' !== (string) ( $old['status'] ?? '' ) ) {
+			return new WP_Error(
+				'npcink_governance_core_app_key_not_active',
+				__( 'Only active app keys can be rotated.', 'npcink-governance-core' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		$replacement = $this->apps->create(
+			array(
+				'app_label'           => (string) ( $old['app_label'] ?? 'External app' ),
+				'caller_type'         => (string) ( $old['caller_type'] ?? 'external_app' ),
+				'scopes'              => (array) ( $old['scopes'] ?? array() ),
+				'rate_limit'          => (int) ( $old['rate_limit'] ?? App_Key_Repository::DEFAULT_RATE_LIMIT ),
+				'rate_window_seconds' => (int) ( $old['rate_window_seconds'] ?? App_Key_Repository::DEFAULT_RATE_WINDOW ),
+				'expires_at'          => (string) ( $request->get_param( 'expires_at' ) ?: ( $old['expires_at'] ?? '' ) ),
+			)
+		);
+		if ( is_wp_error( $replacement ) ) {
+			return $replacement;
+		}
+
+		$event_id = $this->audit->record(
+			'app.rotated',
+			array(
+				'old_app_id'      => (string) ( $old['app_id'] ?? '' ),
+				'old_key_id'      => (string) ( $old['key_id'] ?? '' ),
+				'new_app_id'      => (string) ( $replacement['app_id'] ?? '' ),
+				'new_key_id'      => (string) ( $replacement['key_id'] ?? '' ),
+				'caller_type'     => (string) ( $replacement['caller_type'] ?? '' ),
+				'scopes'          => (array) ( $replacement['scopes'] ?? array() ),
+				'old_key_revoked' => false,
+			)
+		);
+		if ( '' === $event_id ) {
+			$this->apps->revoke_by_key_id( (string) $replacement['key_id'], 'rotation_audit_failed' );
+			return new WP_Error(
+				'npcink_governance_core_app_rotation_audit_failed',
+				__( 'App key rotation could not be audited.', 'npcink-governance-core' ),
+				array( 'status' => 500 )
+			);
+		}
+
+		if ( ! $this->apps->revoke_by_key_id( $key_id, 'rotated_to:' . (string) $replacement['key_id'] ) ) {
+			$this->apps->revoke_by_key_id( (string) $replacement['key_id'], 'rotation_revoke_failed' );
+			return new WP_Error(
+				'npcink_governance_core_app_rotation_revoke_failed',
+				__( 'App key rotation could not revoke the old key.', 'npcink-governance-core' ),
+				array( 'status' => 500 )
+			);
+		}
+
+		$this->audit->record(
+			'app.revoked',
+			array(
+				'app_id'        => (string) ( $old['app_id'] ?? '' ),
+				'key_id'        => (string) ( $old['key_id'] ?? '' ),
+				'caller_type'   => (string) ( $old['caller_type'] ?? '' ),
+				'revoke_reason' => 'rotated',
+			)
+		);
+
+		$replacement['rotated_from_key_id'] = $key_id;
+		$replacement['old_key_revoked']    = true;
+
+		return new WP_REST_Response( $replacement, 201 );
 	}
 }
