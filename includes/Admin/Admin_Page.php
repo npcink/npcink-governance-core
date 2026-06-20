@@ -218,7 +218,7 @@ final class Admin_Page {
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html__( 'Npcink AI', 'npcink-governance-core' ); ?></h1>
-			<p><?php echo esc_html__( 'Local WordPress entry points for Npcink governance, connections, cloud access, and ability packages.', 'npcink-governance-core' ); ?></p>
+			<p><?php echo esc_html__( 'Local WordPress entry points for Npcink governance, connections, cloud connection pointers, and ability packages.', 'npcink-governance-core' ); ?></p>
 			<h2><?php echo esc_html__( 'Installed Surfaces', 'npcink-governance-core' ); ?></h2>
 			<table class="widefat striped npcink-governance-core-table-narrow">
 				<tbody>
