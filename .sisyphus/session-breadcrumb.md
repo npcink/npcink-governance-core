@@ -5,15 +5,16 @@
 - **Module**: Core release closeout documentation.
 - **Status**: The release closeout document now includes a historical summary
   of the boundary decisions, pressure-point handling, publication state, and
-  WordPress.org SVN stop point.
+  WordPress.org SVN publication state.
 - **Completed**:
   - Added a historical summary to `docs/release-closeout-2026-06-21.md`.
   - Reaffirmed that post-tag WP-CLI and smoke deprecation fixes are local
     validation hygiene, not a reason to move Core `v0.1.1`.
 - **Next gate**:
   - Run `composer test:all`.
-  - Await an explicit maintainer decision before any WordPress.org SVN
-    `--apply` or `svn commit`.
+  - Wait for the public WordPress.org plugin page and download cache to reflect
+    SVN `0.1.1`.
+  - Submit prepared `Stable Readme` translations if that remains useful.
 - **Boundary**:
   - This is documentation only. Core still does not execute abilities, own
     Adapter or Toolkit code, own workflow runtime, own task queues, store
