@@ -155,7 +155,8 @@ composer sync:wporg -- --version 0.1.1 --svn-dir /Users/muze/wporg-svn/npcink-go
 Result:
 
 - dry-run completed successfully;
-- SVN working copy remained clean after dry-run;
+- SVN working copy was restored to a clean local state after final
+  verification;
 - existing SVN tags list contained `0.1.0/` and did not contain `0.1.1/`;
 - supplemental `rsync --dry-run --itemize-changes` showed 46 trunk changes
   from the existing WordPress.org `0.1.0` trunk to the prepared `0.1.1`
@@ -168,3 +169,7 @@ Result:
 Decision: the WordPress.org SVN release appears ready for a formal
 `--apply` and `svn commit`, but the formal SVN commit remains unperformed until
 the maintainer explicitly approves that publish step.
+
+Final verification found no committed WordPress.org SVN change. Any local
+uncommitted SVN working-copy residue observed during verification was reverted
+before closeout.
