@@ -12,8 +12,8 @@ The current stack-level RC candidate is:
 | Repository | Role | Expected plugin version | Conventional release tag | Tag readiness |
 | --- | --- | --- | --- | --- |
 | `npcink-governance-core` | Governance layer | `0.1.0` | `v0.1.0` | Available if the current Core commit is the release candidate. |
-| `npcink-ai-client-adapter` | Thin channel layer | `0.3.1` | `v0.3.1` | Existing tag is historical; do not retag it to a newer commit. |
-| `npcink-abilities-toolkit` | Ability implementation layer | `0.5.1` | `0.5.1` | Existing tag is historical; do not retag it to a newer commit. |
+| `npcink-ai-client-adapter` | Thin channel layer | `0.3.2` | `v0.3.2` | Available if the current Adapter commit is the release candidate. |
+| `npcink-abilities-toolkit` | Ability implementation layer | `0.5.2` | `0.5.2` | Available if the current Toolkit commit is the release candidate. |
 
 Run the machine check from Core:
 
@@ -37,11 +37,10 @@ paths before final publication:
 2. Keep the plugin version unchanged and create a clearly named stack RC
    snapshot tag that is not the conventional release tag.
 
-For the current matrix, Adapter and Toolkit already have conventional version
-tags that do not point at the current working HEADs. That means a final release
-tag for the current Adapter or Toolkit HEAD requires either a version bump or a
-separate RC snapshot tag. Core can still create its first conventional
-`v0.1.0` tag after the Core release gate passes.
+The previous `v0.3.1` Adapter tag and `0.5.1` Toolkit tag are historical and
+must not be moved. The current matrix uses patch versions `0.3.2` and `0.5.2`
+so final conventional release tags can be created after the full release gate
+passes.
 
 ## Required Gate Before Any Tag
 
@@ -68,7 +67,7 @@ Then create a tag name that cannot be mistaken for a plugin release tag, for
 example:
 
 ```bash
-git tag stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1
+git tag stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2
 ```
 
 Only push the tag after the exact matrix output and cross-repo acceptance result

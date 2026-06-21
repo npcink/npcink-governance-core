@@ -1,5 +1,25 @@
 # Session Breadcrumb
 
+## 2026-06-21 — Conventional RC tag path prepared
+
+- **Module**: Cross-repository release candidate tagging.
+- **Status**: The stack is moving from a stack-snapshot RC tag to conventional
+  release tags by bumping Adapter and Toolkit patch versions.
+- **Completed**:
+  - Updated the Core version matrix defaults to expect Adapter `0.3.2` and
+    Toolkit `0.5.2`.
+  - Documented that historical Adapter `v0.3.1` and Toolkit `0.5.1` tags must
+    not be moved.
+- **Next gate**:
+  - Re-run `composer rc:version-matrix -- --require-tag-ready`.
+  - Re-run `composer acceptance:cross-repo-release`.
+  - Create conventional tags only after the clean matrix and acceptance gate
+    pass.
+- **Boundary**:
+  - This is release coordination only. Core still does not execute abilities,
+    own Adapter or Toolkit code, own workflow runtime, own task queues, store
+    provider credentials, or mutate WordPress content.
+
 ## 2026-06-21 — Core release gate diagnostics cleared
 
 - **Module**: Core WordPress.org release hygiene.

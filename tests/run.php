@@ -781,11 +781,11 @@ foreach (
 		'npcink-ai-client-adapter',
 		'npcink-abilities-toolkit',
 		'0.1.0',
-		'0.3.1',
-		'0.5.1',
-		'do not retag it to a newer commit',
+		'0.3.2',
+		'0.5.2',
+		'must not be moved',
 		'--require-tag-ready',
-		'stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1',
+		'stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2',
 		'The matrix must not become a dependency resolver',
 	) as $required
 ) {
