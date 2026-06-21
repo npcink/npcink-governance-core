@@ -692,6 +692,7 @@ final class Admin_Page {
 						<strong
 							data-npcink-bulk-count-label
 							data-default-label="<?php echo esc_attr__( 'Bulk actions', 'npcink-governance-core' ); ?>"
+							<?php /* translators: %d: number of selected proposal requests. */ ?>
 							data-selected-label="<?php echo esc_attr__( 'Selected requests: %d', 'npcink-governance-core' ); ?>"
 						><?php echo esc_html__( 'Bulk actions', 'npcink-governance-core' ); ?></strong>
 						<span
@@ -2508,8 +2509,8 @@ final class Admin_Page {
 						printf(
 							/* translators: 1: warning count, 2: blocked item count. */
 							esc_html__( '%1$d warnings / %2$d blocked', 'npcink-governance-core' ),
-							$warning_count,
-							$blocked_count
+							absint( $warning_count ),
+							absint( $blocked_count )
 						);
 						?>
 					</div>

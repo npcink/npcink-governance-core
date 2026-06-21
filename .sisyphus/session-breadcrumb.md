@@ -1,5 +1,27 @@
 # Session Breadcrumb
 
+## 2026-06-21 — Core release gate diagnostics cleared
+
+- **Module**: Core WordPress.org release hygiene.
+- **Status**: Plugin Check release diagnostics are cleared while preserving
+  Core's governance-only runtime boundary.
+- **Completed**:
+  - Added the missing translator note for the bulk-selected request count.
+  - Escaped numeric warning and blocked counts through explicit integer
+    formatting.
+  - Unslashed the request IP before sanitizing and hashing app-key usage
+    metadata.
+  - Narrowly suppressed static SQL placeholder/direct-DB diagnostics for
+    generated placeholders against Core-owned custom governance tables.
+- **Verified**:
+  - `composer plugin-check:release` passed with no errors found.
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+- **Boundary**:
+  - This is release hygiene only. Core still does not execute abilities, own
+    Cloud or Adapter runtime, own workflow runtime, own task queues, store
+    provider credentials, or mutate WordPress content.
+
 ## 2026-06-21 — Boundary pressure points frozen for release candidate
 
 - **Module**: Core boundary documentation, admin wording, and static contracts.

@@ -289,7 +289,7 @@ final class App_Authenticator {
 	 * @return string
 	 */
 	private function request_ip_hash(): string {
-		$remote_addr = sanitize_text_field( (string) ( $_SERVER['REMOTE_ADDR'] ?? '' ) );
+		$remote_addr = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
 		if ( '' === $remote_addr ) {
 			return '';
 		}
