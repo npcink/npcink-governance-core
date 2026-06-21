@@ -32,7 +32,7 @@ msgstr "Npcink"
 
 #: includes/Admin/Admin_Page.php:126 includes/Admin/Admin_Page.php:226
 msgid "Core"
-msgstr "核心"
+msgstr "治理核心"
 
 #: includes/Admin/Admin_Page.php:172 includes/Admin/Admin_Page.php:173
 #: includes/Admin/Admin_Page.php:220
@@ -69,7 +69,7 @@ msgstr "审核提案、批准决策、提交前检查、审计和客户端访问
 
 #: includes/Admin/Admin_Page.php:227
 msgid "Adapter"
-msgstr "Adapter"
+msgstr "渠道适配器"
 
 #: includes/Admin/Admin_Page.php:227
 msgid "Connect OpenClaw through the Adapter surface."
@@ -77,7 +77,7 @@ msgstr "通过 Adapter 界面连接 OpenClaw。"
 
 #: includes/Admin/Admin_Page.php:228
 msgid "Abilities"
-msgstr "能力"
+msgstr "原子能力"
 
 #: includes/Admin/Admin_Page.php:228
 msgid "Verify WordPress Abilities API packages and demo ability controls."
