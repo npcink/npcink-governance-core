@@ -1,5 +1,26 @@
 # Session Breadcrumb
 
+## 2026-06-21 — Local WP-CLI wrapper added
+
+- **Module**: Core local release and smoke tooling.
+- **Status**: WP-CLI deprecation noise is handled as release-environment
+  hygiene, not as a plugin runtime blocker.
+- **Completed**:
+  - Added `scripts/wp-cli-local.sh` to run local WP-CLI commands with stable
+    LocalWP defaults.
+  - Switched Core Plugin Check release scans to the wrapper.
+  - Kept smoke and cross-repo release defaults on the current LocalWP PHP
+    runtime after PHP `8.2` was found to break the current Abilities API smoke
+    registration path.
+- **Next gate**:
+  - Run `composer test:all`.
+  - Run `scripts/wp-cli-local.sh core is-installed`.
+  - Run `composer plugin-check:release`.
+- **Boundary**:
+  - This is local tooling only. Core still does not execute abilities, own
+    Adapter or Toolkit code, own workflow runtime, own task queues, store
+    provider credentials, or mutate WordPress content.
+
 ## 2026-06-21 — Core 0.1.1 release tooling patch
 
 - **Module**: Core release candidate matrix tooling.

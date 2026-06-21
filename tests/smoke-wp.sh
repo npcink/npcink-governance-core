@@ -135,11 +135,13 @@ fi
 run_wp() {
 	if [[ "$WP_CLI_BIN" == *.phar ]]; then
 		php_args=()
+		php_args+=("-d" "display_errors=0")
 		if [[ -n "$WP_CLI_ERROR_REPORTING" ]]; then
 			php_args+=("-d" "error_reporting=$WP_CLI_ERROR_REPORTING")
 		fi
 		if [[ -n "$WP_CLI_MYSQL_SOCKET" ]]; then
 			php_args+=("-d" "mysqli.default_socket=$WP_CLI_MYSQL_SOCKET")
+			php_args+=("-d" "pdo_mysql.default_socket=$WP_CLI_MYSQL_SOCKET")
 		fi
 		if [[ -n "$WP_CLI_PHP_ARGS" ]]; then
 			extra_php_args=()

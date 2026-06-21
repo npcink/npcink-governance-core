@@ -1538,6 +1538,7 @@ foreach (
 }
 
 $smoke_wp_sh = npcink_governance_core_read( $root . '/tests/smoke-wp.sh' );
+$wp_cli_local_sh = npcink_governance_core_read( $root . '/scripts/wp-cli-local.sh' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp_sh, 'WP_CLI' ), 'WordPress smoke shell uses WP-CLI directly.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp_sh, 'smoke_preflight_note' ), 'WordPress smoke shell reports preflight diagnostics.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp_sh, 'smoke_preflight_fail' ), 'WordPress smoke shell fails environment setup before runtime assertions.' );
@@ -1546,6 +1547,9 @@ npcink_governance_core_assert( false !== strpos( $smoke_wp_sh, 'npcink-abilities
 npcink_governance_core_assert( false !== strpos( $smoke_wp_sh, 'NPCINK_ABILITIES_TOOLKIT_PATH' ), 'WordPress smoke shell reports the Toolkit source path assumption.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp_sh, 'readlink' ), 'WordPress smoke shell diagnoses Core plugin symlink state.' );
 npcink_governance_core_assert( false === strpos( $smoke_wp_sh, 'magick-ai-root' ), 'WordPress smoke shell must not depend on magick-ai-root.' );
+npcink_governance_core_assert( false !== strpos( $wp_cli_local_sh, 'php-8.5.3+1' ), 'Local WP-CLI wrapper prefers the current LocalWP smoke PHP runtime.' );
+npcink_governance_core_assert( false !== strpos( $wp_cli_local_sh, 'display_errors=0' ), 'Local WP-CLI wrapper suppresses PHP display errors for release-smoke noise control.' );
+npcink_governance_core_assert( false !== strpos( $wp_cli_local_sh, 'pdo_mysql.default_socket' ), 'Local WP-CLI wrapper sets both mysqli and PDO MySQL sockets.' );
 
 $smoke_wp = npcink_governance_core_read( $root . '/tests/smoke-wp.php' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'NPCINK_ABILITIES_TOOLKIT_PATH' ), 'WordPress smoke can locate the shared npcink-abilities-toolkit repository explicitly.' );

@@ -68,6 +68,10 @@ composer smoke:wp
 
 For the default LocalWP environment, the script prefers `/tmp/wp-cli.phar` when
 available so it can pass Local's PHP runtime and MySQL socket explicitly.
+The default PHP preference follows the current LocalWP smoke runtime first,
+then falls back to older Local PHP and the system PHP. Do not change the system
+PHP version to quiet WP-CLI vendor deprecation noise; set `WP_CLI_PHP` for a
+single command when a different runtime is needed.
 Override these only when needed:
 
 ```bash
@@ -76,6 +80,17 @@ WP_CLI_PHP="/path/to/local/php" \
 WP_CLI_MYSQL_SOCKET="/path/to/mysql/mysqld.sock" \
 composer smoke:wp
 ```
+
+Use the local wrapper for ad hoc WP-CLI commands against the smoke site:
+
+```bash
+scripts/wp-cli-local.sh core is-installed
+scripts/wp-cli-local.sh plugin list --skip-update-check
+```
+
+The wrapper sets `display_errors=0`, `error_reporting=8191`, the LocalWP MySQL
+socket, and `--path` for the documented local site. It is a local development
+and release-smoke helper, not a production operations entrypoint.
 
 Before running the WordPress smoke PHP file, `tests/smoke-wp.sh` prints
 `[smoke:preflight]` diagnostics for the repository root, `WP_PATH`, WP-CLI,
@@ -178,6 +193,11 @@ workarounds, local CA bundle paths, and agent usage instructions belong in
 Magick AI Adapter. Core only issues scoped governance app keys.
 
 ## Smoke Wrapper
+
+`tests/smoke-wp.sh` keeps its own preflight diagnostics so smoke failures can
+be classified before runtime assertions. For one-off local WP-CLI inspection,
+prefer `scripts/wp-cli-local.sh` so PHP and socket defaults stay consistent
+with release checks.
 
 The smoke script is self-contained in this repository. It uses WP-CLI against
 the LocalWP site and does not depend on the abandoned legacy Magick AI

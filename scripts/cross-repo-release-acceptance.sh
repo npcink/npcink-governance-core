@@ -8,7 +8,7 @@ ADAPTER_ROOT="${NPCINK_AI_CLIENT_ADAPTER_ROOT:-$DEFAULT_REPO_PARENT/npcink-ai-cl
 TOOLKIT_ROOT="${NPCINK_ABILITIES_TOOLKIT_ROOT:-$DEFAULT_REPO_PARENT/npcink-abilities-toolkit}"
 WP_PATH="${WP_PATH:-/Users/muze/Local Sites/magick-ai/app/public}"
 WP_CLI="${WP_CLI:-/tmp/wp-cli.phar}"
-WP_CLI_PHP="${WP_CLI_PHP:-$HOME/Library/Application Support/Local/lightning-services/php-8.5.3+1/bin/darwin-arm64/bin/php}"
+WP_CLI_PHP="${WP_CLI_PHP:-}"
 WP_CLI_ERROR_REPORTING="${WP_CLI_ERROR_REPORTING:-8191}"
 WP_CLI_MYSQL_SOCKET="${WP_CLI_MYSQL_SOCKET:-$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock}"
 WP_DB_SOCKET="${WP_DB_SOCKET:-$WP_CLI_MYSQL_SOCKET}"
@@ -128,6 +128,24 @@ require_command git
 require_repo "Core" "$CORE_ROOT"
 require_repo "Adapter" "$ADAPTER_ROOT"
 require_repo "Toolkit" "$TOOLKIT_ROOT"
+
+if [[ -z "$WP_CLI_PHP" ]]; then
+	for candidate in \
+		"$HOME/Library/Application Support/Local/lightning-services/php-8.5.3+1/bin/darwin-arm64/bin/php" \
+		"$HOME/Library/Application Support/Local/lightning-services/php-8.2.29+0/bin/darwin-arm64/bin/php" \
+		"$(command -v php 2>/dev/null || true)"
+	do
+		if [[ -n "$candidate" && -x "$candidate" ]]; then
+			WP_CLI_PHP="$candidate"
+			break
+		fi
+	done
+fi
+
+if [[ -z "$WP_CLI_PHP" ]]; then
+	echo "Missing PHP for WP-CLI. Set WP_CLI_PHP=/path/to/php." >&2
+	exit 2
+fi
 
 export WP_PATH
 export WP_CLI
