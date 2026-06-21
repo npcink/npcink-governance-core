@@ -42,6 +42,30 @@ function npcink_governance_core_smoke_assert( bool $condition, string $message )
 }
 
 /**
+ * Finds a post by exact title without using deprecated WordPress helpers.
+ *
+ * @param string $title Post title.
+ * @param string $post_type Post type.
+ * @return int
+ */
+function npcink_governance_core_smoke_find_post_id_by_title( string $title, string $post_type ): int {
+	$posts = get_posts(
+		array(
+			'title'                  => $title,
+			'post_type'              => $post_type,
+			'post_status'            => 'any',
+			'posts_per_page'         => 1,
+			'fields'                 => 'ids',
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+		)
+	);
+
+	return (int) ( $posts[0] ?? 0 );
+}
+
+/**
  * Registers a post fixture for cleanup even when the smoke test fails.
  *
  * @param int $post_id Post id.
@@ -1881,9 +1905,9 @@ npcink_governance_core_smoke_assert( 2 === count( $pattern_page_actions ), 'patt
 npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/create-draft' === (string) ( $pattern_page_actions[0]['target_ability_id'] ?? '' ), 'pattern page first action creates a draft page' );
 npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/update-post-blocks' === (string) ( $pattern_page_actions[1]['target_ability_id'] ?? '' ), 'pattern page second action updates Gutenberg blocks' );
 npcink_governance_core_smoke_assert( '$outputs.create-pattern-page.post_id' === (string) ( $pattern_page_actions[1]['input']['post_id'] ?? '' ), 'pattern page update action preserves output reference' );
-npcink_governance_core_smoke_assert( null === get_page_by_title( $pattern_page_title, OBJECT, 'page' ), 'pattern page from-plan intake does not create the page draft' );
+npcink_governance_core_smoke_assert( 0 === npcink_governance_core_smoke_find_post_id_by_title( $pattern_page_title, 'page' ), 'pattern page from-plan intake does not create the page draft' );
 npcink_governance_core_smoke_approve_and_preflight_plan_proposal( (string) ( $pattern_page_proposal['proposal_id'] ?? '' ) );
-npcink_governance_core_smoke_assert( null === get_page_by_title( $pattern_page_title, OBJECT, 'page' ), 'pattern page preflight does not create the page draft' );
+npcink_governance_core_smoke_assert( 0 === npcink_governance_core_smoke_find_post_id_by_title( $pattern_page_title, 'page' ), 'pattern page preflight does not create the page draft' );
 
 $block_theme_site_plan_input = array(
 	'intent'                 => 'customize_template_layout',
@@ -2020,9 +2044,9 @@ npcink_governance_core_smoke_assert( 2 === count( $article_block_actions ), 'art
 npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/create-draft' === (string) ( $article_block_actions[0]['target_ability_id'] ?? '' ), 'article block first action creates a draft post' );
 npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/update-post-blocks' === (string) ( $article_block_actions[1]['target_ability_id'] ?? '' ), 'article block second action updates Gutenberg blocks' );
 npcink_governance_core_smoke_assert( '$outputs.create-article-draft.post_id' === (string) ( $article_block_actions[1]['input']['post_id'] ?? '' ), 'article block update action preserves output reference' );
-npcink_governance_core_smoke_assert( null === get_page_by_title( $article_block_title, OBJECT, 'post' ), 'article block from-plan intake does not create the post draft' );
+npcink_governance_core_smoke_assert( 0 === npcink_governance_core_smoke_find_post_id_by_title( $article_block_title, 'post' ), 'article block from-plan intake does not create the post draft' );
 npcink_governance_core_smoke_approve_and_preflight_plan_proposal( (string) ( $article_block_proposal['proposal_id'] ?? '' ) );
-npcink_governance_core_smoke_assert( null === get_page_by_title( $article_block_title, OBJECT, 'post' ), 'article block preflight does not create the post draft' );
+npcink_governance_core_smoke_assert( 0 === npcink_governance_core_smoke_find_post_id_by_title( $article_block_title, 'post' ), 'article block preflight does not create the post draft' );
 
 $cleanup_pattern = 'Core Plan Bridge Test Cleanup Candidate ' . $npcink_governance_core_smoke_run_id;
 $cleanup_post_id = wp_insert_post(
@@ -2160,7 +2184,7 @@ npcink_governance_core_smoke_assert( 'trusted_local' === (string) ( $smart_guard
 npcink_governance_core_smoke_assert( in_array( 'smart_guarded_create_draft_auto_approved', (array) ( $smart_guarded_draft['policy_reasons'] ?? array() ), true ), 'smart guarded create-draft records auto-approved reason' );
 $smart_guarded_draft_preflight = npcink_governance_core_smoke_rest_as_app( 'POST', '/npcink-governance-core/v1/proposals/' . rawurlencode( $smart_guarded_draft_id ) . '/commit-preflight', $smart_guarded_token );
 npcink_governance_core_smoke_assert( true === (bool) ( $smart_guarded_draft_preflight['approval_context']['approval_commit_authorized'] ?? false ), 'smart guarded create-draft preflight passes without manual approval' );
-npcink_governance_core_smoke_assert( null === get_page_by_title( $smart_guarded_draft_title, OBJECT, 'post' ), 'smart guarded create-draft preflight does not create the post draft' );
+npcink_governance_core_smoke_assert( 0 === npcink_governance_core_smoke_find_post_id_by_title( $smart_guarded_draft_title, 'post' ), 'smart guarded create-draft preflight does not create the post draft' );
 
 update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_DEV_ALLOW_ALL, false );
 $dev_allow_all_disabled = npcink_governance_core_smoke_rest_as_app(
@@ -2615,7 +2639,7 @@ npcink_governance_core_smoke_assert( true === (bool) ( $trusted_external_result[
 npcink_governance_core_smoke_assert( 0 === (int) ( $trusted_external_result['post_id'] ?? -1 ), 'trusted Adapter external dry-run does not create a post id' );
 npcink_governance_core_smoke_assert( 'dry_run' === (string) ( $trusted_external_result['status'] ?? '' ), 'trusted Adapter external execution returns dry-run status' );
 npcink_governance_core_smoke_assert( 'create_draft' === (string) ( $trusted_external_result['preview']['action'] ?? '' ), 'trusted Adapter external execution runs the target create-draft ability' );
-npcink_governance_core_smoke_assert( null === get_page_by_title( $trusted_draft_title, OBJECT, 'post' ), 'trusted Adapter external dry-run does not create the post draft' );
+npcink_governance_core_smoke_assert( 0 === npcink_governance_core_smoke_find_post_id_by_title( $trusted_draft_title, 'post' ), 'trusted Adapter external dry-run does not create the post draft' );
 
 $trusted_record_denied = npcink_governance_core_smoke_rest_result_as_app(
 	'POST',

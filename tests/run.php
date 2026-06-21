@@ -1553,6 +1553,7 @@ npcink_governance_core_assert( false !== strpos( $wp_cli_local_sh, 'pdo_mysql.de
 
 $smoke_wp = npcink_governance_core_read( $root . '/tests/smoke-wp.php' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'NPCINK_ABILITIES_TOOLKIT_PATH' ), 'WordPress smoke can locate the shared npcink-abilities-toolkit repository explicitly.' );
+npcink_governance_core_assert( false === strpos( $smoke_wp, 'get_page_by_title' ), 'WordPress smoke does not use deprecated get_page_by_title.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'agent-workflow-replay.json' ), 'WordPress smoke consumes the shared replay fixture.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'preferred bundle is discoverable by Core' ), 'WordPress smoke validates preferred bundle discovery.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'disallowed default ability requires approval in Core' ), 'WordPress smoke validates write-like defaults stay approval-gated.' );

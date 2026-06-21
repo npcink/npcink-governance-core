@@ -1,5 +1,23 @@
 # Session Breadcrumb
 
+## 2026-06-21 — Smoke deprecated title lookup removed
+
+- **Module**: Core WordPress smoke release hygiene.
+- **Status**: The remaining `get_page_by_title()` deprecation in smoke output
+  has been removed from Core's smoke test path.
+- **Completed**:
+  - Replaced smoke-only title lookups with a `get_posts()` helper using exact
+    title and post type matching.
+  - Added a static contract to keep deprecated `get_page_by_title()` out of
+    `tests/smoke-wp.php`.
+- **Next gate**:
+  - Run `composer test:all`.
+  - Run `composer smoke:wp`.
+- **Boundary**:
+  - This is smoke/release hygiene only. Core still does not execute abilities,
+    own Adapter or Toolkit code, own workflow runtime, own task queues, store
+    provider credentials, or mutate WordPress content.
+
 ## 2026-06-21 — Local WP-CLI wrapper added
 
 - **Module**: Core local release and smoke tooling.
