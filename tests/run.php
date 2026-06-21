@@ -313,6 +313,8 @@ npcink_governance_core_assert( false !== strpos( $admin_page, "const PARENT_MENU
 npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Npcink AI', 'npcink-governance-core' )" ), 'Admin parent menu title is Npcink AI.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Npcink AI Overview', 'npcink-governance-core' )" ), 'Admin parent overview title is Npcink AI Overview.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Core', 'npcink-governance-core' ),\n\t\t\tself::MENU_CAPABILITY" ), 'Admin submenu title is Core.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "'npcink-ai-client-adapter'" ), 'Admin overview links to the canonical Adapter slug.' );
+npcink_governance_core_assert( false === strpos( $admin_page, "'npcink-openclaw-adapter'" ), 'Admin overview does not link to the legacy Adapter slug.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'npcink-cloud-addon'" ), 'Admin overview links to the canonical Cloud Addon slug.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Cloud Addon', 'npcink-governance-core' )" ), 'Admin overview labels the Cloud Addon surface.' );
 

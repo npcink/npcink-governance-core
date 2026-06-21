@@ -1,5 +1,26 @@
 # Session Breadcrumb
 
+## 2026-06-21 — Adapter overview slug corrected
+
+- **Module**: Shared Npcink AI overview navigation.
+- **Status**: The Core overview now points the Adapter row at the current
+  `npcink-ai-client-adapter` submenu slug instead of the legacy
+  `npcink-openclaw-adapter` slug.
+- **Completed**:
+  - Updated `includes/Admin/Admin_Page.php` so the Adapter row opens the
+    productized Adapter admin surface when it is installed.
+  - Added static contracts that require the canonical Adapter slug and reject
+    the legacy slug in the Core overview.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+  - Local WP-CLI admin submenu inspection showed `npcink-ai-client-adapter`
+    registered under `npcink-ai`.
+- **Boundary**:
+  - This is navigation status hygiene only. Core still does not execute
+    abilities, own Adapter runtime, own workflow runtime, own task queues,
+    store provider credentials, or mutate WordPress content.
+
 ## 2026-06-21 — Admin menu localization closeout recorded
 
 - **Module**: Shared Npcink AI admin menu localization documentation.
