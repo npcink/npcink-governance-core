@@ -127,6 +127,7 @@ Read the project handoff docs before starting a new implementation session:
 - [WordPress.org Release Gate](docs/wordpress-org-release-gate.md)
 - [Cross-Repo Release Acceptance](docs/cross-repo-release-acceptance.md)
 - [Release Candidate Version Matrix](docs/release-candidate-version-matrix.md)
+- [Release Closeout - 2026-06-21](docs/release-closeout-2026-06-21.md)
 - [Next Stage Plan](docs/next-stage-plan.md)
 - [Strategy And Product Split](docs/strategy-and-product-split.md)
 - [ADR-001: Rebuild Core As A Governance Layer](docs/decisions/ADR-001-rebuild-core-as-governance-layer.md)

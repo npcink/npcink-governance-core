@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-06-21 — Release publication closeout recorded
+
+- **Module**: Core release publication and WordPress.org SVN handoff.
+- **Status**: The release history is summarized locally, Core and Toolkit
+  GitHub draft releases are public, and WordPress.org SVN has been checked by
+  dry-run only.
+- **Completed**:
+  - Added a local release closeout summary for the Core `0.1.1`, Adapter
+    `0.3.2`, and Toolkit `0.5.2` matrix.
+  - Recorded that post-tag WP-CLI and smoke deprecation fixes are local
+    release tooling hygiene on `master`, not a reason to move the existing
+    Core `v0.1.1` tag.
+  - Published Core `v0.1.1` and Toolkit `0.5.2` GitHub releases from their
+    existing draft records.
+  - Checked out WordPress.org SVN for Core and ran the `0.1.1` sync as a
+    dry-run only.
+- **Next gate**:
+  - Decide whether to run WordPress.org SVN `--apply` and `svn commit` for
+    `0.1.1`.
+- **Boundary**:
+  - This is release publication coordination only. Core still does not execute
+    abilities, own Adapter or Toolkit code, own workflow runtime, own task
+    queues, store provider credentials, or mutate WordPress content.
+
 ## 2026-06-21 — Smoke deprecated title lookup removed
 
 - **Module**: Core WordPress smoke release hygiene.
