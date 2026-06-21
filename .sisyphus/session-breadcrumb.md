@@ -1,11 +1,29 @@
 # Session Breadcrumb
 
-## 2026-06-21 — Release publication closeout recorded
+## 2026-06-21 — Release closeout history summarized
+
+- **Module**: Core release closeout documentation.
+- **Status**: The release closeout document now includes a historical summary
+  of the boundary decisions, pressure-point handling, publication state, and
+  WordPress.org SVN stop point.
+- **Completed**:
+  - Added a historical summary to `docs/release-closeout-2026-06-21.md`.
+  - Reaffirmed that post-tag WP-CLI and smoke deprecation fixes are local
+    validation hygiene, not a reason to move Core `v0.1.1`.
+- **Next gate**:
+  - Run `composer test:all`.
+  - Await an explicit maintainer decision before any WordPress.org SVN
+    `--apply` or `svn commit`.
+- **Boundary**:
+  - This is documentation only. Core still does not execute abilities, own
+    Adapter or Toolkit code, own workflow runtime, own task queues, store
+    provider credentials, or mutate WordPress content.
+
+## 2026-06-21 — WordPress.org 0.1.1 SVN release published
 
 - **Module**: Core release publication and WordPress.org SVN handoff.
-- **Status**: The release history is summarized locally, Core and Toolkit
-  GitHub draft releases are public, and WordPress.org SVN has been checked by
-  dry-run only.
+- **Status**: Core `0.1.1` has been committed to the official WordPress.org
+  SVN release repository.
 - **Completed**:
   - Added a local release closeout summary for the Core `0.1.1`, Adapter
     `0.3.2`, and Toolkit `0.5.2` matrix.
@@ -14,11 +32,16 @@
     Core `v0.1.1` tag.
   - Published Core `v0.1.1` and Toolkit `0.5.2` GitHub releases from their
     existing draft records.
-  - Checked out WordPress.org SVN for Core and ran the `0.1.1` sync as a
-    dry-run only.
+  - Checked out WordPress.org SVN for Core, ran the `0.1.1` sync dry-run,
+    applied the expected trunk/tag/assets sync, and committed revision
+    `3580253`.
+  - Re-ran `composer prepare:release -- --version 0.1.1` with the unrelated
+    local `npcink-toolbox` fatal isolated from the WordPress smoke site.
 - **Next gate**:
-  - Decide whether to run WordPress.org SVN `--apply` and `svn commit` for
-    `0.1.1`.
+  - Wait for the public WordPress.org plugin page and download cache to reflect
+    SVN `0.1.1`.
+  - Submit the prepared `Stable Readme` translations through
+    translate.wordpress.org.
 - **Boundary**:
   - This is release publication coordination only. Core still does not execute
     abilities, own Adapter or Toolkit code, own workflow runtime, own task

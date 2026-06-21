@@ -6,6 +6,55 @@ This note summarizes the current release history and the boundary decisions
 that led to the Core `0.1.1`, Adapter `0.3.2`, and Toolkit `0.5.2` release
 matrix.
 
+## Historical Summary
+
+This stage started from repeated boundary checks around whether Core was clear
+enough to release and whether any implementation had drifted outside the
+governance layer. The answer at closeout is that the boundary is clear enough
+for the current release candidate: Core is the review, approval, preflight,
+and audit truth; Adapter remains the signed channel and execution bridge; and
+Toolkit remains the ability definition and dry-run preview owner.
+
+The main product decision was to stop broadening Core. Any work that smelled
+like article workflow UX, media workflow UX, model routing, provider
+configuration, workflow runtime, task queues, batch execution, MCP runtime, or
+Agent Gateway catalog ownership was treated as outside Core. Release work was
+therefore limited to governance contracts, boundary wording, release gates,
+WordPress.org packaging hygiene, and local validation tooling.
+
+Three pressure points were resolved before release closeout:
+
+- plan handoffs stay admitted only through explicit allowlists and proposal
+  review, with Toolkit-owned ability ids where Toolkit owns the capability;
+- Cloud Addon and Adapter are documented as external-owner surfaces rather
+  than Core-owned control planes;
+- `record-execution` is an external execution-result recording route, not Core
+  execution ownership.
+
+The release candidate then moved from boundary cleanup to publication
+readiness. WordPress.org listing copy, translation drafts, Plugin Check
+diagnostics, version matrix checks, cross-repository acceptance, package
+builds, and LocalWP smoke checks were tightened without adding runtime
+responsibility to Core.
+
+Late in the release process, local validation noise was handled as tooling
+hygiene instead of product scope: `scripts/wp-cli-local.sh` centralizes local
+WP-CLI defaults, and the smoke test stopped using deprecated
+`get_page_by_title()`. These post-tag changes improve local release
+confidence, but they do not change the already-published Core `v0.1.1` release
+artifact.
+
+The current stop point is deliberate:
+
+- GitHub release records are public for Core `v0.1.1`, Adapter `v0.3.2`, and
+  Toolkit `0.5.2`;
+- WordPress.org SVN has been formally published for Core `0.1.1` at revision
+  `3580253`;
+- the WordPress.org download package now resolves to `Npcink Governance Core`
+  `0.1.1`;
+- the remaining publication work is public page cache observation and
+  translate.wordpress.org `Stable Readme` submission.
+
 ## Product Boundary
 
 Npcink Governance Core remains the WordPress AI operation governance layer.
@@ -107,69 +156,52 @@ If those local tooling improvements must be represented inside a published
 release artifact, the correct path is a new patch release such as `0.1.2`, not
 retagging `v0.1.1`.
 
-## WordPress.org SVN Decision Point
+## WordPress.org SVN Publication
 
-WordPress.org SVN remains the release repository only. The next step is a
-dry-run sync from the prepared package into a Core SVN checkout:
+WordPress.org SVN remains the release repository only. Core `0.1.1` was
+published from the prepared package into the official checkout:
 
 ```sh
-composer sync:wporg -- --version 0.1.1 --svn-dir /path/to/wporg-npcink-governance-core
+composer sync:wporg -- --version 0.1.1 --svn-dir /Users/muze/wporg-svn/npcink-governance-core --assets
+composer sync:wporg -- --version 0.1.1 --svn-dir /Users/muze/wporg-svn/npcink-governance-core --assets --apply
+svn commit /Users/muze/wporg-svn/npcink-governance-core -m "Release npcink-governance-core 0.1.1"
 ```
 
-The dry run must be reviewed before any formal SVN apply or commit. A formal
-commit should happen only if:
+The formal SVN commit is:
 
-- the dry-run diff is limited to the expected `trunk/` release package and
-  `tags/0.1.1`;
-- `tags/0.1.1` does not already exist in SVN;
-- no pre-existing, unrelated SVN working-copy changes are present;
-- the public plugin identity remains `Npcink Governance Core` with slug,
-  text domain, REST namespace, and package identity
-  `npcink-governance-core`;
-- the release package still respects Core's governance-only boundary.
+```text
+Committed revision 3580253.
+```
 
-Listing assets should be synced with `--assets` only when the modified
-WordPress.org image exports are intentionally part of the release decision.
-Do not include asset changes incidentally.
+The sync included `--assets`, so the refreshed WordPress.org listing image
+exports were intentionally part of the release.
 
-## SVN Dry-Run Result
+## SVN Publication Result
 
-Dry-run checkout:
+SVN checkout:
 
 ```text
 /Users/muze/wporg-svn/npcink-governance-core
 ```
 
-SVN checkout revision:
+SVN checkout base revision before publication:
 
 ```text
 3580249
 ```
 
-Dry-run command:
+Published SVN paths:
 
-```sh
-composer sync:wporg -- --version 0.1.1 --svn-dir /Users/muze/wporg-svn/npcink-governance-core
-```
+- `trunk/` updated to the `0.1.1` release package;
+- `tags/0.1.1/` added;
+- `assets/banner-1544x500.png`, `assets/banner-772x250.png`,
+  `assets/icon-256x256.png`, and `assets/icon-128x128.png` updated.
 
-Result:
+Verification after publication:
 
-- dry-run completed successfully;
-- SVN working copy was restored to a clean local state after final
-  verification;
-- existing SVN tags list contained `0.1.0/` and did not contain `0.1.1/`;
-- supplemental `rsync --dry-run --itemize-changes` showed 46 trunk changes
-  from the existing WordPress.org `0.1.0` trunk to the prepared `0.1.1`
-  package, including removal of the old `includes/Media/` directory and
-  updates/additions under current Core governance, REST, security, assets, and
-  language files;
-- the dry run did not include `--assets`, so WordPress.org listing image
-  exports were not part of this dry-run decision.
-
-Decision: the WordPress.org SVN release appears ready for a formal
-`--apply` and `svn commit`, but the formal SVN commit remains unperformed until
-the maintainer explicitly approves that publish step.
-
-Final verification found no committed WordPress.org SVN change. Any local
-uncommitted SVN working-copy residue observed during verification was reverted
-before closeout.
+- official SVN `tags/0.1.1/readme.txt` reports `Stable tag: 0.1.1`;
+- official SVN `trunk/npcink-governance-core.php` reports
+  `Plugin Name: Npcink Governance Core` and `Version: 0.1.1`;
+- `https://downloads.wordpress.org/plugin/npcink-governance-core.zip`
+  resolves to a package containing `Npcink Governance Core` `0.1.1`;
+- public plugin page cache may lag behind SVN and download package refresh.
