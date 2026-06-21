@@ -32,7 +32,7 @@ msgstr "Npcink"
 
 #: includes/Admin/Admin_Page.php:126 includes/Admin/Admin_Page.php:226
 msgid "Core"
-msgstr "Core"
+msgstr "核心"
 
 #: includes/Admin/Admin_Page.php:172 includes/Admin/Admin_Page.php:173
 #: includes/Admin/Admin_Page.php:220
@@ -85,7 +85,7 @@ msgstr "验证 WordPress Abilities API 包和演示能力控件。"
 
 #: includes/Admin/Admin_Page.php:229
 msgid "Cloud Addon"
-msgstr "Cloud Addon"
+msgstr "云端扩展"
 
 #: includes/Admin/Admin_Page.php:229
 msgid ""
