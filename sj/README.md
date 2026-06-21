@@ -9,6 +9,8 @@ assets. It is intentionally excluded from release archives through
 - `positioning.md` - product positioning, audience, boundaries, and series map.
 - `listing-copy-en.md` - English WordPress.org listing draft.
 - `listing-copy-zh.md` - Chinese listing draft for reuse on Chinese channels.
+- `wporg-readme-translations/` - eight-locale WordPress.org Stable Readme
+  translation drafts for translate.wordpress.org submission.
 - `image-prompts.md` - reusable AI image prompts for the icon and banner.
 - `translation-notes.md` - bilingual listing and runtime translation notes.
 - `license-notes.md` - image provenance and release notes.
@@ -34,3 +36,9 @@ The plugin code uses the `npcink-governance-core` text domain for translatable r
 strings. The WordPress.org listing should use English as the primary directory
 copy, while `listing-copy-zh.md` can be reused for Chinese launch posts,
 documentation, and marketplace-adjacent pages.
+
+The public WordPress.org plugin page translation is not loaded from bundled
+`.po` or `.mo` files. Description, installation, FAQ, and changelog copy should
+be submitted through translate.wordpress.org as `Stable Readme` strings. The
+drafts in `wporg-readme-translations/` cover `zh_CN`, `zh_TW`, `ja`, `ko_KR`,
+`es_ES`, `fr_FR`, `de_DE`, and `pt_BR`.

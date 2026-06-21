@@ -59,6 +59,31 @@ existing tag choices. The plan may package those choices into dry-run
 `write_actions`, but it must not create terms, mutate SEO fields, rewrite
 content, or claim direct write authority.
 
+## Plan Handoff Admission Checklist
+
+New plan handoffs are frozen for the release-candidate boundary unless they
+pass this checklist and update the implementation, contract docs, and static
+contract tests in the same change:
+
+- the plan has a fixed external owner such as `npcink-abilities-toolkit` or
+  `npcink-toolbox`;
+- the plan ability id is explicit and allowlisted; Core must not accept generic
+  workflow names, channel tool names, or arbitrary caller-supplied ability ids;
+- the target write ability ids are explicit, discoverable WordPress ability
+  ids, and proposal-governed;
+- the proposal mode is explicit, including whether the plan creates individual
+  proposals or one bounded `plan_to_proposal_batch`;
+- the maximum action count and any narrower per-family cap are documented;
+- the required review evidence, preview namespace, blocked context, and
+  operator next-action fields are documented;
+- `requires_approval=true`, `dry_run=true`, `commit=false`,
+  `commit_execution=false`, and `direct_wordpress_write=false` remain part of
+  the accepted handoff shape where applicable;
+- the final execution owner is Adapter or host after Core approval and commit
+  preflight;
+- the handoff is not a generic workflow runtime, task queue, scheduler, retry
+  store, MCP runtime, Agent Gateway catalog, Cloud control plane, or product UX.
+
 ## Boundary
 
 Core owns:

@@ -1295,7 +1295,9 @@ successful handoff per approved proposal input; replay attempts fail with
 Purpose: record the Adapter-owned execution outcome after Core approval and
 commit preflight. This route updates proposal lifecycle status and audit only;
 it does not execute the target ability and does not store full ability result
-payloads.
+payloads. The route name is a compatibility contract for recording external execution results;
+it must not be implemented as a Core execute, proxy-execute, retry, queue,
+scheduler, or workflow runtime path.
 
 Permission: `manage_options` or app scope `commit:record_execution`.
 
@@ -1345,7 +1347,9 @@ Local observability event:
 
 Execution result recording keeps `core_proxy_execute=false` and
 `commit_execution=false`. Core remains the proposal, approval, preflight, and
-audit truth; Adapter remains the final WordPress ability executor.
+audit truth; Adapter remains the final WordPress ability executor. Documentation
+and UI copy should describe this path as "record external execution result" or
+"record Adapter-owned execution outcome", not as Core execution.
 
 ## Planned Routes
 

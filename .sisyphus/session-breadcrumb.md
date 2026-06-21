@@ -1,5 +1,53 @@
 # Session Breadcrumb
 
+## 2026-06-21 — Boundary pressure points frozen for release candidate
+
+- **Module**: Core boundary documentation, admin wording, and static contracts.
+- **Status**: The three release-candidate boundary pressure points now have
+  explicit guardrails: plan handoffs require an admission checklist, Cloud
+  Addon and Adapter remain external-owner surfaces, and `record-execution` is
+  documented as external execution-result recording rather than Core
+  execution.
+- **Completed**:
+  - Added a plan handoff admission checklist to freeze new handoffs unless
+    they are explicit, allowlisted, externally owned, bounded, and tested.
+  - Expanded external owner notes for Cloud Addon connection pointers and
+    Adapter channel execution/status readback.
+  - Clarified REST and approval-commit docs for `record-execution` semantics.
+  - Tightened the admin overview copy so Cloud appears as a connection pointer,
+    not Core-owned Cloud access.
+  - Added static contract assertions for the new boundary guardrails.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+- **Boundary**:
+  - This is boundary freeze and release hygiene only. Core still does not
+    execute abilities, own Cloud or Adapter runtime, own workflow runtime, own
+    task queues, store provider credentials, or mutate WordPress content.
+
+## 2026-06-21 — Eight-locale WordPress.org readme drafts added
+
+- **Module**: Core WordPress.org public page translation materials.
+- **Status**: Eight `Stable Readme` translation drafts now exist for
+  translate.wordpress.org submission and review.
+- **Completed**:
+  - Added `sj/wporg-readme-translations/` with drafts for `zh_CN`, `zh_TW`,
+    `ja`, `ko_KR`, `es_ES`, `fr_FR`, `de_DE`, and `pt_BR`.
+  - Updated listing and translation notes to distinguish bundled runtime
+    `.po`/`.mo` files from WordPress.org public page `Stable Readme`
+    translations.
+  - Updated the release gate and static contracts so the eight public page
+    translation drafts stay discoverable.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer validate --no-check-publish` passed.
+- **Boundary**:
+  - This is release translation material only. The drafts do not submit,
+    approve, or publish WordPress.org translations by themselves. Core still
+    does not generate content, route models, execute abilities, own workflow
+    runtime, own task queues, store provider credentials, or mutate WordPress
+    content.
+
 ## 2026-06-21 — WordPress.org description and FAQ expanded
 
 - **Module**: Core WordPress.org release copy.

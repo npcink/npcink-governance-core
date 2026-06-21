@@ -136,6 +136,9 @@ changes status to `execution_failed`. If audit persistence fails, Core rolls
 the proposal back to `approved`. Once a proposal has a terminal execution
 outcome, later execution-result records must fail closed instead of being
 treated as another successful or idempotent execution record.
+This path records an external execution result only: it is not a Core execute
+route, proxy-execute route, retry worker, queue, scheduler, workflow runtime, or
+WordPress mutation path.
 
 Generic MCP keys should not receive `proposals:approve` or
 `commit:record_execution`. Productized Magick AI Adapter may use a separately

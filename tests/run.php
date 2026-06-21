@@ -218,6 +218,43 @@ foreach (
 	npcink_governance_core_assert( false !== strpos( $wp_readme, $required ), 'WordPress readme contains required phrase: ' . $required );
 }
 
+$wporg_translation_readme = npcink_governance_core_read( $root . '/sj/wporg-readme-translations/README.md' );
+foreach (
+	array(
+		'Stable Readme',
+		'translate.wordpress.org',
+		'zh_CN',
+		'zh_TW',
+		'ja',
+		'ko_KR',
+		'es_ES',
+		'fr_FR',
+		'de_DE',
+		'pt_BR',
+		'Do not localize the slug or REST namespace.',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $wporg_translation_readme, $required ), 'WordPress.org translation readme contains required phrase: ' . $required );
+}
+
+foreach (
+	array(
+		'zh_CN' => '面向 AI 辅助 WordPress 操作的治理',
+		'zh_TW' => '為 AI 輔助的 WordPress 操作提供治理',
+		'ja'    => 'AI 支援の WordPress 操作',
+		'ko_KR' => 'AI 지원 WordPress 작업',
+		'es_ES' => 'operaciones de WordPress asistidas por IA',
+		'fr_FR' => 'opérations WordPress assistées par IA',
+		'de_DE' => 'KI-gestützte WordPress-Operationen',
+		'pt_BR' => 'operações WordPress assistidas por IA',
+	) as $locale => $required
+) {
+	$draft = npcink_governance_core_read( $root . '/sj/wporg-readme-translations/stable-readme-' . $locale . '.md' );
+	npcink_governance_core_assert( false !== strpos( $draft, 'Npcink Governance Core' ), 'WordPress.org readme translation draft keeps product name: ' . $locale );
+	npcink_governance_core_assert( false !== strpos( $draft, '/wp-json/npcink-governance-core/v1/' ), 'WordPress.org readme translation draft keeps REST namespace: ' . $locale );
+	npcink_governance_core_assert( false !== strpos( $draft, $required ), 'WordPress.org readme translation draft contains localized positioning: ' . $locale );
+}
+
 $platform_baseline = npcink_governance_core_read( $root . '/docs/platform-baseline.md' );
 foreach ( array( 'WordPress minimum: `7.0`', 'PHP minimum: `8.0`', '`npcink-cloud-addon`' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $platform_baseline, $required ), 'Platform baseline documents required phrase: ' . $required );
@@ -2061,6 +2098,11 @@ npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'optimi
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'target_file_name' ), 'Plan-to-proposal docs require reviewed media rename target filename.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'Article writing is a local Ability recipe' ), 'Plan-to-proposal docs treat article writing as local Ability recipe.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'must not produce article drafts' ), 'Plan-to-proposal docs prohibit Cloud draft generation.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'Plan Handoff Admission Checklist' ), 'Plan-to-proposal docs define a plan handoff admission checklist.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'fixed external owner' ), 'Plan-to-proposal docs require fixed external plan owners.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'explicit and allowlisted' ), 'Plan-to-proposal docs keep plan ability ids explicit and allowlisted.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'maximum action count' ), 'Plan-to-proposal docs require bounded action counts for new handoffs.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'not a generic workflow runtime' ), 'Plan-to-proposal docs reject generic workflow runtime ownership.' );
 npcink_governance_core_assert( false !== strpos( $operation_classification, 'Media Optimization Regression Rule' ), 'Operation classification docs lock media optimization batch plans to Core proposal review.' );
 npcink_governance_core_assert( false !== strpos( $operation_classification, 'Adapter owns derived readiness and execution state' ), 'Operation classification docs keep Adapter ownership for media execution state.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'regression-owned cross-repo path' ), 'Next stage plan treats media optimization as a cross-repo regression path.' );
@@ -2081,6 +2123,10 @@ foreach (
 }
 npcink_governance_core_assert( false !== strpos( $external_owner_boundary, 'Article recipe orchestration and Article Assistant UX' ), 'External owner boundary note moves article recipe ownership out of Core.' );
 npcink_governance_core_assert( false !== strpos( $external_owner_boundary, 'Cloud must remain runtime/detail only' ), 'External owner boundary note keeps Cloud writing out of Core.' );
+npcink_governance_core_assert( false !== strpos( $external_owner_boundary, 'Cloud Addon connection and optional telemetry collection' ), 'External owner boundary note keeps Cloud Addon connection ownership outside Core.' );
+npcink_governance_core_assert( false !== strpos( $external_owner_boundary, 'optional local metadata pointers only' ), 'External owner boundary note limits Core Cloud Addon role to metadata pointers.' );
+npcink_governance_core_assert( false !== strpos( $external_owner_boundary, 'Adapter channel execution and status readback' ), 'External owner boundary note keeps Adapter channel execution outside Core.' );
+npcink_governance_core_assert( false !== strpos( $external_owner_boundary, 'record external execution outcomes only' ), 'External owner boundary note limits Core to external execution outcome records.' );
 npcink_governance_core_assert( false !== strpos( $external_owner_boundary, 'Govern reviewed apply plans only' ), 'External owner boundary note moves Content Metadata Delta product workbench out of Core.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'standard article artifacts documented by the owning product or ability' ), 'Plan-to-proposal docs defer article workflow contract to external owner.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'Core no longer keeps the article workflow contract locally' ), 'Plan-to-proposal docs do not keep article workflow contract in Core.' );
@@ -2089,6 +2135,11 @@ npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'Recipe
 $rest_api_contract = npcink_governance_core_read( $root . '/docs/rest-api-contract.md' );
 npcink_governance_core_assert( false !== strpos( $rest_api_contract, 'npcink-toolbox/build-nightly-inspection-review-plan' ) && false !== strpos( $rest_api_contract, 'source_context.cloud_core_intake_package.selected_review_items' ) && false !== strpos( $rest_api_contract, 'preview.nightly_inspection_review' ), 'REST API contract documents Nightly Morning Brief Core intake shape.' );
 npcink_governance_core_assert( false !== strpos( $rest_api_contract, 'needs_input_resolution_owner' ) && false !== strpos( $rest_api_contract, 'toolbox_morning_brief_operator' ) && false !== strpos( $rest_api_contract, 'Core does not generate or edit missing draft fields' ), 'REST API contract documents Nightly Morning Brief needs-input resubmission path.' );
+npcink_governance_core_assert( false !== strpos( $rest_api_contract, 'recording external execution results' ), 'REST API contract defines record-execution as external execution result recording.' );
+npcink_governance_core_assert( false !== strpos( $rest_api_contract, 'not as Core execution' ), 'REST API contract keeps record-execution wording out of Core execution ownership.' );
+$approval_commit_contract = npcink_governance_core_read( $root . '/docs/approval-commit-contract.md' );
+npcink_governance_core_assert( false !== strpos( $approval_commit_contract, 'records an external execution result only' ), 'Approval commit contract limits record-execution to external execution result recording.' );
+npcink_governance_core_assert( false !== strpos( $approval_commit_contract, 'not a Core execute' ), 'Approval commit contract rejects Core execute semantics for record-execution.' );
 $ability_intake_contract = npcink_governance_core_read( $root . '/docs/ability-intake-contract.md' );
 npcink_governance_core_assert( false !== strpos( $ability_intake_contract, 'npcink-toolbox/build-nightly-inspection-review-plan' ) && false !== strpos( $ability_intake_contract, 'selected Morning Brief review item' ) && false !== strpos( $ability_intake_contract, 'Cloud scheduling, retry state' ), 'Ability intake contract documents Nightly Inspection as selected-item review handoff only.' );
 npcink_governance_core_assert( false !== strpos( $ability_intake_contract, 'Toolbox Morning Brief operator' ) && false !== strpos( $ability_intake_contract, 'complete proposal resubmission' ) && false !== strpos( $ability_intake_contract, 'Core does not generate or edit missing draft fields' ), 'Ability intake contract documents Nightly missing-input owner and Core non-amendment boundary.' );
