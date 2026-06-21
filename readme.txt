@@ -4,7 +4,7 @@ Tags: ai, governance, approval, audit, abilities
 Requires at least: 7.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -99,6 +99,12 @@ Productized OpenClaw setup should connect through a trusted adapter. Direct Core
 Yes. The proposal lifecycle is provider-neutral at the base layer. Third-party providers can expose WordPress Abilities API definitions with schemas, permission callbacks, risk metadata, and dry-run previews, then submit write or destructive operations for Core review.
 
 == Changelog ==
+
+= 0.1.1 =
+
+Release tooling patch for the conventional RC tag path. The version matrix now
+recognizes annotated release tags that point at the current commit without
+retagging historical releases.
 
 = 0.1.0 =
 

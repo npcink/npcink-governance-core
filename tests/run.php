@@ -195,7 +195,7 @@ $wp_readme = npcink_governance_core_read( $root . '/readme.txt' );
 foreach (
 	array(
 		'=== Npcink Governance Core ===',
-		'Stable tag: 0.1.0',
+		'Stable tag: 0.1.1',
 		'Npcink AI governance layer for WordPress operations.',
 		'= What Core does =',
 		'= Who should use this plugin =',
@@ -780,12 +780,12 @@ foreach (
 		'npcink-governance-core',
 		'npcink-ai-client-adapter',
 		'npcink-abilities-toolkit',
-		'0.1.0',
+		'0.1.1',
 		'0.3.2',
 		'0.5.2',
 		'must not be moved',
 		'--require-tag-ready',
-		'stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2',
+		'stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2',
 		'The matrix must not become a dependency resolver',
 	) as $required
 ) {

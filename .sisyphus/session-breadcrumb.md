@@ -1,5 +1,26 @@
 # Session Breadcrumb
 
+## 2026-06-21 — Core 0.1.1 release tooling patch
+
+- **Module**: Core release candidate matrix tooling.
+- **Status**: Conventional RC tagging remains the active closeout path, with a
+  Core patch version reserved for the annotated-tag matrix fix.
+- **Completed**:
+  - Updated the release matrix check to compare release tags through their
+    peeled commit object so annotated tags are handled correctly.
+  - Bumped the Core candidate version from `0.1.0` to `0.1.1` instead of
+    moving the already-pushed historical `v0.1.0` tag.
+- **Next gate**:
+  - Run `composer test:all`.
+  - Re-run `composer rc:version-matrix -- --require-tag-ready`.
+  - Re-run `composer acceptance:cross-repo-release`.
+  - Create and push `v0.1.1` plus the updated stack RC tag only after those
+    gates pass.
+- **Boundary**:
+  - This is release tooling only. Core still does not execute abilities, own
+    Adapter or Toolkit code, own workflow runtime, own task queues, store
+    provider credentials, or mutate WordPress content.
+
 ## 2026-06-21 — Conventional RC tag path prepared
 
 - **Module**: Cross-repository release candidate tagging.

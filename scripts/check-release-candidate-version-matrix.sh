@@ -7,7 +7,7 @@ DEFAULT_REPO_PARENT="$(dirname "$CORE_ROOT")"
 ADAPTER_ROOT="${NPCINK_AI_CLIENT_ADAPTER_ROOT:-$DEFAULT_REPO_PARENT/npcink-ai-client-adapter}"
 TOOLKIT_ROOT="${NPCINK_ABILITIES_TOOLKIT_ROOT:-$DEFAULT_REPO_PARENT/npcink-abilities-toolkit}"
 
-EXPECTED_CORE_VERSION="${EXPECTED_CORE_VERSION:-0.1.0}"
+EXPECTED_CORE_VERSION="${EXPECTED_CORE_VERSION:-0.1.1}"
 EXPECTED_ADAPTER_VERSION="${EXPECTED_ADAPTER_VERSION:-0.3.2}"
 EXPECTED_TOOLKIT_VERSION="${EXPECTED_TOOLKIT_VERSION:-0.5.2}"
 
@@ -26,7 +26,7 @@ the current HEAD without retagging history.
 Environment overrides:
   NPCINK_AI_CLIENT_ADAPTER_ROOT    Path to npcink-ai-client-adapter.
   NPCINK_ABILITIES_TOOLKIT_ROOT    Path to npcink-abilities-toolkit.
-  EXPECTED_CORE_VERSION           Default: 0.1.0.
+  EXPECTED_CORE_VERSION           Default: 0.1.1.
   EXPECTED_ADAPTER_VERSION        Default: 0.3.2.
   EXPECTED_TOOLKIT_VERSION        Default: 0.5.2.
 
@@ -104,7 +104,7 @@ tag_status() {
 	local tag_commit
 
 	head="$(git -C "$root" rev-parse HEAD)"
-	if ! tag_commit="$(git -C "$root" rev-parse --verify "$tag" 2>/dev/null)"; then
+	if ! tag_commit="$(git -C "$root" rev-parse --verify "${tag}^{}" 2>/dev/null)"; then
 		echo "available"
 		return
 	fi

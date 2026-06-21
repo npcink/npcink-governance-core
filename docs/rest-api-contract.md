@@ -86,7 +86,7 @@ Response `200`:
 {
   "schema_version": "npcink_governance_core_contract.v1",
   "core_contract_version": "1",
-  "plugin_version": "0.1.0",
+  "plugin_version": "0.1.1",
   "rest_namespace": "npcink-governance-core/v1",
   "governance_contract_version": "1",
   "rest_api_contract_version": "1",

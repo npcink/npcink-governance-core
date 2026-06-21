@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Npcink Governance Core
  * Description: Npcink AI governance layer for WordPress operations.
- * Version: 0.1.0
+ * Version: 0.1.1
  * Requires at least: 7.0
  * Requires PHP: 8.0
  * Author: Npcink
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NPCINK_GOVERNANCE_CORE_VERSION', '0.1.0' );
+define( 'NPCINK_GOVERNANCE_CORE_VERSION', '0.1.1' );
 define( 'NPCINK_GOVERNANCE_CORE_FILE', __FILE__ );
 define( 'NPCINK_GOVERNANCE_CORE_DIR', plugin_dir_path( __FILE__ ) );
 
