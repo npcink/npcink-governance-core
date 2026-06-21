@@ -104,6 +104,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Governed AI Feedback Loop](docs/governed-ai-feedback-loop.md)
 - [Platform Baseline](docs/platform-baseline.md)
 - [Admin Menu Standard](docs/admin-menu-standard.md)
+- [Admin Menu Localization Closeout - 2026-06-21](docs/admin-menu-localization-closeout-2026-06-21.md)
 - [Admin Surface Standard](docs/admin-surface-standard.md)
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
 - [Operation Classification Contract](docs/operation-classification-contract.md)

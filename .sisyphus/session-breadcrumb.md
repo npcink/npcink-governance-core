@@ -1,5 +1,28 @@
 # Session Breadcrumb
 
+## 2026-06-21 — Admin menu localization closeout recorded
+
+- **Module**: Shared Npcink AI admin menu localization documentation.
+- **Status**: The historical decisions and cross-repository state for the
+  Simplified Chinese menu labels are now recorded locally.
+- **Completed**:
+  - Added `docs/admin-menu-localization-closeout-2026-06-21.md` with the final
+    Chinese labels, repository commits/PRs, LocalWP debugging notes, and
+    boundary reminders.
+  - Updated `docs/admin-menu-standard.md` to document English source strings
+    alongside the Simplified Chinese visible labels.
+  - Updated `docs/translation-glossary-zh.md` so future translation work keeps
+    product identities in English while localizing short wp-admin module
+    entries.
+- **Next gate**:
+  - Run `composer test:all`.
+  - Merge the Adapter, Toolkit, and Cloud Addon localization PRs when their CI
+    states are acceptable.
+- **Boundary**:
+  - This is documentation only. Core still does not execute abilities, own
+    Adapter or Toolkit code, own workflow runtime, own task queues, store
+    provider credentials, or mutate WordPress content.
+
 ## 2026-06-21 — Release closeout history summarized
 
 - **Module**: Core release closeout documentation.

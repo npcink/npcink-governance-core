@@ -33,12 +33,16 @@ OpenClaw handoff, Cloud configuration, or Abilities API test workflows.
 
 ## Submenu Order
 
-| Position | Menu title | Owner | Responsibility |
-| --- | --- | --- | --- |
-| 10 | `Core` | `npcink-governance-core` | Proposal review, approval/rejection, commit preflight, audit, and client access tokens. |
-| 20 | `Adapter` | `npcink-openclaw-adapter` | OpenClaw handoff, endpoint discovery, health, and client connection material. |
-| 40 | `Abilities` | `npcink-abilities-toolkit` | Abilities API package test surface, route checks, and demo ability controls. |
-| 50 | `Cloud Addon` | `npcink-cloud-addon` | Cloud Base URL/API key entry, signed verification, local connection state, and read-only entitlement summary. |
+English source strings remain the stable `msgid` values and documentation
+contract. Simplified Chinese runtime language files should localize the visible
+wp-admin labels as shown below.
+
+| Position | English source string | Simplified Chinese label | Owner | Responsibility |
+| --- | --- | --- | --- | --- |
+| 10 | `Core` | `治理核心` | `npcink-governance-core` | Proposal review, approval/rejection, commit preflight, audit, and client access tokens. |
+| 20 | `Adapter` | `渠道适配器` | `npcink-ai-client-adapter` | OpenClaw and similar client handoff, endpoint discovery, health, and client connection material. |
+| 40 | `Abilities` | `原子能力` | `npcink-abilities-toolkit` | Abilities API package test surface, route checks, and demo ability controls. |
+| 50 | `Cloud Addon` | `云端扩展` | `npcink-cloud-addon` | Cloud Base URL/API key entry, signed verification, local connection state, and read-only entitlement summary. |
 
 ## Boundary Rules
 
@@ -54,12 +58,19 @@ OpenClaw handoff, Cloud configuration, or Abilities API test workflows.
 
 ## Documentation Rule
 
-User-facing docs should refer to these admin paths:
+English user-facing docs should refer to these admin paths:
 
 - `Npcink AI -> Core`
 - `Npcink AI -> Adapter`
 - `Npcink AI -> Abilities`
 - `Npcink AI -> Cloud Addon`
+
+Simplified Chinese user-facing docs should refer to these admin paths:
+
+- `Npcink AI -> 治理核心`
+- `Npcink AI -> 渠道适配器`
+- `Npcink AI -> 原子能力`
+- `Npcink AI -> 云端扩展`
 
 Only the standalone Abilities fallback should mention
 `Tools -> Abilities API Packages`.

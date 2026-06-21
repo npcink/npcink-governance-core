@@ -8,15 +8,19 @@ and text domain remain English public contracts.
 
 ## Identity Rules
 
-- Keep `Npcink Governance Core`, `Npcink AI`, `Core`, and plugin slugs in
-  English. Keep `npcink-governance-core` for slug and technical identifiers.
+- Keep `Npcink Governance Core`, `Npcink AI`, and plugin slugs in English.
+  Keep `npcink-governance-core` for slug and technical identifiers.
 - Keep `npcink-governance-core`, REST paths, database table names, option names,
   transient prefixes, ability ids, app scopes, and audit event names
   untranslated.
 - Translate user-facing descriptions, labels, validation messages, and admin UI
   copy.
-- Do not translate `OpenClaw`, `Cloud Addon`, `Adapter`, or
-  `npcink-abilities-toolkit` when they refer to product or package identities.
+- Do not translate `OpenClaw`, `Npcink Cloud Addon`, `Npcink AI Client
+  Adapter`, `Npcink Abilities Toolkit`, or `npcink-abilities-toolkit` when
+  they refer to product or package identities.
+- Translate shared wp-admin navigation labels when they are short module
+  entries rather than product names: `Core` -> `治理核心`, `Adapter` ->
+  `渠道适配器`, `Abilities` -> `原子能力`, and `Cloud Addon` -> `云端扩展`.
 
 ## Standard Terms
 
@@ -37,6 +41,7 @@ and text domain remain English public contracts.
 | Execution handoff | 执行交接 |
 | Ability | 能力 |
 | Ability id | 能力 ID |
+| Abilities menu | 原子能力 |
 | WordPress Abilities API | WordPress Abilities API |
 | Audit | 审计 |
 | Audit log | 审计日志 |
@@ -46,8 +51,11 @@ and text domain remain English public contracts.
 | Scope | 权限范围 |
 | Rate limit | 速率限制 |
 | Caller | 调用方 |
-| Adapter | Adapter |
-| Cloud Addon | Cloud Addon |
+| Core menu | 治理核心 |
+| Adapter menu | 渠道适配器 |
+| Cloud Addon menu | 云端扩展 |
+| Adapter product identity | Adapter |
+| Cloud Addon product identity | Cloud Addon |
 | Media Policy | 媒体策略 |
 | Media optimization | 媒体优化 |
 | Local control-plane truth | 本地控制面事实 |
