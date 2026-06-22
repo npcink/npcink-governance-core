@@ -1,5 +1,22 @@
 # Session Breadcrumb
 
+## 2026-06-22 — Metadata apply bridge closeout documented
+
+- **Module**: Cross-repository metadata apply bridge documentation.
+- **Status**: The Adapter and Toolbox metadata apply bridge work has been
+  summarized as a local Core closeout record after both implementation PRs
+  were merged.
+- **Completed**:
+  - Added `docs/metadata-apply-bridge-closeout-2026-06-22.md` with the
+    boundary conclusion, Adapter and Toolbox PR details, merge commits,
+    verification gates, local environment notes, and final stop decision.
+- **Next gate**:
+  - Run `composer test:all` for the documentation-only closeout.
+- **Boundary**:
+  - This is documentation only. Core still does not execute abilities, own
+    Adapter or Toolkit code, own workflow runtime, own task queues, store
+    provider credentials, or mutate WordPress content.
+
 ## 2026-06-21 — Adapter overview slug corrected
 
 - **Module**: Shared Npcink AI overview navigation.
