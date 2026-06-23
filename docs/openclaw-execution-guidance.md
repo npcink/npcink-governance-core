@@ -164,7 +164,7 @@ Core still does not execute the final WordPress mutation.
 
 ## Proposal Status Bridge
 
-Productized OpenClaw clients should connect to Magick AI Adapter rather than
+Productized OpenClaw clients should connect to Npcink AI Client Adapter rather than
 directly to Core. The adapter may expose a thin read-only bridge for Core
 proposal status so an agent can poll or display the lifecycle after it creates
 a proposal:
@@ -183,7 +183,7 @@ The adapter should not expose `POST /proposals/{proposal_id}/approve` or
 Approval and rejection are governance decisions owned by Core and the WordPress
 admin surface unless a separate trusted host policy is explicitly documented.
 
-A productized Magick AI Adapter may provide a single user-facing
+A productized Npcink AI Client Adapter may provide a single user-facing
 approve-and-execute action. That action is still a governance composition, not
 a Core execution route:
 

@@ -176,7 +176,7 @@ visible as the row's governance lookup handle. Keep ability id and source
 metadata behind per-row technical details so operators can still match
 Adapter/OpenClaw task status, provider request logs, audit filters, and
 proposal detail links. OpenClaw onboarding, client export, and single
-approve-and-execute product flow still belong in Magick AI Adapter.
+approve-and-execute product flow still belong in Npcink AI Client Adapter.
 
 The full activity table should suppress low-value read/list events by default,
 use user-facing activity labels instead of raw event names in the main column,

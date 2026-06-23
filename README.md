@@ -302,7 +302,7 @@ commit preflight before Adapter-owned execution. See
 [Approval Policy Evaluator Standard](docs/approval-policy-evaluator-standard.md).
 
 Real AI provider request logs remain owned by the WordPress `ai` plugin.
-Magick AI Adapter should carry Core `proposal_id` and commit-preflight
+Npcink AI Client Adapter should carry Core `proposal_id` and commit-preflight
 `correlation_id` into provider request log context so operators can correlate
 Core governance audit with AI Request Logs. See
 [AI Provider Log Correlation](docs/ai-provider-log-correlation.md). Core does
@@ -314,12 +314,12 @@ collapsed `Advanced Access` entry from `Npcink AI -> Core` to create a scoped
 one-time app token and disable leaked or obsolete keys. This screen is a
 governance fallback, not an OpenClaw onboarding surface. Productized OpenClaw
 setup, local TLS client configuration, agent rules, and handoff instructions
-belong in Magick AI Adapter. Core only issues governance app keys and records
+belong in Npcink AI Client Adapter. Core only issues governance app keys and records
 approvals, preflight, rate limits, and audit attribution. The token is shown
 once and should be stored only in a trusted Adapter or internal governance
 client secret store.
 
-Productized OpenClaw acceptance should be run from Magick AI Adapter's
+Productized OpenClaw acceptance should be run from Npcink AI Client Adapter's
 `docs/openclaw-consumer-acceptance.md`. Core participates as the governance
 authority behind Adapter; OpenClaw should not use Core as its primary product
 connection.

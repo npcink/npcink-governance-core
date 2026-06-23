@@ -26,7 +26,7 @@ Use `npcink-local-automation-runtime` as the dedicated owner for unattended
 batch automation runtime implementation.
 
 The owner must be independently developed and independently testable. Product
-release packaging may bundle it inside `magick-ai-toolbox` as an isolated
+release packaging may bundle it inside `npcink-toolbox` as an isolated
 module when that gives operators a simpler install path.
 
 The canonical development identity is:

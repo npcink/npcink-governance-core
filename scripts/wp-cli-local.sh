@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-WP_PATH="${WP_PATH:-/Users/muze/Local Sites/magick-ai/app/public}"
+WP_PATH="${WP_PATH:-/Users/muze/Local Sites/npcink/app/public}"
 WP_CLI_BIN="${WP_CLI:-${WP_CLI_BIN:-}}"
 WP_CLI_PHP="${WP_CLI_PHP:-}"
 WP_CLI_ERROR_REPORTING="${WP_CLI_ERROR_REPORTING:-8191}"
@@ -14,7 +14,7 @@ Usage: scripts/wp-cli-local.sh <wp-cli-command> [args...]
 Runs WP-CLI against the local LocalWP smoke site with stable PHP and database
 socket defaults. Environment overrides:
 
-  WP_PATH                 WordPress root. Default: /Users/muze/Local Sites/magick-ai/app/public
+  WP_PATH                 WordPress root. Default: /Users/muze/Local Sites/npcink/app/public
   WP_CLI or WP_CLI_BIN    WP-CLI phar/binary. Default: /tmp/wp-cli.phar, then PATH wp.
   WP_CLI_PHP             PHP binary for WP-CLI. Default prefers the LocalWP PHP
                          runtime used by the smoke site.

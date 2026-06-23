@@ -652,7 +652,7 @@ foreach (
 		'read_requests:reject',
 		'read_requests:preflight',
 		'Do not grant `proposals:approve`, `commit:record_execution`, or `audit:read` by',
-		'Trusted Magick AI Adapter approve-and-execute path',
+		'Trusted Npcink AI Client Adapter approve-and-execute path',
 		'scope_decision',
 		'correlation_id',
 	) as $required
@@ -720,11 +720,11 @@ npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'ADR-003' ), 
 npcink_governance_core_assert( false === strpos( $next_stage_plan, 'revocation UI, and expiry automation' ), 'Next stage plan no longer lists implemented revocation UI as missing.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'OpenClaw Adapter / Agent Gateway Planning' ), 'Next stage plan keeps OpenClaw adapter planning outside Core.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'OpenClaw Execution Guidance' ), 'Next stage plan links OpenClaw execution guidance.' );
-npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'productized acceptance in Magick AI Adapter' ), 'Next stage plan points productized OpenClaw acceptance to Adapter.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'productized acceptance in Npcink AI Client Adapter' ), 'Next stage plan points productized OpenClaw acceptance to Adapter.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Adapter Handoff And Approval Policy Acceptance' ), 'Next stage plan links Adapter handoff and policy acceptance.' );
-npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'continue approve-and-execute implementation in Magick AI Adapter' ), 'Next stage plan moves approve-and-execute implementation to Adapter.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'continue approve-and-execute implementation in Npcink AI Client Adapter' ), 'Next stage plan moves approve-and-execute implementation to Adapter.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Manual local acceptance' ), 'Next stage plan records manual approval policy acceptance.' );
-npcink_governance_core_assert( false !== strpos( $next_stage_plan, '/Users/muze/gitee/npcink-openclaw-adapter/docs/openclaw-consumer-acceptance.md' ), 'Next stage plan links Adapter acceptance checklist.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, '/Users/muze/gitee/npcink-ai-client-adapter/docs/openclaw-consumer-acceptance.md' ), 'Next stage plan links Adapter acceptance checklist.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'AI Provider Log Correlation Acceptance' ), 'Next stage plan includes AI provider log correlation acceptance.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'real AI provider request log correlation is implemented and tested in' ), 'Next stage plan keeps provider log correlation implementation in Adapter.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Create Draft Governance Scenario' ), 'Next stage plan links create-draft scenario.' );
@@ -742,7 +742,7 @@ npcink_governance_core_assert( false !== strpos( $readme, 'AI Provider Log Corre
 npcink_governance_core_assert( false !== strpos( $readme, 'OpenClaw Execution Guidance' ), 'README links OpenClaw Execution Guidance.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Adapter Handoff And Approval Policy Acceptance' ), 'README links Adapter handoff and approval policy acceptance.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'ADR-003: Keep Final Execution Outside Core For The Current Stage' ), 'README links ADR-003.' );
-npcink_governance_core_assert( false !== strpos( $readme, 'Productized OpenClaw acceptance should be run from Magick AI Adapter' ), 'README points OpenClaw productized acceptance to Adapter.' );
+npcink_governance_core_assert( false !== strpos( $readme, 'Productized OpenClaw acceptance should be run from Npcink AI Client Adapter' ), 'README points OpenClaw productized acceptance to Adapter.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Create Draft Governance Scenario' ), 'README links Create Draft Governance Scenario.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Set Post SEO Meta Governance Scenario' ), 'README links Set Post SEO Meta Governance Scenario.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Approve Comment Governance Scenario' ), 'README links Approve Comment Governance Scenario.' );
@@ -798,8 +798,8 @@ $adapter_policy_acceptance = npcink_governance_core_read( $root . '/docs/adapter
 foreach (
 	array(
 		'Adapter Handoff And Approval Policy Acceptance',
-		'The next execution work belongs in Magick AI Adapter',
-		'/Users/muze/gitee/npcink-openclaw-adapter',
+		'The next execution work belongs in Npcink AI Client Adapter',
+		'/Users/muze/gitee/npcink-ai-client-adapter',
 		'Adapter should implement or verify this approve-and-execute sequence',
 		'Discover Core capability guidance',
 		'create a Core proposal with',
@@ -1166,7 +1166,7 @@ npcink_governance_core_assert( false !== strpos( $adr_006, 'No unattended runtim
 npcink_governance_core_assert( false !== strpos( $adr_007, 'Use `npcink-local-automation-runtime` as the dedicated owner' ), 'ADR-007 selects a dedicated future runtime owner.' );
 npcink_governance_core_assert( false !== strpos( $adr_007, '`npcink-local-automation-runtime`' ), 'ADR-007 names npcink-local-automation-runtime.' );
 npcink_governance_core_assert( false !== strpos( $adr_007, 'repo: `/Users/muze/gitee/npcink-local-automation-runtime`' ), 'ADR-007 records the future runtime repo path.' );
-npcink_governance_core_assert( false !== strpos( $adr_007, 'release packaging may bundle it inside' ) && false !== strpos( $adr_007, '`magick-ai-toolbox`' ), 'ADR-007 allows Toolbox release bundling.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'release packaging may bundle it inside' ) && false !== strpos( $adr_007, '`npcink-toolbox`' ), 'ADR-007 allows Toolbox release bundling.' );
 npcink_governance_core_assert( false !== strpos( $adr_007, 'module path: `modules/local-automation-runtime/`' ), 'ADR-007 defines the Toolbox bundled module path.' );
 npcink_governance_core_assert( false !== strpos( $adr_007, 'Toolbox fixed-flow' ) && false !== strpos( $adr_007, 'runtime state machine' ), 'ADR-007 keeps Toolbox fixed buttons out of runtime ownership.' );
 npcink_governance_core_assert( false !== strpos( $adr_007, 'Phase 1 is contract and replay only' ), 'ADR-007 keeps Phase 1 contract and replay only.' );
@@ -1182,7 +1182,7 @@ foreach (
 		'Local automation runtime',
 		'Content Metadata Delta product workbench',
 		'npcink-local-automation-runtime',
-		'magick-ai-toolbox',
+		'npcink-toolbox',
 		'Do not add these files or equivalents back to Core',
 		'docs/local-automation-runtime-contract.md',
 		'tests/fixtures/local-automation-runtime-dry-run-replay.json',

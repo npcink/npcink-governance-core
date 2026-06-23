@@ -76,7 +76,7 @@ The closeout test pass verified the Core path with:
   `commit_execution=false`, and did not create the post in Core;
 - a manual REST negative probe proving a non-draft create-draft proposal stayed
   `pending` with `policy_decision=manual_required`;
-- Magick AI Adapter `composer test:all`,
+- Npcink AI Client Adapter `composer test:all`,
   `composer validate --no-check-publish`, and `composer smoke:wp` against the
   same governed flow.
 
@@ -120,7 +120,7 @@ If one of those appears necessary, write a boundary note or ADR before coding.
 
 ## OpenClaw Development Use
 
-For local development, use Magick AI Adapter as the productized OpenClaw entry
+For local development, use Npcink AI Client Adapter as the productized OpenClaw entry
 instead of connecting OpenClaw directly to Core.
 
 The trusted development app key used by Adapter or an internal local probe must
@@ -147,7 +147,7 @@ stage. The next useful work is operational:
 3. observe audit and proposal behavior in real daily use;
 4. fix only concrete bugs or missing evidence surfaced by that use;
 5. move product polish, OpenClaw setup, and approve-and-execute experience to
-   Magick AI Adapter.
+   Npcink AI Client Adapter.
 
 Return to Core only for bounded contract fixes, documentation corrections, or a
 separate accepted ADR that deliberately widens the policy surface.

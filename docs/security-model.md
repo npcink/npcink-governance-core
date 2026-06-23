@@ -240,7 +240,7 @@ admin view stays focused on status, pending proposals, and recent activity;
 token creation and revocation are low-frequency fallback actions. The raw token
 and minimal Core environment variables are displayed only on the creation
 result screen. Productized OpenClaw setup, agent rules, handoff text, and local
-TLS client configuration belong in Magick AI Adapter, not Core.
+TLS client configuration belong in Npcink AI Client Adapter, not Core.
 
 If a token is exposed, administrators should revoke that token from the same
 screen and create a replacement. Revoked tokens are stored as `revoked` and must

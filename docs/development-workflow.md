@@ -16,13 +16,13 @@ Project:
 Local WordPress root:
 
 ```text
-/Users/muze/Local Sites/magick-ai/app/public
+/Users/muze/Local Sites/npcink/app/public
 ```
 
 Plugin symlink:
 
 ```text
-/Users/muze/Local Sites/magick-ai/app/public/wp-content/plugins/npcink-governance-core
+/Users/muze/Local Sites/npcink/app/public/wp-content/plugins/npcink-governance-core
 -> /Users/muze/gitee/npcink-governance-core
 ```
 
@@ -190,7 +190,7 @@ after assertions have completed.
 Core no longer exports LocalWP TLS switches or OpenClaw handoff text from the
 app-key screen. Productized OpenClaw setup, LocalWP `.local` certificate
 workarounds, local CA bundle paths, and agent usage instructions belong in
-Magick AI Adapter. Core only issues scoped governance app keys.
+Npcink AI Client Adapter. Core only issues scoped governance app keys.
 
 ## Smoke Wrapper
 

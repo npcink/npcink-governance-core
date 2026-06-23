@@ -52,7 +52,7 @@ composer acceptance:cross-repo-release
 The default LocalWP target is:
 
 ```text
-/Users/muze/Local Sites/magick-ai/app/public
+/Users/muze/Local Sites/npcink/app/public
 ```
 
 The wrapper also forwards `WP_PATH`, `WP_CLI`, `WP_CLI_PHP`,
