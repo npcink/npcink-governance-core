@@ -23,7 +23,7 @@ The conclusion was that the boundary is clear and should not be expanded:
   builders.
 - `npcink-ai-client-adapter` stays a thin client/channel bridge and may forward
   explicitly supported plans into Core governance.
-- `magick-ai-toolbox` stays an editor/operator-facing planning and handoff
+- `npcink-toolbox` stays an editor/operator-facing planning and handoff
   surface.
 
 The useful next stage was therefore not new Core capability. It was execution
@@ -87,11 +87,11 @@ Boundary:
 
 ## Toolbox Work Completed
 
-Repository: `/Users/muze/gitee/magick-ai-toolbox`
+Repository: `/Users/muze/gitee/npcink-toolbox`
 
 - Branch: `codex/metadata-apply-toolbox-bridge`
 - Commit: `3c3dfd2 Cover metadata apply Adapter bridge`
-- Pull request: <https://github.com/muze-page/magick-ai-toolbox/pull/18>
+- Pull request: <https://github.com/muze-page/npcink-toolbox/pull/18>
 - Merge commit: `11fceae57ef40d3d3fd946a5e454e413dd40a583`
 
 Changes:

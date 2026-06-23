@@ -20,7 +20,7 @@ Simplified Chinese runtime display should use these operator-facing labels:
 | `Core` | `治理核心` | `npcink-governance-core` |
 | `Adapter` | `渠道适配器` | `npcink-ai-client-adapter` |
 | `Abilities` | `原子能力` | `npcink-abilities-toolkit` |
-| `Toolbox` | `工具箱` | `magick-ai-toolbox` |
+| `Toolbox` | `工具箱` | `npcink-toolbox` |
 | `Cloud Addon` | `云端扩展` | `npcink-cloud-addon` |
 
 Use the Chinese labels for wp-admin navigation and overview rows. Keep English
@@ -154,7 +154,7 @@ This localization closeout does not merge ownership between plugins:
 - `npcink-ai-client-adapter` remains the channel adapter.
 - `npcink-abilities-toolkit` remains the atomic ability package.
 - `npcink-cloud-addon` remains a Cloud connector.
-- `magick-ai-toolbox` remains the operator-facing toolbox surface.
+- `npcink-toolbox` remains the operator-facing toolbox surface.
 
 The top-level `Npcink AI` menu is only a navigation shell. Localized labels
 make operator navigation clearer; they do not change runtime authority,

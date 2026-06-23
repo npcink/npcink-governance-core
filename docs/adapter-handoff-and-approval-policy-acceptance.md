@@ -3,7 +3,7 @@
 Status: active handoff and manual acceptance checklist.
 
 This document covers the next implementation step after the Core approval
-policy work. The next execution work belongs in Magick AI Adapter or another
+policy work. The next execution work belongs in Npcink AI Client Adapter or another
 channel adapter, not in Core.
 
 Core remains responsible for proposal records, approval/rejection, policy
@@ -14,7 +14,7 @@ preflight.
 ## Adapter Next Step
 
 The next product implementation should happen in
-`/Users/muze/gitee/npcink-openclaw-adapter` or the relevant Magick AI Adapter
+`/Users/muze/gitee/npcink-ai-client-adapter` or the relevant Npcink AI Client Adapter
 workspace.
 
 Adapter should implement or verify this approve-and-execute sequence:

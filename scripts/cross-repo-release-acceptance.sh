@@ -6,7 +6,7 @@ DEFAULT_REPO_PARENT="$(dirname "$CORE_ROOT")"
 
 ADAPTER_ROOT="${NPCINK_AI_CLIENT_ADAPTER_ROOT:-$DEFAULT_REPO_PARENT/npcink-ai-client-adapter}"
 TOOLKIT_ROOT="${NPCINK_ABILITIES_TOOLKIT_ROOT:-$DEFAULT_REPO_PARENT/npcink-abilities-toolkit}"
-WP_PATH="${WP_PATH:-/Users/muze/Local Sites/magick-ai/app/public}"
+WP_PATH="${WP_PATH:-/Users/muze/Local Sites/npcink/app/public}"
 WP_CLI="${WP_CLI:-/tmp/wp-cli.phar}"
 WP_CLI_PHP="${WP_CLI_PHP:-}"
 WP_CLI_ERROR_REPORTING="${WP_CLI_ERROR_REPORTING:-8191}"

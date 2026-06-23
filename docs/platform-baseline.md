@@ -1,10 +1,10 @@
-# Magick AI Platform Baseline
+# Npcink Platform Baseline
 
 Status: active for the Core, Abilities, Adapter, and Cloud Addon plugins.
 
 ## Baseline
 
-All Magick AI WordPress plugins in this product group use the same minimum
+All Npcink WordPress plugins in this product group use the same minimum
 runtime requirements:
 
 - WordPress minimum: `7.0`
@@ -16,14 +16,14 @@ runtime requirements:
 
 - `npcink-governance-core`
 - `npcink-abilities-toolkit`
-- `npcink-openclaw-adapter`
+- `npcink-ai-client-adapter`
 - `npcink-cloud-addon`
 
 ## Rules
 
 - Plugin headers, `readme.txt`, `README.md`, Composer constraints, and static
   contract tests must stay aligned with this baseline.
-- New Magick AI WordPress plugins should inherit this baseline unless a later
+- New Npcink WordPress plugins should inherit this baseline unless a later
   platform decision supersedes this document.
 - Do not advertise WordPress 6.x or PHP 7.x compatibility for these four
   plugins after this baseline takes effect.

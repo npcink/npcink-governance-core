@@ -88,7 +88,7 @@ avoid wildcard write semantics.
 - Proposal creation requires `proposals:create`.
 - Proposal approval is high risk and requires `proposals:approve`; most MCP
   adapters should not receive this by default.
-- Productized Magick AI Adapter may receive `proposals:approve` only as a
+- Productized Npcink AI Client Adapter may receive `proposals:approve` only as a
   separately issued trusted Adapter key. That key represents a host-controlled
   UI or policy that has already presented the proposal preview and risk context
   to the user.
@@ -182,7 +182,7 @@ the token page on an active-token list with a separate read-only revoked-token
 audit subtab and a separate issuance subtab using purpose presets and an
 advanced custom permission area. It remains a Core credential management
 fallback, not the primary OpenClaw product setup flow. Productized OpenClaw
-setup should use Magick AI Adapter, which calls Core for governance and
+setup should use Npcink AI Client Adapter, which calls Core for governance and
 WordPress Abilities API for direct reads.
 
 The admin panel also exposes a minimal token revoke action for active tokens.
@@ -194,7 +194,7 @@ read-only `Revoked tokens` audit subtab, and retained until the Settings
 restore, reopen, or reissue actions.
 
 LocalWP TLS switches, OpenClaw handoff text, and agent rules belong in
-Magick AI Adapter or another client-side adapter layer. Core does not export
+Npcink AI Client Adapter or another client-side adapter layer. Core does not export
 `NPCINK_GOVERNANCE_CORE_INSECURE_SSL`, adapter base URLs, or OpenClaw instructions from
 the app-key screen.
 
@@ -216,7 +216,7 @@ Recommended defaults:
 | --- | --- |
 | MCP adapter | `capabilities:read`, `proposals:create`, `proposals:read`, `commit:preflight`, `read_requests:create`, `read_requests:read`, `read_requests:preflight` |
 | Product plugin | `capabilities:read`, `proposals:create`, `proposals:read` |
-| Trusted Magick AI Adapter approve-and-execute path | `capabilities:read`, `proposals:create`, `proposals:read`, `proposals:approve`, `commit:preflight`, `commit:record_execution`, `read_requests:create`, `read_requests:read`, `read_requests:approve`, `read_requests:reject`, `read_requests:preflight` |
+| Trusted Npcink AI Client Adapter approve-and-execute path | `capabilities:read`, `proposals:create`, `proposals:read`, `proposals:approve`, `commit:preflight`, `commit:record_execution`, `read_requests:create`, `read_requests:read`, `read_requests:approve`, `read_requests:reject`, `read_requests:preflight` |
 | Human admin UI | WordPress `manage_options`; no app key required. |
 | Hosted runtime callback | No default Core access until callback identity is separately contracted. |
 
@@ -234,7 +234,7 @@ Current implementation gates:
 2. REST authentication and error semantics are documented.
 3. Security storage and redaction behavior is documented.
 4. Admin UI can issue one-time scoped app tokens from a dedicated client access
-   token view, point productized OpenClaw setup to Magick AI Adapter, and
+   token view, point productized OpenClaw setup to Npcink AI Client Adapter, and
    revoke leaked or obsolete keys without exporting Adapter onboarding content.
 5. Static contract tests cover scopes, UI entry, revocation, and forbidden
    secret storage.

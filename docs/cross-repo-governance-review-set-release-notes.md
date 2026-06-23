@@ -39,7 +39,7 @@ Toolkit plan output now aligns with Core's bounded block-theme template
 contract. Archive template write prompts fail closed before Core handoff, while
 read-side inspection can still examine archive templates.
 
-### magick-ai-toolbox
+### npcink-toolbox
 
 - `c748423 toolbox: preserve metadata apply classification evidence`
 - `7c85a45 toolbox: document progressive recommendations closeout`
@@ -52,7 +52,7 @@ batch media path builds a visible plan, shows eligible and blocked items,
 generates selected previews, and submits selected Core review proposals without
 executing media writes.
 
-### magick-ai-adapter
+### npcink-ai-client-adapter
 
 No new commit is required for this slice.
 

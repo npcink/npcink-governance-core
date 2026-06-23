@@ -11,7 +11,7 @@ and audit truth only.
 
 | Surface | Owner | Core role |
 | --- | --- | --- |
-| Article recipe orchestration and Article Assistant UX | `npcink-abilities-toolkit` for reusable abilities and `magick-ai-toolbox` for product UX | Accept only documented, allowlisted plan output through `POST /proposals/from-plan`; do not store recipe runtime state. |
+| Article recipe orchestration and Article Assistant UX | `npcink-abilities-toolkit` for reusable abilities and `npcink-toolbox` for product UX | Accept only documented, allowlisted plan output through `POST /proposals/from-plan`; do not store recipe runtime state. |
 | Cloud or hosted article writing | Not Core; Cloud must remain runtime/detail only where used by product modules | Do not accept Cloud-generated article body jobs, Cloud-produced article plans, or Cloud bulk writing artifacts as Core truth. |
 | Cloud Addon connection and optional telemetry collection | Cloud Addon or product module | Link to the external surface and keep optional local metadata pointers only; do not store billing truth, model routing, Cloud runtime state, provider credentials, or Cloud control-plane configuration. |
 | Adapter channel execution and status readback | Adapter or host after Core approval and commit preflight | Issue commit-preflight handoff context and record external execution outcomes only; do not call target abilities, mutate WordPress content, or become the channel runtime. |

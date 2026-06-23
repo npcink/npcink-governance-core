@@ -29,7 +29,7 @@
     "sync:wporg": "bash scripts/sync-wporg-svn.sh",
     "acceptance:cross-repo-release": "bash scripts/cross-repo-release-acceptance.sh",
     "rc:version-matrix": "bash scripts/check-release-candidate-version-matrix.sh",
-    "plugin-check:release": "WP_PATH=\"${WP_PATH:-/Users/muze/Local Sites/magick-ai/app/public}\"; TARGET=\"${WP_PLUGIN_CHECK_TARGET:-npcink-governance-core/npcink-governance-core.php}\"; PLUGIN_LINK=\"$WP_PATH/wp-content/plugins/npcink-governance-core\"; if [ ! -e \"$PLUGIN_LINK\" ]; then ln -s \"$PWD\" \"$PLUGIN_LINK\"; fi; bash scripts/wp-cli-local.sh plugin check \"$TARGET\" --format=table --exclude-directories=tests,.git,.github,.sisyphus,.workbuddy,vendor,node_modules,build,dist,docs,examples,sj,scripts --exclude-files=.DS_Store,.gitignore,.distignore,AGENTS.md,README.md,composer.json,composer.lock,phpcs.xml,phpcs.xml.dist,phpstan.neon,phpstan.neon.dist",
+    "plugin-check:release": "WP_PATH=\"${WP_PATH:-/Users/muze/Local Sites/npcink/app/public}\"; TARGET=\"${WP_PLUGIN_CHECK_TARGET:-npcink-governance-core/npcink-governance-core.php}\"; PLUGIN_LINK=\"$WP_PATH/wp-content/plugins/npcink-governance-core\"; if [ ! -e \"$PLUGIN_LINK\" ]; then ln -s \"$PWD\" \"$PLUGIN_LINK\"; fi; bash scripts/wp-cli-local.sh plugin check \"$TARGET\" --format=table --exclude-directories=tests,.git,.github,.sisyphus,.workbuddy,vendor,node_modules,build,dist,docs,examples,sj,scripts --exclude-files=.DS_Store,.gitignore,.distignore,AGENTS.md,README.md,composer.json,composer.lock,phpcs.xml,phpcs.xml.dist,phpstan.neon,phpstan.neon.dist",
     "release:verify": [
       "@test:all",
       "@check:wporg",

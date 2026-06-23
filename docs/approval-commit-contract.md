@@ -141,7 +141,7 @@ route, proxy-execute route, retry worker, queue, scheduler, workflow runtime, or
 WordPress mutation path.
 
 Generic MCP keys should not receive `proposals:approve` or
-`commit:record_execution`. Productized Magick AI Adapter may use a separately
+`commit:record_execution`. Productized Npcink AI Client Adapter may use a separately
 issued trusted key with `proposals:approve` and `commit:record_execution` when
 its own UI or host policy presents proposal risk, collects the user's approval,
 executes the approved ability outside Core, and records only the execution

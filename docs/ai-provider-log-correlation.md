@@ -113,7 +113,7 @@ changing the Core contract.
 Core should not add a provider request endpoint or merge AI Request Logs into
 Core audit for this stage.
 
-Magick AI Adapter should productize this contract by adding:
+Npcink AI Client Adapter should productize this contract by adding:
 
 - automatic request-context injection for real AI provider calls;
 - a smoke path that can call a local provider such as Ollama;

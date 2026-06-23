@@ -20,10 +20,10 @@ Npcink already has the safer current-stage pieces:
 - `npcink-governance-core` owns ability intake, proposal records,
   approval/rejection, commit preflight, audit, and Adapter execution-result
   records.
-- `magick-ai-adapter` is the channel executor that may execute approved writes
+- `npcink-ai-client-adapter` is the channel executor that may execute approved writes
   only after Core approval, successful commit preflight, and an explicit
   execution profile allowlist.
-- `magick-ai-toolbox` is the operator UX and fixed-button product surface. It
+- `npcink-toolbox` is the operator UX and fixed-button product surface. It
   may produce planning artifacts and handoff suggestions, but final WordPress
   writes still flow through abilities and Core governance.
 

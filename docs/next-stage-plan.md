@@ -31,7 +31,7 @@ Implemented:
   attribution, and commit-preflight correlation ids.
 - documented AI provider log correlation contract that keeps provider request
   logs in the WordPress `ai` plugin and assigns productized context injection
-  to Magick AI Adapter.
+  to Npcink AI Client Adapter.
 - plan-to-proposal governance bridge for content inventory fix, test content
   cleanup, and media inventory fix plans.
 - bounded local article batch draft and media optimization plan contracts that
@@ -272,7 +272,7 @@ Current implementation:
 - the admin UI keeps client access token management out of first-level Core tabs while
   preserving one-time token display on the creation result page and paginated
   revoke actions;
-- the admin UI points productized OpenClaw setup to Magick AI Adapter and does
+- the admin UI points productized OpenClaw setup to Npcink AI Client Adapter and does
   not export OpenClaw handoff text, Adapter URLs, agent rules, or LocalWP TLS
   switches;
 - raw secrets are returned once as bearer tokens;
@@ -398,7 +398,7 @@ Current-stage acceptance:
 
 Next implementation location:
 
-- continue approve-and-execute implementation in Magick AI Adapter or another
+- continue approve-and-execute implementation in Npcink AI Client Adapter or another
   channel adapter, not in Core;
 - use
   [Adapter Handoff And Approval Policy Acceptance](adapter-handoff-and-approval-policy-acceptance.md)
@@ -431,7 +431,7 @@ See [AI Provider Log Correlation](ai-provider-log-correlation.md).
 
 ### 10. OpenClaw Adapter / Agent Gateway Planning
 
-Status: outside Core, productized acceptance in Magick AI Adapter.
+Status: outside Core, productized acceptance in Npcink AI Client Adapter.
 
 Goal: design a dedicated adapter or gateway layer that presents WordPress
 abilities to OpenClaw while preserving Core as the governance layer.
@@ -453,7 +453,7 @@ Acceptance before implementation:
 
 Current handoff:
 
-- productized OpenClaw clients should connect to Magick AI Adapter, not Core;
+- productized OpenClaw clients should connect to Npcink AI Client Adapter, not Core;
 - Adapter owns the OpenClaw connection UI, Application Password handoff, route
   discovery, direct-read shortcuts, proposal status bridge, and acceptance
   checklist;
@@ -463,7 +463,7 @@ Current handoff:
 - Core documentation only cross-references Adapter acceptance so future agents
   do not recreate OpenClaw onboarding inside Core.
 
-See `/Users/muze/gitee/npcink-openclaw-adapter/docs/openclaw-consumer-acceptance.md`
+See `/Users/muze/gitee/npcink-ai-client-adapter/docs/openclaw-consumer-acceptance.md`
 for the productized OpenClaw acceptance checklist.
 
 ### 11. Approval Policy Evaluator Roadmap
