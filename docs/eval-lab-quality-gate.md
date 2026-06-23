@@ -38,7 +38,7 @@ Eval-lab must not:
 ## Commands
 
 Prerequisite: the Magick AI Evaluation Lab must be available as a sibling
-checkout named `magick-ai-eval-lab`, or `MAGICK_AI_EVAL_LAB_PATH` must point to
+checkout named `npcink-eval-lab`, or `NPCINK_EVAL_LAB_PATH` must point to
 another local checkout. If the checkout is missing, `scripts/eval-lab.sh` fails
 with a clear local setup message before any provider call.
 
@@ -77,7 +77,7 @@ such as `mode=head` override that default.
 Use a non-default checkout:
 
 ```bash
-MAGICK_AI_EVAL_LAB_PATH=/Users/muze/gitee/magick-ai-eval-lab \
+NPCINK_EVAL_LAB_PATH=/Users/muze/gitee/npcink-eval-lab \
   composer eval:gutenberg:judge -- dry_run=true limit=3
 ```
 
@@ -97,7 +97,7 @@ composer eval:project:review -- mode=head
 ```
 
 This writes local JSON and Markdown reports under
-`$MAGICK_AI_EVAL_LAB_PATH/project-review/generated/` or the sibling eval-lab
+`$NPCINK_EVAL_LAB_PATH/project-review/generated/` or the sibling eval-lab
 checkout's `project-review/generated/` directory. These generated reports are
 disposable local evidence only. They must never be imported as Core audit
 truth, proposals, approvals, preflights, execution history, or CI-required
