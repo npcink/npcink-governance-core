@@ -6,8 +6,8 @@ DEFAULT_REPO_PARENT="$(dirname "$CORE_ROOT")"
 
 ADAPTER_ROOT="${NPCINK_AI_CLIENT_ADAPTER_ROOT:-$DEFAULT_REPO_PARENT/npcink-ai-client-adapter}"
 TOOLKIT_ROOT="${NPCINK_ABILITIES_TOOLKIT_ROOT:-$DEFAULT_REPO_PARENT/npcink-abilities-toolkit}"
-WP_PATH="${WP_PATH:-/Users/muze/Local Sites/npcink/app/public}"
-WP_CLI="${WP_CLI:-/tmp/wp-cli.phar}"
+WP_PATH="${WP_PATH:-/Users/muze/Local Sites/magick-ai/app/public}"
+WP_CLI="${WP_CLI:-}"
 WP_CLI_PHP="${WP_CLI_PHP:-}"
 WP_CLI_ERROR_REPORTING="${WP_CLI_ERROR_REPORTING:-8191}"
 WP_CLI_MYSQL_SOCKET="${WP_CLI_MYSQL_SOCKET:-$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock}"
@@ -79,7 +79,7 @@ require_command() {
 require_repo() {
 	local label="$1"
 	local root="$2"
-	if [[ ! -d "$root/.git" || ! -f "$root/composer.json" ]]; then
+	if { [[ ! -d "$root/.git" ]] && [[ ! -f "$root/.git" ]]; } || [[ ! -f "$root/composer.json" ]]; then
 		echo "$label repository was not found or is not a Composer project: $root" >&2
 		exit 2
 	fi
@@ -115,12 +115,17 @@ activate_plugin_if_possible() {
 		return
 	fi
 
-	"$WP_CLI_PHP" \
-		-d display_errors=0 \
-		-d "error_reporting=$WP_CLI_ERROR_REPORTING" \
-		-d "mysqli.default_socket=$WP_CLI_MYSQL_SOCKET" \
-		-d "pdo_mysql.default_socket=$WP_CLI_MYSQL_SOCKET" \
-		"$WP_CLI" --path="$WP_PATH" plugin activate "$slug" >/dev/null
+	if [[ "$WP_CLI" == *.phar ]]; then
+		"$WP_CLI_PHP" \
+			-d display_errors=0 \
+			-d "error_reporting=$WP_CLI_ERROR_REPORTING" \
+			-d "mysqli.default_socket=$WP_CLI_MYSQL_SOCKET" \
+			-d "pdo_mysql.default_socket=$WP_CLI_MYSQL_SOCKET" \
+			"$WP_CLI" --path="$WP_PATH" plugin activate "$slug" >/dev/null
+		return
+	fi
+
+	"$WP_CLI" --path="$WP_PATH" plugin activate "$slug" >/dev/null
 }
 
 require_command composer
@@ -128,6 +133,17 @@ require_command git
 require_repo "Core" "$CORE_ROOT"
 require_repo "Adapter" "$ADAPTER_ROOT"
 require_repo "Toolkit" "$TOOLKIT_ROOT"
+
+if [[ -z "$WP_CLI" ]]; then
+	if command -v wp >/dev/null 2>&1; then
+		WP_CLI="$(command -v wp)"
+	elif [[ -f /tmp/wp-cli.phar ]]; then
+		WP_CLI="/tmp/wp-cli.phar"
+	else
+		echo "Missing WP-CLI. Set WP_CLI=/path/to/wp or install wp on PATH." >&2
+		exit 2
+	fi
+fi
 
 if [[ -z "$WP_CLI_PHP" ]]; then
 	for candidate in \

@@ -16,13 +16,13 @@ Project:
 Local WordPress root:
 
 ```text
-/Users/muze/Local Sites/npcink/app/public
+/Users/muze/Local Sites/magick-ai/app/public
 ```
 
 Plugin symlink:
 
 ```text
-/Users/muze/Local Sites/npcink/app/public/wp-content/plugins/npcink-governance-core
+/Users/muze/Local Sites/magick-ai/app/public/wp-content/plugins/npcink-governance-core
 -> /Users/muze/gitee/npcink-governance-core
 ```
 

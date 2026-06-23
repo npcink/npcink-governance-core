@@ -49,15 +49,20 @@ NPCINK_ABILITIES_TOOLKIT_ROOT=/path/to/npcink-abilities-toolkit \
 composer acceptance:cross-repo-release
 ```
 
-The default LocalWP target is:
+The default LocalWP target is the primary deployment and release-test site:
 
 ```text
-/Users/muze/Local Sites/npcink/app/public
+/Users/muze/Local Sites/magick-ai/app/public
+https://magick-ai.local/
 ```
 
 The wrapper also forwards `WP_PATH`, `WP_CLI`, `WP_CLI_PHP`,
 `WP_CLI_MYSQL_SOCKET`, and `WP_DB_SOCKET` to each repository's existing smoke
 and Plugin Check scripts.
+
+`/Users/muze/Local Sites/npcink/app/public` / `http://npcink.local/` may still be
+used as an explicit `WP_PATH` override for temporary isolated rename tests, but
+it is not the canonical release-test target.
 
 ## Acceptance Matrix
 

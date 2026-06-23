@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-WP_PATH="${WP_PATH:-/Users/muze/Local Sites/npcink/app/public}"
+WP_PATH="${WP_PATH:-/Users/muze/Local Sites/magick-ai/app/public}"
 WP_CLI_BIN="${WP_CLI:-${WP_CLI_BIN:-}}"
 WP_CLI_PHP="${WP_CLI_PHP:-}"
 WP_CLI_ERROR_REPORTING="${WP_CLI_ERROR_REPORTING:-8191}"
@@ -14,8 +14,8 @@ Usage: scripts/wp-cli-local.sh <wp-cli-command> [args...]
 Runs WP-CLI against the local LocalWP smoke site with stable PHP and database
 socket defaults. Environment overrides:
 
-  WP_PATH                 WordPress root. Default: /Users/muze/Local Sites/npcink/app/public
-  WP_CLI or WP_CLI_BIN    WP-CLI phar/binary. Default: /tmp/wp-cli.phar, then PATH wp.
+  WP_PATH                 WordPress root. Default: /Users/muze/Local Sites/magick-ai/app/public
+  WP_CLI or WP_CLI_BIN    WP-CLI phar/binary. Default: PATH wp, then /tmp/wp-cli.phar.
   WP_CLI_PHP             PHP binary for WP-CLI. Default prefers the LocalWP PHP
                          runtime used by the smoke site.
   WP_CLI_MYSQL_SOCKET    Local MySQL socket. Falls back to WP_DB_SOCKET.
@@ -38,12 +38,12 @@ if [[ $# -eq 0 ]]; then
 fi
 
 if [[ -z "$WP_CLI_BIN" ]]; then
-	if [[ -f /tmp/wp-cli.phar ]]; then
-		WP_CLI_BIN="/tmp/wp-cli.phar"
-	elif command -v wp >/dev/null 2>&1; then
+	if command -v wp >/dev/null 2>&1; then
 		WP_CLI_BIN="$(command -v wp)"
+	elif [[ -f /tmp/wp-cli.phar ]]; then
+		WP_CLI_BIN="/tmp/wp-cli.phar"
 	else
-		echo "Missing WP-CLI. Set WP_CLI=/path/to/wp-cli.phar or install wp on PATH." >&2
+		echo "Missing WP-CLI. Set WP_CLI=/path/to/wp or install wp on PATH." >&2
 		exit 127
 	fi
 fi
@@ -87,4 +87,9 @@ if [[ -n "$WP_PATH" ]]; then
 	wp_args+=(--path="$WP_PATH")
 fi
 
-"$WP_CLI_PHP" "${php_args[@]}" "$WP_CLI_BIN" "${wp_args[@]}" --no-color "$@"
+if [[ "$WP_CLI_BIN" == *.phar ]]; then
+	"$WP_CLI_PHP" "${php_args[@]}" "$WP_CLI_BIN" "${wp_args[@]}" --no-color "$@"
+	exit $?
+fi
+
+"$WP_CLI_BIN" "${wp_args[@]}" --no-color "$@"
