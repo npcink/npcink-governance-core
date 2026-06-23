@@ -115,10 +115,11 @@ activate_plugin_if_possible() {
 		return
 	fi
 
-	if [[ "$WP_CLI" == *.phar ]]; then
+	if [[ "$WP_CLI" == *.phar || -n "$WP_CLI_MYSQL_SOCKET" ]]; then
 		"$WP_CLI_PHP" \
 			-d display_errors=0 \
 			-d "error_reporting=$WP_CLI_ERROR_REPORTING" \
+			-d "mysql.default_socket=$WP_CLI_MYSQL_SOCKET" \
 			-d "mysqli.default_socket=$WP_CLI_MYSQL_SOCKET" \
 			-d "pdo_mysql.default_socket=$WP_CLI_MYSQL_SOCKET" \
 			"$WP_CLI" --path="$WP_PATH" plugin activate "$slug" >/dev/null
