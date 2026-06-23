@@ -4,7 +4,7 @@ Status: completed local-development handoff.
 
 ## 背景
 
-这次工作的目标是把 `/Users/muze/gitee/magick-ai-eval-lab` 里的多模型
+这次工作的目标是把 `/Users/muze/gitee/npcink-eval-lab` 里的多模型
 对照评测能力接到当前 Core 项目，用三组 AI reviewer profile 互相检查
 Core 的边界敏感改动，并把有效反馈落实到代码、文档和静态契约中。
 
@@ -16,7 +16,7 @@ proposal 生命周期、CI 必选 gate 或 WordPress 写入链路。
 Core 仓库新增或收紧：
 
 - `scripts/eval-lab.sh`：薄 wrapper，调用 sibling eval-lab checkout 或
-  `MAGICK_AI_EVAL_LAB_PATH` 指定的本地 checkout。
+  `NPCINK_EVAL_LAB_PATH` 指定的本地 checkout。
 - `composer eval:lab`：列出 eval-lab 任务。
 - `composer eval:gutenberg:judge`：本地 dry-run Gutenberg cross-judge 入口。
 - `composer eval:project:review`：调用 eval-lab 的
