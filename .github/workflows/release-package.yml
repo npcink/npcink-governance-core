@@ -24,10 +24,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Check out npcink-abilities-toolkit fixtures
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: muze-page/npcink-abilities-toolkit
           ref: master
