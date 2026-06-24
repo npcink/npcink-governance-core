@@ -71,6 +71,10 @@ implementing it inside Core.
 
 - Check `git status --short --branch` before edits.
 - Keep changes scoped to one module per session.
+- For AI-assisted work, write a short change envelope before editing: target
+  repositories, focused module, intended change, explicit non-goals, public
+  contracts touched, expected files, files or areas that must not change,
+  required gates, cross-repo matrix requirement, and rollback plan.
 - Update docs when public REST, data shape, lifecycle, or product boundary
   changes.
 - Add or update `tests/run.php` static contracts for public behavior.
@@ -78,6 +82,12 @@ implementing it inside Core.
 - Run `composer smoke:wp` when behavior depends on WordPress activation, tables,
   REST routing, or `npcink-abilities-toolkit`.
 - Stage only files changed for the current task. Do not use `git add -A`.
+- Do not run `git reset --hard`, `git checkout -- .`, or equivalent destructive
+  cleanup unless the user explicitly asks for that exact operation.
+- For cross-repo milestones, use the central matrix from
+  `/Users/muze/gitee/npcink-toolbox` instead of copying the script into Core:
+  `composer quality:matrix` for status and `composer quality:matrix:run` before
+  multi-repo closeout.
 
 ## Verification Gates
 

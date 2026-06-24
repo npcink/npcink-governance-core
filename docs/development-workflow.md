@@ -141,6 +141,49 @@ Solo maintainer + AI agent work is documented in
 from a GitHub Issue, move through a `codex/<task-name>` branch and pull request,
 and merge only after the required gate passes.
 
+## AI Change Envelope And Cross-Repo Matrix
+
+Before AI-assisted edits, write a compact change envelope in the task thread or
+pull request body:
+
+- target repositories;
+- focused module;
+- intended change;
+- explicit non-goals;
+- public contracts touched;
+- files expected to change;
+- files or areas that must not change;
+- required gates;
+- cross-repo matrix requirement;
+- rollback plan.
+
+For Core-only work, the default gate remains:
+
+```bash
+composer test:all
+```
+
+For multi-repo work or milestone closeout, run the central quality matrix from
+`npcink-toolbox` instead of duplicating the script in this repository:
+
+```bash
+cd /Users/muze/gitee/npcink-toolbox
+composer quality:matrix
+composer quality:matrix:run
+```
+
+Use the status-only matrix before and after multi-repo work. Use the gate-running
+matrix before declaring a cross-repo milestone closed. For release closeout that
+must prove all repositories are clean, run:
+
+```bash
+php scripts/cross-repo-quality-matrix.php --run-gates --fail-on-dirty
+```
+
+AI agents must not run `git reset --hard`, `git checkout -- .`, or use
+`git add -A` in mixed worktrees unless the user explicitly asks for that exact
+operation.
+
 Release preparation for WordPress.org:
 
 ```bash
