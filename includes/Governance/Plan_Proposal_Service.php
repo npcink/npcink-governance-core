@@ -41,6 +41,7 @@ final class Plan_Proposal_Service {
 		'npcink-toolbox/build-article-batch-write-plan'                      => true,
 		'npcink-toolbox/build-article-media-batch-write-plan'                => true,
 		'npcink-abilities-toolkit/build-image-candidate-adoption-plan'        => true,
+		'npcink-abilities-toolkit/build-article-audio-adoption-plan'         => true,
 		'npcink-toolbox/build-site-knowledge-review-plan'                    => true,
 		'npcink-toolbox/build-nightly-inspection-review-plan'                => true,
 		'npcink-abilities-toolkit/build-content-metadata-apply-plan'         => true,
@@ -162,6 +163,13 @@ final class Plan_Proposal_Service {
 			$image_candidate_contract_error = $this->validate_image_candidate_adoption_plan_contract( $plan );
 			if ( is_wp_error( $image_candidate_contract_error ) ) {
 				return $image_candidate_contract_error;
+			}
+		}
+
+		if ( 'npcink-abilities-toolkit/build-article-audio-adoption-plan' === $plan_ability_id ) {
+			$article_audio_contract_error = $this->validate_article_audio_adoption_plan_contract( $plan );
+			if ( is_wp_error( $article_audio_contract_error ) ) {
+				return $article_audio_contract_error;
 			}
 		}
 
@@ -3324,6 +3332,117 @@ final class Plan_Proposal_Service {
 	}
 
 	/**
+	 * Builds preview context for article audio adoption plans.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function article_audio_adoption_preview( array $plan ): array {
+		$action = is_array( $plan['write_actions'][0] ?? null ) ? $plan['write_actions'][0] : array();
+		$input  = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+
+		return array(
+			'artifact_type'          => sanitize_text_field( (string) ( $plan['artifact_type'] ?? '' ) ),
+			'post_id'                => absint( $input['post_id'] ?? ( $plan['target_post_id'] ?? 0 ) ),
+			'audio_kind'             => sanitize_key( (string) ( $input['audio_kind'] ?? '' ) ),
+			'audio_url'              => esc_url_raw( (string) ( $input['audio_url'] ?? '' ) ),
+			'audio_title'            => sanitize_text_field( (string) ( $input['audio_title'] ?? '' ) ),
+			'duration_seconds'       => is_numeric( $input['duration_seconds'] ?? null ) ? (float) $input['duration_seconds'] : 0.0,
+			'provider'               => sanitize_key( (string) ( $input['provider'] ?? '' ) ),
+			'model'                  => sanitize_text_field( (string) ( $input['model'] ?? '' ) ),
+			'trace_id'               => sanitize_text_field( (string) ( $input['trace_id'] ?? '' ) ),
+			'final_write_path'       => 'core_proposal_required',
+			'direct_wordpress_write' => false,
+		);
+	}
+
+	/**
+	 * Validates a Toolkit article audio adoption plan.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_article_audio_adoption_plan_contract( array $plan ) {
+		if ( 'article_audio_adoption_plan.v1' !== (string) ( $plan['artifact_type'] ?? '' ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_audio_plan_invalid',
+				__( 'Article audio adoption plans must declare artifact_type=article_audio_adoption_plan.v1.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true === (bool) ( $plan['direct_wordpress_write'] ?? false ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_audio_direct_write_rejected',
+				__( 'Article audio adoption plans must not claim direct WordPress write authority.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( 1 !== count( $write_actions ) || ! is_array( $write_actions[0] ?? null ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_audio_action_count_rejected',
+				__( 'Article audio adoption plans must contain exactly one adoption action.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$action = $write_actions[0];
+		if ( 'npcink-abilities-toolkit/adopt-article-audio' !== sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_audio_target_rejected',
+				__( 'Article audio adoption plans may target only adopt-article-audio.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true !== (bool) ( $action['requires_approval'] ?? false ) || false !== (bool) ( $action['commit_execution'] ?? true ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_audio_action_contract_rejected',
+				__( 'Article audio adoption actions must require approval and must not claim commit execution.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+		if ( absint( $input['post_id'] ?? 0 ) <= 0 || '' === esc_url_raw( (string) ( $input['audio_url'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_audio_input_rejected',
+				__( 'Article audio adoption input must include post_id and audio_url.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( false === (bool) ( $input['dry_run'] ?? true ) || true === (bool) ( $input['commit'] ?? false ) ) {
+			return new WP_Error(
+				'npcink_governance_core_article_audio_commit_rejected',
+				__( 'Article audio adoption action input must remain dry-run and must not request commit.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$allowed_input_keys = array_fill_keys(
+			array( 'post_id', 'audio_url', 'audio_title', 'audio_kind', 'duration_seconds', 'mime_type', 'source_content_hash', 'source_word_count', 'source_generated_at', 'provider', 'model', 'trace_id', 'dry_run', 'commit', 'idempotency_key' ),
+			true
+		);
+		foreach ( array_keys( $input ) as $key ) {
+			if ( ! isset( $allowed_input_keys[ (string) $key ] ) ) {
+				return new WP_Error(
+					'npcink_governance_core_article_audio_input_key_rejected',
+					__( 'Article audio adoption input includes an unsupported field.', 'npcink-governance-core' ),
+					array(
+						'status' => 422,
+						'field'  => (string) $key,
+					)
+				);
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Returns plan-level block editor review metadata for proposal previews.
 	 *
 	 * These fields are advisory review evidence only. They do not grant write
@@ -3495,6 +3614,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'npcink-abilities-toolkit/build-content-metadata-apply-plan' === $plan_ability_id ) {
 			$preview['content_metadata_apply'] = $this->content_metadata_apply_preview( $plan );
+		}
+		if ( 'npcink-abilities-toolkit/build-article-audio-adoption-plan' === $plan_ability_id ) {
+			$preview['article_audio_adoption'] = $this->article_audio_adoption_preview( $plan );
 		}
 		$preview = array_merge( $preview, $this->block_editor_quality_preview( $plan ) );
 
@@ -3719,6 +3841,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'npcink-abilities-toolkit/build-content-metadata-apply-plan' === $plan_ability_id ) {
 			$preview['content_metadata_apply'] = $this->content_metadata_apply_preview( $plan );
+		}
+		if ( 'npcink-abilities-toolkit/build-article-audio-adoption-plan' === $plan_ability_id ) {
+			$preview['article_audio_adoption'] = $this->article_audio_adoption_preview( $plan );
 		}
 		$preview = array_merge( $preview, $this->block_editor_quality_preview( $plan ) );
 		$summary = sprintf(

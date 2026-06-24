@@ -76,6 +76,7 @@ final class Smart_Guarded_Approval_Policy_Strategy implements Approval_Policy_St
 		$caller        = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
 		$cleanup       = $evaluator->cleanup_batch_evaluation( $ability_id, $input, $preview, $caller );
 		$create_draft  = $evaluator->create_draft_evaluation( $ability_id, $input );
+		$article_audio = $evaluator->article_audio_adoption_evaluation( $ability_id, $input, $preview, $caller );
 
 		$reasons  = array( 'default_manual_required', 'mode_' . $mode );
 		$decision = Approval_Policy_Evaluator::DECISION_MANUAL_REQUIRED;
@@ -84,6 +85,7 @@ final class Smart_Guarded_Approval_Policy_Strategy implements Approval_Policy_St
 
 		$reasons = array_merge( $reasons, (array) ( $cleanup['reasons'] ?? array() ) );
 		$reasons = array_merge( $reasons, (array) ( $create_draft['reasons'] ?? array() ) );
+		$reasons = array_merge( $reasons, (array) ( $article_audio['reasons'] ?? array() ) );
 
 		if ( ! empty( $cleanup['allowed'] ) ) {
 			$reasons[] = 'guarded_cleanup_candidate';
@@ -111,6 +113,20 @@ final class Smart_Guarded_Approval_Policy_Strategy implements Approval_Policy_St
 					$decision  = Approval_Policy_Evaluator::DECISION_AUTO_APPROVED;
 					$profile   = Approval_Policy_Evaluator::PROFILE_TRUSTED_LOCAL;
 					$reasons[] = 'smart_guarded_create_draft_auto_approved';
+				}
+			}
+		} elseif ( ! empty( $article_audio['allowed'] ) ) {
+			$reasons[] = 'guarded_article_audio_candidate';
+			if ( ! $evaluator->caller_can_auto_approve() ) {
+				$reasons[] = 'guarded_article_audio_rejected_missing_approval_scope';
+			} else {
+				$quota = $evaluator->auto_approval_quota_metadata( $mode );
+				if ( ! $evaluator->auto_approval_quota_available( $quota ) ) {
+					$reasons[] = 'guarded_article_audio_rejected_auto_approval_quota_exceeded';
+				} else {
+					$decision  = Approval_Policy_Evaluator::DECISION_AUTO_APPROVED;
+					$profile   = Approval_Policy_Evaluator::PROFILE_TRUSTED_LOCAL;
+					$reasons[] = 'smart_guarded_article_audio_auto_approved';
 				}
 			}
 		}
@@ -431,6 +447,62 @@ final class Approval_Policy_Evaluator {
 		return array(
 			'allowed' => true,
 			'reasons' => array( 'guarded_create_draft_draft_only' ),
+		);
+	}
+
+	/**
+	 * Evaluates the narrow article audio adoption candidate.
+	 *
+	 * @param string              $ability_id Ability id.
+	 * @param array<string,mixed> $input Input.
+	 * @param array<string,mixed> $preview Preview.
+	 * @param array<string,mixed> $caller Caller.
+	 * @return array{allowed:bool,reasons:array<int,string>}
+	 */
+	public function article_audio_adoption_evaluation( string $ability_id, array $input, array $preview, array $caller ): array {
+		if ( 'npcink-abilities-toolkit/adopt-article-audio' !== $ability_id ) {
+			return array( 'allowed' => false, 'reasons' => array() );
+		}
+
+		if ( 'plan_to_proposal' !== (string) ( $caller['source'] ?? '' ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_article_audio_rejected_source' ) );
+		}
+
+		if ( 'npcink-abilities-toolkit/build-article-audio-adoption-plan' !== (string) ( $caller['plan_ability_id'] ?? '' ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_article_audio_rejected_plan_ability' ) );
+		}
+
+		$source = is_array( $preview['source'] ?? null ) ? $preview['source'] : array();
+		if ( 'plan_to_proposal' !== (string) ( $source['type'] ?? '' ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_article_audio_rejected_preview_source' ) );
+		}
+
+		if ( absint( $input['post_id'] ?? 0 ) <= 0 || '' === trim( sanitize_text_field( (string) ( $input['audio_url'] ?? '' ) ) ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_article_audio_rejected_missing_required_input' ) );
+		}
+
+		$kind = sanitize_key( (string) ( $input['audio_kind'] ?? '' ) );
+		if ( ! in_array( $kind, array( 'article_narration', 'article_audio_summary' ), true ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_article_audio_rejected_kind' ) );
+		}
+
+		if ( false === (bool) ( $input['dry_run'] ?? true ) || true === (bool) ( $input['commit'] ?? false ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_article_audio_rejected_commit_input' ) );
+		}
+
+		$allowed_input_keys = array_fill_keys(
+			array( 'post_id', 'audio_url', 'audio_title', 'audio_kind', 'duration_seconds', 'mime_type', 'source_content_hash', 'source_word_count', 'source_generated_at', 'provider', 'model', 'trace_id', 'dry_run', 'commit', 'idempotency_key' ),
+			true
+		);
+		foreach ( array_keys( $input ) as $key ) {
+			if ( ! isset( $allowed_input_keys[ (string) $key ] ) ) {
+				return array( 'allowed' => false, 'reasons' => array( 'guarded_article_audio_rejected_input_key' ) );
+			}
+		}
+
+		return array(
+			'allowed' => true,
+			'reasons' => array( 'guarded_article_audio_single_post_meta_only' ),
 		);
 	}
 
