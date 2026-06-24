@@ -491,7 +491,7 @@ final class Approval_Policy_Evaluator {
 		}
 
 		$allowed_input_keys = array_fill_keys(
-			array( 'post_id', 'audio_url', 'audio_title', 'audio_kind', 'duration_seconds', 'mime_type', 'source_content_hash', 'source_word_count', 'source_generated_at', 'provider', 'model', 'trace_id', 'dry_run', 'commit', 'idempotency_key' ),
+			array( 'post_id', 'audio_url', 'audio_title', 'audio_kind', 'duration_seconds', 'mime_type', 'source_content_hash', 'source_word_count', 'source_generated_at', 'provider', 'model', 'trace_id', 'import_media', 'media_file_name', 'dry_run', 'commit', 'idempotency_key' ),
 			true
 		);
 		foreach ( array_keys( $input ) as $key ) {
@@ -502,7 +502,7 @@ final class Approval_Policy_Evaluator {
 
 		return array(
 			'allowed' => true,
-			'reasons' => array( 'guarded_article_audio_single_post_meta_only' ),
+			'reasons' => array( ! empty( $input['import_media'] ) ? 'guarded_article_audio_single_post_media_import' : 'guarded_article_audio_single_post_meta_only' ),
 		);
 	}
 

@@ -3351,6 +3351,9 @@ final class Plan_Proposal_Service {
 			'provider'               => sanitize_key( (string) ( $input['provider'] ?? '' ) ),
 			'model'                  => sanitize_text_field( (string) ( $input['model'] ?? '' ) ),
 			'trace_id'               => sanitize_text_field( (string) ( $input['trace_id'] ?? '' ) ),
+			'import_media'           => ! empty( $input['import_media'] ),
+			'media_file_name'        => sanitize_text_field( (string) ( $input['media_file_name'] ?? '' ) ),
+			'storage_mode'           => ! empty( $input['import_media'] ) ? 'wordpress_media_library' : 'remote_url',
 			'final_write_path'       => 'core_proposal_required',
 			'direct_wordpress_write' => false,
 		);
@@ -3423,7 +3426,7 @@ final class Plan_Proposal_Service {
 		}
 
 		$allowed_input_keys = array_fill_keys(
-			array( 'post_id', 'audio_url', 'audio_title', 'audio_kind', 'duration_seconds', 'mime_type', 'source_content_hash', 'source_word_count', 'source_generated_at', 'provider', 'model', 'trace_id', 'dry_run', 'commit', 'idempotency_key' ),
+			array( 'post_id', 'audio_url', 'audio_title', 'audio_kind', 'duration_seconds', 'mime_type', 'source_content_hash', 'source_word_count', 'source_generated_at', 'provider', 'model', 'trace_id', 'import_media', 'media_file_name', 'dry_run', 'commit', 'idempotency_key' ),
 			true
 		);
 		foreach ( array_keys( $input ) as $key ) {
