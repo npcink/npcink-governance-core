@@ -1448,7 +1448,7 @@ foreach (
 }
 
 $composer_json = npcink_governance_core_read( $root . '/composer.json' );
-foreach ( array( 'test:contracts', 'test:fail-closed', 'tests/fail-closed.php', 'acceptance:cross-repo-release', 'scripts/cross-repo-release-acceptance.sh', 'rc:version-matrix', 'scripts/check-release-candidate-version-matrix.sh' ) as $required ) {
+foreach ( array( 'test:contracts', 'test:fail-closed', 'tests/fail-closed.php', 'analyse:phpstan', 'vendor/bin/phpstan analyse', 'phpstan.neon.dist', 'acceptance:cross-repo-release', 'scripts/cross-repo-release-acceptance.sh', 'rc:version-matrix', 'scripts/check-release-candidate-version-matrix.sh' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $composer_json, $required ), 'Composer scripts include required test command: ' . $required );
 }
 $composer_data = json_decode( $composer_json, true );
@@ -1471,6 +1471,17 @@ foreach ( $default_gate_scripts as $script_name ) {
 		npcink_governance_core_assert( false === strpos( $script_text, $forbidden ), 'Default Composer gate ' . $script_name . ' does not invoke eval-lab via ' . $forbidden . '.' );
 	}
 }
+
+$core_ci = npcink_governance_core_read( $root . '/.github/workflows/ci.yml' );
+foreach ( array( 'composer install --no-interaction --no-progress --prefer-dist', 'composer test:all', 'composer analyse:phpstan', 'composer check:wporg' ) as $required ) {
+	npcink_governance_core_assert( false !== strpos( $core_ci, $required ), 'Core CI includes required static gate: ' . $required );
+}
+$phpstan_config = npcink_governance_core_read( $root . '/phpstan.neon.dist' );
+foreach ( array( 'vendor/szepeviktor/phpstan-wordpress/extension.neon', 'level: 0', 'includes/', 'stubs/npcink-abilities-toolkit.stub.php' ) as $required ) {
+	npcink_governance_core_assert( false !== strpos( $phpstan_config, $required ), 'PHPStan config keeps required WordPress/Core analysis contract: ' . $required );
+}
+$toolkit_stub = npcink_governance_core_read( $root . '/stubs/npcink-abilities-toolkit.stub.php' );
+npcink_governance_core_assert( false !== strpos( $toolkit_stub, 'function npcink_abilities_toolkit_get_registered(): array' ), 'PHPStan stub describes the public Toolkit discovery helper.' );
 foreach ( $composer_scripts as $script_name => $script_value ) {
 	if ( str_starts_with( (string) $script_name, 'eval:' ) ) {
 		continue;

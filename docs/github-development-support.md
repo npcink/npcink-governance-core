@@ -12,7 +12,8 @@ SVN remains release-only.
 - Issues use focused templates for bugs, boundary reviews, release tasks, and
   WordPress.org review findings.
 - Dependabot checks GitHub Actions and Composer metadata weekly.
-- `Core CI` runs static verification on pull requests and pushes to `master`.
+- `Core CI` runs static contracts, PHPStan, and WordPress.org review guard
+  checks on pull requests and pushes to `master`.
 - `Release Package` is a manually triggered GitHub Actions workflow that builds
   a downloadable plugin zip artifact for review.
 - Solo maintainer + AI agent work should follow
@@ -28,9 +29,11 @@ Protect `master` after the current setup commit is pushed:
 - block force pushes and branch deletion;
 - allow administrator bypass only for emergency release repair.
 
-The protected branch gate is intentionally static. It does not replace the local
-WordPress smoke gate, because `composer smoke:wp` depends on the LocalWP site,
-WP-CLI runtime, database socket, and installed `npcink-abilities-toolkit`.
+The protected branch gate is intentionally static: Composer validation,
+contracts, PHPStan, and WordPress.org review guard checks. It does not replace
+the local WordPress smoke gate, because `composer smoke:wp` depends on the
+LocalWP site, WP-CLI runtime, database socket, and installed
+`npcink-abilities-toolkit`.
 
 ## Release Package Workflow
 

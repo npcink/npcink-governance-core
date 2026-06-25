@@ -9,6 +9,7 @@ Npcink Governance Core starts with a small but strict test pyramid.
 | Layer | Command | Purpose |
 | --- | --- | --- |
 | PHP syntax lint | `composer lint:php` | Prevent parse errors in plugin PHP files. |
+| PHPStan static analysis | `composer analyse:phpstan` | Catch unknown symbols and first-pass static regressions in first-party Core code. |
 | Static contracts | `composer test:contracts` | Freeze product boundary, REST routes, public lifecycle, and forbidden legacy terms. |
 | Fail-closed fault injection | `composer test:fail-closed` | Inject database and audit persistence failures against Core classes and assert rollback or cleanup. |
 | Full local suite | `composer test:all` | Run lint, static contracts, and fault injection together. |

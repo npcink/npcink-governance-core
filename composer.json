@@ -12,6 +12,7 @@
     }
   },
   "scripts": {
+    "analyse:phpstan": "vendor/bin/phpstan analyse --configuration=phpstan.neon.dist --no-progress --memory-limit=1G",
     "lint:php": "@php tests/lint.php",
     "smoke:wp": "bash tests/smoke-wp.sh",
     "test:contracts": "@php tests/run.php",
@@ -39,5 +40,9 @@
       "@lint:php",
       "@test"
     ]
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^2.2",
+    "szepeviktor/phpstan-wordpress": "^2.0"
   }
 }

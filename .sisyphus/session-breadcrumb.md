@@ -1,5 +1,26 @@
 # Session Breadcrumb
 
+## 2026-06-25 — PHPStan CI gate prepared
+
+- **Module**: Core static quality gate.
+- **Status**: PHPStan has been added as a first-pass static analysis gate for
+  first-party Core code and wired into Core CI.
+- **Completed**:
+  - Added Composer dev dependencies for PHPStan and WordPress stubs.
+  - Added `phpstan.neon.dist` plus a narrow public
+    `npcink-abilities-toolkit` discovery-helper stub.
+  - Updated CI, docs, and static contracts so the PHPStan gate remains
+    durable for future AI-assisted changes.
+- **Verified**:
+  - `composer validate --no-check-publish` passed.
+  - `composer analyse:phpstan` passed.
+  - `composer test:all` passed.
+  - `composer check:wporg` passed.
+- **Boundary**:
+  - This is static quality infrastructure only. Core still does not execute
+    abilities, own Adapter or Toolkit code, own workflow runtime, own task
+    queues, store provider credentials, or mutate WordPress content.
+
 ## 2026-06-22 — Metadata apply bridge closeout documented
 
 - **Module**: Cross-repository metadata apply bridge documentation.
