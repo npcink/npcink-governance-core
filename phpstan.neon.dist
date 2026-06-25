@@ -1,0 +1,18 @@
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+    level: 0
+    paths:
+        - includes/
+        - npcink-governance-core.php
+
+    scanFiles:
+        - stubs/npcink-abilities-toolkit.stub.php
+
+    excludePaths:
+        analyse:
+            - vendor (?)
+            - build (?)
+            - dist (?)
+            - tests (?)

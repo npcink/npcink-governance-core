@@ -84,6 +84,7 @@ For code or contract changes:
 ```sh
 composer validate --no-check-publish
 composer test:all
+composer analyse:phpstan
 composer check:wporg
 ```
 
