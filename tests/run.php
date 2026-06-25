@@ -1473,7 +1473,7 @@ foreach ( $default_gate_scripts as $script_name ) {
 }
 
 $core_ci = npcink_governance_core_read( $root . '/.github/workflows/ci.yml' );
-foreach ( array( 'composer test:all', 'composer analyse:phpstan', 'composer check:wporg' ) as $required ) {
+foreach ( array( 'composer install --no-interaction --no-progress --prefer-dist', 'composer test:all', 'composer analyse:phpstan', 'composer check:wporg' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $core_ci, $required ), 'Core CI includes required static gate: ' . $required );
 }
 $phpstan_config = npcink_governance_core_read( $root . '/phpstan.neon.dist' );

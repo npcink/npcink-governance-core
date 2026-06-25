@@ -41,6 +41,9 @@ jobs:
       - name: Validate Composer metadata
         run: composer validate --no-check-publish
 
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
       - name: Run static contracts
         run: composer test:all
 
