@@ -19,6 +19,11 @@
 - [ ] `composer smoke:wp` if the change touches activation, tables, REST routing, WordPress runtime behavior, or `npcink-abilities-toolkit` integration.
 - [ ] `composer prepare:release -- --version <version>` if preparing a WordPress.org release.
 
+## Risk
+
+- Residual risk:
+- Rollback plan:
+
 ## Release Impact
 
 - [ ] No release impact.
