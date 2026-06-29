@@ -27,7 +27,9 @@ Current supported modes:
   `manual_required`.
 - `smart_guarded`: conservative approval reducer. It may auto-approve only
   trusted test cleanup trash batches and single direct draft-only
-  `npcink-abilities-toolkit/create-draft` proposals.
+  `npcink-abilities-toolkit/create-draft` proposals, guarded article-audio
+  adoptions, or single reviewed
+  `npcink-abilities-toolkit/adopt-cloud-media-derivative` proposals.
 - `dev_allow_all`: explicit local-development allow-all mode. It requires
   `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL` and still requires commit
   preflight before Adapter-owned execution.
@@ -55,6 +57,10 @@ The stage delivered these Core-side pieces:
   `trash-post` batches;
 - `smart_guarded` auto approval for a single direct draft-only
   `npcink-abilities-toolkit/create-draft` proposal;
+- `smart_guarded` auto approval for guarded article-audio adoption proposals;
+- `smart_guarded` auto approval for a single reviewed media derivative
+  adoption proposal;
+- `smart_guarded` auto approval for a reviewed ALT-only media detail proposal;
 - `proposal.auto_approved` audit whenever Core changes a proposal to approved;
 - admin/settings copy for the guarded modes;
 - static contracts, fail-closed coverage, WordPress smoke coverage, REST/API
@@ -85,9 +91,11 @@ does not require taking ownership of those Adapter changes for this closeout.
 
 ## Stop Point
 
-Do not keep expanding Core approval policy in this stage. The useful local
-development pain point is addressed: repeated OpenClaw draft and trusted test
-cleanup approvals can be reduced with `smart_guarded`, while the governance
+Do not keep expanding Core approval policy in this stage without an explicit
+accepted boundary decision. The useful local development and operator pain
+points are addressed: repeated OpenClaw draft, trusted test cleanup,
+article-audio adoption, and reviewed single-attachment media derivative
+adoption approvals can be reduced with `smart_guarded`, while the governance
 boundary stays intact.
 
 Core should not add auto approval for:
@@ -102,8 +110,14 @@ Core should not add auto approval for:
 - `approve-comment`;
 - `reply-comment`;
 - updates to existing published content;
-- media settings, featured-image adoption, derivative adoption, or other
-  multi-object write plans.
+- media settings, featured-image adoption, URL repair, destructive media
+  operations, or other multi-object write plans.
+
+The accepted media derivative exception is narrow: one
+`npcink-abilities-toolkit/adopt-cloud-media-derivative` proposal, one
+attachment, derivative artifact evidence, `media_optimization_plan` preview
+evidence, dry-run/non-commit proposal input, caller approval authority, quotas,
+audit, and Adapter commit preflight before any final write.
 
 Core should also not add:
 

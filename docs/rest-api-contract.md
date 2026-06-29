@@ -511,7 +511,7 @@ Proposal rows include policy fields:
 
 | Name | Type | Notes |
 | --- | --- | --- |
-| `policy_decision` | string | Defaults to `manual_required`. `smart_guarded` may return `auto_approved` only for trusted test cleanup trash-post batches and single draft-only create-draft proposals. `dev_allow_all` may return `auto_approved` only in explicit local development mode. Reserved values are `manual_required`, `auto_approved`, and `blocked`. |
+| `policy_decision` | string | Defaults to `manual_required`. `smart_guarded` may return `auto_approved` only for trusted test cleanup trash-post batches, single draft-only create-draft proposals, guarded article-audio adoptions, single reviewed media derivative adoption proposals, and reviewed ALT-only media detail proposals. `dev_allow_all` may return `auto_approved` only in explicit local development mode. Reserved values are `manual_required`, `auto_approved`, and `blocked`. |
 | `policy_profile` | string | Defaults to `manual`. `smart_guarded` and `dev_allow_all` candidate evaluation may return `guarded`; auto approval returns `trusted_local`. Reserved profiles are `manual`, `guarded`, `trusted_local`, and `break_glass`. |
 | `policy_version` | string | Current value is `core-approval-policy-v1`. |
 | `policy_reasons` | array | Stable, sanitized reason keys. |
@@ -525,7 +525,11 @@ not auto-approve. `smart_guarded` may auto-approve only
 trusted `build-nonproduction-content-cleanup-plan` `plan_to_proposal_batch` proposals
 whose actions all target `npcink-abilities-toolkit/trash-post`, or a single
 direct `npcink-abilities-toolkit/create-draft` proposal that creates only a
-draft post with dry-run/non-commit input and no schedule/publish intent.
+draft post with dry-run/non-commit input and no schedule/publish intent, or a
+guarded article-audio adoption proposal, or a single reviewed
+`npcink-abilities-toolkit/adopt-cloud-media-derivative` proposal with one
+attachment, derivative artifact evidence, dry-run/non-commit input, and
+`media_optimization_plan` preview evidence.
 `dev_allow_all` is local-development only, requires
 `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL`, and still leaves commit
 preflight mandatory. It does not add a rules DSL, workflow runtime,

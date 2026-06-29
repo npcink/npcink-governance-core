@@ -128,8 +128,11 @@ The MVP does not execute final writes.
 
 The approval policy evaluator defaults to `manual`, records `manual_required`
 for every proposal, and writes `proposal.policy_evaluated`. `smart_guarded`
-may auto-approve only trusted test cleanup trash-post batches and single draft-only create-draft proposals when explicit caller/app authorization,
-persisted evidence, quota, and audit checks pass. `dev_allow_all` is
+may auto-approve only trusted test cleanup trash-post batches, single
+draft-only create-draft proposals, guarded article-audio adoptions, single
+reviewed media derivative adoption proposals, and reviewed ALT-only media
+detail proposals when explicit caller/app
+authorization, persisted evidence, quota, and audit checks pass. `dev_allow_all` is
 local-development only, requires
 `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL`, caller approval authority,
 quota, and audit, and still does not execute writes. `smart_guarded` does not
@@ -140,8 +143,9 @@ scheduler, final execution, or configuration center. If policy decision audit
 cannot be written, Core fails closed and deletes the created proposal row; if
 auto-approval audit cannot be written, the proposal is not left approved.
 
-Auto approval allowlist: trusted test cleanup trash-post batches and single
-draft-only create-draft proposals.
+Auto approval allowlist: trusted test cleanup trash-post batches, single
+draft-only create-draft proposals, guarded article-audio adoptions, and single
+reviewed media derivative adoption proposals.
 
 Commit preflight returns Core-generated approval-commit context without running
 the target ability. Final write or destructive execution must require that

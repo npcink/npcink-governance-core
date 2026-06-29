@@ -89,9 +89,9 @@ evidence would be unsafe:
   action caps before storing proposal rows;
 - direct proposal creation rejects oversized payloads before storing proposal
   rows;
-- smart guarded cleanup and draft-only create-draft auto approval write
-  `proposal.auto_approved`, and audit failure must not leave the proposal
-  approved;
+- smart guarded cleanup, draft-only create-draft, article-audio adoption, and
+  single media derivative adoption auto approval write `proposal.auto_approved`,
+  and audit failure must not leave the proposal approved;
 - approval and rejection roll back to the previous proposal status when
   decision audit cannot be written;
 - app-key creation revokes the newly created key and withholds the one-time

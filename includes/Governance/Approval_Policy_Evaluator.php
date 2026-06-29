@@ -74,9 +74,11 @@ final class Smart_Guarded_Approval_Policy_Strategy implements Approval_Policy_St
 		$input         = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
 		$preview       = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
 		$caller        = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
-		$cleanup       = $evaluator->cleanup_batch_evaluation( $ability_id, $input, $preview, $caller );
-		$create_draft  = $evaluator->create_draft_evaluation( $ability_id, $input );
-		$article_audio = $evaluator->article_audio_adoption_evaluation( $ability_id, $input, $preview, $caller );
+		$cleanup          = $evaluator->cleanup_batch_evaluation( $ability_id, $input, $preview, $caller );
+		$create_draft     = $evaluator->create_draft_evaluation( $ability_id, $input );
+		$article_audio    = $evaluator->article_audio_adoption_evaluation( $ability_id, $input, $preview, $caller );
+		$media_alt        = $evaluator->media_alt_text_evaluation( $ability_id, $input, $preview );
+		$media_derivative = $evaluator->media_derivative_adoption_evaluation( $ability_id, $input, $preview );
 
 		$reasons  = array( 'default_manual_required', 'mode_' . $mode );
 		$decision = Approval_Policy_Evaluator::DECISION_MANUAL_REQUIRED;
@@ -86,6 +88,8 @@ final class Smart_Guarded_Approval_Policy_Strategy implements Approval_Policy_St
 		$reasons = array_merge( $reasons, (array) ( $cleanup['reasons'] ?? array() ) );
 		$reasons = array_merge( $reasons, (array) ( $create_draft['reasons'] ?? array() ) );
 		$reasons = array_merge( $reasons, (array) ( $article_audio['reasons'] ?? array() ) );
+		$reasons = array_merge( $reasons, (array) ( $media_alt['reasons'] ?? array() ) );
+		$reasons = array_merge( $reasons, (array) ( $media_derivative['reasons'] ?? array() ) );
 
 		if ( ! empty( $cleanup['allowed'] ) ) {
 			$reasons[] = 'guarded_cleanup_candidate';
@@ -127,6 +131,34 @@ final class Smart_Guarded_Approval_Policy_Strategy implements Approval_Policy_St
 					$decision  = Approval_Policy_Evaluator::DECISION_AUTO_APPROVED;
 					$profile   = Approval_Policy_Evaluator::PROFILE_TRUSTED_LOCAL;
 					$reasons[] = 'smart_guarded_article_audio_auto_approved';
+				}
+			}
+		} elseif ( ! empty( $media_alt['allowed'] ) ) {
+			$reasons[] = 'guarded_media_alt_candidate';
+			if ( ! $evaluator->caller_can_auto_approve() ) {
+				$reasons[] = 'guarded_media_alt_rejected_missing_approval_scope';
+			} else {
+				$quota = $evaluator->auto_approval_quota_metadata( $mode );
+				if ( ! $evaluator->auto_approval_quota_available( $quota ) ) {
+					$reasons[] = 'guarded_media_alt_rejected_auto_approval_quota_exceeded';
+				} else {
+					$decision  = Approval_Policy_Evaluator::DECISION_AUTO_APPROVED;
+					$profile   = Approval_Policy_Evaluator::PROFILE_TRUSTED_LOCAL;
+					$reasons[] = 'smart_guarded_media_alt_auto_approved';
+				}
+			}
+		} elseif ( ! empty( $media_derivative['allowed'] ) ) {
+			$reasons[] = 'guarded_media_derivative_candidate';
+			if ( ! $evaluator->caller_can_auto_approve() ) {
+				$reasons[] = 'guarded_media_derivative_rejected_missing_approval_scope';
+			} else {
+				$quota = $evaluator->auto_approval_quota_metadata( $mode );
+				if ( ! $evaluator->auto_approval_quota_available( $quota ) ) {
+					$reasons[] = 'guarded_media_derivative_rejected_auto_approval_quota_exceeded';
+				} else {
+					$decision  = Approval_Policy_Evaluator::DECISION_AUTO_APPROVED;
+					$profile   = Approval_Policy_Evaluator::PROFILE_TRUSTED_LOCAL;
+					$reasons[] = 'smart_guarded_media_derivative_auto_approved';
 				}
 			}
 		}
@@ -503,6 +535,129 @@ final class Approval_Policy_Evaluator {
 		return array(
 			'allowed' => true,
 			'reasons' => array( ! empty( $input['import_media'] ) ? 'guarded_article_audio_single_post_media_import' : 'guarded_article_audio_single_post_meta_only' ),
+		);
+	}
+
+	/**
+	 * Evaluates a narrow media ALT-only update candidate.
+	 *
+	 * @param string              $ability_id Ability id.
+	 * @param array<string,mixed> $input Input.
+	 * @param array<string,mixed> $preview Preview.
+	 * @return array{allowed:bool,reasons:array<int,string>}
+	 */
+	public function media_alt_text_evaluation( string $ability_id, array $input, array $preview ): array {
+		if ( 'npcink-abilities-toolkit/update-media-details' !== $ability_id ) {
+			return array( 'allowed' => false, 'reasons' => array() );
+		}
+
+		if ( absint( $input['attachment_id'] ?? 0 ) <= 0 ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_attachment' ) );
+		}
+
+		$alt = trim( sanitize_text_field( (string) ( $input['alt'] ?? '' ) ) );
+		if ( '' === $alt || strlen( $alt ) < 3 || strlen( $alt ) > 160 ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_alt_quality' ) );
+		}
+
+		if ( preg_match( '/https?:\/\/|generated\s+by|prompt\s*:|model\s*:|provider\s*:|profile\s*:/i', $alt ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_runtime_or_source_text' ) );
+		}
+
+		if ( false === (bool) ( $input['dry_run'] ?? true ) || true === (bool) ( $input['commit'] ?? false ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_commit_input' ) );
+		}
+
+		$allowed_input_keys = array_fill_keys(
+			array( 'attachment_id', 'alt', 'dry_run', 'commit', 'idempotency_key' ),
+			true
+		);
+		foreach ( array_keys( $input ) as $key ) {
+			if ( ! isset( $allowed_input_keys[ (string) $key ] ) ) {
+				return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_non_alt_field' ) );
+			}
+		}
+
+		$source        = is_array( $preview['source'] ?? null ) ? $preview['source'] : array();
+		$artifact_type = sanitize_key( (string) ( $preview['artifact_type'] ?? '' ) );
+		if ( 'media_alt_caption_review_item' !== $artifact_type || 'toolbox_media_alt_caption_review' !== (string) ( $source['type'] ?? '' ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_preview_source' ) );
+		}
+
+		if ( 'media_alt_caption_review_set.v1' !== (string) ( $preview['review_set_contract'] ?? '' ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_review_contract' ) );
+		}
+
+		$current_status = sanitize_key( (string) ( $preview['current_alt_status'] ?? '' ) );
+		if ( ! in_array( $current_status, array( 'missing', 'empty', 'weak', 'filename_like', 'long_or_keyword_stuffed' ), true ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_current_status' ) );
+		}
+
+		if ( empty( $preview['operator_reviewed'] ) || empty( $preview['operator_visual_review_confirmed'] ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_operator_review' ) );
+		}
+
+		$proposed_alt = trim( sanitize_text_field( (string) ( $preview['proposed_alt'] ?? '' ) ) );
+		if ( '' !== $proposed_alt && $proposed_alt !== $alt ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_preview_mismatch' ) );
+		}
+
+		return array(
+			'allowed' => true,
+			'reasons' => array( 'guarded_media_alt_single_attachment', 'guarded_media_alt_reviewed_alt_only', 'guarded_media_alt_toolbox_review_set' ),
+		);
+	}
+
+	/**
+	 * Evaluates the narrow Cloud media derivative adoption candidate.
+	 *
+	 * @param string              $ability_id Ability id.
+	 * @param array<string,mixed> $input Input.
+	 * @param array<string,mixed> $preview Preview.
+	 * @return array{allowed:bool,reasons:array<int,string>}
+	 */
+	public function media_derivative_adoption_evaluation( string $ability_id, array $input, array $preview ): array {
+		if ( 'npcink-abilities-toolkit/adopt-cloud-media-derivative' !== $ability_id ) {
+			return array( 'allowed' => false, 'reasons' => array() );
+		}
+
+		if ( absint( $input['attachment_id'] ?? 0 ) <= 0 ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_derivative_rejected_attachment' ) );
+		}
+
+		if ( false === (bool) ( $input['dry_run'] ?? true ) || true === (bool) ( $input['commit'] ?? false ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_derivative_rejected_commit_input' ) );
+		}
+
+		if ( ! empty( $input['write_actions'] ) || ! empty( $input['content_reference_repairs'] ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_derivative_rejected_multi_action' ) );
+		}
+
+		$artifact = is_array( $input['derivative_artifact'] ?? null ) ? $input['derivative_artifact'] : array();
+		if ( '' === trim( sanitize_text_field( (string) ( $artifact['artifact_id'] ?? ( $artifact['id'] ?? '' ) ) ) ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_derivative_rejected_artifact' ) );
+		}
+
+		$preview_media = is_array( $preview['media_optimization'] ?? null ) ? $preview['media_optimization'] : array();
+		$source        = is_array( $preview['source'] ?? null ) ? $preview['source'] : array();
+		$artifact_type = sanitize_key( (string) ( $preview['artifact_type'] ?? ( $preview_media['artifact_type'] ?? ( $preview['type'] ?? '' ) ) ) );
+		if ( 'media_optimization_plan' !== $artifact_type && 'npcink-abilities-toolkit/build-media-optimization-plan' !== (string) ( $source['plan_ability_id'] ?? '' ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_derivative_rejected_preview_plan' ) );
+		}
+
+		$allowed_input_keys = array_fill_keys(
+			array( 'attachment_id', 'derivative_artifact', 'expected_current_relative_file', 'expected_current_mime_type', 'expected_derivative_mime_type', 'expected_storage_provider', 'expected_storage_adapter', 'storage_preflight', 'file_name', 'expected_content_reference_post_ids', 'expected_content_reference_post_count', 'expected_content_reference_replacement_count', 'backup_suffix', 'dry_run', 'commit', 'idempotency_key' ),
+			true
+		);
+		foreach ( array_keys( $input ) as $key ) {
+			if ( ! isset( $allowed_input_keys[ (string) $key ] ) ) {
+				return array( 'allowed' => false, 'reasons' => array( 'guarded_media_derivative_rejected_input_key' ) );
+			}
+		}
+
+		return array(
+			'allowed' => true,
+			'reasons' => array( 'guarded_media_derivative_single_attachment', 'guarded_media_derivative_artifact_evidence', 'guarded_media_derivative_preview_plan' ),
 		);
 	}
 

@@ -4579,6 +4579,185 @@ update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTI
 $stack    = npcink_governance_core_fail_closed_proposal_stack();
 $proposal = $stack['service']->create(
 	array(
+		'ability_id' => 'npcink-abilities-toolkit/update-media-details',
+		'title'      => 'Smart guarded media ALT proposal',
+		'summary'    => 'Apply one reviewed ALT suggestion.',
+		'input'      => array(
+			'attachment_id'   => 321,
+			'alt'             => 'Small orange cat sitting beside a window',
+			'dry_run'         => true,
+			'commit'          => false,
+			'idempotency_key' => 'guarded-media-alt',
+		),
+		'preview'    => array(
+			'artifact_type'                     => 'media_alt_caption_review_item',
+			'contract_version'                 => 'media_alt_caption_review_item.v1',
+			'review_set_contract'              => 'media_alt_caption_review_set.v1',
+			'source'                           => array( 'type' => 'toolbox_media_alt_caption_review' ),
+			'attachment_id'                    => 321,
+			'current_alt_status'               => 'missing',
+			'current_alt'                      => '',
+			'proposed_alt'                     => 'Small orange cat sitting beside a window',
+			'operator_reviewed'                => true,
+			'operator_visual_review_confirmed' => true,
+			'direct_wordpress_write'           => false,
+		),
+		'caller'     => array( 'source' => 'fault_injection' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Smart guarded media ALT proposal is created.' );
+npcink_governance_core_fail_closed_assert( 'approved' === (string) ( $proposal['status'] ?? '' ), 'Smart guarded media ALT proposal is auto-approved.' );
+npcink_governance_core_fail_closed_assert( 'auto_approved' === (string) ( $proposal['policy_decision'] ?? '' ), 'Smart guarded media ALT records auto-approved decision.' );
+npcink_governance_core_fail_closed_assert( in_array( 'guarded_media_alt_candidate', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded media ALT records candidate reason.' );
+npcink_governance_core_fail_closed_assert( in_array( 'smart_guarded_media_alt_auto_approved', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded media ALT records stable auto approval reason.' );
+
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_SMART_GUARDED, false );
+\Npcink\GovernanceCore\Security\Request_Context::set_app(
+	array(
+		'app_id'       => 'app_auto',
+		'key_id'       => 'key_auto',
+		'caller_type'  => 'trusted_adapter',
+		'scope'        => 'proposals:create',
+		'scopes'       => array( 'proposals:create', 'proposals:approve' ),
+		'route_family' => 'proposals_create',
+	)
+);
+$stack    = npcink_governance_core_fail_closed_proposal_stack();
+$proposal = $stack['service']->create(
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/update-media-details',
+		'title'      => 'Smart guarded media ALT plus caption proposal',
+		'summary'    => 'Caption edits must stay in manual review.',
+		'input'      => array(
+			'attachment_id'   => 321,
+			'alt'             => 'Small orange cat sitting beside a window',
+			'caption'         => 'Cat by the window',
+			'dry_run'         => true,
+			'commit'          => false,
+			'idempotency_key' => 'guarded-media-alt-caption',
+		),
+		'preview'    => array(
+			'artifact_type'                     => 'media_alt_caption_review_item',
+			'review_set_contract'              => 'media_alt_caption_review_set.v1',
+			'source'                           => array( 'type' => 'toolbox_media_alt_caption_review' ),
+			'current_alt_status'               => 'missing',
+			'proposed_alt'                     => 'Small orange cat sitting beside a window',
+			'operator_reviewed'                => true,
+			'operator_visual_review_confirmed' => true,
+		),
+		'caller'     => array( 'source' => 'fault_injection' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Smart guarded media ALT plus caption proposal is created.' );
+npcink_governance_core_fail_closed_assert( 'pending' === (string) ( $proposal['status'] ?? '' ), 'Smart guarded media ALT plus caption proposal stays pending.' );
+npcink_governance_core_fail_closed_assert( in_array( 'guarded_media_alt_rejected_non_alt_field', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded media ALT rejects non-ALT media metadata fields.' );
+
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_SMART_GUARDED, false );
+\Npcink\GovernanceCore\Security\Request_Context::set_app(
+	array(
+		'app_id'       => 'app_auto',
+		'key_id'       => 'key_auto',
+		'caller_type'  => 'trusted_adapter',
+		'scope'        => 'proposals:create',
+		'scopes'       => array( 'proposals:create', 'proposals:approve' ),
+		'route_family' => 'proposals_create',
+	)
+);
+$stack    = npcink_governance_core_fail_closed_proposal_stack();
+$proposal = $stack['service']->create(
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',
+		'title'      => 'Smart guarded media derivative proposal',
+		'summary'    => 'Adopt one reviewed derivative artifact.',
+		'input'      => array(
+			'attachment_id'                  => 123,
+			'derivative_artifact'            => array(
+				'artifact_id'    => 'cloud-derivative-123',
+				'mime_type'      => 'image/webp',
+				'format'         => 'webp',
+				'filesize_bytes' => 12345,
+				'sha256'         => 'abc123',
+			),
+			'expected_derivative_mime_type'  => 'image/webp',
+			'backup_suffix'                  => 'npcink-cloud-backup',
+			'dry_run'                        => true,
+			'commit'                         => false,
+			'idempotency_key'                => 'guarded-media-derivative',
+		),
+		'preview'    => array(
+			'artifact_type'     => 'media_optimization_plan',
+			'attachment_id'     => 123,
+			'requires_approval' => true,
+			'dry_run'           => true,
+			'commit_execution'  => false,
+		),
+		'caller'     => array( 'source' => 'fault_injection' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Smart guarded media derivative proposal is created.' );
+npcink_governance_core_fail_closed_assert( 'approved' === (string) ( $proposal['status'] ?? '' ), 'Smart guarded media derivative proposal is auto-approved.' );
+npcink_governance_core_fail_closed_assert( 'auto_approved' === (string) ( $proposal['policy_decision'] ?? '' ), 'Smart guarded media derivative records auto-approved decision.' );
+npcink_governance_core_fail_closed_assert( 'trusted_local' === (string) ( $proposal['policy_profile'] ?? '' ), 'Smart guarded media derivative records trusted_local profile.' );
+npcink_governance_core_fail_closed_assert( in_array( 'guarded_media_derivative_candidate', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded media derivative records candidate reason.' );
+npcink_governance_core_fail_closed_assert( in_array( 'smart_guarded_media_derivative_auto_approved', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded media derivative records stable auto approval reason.' );
+
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_SMART_GUARDED, false );
+\Npcink\GovernanceCore\Security\Request_Context::set_app(
+	array(
+		'app_id'       => 'app_auto',
+		'key_id'       => 'key_auto',
+		'caller_type'  => 'trusted_adapter',
+		'scope'        => 'proposals:create',
+		'scopes'       => array( 'proposals:create', 'proposals:approve' ),
+		'route_family' => 'proposals_create',
+	)
+);
+$stack    = npcink_governance_core_fail_closed_proposal_stack();
+$proposal = $stack['service']->create(
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',
+		'title'      => 'Smart guarded media derivative batch-shaped proposal',
+		'summary'    => 'Nested write actions must not auto approve.',
+		'input'      => array(
+			'attachment_id'       => 123,
+			'derivative_artifact' => array( 'artifact_id' => 'cloud-derivative-123' ),
+			'write_actions'       => array(
+				array(
+					'target_ability_id' => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',
+					'input'             => array( 'attachment_id' => 123 ),
+				),
+			),
+			'dry_run'             => true,
+			'commit'              => false,
+			'idempotency_key'     => 'guarded-media-derivative-batch-shaped',
+		),
+		'preview'    => array( 'artifact_type' => 'media_optimization_plan' ),
+		'caller'     => array( 'source' => 'fault_injection' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Smart guarded media derivative batch-shaped proposal is still created for review.' );
+npcink_governance_core_fail_closed_assert( 'pending' === (string) ( $proposal['status'] ?? '' ), 'Smart guarded media derivative batch-shaped proposal remains pending.' );
+npcink_governance_core_fail_closed_assert( 'manual_required' === (string) ( $proposal['policy_decision'] ?? '' ), 'Smart guarded media derivative batch-shaped proposal remains manual.' );
+npcink_governance_core_fail_closed_assert( in_array( 'guarded_media_derivative_rejected_multi_action', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded media derivative batch-shaped proposal records multi-action rejection reason.' );
+
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_SMART_GUARDED, false );
+\Npcink\GovernanceCore\Security\Request_Context::set_app(
+	array(
+		'app_id'       => 'app_auto',
+		'key_id'       => 'key_auto',
+		'caller_type'  => 'trusted_adapter',
+		'scope'        => 'proposals:create',
+		'scopes'       => array( 'proposals:create', 'proposals:approve' ),
+		'route_family' => 'proposals_create',
+	)
+);
+$stack    = npcink_governance_core_fail_closed_proposal_stack();
+$proposal = $stack['service']->create(
+	array(
 		'ability_id' => 'npcink-abilities-toolkit/create-draft',
 		'title'      => 'Smart guarded publish proposal',
 		'summary'    => 'Publish must not auto approve.',

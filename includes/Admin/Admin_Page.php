@@ -530,7 +530,7 @@ final class Admin_Page {
 										</option>
 									<?php endforeach; ?>
 								</select>
-								<p class="description"><?php echo esc_html__( 'Smart approval only auto-approves trusted test-content cleanup trash batches and single draft-only create-draft proposals. Allow all is local-development only and requires NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL; commit preflight is still required and Core still does not execute writes.', 'npcink-governance-core' ); ?></p>
+								<p class="description"><?php echo esc_html__( 'Smart approval only auto-approves trusted cleanup, draft creation, article audio, reviewed single-image replacement, and reviewed ALT-only media detail proposals. Allow all is local-development only and requires NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL; commit preflight is still required and Core still does not execute writes.', 'npcink-governance-core' ); ?></p>
 							</td>
 						</tr>
 						<tr>

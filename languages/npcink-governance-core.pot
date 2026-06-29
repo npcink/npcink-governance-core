@@ -231,7 +231,7 @@ msgid "Policy mode"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:533
-msgid "Smart approval only auto-approves trusted test-content cleanup trash batches and single draft-only create-draft proposals. Allow all is local-development only and requires NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL; commit preflight is still required and Core still does not execute writes."
+msgid "Smart approval only auto-approves trusted cleanup, draft creation, article audio, and reviewed single-image replacement proposals. Allow all is local-development only and requires NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL; commit preflight is still required and Core still does not execute writes."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:537

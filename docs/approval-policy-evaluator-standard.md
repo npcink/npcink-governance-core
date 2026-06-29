@@ -18,8 +18,9 @@ site policy modes stored in
   `policy_profile=manual`.
 - `smart_guarded`: conservative smart approval mode. Core may approve only
   trusted test-content cleanup trash-post batches and single draft-only
-  create-draft proposals after explicit authorization, persisted evidence,
-  quota checks, and audit.
+  create-draft proposals, guarded article-audio adoptions, or single reviewed
+  media derivative adoption proposals after explicit authorization, persisted
+  evidence, quota checks, and audit.
 - `dev_allow_all`: local development allow-all mode. It may approve every
   proposal only when `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL` is explicitly
   defined as true, the caller can approve proposals, quota checks pass, and
@@ -39,7 +40,7 @@ Current behavior is intentionally unchanged:
 
 - all proposals remain `pending` by default in `manual`;
 - no production proposal is auto-approved unless `smart_guarded` is explicitly
-  enabled and every narrow cleanup or draft-only create-draft condition passes;
+  enabled and every narrow implemented candidate condition passes;
 - no development allow-all approval is applied unless
   `dev_allow_all` is selected and the local development constant is true;
 - Adapter remains thin and executes only approved proposals that pass Core
@@ -158,12 +159,14 @@ Do not widen real auto approval beyond implemented narrow candidates until all o
 
 The current safe production default is still `manual`. Use `smart_guarded`
 only when the site should reduce repetitive approvals for trusted cleanup
-batches and single draft-only create-draft proposals. Use `dev_allow_all` only
-inside a local development environment with the explicit constant enabled.
+batches, single draft-only create-draft proposals, guarded article-audio
+adoptions, or single reviewed media derivative adoption proposals. Use
+`dev_allow_all` only inside a local development environment with the explicit
+constant enabled.
 
 ## First Narrow Candidate: Test Cleanup Trash Batch
 
-This is the only implemented auto-approval scenario.
+This is one implemented auto-approval scenario.
 
 Required properties:
 
@@ -213,6 +216,77 @@ size, `smart_guarded_create_draft_auto_approved` in `policy_reasons`, and
 approval reducer, not an article-generation workflow, not batch article
 approval, and not final WordPress execution.
 
+## Third Narrow Candidate: Article Audio Adoption
+
+Status: implemented for `smart_guarded`.
+
+`npcink-abilities-toolkit/adopt-article-audio` may be auto-approved only when a
+trusted `build-article-audio-adoption-plan` handoff produced one dry-run,
+non-commit adoption proposal for one post. The proposal must carry the expected
+plan source, a valid article-audio kind, required input evidence, and no
+unexpected input keys. This reducer does not make Core an audio workflow
+runtime, media importer, or execution owner.
+
+## Fourth Narrow Candidate: Media Derivative Adoption
+
+Status: implemented for `smart_guarded`.
+
+`npcink-abilities-toolkit/adopt-cloud-media-derivative` may be auto-approved
+only for one reviewed attachment derivative adoption proposal at a time. It is
+intended for operator-reviewed media-library optimization flows where the
+current user or trusted Adapter key already has approval authority.
+
+Required properties:
+
+- one `attachment_id`;
+- one `derivative_artifact` with artifact evidence;
+- proposal input remains `dry_run=true` and `commit=false`;
+- preview identifies a `media_optimization_plan` or the
+  `npcink-abilities-toolkit/build-media-optimization-plan` source ability;
+- no nested `write_actions`, direct content-reference repair payload, delete,
+  settings, featured-image, or URL-repair action is bundled into the shortcut;
+- caller/app key is explicitly trusted and quota-bound;
+- Adapter still performs Core commit preflight and final execution outside
+  Core.
+
+Real auto approval additionally requires
+`guarded_media_derivative_candidate` and
+`smart_guarded_media_derivative_auto_approved` in `policy_reasons` and
+`proposal.auto_approved` audit if status changes. This is an approval reducer
+for reviewed single-attachment derivative replacement proposals; it is not a
+Core batch optimizer, media queue, Cloud runtime, or direct WordPress write.
+
+## Fifth Narrow Candidate: Media ALT-Only Update
+
+Status: implemented for `smart_guarded`.
+
+`npcink-abilities-toolkit/update-media-details` may be auto-approved only for
+one reviewed ALT-only proposal at a time. It is intended for Toolbox batch ALT
+review rows where an operator already inspected the image and accepted the ALT
+text.
+
+Required properties:
+
+- one `attachment_id`;
+- one concise `alt` value;
+- proposal input remains `dry_run=true` and `commit=false`;
+- no `title`, `caption`, `description`, source, attribution, or other media
+  metadata fields are present;
+- preview identifies `media_alt_caption_review_item` from
+  `toolbox_media_alt_caption_review` and
+  `media_alt_caption_review_set.v1`;
+- preview marks `operator_reviewed=true` and
+  `operator_visual_review_confirmed=true`;
+- current ALT status is missing, weak, filename-like, empty, or
+  long/keyword-stuffed;
+- caller/app key is explicitly trusted and quota-bound;
+- Adapter still performs Core commit preflight and final execution outside
+  Core.
+
+Real auto approval additionally requires `guarded_media_alt_candidate` and
+`smart_guarded_media_alt_auto_approved` in `policy_reasons` and
+`proposal.auto_approved` audit if status changes.
+
 ## Development Allow-All Strategy
 
 `dev_allow_all` exists only to reduce local development friction when a
@@ -235,12 +309,14 @@ When the constant is absent or false, `dev_allow_all` must fail closed to
 
 ## Explicit Non-Candidates
 
-Do not auto-approve these in the first policy stages:
+Do not auto-approve these in the current policy stage:
 
 - `npcink-abilities-toolkit/delete-media-permanently`
 - `npcink-abilities-toolkit/delete-post-permanently`
 - `npcink-abilities-toolkit/delete-term`
 - `npcink-abilities-toolkit/set-post-terms`
+- `npcink-abilities-toolkit/set-post-featured-image`
+- URL repair or media settings proposals
 - `npcink-abilities-toolkit/approve-comment`
 - `npcink-abilities-toolkit/reply-comment`
 - `npcink-abilities-toolkit/update-post` when it touches published content

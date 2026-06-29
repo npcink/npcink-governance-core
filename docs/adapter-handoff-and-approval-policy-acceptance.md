@@ -113,12 +113,18 @@ store local passwords or secrets in the repository.
      `npcink-abilities-toolkit/trash-post`; or
    - one direct draft-only `npcink-abilities-toolkit/create-draft` proposal
      with `dry_run=true`, `commit=false`, no publish or schedule intent, and no
-     existing-content target.
+     existing-content target; or
+   - one guarded article-audio adoption proposal; or
+   - one reviewed `npcink-abilities-toolkit/adopt-cloud-media-derivative`
+     proposal with a single attachment, derivative artifact evidence,
+     dry-run/non-commit input, and `media_optimization_plan` preview evidence.
 4. Confirm the proposal becomes `approved` without manual approval.
 5. Confirm policy fields show `policy_decision=auto_approved`,
    `policy_profile=trusted_local`, and one of:
    `smart_guarded_cleanup_auto_approved` or
-   `smart_guarded_create_draft_auto_approved`.
+   `smart_guarded_create_draft_auto_approved` or
+   `smart_guarded_article_audio_auto_approved` or
+   `smart_guarded_media_derivative_auto_approved`.
 6. Confirm `proposal.policy_evaluated` and `proposal.auto_approved` are in the
    audit timeline.
 7. Run commit preflight and confirm it returns a handoff without executing the
