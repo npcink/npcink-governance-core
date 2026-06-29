@@ -68,7 +68,7 @@ ability ids.
 | `capabilities:read` | Read normalized Core capability rows. |
 | `proposals:create` | Create proposals for real `ability_id` values. |
 | `proposals:read` | List or fetch proposal records. |
-| `proposals:approve` | Approve proposals when a trusted host policy is allowed to do so; also authorizes `smart_guarded` cleanup and draft-only create-draft auto approval when paired with `proposals:create`. |
+| `proposals:approve` | Approve proposals when a trusted host policy is allowed to do so; also authorizes `smart_guarded` cleanup, draft-only create-draft, guarded article-audio, single reviewed media derivative, and reviewed ALT-only media detail auto approval when paired with `proposals:create`. |
 | `proposals:reject` | Reject proposals. |
 | `commit:preflight` | Request Core-generated approval context for approved proposals. |
 | `commit:record_execution` | Record Adapter-owned execution outcome after a matching Core commit preflight. |
@@ -92,10 +92,12 @@ avoid wildcard write semantics.
   separately issued trusted Adapter key. That key represents a host-controlled
   UI or policy that has already presented the proposal preview and risk context
   to the user.
-- In `smart_guarded` policy mode, an app-created cleanup batch or single
-  draft-only create-draft proposal can be auto-approved only when the app key
-  carries both `proposals:create` and `proposals:approve`; Core still requires
-  trusted evidence, quotas, audit, and commit preflight.
+- In `smart_guarded` policy mode, an app-created cleanup batch, single
+  draft-only create-draft proposal, guarded article-audio proposal, single
+  reviewed media derivative adoption proposal, or reviewed ALT-only media
+  detail proposal can be auto-approved only when
+  the app key carries both `proposals:create` and `proposals:approve`; Core
+  still requires trusted evidence, quotas, audit, and commit preflight.
 - In `dev_allow_all` policy mode, app-created proposals can be auto-approved
   only in explicit local development mode when
   `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL` is true and the app key carries

@@ -468,8 +468,9 @@ for the productized OpenClaw acceptance checklist.
 
 ### 11. Approval Policy Evaluator Roadmap
 
-Status: development approval modes implemented for cleanup and direct
-draft-only create-draft proposals.
+Status: development approval modes implemented for cleanup, direct draft-only
+create-draft proposals, guarded article-audio adoption, and single reviewed
+media derivative adoption proposals.
 
 Goal: support a conservative future auto-approval tier without turning Core
 into a policy engine or workflow runtime.
@@ -480,7 +481,8 @@ Current rule:
 - every successful proposal creation writes `proposal.policy_evaluated`;
 - `smart_guarded` may auto-approve only trusted test cleanup trash-post
   batches and single draft-only `npcink-abilities-toolkit/create-draft`
-  proposals;
+  proposals, guarded article-audio adoption proposals, or single reviewed
+  `npcink-abilities-toolkit/adopt-cloud-media-derivative` proposals;
 - `dev_allow_all` may auto-approve every proposal only in local development
   when `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL` is true;
 - Adapter still executes only approved proposals that pass Core commit
@@ -491,7 +493,9 @@ Recommended next slice:
 - observe `smart_guarded` in development and keep the allowlist limited to
   `build-nonproduction-content-cleanup-plan` -> `plan_to_proposal_batch` proposals whose
   actions all target `npcink-abilities-toolkit/trash-post`, plus single direct
-  draft-only `npcink-abilities-toolkit/create-draft` proposals;
+  draft-only `npcink-abilities-toolkit/create-draft` proposals, guarded
+  article-audio adoption proposals, and single reviewed
+  `npcink-abilities-toolkit/adopt-cloud-media-derivative` proposals;
 - do not add batch article, publish, schedule, comment, term, destructive,
   media delete, settings, or published-content update auto approval;
 - do not add a rules DSL, scheduler, workflow runtime, UI configuration center,
