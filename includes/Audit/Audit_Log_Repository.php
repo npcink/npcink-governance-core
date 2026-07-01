@@ -79,9 +79,31 @@ final class Audit_Log_Repository {
 	 * @return string
 	 */
 	public function record( string $event_name, array $metadata = array(), string $proposal_id = '' ): string {
+		$event_id = function_exists( 'wp_generate_uuid4' ) ? wp_generate_uuid4() : uniqid( 'npcink_governance_core_audit_', true );
+
+		return $this->record_with_event_id( $event_id, $event_name, $metadata, $proposal_id );
+	}
+
+	/**
+	 * Records one event using a caller-provided unique event id.
+	 *
+	 * This lets lifecycle handoffs use the audit table unique key as a race
+	 * guard without adding execution or queue state.
+	 *
+	 * @param string              $event_id Stable event id.
+	 * @param string              $event_name Event name.
+	 * @param array<string,mixed> $metadata Event metadata.
+	 * @param string              $proposal_id Optional proposal id.
+	 * @return string
+	 */
+	public function record_with_event_id( string $event_id, string $event_name, array $metadata = array(), string $proposal_id = '' ): string {
 		global $wpdb;
 
-		$event_id = function_exists( 'wp_generate_uuid4' ) ? wp_generate_uuid4() : uniqid( 'npcink_governance_core_audit_', true );
+		$event_id = substr( sanitize_key( $event_id ), 0, 64 );
+		if ( '' === $event_id ) {
+			return '';
+		}
+
 		$now      = current_time( 'mysql', true );
 		$auth     = Request_Context::audit_metadata();
 		if ( ! empty( $auth ) ) {

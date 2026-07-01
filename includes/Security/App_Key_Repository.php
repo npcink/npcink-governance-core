@@ -216,7 +216,7 @@ final class App_Key_Repository {
 			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 			$rows  = $wpdb->get_results(
 				$wpdb->prepare(
-					'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, expires_at, last_used_ip_hash, revoked_at, revoked_reason, hash_algorithm_version, created_by, created_at, updated_at, last_used_at FROM %i WHERE status = %s ORDER BY id DESC LIMIT %d OFFSET %d',
+					'SELECT app_id, app_label, key_id, status, scopes_json, rate_limit, rate_window_seconds, caller_type, expires_at, last_used_ip_hash, revoked_at, revoked_reason, hash_algorithm_version, created_by, created_at, updated_at, last_used_at FROM %i WHERE status = %s ORDER BY id DESC LIMIT %d OFFSET %d',
 					$this->table_name(),
 					$status,
 					$limit,
@@ -231,7 +231,7 @@ final class App_Key_Repository {
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$rows  = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT app_id, app_label, key_id, secret_hash, status, scopes_json, rate_limit, rate_window_seconds, caller_type, expires_at, last_used_ip_hash, revoked_at, revoked_reason, hash_algorithm_version, created_by, created_at, updated_at, last_used_at FROM %i ORDER BY id DESC LIMIT %d OFFSET %d',
+				'SELECT app_id, app_label, key_id, status, scopes_json, rate_limit, rate_window_seconds, caller_type, expires_at, last_used_ip_hash, revoked_at, revoked_reason, hash_algorithm_version, created_by, created_at, updated_at, last_used_at FROM %i ORDER BY id DESC LIMIT %d OFFSET %d',
 				$this->table_name(),
 				$limit,
 				$offset

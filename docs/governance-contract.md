@@ -103,7 +103,9 @@ Core may consume these read-only planning ability outputs:
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
 - `npcink-abilities-toolkit/build-image-candidate-adoption-plan`
+- `npcink-abilities-toolkit/build-article-audio-adoption-plan`
 - `npcink-toolbox/build-site-knowledge-review-plan`
+- `npcink-toolbox/build-nightly-inspection-review-plan`
 - `npcink-abilities-toolkit/build-content-metadata-apply-plan`
 
 Plan intake does not execute the plan ability and does not execute target write

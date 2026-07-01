@@ -1082,6 +1082,7 @@ foreach (
 npcink_governance_core_assert( false === strpos( $app_key_repository, "'secret' => " . '$secret' ), 'App key repository does not persist raw app secret in DB record.' );
 npcink_governance_core_assert( false === strpos( $app_key_repository, 'mai_core.' ), 'App key repository does not generate legacy Magick AI token prefixes.' );
 npcink_governance_core_assert( false === strpos( $app_key_repository, 'empty( $clean ) ? $this->default_scopes()' ), 'App key repository does not turn explicitly empty scopes into default scopes.' );
+npcink_governance_core_assert( 1 !== preg_match( '/SELECT app_id, app_label, key_id, ' . 'secret_hash, status.*ORDER BY id DESC/s', $app_key_repository ), 'App key list queries do not select secret_hash.' );
 
 $app_rate_limiter = npcink_governance_core_read( $root . '/includes/Security/App_Rate_Limiter.php' );
 npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'npcink_governance_core_app_rate_limits' ), 'App rate limiter stores fixed-window counters.' );
@@ -1788,6 +1789,8 @@ npcink_governance_core_assert( false !== strpos( $proposal_repository, 'list_sta
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'list_recent_summaries' ), 'Proposal repository supports payload-light proposal lists.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'payload_included' ), 'Proposal repository marks payload-light list rows.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'list_pending_for_guardrail' ), 'Proposal repository can list pending proposals for create guardrails.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'list_pending_guardrail_summaries' ), 'Proposal repository supports payload-light pending guardrail checks.' );
+npcink_governance_core_assert( false !== strpos( $proposal_repository, 'SELECT proposal_id, ability_id, status, caller_json, created_by, created_at, updated_at' ), 'Pending guardrail summary query omits large input and preview payloads.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'pending_quota_key' ), 'Proposal repository stores indexed pending quota keys.' );
 npcink_governance_core_assert( false === strpos( $proposal_repository, 'caller_json LIKE' ), 'Proposal repository does not scan caller JSON for guardrail quota lookup.' );
 npcink_governance_core_assert( false !== strpos( $proposal_repository, 'count_by_status' ), 'Proposal repository can count status queues.' );
@@ -1847,6 +1850,7 @@ npcink_governance_core_assert( false !== strpos( $proposal_service, 'core_guardr
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'core_policy' ), 'Proposal service stores non-secret policy decision metadata.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_policy_decision_audit_failed' ), 'Proposal service fails closed when policy decision audit fails.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'deduplicated' ), 'Proposal service returns existing pending duplicates.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, '$full_duplicate = $this->proposals->find' ), 'Proposal service reloads full proposal payloads before returning pending duplicates.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'stable_input_hash' ), 'Proposal service hashes proposal input after ability-aware persistence sanitization.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, '$this->proposals->sanitize_input_for_ability' ), 'Proposal service input hashes match repository persistence sanitization.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.listed' ), 'Proposal service records proposal.listed audit event.' );
@@ -1888,6 +1892,8 @@ npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "fun
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "function_exists( 'home_url' ) ? home_url() : ''" ), 'Commit preflight binds home_url.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "function_exists( 'get_current_blog_id' ) ? get_current_blog_id() : 0" ), 'Commit preflight binds blog_id.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'payload_hash' ), 'Commit preflight has stable payload hash generation.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'record_with_event_id' ), 'Commit preflight uses deterministic audit event id for one successful handoff.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'preflight_failure_audit_failed' ), 'Commit preflight fails closed when denial audit cannot be stored.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'new_correlation_id' ), 'Commit preflight generates a correlation id.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'proposal_item_preflight' ), 'Commit preflight evaluates proposal item readiness.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'batch_review_summary' ), 'Commit preflight returns batch review summary when a proposal has one.' );
@@ -1918,6 +1924,7 @@ foreach (
 		'npcink-toolbox/build-article-batch-write-plan',
 		'npcink-toolbox/build-article-media-batch-write-plan',
 		'npcink-abilities-toolkit/build-image-candidate-adoption-plan',
+		'npcink-abilities-toolkit/build-article-audio-adoption-plan',
 		'npcink-toolbox/build-site-knowledge-review-plan',
 		'npcink-toolbox/build-nightly-inspection-review-plan',
 		'npcink-abilities-toolkit/build-content-metadata-apply-plan',
@@ -2100,6 +2107,35 @@ npcink_governance_core_assert( false !== strpos( $testing_strategy, 'Proposal an
 npcink_governance_core_assert( false !== strpos( $development_workflow, 'NPCINK_GOVERNANCE_CORE_SMOKE_PURGE=1' ), 'Development workflow documents optional smoke purge.' );
 
 $plan_to_proposal_docs = npcink_governance_core_read( $root . '/docs/plan-to-proposal-governance.md' );
+$canonical_plan_ability_ids = array(
+	'npcink-abilities-toolkit/build-content-inventory-fix-plan',
+	'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan',
+	'npcink-abilities-toolkit/build-media-inventory-fix-plan',
+	'npcink-abilities-toolkit/build-media-reference-repair-plan',
+	'npcink-abilities-toolkit/build-media-settings-reference-repair-plan',
+	'npcink-abilities-toolkit/build-media-optimization-plan',
+	'npcink-abilities-toolkit/build-media-adoption-enhancement-plan',
+	'npcink-abilities-toolkit/build-media-rename-plan',
+	'npcink-abilities-toolkit/build-article-optimization-apply-plan',
+	'npcink-abilities-toolkit/build-article-block-plan',
+	'npcink-abilities-toolkit/build-pattern-page-plan',
+	'npcink-abilities-toolkit/build-block-theme-site-plan',
+	'npcink-toolbox/build-article-write-plan',
+	'npcink-toolbox/build-article-batch-write-plan',
+	'npcink-toolbox/build-article-media-batch-write-plan',
+	'npcink-abilities-toolkit/build-image-candidate-adoption-plan',
+	'npcink-abilities-toolkit/build-article-audio-adoption-plan',
+	'npcink-toolbox/build-site-knowledge-review-plan',
+	'npcink-toolbox/build-nightly-inspection-review-plan',
+	'npcink-abilities-toolkit/build-content-metadata-apply-plan',
+);
+foreach ( $canonical_plan_ability_ids as $ability_id ) {
+	npcink_governance_core_assert( false !== strpos( $plan_proposal_service, $ability_id ), 'Plan service allowlist contains canonical plan ability: ' . $ability_id );
+	npcink_governance_core_assert( false !== strpos( $governance, $ability_id ), 'Governance contract contains canonical plan ability: ' . $ability_id );
+	npcink_governance_core_assert( false !== strpos( $rest_contract, $ability_id ), 'REST contract contains canonical plan ability: ' . $ability_id );
+	npcink_governance_core_assert( false !== strpos( $ability_intake, $ability_id ), 'Ability intake contract contains canonical plan ability: ' . $ability_id );
+	npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, $ability_id ), 'Plan-to-proposal docs contain canonical plan ability: ' . $ability_id );
+}
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_unattached_nonproduction_media' ), 'Plan-to-proposal docs mention abilities-side unattached test media delete gate.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'include_trash_parent_media' ), 'Plan-to-proposal docs mention abilities-side trash-parent media delete gate.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-article-write-plan' ), 'Plan-to-proposal docs include the Toolbox article writing handoff.' );

@@ -219,7 +219,8 @@ final class Commit_Preflight_Service {
 			'commit_execution'  => false,
 		) + $client_binding + $site_binding;
 
-		$event_id = $this->audit->record(
+		$event_id = $this->audit->record_with_event_id(
+			$this->preflight_event_id( $proposal_id, $approved_input_hash ),
 			'commit.preflighted',
 			array(
 				'ability_id'            => (string) $proposal['ability_id'],
@@ -237,6 +238,21 @@ final class Commit_Preflight_Service {
 		);
 
 		if ( '' === $event_id ) {
+			if ( $this->has_prior_preflight( $proposal_id, $approved_input_hash ) ) {
+				return $this->preflight_error(
+					'npcink_governance_core_commit_preflight_already_issued',
+					__( 'Commit preflight has already issued an execution handoff for this approved proposal.', 'npcink-governance-core' ),
+					409,
+					$proposal_id,
+					array(
+						'ability_id'           => (string) ( $proposal['ability_id'] ?? '' ),
+						'status'               => (string) ( $proposal['status'] ?? '' ),
+						'approved_input_hash'  => $approved_input_hash,
+						'idempotency_required' => true,
+					)
+				);
+			}
+
 			return new WP_Error(
 				'npcink_governance_core_preflight_audit_failed',
 				__( 'Commit preflight could not be audited.', 'npcink-governance-core' ),
@@ -448,6 +464,17 @@ final class Commit_Preflight_Service {
 	}
 
 	/**
+	 * Returns a deterministic event id for one successful preflight handoff.
+	 *
+	 * @param string $proposal_id Proposal id.
+	 * @param string $approved_input_hash Approved input hash.
+	 * @return string
+	 */
+	private function preflight_event_id( string $proposal_id, string $approved_input_hash ): string {
+		return 'preflight_' . substr( hash( 'sha256', $proposal_id . '|' . $approved_input_hash ), 0, 48 );
+	}
+
+	/**
 	 * Records and returns a preflight failure.
 	 *
 	 * @param string              $code Error code.
@@ -460,7 +487,7 @@ final class Commit_Preflight_Service {
 	 */
 	private function preflight_error( string $code, string $message, int $status, string $proposal_id = '', array $metadata = array(), array $data = array() ): WP_Error {
 		if ( '' !== $proposal_id ) {
-			$this->audit->record(
+			$event_id = $this->audit->record(
 				'commit.preflight_failed',
 				array_merge(
 					array(
@@ -472,11 +499,21 @@ final class Commit_Preflight_Service {
 				),
 				$proposal_id
 			);
+			if ( '' === $event_id ) {
+				return new WP_Error(
+					'npcink_governance_core_preflight_failure_audit_failed',
+					__( 'Commit preflight failure could not be audited.', 'npcink-governance-core' ),
+					array(
+						'status'        => 500,
+						'original_code' => $code,
+					)
+				);
+			}
 		}
 
-			return new WP_Error(
-				$code,
-				$message,
+		return new WP_Error(
+			$code,
+			$message,
 			array_merge(
 				array(
 					'status'           => $status,

@@ -130,9 +130,14 @@ final class Proposal_Service {
 		$caller['core_policy'] = $policy;
 		$this->expire_stale_pending_before_create();
 
-		$pending = $this->proposals->list_pending_for_guardrail( (string) $guardrail['pending_quota_key'], '', max( 500, (int) $guardrail['pending_quota_limit'] ) );
+		$pending = $this->proposals->list_pending_guardrail_summaries( (string) $guardrail['pending_quota_key'], '', max( 500, (int) $guardrail['pending_quota_limit'] ) );
 		$duplicate = $this->find_duplicate_pending_proposal( $pending, $ability_id, (string) $guardrail['input_hash'], (string) $guardrail['pending_quota_key'] );
 		if ( null !== $duplicate ) {
+			$full_duplicate = $this->proposals->find( (string) $duplicate['proposal_id'] );
+			if ( null !== $full_duplicate ) {
+				$duplicate = $full_duplicate;
+			}
+
 			$duplicate['deduplicated'] = true;
 			$duplicate['dedupe']       = array(
 				'reason'      => 'pending_equivalent_exists',
@@ -956,6 +961,16 @@ final class Proposal_Service {
 	 */
 	public function pending_ttl_seconds(): int {
 		return self::PENDING_TTL_SECONDS;
+	}
+
+	/**
+	 * Deletes a proposal row created inside a failed multi-record intake.
+	 *
+	 * @param string $proposal_id Proposal id.
+	 * @return bool
+	 */
+	public function delete_created_proposal( string $proposal_id ): bool {
+		return $this->proposals->delete_by_proposal_id( $proposal_id );
 	}
 
 	/**

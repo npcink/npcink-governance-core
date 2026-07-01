@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-07-01 — Eval-lab governance hardening follow-up
+
+- **Module**: Core fail-closed governance services.
+- **Status**: Eval-lab adversarial findings have been converted into
+  fail-closed hardening for commit preflight, sensitive read one-time grants,
+  plan intake audit rollback, and payload-light guardrail queries.
+- **Completed**:
+  - Added deterministic audit event ids for successful commit preflight
+    handoffs.
+  - Made preflight failure audit persistence mandatory.
+  - Rolled back one-time read consumption when consume audit fails and guarded
+    approval field updates by pending status.
+  - Made aggregate plan-ingested audit failure delete created proposals.
+  - Synced canonical plan allowlists across docs and static contracts.
+  - Removed `secret_hash` from app-key list queries and avoided full proposal
+    payloads in pending guardrail checks while preserving full duplicate
+    response payloads.
+- **Verified**:
+  - `composer test:all` passed.
+  - `composer analyse:phpstan` passed.
+  - `composer smoke:wp` passed.
+- **Boundary**:
+  - This is governance hardening only. Core still does not execute abilities,
+    own Adapter or Toolkit code, own workflow runtime, own task queues, store
+    provider credentials, or mutate WordPress content.
+
 ## 2026-06-25 — PHPStan CI gate prepared
 
 - **Module**: Core static quality gate.

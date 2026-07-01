@@ -74,6 +74,7 @@ abilities:
 - `npcink-abilities-toolkit/build-media-optimization-plan`
 - `npcink-abilities-toolkit/build-media-adoption-enhancement-plan`
 - `npcink-abilities-toolkit/build-media-rename-plan`
+- `npcink-abilities-toolkit/build-article-optimization-apply-plan`
 - `npcink-abilities-toolkit/build-pattern-page-plan`
 - `npcink-abilities-toolkit/build-article-block-plan`
 - `npcink-abilities-toolkit/build-block-theme-site-plan`
@@ -81,6 +82,7 @@ abilities:
 - `npcink-toolbox/build-article-batch-write-plan`
 - `npcink-toolbox/build-article-media-batch-write-plan`
 - `npcink-abilities-toolkit/build-image-candidate-adoption-plan`
+- `npcink-abilities-toolkit/build-article-audio-adoption-plan`
 - `npcink-toolbox/build-site-knowledge-review-plan`
 - `npcink-toolbox/build-nightly-inspection-review-plan`
 - `npcink-abilities-toolkit/build-content-metadata-apply-plan`
