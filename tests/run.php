@@ -135,6 +135,7 @@ $translation_glossary = npcink_governance_core_read( $root . '/docs/translation-
 foreach ( array( 'Governance', 'Proposal', 'Commit preflight', 'Ability', 'Audit', 'App key' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $translation_glossary, $required ), 'Chinese translation glossary contains required term: ' . $required );
 }
+npcink_governance_core_assert( false !== strpos( $translation_glossary, 'Workflow Toolbox menu | 流程工具箱' ), 'Chinese translation glossary contains the Workflow Toolbox menu label.' );
 
 $translation_pot = npcink_governance_core_read( $root . '/languages/npcink-governance-core.pot' );
 $translation_po  = npcink_governance_core_read( $root . '/languages/npcink-governance-core-zh_CN.po' );
@@ -143,6 +144,8 @@ npcink_governance_core_assert( '' !== $translation_po, 'Bundled zh_CN PO file ex
 npcink_governance_core_assert( is_readable( $root . '/languages/npcink-governance-core-zh_CN.mo' ), 'Bundled zh_CN MO file exists.' );
 npcink_governance_core_assert( false !== strpos( $translation_po, '"Language: zh_CN\\n"' ), 'Bundled zh_CN PO declares zh_CN language.' );
 npcink_governance_core_assert( false !== strpos( $translation_po, 'msgid "Review Queue"' ) && false !== strpos( $translation_po, 'msgstr "审核队列"' ), 'Bundled zh_CN PO translates Review Queue.' );
+npcink_governance_core_assert( false !== strpos( $translation_po, 'msgid "Workflow Toolbox"' ) && false !== strpos( $translation_po, 'msgstr "流程工具箱"' ), 'Bundled zh_CN PO translates the Workflow Toolbox menu label.' );
+npcink_governance_core_assert( false !== strpos( $translation_po, '"connection pointers, and ability packages."' ) && false !== strpos( $translation_po, 'Npcink 治理、连接、云端连接指引和能力包的本地 WordPress 入口。' ), 'Bundled zh_CN PO translates the shared Npcink AI overview description.' );
 npcink_governance_core_assert( false !== strpos( $translation_po, 'msgid "Commit preflight has already issued an execution handoff for this approved proposal."' ), 'Bundled zh_CN PO keeps commit preflight source strings.' );
 
 $readme = npcink_governance_core_read( $root . '/README.md' );
@@ -299,7 +302,7 @@ npcink_governance_core_assert( false !== strpos( $positioning, '`npcink-content-
 npcink_governance_core_assert( false !== strpos( $positioning, 'local admin consent with audit' ), 'Positioning documents local admin consent with audit.' );
 
 $admin_menu_standard = npcink_governance_core_read( $root . '/docs/admin-menu-standard.md' );
-foreach ( array( '`Npcink AI`', '`npcink-ai`', '`Core`', '`Adapter`', '`Abilities`', '`Cloud Addon`', '`Npcink AI -> Core`' ) as $required ) {
+foreach ( array( '`Npcink AI`', '`npcink-ai`', '`Core`', '`Adapter`', '`Abilities`', '`Workflow Toolbox`', '`Cloud Addon`', '`Npcink AI -> Core`', '`Npcink AI -> Workflow Toolbox`', '`Npcink AI -> 流程工具箱`' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $admin_menu_standard, $required ), 'Admin menu standard documents required entry: ' . $required );
 }
 
@@ -315,6 +318,8 @@ npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Npcink AI Ov
 npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Core', 'npcink-governance-core' ),\n\t\t\tself::MENU_CAPABILITY" ), 'Admin submenu title is Core.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'npcink-ai-client-adapter'" ), 'Admin overview links to the canonical Adapter slug.' );
 npcink_governance_core_assert( false === strpos( $admin_page, "'npcink-openclaw-adapter'" ), 'Admin overview does not link to the legacy Adapter slug.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "'npcink-toolbox'" ), 'Admin overview links to the canonical Workflow Toolbox slug.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Workflow Toolbox', 'npcink-governance-core' )" ), 'Admin overview labels the Workflow Toolbox surface.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'npcink-cloud-addon'" ), 'Admin overview links to the canonical Cloud Addon slug.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Cloud Addon', 'npcink-governance-core' )" ), 'Admin overview labels the Cloud Addon surface.' );
 

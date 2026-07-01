@@ -1,5 +1,23 @@
 # Session Breadcrumb
 
+## 2026-07-01 — Shared Npcink AI overview lists Workflow Toolbox
+
+- **Module**: Shared Npcink AI admin overview navigation and zh_CN localization.
+- **Status**: The Overview installed-surfaces table now includes the Workflow
+  Toolbox entry between Abilities and Cloud Addon, and the zh_CN language pack
+  translates the overview description plus the Workflow Toolbox label as
+  `流程工具箱`.
+- **Completed**:
+  - Added the `npcink-toolbox` overview row.
+  - Updated the admin menu standard and Chinese translation glossary.
+  - Updated PO/POT/MO language files and static contracts.
+- **Next gate**:
+  - Run `composer test:all`.
+- **Boundary**:
+  - This is navigation and localization only. Core still does not own toolbox
+    product workflows, workflow runtime, provider credentials, queues, or final
+    WordPress writes.
+
 ## 2026-07-01 — Eval-lab hardening closeout documented
 
 - **Module**: Core governance hardening documentation.

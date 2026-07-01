@@ -20,7 +20,8 @@ and text domain remain English public contracts.
   they refer to product or package identities.
 - Translate shared wp-admin navigation labels when they are short module
   entries rather than product names: `Core` -> `治理核心`, `Adapter` ->
-  `渠道适配器`, `Abilities` -> `原子能力`, and `Cloud Addon` -> `云端扩展`.
+  `渠道适配器`, `Abilities` -> `原子能力`, `Workflow Toolbox` -> `流程工具箱`,
+  and `Cloud Addon` -> `云端扩展`.
 
 ## Standard Terms
 
@@ -42,6 +43,7 @@ and text domain remain English public contracts.
 | Ability | 能力 |
 | Ability id | 能力 ID |
 | Abilities menu | 原子能力 |
+| Workflow Toolbox menu | 流程工具箱 |
 | WordPress Abilities API | WordPress Abilities API |
 | Audit | 审计 |
 | Audit log | 审计日志 |
