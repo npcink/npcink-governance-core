@@ -339,18 +339,26 @@ final class Plan_Proposal_Service {
 			}
 		}
 
-		$this->audit->record(
+		$plan_ingested_event_id = $this->audit->record(
 			'proposal.plan_ingested',
 			array(
-				'plan_ability_id' => $plan_ability_id,
-				'batch_id'        => $batch_id,
-				'action_count'    => count( $write_actions ),
-				'proposal_count'  => count( $created ),
-				'blocked_count'   => count( $blocked_items ),
+				'plan_ability_id'  => $plan_ability_id,
+				'batch_id'         => $batch_id,
+				'action_count'     => count( $write_actions ),
+				'proposal_count'   => count( $created ),
+				'blocked_count'    => count( $blocked_items ),
 				'needs_input_count' => count( $needs_input ),
 				'commit_execution' => false,
 			)
 		);
+		if ( '' === $plan_ingested_event_id ) {
+			$this->delete_created_proposals( $created );
+			return new WP_Error(
+				'npcink_governance_core_plan_ingest_audit_failed',
+				__( 'Plan intake could not be audited.', 'npcink-governance-core' ),
+				array( 'status' => 500 )
+			);
+		}
 
 		return array(
 			'plan_ability_id'  => $plan_ability_id,
@@ -2395,6 +2403,25 @@ final class Plan_Proposal_Service {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Deletes proposal rows created by a failed aggregate plan ingest.
+	 *
+	 * @param array<int,array<string,mixed>> $created Created proposal rows.
+	 * @return void
+	 */
+	private function delete_created_proposals( array $created ): void {
+		foreach ( $created as $proposal ) {
+			if ( ! is_array( $proposal ) ) {
+				continue;
+			}
+
+			$proposal_id = sanitize_text_field( (string) ( $proposal['proposal_id'] ?? '' ) );
+			if ( '' !== $proposal_id ) {
+				$this->proposals->delete_created_proposal( $proposal_id );
+			}
+		}
 	}
 
 	/**

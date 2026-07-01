@@ -846,6 +846,13 @@ final class Npcink_Governance_Core_Fail_Closed_WPDB {
 		if ( false !== strpos( $table, 'npcink_governance_core_audit_log' ) && in_array( (string) ( $record['event_name'] ?? '' ), $this->fail_insert_event_names, true ) ) {
 			return false;
 		}
+		if ( false !== strpos( $table, 'npcink_governance_core_audit_log' ) ) {
+			foreach ( $this->tables[ $table ] ?? array() as $row ) {
+				if ( (string) ( $row['event_id'] ?? '' ) === (string) ( $record['event_id'] ?? '' ) ) {
+					return false;
+				}
+			}
+		}
 
 		$this->auto_increment[ $table ] = ( $this->auto_increment[ $table ] ?? 0 ) + 1;
 		$this->insert_id               = $this->auto_increment[ $table ];
@@ -3460,6 +3467,14 @@ npcink_governance_core_fail_closed_assert( is_array( $article_result['proposals'
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();
+$wpdb->fail_insert_event_names[] = 'proposal.plan_ingested';
+$plan_ingest_audit_failure = $stack['service']->create_from_plan( 'npcink-toolbox/build-article-write-plan', npcink_governance_core_fail_closed_article_write_plan(), array(), array( 'source' => 'toolbox_article_workflow' ) );
+npcink_governance_core_fail_closed_assert( is_wp_error( $plan_ingest_audit_failure ), 'Plan intake fails closed when aggregate plan_ingested audit cannot be stored.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_plan_ingest_audit_failed' === $plan_ingest_audit_failure->get_error_code(), 'Plan ingest audit failure uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 0 === count( $wpdb->rows( $proposal_table ) ), 'Plan ingest audit failure deletes created proposal rows.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
 $oversized_payload_plan = npcink_governance_core_fail_closed_article_write_plan();
 $oversized_payload_plan['intake_padding'] = str_repeat( 'x', 263000 );
 $oversized_payload_result = $stack['service']->create_from_plan( 'npcink-toolbox/build-article-write-plan', $oversized_payload_plan );
@@ -4379,6 +4394,32 @@ $one_time_replay = $stack['service']->preflight(
 );
 npcink_governance_core_fail_closed_assert( is_wp_error( $one_time_replay ), 'Consumed one-time sensitive read request cannot be reused.' );
 
+$one_time_failed_consume_audit_request = $stack['service']->create(
+	array_merge(
+		$read_payload,
+		array(
+			'input'    => array( 'tail' => true, 'filter' => 'one-time-consume-audit-fails' ),
+			'one_time' => true,
+		)
+	)
+);
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $one_time_failed_consume_audit_request ), 'One-time sensitive read request is created for consume audit failure.' );
+$one_time_failed_consume_audit_approved = $stack['service']->approve( (string) $one_time_failed_consume_audit_request['request_id'], array( 'one_time' => true ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $one_time_failed_consume_audit_approved ), 'One-time sensitive read request is approved for consume audit failure.' );
+$wpdb->fail_insert_event_names[] = 'read_request.consumed';
+$one_time_failed_consume_audit_grant = $stack['service']->preflight(
+	(string) $one_time_failed_consume_audit_request['request_id'],
+	array(
+		'ability_id' => 'npcink-abilities-toolkit/read-error-log',
+		'input'      => array( 'tail' => true, 'filter' => 'one-time-consume-audit-fails' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $one_time_failed_consume_audit_grant ), 'One-time sensitive read request fails closed when consume audit fails.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_read_request_consume_audit_failed' === $one_time_failed_consume_audit_grant->get_error_code(), 'One-time consume audit failure uses stable error code.' );
+$one_time_after_consume_audit_failure = $stack['requests']->find( (string) $one_time_failed_consume_audit_request['request_id'] );
+npcink_governance_core_fail_closed_assert( is_array( $one_time_after_consume_audit_failure ) && 'approved' === (string) ( $one_time_after_consume_audit_failure['status'] ?? '' ), 'One-time consume audit failure rolls the request back to approved.' );
+$wpdb->fail_insert_event_names = array_values( array_diff( $wpdb->fail_insert_event_names, array( 'read_request.consumed' ) ) );
+
 $one_time_failed_consume_request = $stack['service']->create(
 	array_merge(
 		$read_payload,
@@ -5021,11 +5062,23 @@ foreach ( $representative_ability_ids as $ability_id ) {
 	npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'proposal.policy_evaluated' ) ), $ability_id . ' policy evaluation is audited.' );
 	npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'proposal.approved' ) ), $ability_id . ' approval is audited.' );
 	npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflighted' ) ), $ability_id . ' successful preflight is audited.' );
+	$preflight_events = npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflighted' );
+	npcink_governance_core_fail_closed_assert( 0 === strpos( (string) ( $preflight_events[0]['event_id'] ?? '' ), 'preflight_' ), $ability_id . ' successful preflight uses deterministic audit event id prefix.' );
 
 	$replay = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
 	npcink_governance_core_fail_closed_assert( is_wp_error( $replay ), $ability_id . ' duplicate commit preflight is rejected.' );
 	npcink_governance_core_fail_closed_assert( 'npcink_governance_core_commit_preflight_already_issued' === $replay->get_error_code(), $ability_id . ' duplicate preflight uses stable error code.' );
 }
+
+$wpdb     = npcink_governance_core_fail_closed_reset_db();
+$stack    = npcink_governance_core_fail_closed_governance_stack();
+$proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/update-post' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Preflight failure audit fixture proposal is created.' );
+$wpdb->fail_insert_event_names[] = 'commit.preflight_failed';
+$failed_preflight_audit = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
+npcink_governance_core_fail_closed_assert( is_wp_error( $failed_preflight_audit ), 'Preflight denial fails closed when failure audit cannot be stored.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_preflight_failure_audit_failed' === $failed_preflight_audit->get_error_code(), 'Preflight failure audit insert failure uses stable error code.' );
+npcink_governance_core_fail_closed_assert( 500 === npcink_governance_core_fail_closed_error_http_status( $failed_preflight_audit ), 'Preflight failure audit insert failure maps to HTTP 500.' );
 
 $wpdb     = npcink_governance_core_fail_closed_reset_db();
 $stack    = npcink_governance_core_fail_closed_governance_stack();

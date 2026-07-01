@@ -340,6 +340,37 @@ final class Read_Request_Repository {
 	}
 
 	/**
+	 * Restores a consumed one-time request when consume audit cannot be stored.
+	 *
+	 * @param string $request_id Request id.
+	 * @return array<string,mixed>|null
+	 */
+	public function restore_consumed_to_approved( string $request_id ): ?array {
+		global $wpdb;
+
+		$request_id = sanitize_text_field( $request_id );
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		$updated = $wpdb->update(
+			$this->table_name(),
+			array(
+				'status'      => self::STATUS_APPROVED,
+				'consumed_at' => '',
+				'updated_at'  => current_time( 'mysql', true ),
+			),
+			array(
+				'request_id' => $request_id,
+				'status'     => self::STATUS_CONSUMED,
+			),
+			array( '%s', '%s', '%s' ),
+			array( '%s', '%s' )
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return 1 === $updated ? $this->find( $request_id ) : null;
+	}
+
+	/**
 	 * Updates approved bounds and expiry.
 	 *
 	 * @param string              $request_id Request id.
@@ -357,16 +388,19 @@ final class Read_Request_Repository {
 		);
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
-		$wpdb->update(
+		$updated = $wpdb->update(
 			$this->table_name(),
 			$record,
-			array( 'request_id' => sanitize_text_field( $request_id ) ),
+			array(
+				'request_id' => sanitize_text_field( $request_id ),
+				'status'     => self::STATUS_PENDING,
+			),
 			array( '%s', '%s', '%s', '%s' ),
-			array( '%s' )
+			array( '%s', '%s' )
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
-		return $this->find( $request_id );
+		return 1 === $updated ? $this->find( $request_id ) : null;
 	}
 
 	/**

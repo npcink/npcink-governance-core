@@ -201,6 +201,11 @@ final class Read_Request_Service {
 			)
 		);
 		$expires_at = $this->bounded_expires_at( (string) ( $metadata['expires_at'] ?? $request['expires_at'] ?? '' ) );
+		$original_approval_fields = array(
+			'bounds'          => is_array( $request['bounds'] ?? null ) ? (array) $request['bounds'] : array(),
+			'redaction_level' => (string) ( $request['redaction_level'] ?? 'standard' ),
+			'expires_at'      => (string) ( $request['expires_at'] ?? '' ),
+		);
 		$updated    = $this->requests->update_approval_fields(
 			(string) $request['request_id'],
 			array(
@@ -215,6 +220,7 @@ final class Read_Request_Service {
 
 		$approved = $this->requests->update_status_when( (string) $request['request_id'], Read_Request_Repository::STATUS_PENDING, Read_Request_Repository::STATUS_APPROVED );
 		if ( null === $approved ) {
+			$this->requests->update_approval_fields( (string) $request['request_id'], $original_approval_fields );
 			return $this->transition_failed_error();
 		}
 
@@ -225,7 +231,10 @@ final class Read_Request_Service {
 		);
 
 		if ( '' === $event_id ) {
-			$this->requests->update_status_when( (string) $request['request_id'], Read_Request_Repository::STATUS_APPROVED, Read_Request_Repository::STATUS_PENDING );
+			$rolled_back = $this->requests->update_status_when( (string) $request['request_id'], Read_Request_Repository::STATUS_APPROVED, Read_Request_Repository::STATUS_PENDING );
+			if ( null !== $rolled_back ) {
+				$this->requests->update_approval_fields( (string) $request['request_id'], $original_approval_fields );
+			}
 			return $this->audit_failed_error( 'npcink_governance_core_read_request_decision_audit_failed' );
 		}
 
@@ -364,6 +373,7 @@ final class Read_Request_Service {
 				(string) $request['request_id']
 			);
 			if ( '' === $consumed_event_id ) {
+				$this->requests->restore_consumed_to_approved( (string) $request['request_id'] );
 				return $this->audit_failed_error( 'npcink_governance_core_read_request_consume_audit_failed' );
 			}
 

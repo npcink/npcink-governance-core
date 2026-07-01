@@ -6,14 +6,16 @@ Npcink Governance Core is a governance plugin. The security model must fail clos
 
 ## MVP Authorization
 
-All MVP REST routes require:
+MVP REST routes require either an administrator session or an explicitly
+documented scoped app key:
 
 ```php
 current_user_can( 'manage_options' )
 ```
 
-Scoped app keys are also supported for external governance clients. App keys do
-not replace human admin approval.
+Scoped app keys are supported only for the route families listed in the REST
+API contract. App keys do not replace human admin approval, and generic
+adapters must not receive approval or audit scopes by default.
 
 The runtime contract discovery endpoint remains administrator-only. It exposes
 version and boundary metadata, not app-authenticated governance state.
@@ -31,12 +33,15 @@ Implemented layers include:
 - rate limits;
 - pending proposal quota and duplicate pending proposal reuse;
 - observation-only approval policy evaluation;
+- bounded `smart_guarded` auto approval for explicitly allowlisted low-risk
+  cases with audit and quota checks;
+- local-development-only `dev_allow_all` gated by
+  `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL`;
 - per-app audit attribution.
 
 Planned layers include:
 
 - write-mode policy;
-- explicitly enabled auto approval for tightly bounded cases;
 - idempotency keys;
 
 These must be documented before implementation. They must not be inferred from

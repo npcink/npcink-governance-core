@@ -345,6 +345,50 @@ final class Proposal_Repository {
 	}
 
 	/**
+	 * Lists pending proposal summaries for guardrail checks.
+	 *
+	 * This omits input_json and preview_json because duplicate and quota checks
+	 * use caller guardrail metadata, not full proposal payloads.
+	 *
+	 * @param string $quota_key Pending quota key.
+	 * @param string $ability_id Optional ability id.
+	 * @param int    $limit Limit.
+	 * @return array<int,array<string,mixed>>
+	 */
+	public function list_pending_guardrail_summaries( string $quota_key, string $ability_id = '', int $limit = 500 ): array {
+		global $wpdb;
+
+		$quota_key = sanitize_text_field( $quota_key );
+		if ( '' === $quota_key ) {
+			return array();
+		}
+
+		$ability_id = sanitize_text_field( $ability_id );
+		$limit      = max( 1, min( 1000, $limit ) );
+		$where      = array( 'status = %s', 'pending_quota_key = %s' );
+		$args       = array( $this->table_name(), self::STATUS_PENDING, $quota_key );
+
+		if ( '' !== $ability_id ) {
+			$where[] = 'ability_id = %s';
+			$args[]  = $ability_id;
+		}
+
+		$args[] = $limit;
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- SQL uses fixed clauses, generated placeholders, and Core's custom governance table.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT proposal_id, ability_id, status, caller_json, created_by, created_at, updated_at FROM %i WHERE ' . $this->join_where_clauses( $where ) . ' ORDER BY id DESC LIMIT %d',
+				...$args
+			),
+			ARRAY_A
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
+	}
+
+	/**
 	 * Finds a proposal by id.
 	 *
 	 * @param string $proposal_id Proposal id.
