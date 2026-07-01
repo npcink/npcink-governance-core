@@ -124,6 +124,7 @@ Read the project handoff docs before starting a new implementation session:
 - [AI Development Workstream Summary](docs/ai-development-workstream-summary.md)
 - [Eval Lab Quality Gate](docs/eval-lab-quality-gate.md)
 - [Eval-Lab Triad Review Closeout](docs/eval-lab-triad-review-closeout.md)
+- [Eval-Lab Governance Hardening Closeout - 2026-07-01](docs/eval-lab-governance-hardening-closeout-2026-07-01.md)
 - [Testing Strategy](docs/testing-strategy.md)
 - [WordPress.org Release Gate](docs/wordpress-org-release-gate.md)
 - [Cross-Repo Release Acceptance](docs/cross-repo-release-acceptance.md)
