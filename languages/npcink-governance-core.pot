@@ -107,10 +107,6 @@ msgstr ""
 msgid "Not installed"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:302
-msgid "Governance Core"
-msgstr ""
-
 #: includes/Admin/Admin_Page.php:303
 msgid "Review, approve, and audit AI-initiated WordPress operations."
 msgstr ""

@@ -220,7 +220,7 @@ final class Admin_Page {
 			<h1><?php echo esc_html__( 'Npcink AI', 'npcink-governance-core' ); ?></h1>
 			<p><?php echo esc_html__( 'Local WordPress entry points for Npcink governance, connections, cloud connection pointers, and ability packages.', 'npcink-governance-core' ); ?></p>
 			<h2><?php echo esc_html__( 'Installed Surfaces', 'npcink-governance-core' ); ?></h2>
-			<table class="widefat striped npcink-governance-core-table-narrow">
+			<table class="widefat striped npcink-governance-core-table-narrow npcink-governance-core-overview-table">
 				<tbody>
 					<?php
 					$this->render_overview_row( __( 'Core', 'npcink-governance-core' ), __( 'Review proposals, approval decisions, commit preflight, audit, and client access tokens.', 'npcink-governance-core' ), self::MENU_SLUG );
@@ -300,7 +300,7 @@ final class Admin_Page {
 		$error          = $this->admin_query_key( 'npcink_governance_core_error' );
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html__( 'Governance Core', 'npcink-governance-core' ); ?></h1>
+			<h1><?php echo esc_html( 'Npcink Governance Core' ); ?></h1>
 			<p><?php echo esc_html__( 'Review, approve, and audit AI-initiated WordPress operations.', 'npcink-governance-core' ); ?></p>
 
 			<?php if ( '' !== $message ) : ?>
@@ -372,9 +372,9 @@ final class Admin_Page {
 			),
 		);
 		?>
-		<nav class="nav-tab-wrapper npcink-governance-core-tabs" aria-label="<?php echo esc_attr__( 'Core admin sections', 'npcink-governance-core' ); ?>">
+		<nav class="npcink-ai-tabs npcink-governance-core-tabs" aria-label="<?php echo esc_attr__( 'Core admin sections', 'npcink-governance-core' ); ?>">
 			<?php foreach ( $tabs as $key => $tab ) : ?>
-				<a class="nav-tab <?php echo $active === $key ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( (string) $tab['url'] ); ?>" <?php echo $active === $key ? 'aria-current="page"' : ''; ?>>
+				<a class="npcink-ai-tab <?php echo $active === $key ? 'npcink-ai-tab-active' : ''; ?>" href="<?php echo esc_url( (string) $tab['url'] ); ?>" <?php echo $active === $key ? 'aria-current="page"' : ''; ?>>
 					<?php echo esc_html( (string) $tab['label'] ); ?>
 				</a>
 			<?php endforeach; ?>
@@ -1647,14 +1647,14 @@ final class Admin_Page {
 			</div>
 		</div>
 
-		<nav class="nav-tab-wrapper npcink-governance-core-subtabs" aria-label="<?php echo esc_attr__( 'Client access token sections', 'npcink-governance-core' ); ?>">
-			<a class="nav-tab <?php echo 'tokens' === $token_tab ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( $this->admin_url( array( 'view' => 'app-keys', 'token_tab' => 'tokens' ) ) ); ?>" <?php echo 'tokens' === $token_tab ? 'aria-current="page"' : ''; ?>>
+		<nav class="npcink-ai-tabs npcink-governance-core-subtabs" aria-label="<?php echo esc_attr__( 'Client access token sections', 'npcink-governance-core' ); ?>">
+			<a class="npcink-ai-tab <?php echo 'tokens' === $token_tab ? 'npcink-ai-tab-active' : ''; ?>" href="<?php echo esc_url( $this->admin_url( array( 'view' => 'app-keys', 'token_tab' => 'tokens' ) ) ); ?>" <?php echo 'tokens' === $token_tab ? 'aria-current="page"' : ''; ?>>
 				<?php echo esc_html__( 'Access tokens', 'npcink-governance-core' ); ?>
 			</a>
-			<a class="nav-tab <?php echo 'revoked' === $token_tab ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( $this->admin_url( array( 'view' => 'app-keys', 'token_tab' => 'revoked' ) ) ); ?>" <?php echo 'revoked' === $token_tab ? 'aria-current="page"' : ''; ?>>
+			<a class="npcink-ai-tab <?php echo 'revoked' === $token_tab ? 'npcink-ai-tab-active' : ''; ?>" href="<?php echo esc_url( $this->admin_url( array( 'view' => 'app-keys', 'token_tab' => 'revoked' ) ) ); ?>" <?php echo 'revoked' === $token_tab ? 'aria-current="page"' : ''; ?>>
 				<?php echo esc_html__( 'Revoked tokens', 'npcink-governance-core' ); ?>
 			</a>
-			<a class="nav-tab <?php echo 'issue' === $token_tab ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( $this->admin_url( array( 'view' => 'app-keys', 'token_tab' => 'issue' ) ) ); ?>" <?php echo 'issue' === $token_tab ? 'aria-current="page"' : ''; ?>>
+			<a class="npcink-ai-tab <?php echo 'issue' === $token_tab ? 'npcink-ai-tab-active' : ''; ?>" href="<?php echo esc_url( $this->admin_url( array( 'view' => 'app-keys', 'token_tab' => 'issue' ) ) ); ?>" <?php echo 'issue' === $token_tab ? 'aria-current="page"' : ''; ?>>
 				<?php echo esc_html__( 'Issue token', 'npcink-governance-core' ); ?>
 			</a>
 		</nav>
@@ -2376,10 +2376,10 @@ final class Admin_Page {
 	 */
 	private function render_proposal_detail_tabs( array $proposal, string $active_tab ): void {
 		?>
-		<nav class="nav-tab-wrapper npcink-governance-core-detail-tabs" aria-label="<?php echo esc_attr__( 'Proposal detail sections', 'npcink-governance-core' ); ?>">
+		<nav class="npcink-ai-tabs npcink-governance-core-detail-tabs" aria-label="<?php echo esc_attr__( 'Proposal detail sections', 'npcink-governance-core' ); ?>">
 			<?php foreach ( $this->proposal_detail_tabs() as $tab => $label ) : ?>
 				<a
-					class="nav-tab<?php echo $active_tab === $tab ? ' nav-tab-active' : ''; ?>"
+					class="npcink-ai-tab<?php echo $active_tab === $tab ? ' npcink-ai-tab-active' : ''; ?>"
 					href="<?php echo esc_url( $this->proposal_detail_tab_url( $proposal, $tab ) ); ?>"
 					<?php echo $active_tab === $tab ? 'aria-current="page"' : ''; ?>
 				><?php echo esc_html( $label ); ?></a>

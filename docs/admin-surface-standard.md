@@ -7,8 +7,8 @@ Status: active for `Npcink AI -> Core`.
 The Core admin page is the local governance workbench for WordPress ability
 proposals. It helps an administrator review pending proposals, make approval
 decisions, inspect commit-preflight readiness, and trace Core audit evidence.
-The page title should use the operator-facing module name `Governance Core`
-rather than the plugin slug.
+The page title should use the fixed product name `Npcink Governance Core`
+rather than a translated module label or the plugin slug.
 
 ## Default View
 
@@ -88,6 +88,41 @@ queue:
   count, last-used time, and a `Manage access tokens` action. Use
   operator-facing token language rather than leading with the internal app-key
   implementation name.
+
+## Shared Tab Visual Standard
+
+Npcink admin surfaces should use one shared tab visual style across Core,
+Adapter, Abilities Toolkit, Workflow Toolbox, and Cloud Addon. Core keeps this
+standard as the source of truth for the plugin family.
+
+Use the underline tab style for first-level and product-level tabs:
+
+- tab group class: `npcink-ai-tabs`;
+- tab item class: `npcink-ai-tab`;
+- active tab class: `npcink-ai-tab-active`;
+- active tab attribute: `aria-current="page"`;
+- active state: Gutenberg blue text with a 3px to 4px `#3858e9` bottom border;
+- inactive state: muted text, no filled gray block, no boxed border;
+- hover state: Gutenberg blue text with a subtle bottom affordance;
+- tab group bottom edge: one light divider line;
+- mobile behavior: horizontal scrolling with no cramped wrapping;
+- focus behavior: preserve visible keyboard focus outlines.
+
+Do not globally restyle WordPress core `.nav-tab` or `.nav-tab-wrapper`
+selectors. Each plugin should opt in through the shared `npcink-ai-*` classes
+so third-party WordPress admin pages keep their native behavior.
+
+Avoid the old boxed WordPress tab look for Npcink-owned product surfaces:
+
+- no gray rectangular inactive tabs;
+- no raised tab borders;
+- no oversized button-like tab blocks;
+- no nested card treatment around the tab group.
+
+Migration order should be Core, Abilities Toolkit, Cloud Addon, Workflow
+Toolbox, then Adapter when Adapter adds or exposes product tabs. Each migration
+should keep existing URLs, query parameters, capabilities, and tab semantics
+stable; only the visual treatment should change.
 
 ## Detail Views
 

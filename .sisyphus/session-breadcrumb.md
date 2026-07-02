@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-07-02 — Admin identity and tab visual closeout
+
+- **Module**: Cross-repository Npcink admin identity, tab visuals, and local
+  closeout documentation.
+- **Status**: Product titles, localized menu labels, underline tab styling,
+  Gutenberg-blue active states, and Cloud tab-panel spacing have been aligned
+  across Core, Abilities Toolkit, AI Client Adapter, Cloud Addon, and Workflow
+  Toolbox. Core now records the closeout in
+  `docs/admin-identity-tab-visual-closeout-2026-07-02.md`.
+- **Completed**:
+  - Kept product page titles as fixed English identities.
+  - Localized the Abilities menu entry as `AI 能力集`.
+  - Migrated Core, Abilities Toolkit, and Cloud Addon tabs away from boxed
+    `nav-tab` styling.
+  - Updated Toolbox tab active/hover color to Gutenberg blue.
+  - Added Cloud Addon 16px tab-panel spacing.
+- **Next gate**:
+  - Commit the scoped changes in each touched repository after local gates pass.
+- **Boundary**:
+  - This is UI identity and visual alignment only. It does not change Core
+    governance authority, Toolkit ability ownership, Adapter channel contracts,
+    Cloud runtime ownership, Toolbox product/write boundaries, or final
+    WordPress write paths.
+
 ## 2026-07-01 — Shared Npcink AI overview lists Workflow Toolbox
 
 - **Module**: Shared Npcink AI admin overview navigation and zh_CN localization.
