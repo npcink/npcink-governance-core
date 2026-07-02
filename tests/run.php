@@ -135,6 +135,7 @@ $translation_glossary = npcink_governance_core_read( $root . '/docs/translation-
 foreach ( array( 'Governance', 'Proposal', 'Commit preflight', 'Ability', 'Audit', 'App key' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $translation_glossary, $required ), 'Chinese translation glossary contains required term: ' . $required );
 }
+npcink_governance_core_assert( false !== strpos( $translation_glossary, 'Workflow Toolbox menu | 流程工具箱' ), 'Chinese translation glossary contains the Workflow Toolbox menu label.' );
 
 $translation_pot = npcink_governance_core_read( $root . '/languages/npcink-governance-core.pot' );
 $translation_po  = npcink_governance_core_read( $root . '/languages/npcink-governance-core-zh_CN.po' );
@@ -143,6 +144,8 @@ npcink_governance_core_assert( '' !== $translation_po, 'Bundled zh_CN PO file ex
 npcink_governance_core_assert( is_readable( $root . '/languages/npcink-governance-core-zh_CN.mo' ), 'Bundled zh_CN MO file exists.' );
 npcink_governance_core_assert( false !== strpos( $translation_po, '"Language: zh_CN\\n"' ), 'Bundled zh_CN PO declares zh_CN language.' );
 npcink_governance_core_assert( false !== strpos( $translation_po, 'msgid "Review Queue"' ) && false !== strpos( $translation_po, 'msgstr "审核队列"' ), 'Bundled zh_CN PO translates Review Queue.' );
+npcink_governance_core_assert( false !== strpos( $translation_po, 'msgid "Workflow Toolbox"' ) && false !== strpos( $translation_po, 'msgstr "流程工具箱"' ), 'Bundled zh_CN PO translates the Workflow Toolbox menu label.' );
+npcink_governance_core_assert( false !== strpos( $translation_po, '"connection pointers, and ability packages."' ) && false !== strpos( $translation_po, 'Npcink 治理、连接、云端连接指引和能力包的本地 WordPress 入口。' ), 'Bundled zh_CN PO translates the shared Npcink AI overview description.' );
 npcink_governance_core_assert( false !== strpos( $translation_po, 'msgid "Commit preflight has already issued an execution handoff for this approved proposal."' ), 'Bundled zh_CN PO keeps commit preflight source strings.' );
 
 $readme = npcink_governance_core_read( $root . '/README.md' );
@@ -299,7 +302,7 @@ npcink_governance_core_assert( false !== strpos( $positioning, '`npcink-content-
 npcink_governance_core_assert( false !== strpos( $positioning, 'local admin consent with audit' ), 'Positioning documents local admin consent with audit.' );
 
 $admin_menu_standard = npcink_governance_core_read( $root . '/docs/admin-menu-standard.md' );
-foreach ( array( '`Npcink AI`', '`npcink-ai`', '`Core`', '`Adapter`', '`Abilities`', '`Cloud Addon`', '`Npcink AI -> Core`' ) as $required ) {
+foreach ( array( '`Npcink AI`', '`npcink-ai`', '`Core`', '`Adapter`', '`Abilities`', '`Workflow Toolbox`', '`Cloud Addon`', '`Npcink AI -> Core`', '`Npcink AI -> Workflow Toolbox`', '`Npcink AI -> 流程工具箱`' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $admin_menu_standard, $required ), 'Admin menu standard documents required entry: ' . $required );
 }
 
@@ -315,8 +318,11 @@ npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Npcink AI Ov
 npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Core', 'npcink-governance-core' ),\n\t\t\tself::MENU_CAPABILITY" ), 'Admin submenu title is Core.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'npcink-ai-client-adapter'" ), 'Admin overview links to the canonical Adapter slug.' );
 npcink_governance_core_assert( false === strpos( $admin_page, "'npcink-openclaw-adapter'" ), 'Admin overview does not link to the legacy Adapter slug.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "'npcink-toolbox'" ), 'Admin overview links to the canonical Workflow Toolbox slug.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Workflow Toolbox', 'npcink-governance-core' )" ), 'Admin overview labels the Workflow Toolbox surface.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'npcink-cloud-addon'" ), 'Admin overview links to the canonical Cloud Addon slug.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Cloud Addon', 'npcink-governance-core' )" ), 'Admin overview labels the Cloud Addon surface.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-overview-table' ), 'Admin overview uses a dedicated table class for overview row alignment.' );
 
 npcink_governance_core_assert( ! file_exists( $root . '/includes/Media/Media_Derivative_Settings.php' ), 'Core no longer owns media derivative product defaults.' );
 npcink_governance_core_assert( false === strpos( $main_plugin, 'npcink_governance_core_get_media_derivative_settings' ), 'Core no longer exposes a media derivative settings helper for local product surfaces.' );
@@ -2282,10 +2288,11 @@ $plugin_bootstrap = npcink_governance_core_read( $root . '/includes/Plugin.php' 
 $admin_css = npcink_governance_core_read( $root . '/assets/admin.css' );
 $admin_js = npcink_governance_core_read( $root . '/assets/admin.js' );
 $admin_surface_standard = npcink_governance_core_read( $root . '/docs/admin-surface-standard.md' );
+$admin_identity_tab_visual_closeout = npcink_governance_core_read( $root . '/docs/admin-identity-tab-visual-closeout-2026-07-02.md' );
 foreach (
 	array(
 		'local governance workbench',
-		'operator-facing module name `Governance Core`',
+		'fixed product name `Npcink Governance Core`',
 		'Review Queue',
 		'compact status summary',
 		'pending request list',
@@ -2330,18 +2337,28 @@ foreach (
 		'bounded code blocks',
 		'visual status badges',
 		'reviewer sees the basis',
-			'low-frequency fallback action',
-			'directly visible Settings section',
-			'operator-facing token',
-			'Access tokens',
-			'Revoked tokens',
-			'Issue token',
-			'active tokens only',
-			'read-only audit lookup',
-			'purpose',
-			'raw scope checkboxes',
-			'rate-limit fields',
-			'default token table',
+		'Shared Tab Visual Standard',
+		'npcink-ai-tabs',
+		'npcink-ai-tab',
+		'npcink-ai-tab-active',
+		'aria-current="page"',
+		'3px to 4px `#3858e9` bottom border',
+		'Do not globally restyle WordPress core `.nav-tab`',
+		'no gray rectangular inactive tabs',
+		'Migration order should be Core, Abilities Toolkit, Cloud Addon, Workflow',
+		'Toolbox, then Adapter when Adapter adds or exposes product tabs',
+		'low-frequency fallback action',
+		'directly visible Settings section',
+		'operator-facing token',
+		'Access tokens',
+		'Revoked tokens',
+		'Issue token',
+		'active tokens only',
+		'read-only audit lookup',
+		'purpose',
+		'raw scope checkboxes',
+		'rate-limit fields',
+		'default token table',
 		'Settings section',
 		'keeping these controls out of the default review queue',
 		'directly visible',
@@ -2360,6 +2377,18 @@ foreach (
 ) {
 	npcink_governance_core_assert( false !== strpos( $admin_surface_standard, $required ), 'Admin surface standard documents Core page boundary: ' . $required );
 }
+npcink_governance_core_assert(
+	false !== strpos( $readme, 'Admin Identity And Tab Visual Closeout - 2026-07-02' )
+	&& false !== strpos( $admin_identity_tab_visual_closeout, 'Npcink Governance Core' )
+	&& false !== strpos( $admin_identity_tab_visual_closeout, 'Npcink Abilities Toolkit' )
+	&& false !== strpos( $admin_identity_tab_visual_closeout, 'Npcink AI Client Adapter' )
+	&& false !== strpos( $admin_identity_tab_visual_closeout, 'Npcink Cloud Addon' )
+	&& false !== strpos( $admin_identity_tab_visual_closeout, 'AI 能力集' )
+	&& false !== strpos( $admin_identity_tab_visual_closeout, '#3858e9' )
+	&& false !== strpos( $admin_identity_tab_visual_closeout, 'margin: 16px 0' )
+	&& false !== strpos( $admin_identity_tab_visual_closeout, 'does not' ),
+	'Admin identity and tab visual closeout records the cross-repository naming, tab color, spacing, and boundary decisions.'
+);
 npcink_governance_core_assert( false !== strpos( $admin_page, 'admin_post_npcink_governance_core_approve_proposal' ), 'Admin page registers approve handler.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'admin_post_npcink_governance_core_reject_proposal' ), 'Admin page registers reject handler.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'admin_post_npcink_governance_core_bulk_reject_proposals' ), 'Admin page registers bulk reject handler.' );
@@ -2373,7 +2402,7 @@ npcink_governance_core_assert( false === strpos( $admin_page, 'ADMIN_REQUEST_NON
 npcink_governance_core_assert( false === strpos( $admin_page, 'has_valid_admin_request_nonce' ), 'Admin GET filters rely on capability checks and sanitization instead of URL nonce gating.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "current_user_can( 'manage_options' )" ), 'Admin proposal actions enforce capability.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "DATETIME_DISPLAY_FORMAT = 'Y-m-d H:i:s'" ), 'Admin page standardizes visible datetime format.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Governance Core', 'npcink-governance-core' )" ), 'Admin page title uses the operator-facing module name.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "esc_html( 'Npcink Governance Core' )" ), 'Admin page title uses the fixed product name.' );
 npcink_governance_core_assert( false === strpos( $admin_page, "<h1><?php echo esc_html__( 'npcink-governance-core'" ), 'Admin page title does not expose the plugin slug as the primary heading.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Review, approve, and audit AI-initiated WordPress operations.' ), 'Admin page intro describes the governance job.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'display_datetime' ), 'Admin page centralizes visible datetime formatting.' );
@@ -2480,7 +2509,8 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'update_option( Ap
 npcink_governance_core_assert( false !== strpos( $admin_page, 'update_option( History_Cleanup_Service::OPTION_HISTORY_RETENTION_DAYS' ), 'Admin page persists history retention through the cleanup service option.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "'app-keys'" ), 'Admin page keeps token management available behind an advanced view.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_admin_tabs' ), 'Admin page exposes tabbed Core sections.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'nav-tab-wrapper' ), 'Admin page uses WordPress admin tabs for Core sections.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-ai-tabs npcink-governance-core-tabs' ) && false !== strpos( $admin_page, 'npcink-ai-tab-active' ) && false !== strpos( $admin_page, 'aria-current="page"' ), 'Admin page uses the shared Npcink AI tab visual standard for Core sections.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'nav-tab-wrapper' ) && false === strpos( $admin_page, 'nav-tab-active' ), 'Admin page no longer uses boxed WordPress nav tabs.' );
 npcink_governance_core_assert( false === strpos( $admin_page, "'app-keys' => array" ), 'Admin page does not expose client access tokens as a first-level tab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Review Queue' ), 'Admin page defaults to the review queue tab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'History' ), 'Admin page exposes historical proposal records tab.' );
@@ -2671,7 +2701,7 @@ npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-summary-actions' ) && false !== strpos( $admin_css, '.npcink-governance-core-reject-panel' ), 'Admin CSS styles the proposal detail inline summary actions.' );
 npcink_governance_core_assert( false === strpos( $admin_css, '.npcink-governance-core-decision-bar' ), 'Admin CSS does not keep obsolete separate decision bar styling.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-evidence-ok' ), 'Admin CSS styles the zero-risk evidence summary.' );
-npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-detail-tabs' ) && false !== strpos( $admin_css, '.npcink-governance-core-tab-panel' ), 'Admin CSS styles the proposal detail tab shell.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-ai-tabs' ) && false !== strpos( $admin_css, '.npcink-ai-tab-active' ) && false !== strpos( $admin_css, '.npcink-governance-core-detail-tabs' ) && false !== strpos( $admin_css, '.npcink-governance-core-tab-panel' ), 'Admin CSS styles the proposal detail tab shell with the shared Npcink AI tab visual standard.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-action-plan-table' ), 'Admin CSS keeps batch action rows vertically aligned.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-display-id-primary' ), 'Admin CSS emphasizes the proposal detail review id.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-signal-summary' ), 'Admin CSS styles compressed zero-value review signals.' );
@@ -2682,6 +2712,8 @@ npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-list-nav' ), 'Admin CSS styles the review queue table navigation row.' );
 npcink_governance_core_assert( false === strpos( $admin_css, '.npcink-governance-core-table-filter-links' ), 'Admin CSS no longer carries unused history status filter styles.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-page-button' ), 'Admin CSS styles compact square pagination buttons.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-overview-table th' ) && false !== strpos( $admin_css, 'vertical-align: middle' ), 'Admin CSS emphasizes overview labels and vertically centers overview row content.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-overview-table td:last-child .button' ) && false !== strpos( $admin_css, 'justify-content: center' ), 'Admin CSS centers overview action button labels.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'data-npcink-details-target' ), 'Admin JS toggles row details by explicit target id.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'aria-expanded' ), 'Admin JS maintains details toggle accessibility state.' );
 npcink_governance_core_assert( false !== strpos( $admin_js, 'target.hidden = expanded' ), 'Admin JS shows and hides inline technical detail rows.' );

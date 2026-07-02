@@ -1,5 +1,84 @@
 # Session Breadcrumb
 
+## 2026-07-02 — Cross-repository branch consolidation
+
+- **Module**: Cross-repository Npcink Git closeout for Core, Abilities
+  Toolkit, AI Client Adapter, Workflow Toolbox, AI Cloud, and Cloud Addon.
+- **Status**: Topic branches and local milestone commits are being consolidated
+  onto each repository's `master` branch, with Cloud `production` preserved as
+  the production source branch and Dependabot maintenance branches left alone.
+- **Completed**:
+  - Confirmed the prior admin identity/tab visual work is a UI/documentation
+    closeout, not a governance or runtime ownership change.
+  - Confirmed Cloud keeps `production` as a normal production branch.
+- **Next gate**:
+  - Run the repository verification gates, push `master`, then remove only
+    merged local worktrees and merged topic branches.
+- **Boundary**:
+  - This is Git closeout only. It does not move Core governance authority,
+    Toolkit ability ownership, Adapter channel contracts, Cloud runtime
+    ownership, Toolbox product/write boundaries, or Cloud Addon connector
+    boundaries.
+
+## 2026-07-02 — Admin identity and tab visual closeout
+
+- **Module**: Cross-repository Npcink admin identity, tab visuals, and local
+  closeout documentation.
+- **Status**: Product titles, localized menu labels, underline tab styling,
+  Gutenberg-blue active states, and Cloud tab-panel spacing have been aligned
+  across Core, Abilities Toolkit, AI Client Adapter, Cloud Addon, and Workflow
+  Toolbox. Core now records the closeout in
+  `docs/admin-identity-tab-visual-closeout-2026-07-02.md`.
+- **Completed**:
+  - Kept product page titles as fixed English identities.
+  - Localized the Abilities menu entry as `AI 能力集`.
+  - Migrated Core, Abilities Toolkit, and Cloud Addon tabs away from boxed
+    `nav-tab` styling.
+  - Updated Toolbox tab active/hover color to Gutenberg blue.
+  - Added Cloud Addon 16px tab-panel spacing.
+- **Next gate**:
+  - Commit the scoped changes in each touched repository after local gates pass.
+- **Boundary**:
+  - This is UI identity and visual alignment only. It does not change Core
+    governance authority, Toolkit ability ownership, Adapter channel contracts,
+    Cloud runtime ownership, Toolbox product/write boundaries, or final
+    WordPress write paths.
+
+## 2026-07-01 — Shared Npcink AI overview lists Workflow Toolbox
+
+- **Module**: Shared Npcink AI admin overview navigation and zh_CN localization.
+- **Status**: The Overview installed-surfaces table now includes the Workflow
+  Toolbox entry between Abilities and Cloud Addon, and the zh_CN language pack
+  translates the overview description plus the Workflow Toolbox label as
+  `流程工具箱`.
+- **Completed**:
+  - Added the `npcink-toolbox` overview row.
+  - Updated the admin menu standard and Chinese translation glossary.
+  - Updated PO/POT/MO language files and static contracts.
+- **Next gate**:
+  - Run `composer test:all`.
+- **Boundary**:
+  - This is navigation and localization only. Core still does not own toolbox
+    product workflows, workflow runtime, provider credentials, queues, or final
+    WordPress writes.
+
+## 2026-07-01 — Eval-lab hardening closeout documented
+
+- **Module**: Core governance hardening documentation.
+- **Status**: The Eval-Lab governance hardening implementation, PR #43 merge,
+  verification gates, cross-repo matrix result, and remaining background repo
+  states are summarized in
+  `docs/eval-lab-governance-hardening-closeout-2026-07-01.md`.
+- **Completed**:
+  - Added the closeout document.
+  - Linked it from `README.md` so future development sessions can find it.
+- **Next gate**:
+  - Run `composer test:all` for the documentation-only change.
+- **Boundary**:
+  - This is documentation only. Core still does not execute abilities, own
+    Adapter or Toolkit code, own workflow runtime, own task queues, store
+    provider credentials, or mutate WordPress content.
+
 ## 2026-07-01 — Eval-lab governance hardening follow-up
 
 - **Module**: Core fail-closed governance services.

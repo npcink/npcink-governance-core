@@ -24,7 +24,7 @@ a duplicate parent.
 
 Host plugins should use stable `admin_menu` priorities so submenu order does
 not depend on plugin activation order: Core at 10, Adapter at 20, Abilities at
-40, and Cloud Addon at 50. `npcink-abilities-toolkit` keeps its standalone
+40, Workflow Toolbox at 45, and Cloud Addon at 50. `npcink-abilities-toolkit` keeps its standalone
 `Tools -> Abilities API Packages` fallback when no shared parent menu exists.
 
 The parent page is `Overview`. It must stay shallow: show orientation and point
@@ -42,6 +42,7 @@ wp-admin labels as shown below.
 | 10 | `Core` | `治理核心` | `npcink-governance-core` | Proposal review, approval/rejection, commit preflight, audit, and client access tokens. |
 | 20 | `Adapter` | `渠道适配器` | `npcink-ai-client-adapter` | OpenClaw and similar client handoff, endpoint discovery, health, and client connection material. |
 | 40 | `Abilities` | `原子能力` | `npcink-abilities-toolkit` | Abilities API package test surface, route checks, and demo ability controls. |
+| 45 | `Workflow Toolbox` | `流程工具箱` | `npcink-workflow-toolbox` | Fixed review-only workflow buttons, site checks, image handling, and governed handoff suggestions. |
 | 50 | `Cloud Addon` | `云端扩展` | `npcink-cloud-addon` | Cloud Base URL/API key entry, signed verification, local connection state, and read-only entitlement summary. |
 
 ## Boundary Rules
@@ -63,6 +64,7 @@ English user-facing docs should refer to these admin paths:
 - `Npcink AI -> Core`
 - `Npcink AI -> Adapter`
 - `Npcink AI -> Abilities`
+- `Npcink AI -> Workflow Toolbox`
 - `Npcink AI -> Cloud Addon`
 
 Simplified Chinese user-facing docs should refer to these admin paths:
@@ -70,6 +72,7 @@ Simplified Chinese user-facing docs should refer to these admin paths:
 - `Npcink AI -> 治理核心`
 - `Npcink AI -> 渠道适配器`
 - `Npcink AI -> 原子能力`
+- `Npcink AI -> 流程工具箱`
 - `Npcink AI -> 云端扩展`
 
 Only the standalone Abilities fallback should mention

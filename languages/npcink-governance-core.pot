@@ -56,7 +56,7 @@ msgid "You do not have permission to access this page."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:221
-msgid "Local WordPress entry points for Npcink governance, connections, cloud access, and ability packages."
+msgid "Local WordPress entry points for Npcink governance, connections, cloud connection pointers, and ability packages."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:222
@@ -84,6 +84,14 @@ msgid "Verify WordPress Abilities API packages and demo ability controls."
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:229
+msgid "Workflow Toolbox"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:229
+msgid "Open fixed review-only workflow buttons for site checks, image handling, and governed handoffs."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:229
 msgid "Cloud Addon"
 msgstr ""
 
@@ -97,10 +105,6 @@ msgstr ""
 
 #: includes/Admin/Admin_Page.php:254
 msgid "Not installed"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:302
-msgid "Governance Core"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:303
