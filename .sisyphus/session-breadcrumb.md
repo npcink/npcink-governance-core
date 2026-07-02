@@ -1,5 +1,25 @@
 # Session Breadcrumb
 
+## 2026-07-02 — Cross-repository branch consolidation
+
+- **Module**: Cross-repository Npcink Git closeout for Core, Abilities
+  Toolkit, AI Client Adapter, Workflow Toolbox, AI Cloud, and Cloud Addon.
+- **Status**: Topic branches and local milestone commits are being consolidated
+  onto each repository's `master` branch, with Cloud `production` preserved as
+  the production source branch and Dependabot maintenance branches left alone.
+- **Completed**:
+  - Confirmed the prior admin identity/tab visual work is a UI/documentation
+    closeout, not a governance or runtime ownership change.
+  - Confirmed Cloud keeps `production` as a normal production branch.
+- **Next gate**:
+  - Run the repository verification gates, push `master`, then remove only
+    merged local worktrees and merged topic branches.
+- **Boundary**:
+  - This is Git closeout only. It does not move Core governance authority,
+    Toolkit ability ownership, Adapter channel contracts, Cloud runtime
+    ownership, Toolbox product/write boundaries, or Cloud Addon connector
+    boundaries.
+
 ## 2026-07-02 — Admin identity and tab visual closeout
 
 - **Module**: Cross-repository Npcink admin identity, tab visuals, and local
