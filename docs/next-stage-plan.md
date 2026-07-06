@@ -180,6 +180,15 @@ learning. This proves the loop without treating Core as a content product or
 letting AI create taxonomy terms, batch edit posts, or publish content
 unattended.
 
+After the P0 governed loop is technically proven, the next stage is not a
+larger Core feature. It is the
+[Content Metadata Delta Operator Trial](content-metadata-delta-operator-trial.md):
+3 to 5 real posts, one post at a time, with Issue Record, Outcome Contract,
+operator review decision, governance evidence, and Learning Entry for each
+case. `npcink-eval-lab` may assist local recommendation review and worksheets,
+but it remains development-only evidence and must not become a Core runtime,
+proposal truth, audit truth, CI-required gate, or WordPress write executor.
+
 ## Recommended Order
 
 ### 1. Proposal Detail Endpoint

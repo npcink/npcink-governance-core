@@ -746,6 +746,8 @@ npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Create Draft
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Set Post SEO Meta Governance Scenario' ), 'Next stage plan links set-post-seo-meta scenario.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Approve Comment Governance Scenario' ), 'Next stage plan links approve-comment scenario.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Taxonomy Terms Preview Governance Scenario' ), 'Next stage plan links taxonomy terms preview scenario.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Content Metadata Delta Operator Trial' ), 'Next stage plan names the Content Metadata Delta operator trial as the next stage.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'npcink-eval-lab' ) && false !== strpos( $next_stage_plan, 'development-only evidence' ), 'Next stage plan keeps eval-lab optional and development-only.' );
 
 $readme = npcink_governance_core_read( $root . '/README.md' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Agent MCP Entry Contract' ), 'README links Agent MCP Entry Contract.' );
@@ -754,6 +756,7 @@ npcink_governance_core_assert( false !== strpos( $readme, 'OpenClaw governance a
 npcink_governance_core_assert( false !== strpos( $readme, 'Core 0.4 Consumer Readiness' ), 'README links Core 0.4 Consumer Readiness.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Core Governance Operability' ), 'README links Core Governance Operability.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'AI Provider Log Correlation' ), 'README links AI Provider Log Correlation.' );
+npcink_governance_core_assert( false !== strpos( $readme, 'Content Metadata Delta Operator Trial' ), 'README links the Content Metadata Delta operator trial.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'OpenClaw Execution Guidance' ), 'README links OpenClaw Execution Guidance.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Adapter Handoff And Approval Policy Acceptance' ), 'README links Adapter handoff and approval policy acceptance.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'ADR-003: Keep Final Execution Outside Core For The Current Stage' ), 'README links ADR-003.' );
@@ -1214,6 +1217,37 @@ foreach (
 	) as $removed_path
 ) {
 	npcink_governance_core_assert( ! file_exists( $root . '/' . $removed_path ), 'Core must not keep local automation runtime artifact: ' . $removed_path );
+}
+
+$content_metadata_operator_trial = npcink_governance_core_read( $root . '/docs/content-metadata-delta-operator-trial.md' );
+foreach (
+	array(
+		'Status: active trial protocol',
+		'not a Core product-workbench implementation contract',
+		'3 to 5 real posts',
+		'Process one post at a time',
+		'Issue Record',
+		'Outcome Contract',
+		'Learning Entry',
+		'reviewed excerpt',
+		'existing category assignment',
+		'existing tag assignment',
+		'Workflow Toolbox or another product plugin',
+		'Governance Core',
+		'npcink-eval-lab',
+		'development-only assistant',
+		'composer eval:lab -- --list domain=recommendation provider=offline',
+		'composer eval:project:review -- dry_run=true',
+		'It must not become',
+		'Core proposal source of truth',
+		'CI-required gate',
+		'WordPress write executor',
+		'Stop Rules',
+		'automatic taxonomy term creation',
+		'Core final execution',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $content_metadata_operator_trial, $required ), 'Content Metadata Delta operator trial doc contains required text: ' . $required );
 }
 
 $operation_classification = npcink_governance_core_read( $root . '/docs/operation-classification-contract.md' );
