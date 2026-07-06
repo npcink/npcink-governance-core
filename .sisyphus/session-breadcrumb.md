@@ -1,5 +1,37 @@
 # Session Breadcrumb
 
+## 2026-07-06 — Cross-repository Git closeout completed through protected PRs
+
+- **Module**: Cross-repository Git closeout for Abilities Toolkit, Governance
+  Core, AI Client Adapter, Workflow Toolbox, AI Cloud, and Cloud Addon.
+- **Status**: Protected `master` branches rejected direct pushes, so completed
+  the publish path through GitHub PRs and merged the ready branches:
+  Toolkit PR #84, Core PR #46, Adapter PR #26, and Workflow Toolbox PR #64.
+- **Completed**:
+  - Merged Toolkit zh_CN translation status documentation into `master`.
+  - Committed and merged the Core shared switch control standard and admin
+    reference notes into `master`.
+  - Published Adapter onboarding reference and zh_CN PTE closeout notes through
+    `master`.
+  - Merged Workflow Toolbox media ALT/caption migration closeout documentation
+    into `master`.
+  - Removed merged local topic branches where safe and removed clean extra
+    AI Cloud worktrees.
+- **Verified**:
+  - `composer test:all` passed in Toolkit, Core, Adapter, and Workflow Toolbox.
+  - GitHub PR body contracts and repository CI checks passed before merge.
+- **Remaining gate**:
+  - Workflow Toolbox still has two local unmerged branches:
+    `codex/verify-toolbox-merged-smoke` and `master-local-before-pr55-sync`.
+  - AI Cloud intentionally remains on `production` with production/topic
+    branches preserved; do not collapse these into `master` without a separate
+    release decision.
+- **Boundary**:
+  - This was Git closeout only. It did not move Core governance authority,
+    Toolkit ability ownership, Adapter channel contracts, Cloud production
+    ownership, Toolbox product/write boundaries, or Cloud Addon connector
+    boundaries.
+
 ## 2026-07-06 — Reference plugin benchmark execution begins
 
 - **Module**: Core admin reference benchmarking.
