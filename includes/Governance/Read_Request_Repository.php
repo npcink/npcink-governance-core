@@ -400,7 +400,11 @@ final class Read_Request_Repository {
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
-		return 1 === $updated ? $this->find( $request_id ) : null;
+		if ( false === $updated ) {
+			return null;
+		}
+
+		return $this->find( $request_id );
 	}
 
 	/**

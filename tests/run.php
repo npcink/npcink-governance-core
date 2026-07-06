@@ -1721,6 +1721,9 @@ npcink_governance_core_assert( false !== strpos( $read_request_repository, 'cons
 npcink_governance_core_assert( false !== strpos( $read_request_repository, 'update_status_when' ), 'Read request repository supports conditional status transitions.' );
 npcink_governance_core_assert( false === strpos( $read_request_repository, 'public function update_status(' ), 'Read request repository does not expose unconditional status transitions as public API.' );
 npcink_governance_core_assert( false !== strpos( $read_request_repository, '\'status\'     => $expected_status' ), 'Read request repository binds current status in conditional updates.' );
+$read_request_approval_fields_offset = strpos( $read_request_repository, 'public function update_approval_fields' );
+$read_request_approval_fields_source = false === $read_request_approval_fields_offset ? '' : substr( $read_request_repository, $read_request_approval_fields_offset, 1200 );
+npcink_governance_core_assert( false !== strpos( $read_request_approval_fields_source, 'if ( false === $updated )' ) && false !== strpos( $read_request_approval_fields_source, 'return $this->find( $request_id );' ), 'Read request approval field updates treat unchanged rows as successful persistence.' );
 npcink_governance_core_assert( false !== strpos( $read_request_repository, 'Sensitive_Data_Redactor::sanitize_payload' ), 'Read request repository uses shared sensitive data redaction.' );
 npcink_governance_core_assert( false !== strpos( $read_request_repository, 'redact_secret_string' ), 'Read request repository redacts secret-shaped strings.' );
 
