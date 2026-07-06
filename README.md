@@ -107,6 +107,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Admin Menu Localization Closeout - 2026-06-21](docs/admin-menu-localization-closeout-2026-06-21.md)
 - [Admin Surface Standard](docs/admin-surface-standard.md)
 - [Admin Identity And Tab Visual Closeout - 2026-07-02](docs/admin-identity-tab-visual-closeout-2026-07-02.md)
+- [Reference Plugin Benchmark](docs/reference-plugin-benchmark.md)
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
 - [Operation Classification Contract](docs/operation-classification-contract.md)
 - [Plan To Proposal Governance](docs/plan-to-proposal-governance.md)
