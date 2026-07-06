@@ -1,5 +1,37 @@
 # Session Breadcrumb
 
+## 2026-07-06 — Content Metadata Delta operator trial protocol added
+
+- **Module**: Content Metadata Delta next-stage operator trial planning.
+- **Status**: Added `docs/content-metadata-delta-operator-trial.md` as the
+  next-stage trial protocol after the P0 governed loop closeout. The protocol
+  keeps the stage focused on 3 to 5 real single-post cases, Issue Record,
+  Outcome Contract, operator review decision, governance evidence, and Learning
+  Entry.
+- **Completed**:
+  - Linked the trial protocol from `README.md`.
+  - Updated `docs/next-stage-plan.md` so the next stage is operator trial and
+    learning evidence, not a larger Core feature.
+  - Added static contracts that keep `npcink-eval-lab` optional,
+    development-only, no-write, and outside Core proposal/audit/runtime truth.
+  - Confirmed eval-lab can list offline recommendation tasks and run the Core
+    project-review dry-run with zero findings.
+- **Verified**:
+  - Core `composer test:all` passed.
+  - `NPCINK_EVAL_LAB_PATH=/Users/muze/gitee/npcink-eval-lab composer eval:lab -- --list domain=recommendation provider=offline`
+    passed.
+  - `NPCINK_EVAL_LAB_PATH=/Users/muze/gitee/npcink-eval-lab composer eval:project:review -- dry_run=true`
+    passed with zero findings.
+- **Next gate**:
+  - Start the actual trial in the product owner surface, normally Workflow
+    Toolbox, using one real post at a time.
+  - Use eval-lab only for local recommendation-quality review or worksheets;
+    do not make it a default Core gate or runtime dependency.
+- **Boundary**:
+  - This is protocol/documentation only. Core still does not own the metadata
+    workbench, learning-store runtime, taxonomy policy engine, workflow queue,
+    final execution, or Cloud write path.
+
 ## 2026-07-06 — Content Metadata Delta P0 governed loop closed
 
 - **Module**: Cross-repository Content Metadata Delta P0 validation for
