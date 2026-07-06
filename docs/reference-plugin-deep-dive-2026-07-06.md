@@ -294,7 +294,7 @@ benchmark pass:
 
 | Step | Output | Owner repo |
 | --- | --- | --- |
-| Capture reference screenshots for Core queue/audit patterns. | `docs/core-admin-reference-notes-2026-07.md` or equivalent. | `npcink-governance-core` |
+| Capture reference screenshots for Core queue/audit patterns. | [Core Admin Reference Notes - 2026-07](core-admin-reference-notes-2026-07.md). | `npcink-governance-core` |
 | Compare Toolkit ability metadata against current official Abilities API shape. | Toolkit compatibility note. | `npcink-abilities-toolkit` |
 | Compare Adapter onboarding against WP Webhooks/Automator connection language. | Adapter connection UX checklist. | `npcink-ai-client-adapter` |
 | Compare Toolbox editor/sidebar flows against checklist/SEO/AI-assist plugins. | Toolbox fixed-button UX checklist. | `npcink-workflow-toolbox` |
