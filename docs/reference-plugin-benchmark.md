@@ -8,6 +8,9 @@ This note records mature WordPress plugins and platform projects that overlap
 with parts of the Npcink stack. It is a learning map, not an implementation
 plan and not a dependency decision.
 
+A deeper module-by-module research pass is recorded in
+[Reference Plugin Deep Dive - 2026-07-06](reference-plugin-deep-dive-2026-07-06.md).
+
 ## Purpose
 
 The Npcink stack should not rebuild mature WordPress patterns in isolation.

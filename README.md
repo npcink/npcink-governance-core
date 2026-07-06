@@ -108,6 +108,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Admin Surface Standard](docs/admin-surface-standard.md)
 - [Admin Identity And Tab Visual Closeout - 2026-07-02](docs/admin-identity-tab-visual-closeout-2026-07-02.md)
 - [Reference Plugin Benchmark](docs/reference-plugin-benchmark.md)
+- [Reference Plugin Deep Dive - 2026-07-06](docs/reference-plugin-deep-dive-2026-07-06.md)
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
 - [Operation Classification Contract](docs/operation-classification-contract.md)
 - [Plan To Proposal Governance](docs/plan-to-proposal-governance.md)
