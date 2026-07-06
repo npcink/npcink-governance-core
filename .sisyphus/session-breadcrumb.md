@@ -1,5 +1,52 @@
 # Session Breadcrumb
 
+## 2026-07-06 — Content Metadata Delta P0 governed loop closed
+
+- **Module**: Cross-repository Content Metadata Delta P0 validation for
+  Workflow Toolbox, Governance Core, and AI Client Adapter.
+- **Status**: The narrow product proof is complete and should stop at this
+  boundary for the current stage. One selected post can produce reviewed
+  excerpt/category/tag metadata delta evidence, hand it to Core proposal
+  review, and execute approved existing-term/excerpt writes through Adapter and
+  Abilities without moving product workflow ownership into Core.
+- **Completed**:
+  - Verified Toolbox metadata delta remains suggestion-only and does not create
+    taxonomy terms, batch jobs, direct writes, or post mutations during the
+    metadata smoke.
+  - Verified Core accepts the metadata apply plan as a pending
+    `plan_to_proposal_batch` governance record while keeping
+    `commit_execution=false`.
+  - Verified Adapter can approve-and-execute the reviewed metadata batch and
+    write the reviewed excerpt plus existing category/tag assignments through
+    WordPress Abilities API.
+  - Fixed Core sensitive read approval no-op persistence so approving a request
+    with unchanged reviewed bounds/redaction fields no longer fails before the
+    status transition.
+  - Refreshed the Adapter smoke contract hash snapshot to match the current
+    supported plan/execution profile registry.
+- **Verified**:
+  - Core `composer test:all` passed.
+  - Core `WP_CLI_BIN=/opt/homebrew/bin/wp composer smoke:wp` passed.
+  - Adapter `composer test:all` passed.
+  - Adapter `WP_CLI_BIN=/opt/homebrew/bin/wp composer smoke:wp` passed.
+  - Workflow Toolbox `composer test:all` passed.
+  - Workflow Toolbox `WP_CLI_BIN=/opt/homebrew/bin/wp composer smoke:metadata-delta`
+    passed.
+- **Commits**:
+  - Core `b0a318c` — `Fix read request approval no-op persistence`.
+  - Adapter `f703c62` — `Refresh adapter smoke contract hashes`.
+- **Next gate**:
+  - Publish the Core and Adapter commits through GitHub.
+  - Do not start a new Core feature from this proof. The next stage should be
+    an operator trial / learning artifact slice around the same P0 flow, not
+    batch metadata automation, Cloud writing, final Core execution, or a local
+    workflow runtime.
+- **Boundary**:
+  - This closes a narrow governed AI feedback loop proof. Core still does not
+    own content UX, article generation, taxonomy creation, final WordPress
+    execution, workflow runtime, queues, provider credentials, Cloud runtime,
+    or product workbenches.
+
 ## 2026-07-06 — Cross-repository Git closeout completed through protected PRs
 
 - **Module**: Cross-repository Git closeout for Abilities Toolkit, Governance
