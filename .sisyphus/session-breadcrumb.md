@@ -1,5 +1,50 @@
 # Session Breadcrumb
 
+## 2026-07-06 — Reference plugin benchmark execution begins
+
+- **Module**: Core admin reference benchmarking.
+- **Status**: The cross-module reference plugin benchmark now has a first Core
+  execution note in `docs/core-admin-reference-notes-2026-07.md`, focused on
+  PublishPress Revisions, WP Activity Log, and Activity Log patterns for review
+  queues and audit tables.
+- **Completed**:
+  - Recorded mature review queue and audit table patterns that Core may learn
+    from before changing admin UI.
+  - Preserved the hard boundary that Core proposals are governance records, not
+    editorial revisions, workflow jobs, generic site activity logs, or final
+    execution actions.
+- **Next gate**:
+  - Resolve the pre-existing dirty `docs/admin-surface-standard.md` and
+    `tests/run.php` state before opening any Core admin UI implementation task.
+  - If a UI task follows, start from a screenshot comparison and propose no
+    more than three presentation-only improvements.
+- **Boundary**:
+  - This is benchmark documentation only. Core still does not execute
+    abilities, own Adapter or Toolkit code, own workflow runtime, own task
+    queues, store provider credentials, or mutate WordPress content.
+
+## 2026-07-03 — WordPress.org zh_CN translation status recorded
+
+- **Module**: Core WordPress.org Simplified Chinese translation handoff.
+- **Status**: Local Core zh_CN runtime translations and WordPress.org
+  Stable Readme drafts are now distinguished from the public
+  translate.wordpress.org approval state in
+  `docs/wordpress-org-zh-cn-translation-status-2026-07-03.md`.
+- **Completed**:
+  - Recorded the local Git translation history for bundled zh_CN runtime
+    files and Stable Readme drafts.
+  - Recorded the public WordPress.org `zh_CN` snapshot: `326`
+    waiting/suggested entries, `0` current translated entries, no Core-specific
+    `zh_CN` project translation editor, and `Npcink` as contributor.
+  - Linked the status note from `README.md`.
+- **Next gate**:
+  - Ask the WordPress.org Polyglots team for Core-specific `zh_CN` PTE access,
+    or have a `zh_CN` GTE/PTE review the waiting suggestions.
+- **Boundary**:
+  - This is translation handoff documentation only. Core still does not
+    execute abilities, own Adapter or Toolkit code, own workflow runtime, own
+    task queues, store provider credentials, or mutate WordPress content.
+
 ## 2026-07-02 — Cross-repository branch consolidation
 
 - **Module**: Cross-repository Npcink Git closeout for Core, Abilities

@@ -124,6 +124,43 @@ Toolbox, then Adapter when Adapter adds or exposes product tabs. Each migration
 should keep existing URLs, query parameters, capabilities, and tab semantics
 stable; only the visual treatment should change.
 
+## Shared Switch Control Standard
+
+Npcink admin surfaces should use one shared switch visual style for independent
+boolean controls that behave like immediate on/off settings. Core keeps this
+standard as the source of truth for the plugin family, but each plugin should
+ship its own scoped CSS copy so standalone activation and WordPress.org packages
+do not depend on another plugin's runtime assets.
+
+The shared `npcink-ai-switch*` class names are a visual contract, not a runtime
+dependency on Core. A plugin that renders one of these switches must enqueue its
+own admin stylesheet containing the switch rules on the screens that use it. For
+example, Cloud Addon must keep the switch styling available when installed and
+activated by itself, without Core active.
+
+Use the WordPress `ToggleControl` visual language for PHP-rendered switches:
+
+- switch wrapper class: `npcink-ai-switch`;
+- input class: `npcink-ai-switch__input`;
+- track class: `npcink-ai-switch__track`;
+- thumb class: `npcink-ai-switch__thumb`;
+- enabled state: Gutenberg blue `#3858e9` track with a white circular thumb;
+- disabled state: neutral gray track with the same thumb size and motion;
+- focus behavior: preserve a visible keyboard focus ring on the switch track;
+- mobile behavior: keep the switch dimension stable and let copy wrap beside or
+  below it.
+
+Use switches only for independent enable/disable settings where the user's
+mental model is "on" or "off". Prefer normal checkboxes for bulk selection,
+multi-select filters, confirmation checkboxes, scoped access lists, and
+secondary options inside a larger saved form. Auto-save should be reserved for
+single setting switches whose side effects are clear and bounded; complex forms
+should keep an explicit save action.
+
+Do not globally restyle WordPress core checkbox selectors. Each plugin should
+opt in through the shared `npcink-ai-switch*` classes while keeping
+business-specific row, copy, and state classes local to that plugin.
+
 ## Detail Views
 
 Proposal detail should be a focused review surface:
