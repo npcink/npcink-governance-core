@@ -1,5 +1,22 @@
 # Session Breadcrumb
 
+## 2026-07-07 — AI write classification evidence template added
+
+- **Module**: Release evidence documentation.
+- **Status**: Adding a reusable evidence template for the three-lane AI Write
+  Classification release regression.
+- **Target**:
+  - Keep the canonical `magick-ai.local` validation record copyable and
+    repeatable.
+  - Record expected and actual evidence for editor acceptance, Toolbox Local
+    Admin Consent, and high-risk article/media batch lanes.
+  - Keep credentials, cookies, app tokens, raw provider payloads, and private
+    content out of committed evidence.
+- **Boundary**:
+  - This is evidence discipline only. It does not add runtime code, content
+    generation, queues, Cloud writes, Core final execution, or another
+    approval store.
+
 ## 2026-07-07 — AI write classification promoted to release admission
 
 - **Module**: Release and new-entrypoint governance documentation.

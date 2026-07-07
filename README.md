@@ -113,6 +113,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Core Admin Reference Notes - 2026-07](docs/core-admin-reference-notes-2026-07.md)
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
 - [Operation Classification Contract](docs/operation-classification-contract.md)
+- [AI Write Classification Regression Evidence](docs/ai-write-classification-regression-evidence.md)
 - [Plan To Proposal Governance](docs/plan-to-proposal-governance.md)
 - [Current Stage Closeout And Handoff](docs/current-stage-closeout-and-handoff.md)
 - [Approval Policy Stage Closeout](docs/approval-policy-stage-closeout.md)

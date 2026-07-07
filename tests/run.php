@@ -774,6 +774,7 @@ npcink_governance_core_assert( false !== strpos( $readme, 'Approve Comment Gover
 npcink_governance_core_assert( false !== strpos( $readme, 'Taxonomy Terms Preview Governance Scenario' ), 'README links Taxonomy Terms Preview Governance Scenario.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Cross-Repo Release Acceptance' ), 'README links Cross-Repo Release Acceptance.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Release Candidate Version Matrix' ), 'README links Release Candidate Version Matrix.' );
+npcink_governance_core_assert( false !== strpos( $readme, 'AI Write Classification Regression Evidence' ), 'README links AI write classification regression evidence template.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'signed Adapter request through Core' ) && false !== strpos( $readme, 'Adapter status/readback without moving execution into Core' ), 'README summarizes the cross-repo release chain.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Article writing is an external product/ability concern' ), 'README keeps article product ownership outside Core.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Cloud must not provide Core with' ), 'README prohibits Cloud writing generation for Core intake.' );
@@ -792,6 +793,7 @@ foreach (
 		'Core record-execution',
 		'Adapter status/readback',
 		'AI write classification regression',
+		'AI Write Classification Regression Evidence',
 		'Generic AI plugin output accepted through the WordPress editor',
 		'External,',
 		'automated, delegated, high-risk',
@@ -1310,9 +1312,32 @@ foreach (
 		'composer smoke:local-featured-image',
 		'composer smoke:article-media-batch-core',
 		'emit Local Admin Consent audit events',
+		'AI Write Classification Regression Evidence',
+		'Do not commit local credentials',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $testing_strategy, $required ), 'Testing strategy documents AI write classification release regression text: ' . $required );
+}
+
+$ai_write_regression_evidence = npcink_governance_core_read( $root . '/docs/ai-write-classification-regression-evidence.md' );
+foreach (
+	array(
+		'AI Write Classification Regression Evidence',
+		'/Users/muze/Local Sites/magick-ai/app/public',
+		'https://magick-ai.local/',
+		'Do not store local passwords',
+		'Lane 1 - Native editor / generic AI plugin acceptance',
+		'Core proposal count before',
+		'Lane 2 - Toolbox Local Admin Consent featured image',
+		'local_admin_consent.requested',
+		'Lane 3 - High-risk article/media batch',
+		'NPCINK_TOOLBOX_ARTICLE_MEDIA_BATCH_SMOKE_PURGE=1',
+		'Release candidate accepted for AI write classification',
+		'not become',
+		'Core final execution',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $ai_write_regression_evidence, $required ), 'AI write classification regression evidence template contains required text: ' . $required );
 }
 
 $wordpress_org_release_gate = npcink_governance_core_read( $root . '/docs/wordpress-org-release-gate.md' );
@@ -1320,12 +1345,14 @@ foreach (
 	array(
 		'AI Write Classification',
 		'release regression from [Testing Strategy]',
+		'AI Write Classification Regression Evidence',
 		'visible generic AI plugin or native editor acceptance',
 		'narrow Toolbox existing-attachment featured-image proof',
 		'`core_proposal_required`, with Core proposal evidence',
 		'not a feature request',
 		'record the AI Write',
 		'Classification release regression evidence',
+		'without storing local credentials',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $wordpress_org_release_gate, $required ), 'WordPress.org release gate documents AI write classification release evidence: ' . $required );
