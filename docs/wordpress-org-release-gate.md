@@ -19,6 +19,25 @@ composer acceptance:cross-repo-release
 composer rc:version-matrix
 ```
 
+When a release candidate includes, depends on, or is tested alongside
+AI-assisted WordPress write entrypoints, also run the AI Write Classification
+release regression from [Testing Strategy](testing-strategy.md) and
+[Operation Classification Contract](operation-classification-contract.md). The
+release is not ready until the three lanes are still true:
+
+- visible generic AI plugin or native editor acceptance remains an ordinary
+  author/editor action and does not create Core proposals or Core audit rows;
+- the narrow Toolbox existing-attachment featured-image proof remains
+  `local_admin_consent`, with Core-owned requested/completed audit evidence and
+  no proposal;
+- high-risk, external, delegated, or batch writes remain
+  `core_proposal_required`, with Core proposal evidence and no
+  `local_admin_consent.*` audit events.
+
+This is a release gate, not a feature request. Do not add first-party
+summary/category/tag generation, queues, workflow runtime, Cloud WordPress
+writes, Core final execution, or a second approval store to satisfy it.
+
 See [Cross-Repo Release Acceptance](cross-repo-release-acceptance.md). That
 gate is intentionally broader than the Core-only WordPress.org package check:
 it proves the Governance Core, AI Client Adapter, and Abilities Toolkit still
@@ -230,8 +249,10 @@ When resuming release work:
 3. Run `composer prepare:release -- --version <version>`.
 4. For cross-repository release candidates, run
    `composer acceptance:cross-repo-release` and `composer rc:version-matrix`.
-5. Run `composer sync:wporg -- --version <version> --svn-dir <checkout>` as a
+5. If AI-assisted write entrypoints are in scope, record the AI Write
+   Classification release regression evidence before tagging or uploading.
+6. Run `composer sync:wporg -- --version <version> --svn-dir <checkout>` as a
    dry run, then re-run with `--apply` after reviewing the output.
-6. Inspect `build/npcink-governance-core.zip` before upload.
-7. Commit the SVN checkout only after the public identity, Plugin Check
+7. Inspect `build/npcink-governance-core.zip` before upload.
+8. Commit the SVN checkout only after the public identity, Plugin Check
    results, and SVN status match this file.

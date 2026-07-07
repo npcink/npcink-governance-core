@@ -791,6 +791,11 @@ foreach (
 		'WordPress Abilities API',
 		'Core record-execution',
 		'Adapter status/readback',
+		'AI write classification regression',
+		'Generic AI plugin output accepted through the WordPress editor',
+		'External,',
+		'automated, delegated, high-risk',
+		'incomplete-preview, or batch writes',
 		'Core must not add final execution routes',
 		'Adapter must not define reusable abilities',
 		'Toolkit must not store approval records',
@@ -1309,6 +1314,22 @@ foreach (
 ) {
 	npcink_governance_core_assert( false !== strpos( $testing_strategy, $required ), 'Testing strategy documents AI write classification release regression text: ' . $required );
 }
+
+$wordpress_org_release_gate = npcink_governance_core_read( $root . '/docs/wordpress-org-release-gate.md' );
+foreach (
+	array(
+		'AI Write Classification',
+		'release regression from [Testing Strategy]',
+		'visible generic AI plugin or native editor acceptance',
+		'narrow Toolbox existing-attachment featured-image proof',
+		'`core_proposal_required`, with Core proposal evidence',
+		'not a feature request',
+		'record the AI Write',
+		'Classification release regression evidence',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $wordpress_org_release_gate, $required ), 'WordPress.org release gate documents AI write classification release evidence: ' . $required );
+}
 foreach (
 	array(
 		'suggestion_only',
@@ -1661,6 +1682,10 @@ npcink_governance_core_assert( false !== strpos( $development_workflow, '[smoke:
 npcink_governance_core_assert( false !== strpos( $development_workflow, '[smoke:preflight:fail] toolkit:' ), 'Development workflow classifies smoke Toolkit setup failures.' );
 npcink_governance_core_assert( false !== strpos( $development_workflow, 'do not copy Toolkit ability definitions into Core' ), 'Development workflow preserves Toolkit ability ownership during smoke fixes.' );
 npcink_governance_core_assert( false !== strpos( $development_workflow, 'Core or Toolkit contract regression' ), 'Development workflow classifies post-preflight smoke assertion failures.' );
+npcink_governance_core_assert( false !== strpos( $development_workflow, 'New AI Write Entrypoint Admission' ), 'Development workflow documents new AI write entrypoint admission.' );
+npcink_governance_core_assert( false !== strpos( $development_workflow, 'classification answer must be recorded' ), 'Development workflow requires classification evidence before implementation.' );
+npcink_governance_core_assert( false !== strpos( $development_workflow, 'Do not add a Core proposal hop' ), 'Development workflow keeps native editor AI plugin acceptance outside Core.' );
+npcink_governance_core_assert( false !== strpos( $development_workflow, 'owns the final WordPress action' ), 'Development workflow frames AI write entrypoints by final WordPress action ownership.' );
 npcink_governance_core_assert( false === strpos( $development_workflow, 'magick-ai-root' ), 'Development workflow must not depend on magick-ai-root.' );
 
 $ai_workstream_summary = npcink_governance_core_read( $root . '/docs/ai-development-workstream-summary.md' );

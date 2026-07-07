@@ -79,6 +79,7 @@ The release candidate is acceptable only when all rows pass.
 | Adapter real-chain fixture | `MAA_ADAPTER_FIXTURE_ALLOW_COMMIT=1 composer accept:local-ai-client-fixture` |
 | Toolkit source contracts | `composer test:all`, `composer analyse:phpstan` |
 | Toolkit release and WordPress integration | `composer release:verify`, `composer smoke:wp` |
+| AI write classification regression | Core `composer smoke:wp` plus the Toolbox local-consent and article/media batch smokes when AI-assisted write entrypoints are in scope |
 
 After this gate passes, run
 [Release Candidate Version Matrix](release-candidate-version-matrix.md):
@@ -122,6 +123,11 @@ Passing this gate does not authorize any boundary expansion.
   a generic workflow executor, or store model/provider credentials.
 - Toolkit must not store approval records, audit records, runtime execution
   state, billing, model routing, or Core app-key policy.
+- Generic AI plugin output accepted through the WordPress editor must remain
+  outside Core proposal review. Local Admin Consent must stay limited to
+  bounded present-admin single-object proofs with audit evidence. External,
+  automated, delegated, high-risk, incomplete-preview, or batch writes must
+  stay in Core proposal review.
 
 If a future release needs one of those responsibilities, stop and write a
 boundary note or ADR in the owning repository before implementing it.
