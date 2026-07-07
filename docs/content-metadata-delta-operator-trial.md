@@ -1,16 +1,20 @@
 # Content Metadata Delta Operator Trial
 
-Status: active trial protocol.
+Status: superseded as the current next-stage target; retained as a historical
+trial protocol.
 
-This document defines the next validation stage after the P0 governed loop was
-proven across Workflow Toolbox, Governance Core, AI Client Adapter, and
-WordPress Abilities API execution. It is a trial protocol and boundary guard,
-not a Core product-workbench implementation contract.
+This document recorded the validation stage proposed after the P0 governed
+loop was proven across Workflow Toolbox, Governance Core, AI Client Adapter,
+and WordPress Abilities API execution. It remains useful as a historical trial
+protocol and boundary guard, but it is not the current next-stage target and
+must not be used to start a first-party summary/category/tag recommendation
+product inside Core.
 
 ## Purpose
 
-The goal is to prove that Content Metadata Delta produces repeatable operator
-value on real posts before the product expands any surface area.
+The historical goal was to prove whether Content Metadata Delta could produce
+repeatable operator value on real posts before any product expanded surface
+area.
 
 The trial must answer:
 
@@ -23,7 +27,9 @@ The trial must answer:
 
 ## Scope
 
-Use 3 to 5 real posts from a local or staging WordPress site. Process one post at a time.
+If this historical protocol is revived by a later accepted decision, use 3 to
+5 real posts from a local or staging WordPress site. Process one post at a
+time.
 
 Allowed P0 suggestion fields:
 

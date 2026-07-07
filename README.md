@@ -102,7 +102,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Current Stage Governance Reliability](docs/current-stage-governance-reliability.md)
 - [Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md)
 - [Governed AI Feedback Loop](docs/governed-ai-feedback-loop.md)
-- [Content Metadata Delta Operator Trial](docs/content-metadata-delta-operator-trial.md)
+- [Content Metadata Delta Operator Trial - Superseded Historical Protocol](docs/content-metadata-delta-operator-trial.md)
 - [Platform Baseline](docs/platform-baseline.md)
 - [Admin Menu Standard](docs/admin-menu-standard.md)
 - [Admin Menu Localization Closeout - 2026-06-21](docs/admin-menu-localization-closeout-2026-06-21.md)
