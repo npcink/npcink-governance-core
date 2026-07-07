@@ -184,6 +184,32 @@ AI agents must not run `git reset --hard`, `git checkout -- .`, or use
 `git add -A` in mixed worktrees unless the user explicitly asks for that exact
 operation.
 
+## AI Write Classification Release Regression
+
+Before a release candidate or after any change to an AI-assisted write
+entrypoint, verify the three matrix lanes against the local smoke site:
+
+1. Generic AI plugin or native editor author acceptance remains an ordinary
+   WordPress editor action: proposal and audit counts must be unchanged before
+   and after the save/publish action.
+2. The Toolbox existing-attachment featured-image proof remains
+   `local_admin_consent`: it must create Core local-consent audit evidence and
+   no Core proposal.
+3. The Toolbox article/media batch proof remains `core_proposal_required`: it
+   must create Core proposal evidence and no Local Admin Consent audit events.
+
+Use the Toolbox smoke commands for the two product-owned lanes:
+
+```bash
+cd /Users/muze/gitee/npcink-workflow-toolbox
+WP_CLI_BIN=/opt/homebrew/bin/wp composer smoke:local-featured-image
+WP_CLI_BIN=/opt/homebrew/bin/wp composer smoke:article-media-batch-core
+```
+
+This is a release regression gate, not permission to add first-party content
+metadata generation, local queues, workflow runtime, Cloud WordPress writes, or
+Core final execution.
+
 Release preparation for WordPress.org:
 
 ```bash

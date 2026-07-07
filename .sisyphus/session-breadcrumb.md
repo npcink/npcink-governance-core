@@ -1,5 +1,26 @@
 # Session Breadcrumb
 
+## 2026-07-07 — AI write classification release regression gate documented
+
+- **Module**: Operation classification release regression.
+- **Status**: The three-lane AI Write Classification Matrix is now documented
+  as a release regression gate instead of a feature-expansion backlog.
+- **Completed**:
+  - Added the release regression gate to the Operation Classification Contract.
+  - Added testing/development workflow guidance for generic editor acceptance,
+    Toolbox Local Admin Consent featured-image audit, and high-risk
+    article/media batch Core proposal proof.
+  - Added static contracts to keep the release regression wording and smoke
+    commands discoverable.
+- **Next gate**:
+  - Run Core `composer test:all` and `composer smoke:wp`.
+  - Keep the paired Toolbox smoke commands as the product-owned evidence for
+    the local consent and high-risk batch lanes.
+- **Boundary**:
+  - This is regression discipline only. It does not add first-party
+    summary/category/tag generation, workflow runtime, queues, Cloud WordPress
+    writes, Core final execution, or another approval store.
+
 ## 2026-07-07 — Classification evidence enforced at write entrypoints
 
 - **Module**: Proposal intake and local admin consent audit.
