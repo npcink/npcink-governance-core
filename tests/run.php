@@ -775,6 +775,7 @@ npcink_governance_core_assert( false !== strpos( $readme, 'Taxonomy Terms Previe
 npcink_governance_core_assert( false !== strpos( $readme, 'Cross-Repo Release Acceptance' ), 'README links Cross-Repo Release Acceptance.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Release Candidate Version Matrix' ), 'README links Release Candidate Version Matrix.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'AI Write Classification Regression Evidence' ), 'README links AI write classification regression evidence template.' );
+npcink_governance_core_assert( false !== strpos( $readme, 'AI Write Classification Stage Closeout - 2026-07-07' ), 'README links AI write classification stage closeout.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'signed Adapter request through Core' ) && false !== strpos( $readme, 'Adapter status/readback without moving execution into Core' ), 'README summarizes the cross-repo release chain.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Article writing is an external product/ability concern' ), 'README keeps article product ownership outside Core.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Cloud must not provide Core with' ), 'README prohibits Cloud writing generation for Core intake.' );
@@ -1338,6 +1339,27 @@ foreach (
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $ai_write_regression_evidence, $required ), 'AI write classification regression evidence template contains required text: ' . $required );
+}
+
+$ai_write_stage_closeout = npcink_governance_core_read( $root . '/docs/ai-write-classification-stage-closeout-2026-07-07.md' );
+foreach (
+	array(
+		'AI Write Classification Stage Closeout - 2026-07-07',
+		'The current stage target is the AI Write Classification Matrix',
+		'first-party summary/category/tag generation.',
+		'Generic AI plugin output accepted',
+		'first-party summary/category/tag generation in Core',
+		'treating normal WordPress editor publish/save as a Core approval workflow',
+		'Persisted classification evidence at real Core write entrypoints',
+		'Promoted classification to release and new-entrypoint admission',
+		'Native editor or generic AI plugin acceptance keeps Core proposal and audit',
+		'This stage is complete. Do not continue by adding Core features.',
+		'Continue only when one of these triggers appears',
+		'Only fix code when the',
+		'classification or evidence shows a real gap',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $ai_write_stage_closeout, $required ), 'AI write classification stage closeout contains required text: ' . $required );
 }
 
 $wordpress_org_release_gate = npcink_governance_core_read( $root . '/docs/wordpress-org-release-gate.md' );

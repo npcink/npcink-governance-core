@@ -114,6 +114,7 @@ Read the project handoff docs before starting a new implementation session:
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
 - [Operation Classification Contract](docs/operation-classification-contract.md)
 - [AI Write Classification Regression Evidence](docs/ai-write-classification-regression-evidence.md)
+- [AI Write Classification Stage Closeout - 2026-07-07](docs/ai-write-classification-stage-closeout-2026-07-07.md)
 - [Plan To Proposal Governance](docs/plan-to-proposal-governance.md)
 - [Current Stage Closeout And Handoff](docs/current-stage-closeout-and-handoff.md)
 - [Approval Policy Stage Closeout](docs/approval-policy-stage-closeout.md)
