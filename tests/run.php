@@ -188,10 +188,27 @@ foreach (
 		'Operation Classification Contract',
 		'Cross-Repo Release Acceptance',
 		'Release Candidate Version Matrix',
+		'Reference Plugin Action Plan',
 		'local admin consent with audit',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $readme, $required ), 'README contains required phrase: ' . $required );
+}
+
+$reference_plugin_action_plan = npcink_governance_core_read( $root . '/docs/reference-plugin-action-plan.md' );
+foreach (
+	array(
+		'Core governance review',
+		'Abilities Toolkit contracts',
+		'Adapter channel feedback',
+		'Workflow Toolbox product flow',
+		'Cloud Addon and Cloud runtime evidence',
+		'composer quality:matrix:run',
+		'does not add a new dependency unless a separate ADR accepts it',
+		'turn suggestions into silent WordPress writes',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $reference_plugin_action_plan, $required ), 'Reference plugin action plan contains required phrase: ' . $required );
 }
 
 $wp_readme = npcink_governance_core_read( $root . '/readme.txt' );

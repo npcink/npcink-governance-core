@@ -110,6 +110,7 @@ Read the project handoff docs before starting a new implementation session:
 - [Admin Identity And Tab Visual Closeout - 2026-07-02](docs/admin-identity-tab-visual-closeout-2026-07-02.md)
 - [Reference Plugin Benchmark](docs/reference-plugin-benchmark.md)
 - [Reference Plugin Deep Dive - 2026-07-06](docs/reference-plugin-deep-dive-2026-07-06.md)
+- [Reference Plugin Action Plan](docs/reference-plugin-action-plan.md)
 - [Core Admin Reference Notes - 2026-07](docs/core-admin-reference-notes-2026-07.md)
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
 - [Operation Classification Contract](docs/operation-classification-contract.md)

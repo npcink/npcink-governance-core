@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-07-07 — Reference plugin action plan becomes next-stage guide
+
+- **Module**: Reference-plugin benchmark follow-through and cross-repo next
+  stage planning.
+- **Status**: The benchmark work now has an active action guide that keeps
+  each project on one small improvement lane: Core review readability, Toolkit
+  ability contracts, Adapter channel feedback, Toolbox fixed-workflow
+  ergonomics, and Cloud/Add-on runtime diagnostics.
+- **Completed**:
+  - Added `docs/reference-plugin-action-plan.md`.
+  - Linked the action plan from README and the next-stage plan.
+  - Added static contract coverage so the plan keeps the five lane names,
+    central matrix gate, dependency ADR rule, and no-silent-write boundary.
+  - Tightened Adapter smoke coverage in a sibling commit so implementation
+    posture execution evidence must be `checked`.
+  - Ran the central cross-repo quality matrix with all listed gates passing.
+- **Next gate**:
+  - Pick exactly one benchmark-derived slice at a time, starting with a Core
+    proposal/audit readability improvement only if it does not change REST,
+    lifecycle, data ownership, execution, or runtime boundaries.
+- **Boundary**:
+  - This is planning, evidence, and regression discipline only. It does not add
+    Core execution, queues, workflow runtime, product writing UX, provider
+    routing, approval storage outside Core, or WordPress write ownership in
+    Cloud/Add-on.
+
 ## 2026-07-07 — Implementation posture contract consumed by Core
 
 - **Module**: Core ability intake, proposal review visibility, and commit

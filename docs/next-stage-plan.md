@@ -117,6 +117,13 @@ See [Strategy And Product Split](strategy-and-product-split.md). Do not move
 toolbox modules, content generation, provider configuration, or workflow runtime
 into Core while executing this plan.
 
+Reference-plugin learning should now follow the
+[Reference Plugin Action Plan](reference-plugin-action-plan.md). That plan
+turns the benchmark into one small improvement lane per project: Core review
+readability, Toolkit ability contracts, Adapter channel feedback, Toolbox fixed
+workflow ergonomics, and Cloud/Add-on runtime diagnostics. Use it to avoid
+copying mature plugins' whole product shapes into the Npcink stack.
+
 The next product-boundary implementation should use the
 [Operation Classification Contract](operation-classification-contract.md):
 
