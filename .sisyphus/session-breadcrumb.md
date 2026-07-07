@@ -1,5 +1,23 @@
 # Session Breadcrumb
 
+## 2026-07-07 — AI write classification promoted to release admission
+
+- **Module**: Release and new-entrypoint governance documentation.
+- **Status**: The AI Write Classification Matrix is being promoted from a
+  development regression note into a release-candidate and new-entrypoint
+  admission gate.
+- **Target**:
+  - WordPress.org release guidance must require classification regression
+    evidence when AI-assisted write entrypoints are in scope.
+  - Cross-repo release acceptance must name the classification regression as a
+    stack boundary check when those entrypoints are part of the candidate.
+  - Development workflow must require a classification answer before new
+    AI-assisted write entrypoint implementation.
+- **Boundary**:
+  - This is gate and documentation work only. It does not add AI content
+    generation, queues, workflow runtime, Cloud WordPress writes, Core final
+    execution, or another approval store.
+
 ## 2026-07-07 — AI write classification release regression gate documented
 
 - **Module**: Operation classification release regression.

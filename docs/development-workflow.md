@@ -184,6 +184,36 @@ AI agents must not run `git reset --hard`, `git checkout -- .`, or use
 `git add -A` in mixed worktrees unless the user explicitly asks for that exact
 operation.
 
+## New AI Write Entrypoint Admission
+
+Before implementing or accepting any new AI-assisted WordPress write entrypoint,
+classify it with the
+[Operation Classification Contract](operation-classification-contract.md). The
+classification answer must be recorded in the issue, change envelope, or pull
+request before code changes:
+
+1. If the entrypoint is a generic AI plugin or native editor suggestion that a
+   present author visibly inserts, saves, or publishes through WordPress editor
+   controls, treat it as native author review. Do not add a Core proposal hop.
+2. If the entrypoint only returns candidates, analysis, copy, or plans without
+   writing WordPress state, classify it as `suggestion_only`.
+3. If a present administrator applies one fully visible, low-risk, reversible
+   field or object, classify it as a candidate for `local_admin_consent` and
+   require Core-owned audit evidence before or around execution.
+4. If a present administrator applies one fully visible but high-impact action,
+   classify it as `strong_local_confirmation` only when the product can show
+   the exact final result and a bounded restore path; otherwise choose Core
+   proposal review.
+5. If the entrypoint is external, automated, delegated, scheduled, destructive,
+   publishing, settings-changing, permission-changing, incomplete-preview,
+   multi-object, or batch, classify it as `core_proposal_required`.
+
+Do not start from the question "should Core review AI content?" Start from who
+owns the final WordPress action and whether the operator can see the exact
+result before it is written. This admission checklist is not permission to add
+first-party metadata generation, queues, workflow runtime, Cloud WordPress
+writes, Core final execution, or a second approval store.
+
 ## AI Write Classification Release Regression
 
 Before a release candidate or after any change to an AI-assisted write
