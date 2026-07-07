@@ -1285,9 +1285,29 @@ foreach (
 		'Do not add a Core proposal hop',
 		'The author\'s visible editor action is the human review step',
 		'External Agent, OpenClaw, MCP, Adapter, CLI, scheduled task, Cloud callback',
+		'Release Regression Gate',
+		'Native editor / generic AI plugin acceptance stays outside Core',
+		'exactly one requested plus one',
+		'completed local-consent audit pair',
+		'High-risk, external, delegated, or batch writes stay in Core proposal',
+		'review.** Article/media batch plans',
+		'not a new product surface',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $operation_classification, $required ), 'Operation classification contract contains required text: ' . $required );
+}
+
+$testing_strategy = npcink_governance_core_read( $root . '/docs/testing-strategy.md' );
+foreach (
+	array(
+		'AI write classification release regression',
+		'editor save/publish of visible AI-plugin-style content',
+		'composer smoke:local-featured-image',
+		'composer smoke:article-media-batch-core',
+		'emit Local Admin Consent audit events',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $testing_strategy, $required ), 'Testing strategy documents AI write classification release regression text: ' . $required );
 }
 foreach (
 	array(

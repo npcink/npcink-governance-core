@@ -101,6 +101,35 @@ The key distinction is not whether AI was involved. The key distinction is
 whether a present author can see and own the final editor action, or whether a
 separate system is asking WordPress to write on the author's behalf.
 
+## Release Regression Gate
+
+Before a release candidate or any change that touches AI-assisted write
+entrypoints, rerun the classification matrix as a three-lane regression gate on
+the local `magick-ai` smoke site:
+
+1. **Native editor / generic AI plugin acceptance stays outside Core.**
+   A present author may review visible AI plugin output in the WordPress editor
+   and save or publish through the normal editor controls. This must not create
+   Core proposals and must not write Core audit rows. The expected evidence is
+   unchanged proposal and audit counts before and after the editor action.
+2. **The narrow Toolbox Local Admin Consent proof stays audited, not proposed.**
+   `/local-admin-consent/featured-image` may set one existing attachment as the
+   current post's featured image only when it records Core-owned
+   `local_admin_consent.requested` and `local_admin_consent.completed` events
+   with the current `operation-classification-v1` `decision_envelope`. The
+   expected evidence is no new Core proposal and exactly one requested plus one
+   completed local-consent audit pair for the run.
+3. **High-risk, external, delegated, or batch writes stay in Core proposal
+   review.** Article/media batch plans, media import plans, SEO batches,
+   taxonomy creation, settings changes, destructive actions, and other
+   multi-object or incomplete-preview writes must create Core proposal evidence
+   and must not emit `local_admin_consent.*` audit events.
+
+This gate is intentionally a regression discipline, not a new product surface.
+Do not add first-party summary/category/tag generation, local queues, workflow
+runtimes, Cloud WordPress writes, Core final execution, or a second approval
+store to satisfy it.
+
 ## Required Evidence
 
 Each classification result preserves the legacy top-level fields

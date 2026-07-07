@@ -18,6 +18,7 @@ Npcink Governance Core starts with a small but strict test pyramid.
 | WordPress.org review guard | `composer check:wporg` | Catch locally reproducible reviewer policy patterns that Plugin Check may miss. |
 | Plugin Check release scan | `composer plugin-check:release` | Catch WordPress.org packaging and runtime security blockers before release. |
 | Cross-repo release acceptance | `composer acceptance:cross-repo-release` | Prove Core, Adapter, and Toolkit still compose as governance, channel, and ability layers before cross-repository release candidates. |
+| AI write classification release regression | Core `composer smoke:wp` plus the Toolbox local consent and article/media batch smokes | Reprove that editor-visible AI plugin acceptance stays outside Core, the narrow local consent featured-image path writes Core audit without proposals, and high-risk batch plans enter Core proposals without local consent events. |
 
 ## Static Contract Rules
 
@@ -204,6 +205,26 @@ rate-limit, and audit rows for the current run after assertions complete.
 
 The smoke test should stay small. It is a confidence gate, not a full end-to-end
 suite.
+
+## AI Write Classification Release Regression
+
+Run this regression gate before release candidates and after changes touching
+AI-assisted write entrypoints:
+
+1. Confirm a normal editor save/publish of visible AI-plugin-style content does
+   not change Core proposal or audit counts.
+2. In `npcink-workflow-toolbox`, run
+   `WP_CLI_BIN=/opt/homebrew/bin/wp composer smoke:local-featured-image` and
+   confirm no Core proposal is created while one requested/completed
+   `local_admin_consent` audit pair is recorded.
+3. In `npcink-workflow-toolbox`, run
+   `WP_CLI_BIN=/opt/homebrew/bin/wp composer smoke:article-media-batch-core`
+   and confirm the high-risk batch creates Core proposal evidence and does not
+   emit Local Admin Consent audit events.
+
+This gate checks routing discipline only. It must not become a reason to add
+metadata generation, workflow runtime, queues, Cloud-side WordPress writes, or
+Core final execution.
 
 ## When To Add Tests
 
