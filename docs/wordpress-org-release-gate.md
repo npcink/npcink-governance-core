@@ -22,8 +22,10 @@ composer rc:version-matrix
 When a release candidate includes, depends on, or is tested alongside
 AI-assisted WordPress write entrypoints, also run the AI Write Classification
 release regression from [Testing Strategy](testing-strategy.md) and
-[Operation Classification Contract](operation-classification-contract.md). The
-release is not ready until the three lanes are still true:
+[Operation Classification Contract](operation-classification-contract.md), and
+record the result with
+[AI Write Classification Regression Evidence](ai-write-classification-regression-evidence.md).
+The release is not ready until the three lanes are still true:
 
 - visible generic AI plugin or native editor acceptance remains an ordinary
   author/editor action and does not create Core proposals or Core audit rows;
@@ -250,7 +252,8 @@ When resuming release work:
 4. For cross-repository release candidates, run
    `composer acceptance:cross-repo-release` and `composer rc:version-matrix`.
 5. If AI-assisted write entrypoints are in scope, record the AI Write
-   Classification release regression evidence before tagging or uploading.
+   Classification release regression evidence before tagging or uploading,
+   using the evidence template and without storing local credentials.
 6. Run `composer sync:wporg -- --version <version> --svn-dir <checkout>` as a
    dry run, then re-run with `--apply` after reviewing the output.
 7. Inspect `build/npcink-governance-core.zip` before upload.

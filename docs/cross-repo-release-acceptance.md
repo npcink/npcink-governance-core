@@ -81,6 +81,10 @@ The release candidate is acceptable only when all rows pass.
 | Toolkit release and WordPress integration | `composer release:verify`, `composer smoke:wp` |
 | AI write classification regression | Core `composer smoke:wp` plus the Toolbox local-consent and article/media batch smokes when AI-assisted write entrypoints are in scope |
 
+When the AI write classification row is in scope, record the run with
+[AI Write Classification Regression Evidence](ai-write-classification-regression-evidence.md)
+instead of relying on memory or chat-only notes.
+
 After this gate passes, run
 [Release Candidate Version Matrix](release-candidate-version-matrix.md):
 

@@ -226,6 +226,11 @@ This gate checks routing discipline only. It must not become a reason to add
 metadata generation, workflow runtime, queues, Cloud-side WordPress writes, or
 Core final execution.
 
+Use [AI Write Classification Regression Evidence](ai-write-classification-regression-evidence.md)
+as the copyable evidence template for release notes, pull requests, or local
+closeout records. Do not commit local credentials, cookies, app tokens, raw
+provider payloads, or private content as evidence.
+
 ## When To Add Tests
 
 Add or update tests when changing:
