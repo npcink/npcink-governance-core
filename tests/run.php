@@ -1169,6 +1169,7 @@ npcink_governance_core_assert( false !== strpos( $adr_003, 'no Core `/execute`, 
 npcink_governance_core_assert( false !== strpos( $adr_004, 'Local Admin Consent Model' ), 'ADR-004 documents local admin consent.' );
 npcink_governance_core_assert( false !== strpos( $adr_004, 'The same plugin package may contain those modules' ), 'ADR-004 permits package consolidation without authority collapse.' );
 npcink_governance_core_assert( false !== strpos( $adr_004, 'External, automated, batch, destructive, high-impact' ) && false !== strpos( $adr_004, 'previewed AI writes must not use local admin consent' ), 'ADR-004 keeps risky writes behind Core review.' );
+npcink_governance_core_assert( false !== strpos( $adr_004, 'Generic AI plugin output inside the WordPress editor' ) && false !== strpos( $adr_004, 'visible editor action is the human' ) && false !== strpos( $adr_004, 'review step' ) && false !== strpos( $adr_004, 'should not add a Core proposal hop' ), 'ADR-004 keeps visible generic AI plugin editor acceptance out of Core proposal review.' );
 npcink_governance_core_assert( false !== strpos( $adr_004, 'ADR-001, ADR-002, and ADR-003 remain active' ), 'ADR-004 preserves earlier governance ADRs.' );
 npcink_governance_core_assert( false !== strpos( $adr_005, 'Do not merge Core and Adapter as the next implementation step' ), 'ADR-005 defers Core and Adapter merge.' );
 npcink_governance_core_assert( false !== strpos( $adr_005, 'OpenClaw Adapter as the first channel adapter' ), 'ADR-005 treats OpenClaw Adapter as one channel adapter.' );
@@ -1265,6 +1266,11 @@ foreach (
 		'evidence surfaces before execution or rejection is reported as final',
 		'Operation_Classifier` must remain side-effect free',
 		'caller owns persistence and must fail closed',
+		'AI Write Classification Matrix',
+		'Generic AI plugin shows title, excerpt, summary, category, tag, ALT, meta description',
+		'Do not add a Core proposal hop',
+		'The author\'s visible editor action is the human review step',
+		'External Agent, OpenClaw, MCP, Adapter, CLI, scheduled task, Cloud callback',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $operation_classification, $required ), 'Operation classification contract contains required text: ' . $required );
@@ -1309,6 +1315,31 @@ $suggestion_classification = $classifier->classify(
 npcink_governance_core_assert( 'suggestion_only' === (string) ( $suggestion_classification['classification'] ?? '' ), 'Operation classifier returns suggestion_only for no-write suggestions.' );
 npcink_governance_core_assert( 'operation-classification-v1' === (string) ( $suggestion_classification['decision_envelope']['decision_version'] ?? '' ), 'Operation classifier decision envelope includes the stable decision version.' );
 
+$editor_ai_plugin_suggestion = $classifier->classify(
+	array(
+		'request_source'       => 'wp_admin_ui',
+		'actor_presence'      => 'present_click',
+		'preview_completeness' => 'exact_final',
+		'scope'                => 'one_field',
+		'reversibility'        => 'easy_undo',
+		'operation_kind'       => 'suggest',
+		'writes_wordpress_state' => false,
+	)
+);
+npcink_governance_core_assert( 'suggestion_only' === (string) ( $editor_ai_plugin_suggestion['classification'] ?? '' ), 'Operation classifier treats visible editor AI-plugin suggestions as no-write until the author/editor applies them.' );
+
+$editor_ai_plugin_field_apply = $classifier->classify(
+	array(
+		'request_source'       => 'wp_admin_ui',
+		'actor_presence'      => 'present_click',
+		'preview_completeness' => 'exact_final',
+		'scope'                => 'one_field',
+		'reversibility'        => 'easy_undo',
+		'operation_kind'       => 'update_metadata',
+	)
+);
+npcink_governance_core_assert( 'local_admin_consent' === (string) ( $editor_ai_plugin_field_apply['classification'] ?? '' ), 'Operation classifier allows a present author to apply one visible low-risk AI-plugin editor field without Core proposal review.' );
+
 $local_consent_classification = $classifier->classify(
 	array(
 		'request_source'       => 'wp_admin_ui',
@@ -1348,6 +1379,18 @@ $strong_confirmation_classification = $classifier->classify(
 	)
 );
 npcink_governance_core_assert( 'strong_local_confirmation' === (string) ( $strong_confirmation_classification['classification'] ?? '' ), 'Operation classifier escalates high-impact single-object writes.' );
+
+$editor_publish_classification = $classifier->classify(
+	array(
+		'request_source'       => 'wp_admin_ui',
+		'actor_presence'      => 'present_click',
+		'preview_completeness' => 'exact_final',
+		'scope'                => 'one_object',
+		'reversibility'        => 'backup_restore',
+		'operation_kind'       => 'publish',
+	)
+);
+npcink_governance_core_assert( 'strong_local_confirmation' === (string) ( $editor_publish_classification['classification'] ?? '' ), 'Operation classifier treats a visible editor publish action as high-impact local confirmation rather than a default Core proposal hop.' );
 
 $media_optimization_batch_classification = $classifier->classify(
 	array(

@@ -70,6 +70,15 @@ Examples that may use local admin consent:
 This is not Core approval. It is a local WordPress admin authorization path for
 low-risk, visible, operator-present actions.
 
+Generic AI plugin output inside the WordPress editor is even more direct: when
+the AI plugin shows a visible title, excerpt, summary, category, tag, ALT, meta
+description, or editing suggestion and the author chooses to insert, save, or
+publish through the normal editor flow, that visible editor action is the human
+review step. Npcink should not add a Core proposal hop to that native author
+workflow. Core governance starts when a separate system asks WordPress to write
+on the author's behalf, or when the action is external, automated, batch,
+insufficiently previewed, destructive, or otherwise high impact.
+
 ## Operations That Still Require Governance Review
 Core proposal review remains required for operations that are external,
 deferred, broad, destructive, or difficult for the operator to fully inspect at
