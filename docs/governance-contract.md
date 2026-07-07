@@ -330,8 +330,12 @@ Commit preflight repeats discovery against the stored real `ability_id` and
 fails closed if that ability disappeared after approval. Proposal creation also
 stores a governance-relevant ability contract fingerprint covering risk,
 approval requirement, execution guidance, WordPress capability, required scopes,
-and input schema. Commit preflight fails closed if the live fingerprint no
-longer matches the approved proposal.
+input schema, and provider-declared `implementation_posture` metadata when
+present. Commit preflight fails closed if the live fingerprint no longer
+matches the approved proposal. Core uses implementation posture only as
+review-relevant drift metadata; it does not become the posture truth owner,
+ability executor, workflow runtime, queue, provider credential store, approval
+store, or audit store.
 
 Core evaluates a lightweight approval policy decision during proposal creation.
 The supported approval policy mode set is closed to `manual`,

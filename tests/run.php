@@ -1544,6 +1544,10 @@ npcink_governance_core_assert( false !== strpos( $ability_adapter, 'core_read_au
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'sensitivity'" ), 'Ability intake exposes read sensitivity.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'redaction_required'" ), 'Ability intake exposes read redaction requirement.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, 'infer_read_sensitivity' ), 'Ability intake infers read sensitivity when providers omit it.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, 'implementation_posture_metadata' ), 'Ability intake reads provider implementation posture metadata.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'implementation_posture_available'" ), 'Ability intake exposes implementation posture availability.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'implementation_posture'" ), 'Ability intake exposes implementation posture metadata.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'meta', 'npcink', 'implementation_posture'" ) || false !== strpos( $ability_adapter, "\$npcink_meta['implementation_posture']" ), 'Ability intake accepts Toolkit mirrored Npcink implementation posture metadata.' );
 
 $ability_intake = npcink_governance_core_read( $root . '/docs/ability-intake-contract.md' );
 npcink_governance_core_assert( false !== strpos( $ability_intake, 'reference provider and smoke-test' ), 'Ability intake contract treats npcink-abilities-toolkit as the reference provider.' );
@@ -1836,6 +1840,10 @@ npcink_governance_core_assert( false !== strpos( $contract_controller, "'operati
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'Operation_Classifier::allowed_classifications()' ), 'Runtime contract reuses the shared operation classifier values.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'CLASSIFICATION_CORE_PROPOSAL_REQUIRED' ) && false !== strpos( $contract_controller, "'proposal_intake_path'               => 'core_proposal'" ), 'Runtime contract declares Core proposal intake classification and path.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, "'generic_editor_author_review_proposal_required' => false" ), 'Runtime contract keeps visible editor author review outside Core proposal intake.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'implementation_posture'" ), 'Runtime contract exposes implementation posture discovery metadata.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'commit_preflight_contract_validation' => true" ), 'Runtime contract declares implementation posture preflight validation.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'core_records_truth'                  => false" ), 'Runtime contract keeps implementation posture truth outside Core.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'forbidden_core_ownership_flags'" ), 'Runtime contract names forbidden Core ownership flags for provider posture.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'minimum_adapter_contract_version' ), 'Runtime contract exposes Adapter compatibility floor.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'context_bindings' ), 'Runtime contract exposes context binding metadata.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, "'fields'       => array( 'site_url', 'home_url', 'blog_id' )" ), 'Runtime contract declares site binding fields.' );
@@ -2027,6 +2035,7 @@ npcink_governance_core_assert( false !== strpos( $proposal_service, 'MAX_PROPOSA
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'validate_proposal_payload_size' ), 'Proposal service validates direct proposal payload size before persistence.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_proposal_payload_too_large' ), 'Proposal service uses a stable oversized direct proposal payload error.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal_intake_classification' ) && false !== strpos( $proposal_service, "'operation_classification'" ), 'Proposal service persists operation classification evidence on proposal intake.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, "'implementation_posture'" ), 'Proposal service stores implementation posture in the proposal ability contract fingerprint.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_proposal_classification_rejected' ), 'Proposal service rejects non-Core proposal classification evidence.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.policy_evaluated' ), 'Proposal service records policy evaluation audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.auto_approved' ), 'Proposal service records auto approval audit event.' );
@@ -2092,6 +2101,7 @@ npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'re
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'governance_mode'" ), 'Commit preflight contract includes governance mode drift.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'execution_surface'" ), 'Commit preflight contract includes execution surface drift.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'required_scopes'" ), 'Commit preflight contract includes required scope drift.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'implementation_posture'" ), 'Commit preflight contract includes implementation posture drift.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'input_schema'" ), 'Commit preflight contract includes input schema drift.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'signed_client_context' ), 'Commit preflight binds signed Adapter client fingerprint when present.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'site_binding_context' ), 'Commit preflight has a site binding helper.' );

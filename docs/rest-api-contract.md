@@ -132,6 +132,24 @@ Response `200`:
     "generic_editor_author_review_proposal_required": false,
     "execution_owner_for_core_proposals": "adapter_or_host_after_core_preflight"
   },
+  "implementation_posture": {
+    "provider_metadata_field": "implementation_posture",
+    "capabilities_surface": "/wp-json/npcink-governance-core/v1/capabilities",
+    "proposal_review_visibility": true,
+    "commit_preflight_contract_validation": true,
+    "metadata_only": true,
+    "owner": "wordpress_abilities_provider",
+    "core_records_truth": false,
+    "execution_owner_for_core_proposals": "adapter_or_host_after_core_preflight",
+    "forbidden_core_ownership_flags": [
+      "workflow_runtime",
+      "queue_or_scheduler",
+      "model_routing",
+      "provider_credentials",
+      "approval_storage",
+      "audit_storage"
+    ]
+  },
   "context_bindings": {
     "site_binding": {
       "fields": ["site_url", "home_url", "blog_id"],
@@ -201,6 +219,15 @@ specific request, create proposals, record local consent audit rows, or grant
 execution. Proposal intake remains fixed to `core_proposal_required` with
 `proposal_intake_path=core_proposal`; local-admin-consent and native editor
 author-review paths stay outside Core proposal intake.
+
+The `implementation_posture` object tells consumers where provider-owned
+implementation posture metadata appears and how Core treats it. Core surfaces
+the normalized posture on `/capabilities`, shows it on proposal review when the
+target ability is discoverable, and includes it in commit-preflight ability
+contract drift checks. It is metadata-only: Core does not become the posture
+truth owner, execute final writes, or own workflow runtime, queues, model
+routing, provider credentials, approval storage, or audit storage because a
+provider declares posture metadata.
 
 Core-issued commit preflight and sensitive-read authorization contexts include
 the current `site_url`, `home_url`, and `blog_id` so adapters can fail closed
@@ -322,6 +349,8 @@ Response `200`:
       "read_authorization_preflight_route": "",
       "read_authorization_status_route": "",
       "read_audit_mode": "adapter_read_envelope",
+      "implementation_posture_available": false,
+      "implementation_posture": {},
       "input_schema": { "type": "object" },
       "output_schema": { "type": "object" },
       "source": "npcink_abilities_toolkit",
@@ -371,6 +400,12 @@ Capability execution guidance:
 - `read_authorization_request_route`,
   `read_authorization_preflight_route`, and
   `read_authorization_status_route` are route guidance for Adapter handoff.
+- `implementation_posture_available=false` means the provider did not expose
+  implementation posture metadata. When it is true, `implementation_posture`
+  carries provider-owned metadata such as write posture, commit authority,
+  owner fields, required host evidence, reference patterns, verification
+  contracts, and forbidden runtime/storage ownership flags. Core surfaces it
+  for review and contract drift only.
 - `core_proxy_execute=false` is fixed in the current contract. Core does not
   provide `/execute` or `/proxy-execute`.
 - `commit_execution=false` remains fixed until a separate final commit

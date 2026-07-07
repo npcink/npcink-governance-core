@@ -129,6 +129,9 @@ Use it for behavior that requires real WordPress:
 - REST dispatch;
 - current user permissions;
 - integration with `npcink-abilities-toolkit`;
+- provider-declared `implementation_posture` metadata on Toolkit
+  host-governed write abilities, including Core `/capabilities` exposure and
+  commit-preflight contract drift coverage;
 - Core-managed sensitive read authorization for diagnostics abilities, including
   capability flags, request creation, approval, bounded read preflight,
   hash-only sensitive preflight rejection, changed input rejection, audit

@@ -749,6 +749,34 @@ function npcink_governance_core_smoke_assert_read_policy( array $ability, string
 }
 
 /**
+ * Verifies provider-declared implementation posture on host-governed write abilities.
+ *
+ * @param array<string,mixed> $ability Capability row.
+ * @param string              $ability_id Ability id.
+ * @return void
+ */
+function npcink_governance_core_smoke_assert_implementation_posture( array $ability, string $ability_id ): void {
+	$posture = is_array( $ability['implementation_posture'] ?? null ) ? $ability['implementation_posture'] : array();
+
+	npcink_governance_core_smoke_assert( true === (bool) ( $ability['implementation_posture_available'] ?? false ), $ability_id . ' exposes implementation posture availability' );
+	npcink_governance_core_smoke_assert( 'npcink_abilities_toolkit_implementation_posture.v1' === (string) ( $posture['schema_version'] ?? '' ), $ability_id . ' exposes implementation posture schema' );
+	npcink_governance_core_smoke_assert( 'host_governed_dry_run_first' === (string) ( $posture['write_posture'] ?? '' ), $ability_id . ' declares host-governed dry-run-first write posture' );
+	npcink_governance_core_smoke_assert( 'host_runtime_approval_context_required' === (string) ( $posture['commit_authority'] ?? '' ), $ability_id . ' declares host runtime approval context authority' );
+	npcink_governance_core_smoke_assert( 'host_governance_layer' === (string) ( $posture['final_authorization_owner'] ?? '' ), $ability_id . ' leaves final authorization truth with host governance' );
+	npcink_governance_core_smoke_assert( 'host_governance_layer' === (string) ( $posture['approval_truth_owner'] ?? '' ), $ability_id . ' leaves approval truth with host governance' );
+	npcink_governance_core_smoke_assert( 'host_governance_layer' === (string) ( $posture['audit_truth_owner'] ?? '' ), $ability_id . ' leaves audit truth with host governance' );
+	npcink_governance_core_smoke_assert( true === (bool) ( $posture['dry_run_default'] ?? false ), $ability_id . ' keeps dry-run default enabled' );
+	npcink_governance_core_smoke_assert( false === (bool) ( $posture['commit_default'] ?? true ), $ability_id . ' keeps commit default disabled' );
+	npcink_governance_core_smoke_assert( false === (bool) ( $posture['direct_wordpress_write_default'] ?? true ), $ability_id . ' keeps direct WordPress write default disabled' );
+	foreach ( array( 'reference_patterns', 'verification_contract', 'required_host_evidence' ) as $list_field ) {
+		npcink_governance_core_smoke_assert( count( (array) ( $posture[ $list_field ] ?? array() ) ) > 0, $ability_id . ' exposes implementation posture ' . $list_field );
+	}
+	foreach ( array( 'workflow_runtime', 'queue_or_scheduler', 'model_routing', 'provider_credentials', 'approval_storage', 'audit_storage' ) as $flag ) {
+		npcink_governance_core_smoke_assert( false === (bool) ( $posture[ $flag ] ?? true ), $ability_id . ' does not declare Core-forbidden ownership flag ' . $flag );
+	}
+}
+
+/**
  * Verifies Core-owned sensitive read authorization guidance.
  *
  * @param array<string,mixed> $ability Capability row.
@@ -1169,6 +1197,11 @@ function npcink_governance_core_smoke_run_governance_proposal( string $ability_i
 		npcink_governance_core_smoke_assert( false !== strpos( (string) ( $preflight['proposal']['input']['content'] ?? '' ), '<p>' ), 'create-draft preflight preserves safe HTML content in approved input' );
 	}
 	npcink_governance_core_smoke_assert( $ability_id === (string) ( $preflight['capability']['ability_id'] ?? '' ), $ability_id . ' preflight capability is rediscovered from ability intake' );
+	$preflight_posture = is_array( $preflight['capability']['implementation_posture'] ?? null ) ? $preflight['capability']['implementation_posture'] : array();
+	if ( ! empty( $preflight_posture ) ) {
+		npcink_governance_core_smoke_assert( 'npcink_abilities_toolkit_implementation_posture.v1' === (string) ( $preflight_posture['schema_version'] ?? '' ), $ability_id . ' preflight capability exposes implementation posture' );
+		npcink_governance_core_smoke_assert( $preflight_posture == (array) ( $preflight['contract_preflight']['current_contract']['implementation_posture'] ?? array() ), $ability_id . ' preflight contract fingerprint carries implementation posture' );
+	}
 	$correlation_id = (string) ( $preflight['correlation_id'] ?? '' );
 	npcink_governance_core_smoke_assert( '' !== $correlation_id, $ability_id . ' commit preflight returns correlation id' );
 	npcink_governance_core_smoke_assert( $correlation_id === (string) ( $preflight['approval_context']['correlation_id'] ?? '' ), $ability_id . ' approval context includes matching correlation id' );
@@ -1389,6 +1422,13 @@ npcink_governance_core_smoke_assert( 'core_proposal_required' === (string) ( $ru
 npcink_governance_core_smoke_assert( 'core_proposal' === (string) ( $runtime_contract['operation_classification']['proposal_intake_path'] ?? '' ), 'runtime contract declares Core proposal intake path' );
 npcink_governance_core_smoke_assert( false === (bool) ( $runtime_contract['operation_classification']['generic_editor_author_review_proposal_required'] ?? true ), 'runtime contract keeps generic editor author review outside Core proposal intake' );
 npcink_governance_core_smoke_assert( 'adapter_or_host_after_core_preflight' === (string) ( $runtime_contract['operation_classification']['execution_owner_for_core_proposals'] ?? '' ), 'runtime contract names Adapter or host execution owner for Core proposals' );
+npcink_governance_core_smoke_assert( 'implementation_posture' === (string) ( $runtime_contract['implementation_posture']['provider_metadata_field'] ?? '' ), 'runtime contract names implementation posture provider metadata field' );
+npcink_governance_core_smoke_assert( '/wp-json/npcink-governance-core/v1/capabilities' === (string) ( $runtime_contract['implementation_posture']['capabilities_surface'] ?? '' ), 'runtime contract points implementation posture consumers to capabilities' );
+npcink_governance_core_smoke_assert( true === (bool) ( $runtime_contract['implementation_posture']['proposal_review_visibility'] ?? false ), 'runtime contract marks implementation posture visible in proposal review' );
+npcink_governance_core_smoke_assert( true === (bool) ( $runtime_contract['implementation_posture']['commit_preflight_contract_validation'] ?? false ), 'runtime contract marks implementation posture validated by commit preflight' );
+npcink_governance_core_smoke_assert( true === (bool) ( $runtime_contract['implementation_posture']['metadata_only'] ?? false ), 'runtime contract keeps implementation posture metadata-only' );
+npcink_governance_core_smoke_assert( false === (bool) ( $runtime_contract['implementation_posture']['core_records_truth'] ?? true ), 'runtime contract does not make Core the implementation posture truth owner' );
+npcink_governance_core_smoke_assert( in_array( 'workflow_runtime', (array) ( $runtime_contract['implementation_posture']['forbidden_core_ownership_flags'] ?? array() ), true ), 'runtime contract names forbidden workflow runtime ownership flag' );
 npcink_governance_core_smoke_assert( '1' === (string) ( $runtime_contract['runtime_contract_endpoint_version'] ?? '' ), 'runtime contract exposes endpoint version' );
 npcink_governance_core_smoke_assert( true === (bool) ( $runtime_contract['compatibility']['metadata_only'] ?? false ), 'runtime contract is metadata-only' );
 npcink_governance_core_smoke_assert( true === (bool) ( $runtime_contract['compatibility']['commit_preflight_available'] ?? false ), 'runtime contract exposes commit preflight availability' );
@@ -1538,6 +1578,19 @@ npcink_governance_core_smoke_assert( $all_have_sensitivity, 'all capability rows
 npcink_governance_core_smoke_assert( $all_have_redaction_requirement, 'all capability rows expose read redaction requirement' );
 npcink_governance_core_smoke_assert( $all_disable_core_proxy_execute, 'all capability rows keep Core proxy execution disabled' );
 npcink_governance_core_smoke_assert( $all_disable_core_commit_execute, 'all capability rows keep Core commit execution disabled' );
+
+foreach (
+	array(
+		'npcink-abilities-toolkit/create-draft',
+		'npcink-abilities-toolkit/update-post',
+		'npcink-abilities-toolkit/update-post-blocks',
+		'npcink-abilities-toolkit/set-post-terms',
+		'npcink-abilities-toolkit/update-media-details',
+	) as $posture_ability_id
+) {
+	npcink_governance_core_smoke_assert( isset( $items_by_id[ $posture_ability_id ] ), $posture_ability_id . ' is discoverable for implementation posture validation' );
+	npcink_governance_core_smoke_assert_implementation_posture( $items_by_id[ $posture_ability_id ], $posture_ability_id );
+}
 
 npcink_governance_core_smoke_assert( isset( $items_by_id['npcink-abilities-toolkit/site-info'] ), 'site-info read ability is discoverable for direct read guidance' );
 npcink_governance_core_smoke_assert_capability_guidance( $items_by_id['npcink-abilities-toolkit/site-info'], 'direct_read', 'wp_abilities_rest', 'site-info uses direct read execution guidance' );

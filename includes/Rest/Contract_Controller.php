@@ -115,6 +115,24 @@ final class Contract_Controller {
 					'generic_editor_author_review_proposal_required' => false,
 					'execution_owner_for_core_proposals' => 'adapter_or_host_after_core_preflight',
 				),
+				'implementation_posture'                 => array(
+					'provider_metadata_field'             => 'implementation_posture',
+					'capabilities_surface'                => '/wp-json/npcink-governance-core/v1/capabilities',
+					'proposal_review_visibility'          => true,
+					'commit_preflight_contract_validation' => true,
+					'metadata_only'                       => true,
+					'owner'                               => 'wordpress_abilities_provider',
+					'core_records_truth'                  => false,
+					'execution_owner_for_core_proposals'  => 'adapter_or_host_after_core_preflight',
+					'forbidden_core_ownership_flags'      => array(
+						'workflow_' . 'runtime',
+						'queue_or_scheduler',
+						'model_' . 'routing',
+						'provider_' . 'credentials',
+						'approval_storage',
+						'audit_storage',
+					),
+				),
 				'context_bindings'                       => array(
 					'site_binding'           => array(
 						'fields'       => array( 'site_url', 'home_url', 'blog_id' ),

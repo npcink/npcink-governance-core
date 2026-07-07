@@ -1,5 +1,41 @@
 # Session Breadcrumb
 
+## 2026-07-07 — Implementation posture contract consumed by Core
+
+- **Module**: Core ability intake, proposal review visibility, and commit
+  preflight contract drift.
+- **Status**: Core now consumes provider-declared `implementation_posture`
+  metadata from Toolkit-style ability definitions without taking ownership of
+  the ability implementation. The posture is normalized on `/capabilities`,
+  discoverable through `/contract`, visible in proposal detail when the target
+  ability is available, and included in proposal/preflight ability contract
+  fingerprints so owner/evidence/reference-pattern drift requires fresh review.
+- **Completed**:
+  - Added safe read-only posture normalization from `implementation_posture`,
+    `meta.implementation_posture`, and `meta.npcink.implementation_posture`.
+  - Added proposal detail posture rows for write posture, commit authority,
+    final authorization owner, approval/audit truth owner, host evidence,
+    verification contract, reference patterns, and forbidden ownership flags.
+  - Added runtime contract metadata that points consumers to `/capabilities`
+    and declares posture validation as metadata-only.
+  - Updated REST, governance, approval-commit, ability-intake, and testing docs.
+  - Added static and WordPress smoke coverage for Toolkit priority write
+    abilities and preflight posture fingerprinting.
+- **Verified**:
+  - `composer validate --no-check-publish` passed.
+  - `composer test:all` passed.
+  - `composer analyse:phpstan` passed.
+  - `composer smoke:wp` passed.
+- **Next gate**:
+  - Apply the same contract-consumer discipline to Adapter next: read Core's
+    `/contract` posture metadata, validate `/capabilities` posture for target
+    abilities, and display/guard it before executing approved handoffs.
+- **Boundary**:
+  - This is metadata intake, review visibility, and drift validation only. It
+    does not add ability execution, fallback registration, workflow runtime,
+    queues, model routing, provider credential storage, approval storage, audit
+    storage, or final WordPress writes to Core.
+
 ## 2026-07-07 — Core classification visibility stage implemented
 
 - **Module**: Core proposal review visibility and runtime contract metadata.

@@ -2671,6 +2671,133 @@ final class Admin_Page {
 	}
 
 	/**
+	 * Returns implementation posture rows for the proposal review surface.
+	 *
+	 * @param array<string,mixed>|null $capability Capability row.
+	 * @return array{label:string,rows:array<int,array{label:string,value:mixed,code?:bool}>}|array{}
+	 */
+	private function implementation_posture_review_group( ?array $capability ): array {
+		$posture = is_array( $capability['implementation_posture'] ?? null ) ? $capability['implementation_posture'] : array();
+		if ( empty( $posture ) ) {
+			return array();
+		}
+
+		return array(
+			'label' => __( 'Implementation posture', 'npcink-governance-core' ),
+			'rows'  => array(
+				array(
+					'label' => __( 'Schema', 'npcink-governance-core' ),
+					'value' => (string) ( $posture['schema_version'] ?? '' ),
+					'code'  => true,
+				),
+				array(
+					'label' => __( 'Write posture', 'npcink-governance-core' ),
+					'value' => (string) ( $posture['write_posture'] ?? '' ),
+					'code'  => true,
+				),
+				array(
+					'label' => __( 'Commit authority', 'npcink-governance-core' ),
+					'value' => (string) ( $posture['commit_authority'] ?? '' ),
+					'code'  => true,
+				),
+				array(
+					'label' => __( 'Execution surface', 'npcink-governance-core' ),
+					'value' => (string) ( $posture['execution_surface'] ?? '' ),
+					'code'  => true,
+				),
+				array(
+					'label' => __( 'Final authorization owner', 'npcink-governance-core' ),
+					'value' => (string) ( $posture['final_authorization_owner'] ?? '' ),
+					'code'  => true,
+				),
+				array(
+					'label' => __( 'Approval truth owner', 'npcink-governance-core' ),
+					'value' => (string) ( $posture['approval_truth_owner'] ?? '' ),
+					'code'  => true,
+				),
+				array(
+					'label' => __( 'Audit truth owner', 'npcink-governance-core' ),
+					'value' => (string) ( $posture['audit_truth_owner'] ?? '' ),
+					'code'  => true,
+				),
+				array(
+					'label' => __( 'Dry-run default', 'npcink-governance-core' ),
+					'value' => $this->posture_bool_label( $posture, 'dry_run_default' ),
+				),
+				array(
+					'label' => __( 'Commit default', 'npcink-governance-core' ),
+					'value' => $this->posture_bool_label( $posture, 'commit_default' ),
+				),
+				array(
+					'label' => __( 'Required host evidence', 'npcink-governance-core' ),
+					'value' => implode( ', ', array_map( 'strval', (array) ( $posture['required_host_evidence'] ?? array() ) ) ),
+				),
+				array(
+					'label' => __( 'Verification contract', 'npcink-governance-core' ),
+					'value' => implode( ', ', array_map( 'strval', (array) ( $posture['verification_contract'] ?? array() ) ) ),
+				),
+				array(
+					'label' => __( 'Reference patterns', 'npcink-governance-core' ),
+					'value' => implode( ', ', array_map( 'strval', (array) ( $posture['reference_patterns'] ?? array() ) ) ),
+				),
+				array(
+					'label' => __( 'Boundary flags', 'npcink-governance-core' ),
+					'value' => $this->implementation_posture_boundary_label( $posture ),
+				),
+			),
+		);
+	}
+
+	/**
+	 * Returns a compact yes/no label for optional posture booleans.
+	 *
+	 * @param array<string,mixed> $posture Posture metadata.
+	 * @param string              $field Boolean field.
+	 * @return string
+	 */
+	private function posture_bool_label( array $posture, string $field ): string {
+		if ( ! array_key_exists( $field, $posture ) ) {
+			return '';
+		}
+
+		return ! empty( $posture[ $field ] ) ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' );
+	}
+
+	/**
+	 * Returns posture boundary status without making Core the provider owner.
+	 *
+	 * @param array<string,mixed> $posture Posture metadata.
+	 * @return string
+	 */
+	private function implementation_posture_boundary_label( array $posture ): string {
+		$enabled = array();
+		foreach (
+			array(
+				'workflow_' . 'runtime' => __( 'workflow runtime', 'npcink-governance-core' ),
+				'queue_or_scheduler'    => __( 'queue or scheduler', 'npcink-governance-core' ),
+				'model_' . 'routing'    => __( 'model routing', 'npcink-governance-core' ),
+				'provider_' . 'credentials' => __( 'provider credentials', 'npcink-governance-core' ),
+				'approval_storage'      => __( 'approval storage', 'npcink-governance-core' ),
+				'audit_storage'         => __( 'audit storage', 'npcink-governance-core' ),
+			) as $field => $label
+		) {
+			if ( ! empty( $posture[ $field ] ) ) {
+				$enabled[] = $label;
+			}
+		}
+
+		if ( empty( $enabled ) ) {
+			return __( 'No runtime, queue, model routing, credential, approval-store, or audit-store ownership declared.', 'npcink-governance-core' );
+		}
+
+		return sprintf(
+			/* translators: %s: comma-separated provider-declared ownership flags. */
+			__( 'Provider declares Core-forbidden ownership: %s', 'npcink-governance-core' ),
+			implode( ', ', $enabled )
+		);
+	}
+
+	/**
 	 * Renders proposal identity and source as grouped detail tables.
 	 *
 	 * @param array<string,mixed> $proposal Proposal.
@@ -3087,6 +3214,10 @@ final class Admin_Page {
 				),
 			),
 		);
+		$implementation_posture_group = $this->implementation_posture_review_group( $capability );
+		if ( ! empty( $implementation_posture_group ) ) {
+			$review_groups[] = $implementation_posture_group;
+		}
 		if ( ! empty( $signal_rows ) ) {
 			$review_groups[] = array(
 				'label' => __( 'Preview signals', 'npcink-governance-core' ),

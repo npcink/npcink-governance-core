@@ -40,6 +40,8 @@ Preflight must:
 - fail when the target ability is no longer discoverable;
 - fail when the target ability's governance-relevant contract has changed since
   proposal creation;
+- fail when the target ability's provider-declared `implementation_posture`
+  metadata has changed since proposal creation;
 - fail when the current WordPress user no longer has the target ability's
   declared WordPress capability;
 - fail when the proposal preview marks the item as not ready, lists
@@ -125,6 +127,13 @@ The handoff object is not a second approval and not an execution token. Core
 issues one handoff per approved proposal input. Adapter must treat duplicate
 preflight rejection as a signal to use the original audited handoff or create a
 new proposal after fresh review.
+
+The `contract_preflight.current_contract` object includes the normalized
+provider-declared `implementation_posture` when the ability exposes one. Core
+uses it only as governance-relevant drift metadata. A change to reference
+patterns, required host evidence, commit authority, owner fields, or forbidden
+runtime/storage flags requires a fresh proposal review before Adapter or the
+host proceeds.
 
 After Adapter executes a write through WordPress Abilities API, it should call
 Core `record-execution` with `execution_status`, `correlation_id`,
