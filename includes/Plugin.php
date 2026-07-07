@@ -274,9 +274,15 @@ final class Plugin {
 			);
 		}
 
+		$classification = $this->local_admin_consent_classification_evidence( $metadata );
+		if ( is_wp_error( $classification ) ) {
+			return $classification;
+		}
+
 		$metadata['governance_record_type'] = 'local_admin_consent_audit';
 		$metadata['proposal_created']       = false;
 		$metadata['core_execution']         = false;
+		$metadata['operation_classification'] = $classification;
 
 		$event_id = $this->audit_repository()->record( $event_name, $metadata );
 		if ( '' === $event_id ) {
@@ -290,6 +296,65 @@ final class Plugin {
 		return array(
 			'event_id'   => $event_id,
 			'event_name' => $event_name,
+		);
+	}
+
+	/**
+	 * Validates and normalizes classification evidence for local consent audit.
+	 *
+	 * @param array<string,mixed> $metadata Audit metadata.
+	 * @return array<string,mixed>|\WP_Error
+	 */
+	private function local_admin_consent_classification_evidence( array $metadata ) {
+		$evidence = is_array( $metadata['operation_classification'] ?? null ) ? $metadata['operation_classification'] : $metadata;
+		$envelope = is_array( $evidence['decision_envelope'] ?? null ) ? $evidence['decision_envelope'] : array();
+		if ( empty( $envelope ) ) {
+			return new \WP_Error(
+				'npcink_governance_core_local_consent_classification_missing',
+				__( 'Local admin consent audit requires operation classification evidence.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$classification          = sanitize_key( (string) ( $evidence['classification'] ?? ( $envelope['classification'] ?? '' ) ) );
+		$envelope_classification = sanitize_key( (string) ( $envelope['classification'] ?? '' ) );
+		if ( '' === $classification || $classification !== $envelope_classification ) {
+			return new \WP_Error(
+				'npcink_governance_core_local_consent_classification_mismatch',
+				__( 'Local admin consent audit classification evidence is inconsistent.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( ! in_array( $classification, array( Operation_Classifier::CLASSIFICATION_LOCAL_ADMIN_CONSENT, Operation_Classifier::CLASSIFICATION_STRONG_LOCAL_CONFIRMATION ), true ) ) {
+			return new \WP_Error(
+				'npcink_governance_core_local_consent_classification_rejected',
+				__( 'Local admin consent audit accepts only local consent or strong local confirmation classifications.', 'npcink-governance-core' ),
+				array(
+					'status'         => 422,
+					'classification' => $classification,
+				)
+			);
+		}
+
+		$decision_version = sanitize_key( (string) ( $evidence['decision_version'] ?? ( $envelope['decision_version'] ?? '' ) ) );
+		if ( Operation_Classifier::POLICY_VERSION !== $decision_version ) {
+			return new \WP_Error(
+				'npcink_governance_core_local_consent_classification_version_rejected',
+				__( 'Local admin consent audit requires the current operation classification policy version.', 'npcink-governance-core' ),
+				array(
+					'status'           => 422,
+					'decision_version' => $decision_version,
+				)
+			);
+		}
+
+		return array(
+			'classification'    => $classification,
+			'policy_version'    => Operation_Classifier::POLICY_VERSION,
+			'decision_version'  => Operation_Classifier::POLICY_VERSION,
+			'decision_envelope' => $envelope,
+			'intake_path'       => 'local_admin_consent_audit',
 		);
 	}
 

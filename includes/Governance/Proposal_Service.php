@@ -112,6 +112,12 @@ final class Proposal_Service {
 			$caller['auth'] = Request_Context::audit_metadata();
 		}
 
+		$classification = $this->proposal_intake_classification( $ability_id, $input, $preview );
+		if ( is_wp_error( $classification ) ) {
+			return $classification;
+		}
+		$preview['operation_classification'] = $classification;
+
 		$payload_size_error = $this->validate_proposal_payload_size( $ability_id, $payload, $input, $preview, $caller );
 		if ( is_wp_error( $payload_size_error ) ) {
 			return $payload_size_error;
@@ -654,6 +660,123 @@ final class Proposal_Service {
 				'max_bytes' => self::MAX_PROPOSAL_PAYLOAD_BYTES,
 			)
 		);
+	}
+
+	/**
+	 * Builds and validates the operation classification evidence for Core proposal intake.
+	 *
+	 * @param string              $ability_id Target ability id.
+	 * @param array<string,mixed> $input Proposal input.
+	 * @param array<string,mixed> $preview Proposal preview.
+	 * @return array<string,mixed>|WP_Error
+	 */
+	private function proposal_intake_classification( string $ability_id, array $input, array $preview ) {
+		$submitted = $this->submitted_classification_from_preview( $preview );
+		if ( '' !== $submitted && Operation_Classifier::CLASSIFICATION_CORE_PROPOSAL_REQUIRED !== $submitted ) {
+			return new WP_Error(
+				'npcink_governance_core_proposal_classification_rejected',
+				__( 'Proposals submitted to Core must classify as Core proposal required.', 'npcink-governance-core' ),
+				array(
+					'status'         => 422,
+					'classification' => $submitted,
+				)
+			);
+		}
+
+		$classifier     = new Operation_Classifier();
+		$classification = $classifier->classify(
+			array(
+				'request_source'          => Request_Context::is_app() ? Operation_Classifier::SOURCE_EXTERNAL_ADAPTER : Operation_Classifier::SOURCE_WP_ADMIN_UI,
+				'actor_presence'         => Request_Context::is_app() ? Operation_Classifier::ACTOR_DELEGATED : Operation_Classifier::ACTOR_BACKGROUND,
+				'preview_completeness'   => empty( $preview ) ? Operation_Classifier::PREVIEW_NONE : Operation_Classifier::PREVIEW_PARTIAL,
+				'scope'                  => $this->proposal_scope_for_input( $input ),
+				'reversibility'          => Operation_Classifier::REVERSIBILITY_HARD_RESTORE,
+				'operation_kind'         => $this->proposal_operation_kind( $ability_id, $input ),
+				'writes_wordpress_state' => true,
+			)
+		);
+
+		if ( Operation_Classifier::CLASSIFICATION_CORE_PROPOSAL_REQUIRED !== (string) ( $classification['classification'] ?? '' ) ) {
+			return new WP_Error(
+				'npcink_governance_core_proposal_classification_mismatch',
+				__( 'Core proposal intake could not produce a Core proposal required classification.', 'npcink-governance-core' ),
+				array(
+					'status'         => 500,
+					'classification' => (string) ( $classification['classification'] ?? '' ),
+				)
+			);
+		}
+
+		$classification['intake_path'] = 'core_proposal';
+		return $classification;
+	}
+
+	/**
+	 * Extracts submitted classification evidence from known preview locations.
+	 *
+	 * @param array<string,mixed> $preview Proposal preview.
+	 * @return string
+	 */
+	private function submitted_classification_from_preview( array $preview ): string {
+		foreach ( array( 'operation_classification', 'classification_evidence', 'authorization' ) as $key ) {
+			$evidence = is_array( $preview[ $key ] ?? null ) ? $preview[ $key ] : array();
+			$envelope = is_array( $evidence['decision_envelope'] ?? null ) ? $evidence['decision_envelope'] : array();
+			$classification = sanitize_key( (string) ( $evidence['classification'] ?? ( $envelope['classification'] ?? '' ) ) );
+			if ( '' !== $classification ) {
+				return $classification;
+			}
+		}
+
+		return '';
+	}
+
+	/**
+	 * Derives bounded scope evidence for proposal intake classification.
+	 *
+	 * @param array<string,mixed> $input Proposal input.
+	 * @return string
+	 */
+	private function proposal_scope_for_input( array $input ): string {
+		$write_actions = is_array( $input['write_actions'] ?? null ) ? $input['write_actions'] : array();
+		if ( count( $write_actions ) > 1 ) {
+			return Operation_Classifier::SCOPE_MULTIPLE_OBJECTS;
+		}
+
+		return Operation_Classifier::SCOPE_ONE_OBJECT;
+	}
+
+	/**
+	 * Derives a conservative operation kind for proposal intake classification.
+	 *
+	 * @param string              $ability_id Target ability id.
+	 * @param array<string,mixed> $input Proposal input.
+	 * @return string
+	 */
+	private function proposal_operation_kind( string $ability_id, array $input ): string {
+		if ( is_array( $input['write_actions'] ?? null ) ) {
+			return Operation_Classifier::KIND_BATCH_PLAN;
+		}
+
+		if ( false !== strpos( $ability_id, 'create-draft' ) ) {
+			return Operation_Classifier::KIND_CREATE_DRAFT;
+		}
+		if ( false !== strpos( $ability_id, 'publish' ) ) {
+			return Operation_Classifier::KIND_PUBLISH;
+		}
+		if ( false !== strpos( $ability_id, 'delete' ) || false !== strpos( $ability_id, 'trash' ) ) {
+			return Operation_Classifier::KIND_DELETE;
+		}
+		if ( false !== strpos( $ability_id, 'replace' ) || false !== strpos( $ability_id, 'rename-media-file' ) ) {
+			return Operation_Classifier::KIND_REPLACE_FILE;
+		}
+		if ( false !== strpos( $ability_id, 'settings' ) ) {
+			return Operation_Classifier::KIND_SETTINGS_CHANGE;
+		}
+		if ( false !== strpos( $ability_id, 'permission' ) || false !== strpos( $ability_id, 'capability' ) ) {
+			return Operation_Classifier::KIND_PERMISSION_CHANGE;
+		}
+
+		return Operation_Classifier::KIND_UPDATE_METADATA;
 	}
 
 	/**

@@ -1070,6 +1070,8 @@ function npcink_governance_core_smoke_assert_plan_proposal_shape( array $proposa
 	npcink_governance_core_smoke_assert( $proposal_ready === (bool) ( $preview['proposal_ready'] ?? false ), $target_ability_id . ' preview records proposal readiness' );
 	npcink_governance_core_smoke_assert( is_array( $preview['risk'] ?? null ) && '' !== (string) ( $preview['risk']['level'] ?? '' ), $target_ability_id . ' preview records risk' );
 	npcink_governance_core_smoke_assert( array_key_exists( 'required_scopes', $preview ), $target_ability_id . ' preview records required scopes' );
+	npcink_governance_core_smoke_assert( 'core_proposal_required' === (string) ( $preview['operation_classification']['classification'] ?? '' ), $target_ability_id . ' plan proposal stores Core proposal classification evidence' );
+	npcink_governance_core_smoke_assert( 'core_proposal' === (string) ( $preview['operation_classification']['intake_path'] ?? '' ), $target_ability_id . ' plan proposal records Core proposal intake path' );
 }
 
 /**
@@ -1131,6 +1133,8 @@ function npcink_governance_core_smoke_run_governance_proposal( string $ability_i
 	$proposal_id = (string) ( $created['proposal_id'] ?? '' );
 	npcink_governance_core_smoke_assert( '' !== $proposal_id && 'pending' === (string) ( $created['status'] ?? '' ), $ability_id . ' proposal created in pending status' );
 	npcink_governance_core_smoke_assert( $ability_id === (string) ( $created['ability_id'] ?? '' ), $ability_id . ' proposal stores the real ability id' );
+	npcink_governance_core_smoke_assert( 'core_proposal_required' === (string) ( $created['preview']['operation_classification']['classification'] ?? '' ), $ability_id . ' proposal stores Core proposal classification evidence' );
+	npcink_governance_core_smoke_assert( 'core_proposal' === (string) ( $created['preview']['operation_classification']['intake_path'] ?? '' ), $ability_id . ' proposal records Core proposal intake path' );
 
 	$detail = npcink_governance_core_smoke_rest( 'GET', '/npcink-governance-core/v1/proposals/' . rawurlencode( $proposal_id ) );
 	npcink_governance_core_smoke_assert( $proposal_id === (string) ( $detail['proposal_id'] ?? '' ), $ability_id . ' proposal detail endpoint returns created proposal' );

@@ -1204,6 +1204,7 @@ require_once dirname( __DIR__ ) . '/includes/Observability.php';
 require_once dirname( __DIR__ ) . '/includes/Audit/Audit_Log_Repository.php';
 require_once dirname( __DIR__ ) . '/includes/Capabilities/Ability_Registry_Adapter.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Approval_Policy_Evaluator.php';
+require_once dirname( __DIR__ ) . '/includes/Governance/Operation_Classifier.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Proposal_Repository.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Proposal_Service.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Read_Request_Repository.php';
@@ -1216,6 +1217,7 @@ require_once dirname( __DIR__ ) . '/includes/Security/App_Authenticator.php';
 require_once dirname( __DIR__ ) . '/includes/Rest/Apps_Controller.php';
 require_once dirname( __DIR__ ) . '/includes/Rest/Proposals_Controller.php';
 require_once dirname( __DIR__ ) . '/includes/Rest/Read_Requests_Controller.php';
+require_once dirname( __DIR__ ) . '/includes/Plugin.php';
 
 /**
  * Resets global storage.
@@ -3290,6 +3292,34 @@ function npcink_governance_core_fail_closed_content_metadata_apply_plan(): array
 	);
 }
 
+/**
+ * Returns local consent classification evidence for audit filter tests.
+ *
+ * @param string $classification Classification value.
+ * @return array<string,mixed>
+ */
+function npcink_governance_core_fail_closed_local_consent_classification( string $classification = 'local_admin_consent' ): array {
+	return array(
+		'classification'    => $classification,
+		'policy_version'    => 'operation-classification-v1',
+		'decision_version'  => 'operation-classification-v1',
+		'decision_envelope' => array(
+			'decision_version'  => 'operation-classification-v1',
+			'classification'    => $classification,
+			'reasons'           => array( 'present_admin_single_visible_low_risk_write' ),
+			'risk_factors'      => array(),
+			'required_evidence' => array( 'actor_user_id', 'target_object_id', 'classification' ),
+			'request_source'    => 'wp_admin_ui',
+			'actor_presence'   => 'present_click',
+			'preview_completeness' => 'exact_final',
+			'scope'             => 'one_object',
+			'reversibility'     => 'easy_undo',
+			'operation_kind'    => 'update_metadata',
+			'writes_wordpress_state' => true,
+		),
+	);
+}
+
 $proposal_table = 'wp_npcink_governance_core_proposals';
 $read_request_table = 'wp_npcink_governance_core_read_requests';
 $audit_table    = 'wp_npcink_governance_core_audit_log';
@@ -3330,6 +3360,9 @@ $create_response = $controller->create_proposal( new WP_REST_Request( $create_pa
 npcink_governance_core_fail_closed_assert( $create_response instanceof WP_REST_Response && 201 === $create_response->get_status(), 'Proposal REST create succeeds for observability smoke.' );
 $created_proposal = $create_response->get_data();
 $proposal_id      = (string) ( is_array( $created_proposal ) ? ( $created_proposal['proposal_id'] ?? '' ) : '' );
+npcink_governance_core_fail_closed_assert( 'core_proposal_required' === (string) ( $created_proposal['preview']['operation_classification']['classification'] ?? '' ), 'Direct proposal creation persists Core proposal classification evidence.' );
+npcink_governance_core_fail_closed_assert( 'operation-classification-v1' === (string) ( $created_proposal['preview']['operation_classification']['decision_envelope']['decision_version'] ?? '' ), 'Direct proposal classification evidence preserves the policy version.' );
+npcink_governance_core_fail_closed_assert( 'core_proposal' === (string) ( $created_proposal['preview']['operation_classification']['intake_path'] ?? '' ), 'Direct proposal classification evidence records the Core proposal intake path.' );
 npcink_governance_core_fail_closed_assert( false === strpos( (string) wp_json_encode( $created_proposal ), 'CALLER_SECRET_SENTINEL' ), 'Proposal response redacts secret-shaped caller metadata.' );
 $created_proposal_json = (string) wp_json_encode( $created_proposal );
 $proposal_rows_json    = (string) wp_json_encode( $wpdb->rows( $proposal_table ) );
@@ -3367,6 +3400,60 @@ foreach ( array( 'AUDIT_PROVIDER_CREDENTIALS_SECRET_SENTINEL', 'AUDIT_APPLICATIO
 	npcink_governance_core_fail_closed_assert( false === strpos( (string) $redaction_audit_rows, $sentinel ), 'Audit metadata redaction removes ' . $sentinel . '.' );
 }
 npcink_governance_core_fail_closed_assert( false !== strpos( (string) $redaction_audit_rows, '[redacted]' ), 'Audit metadata stores redaction markers.' );
+
+$local_classified_proposal_payload = npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/update-post' );
+$local_classified_proposal_payload['preview']['operation_classification'] = npcink_governance_core_fail_closed_local_consent_classification();
+$local_classified_proposal = $controller->create_proposal( new WP_REST_Request( $local_classified_proposal_payload ) );
+npcink_governance_core_fail_closed_assert( is_wp_error( $local_classified_proposal ), 'Direct Core proposal rejects local-admin-consent classification evidence.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_proposal_classification_rejected' === $local_classified_proposal->get_error_code(), 'Direct Core proposal classification rejection uses a stable error code.' );
+
+$plugin = new \Npcink\GovernanceCore\Plugin();
+$missing_local_consent = $plugin->record_local_admin_consent_audit(
+	null,
+	'local_admin_consent.requested',
+	array(
+		'actor_user_id'      => 1,
+		'source_module'      => 'toolbox',
+		'target_object_id'   => 1493,
+		'target_object_type' => 'post',
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $missing_local_consent ), 'Local consent audit rejects missing classification evidence.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_local_consent_classification_missing' === $missing_local_consent->get_error_code(), 'Local consent missing classification rejection uses a stable error code.' );
+
+$core_classified_local_consent = $plugin->record_local_admin_consent_audit(
+	null,
+	'local_admin_consent.requested',
+	array(
+		'actor_user_id'            => 1,
+		'source_module'            => 'toolbox',
+		'target_object_id'         => 1493,
+		'target_object_type'       => 'post',
+		'operation_classification' => npcink_governance_core_fail_closed_local_consent_classification( 'core_proposal_required' ),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $core_classified_local_consent ), 'Local consent audit rejects Core-proposal-required classification evidence.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_local_consent_classification_rejected' === $core_classified_local_consent->get_error_code(), 'Local consent wrong-classification rejection uses a stable error code.' );
+
+$valid_local_consent = $plugin->record_local_admin_consent_audit(
+	null,
+	'local_admin_consent.completed',
+	array(
+		'actor_user_id'            => 1,
+		'source_module'            => 'toolbox',
+		'target_object_id'         => 1493,
+		'target_object_type'       => 'post',
+		'ai_suggestion_summary'    => 'Reviewed visible field value.',
+		'operation_classification' => npcink_governance_core_fail_closed_local_consent_classification(),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_array( $valid_local_consent ) && '' !== (string) ( $valid_local_consent['event_id'] ?? '' ), 'Valid local consent classification evidence is audited.' );
+$local_consent_rows = npcink_governance_core_fail_closed_audit_rows( '', 'local_admin_consent.completed' );
+npcink_governance_core_fail_closed_assert( 1 === count( $local_consent_rows ), 'Valid local consent audit writes one audit row.' );
+$local_consent_metadata = json_decode( (string) ( $local_consent_rows[0]['metadata_json'] ?? '' ), true );
+npcink_governance_core_fail_closed_assert( is_array( $local_consent_metadata ) && false === (bool) ( $local_consent_metadata['proposal_created'] ?? true ), 'Valid local consent audit does not create a proposal.' );
+npcink_governance_core_fail_closed_assert( 'local_admin_consent' === (string) ( $local_consent_metadata['operation_classification']['classification'] ?? '' ), 'Valid local consent audit persists classification evidence.' );
+npcink_governance_core_fail_closed_assert( 'local_admin_consent_audit' === (string) ( $local_consent_metadata['operation_classification']['intake_path'] ?? '' ), 'Valid local consent audit records the local consent intake path.' );
 
 npcink_governance_core_fail_closed_reset_observability_events();
 $approve_response = $controller->approve_proposal(

@@ -146,7 +146,11 @@ selected evidence surface cannot be written.
 For `local_admin_consent`, Core records audit evidence through the
 `npcink_governance_core_record_local_admin_consent` filter. This is an
 audit-only integration point: it does not create proposals, approve proposals,
-preflight commits, or execute abilities. Record at least:
+preflight commits, or execute abilities. The filter requires an
+`operation-classification-v1` `decision_envelope` and accepts only
+`local_admin_consent` or `strong_local_confirmation`. A missing envelope,
+stale policy version, inconsistent classification, or
+`core_proposal_required` classification fails closed. Record at least:
 
 - actor user id;
 - source module and route/action id;
@@ -164,6 +168,15 @@ For `core_proposal_required`, the proposal preview should preserve:
 - reason, risk, and required scopes;
 - caller/source metadata;
 - batch item details when the action is a batch.
+
+Core proposal intake now persists this path explicitly. Accepted direct
+`POST /proposals` requests and accepted `POST /proposals/from-plan` generated
+proposals include `preview.operation_classification` with
+`classification=core_proposal_required`,
+`decision_version=operation-classification-v1`, and
+`intake_path=core_proposal`. If a caller submits local-consent, strong-local, or
+suggestion-only classification evidence to the proposal endpoint, Core rejects
+the request instead of treating it as a proposal.
 
 ## Scenario Proofs
 
