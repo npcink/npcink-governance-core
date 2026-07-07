@@ -117,6 +117,21 @@ Response `200`:
     "agent_catalog": false,
     "provider_secret_storage": false
   },
+  "operation_classification": {
+    "policy_version": "operation-classification-v1",
+    "classification_values": [
+      "suggestion_only",
+      "local_admin_consent",
+      "strong_local_confirmation",
+      "core_proposal_required"
+    ],
+    "proposal_intake_classification": "core_proposal_required",
+    "proposal_intake_path": "core_proposal",
+    "decision_envelope_required": true,
+    "local_admin_consent_audit_required": true,
+    "generic_editor_author_review_proposal_required": false,
+    "execution_owner_for_core_proposals": "adapter_or_host_after_core_preflight"
+  },
   "context_bindings": {
     "site_binding": {
       "fields": ["site_url", "home_url", "blog_id"],
@@ -178,6 +193,14 @@ This endpoint is metadata-only. It must not return proposal rows, audit rows,
 app keys, app secret material, provider credentials, ability definitions,
 workflow runtime state, queues, MCP sessions, Agent Gateway catalogs, or final
 write execution results.
+
+The `operation_classification` object exposes the shared authorization-path
+metadata that Core consumers should use before adding or changing AI-assisted
+write entrypoints. It is discovery metadata only: it does not classify a
+specific request, create proposals, record local consent audit rows, or grant
+execution. Proposal intake remains fixed to `core_proposal_required` with
+`proposal_intake_path=core_proposal`; local-admin-consent and native editor
+author-review paths stay outside Core proposal intake.
 
 Core-issued commit preflight and sensitive-read authorization contexts include
 the current `site_url`, `home_url`, and `blog_id` so adapters can fail closed

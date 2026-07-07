@@ -2209,6 +2209,118 @@ msgstr ""
 msgid "Content metadata apply plans submitted to Core must classify as Core proposal required."
 msgstr ""
 
+#: includes/Admin/Admin_Page.php
+msgid "Governance path"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Classification and handoff"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Classification"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Intake path"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Request source"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Actor presence"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Preview completeness"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Operation kind"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Write posture"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Execution owner"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Blocked guidance"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Suggestion only"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Local admin consent"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Strong local confirmation"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Core proposal required"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "No WordPress state write is declared."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Core records proposal, approval, preflight, and audit only; final WordPress writes stay outside Core."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "A present administrator may apply one bounded local write only with audit evidence."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "A present administrator needs stronger confirmation or Core proposal review before the write."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Adapter or host after Core commit preflight"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "No execution owner because no WordPress write is declared"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Local product module with Core-owned audit evidence"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Target ability is not discoverable; commit preflight will fail closed until the provider exposes it again."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Resolve blocked items, required input, or preflight blockers before approval can become executable."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Approve or reject this proposal; approved items still require commit preflight before external execution."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Run commit preflight to issue a bounded handoff; Core still will not execute the write."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Review the Adapter execution result and submit a new proposal if another write attempt is needed."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "No pending Core decision is available for this lifecycle state."
+msgstr ""
+
 #: includes/Governance/Plan_Proposal_Service.php:1110
 msgid "Content metadata apply plans must target one post."
 msgstr ""

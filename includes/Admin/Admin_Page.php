@@ -11,6 +11,7 @@ use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
 use Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter;
 use Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator;
 use Npcink\GovernanceCore\Governance\History_Cleanup_Service;
+use Npcink\GovernanceCore\Governance\Operation_Classifier;
 use Npcink\GovernanceCore\Governance\Proposal_Repository;
 use Npcink\GovernanceCore\Governance\Proposal_Service;
 use Npcink\GovernanceCore\Security\App_Key_Repository;
@@ -2476,6 +2477,7 @@ final class Admin_Page {
 		$warning_count = $this->proposal_warning_count( $proposal );
 		$blocked_count = $this->proposal_blocked_count( $proposal );
 		$is_pending    = Proposal_Repository::STATUS_PENDING === (string) ( $proposal['status'] ?? '' );
+		$posture       = $this->proposal_governance_posture( $proposal );
 		$has_signals   = $warning_count > 0
 			|| $blocked_count > 0
 			|| $this->proposal_needs_input_count( $proposal ) > 0
@@ -2500,6 +2502,11 @@ final class Admin_Page {
 				<?php $this->render_status_badge( (string) ( $proposal['status'] ?? '' ) ); ?>
 				<div class="npcink-governance-core-summary-detail"><?php echo esc_html( $this->proposal_status_guidance( $proposal ) ); ?></div>
 				<div class="npcink-governance-core-summary-detail"><?php echo esc_html( $this->display_datetime( (string) ( $proposal['created_at'] ?? '' ) ) ); ?></div>
+			</div>
+			<div>
+				<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Governance path', 'npcink-governance-core' ); ?></div>
+				<span class="npcink-governance-core-classification-badge npcink-governance-core-classification-<?php echo esc_attr( sanitize_html_class( $posture['classification'] ) ); ?>"><?php echo esc_html( $posture['classification_label'] ); ?></span>
+				<div class="npcink-governance-core-summary-detail"><?php echo esc_html( $posture['write_posture'] ); ?></div>
 			</div>
 			<div>
 				<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Evidence', 'npcink-governance-core' ); ?></div>
@@ -2527,6 +2534,140 @@ final class Admin_Page {
 			<?php endif; ?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Returns review-facing governance posture for a proposal.
+	 *
+	 * @param array<string,mixed>      $proposal Proposal.
+	 * @param array<string,mixed>|null $capability Capability row.
+	 * @return array<string,string>
+	 */
+	private function proposal_governance_posture( array $proposal, ?array $capability = null ): array {
+		$classification = $this->proposal_operation_classification( $proposal );
+		$envelope       = is_array( $classification['decision_envelope'] ?? null ) ? $classification['decision_envelope'] : array();
+		$value          = sanitize_key( (string) ( $classification['classification'] ?? '' ) );
+		if ( '' === $value ) {
+			$value = Operation_Classifier::CLASSIFICATION_CORE_PROPOSAL_REQUIRED;
+		}
+
+		return array(
+			'classification'       => $value,
+			'classification_label' => $this->proposal_classification_label( $value ),
+			'intake_path'          => sanitize_key( (string) ( $classification['intake_path'] ?? 'core_proposal' ) ),
+			'request_source'       => sanitize_key( (string) ( $envelope['request_source'] ?? '' ) ),
+			'actor_presence'       => sanitize_key( (string) ( $envelope['actor_presence'] ?? '' ) ),
+			'preview_completeness' => sanitize_key( (string) ( $envelope['preview_completeness'] ?? '' ) ),
+			'scope'                => sanitize_key( (string) ( $envelope['scope'] ?? '' ) ),
+			'operation_kind'       => sanitize_key( (string) ( $envelope['operation_kind'] ?? '' ) ),
+			'write_posture'        => $this->proposal_write_posture_label( $value, $envelope ),
+			'execution_owner'      => $this->proposal_execution_owner_label( $value ),
+			'blocked_guidance'     => $this->proposal_blocked_guidance( $proposal, $capability ),
+		);
+	}
+
+	/**
+	 * Returns the stored operation classification evidence.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return array<string,mixed>
+	 */
+	private function proposal_operation_classification( array $proposal ): array {
+		$preview        = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
+		$classification = is_array( $preview['operation_classification'] ?? null ) ? $preview['operation_classification'] : array();
+
+		return $classification;
+	}
+
+	/**
+	 * Returns a human label for the operation classification.
+	 *
+	 * @param string $classification Classification value.
+	 * @return string
+	 */
+	private function proposal_classification_label( string $classification ): string {
+		$labels = array(
+			Operation_Classifier::CLASSIFICATION_SUGGESTION_ONLY          => __( 'Suggestion only', 'npcink-governance-core' ),
+			Operation_Classifier::CLASSIFICATION_LOCAL_ADMIN_CONSENT      => __( 'Local admin consent', 'npcink-governance-core' ),
+			Operation_Classifier::CLASSIFICATION_STRONG_LOCAL_CONFIRMATION => __( 'Strong local confirmation', 'npcink-governance-core' ),
+			Operation_Classifier::CLASSIFICATION_CORE_PROPOSAL_REQUIRED   => __( 'Core proposal required', 'npcink-governance-core' ),
+		);
+
+		return (string) ( $labels[ $classification ] ?? str_replace( '_', ' ', $classification ) );
+	}
+
+	/**
+	 * Returns the write posture label for a proposal classification.
+	 *
+	 * @param string              $classification Classification value.
+	 * @param array<string,mixed> $envelope Decision envelope.
+	 * @return string
+	 */
+	private function proposal_write_posture_label( string $classification, array $envelope ): string {
+		$writes_state = array_key_exists( 'writes_wordpress_state', $envelope ) ? (bool) $envelope['writes_wordpress_state'] : true;
+		if ( ! $writes_state || Operation_Classifier::CLASSIFICATION_SUGGESTION_ONLY === $classification ) {
+			return __( 'No WordPress state write is declared.', 'npcink-governance-core' );
+		}
+
+		if ( Operation_Classifier::CLASSIFICATION_CORE_PROPOSAL_REQUIRED === $classification ) {
+			return __( 'Core records proposal, approval, preflight, and audit only; final WordPress writes stay outside Core.', 'npcink-governance-core' );
+		}
+
+		if ( Operation_Classifier::CLASSIFICATION_LOCAL_ADMIN_CONSENT === $classification ) {
+			return __( 'A present administrator may apply one bounded local write only with audit evidence.', 'npcink-governance-core' );
+		}
+
+		return __( 'A present administrator needs stronger confirmation or Core proposal review before the write.', 'npcink-governance-core' );
+	}
+
+	/**
+	 * Returns the execution owner label for the proposal review surface.
+	 *
+	 * @param string $classification Classification value.
+	 * @return string
+	 */
+	private function proposal_execution_owner_label( string $classification ): string {
+		if ( Operation_Classifier::CLASSIFICATION_CORE_PROPOSAL_REQUIRED === $classification ) {
+			return __( 'Adapter or host after Core commit preflight', 'npcink-governance-core' );
+		}
+
+		if ( Operation_Classifier::CLASSIFICATION_SUGGESTION_ONLY === $classification ) {
+			return __( 'No execution owner because no WordPress write is declared', 'npcink-governance-core' );
+		}
+
+		return __( 'Local product module with Core-owned audit evidence', 'npcink-governance-core' );
+	}
+
+	/**
+	 * Returns a compact blocker and next-step guidance label.
+	 *
+	 * @param array<string,mixed>      $proposal Proposal.
+	 * @param array<string,mixed>|null $capability Capability row.
+	 * @return string
+	 */
+	private function proposal_blocked_guidance( array $proposal, ?array $capability = null ): string {
+		if ( null === $capability ) {
+			return __( 'Target ability is not discoverable; commit preflight will fail closed until the provider exposes it again.', 'npcink-governance-core' );
+		}
+
+		if ( $this->proposal_preflight_blocker_count( $proposal ) > 0 || $this->proposal_blocked_count( $proposal ) > 0 || $this->proposal_needs_input_count( $proposal ) > 0 ) {
+			return __( 'Resolve blocked items, required input, or preflight blockers before approval can become executable.', 'npcink-governance-core' );
+		}
+
+		$status = (string) ( $proposal['status'] ?? '' );
+		if ( Proposal_Repository::STATUS_PENDING === $status ) {
+			return __( 'Approve or reject this proposal; approved items still require commit preflight before external execution.', 'npcink-governance-core' );
+		}
+
+		if ( Proposal_Repository::STATUS_APPROVED === $status ) {
+			return __( 'Run commit preflight to issue a bounded handoff; Core still will not execute the write.', 'npcink-governance-core' );
+		}
+
+		if ( Proposal_Repository::STATUS_EXECUTION_FAILED === $status ) {
+			return __( 'Review the Adapter execution result and submit a new proposal if another write attempt is needed.', 'npcink-governance-core' );
+		}
+
+		return __( 'No pending Core decision is available for this lifecycle state.', 'npcink-governance-core' );
 	}
 
 	/**
@@ -2624,6 +2765,7 @@ final class Admin_Page {
 		$caller         = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
 		$auth           = is_array( $caller['auth'] ?? null ) ? $caller['auth'] : array();
 		$policy_reasons = implode( ', ', array_map( 'strval', (array) ( $proposal['policy_reasons'] ?? array() ) ) );
+		$posture        = $this->proposal_governance_posture( $proposal );
 
 		return array(
 			array(
@@ -2704,6 +2846,16 @@ final class Admin_Page {
 					array(
 						'label' => __( 'Policy reasons', 'npcink-governance-core' ),
 						'value' => $policy_reasons,
+					),
+					array(
+						'label' => __( 'Classification', 'npcink-governance-core' ),
+						'value' => $posture['classification'],
+						'code'  => true,
+					),
+					array(
+						'label' => __( 'Intake path', 'npcink-governance-core' ),
+						'value' => $posture['intake_path'],
+						'code'  => true,
 					),
 				),
 			),
@@ -2799,6 +2951,7 @@ final class Admin_Page {
 		$risk_label            = $this->proposal_risk_label( $proposal );
 		$undeclared_risk_label = __( 'Not declared', 'npcink-governance-core' );
 		$target_ability        = (string) ( $preview['target_ability_id'] ?? $proposal['ability_id'] );
+		$posture               = $this->proposal_governance_posture( $proposal, $capability );
 		$reason                = (string) ( $preview['reason'] ?? '' );
 		$ready_label           = array_key_exists( 'proposal_ready', $preview )
 			? ( (bool) $preview['proposal_ready'] ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ) )
@@ -2879,6 +3032,57 @@ final class Admin_Page {
 						'label' => __( 'Policy decision', 'npcink-governance-core' ),
 						'value' => (string) ( $proposal['policy_decision'] ?? '' ),
 						'code'  => true,
+					),
+				),
+			),
+			array(
+				'label' => __( 'Classification and handoff', 'npcink-governance-core' ),
+				'rows'  => array(
+					array(
+						'label' => __( 'Classification', 'npcink-governance-core' ),
+						'value' => $posture['classification_label'],
+					),
+					array(
+						'label' => __( 'Intake path', 'npcink-governance-core' ),
+						'value' => $posture['intake_path'],
+						'code'  => true,
+					),
+					array(
+						'label' => __( 'Request source', 'npcink-governance-core' ),
+						'value' => $posture['request_source'],
+						'code'  => true,
+					),
+					array(
+						'label' => __( 'Actor presence', 'npcink-governance-core' ),
+						'value' => $posture['actor_presence'],
+						'code'  => true,
+					),
+					array(
+						'label' => __( 'Preview completeness', 'npcink-governance-core' ),
+						'value' => $posture['preview_completeness'],
+						'code'  => true,
+					),
+					array(
+						'label' => __( 'Scope', 'npcink-governance-core' ),
+						'value' => $posture['scope'],
+						'code'  => true,
+					),
+					array(
+						'label' => __( 'Operation kind', 'npcink-governance-core' ),
+						'value' => $posture['operation_kind'],
+						'code'  => true,
+					),
+					array(
+						'label' => __( 'Write posture', 'npcink-governance-core' ),
+						'value' => $posture['write_posture'],
+					),
+					array(
+						'label' => __( 'Execution owner', 'npcink-governance-core' ),
+						'value' => $posture['execution_owner'],
+					),
+					array(
+						'label' => __( 'Blocked guidance', 'npcink-governance-core' ),
+						'value' => $posture['blocked_guidance'],
 					),
 				),
 			),

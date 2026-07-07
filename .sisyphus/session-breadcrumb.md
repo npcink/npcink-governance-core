@@ -1,5 +1,31 @@
 # Session Breadcrumb
 
+## 2026-07-07 — Core classification visibility stage implemented
+
+- **Module**: Core proposal review visibility and runtime contract metadata.
+- **Status**: Added first-class operation-classification and handoff posture
+  visibility for Core proposal review. The `/contract` response now exposes
+  metadata-only classification path discovery, and the proposal detail surface
+  shows governance path, write posture, execution owner, and blocked guidance
+  before reviewers need to inspect raw payload JSON.
+- **Completed**:
+  - Reused `preview.operation_classification` as the proposal review truth
+    source instead of adding new proposal fields or tables.
+  - Kept Core proposal intake fixed to `core_proposal_required` and
+    `intake_path=core_proposal`.
+  - Kept final WordPress writes owned by Adapter or host after Core commit
+    preflight.
+  - Updated REST contract docs, static contracts, WordPress smoke assertions,
+    and bundled zh_CN runtime translations.
+- **Next gate**:
+  - Apply the same visibility discipline to the next repo only after checking
+    that repo's owner/runtime boundary. Do not expand Core into execution,
+    queues, workflow runtime, product writing, or a second approval store.
+- **Boundary**:
+  - This is visibility and metadata discovery only. It does not add proposal
+    lifecycle states, REST write routes, tables, final execution, workflow
+    runtime, queues, Cloud writes, or product UX ownership.
+
 ## 2026-07-07 — AI write classification stage closeout recorded
 
 - **Module**: Stage closeout documentation.

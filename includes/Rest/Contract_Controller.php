@@ -7,6 +7,7 @@
 
 namespace Npcink\GovernanceCore\Rest;
 
+use Npcink\GovernanceCore\Governance\Operation_Classifier;
 use Npcink\GovernanceCore\Security\App_Authenticator;
 use WP_REST_Response;
 
@@ -103,6 +104,16 @@ final class Contract_Controller {
 					'mcp_transport'           => false,
 					'agent_catalog'           => false,
 					'provider_secret_storage' => false,
+				),
+				'operation_classification'               => array(
+					'policy_version'                     => Operation_Classifier::POLICY_VERSION,
+					'classification_values'              => Operation_Classifier::allowed_classifications(),
+					'proposal_intake_classification'     => Operation_Classifier::CLASSIFICATION_CORE_PROPOSAL_REQUIRED,
+					'proposal_intake_path'               => 'core_proposal',
+					'decision_envelope_required'         => true,
+					'local_admin_consent_audit_required' => true,
+					'generic_editor_author_review_proposal_required' => false,
+					'execution_owner_for_core_proposals' => 'adapter_or_host_after_core_preflight',
 				),
 				'context_bindings'                       => array(
 					'site_binding'           => array(
