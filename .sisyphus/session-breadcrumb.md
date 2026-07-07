@@ -1,5 +1,38 @@
 # Session Breadcrumb
 
+## 2026-07-07 — Classification evidence enforced at write entrypoints
+
+- **Module**: Proposal intake and local admin consent audit.
+- **Status**: The AI Write Classification Matrix now reaches Core's real
+  write-governance entrypoints. Accepted direct proposals and plan-generated
+  proposals persist `preview.operation_classification` with
+  `classification=core_proposal_required`; local admin consent audit fails
+  closed unless the caller provides a current `operation-classification-v1`
+  decision envelope for `local_admin_consent` or
+  `strong_local_confirmation`.
+- **Completed**:
+  - Added Core proposal intake classification evidence in
+    `Proposal_Service`.
+  - Rejected proposal requests that submit local-consent, strong-local, or
+    suggestion-only classification evidence to the Core proposal path.
+  - Required classification evidence before
+    `npcink_governance_core_record_local_admin_consent` can write audit rows.
+  - Added static, fail-closed, and real WordPress smoke coverage for direct
+    proposal, plan proposal, and local consent audit classification evidence.
+- **Verified**:
+  - `composer validate --no-check-publish` passed.
+  - `composer test:all` passed.
+  - `composer smoke:wp` passed.
+- **Next gate**:
+  - Align Toolbox/local product callers so they pass the same
+    `decision_envelope` before calling the Core local consent audit filter.
+  - Do not add first-party metadata generation, workflow runtime, queues, or
+    Core final execution as part of this path.
+- **Boundary**:
+  - Core still classifies, records, approves, preflights, and audits. It does
+    not generate content, own editor AI output, execute WordPress writes, or
+    replace the author/editor review flow.
+
 ## 2026-07-07 — AI write classification matrix becomes next-stage target
 
 - **Module**: Operation classification and AI plugin/editor boundary.

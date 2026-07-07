@@ -348,6 +348,8 @@ foreach (
 
 $governance = npcink_governance_core_read( $root . '/docs/governance-contract.md' );
 npcink_governance_core_assert( false !== strpos( $governance, 'proposal.created' ), 'Governance contract records proposal.created event.' );
+npcink_governance_core_assert( false !== strpos( $governance, 'preview.operation_classification' ) && false !== strpos( $governance, 'intake_path=core_proposal' ), 'Governance contract requires proposal intake classification evidence.' );
+npcink_governance_core_assert( false !== strpos( $governance, 'operation-classification-v1' ) && false !== strpos( $governance, 'core_proposal_required` classification must use proposal intake' ), 'Governance contract requires local consent classification evidence.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'proposal.policy_evaluated' ), 'Governance contract records proposal.policy_evaluated event.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'proposal.auto_approved' ), 'Governance contract records proposal.auto_approved event.' );
 npcink_governance_core_assert( false !== strpos( $governance, 'proposal.approved' ), 'Governance contract records proposal.approved event.' );
@@ -475,6 +477,8 @@ foreach (
 		'npcink_governance_core_app_rate_limited',
 		'npcink_governance_core_invalid_ability_id',
 		'npcink_governance_core_ability_not_available',
+		'preview.operation_classification',
+		'npcink_governance_core_proposal_classification_rejected',
 		'npcink_governance_core_proposal_insert_failed',
 		'npcink_governance_core_proposal_audit_failed',
 		'npcink_governance_core_policy_decision_audit_failed',
@@ -1273,6 +1277,9 @@ foreach (
 		'evidence surfaces before execution or rejection is reported as final',
 		'Operation_Classifier` must remain side-effect free',
 		'caller owns persistence and must fail closed',
+		'Core proposal intake now persists this path explicitly',
+		'preview.operation_classification',
+		'operation-classification-v1` `decision_envelope`',
 		'AI Write Classification Matrix',
 		'Generic AI plugin shows title, excerpt, summary, category, tag, ALT, meta description',
 		'Do not add a Core proposal hop',
@@ -1309,6 +1316,8 @@ npcink_governance_core_assert( false !== strpos( $plugin_container, 'read_reques
 npcink_governance_core_assert( false !== strpos( $plugin_container, 'npcink_governance_core_record_local_admin_consent' ) && false !== strpos( $plugin_container, 'record_local_admin_consent_audit' ), 'Plugin container exposes a Core-owned local admin consent audit filter.' );
 npcink_governance_core_assert( false !== strpos( $plugin_container, 'local_admin_consent.requested' ) && false !== strpos( $plugin_container, 'local_admin_consent.completed' ) && false !== strpos( $plugin_container, 'local_admin_consent.failed' ), 'Local admin consent audit accepts only bounded lifecycle events.' );
 npcink_governance_core_assert( false !== strpos( $plugin_container, "proposal_created']" ) && false !== strpos( $plugin_container, "core_execution']" ), 'Local admin consent audit does not create proposals or execute Core writes.' );
+npcink_governance_core_assert( false !== strpos( $plugin_container, 'local_admin_consent_classification_evidence' ), 'Local admin consent audit validates classification evidence before recording.' );
+npcink_governance_core_assert( false !== strpos( $plugin_container, 'npcink_governance_core_local_consent_classification_missing' ) && false !== strpos( $plugin_container, 'npcink_governance_core_local_consent_classification_rejected' ), 'Local admin consent audit fails closed for missing or wrong classification evidence.' );
 
 require_once $root . '/includes/Governance/Operation_Classifier.php';
 $classifier = new \Npcink\GovernanceCore\Governance\Operation_Classifier();
@@ -1910,10 +1919,17 @@ npcink_governance_core_assert( false !== strpos( $proposal_repository, "\$clean[
 npcink_governance_core_assert( false !== strpos( $fail_closed_test, 'update-post-blocks preserves blockName key case' ), 'Fail-closed tests assert update-post-blocks blockName is not lowercased.' );
 npcink_governance_core_assert( false !== strpos( $fail_closed_test, 'update-post-blocks preserves attrs contentSize key case' ), 'Fail-closed tests assert update-post-blocks attrs camelCase is not lowercased.' );
 npcink_governance_core_assert( false !== strpos( $fail_closed_test, 'batch update-post-blocks preserves blockName key case' ), 'Fail-closed tests assert batch update-post-blocks blockName is not lowercased.' );
+npcink_governance_core_assert( false !== strpos( $fail_closed_test, 'Direct proposal creation persists Core proposal classification evidence' ), 'Fail-closed tests assert direct proposal classification evidence persistence.' );
+npcink_governance_core_assert( false !== strpos( $fail_closed_test, 'Local consent audit rejects missing classification evidence' ), 'Fail-closed tests assert local consent audit classification fail-closed behavior.' );
+$smoke_test = npcink_governance_core_read( $root . '/tests/smoke-wp.php' );
+npcink_governance_core_assert( false !== strpos( $smoke_test, 'proposal stores Core proposal classification evidence' ), 'WordPress smoke asserts direct proposal classification evidence.' );
+npcink_governance_core_assert( false !== strpos( $smoke_test, 'plan proposal stores Core proposal classification evidence' ), 'WordPress smoke asserts plan proposal classification evidence.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.created' ), 'Proposal service records proposal.created audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'MAX_PROPOSAL_PAYLOAD_BYTES' ), 'Proposal service bounds direct proposal payload size.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'validate_proposal_payload_size' ), 'Proposal service validates direct proposal payload size before persistence.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_proposal_payload_too_large' ), 'Proposal service uses a stable oversized direct proposal payload error.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal_intake_classification' ) && false !== strpos( $proposal_service, "'operation_classification'" ), 'Proposal service persists operation classification evidence on proposal intake.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_proposal_classification_rejected' ), 'Proposal service rejects non-Core proposal classification evidence.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.policy_evaluated' ), 'Proposal service records policy evaluation audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.auto_approved' ), 'Proposal service records auto approval audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_auto_approval_audit_failed' ), 'Proposal service fails closed when auto approval audit fails.' );

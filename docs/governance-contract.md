@@ -122,7 +122,10 @@ module's already-authorized single-object action. That filter is audit-only:
 it must not create proposals, approve proposals, preflight commits, or execute
 abilities. If a local product module cannot record required Core audit, it
 should fail closed instead of treating Local Admin Consent as an unaudited
-write path.
+write path. The filter also fails closed unless the metadata includes an
+`operation-classification-v1` decision envelope whose classification is
+`local_admin_consent` or `strong_local_confirmation`; a
+`core_proposal_required` classification must use proposal intake instead.
 
 The P0 article writing handoff is stricter: Toolbox owns the workflow artifact,
 and Core accepts `npcink-toolbox/build-article-write-plan` only when it is an
@@ -180,6 +183,14 @@ truth and `preview.content_metadata_apply` only; if classification evidence is
 present, it must show `core_proposal_required` before Core accepts the plan.
 Core does not generate summaries, create terms, approve proposals, store
 feedback/learning truth, or execute WordPress writes.
+
+Every accepted direct or plan-generated proposal receives
+`preview.operation_classification` with `classification=core_proposal_required`
+and `intake_path=core_proposal`. This is Core's stored evidence that the request
+entered the independent proposal-review path. If submitted preview evidence
+claims `suggestion_only`, `local_admin_consent`, or
+`strong_local_confirmation`, Core rejects the proposal request instead of
+silently converting that lower-friction path into a proposal.
 
 The media optimization handoff is the governed shape for the user intent
 "optimize this attachment." Core accepts

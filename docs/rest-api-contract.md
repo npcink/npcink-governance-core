@@ -493,6 +493,15 @@ strings are filtered as WordPress safe post HTML. The same rule applies to
 nested update-post-blocks actions in plan-to-proposal batch input.
 Core rejects direct proposal payloads larger than 262144 bytes before storing a
 proposal row.
+Core also records `preview.operation_classification` for every accepted
+proposal with `classification=core_proposal_required`,
+`decision_version=operation-classification-v1`, and
+`intake_path=core_proposal`. If a caller submits classification evidence under
+`preview.operation_classification`, `preview.classification_evidence`, or
+`preview.authorization`, that evidence must classify the request as
+`core_proposal_required`; local-admin-consent or suggestion-only
+classifications are rejected because those paths do not belong in Core proposal
+intake.
 
 Request fields:
 
@@ -542,6 +551,8 @@ Errors:
 | `npcink_governance_core_invalid_ability_id` | `400` | Missing or invalid namespaced `ability_id`. |
 | `npcink_governance_core_ability_not_available` | `404` | Target ability id is not currently discoverable. |
 | `npcink_governance_core_proposal_payload_too_large` | `413` | Direct proposal payload exceeds Core's proposal byte limit. |
+| `npcink_governance_core_proposal_classification_rejected` | `422` | Proposal intake received classification evidence that is not `core_proposal_required`. |
+| `npcink_governance_core_proposal_classification_mismatch` | `500` | Core proposal intake could not produce a `core_proposal_required` classification. |
 | `npcink_governance_core_proposal_insert_failed` | `500` | Proposal row could not be stored. |
 | `npcink_governance_core_proposal_audit_failed` | `500` | Proposal creation could not be audited; Core deletes the created proposal before failing. |
 | `npcink_governance_core_policy_decision_audit_failed` | `500` | Policy decision could not be audited; Core deletes the created proposal before failing. |
@@ -844,6 +855,10 @@ an operation classification envelope, the classification must be
 `core_proposal_required`; Core rejects `local_admin_consent` plan submissions
 because that path belongs to a present-admin product surface with local audit
 instead of Core plan intake.
+Accepted plan-generated proposals also receive
+`preview.operation_classification` from the shared Core proposal intake path, so
+the stored proposal has both the plan-specific preview evidence and a stable
+Core proposal classification envelope.
 
 For `npcink-abilities-toolkit/build-media-optimization-plan`, the plan must declare
 `artifact_type=media_optimization_plan`, `proposal_mode=batch`,
