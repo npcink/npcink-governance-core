@@ -2405,7 +2405,7 @@ final class Admin_Page {
 		}
 
 		if ( 'evidence' === $active_tab ) {
-			$this->render_audit_timeline( $timeline );
+			$this->render_audit_timeline( $proposal, $timeline );
 			return;
 		}
 
@@ -3579,11 +3579,13 @@ final class Admin_Page {
 	/**
 	 * Renders proposal audit timeline.
 	 *
+	 * @param array<string,mixed>            $proposal Proposal row.
 	 * @param array<int,array<string,mixed>> $events Audit events.
 	 * @return void
 	 */
-	private function render_audit_timeline( array $events, bool $open = false ): void {
+	private function render_audit_timeline( array $proposal, array $events, bool $open = false ): void {
 		unset( $open );
+		$this->render_audit_outcome_summary( $proposal, $events );
 		$this->render_audit_lifecycle_summary( $events );
 		?>
 		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide npcink-governance-core-disclosure-top">
@@ -3618,6 +3620,170 @@ final class Admin_Page {
 			</table>
 		</details>
 		<?php
+	}
+
+	/**
+	 * Renders the current proposal outcome before dense audit evidence.
+	 *
+	 * @param array<string,mixed>            $proposal Proposal row.
+	 * @param array<int,array<string,mixed>> $events Audit events.
+	 * @return void
+	 */
+	private function render_audit_outcome_summary( array $proposal, array $events ): void {
+		$summary = $this->audit_outcome_summary( $proposal, $events );
+		?>
+		<section class="npcink-governance-core-audit-outcome npcink-governance-core-max-wide" aria-label="<?php echo esc_attr__( 'Current governance outcome', 'npcink-governance-core' ); ?>">
+			<h3><?php echo esc_html__( 'Current governance outcome', 'npcink-governance-core' ); ?></h3>
+			<div class="npcink-governance-core-audit-outcome-grid">
+				<div>
+					<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Outcome', 'npcink-governance-core' ); ?></div>
+					<strong><?php echo esc_html( $summary['outcome'] ); ?></strong>
+				</div>
+				<div>
+					<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Next step', 'npcink-governance-core' ); ?></div>
+					<span><?php echo esc_html( $summary['next_step'] ); ?></span>
+				</div>
+				<div>
+					<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Evidence trail', 'npcink-governance-core' ); ?></div>
+					<span><?php echo esc_html( $summary['evidence'] ); ?></span>
+				</div>
+			</div>
+		</section>
+		<?php
+	}
+
+	/**
+	 * Returns a user-facing current audit outcome summary.
+	 *
+	 * @param array<string,mixed>            $proposal Proposal row.
+	 * @param array<int,array<string,mixed>> $events Audit events.
+	 * @return array{outcome:string,next_step:string,evidence:string}
+	 */
+	private function audit_outcome_summary( array $proposal, array $events ): array {
+		$status          = (string) ( $proposal['status'] ?? '' );
+		$has_approval    = $this->audit_events_include( $events, 'proposal.approved' );
+		$has_rejection   = $this->audit_events_include( $events, 'proposal.rejected' );
+		$has_preflight   = $this->audit_events_include( $events, 'commit.preflighted' );
+		$has_executed    = $this->audit_events_include( $events, 'proposal.executed' );
+		$has_failed      = $this->audit_events_include( $events, 'proposal.execution_failed' );
+		$evidence_count  = count( $this->audit_lifecycle_steps( $events ) );
+		$evidence_suffix = sprintf(
+			/* translators: %d: audit lifecycle evidence count. */
+			_n( '%d lifecycle event recorded.', '%d lifecycle events recorded.', $evidence_count, 'npcink-governance-core' ),
+			absint( $evidence_count )
+		);
+
+		if ( Proposal_Repository::STATUS_PENDING === $status ) {
+			return array(
+				'outcome'   => __( 'Awaiting Core review.', 'npcink-governance-core' ),
+				'next_step' => __( 'Review the basis, then approve or reject. Approval still requires commit preflight before Adapter or host execution.', 'npcink-governance-core' ),
+				'evidence'  => $evidence_suffix,
+			);
+		}
+
+		if ( Proposal_Repository::STATUS_APPROVED === $status ) {
+			return array(
+				'outcome'   => $has_preflight ? __( 'Approved and preflight handoff issued.', 'npcink-governance-core' ) : __( 'Approved; preflight handoff not yet issued.', 'npcink-governance-core' ),
+				'next_step' => $has_preflight ? __( 'Adapter or host can use the bounded preflight context; Core still does not execute the write.', 'npcink-governance-core' ) : __( 'Run commit preflight before any external execution attempt.', 'npcink-governance-core' ),
+				'evidence'  => $this->audit_outcome_evidence_label( $evidence_suffix, $has_approval, $has_preflight, $has_executed, $has_failed, $has_rejection ),
+			);
+		}
+
+		if ( Proposal_Repository::STATUS_EXECUTED === $status ) {
+			return array(
+				'outcome'   => __( 'Execution result recorded outside Core.', 'npcink-governance-core' ),
+				'next_step' => __( 'Verify the execution record and related Adapter evidence; no Core decision is pending.', 'npcink-governance-core' ),
+				'evidence'  => $this->audit_outcome_evidence_label( $evidence_suffix, $has_approval, $has_preflight, $has_executed, $has_failed, $has_rejection ),
+			);
+		}
+
+		if ( Proposal_Repository::STATUS_EXECUTION_FAILED === $status ) {
+			return array(
+				'outcome'   => __( 'External execution failed after handoff.', 'npcink-governance-core' ),
+				'next_step' => __( 'Inspect Adapter execution evidence and submit a new proposal if another write attempt is needed.', 'npcink-governance-core' ),
+				'evidence'  => $this->audit_outcome_evidence_label( $evidence_suffix, $has_approval, $has_preflight, $has_executed, $has_failed, $has_rejection ),
+			);
+		}
+
+		if ( Proposal_Repository::STATUS_REJECTED === $status ) {
+			return array(
+				'outcome'   => __( 'Rejected by Core review.', 'npcink-governance-core' ),
+				'next_step' => __( 'Do not continue to commit preflight or external execution for this proposal.', 'npcink-governance-core' ),
+				'evidence'  => $this->audit_outcome_evidence_label( $evidence_suffix, $has_approval, $has_preflight, $has_executed, $has_failed, $has_rejection ),
+			);
+		}
+
+		if ( Proposal_Repository::STATUS_EXPIRED === $status || Proposal_Repository::STATUS_ARCHIVED === $status ) {
+			return array(
+				'outcome'   => __( 'Historical governance record.', 'npcink-governance-core' ),
+				'next_step' => __( 'Use this record for audit lookup only; no approval action is available here.', 'npcink-governance-core' ),
+				'evidence'  => $evidence_suffix,
+			);
+		}
+
+		return array(
+			'outcome'   => __( 'Lifecycle state needs audit review.', 'npcink-governance-core' ),
+			'next_step' => __( 'Read the lifecycle summary and full audit timeline before taking follow-up action.', 'npcink-governance-core' ),
+			'evidence'  => $evidence_suffix,
+		);
+	}
+
+	/**
+	 * Returns whether audit events include a lifecycle event name.
+	 *
+	 * @param array<int,array<string,mixed>> $events Audit events.
+	 * @param string                         $event_name Event name.
+	 * @return bool
+	 */
+	private function audit_events_include( array $events, string $event_name ): bool {
+		foreach ( $events as $event ) {
+			if ( $event_name === (string) ( $event['event_name'] ?? '' ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns a compact evidence label from known lifecycle events.
+	 *
+	 * @param string $base Base evidence count label.
+	 * @param bool   $has_approval Has approval evidence.
+	 * @param bool   $has_preflight Has preflight evidence.
+	 * @param bool   $has_executed Has execution evidence.
+	 * @param bool   $has_failed Has execution failure evidence.
+	 * @param bool   $has_rejection Has rejection evidence.
+	 * @return string
+	 */
+	private function audit_outcome_evidence_label( string $base, bool $has_approval, bool $has_preflight, bool $has_executed, bool $has_failed, bool $has_rejection ): string {
+		$parts = array();
+		if ( $has_approval ) {
+			$parts[] = __( 'approval', 'npcink-governance-core' );
+		}
+		if ( $has_preflight ) {
+			$parts[] = __( 'preflight', 'npcink-governance-core' );
+		}
+		if ( $has_executed ) {
+			$parts[] = __( 'execution result', 'npcink-governance-core' );
+		}
+		if ( $has_failed ) {
+			$parts[] = __( 'execution failure', 'npcink-governance-core' );
+		}
+		if ( $has_rejection ) {
+			$parts[] = __( 'rejection', 'npcink-governance-core' );
+		}
+
+		if ( empty( $parts ) ) {
+			return $base;
+		}
+
+		return sprintf(
+			/* translators: 1: base evidence count label, 2: comma-separated evidence labels. */
+			__( '%1$s Includes %2$s evidence.', 'npcink-governance-core' ),
+			$base,
+			implode( ', ', $parts )
+		);
 	}
 
 	/**

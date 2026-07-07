@@ -3069,3 +3069,110 @@ msgstr ""
 #: includes/Security/App_Key_Repository.php:188
 msgid "App key could not be stored."
 msgstr ""
+
+#: includes/Admin/Admin_Page.php:3635
+#: includes/Admin/Admin_Page.php:3636
+msgid "Current governance outcome"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3639
+msgid "Outcome"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3643
+msgid "Next step"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3647
+msgid "Evidence trail"
+msgstr ""
+
+#. translators: %d: audit lifecycle evidence count.
+#: includes/Admin/Admin_Page.php:3670
+#, php-format
+msgid "%d lifecycle event recorded."
+msgid_plural "%d lifecycle events recorded."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/Admin_Page.php:3678
+msgid "Awaiting Core review."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3679
+msgid "Review the basis, then approve or reject. Approval still requires commit preflight before Adapter or host execution."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3686
+msgid "Approved and preflight handoff issued."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3686
+msgid "Approved; preflight handoff not yet issued."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3687
+msgid "Adapter or host can use the bounded preflight context; Core still does not execute the write."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3687
+msgid "Run commit preflight before any external execution attempt."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3694
+msgid "Execution result recorded outside Core."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3695
+msgid "Verify the execution record and related Adapter evidence; no Core decision is pending."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3702
+msgid "External execution failed after handoff."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3703
+msgid "Inspect Adapter execution evidence and submit a new proposal if another write attempt is needed."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3710
+msgid "Rejected by Core review."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3711
+msgid "Do not continue to commit preflight or external execution for this proposal."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3718
+msgid "Historical governance record."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3719
+msgid "Use this record for audit lookup only; no approval action is available here."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3726
+msgid "Lifecycle state needs audit review."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3727
+msgid "Read the lifecycle summary and full audit timeline before taking follow-up action."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3767
+msgid "execution result"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3770
+msgid "execution failure"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3773
+msgid "rejection"
+msgstr ""
+
+#. translators: 1: base evidence count label, 2: comma-separated evidence labels.
+#: includes/Admin/Admin_Page.php:3784
+#, php-format
+msgid "%1$s Includes %2$s evidence."
+msgstr ""

@@ -3320,6 +3320,113 @@ msgstr "检查 Adapter 执行结果；如需再次尝试写入，请提交新提
 msgid "No pending Core decision is available for this lifecycle state."
 msgstr "此生命周期状态下没有待处理的 Core 决策。"
 
+#: includes/Admin/Admin_Page.php:3635
+#: includes/Admin/Admin_Page.php:3636
+msgid "Current governance outcome"
+msgstr "当前治理结论"
+
+#: includes/Admin/Admin_Page.php:3639
+msgid "Outcome"
+msgstr "结论"
+
+#: includes/Admin/Admin_Page.php:3643
+msgid "Next step"
+msgstr "下一步"
+
+#: includes/Admin/Admin_Page.php:3647
+msgid "Evidence trail"
+msgstr "证据链"
+
+#. translators: %d: audit lifecycle evidence count.
+#: includes/Admin/Admin_Page.php:3670
+#, php-format
+msgid "%d lifecycle event recorded."
+msgid_plural "%d lifecycle events recorded."
+msgstr[0] "已记录 %d 个生命周期事件。"
+msgstr[1] "已记录 %d 个生命周期事件。"
+
+#: includes/Admin/Admin_Page.php:3678
+msgid "Awaiting Core review."
+msgstr "等待 Core 审核。"
+
+#: includes/Admin/Admin_Page.php:3679
+msgid "Review the basis, then approve or reject. Approval still requires commit preflight before Adapter or host execution."
+msgstr "先检查审核依据，然后批准或拒绝。批准后仍需先进行提交前检查，Adapter 或主机才能执行。"
+
+#: includes/Admin/Admin_Page.php:3686
+msgid "Approved and preflight handoff issued."
+msgstr "已批准，并已发出提交前检查交接。"
+
+#: includes/Admin/Admin_Page.php:3686
+msgid "Approved; preflight handoff not yet issued."
+msgstr "已批准；尚未发出提交前检查交接。"
+
+#: includes/Admin/Admin_Page.php:3687
+msgid "Adapter or host can use the bounded preflight context; Core still does not execute the write."
+msgstr "Adapter 或主机可以使用有界的提交前检查上下文；Core 仍不执行写入。"
+
+#: includes/Admin/Admin_Page.php:3687
+msgid "Run commit preflight before any external execution attempt."
+msgstr "任何外部执行尝试前都要先运行提交前检查。"
+
+#: includes/Admin/Admin_Page.php:3694
+msgid "Execution result recorded outside Core."
+msgstr "已记录 Core 外部的执行结果。"
+
+#: includes/Admin/Admin_Page.php:3695
+msgid "Verify the execution record and related Adapter evidence; no Core decision is pending."
+msgstr "核对执行记录和相关 Adapter 证据；Core 当前没有待处理决策。"
+
+#: includes/Admin/Admin_Page.php:3702
+msgid "External execution failed after handoff."
+msgstr "交接后的外部执行失败。"
+
+#: includes/Admin/Admin_Page.php:3703
+msgid "Inspect Adapter execution evidence and submit a new proposal if another write attempt is needed."
+msgstr "检查 Adapter 执行证据；如果需要再次尝试写入，请提交新提案。"
+
+#: includes/Admin/Admin_Page.php:3710
+msgid "Rejected by Core review."
+msgstr "已被 Core 审核拒绝。"
+
+#: includes/Admin/Admin_Page.php:3711
+msgid "Do not continue to commit preflight or external execution for this proposal."
+msgstr "不要继续对此提案进行提交前检查或外部执行。"
+
+#: includes/Admin/Admin_Page.php:3718
+msgid "Historical governance record."
+msgstr "历史治理记录。"
+
+#: includes/Admin/Admin_Page.php:3719
+msgid "Use this record for audit lookup only; no approval action is available here."
+msgstr "此记录仅用于审计查询；这里没有可用的批准操作。"
+
+#: includes/Admin/Admin_Page.php:3726
+msgid "Lifecycle state needs audit review."
+msgstr "需要通过审计检查生命周期状态。"
+
+#: includes/Admin/Admin_Page.php:3727
+msgid "Read the lifecycle summary and full audit timeline before taking follow-up action."
+msgstr "采取后续操作前，请先查看生命周期摘要和完整审计时间线。"
+
+#: includes/Admin/Admin_Page.php:3767
+msgid "execution result"
+msgstr "执行结果"
+
+#: includes/Admin/Admin_Page.php:3770
+msgid "execution failure"
+msgstr "执行失败"
+
+#: includes/Admin/Admin_Page.php:3773
+msgid "rejection"
+msgstr "拒绝"
+
+#. translators: 1: base evidence count label, 2: comma-separated evidence labels.
+#: includes/Admin/Admin_Page.php:3784
+#, php-format
+msgid "%1$s Includes %2$s evidence."
+msgstr "%1$s 包含 %2$s 证据。"
+
 #~ msgid ""
 #~ "Sets how long historical proposal records should be kept. Scheduled "
 #~ "deletion will be wired in a separate cleanup pass."

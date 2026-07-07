@@ -1,5 +1,25 @@
 # Session Breadcrumb
 
+## 2026-07-07 — Core audit evidence outcome summary added
+
+- **Module**: Core proposal detail audit-evidence readability.
+- **Status**: Proposal detail now opens the `Audit evidence` tab with a
+  current governance outcome summary before the lifecycle summary and full
+  audit timeline.
+- **Completed**:
+  - Added a read-only outcome, next-step, and evidence-trail summary derived
+    from the existing proposal status and audit events.
+  - Kept the full audit timeline collapsed behind the existing technical table.
+  - Updated the admin surface standard, Core admin reference notes, static
+    contracts, CSS, and bundled translation files.
+- **Next gate**:
+  - Move to the Toolkit ability-contract lane only after Core gates and the
+    central cross-repo matrix pass.
+- **Boundary**:
+  - This is presentation-only. It does not add REST routes, tables, lifecycle
+    states, approval behavior, commit execution, queues, workflow runtime,
+    provider routing, or product writing UX.
+
 ## 2026-07-07 — Reference plugin action plan becomes next-stage guide
 
 - **Module**: Reference-plugin benchmark follow-through and cross-repo next

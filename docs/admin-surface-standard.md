@@ -199,8 +199,11 @@ Proposal detail should be a focused review surface:
   summary fields as a second linear table;
 - proposal audit evidence in the `Audit evidence` tab, with a compact lifecycle
   summary visible by default and the full audit timeline collapsed for
-  technical attribution. Keep audit evidence before raw payload in the
-  information architecture even when the two surfaces live in separate tabs;
+  technical attribution. The tab should first show a current governance
+  outcome summary with outcome, next step, and evidence trail so operators do
+  not need to infer the proposal state from raw event rows. Keep audit evidence
+  before raw payload in the information architecture even when the two surfaces
+  live in separate tabs; in short, keep audit evidence before raw payload;
 - raw proposal payload behind a troubleshooting disclosure in the `Technical
   info` tab with bounded code blocks;
 - expired or archived proposals should be presented as historical records, not

@@ -1069,6 +1069,35 @@
 	border: 1px solid #dcdcde;
 }
 
+.npcink-governance-core-audit-outcome {
+	box-sizing: border-box;
+	margin: 18px 0 8px;
+	padding: 12px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-left: 4px solid #3858e9;
+}
+
+.npcink-governance-core-audit-outcome h3 {
+	margin: 0 0 10px;
+}
+
+.npcink-governance-core-audit-outcome-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 12px;
+}
+
+.npcink-governance-core-audit-outcome-grid > div {
+	min-width: 0;
+}
+
+.npcink-governance-core-audit-outcome-grid strong,
+.npcink-governance-core-audit-outcome-grid span {
+	display: block;
+	line-height: 1.4;
+}
+
 .npcink-governance-core-lifecycle-summary h3 {
 	margin: 0 0 10px;
 }
@@ -1217,7 +1246,8 @@
 	.npcink-governance-core-token-rate-fields,
 	.npcink-governance-core-workbench-toolbar,
 	.npcink-governance-core-proposal-summary,
-	.npcink-governance-core-detail-groups {
+	.npcink-governance-core-detail-groups,
+	.npcink-governance-core-audit-outcome-grid {
 		grid-template-columns: 1fr;
 	}
 

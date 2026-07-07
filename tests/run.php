@@ -2906,7 +2906,10 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Ability and polic
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Preview signals: no warnings, no blocked items, no required input, and no preflight blockers.' ), 'Admin proposal detail compresses zero-value preview signals into one line.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_proposed_change_details' ) && false !== strpos( $admin_page, 'proposal_has_proposed_change_details' ), 'Admin proposal detail moves structured preview details into the action-plan tab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_lifecycle_summary' ), 'Admin proposal detail shows compact lifecycle evidence before the full audit table.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, '$this->render_audit_timeline( $timeline );' ) && false !== strpos( $admin_page, '$this->render_raw_proposal_payload( $proposal );' ), 'Admin proposal detail separates audit evidence from raw payload.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_outcome_summary' ) && false !== strpos( $admin_page, 'audit_outcome_summary' ), 'Admin proposal audit evidence opens with a current governance outcome summary.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Current governance outcome' ) && false !== strpos( $admin_page, 'Next step' ) && false !== strpos( $admin_page, 'Evidence trail' ), 'Admin proposal audit evidence summarizes outcome, next step, and evidence trail.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Awaiting Core review.' ) && false !== strpos( $admin_page, 'Approved; preflight handoff not yet issued.' ), 'Admin proposal audit outcome explains pending and approved states.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, '$this->render_audit_timeline( $proposal, $timeline );' ) && false !== strpos( $admin_page, '$this->render_raw_proposal_payload( $proposal );' ), 'Admin proposal detail separates audit evidence from raw payload.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_status_badge' ), 'Admin proposal status uses visual badges.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_risk_badge' ), 'Admin proposal risk uses visual badges.' );
 $decision_call_position        = strpos( $admin_page, '$this->render_decision_controls( $proposal );' );
@@ -2954,6 +2957,8 @@ npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-ai-tabs' )
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-action-plan-table' ), 'Admin CSS keeps batch action rows vertically aligned.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-display-id-primary' ), 'Admin CSS emphasizes the proposal detail review id.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-signal-summary' ), 'Admin CSS styles compressed zero-value review signals.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-audit-outcome' ), 'Admin CSS styles the current governance outcome summary.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-audit-outcome-grid' ), 'Admin CSS lays out the audit outcome summary.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-lifecycle-summary' ), 'Admin CSS styles compact proposal lifecycle evidence.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-empty-state' ), 'Admin CSS styles the active queue empty state.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-bulk-action-bar' ), 'Admin CSS styles the contextual bulk action bar.' );
