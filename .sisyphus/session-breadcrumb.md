@@ -1,5 +1,32 @@
 # Session Breadcrumb
 
+## 2026-07-07 — AI write classification matrix becomes next-stage target
+
+- **Module**: Operation classification and AI plugin/editor boundary.
+- **Status**: The next-stage objective has shifted away from building
+  first-party summary/category/tag metadata features. Generic AI plugin output
+  accepted by an author inside the WordPress editor is treated as the human
+  review step and should not be routed through Core proposal review.
+- **Completed**:
+  - Added the AI Write Classification Matrix to
+    `docs/operation-classification-contract.md`.
+  - Updated ADR-004 to state that visible generic AI plugin editor acceptance is
+    not a Core approval workflow.
+  - Added static and runtime contract coverage for visible editor AI-plugin
+    suggestions, low-risk single-field local consent, high-impact publish
+    confirmation, and external/batch Core proposal paths.
+  - Aligned Workflow Toolbox's AI plugin overlap boundary with the Core matrix.
+- **Next gate**:
+  - Keep testing new AI write paths against the matrix before adding UI or
+    proposal handoffs.
+  - Do not restart Content Metadata Delta as a first-party metadata generation
+    feature unless a new decision explicitly supersedes this boundary.
+- **Boundary**:
+  - Core remains the governance layer for external, automated, batch,
+    insufficiently previewed, destructive, or high-impact writes. It does not
+    own generic editor AI generation, provider routing, author publishing, or
+    content product UX.
+
 ## 2026-07-06 — Content Metadata Delta operator trial protocol added
 
 - **Module**: Content Metadata Delta next-stage operator trial planning.

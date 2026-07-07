@@ -80,6 +80,27 @@ Return `core_proposal_required` when any of these are true:
   acts;
 - the action depends on an AI-generated plan with multiple write actions.
 
+## AI Write Classification Matrix
+
+This matrix is the first gate for new AI-assisted write paths. It prevents
+Npcink from becoming a second content-generation plugin while preserving Core
+review for the writes that actually need independent governance.
+
+| Scenario | Owner of the user action | Expected classification | Core proposal? | Required handling |
+| --- | --- | --- | --- | --- |
+| Generic AI plugin shows title, excerpt, summary, category, tag, ALT, meta description, or editing suggestions in the WordPress editor; the author reviews the visible result and uses the normal editor insert, save, or publish action. | WordPress editor or generic AI plugin | Native editor author review; no Npcink authorization path unless Npcink records optional product activity. | No | Do not add a Core proposal hop. The author's visible editor action is the human review step. |
+| Npcink or Toolbox shows candidates only, with no WordPress state write. | Product module | `suggestion_only` | No | Preserve recommendation evidence only when it later becomes an apply request. |
+| Present administrator applies one visible low-risk field or object, such as one reviewed excerpt field, one SEO description, one existing featured image, or one media ALT value. | Local product module | `local_admin_consent` | No | Record product activity or Core-owned local consent audit evidence before/around execution. |
+| Present administrator triggers one visible high-impact action, such as publishing one post through a Npcink-owned action, replacing one file, or overwriting substantial existing content. | Local product module | `strong_local_confirmation` | Case by case | Require stronger local confirmation and reversibility evidence, or choose Core proposal review. |
+| External Agent, OpenClaw, MCP, Adapter, CLI, scheduled task, Cloud callback, or delegated process requests a write. | External or background channel | `core_proposal_required` | Yes | Submit a proposal with caller/source metadata and preview or dry-run evidence. |
+| AI produces a batch plan, multi-object plan, taxonomy creation plan, media import plan, SEO batch, settings change, permission change, destructive action, or anything the operator cannot fully preview item by item. | Planning or automation surface | `core_proposal_required` | Yes | Preserve batch item details and reject local admin consent as a shortcut. |
+| Generic AI plugin editor output is manually copied into content by the author, then the author saves or publishes through WordPress. | WordPress editor | Native editor author review | No | Treat as ordinary editorial action; Core is not in the path. |
+| Npcink wants to observe editor outcomes for learning or diagnostics without blocking the author. | Product analytics or activity layer | `suggestion_only` or product activity only | No | Record optional local activity only; do not turn observation into approval truth. |
+
+The key distinction is not whether AI was involved. The key distinction is
+whether a present author can see and own the final editor action, or whether a
+separate system is asking WordPress to write on the author's behalf.
+
 ## Required Evidence
 
 Each classification result preserves the legacy top-level fields
