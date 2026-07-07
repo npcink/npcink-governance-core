@@ -746,8 +746,11 @@ npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Create Draft
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Set Post SEO Meta Governance Scenario' ), 'Next stage plan links set-post-seo-meta scenario.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Approve Comment Governance Scenario' ), 'Next stage plan links approve-comment scenario.' );
 npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Taxonomy Terms Preview Governance Scenario' ), 'Next stage plan links taxonomy terms preview scenario.' );
-npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Content Metadata Delta Operator Trial' ), 'Next stage plan names the Content Metadata Delta operator trial as the next stage.' );
-npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'npcink-eval-lab' ) && false !== strpos( $next_stage_plan, 'development-only evidence' ), 'Next stage plan keeps eval-lab optional and development-only.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'AI Write Classification Matrix' ), 'Next stage plan names the AI Write Classification Matrix as the next-stage target.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'first-party metadata generation feature' ), 'Next stage plan rejects first-party metadata generation as the current target.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'proposal hop' ) && false !== strpos( $next_stage_plan, 'author workflow' ), 'Next stage plan keeps native editor AI-plugin author review outside Core proposal review.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'Content Metadata Delta Operator Trial' ) && false !== strpos( $next_stage_plan, 'historical protocol' ), 'Next stage plan marks the Content Metadata Delta operator trial as historical.' );
+npcink_governance_core_assert( false !== strpos( $next_stage_plan, 'npcink-eval-lab' ) && false !== strpos( $next_stage_plan, 'development-only' ), 'Next stage plan keeps eval-lab optional and development-only.' );
 
 $readme = npcink_governance_core_read( $root . '/README.md' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Agent MCP Entry Contract' ), 'README links Agent MCP Entry Contract.' );
@@ -756,7 +759,7 @@ npcink_governance_core_assert( false !== strpos( $readme, 'OpenClaw governance a
 npcink_governance_core_assert( false !== strpos( $readme, 'Core 0.4 Consumer Readiness' ), 'README links Core 0.4 Consumer Readiness.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Core Governance Operability' ), 'README links Core Governance Operability.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'AI Provider Log Correlation' ), 'README links AI Provider Log Correlation.' );
-npcink_governance_core_assert( false !== strpos( $readme, 'Content Metadata Delta Operator Trial' ), 'README links the Content Metadata Delta operator trial.' );
+npcink_governance_core_assert( false !== strpos( $readme, 'Content Metadata Delta Operator Trial - Superseded Historical Protocol' ), 'README links the superseded Content Metadata Delta operator trial as historical.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'OpenClaw Execution Guidance' ), 'README links OpenClaw Execution Guidance.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Adapter Handoff And Approval Policy Acceptance' ), 'README links Adapter handoff and approval policy acceptance.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'ADR-003: Keep Final Execution Outside Core For The Current Stage' ), 'README links ADR-003.' );
@@ -1223,10 +1226,14 @@ foreach (
 $content_metadata_operator_trial = npcink_governance_core_read( $root . '/docs/content-metadata-delta-operator-trial.md' );
 foreach (
 	array(
-		'Status: active trial protocol',
-		'not a Core product-workbench implementation contract',
-		'3 to 5 real posts',
-		'Process one post at a time',
+		'Status: superseded as the current next-stage target',
+		'not the current next-stage target',
+		'must not be used to start a first-party',
+		'summary/category/tag recommendation',
+		'product inside Core',
+		'3 to',
+		'real posts',
+		'Process one post',
 		'Issue Record',
 		'Outcome Contract',
 		'Learning Entry',

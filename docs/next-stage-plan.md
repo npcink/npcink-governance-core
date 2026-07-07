@@ -168,26 +168,41 @@ one reviewed intent becomes one Core proposal, execution readiness is visible
 through Adapter, local abilities verify the write and restore path, and Cloud
 Addon remains only a runtime/detail helper. Further work should be limited to
 regression fixes when those contracts fail. New product energy should instead
-go to classifier-driven authorization paths and the next narrow product proof,
-such as Content Metadata Delta.
+go to the classifier-driven authorization paths in the
+[Operation Classification Contract](operation-classification-contract.md).
 
-The next product strategy proof can use the
-[Governed AI Feedback Loop](governed-ai-feedback-loop.md) model. A practical P0
-is Content Metadata Delta: one selected post, related-content vector context,
-existing taxonomy inventory, AI recommendations for excerpt/tags/categories,
-human review, the correct authorization path, post-apply checks, and structured
-learning. This proves the loop without treating Core as a content product or
-letting AI create taxonomy terms, batch edit posts, or publish content
-unattended.
+The current next-stage target is the AI Write Classification Matrix, not a
+first-party metadata generation feature. Generic WordPress AI plugins may
+already show visible title, excerpt, summary, category, tag, ALT, SEO, and
+editing suggestions in the editor. When an author reviews those visible
+suggestions and uses the normal editor insert, save, or publish action, that is
+the human review step. Core should not add another proposal hop to that native
+author workflow.
 
-After the P0 governed loop is technically proven, the next stage is not a
-larger Core feature. It is the
-[Content Metadata Delta Operator Trial](content-metadata-delta-operator-trial.md):
-3 to 5 real posts, one post at a time, with Issue Record, Outcome Contract,
-operator review decision, governance evidence, and Learning Entry for each
-case. `npcink-eval-lab` may assist local recommendation review and worksheets,
-but it remains development-only evidence and must not become a Core runtime,
-proposal truth, audit truth, CI-required gate, or WordPress write executor.
+The next implementation work should therefore prove classification and
+handoff discipline:
+
+- editor-visible generic AI plugin output stays outside Core proposal review;
+- Npcink-owned suggestions with no write stay `suggestion_only`;
+- one visible, low-risk, present-admin write may use `local_admin_consent`
+  with audit evidence;
+- one visible, high-impact present-admin write must use
+  `strong_local_confirmation` or Core proposal review depending on
+  reversibility and preview completeness;
+- external, automated, batch, destructive, insufficiently previewed, or
+  delegated writes remain `core_proposal_required`.
+
+`npcink-eval-lab` may assist local classification review, scenario worksheets,
+and boundary audits during development, but it remains development-only
+evidence and must not become a Core runtime, proposal truth, audit truth,
+CI-required gate, WordPress write executor, or human-review substitute.
+
+The earlier
+[Content Metadata Delta Operator Trial](content-metadata-delta-operator-trial.md)
+is retained as a historical protocol and example of a bounded governed loop.
+It is not the current next-stage target and must not be used to start a
+first-party summary/category/tag recommendation product inside Core unless a
+new accepted decision explicitly supersedes this plan.
 
 ## Recommended Order
 

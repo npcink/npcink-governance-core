@@ -16,6 +16,8 @@
     suggestions, low-risk single-field local consent, high-impact publish
     confirmation, and external/batch Core proposal paths.
   - Aligned Workflow Toolbox's AI plugin overlap boundary with the Core matrix.
+  - Superseded the old Content Metadata Delta operator trial as the current
+    next-stage target and kept it only as a historical protocol.
 - **Next gate**:
   - Keep testing new AI write paths against the matrix before adding UI or
     proposal handoffs.
