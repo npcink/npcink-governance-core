@@ -1,5 +1,29 @@
 # Session Breadcrumb
 
+## 2026-07-08 — Reference plugin evaluation development summary recorded
+
+- **Module**: Core-local documentation for reference-plugin learning and next
+  stage development method.
+- **Status**: Recording the previous cross-repo discussion and release
+  closeout as a Core boundary guide. The active checklist implementation still
+  belongs in the platform coordination lane, starting from
+  `/Users/muze/gitee/npcink-workflow-toolbox/docs/platform/README.md`.
+- **Completed**:
+  - Added `docs/reference-plugin-evaluation-development-summary-2026-07-08.md`.
+  - Linked the summary from `README.md`.
+  - Added static contract coverage so the summary keeps Core's
+    `proposal_handoff` lane, stop rules, verification guidance, and no-runtime
+    conclusion.
+- **Next gate**:
+  - Run `composer test:all`.
+  - Do not add Core functionality for this summary pass unless the gate exposes
+    a real Core contract gap.
+- **Boundary**:
+  - This is historical summary and development-method documentation only. It
+    does not add REST routes, tables, lifecycle states, final execution,
+    product workflow UX, workflow runtime, queues, schedulers, provider
+    credentials, Cloud runtime, or a second ability/workflow registry.
+
 ## 2026-07-08 — Core contract reuse readiness observed
 
 - **Module**: Core proposal, approval, preflight, and audit handoff readiness.
