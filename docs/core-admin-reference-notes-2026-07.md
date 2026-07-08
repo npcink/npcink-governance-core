@@ -106,6 +106,9 @@ Potential future admin UX improvements:
   hidden behind details or filters.
 - Keep actor/object/action/time/correlation id consistent between proposal
   detail and activity table.
+- In proposal detail, show the current governance outcome and next step before
+  the full audit event table so reviewers do not need to infer the state from
+  raw lifecycle rows.
 - Add a compact `More details` style inspector for activity rows if the current
   detail surface feels too raw.
 - Ensure empty Review Queue points to lookup, recent activity, and history

@@ -555,6 +555,7 @@ final class Commit_Preflight_Service {
 			'capability'        => sanitize_key( (string) ( $capability['capability'] ?? '' ) ),
 			'required_scope'    => sanitize_text_field( (string) ( $capability['required_scope'] ?? '' ) ),
 			'required_scopes'   => $required_scopes,
+			'implementation_posture' => $this->normalize_payload_for_hash( is_array( $capability['implementation_posture'] ?? null ) ? $capability['implementation_posture'] : array() ),
 			'input_schema'      => $this->normalize_payload_for_hash( $this->sanitize_payload_for_hash( $capability['input_schema'] ?? array() ) ),
 		);
 	}

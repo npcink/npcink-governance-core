@@ -29,8 +29,17 @@ Core normalizes each ability to:
 - `requires_approval`
 - `input_schema`
 - `output_schema`
+- `implementation_posture_available`
+- `implementation_posture`
 - `source`
 - `raw`
+
+`implementation_posture` is provider-owned metadata. Core normalizes and
+redacts it for `/capabilities`, proposal review visibility, and ability
+contract drift checks, but Core does not become the implementation posture truth
+owner and does not execute the ability. The reference Toolkit mirrors this
+metadata at `implementation_posture`, `meta.implementation_posture`, and
+`meta.npcink.implementation_posture` for host-governed write abilities.
 
 Read abilities may also expose sensitive read authorization guidance:
 
@@ -60,6 +69,9 @@ Ability intake is read-only. It must not:
 - infer workflow ownership;
 - approve or commit writes.
 - grant sensitive reads without a Core read request approval.
+- reinterpret `implementation_posture` as permission to own workflow runtime,
+  queues, model routing, provider credentials, approval storage, audit storage,
+  or final WordPress execution.
 
 ## Plan-To-Proposal Bridge Inputs
 

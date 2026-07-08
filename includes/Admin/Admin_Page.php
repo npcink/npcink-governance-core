@@ -11,6 +11,7 @@ use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
 use Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter;
 use Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator;
 use Npcink\GovernanceCore\Governance\History_Cleanup_Service;
+use Npcink\GovernanceCore\Governance\Operation_Classifier;
 use Npcink\GovernanceCore\Governance\Proposal_Repository;
 use Npcink\GovernanceCore\Governance\Proposal_Service;
 use Npcink\GovernanceCore\Security\App_Key_Repository;
@@ -2404,7 +2405,7 @@ final class Admin_Page {
 		}
 
 		if ( 'evidence' === $active_tab ) {
-			$this->render_audit_timeline( $timeline );
+			$this->render_audit_timeline( $proposal, $timeline );
 			return;
 		}
 
@@ -2476,6 +2477,7 @@ final class Admin_Page {
 		$warning_count = $this->proposal_warning_count( $proposal );
 		$blocked_count = $this->proposal_blocked_count( $proposal );
 		$is_pending    = Proposal_Repository::STATUS_PENDING === (string) ( $proposal['status'] ?? '' );
+		$posture       = $this->proposal_governance_posture( $proposal );
 		$has_signals   = $warning_count > 0
 			|| $blocked_count > 0
 			|| $this->proposal_needs_input_count( $proposal ) > 0
@@ -2500,6 +2502,11 @@ final class Admin_Page {
 				<?php $this->render_status_badge( (string) ( $proposal['status'] ?? '' ) ); ?>
 				<div class="npcink-governance-core-summary-detail"><?php echo esc_html( $this->proposal_status_guidance( $proposal ) ); ?></div>
 				<div class="npcink-governance-core-summary-detail"><?php echo esc_html( $this->display_datetime( (string) ( $proposal['created_at'] ?? '' ) ) ); ?></div>
+			</div>
+			<div>
+				<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Governance path', 'npcink-governance-core' ); ?></div>
+				<span class="npcink-governance-core-classification-badge npcink-governance-core-classification-<?php echo esc_attr( sanitize_html_class( $posture['classification'] ) ); ?>"><?php echo esc_html( $posture['classification_label'] ); ?></span>
+				<div class="npcink-governance-core-summary-detail"><?php echo esc_html( $posture['write_posture'] ); ?></div>
 			</div>
 			<div>
 				<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Evidence', 'npcink-governance-core' ); ?></div>
@@ -2527,6 +2534,267 @@ final class Admin_Page {
 			<?php endif; ?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Returns review-facing governance posture for a proposal.
+	 *
+	 * @param array<string,mixed>      $proposal Proposal.
+	 * @param array<string,mixed>|null $capability Capability row.
+	 * @return array<string,string>
+	 */
+	private function proposal_governance_posture( array $proposal, ?array $capability = null ): array {
+		$classification = $this->proposal_operation_classification( $proposal );
+		$envelope       = is_array( $classification['decision_envelope'] ?? null ) ? $classification['decision_envelope'] : array();
+		$value          = sanitize_key( (string) ( $classification['classification'] ?? '' ) );
+		if ( '' === $value ) {
+			$value = Operation_Classifier::CLASSIFICATION_CORE_PROPOSAL_REQUIRED;
+		}
+
+		return array(
+			'classification'       => $value,
+			'classification_label' => $this->proposal_classification_label( $value ),
+			'intake_path'          => sanitize_key( (string) ( $classification['intake_path'] ?? 'core_proposal' ) ),
+			'request_source'       => sanitize_key( (string) ( $envelope['request_source'] ?? '' ) ),
+			'actor_presence'       => sanitize_key( (string) ( $envelope['actor_presence'] ?? '' ) ),
+			'preview_completeness' => sanitize_key( (string) ( $envelope['preview_completeness'] ?? '' ) ),
+			'scope'                => sanitize_key( (string) ( $envelope['scope'] ?? '' ) ),
+			'operation_kind'       => sanitize_key( (string) ( $envelope['operation_kind'] ?? '' ) ),
+			'write_posture'        => $this->proposal_write_posture_label( $value, $envelope ),
+			'execution_owner'      => $this->proposal_execution_owner_label( $value ),
+			'blocked_guidance'     => $this->proposal_blocked_guidance( $proposal, $capability ),
+		);
+	}
+
+	/**
+	 * Returns the stored operation classification evidence.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return array<string,mixed>
+	 */
+	private function proposal_operation_classification( array $proposal ): array {
+		$preview        = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
+		$classification = is_array( $preview['operation_classification'] ?? null ) ? $preview['operation_classification'] : array();
+
+		return $classification;
+	}
+
+	/**
+	 * Returns a human label for the operation classification.
+	 *
+	 * @param string $classification Classification value.
+	 * @return string
+	 */
+	private function proposal_classification_label( string $classification ): string {
+		$labels = array(
+			Operation_Classifier::CLASSIFICATION_SUGGESTION_ONLY          => __( 'Suggestion only', 'npcink-governance-core' ),
+			Operation_Classifier::CLASSIFICATION_LOCAL_ADMIN_CONSENT      => __( 'Local admin consent', 'npcink-governance-core' ),
+			Operation_Classifier::CLASSIFICATION_STRONG_LOCAL_CONFIRMATION => __( 'Strong local confirmation', 'npcink-governance-core' ),
+			Operation_Classifier::CLASSIFICATION_CORE_PROPOSAL_REQUIRED   => __( 'Core proposal required', 'npcink-governance-core' ),
+		);
+
+		return (string) ( $labels[ $classification ] ?? str_replace( '_', ' ', $classification ) );
+	}
+
+	/**
+	 * Returns the write posture label for a proposal classification.
+	 *
+	 * @param string              $classification Classification value.
+	 * @param array<string,mixed> $envelope Decision envelope.
+	 * @return string
+	 */
+	private function proposal_write_posture_label( string $classification, array $envelope ): string {
+		$writes_state = array_key_exists( 'writes_wordpress_state', $envelope ) ? (bool) $envelope['writes_wordpress_state'] : true;
+		if ( ! $writes_state || Operation_Classifier::CLASSIFICATION_SUGGESTION_ONLY === $classification ) {
+			return __( 'No WordPress state write is declared.', 'npcink-governance-core' );
+		}
+
+		if ( Operation_Classifier::CLASSIFICATION_CORE_PROPOSAL_REQUIRED === $classification ) {
+			return __( 'Core records proposal, approval, preflight, and audit only; final WordPress writes stay outside Core.', 'npcink-governance-core' );
+		}
+
+		if ( Operation_Classifier::CLASSIFICATION_LOCAL_ADMIN_CONSENT === $classification ) {
+			return __( 'A present administrator may apply one bounded local write only with audit evidence.', 'npcink-governance-core' );
+		}
+
+		return __( 'A present administrator needs stronger confirmation or Core proposal review before the write.', 'npcink-governance-core' );
+	}
+
+	/**
+	 * Returns the execution owner label for the proposal review surface.
+	 *
+	 * @param string $classification Classification value.
+	 * @return string
+	 */
+	private function proposal_execution_owner_label( string $classification ): string {
+		if ( Operation_Classifier::CLASSIFICATION_CORE_PROPOSAL_REQUIRED === $classification ) {
+			return __( 'Adapter or host after Core commit preflight', 'npcink-governance-core' );
+		}
+
+		if ( Operation_Classifier::CLASSIFICATION_SUGGESTION_ONLY === $classification ) {
+			return __( 'No execution owner because no WordPress write is declared', 'npcink-governance-core' );
+		}
+
+		return __( 'Local product module with Core-owned audit evidence', 'npcink-governance-core' );
+	}
+
+	/**
+	 * Returns a compact blocker and next-step guidance label.
+	 *
+	 * @param array<string,mixed>      $proposal Proposal.
+	 * @param array<string,mixed>|null $capability Capability row.
+	 * @return string
+	 */
+	private function proposal_blocked_guidance( array $proposal, ?array $capability = null ): string {
+		if ( null === $capability ) {
+			return __( 'Target ability is not discoverable; commit preflight will fail closed until the provider exposes it again.', 'npcink-governance-core' );
+		}
+
+		if ( $this->proposal_preflight_blocker_count( $proposal ) > 0 || $this->proposal_blocked_count( $proposal ) > 0 || $this->proposal_needs_input_count( $proposal ) > 0 ) {
+			return __( 'Resolve blocked items, required input, or preflight blockers before approval can become executable.', 'npcink-governance-core' );
+		}
+
+		$status = (string) ( $proposal['status'] ?? '' );
+		if ( Proposal_Repository::STATUS_PENDING === $status ) {
+			return __( 'Approve or reject this proposal; approved items still require commit preflight before external execution.', 'npcink-governance-core' );
+		}
+
+		if ( Proposal_Repository::STATUS_APPROVED === $status ) {
+			return __( 'Run commit preflight to issue a bounded handoff; Core still will not execute the write.', 'npcink-governance-core' );
+		}
+
+		if ( Proposal_Repository::STATUS_EXECUTION_FAILED === $status ) {
+			return __( 'Review the Adapter execution result and submit a new proposal if another write attempt is needed.', 'npcink-governance-core' );
+		}
+
+		return __( 'No pending Core decision is available for this lifecycle state.', 'npcink-governance-core' );
+	}
+
+	/**
+	 * Returns implementation posture rows for the proposal review surface.
+	 *
+	 * @param array<string,mixed>|null $capability Capability row.
+	 * @return array{label:string,rows:array<int,array{label:string,value:mixed,code?:bool}>}|array{}
+	 */
+	private function implementation_posture_review_group( ?array $capability ): array {
+		$posture = is_array( $capability['implementation_posture'] ?? null ) ? $capability['implementation_posture'] : array();
+		if ( empty( $posture ) ) {
+			return array();
+		}
+
+		return array(
+			'label' => __( 'Implementation posture', 'npcink-governance-core' ),
+			'rows'  => array(
+				array(
+					'label' => __( 'Schema', 'npcink-governance-core' ),
+					'value' => (string) ( $posture['schema_version'] ?? '' ),
+					'code'  => true,
+				),
+				array(
+					'label' => __( 'Write posture', 'npcink-governance-core' ),
+					'value' => (string) ( $posture['write_posture'] ?? '' ),
+					'code'  => true,
+				),
+				array(
+					'label' => __( 'Commit authority', 'npcink-governance-core' ),
+					'value' => (string) ( $posture['commit_authority'] ?? '' ),
+					'code'  => true,
+				),
+				array(
+					'label' => __( 'Execution surface', 'npcink-governance-core' ),
+					'value' => (string) ( $posture['execution_surface'] ?? '' ),
+					'code'  => true,
+				),
+				array(
+					'label' => __( 'Final authorization owner', 'npcink-governance-core' ),
+					'value' => (string) ( $posture['final_authorization_owner'] ?? '' ),
+					'code'  => true,
+				),
+				array(
+					'label' => __( 'Approval truth owner', 'npcink-governance-core' ),
+					'value' => (string) ( $posture['approval_truth_owner'] ?? '' ),
+					'code'  => true,
+				),
+				array(
+					'label' => __( 'Audit truth owner', 'npcink-governance-core' ),
+					'value' => (string) ( $posture['audit_truth_owner'] ?? '' ),
+					'code'  => true,
+				),
+				array(
+					'label' => __( 'Dry-run default', 'npcink-governance-core' ),
+					'value' => $this->posture_bool_label( $posture, 'dry_run_default' ),
+				),
+				array(
+					'label' => __( 'Commit default', 'npcink-governance-core' ),
+					'value' => $this->posture_bool_label( $posture, 'commit_default' ),
+				),
+				array(
+					'label' => __( 'Required host evidence', 'npcink-governance-core' ),
+					'value' => implode( ', ', array_map( 'strval', (array) ( $posture['required_host_evidence'] ?? array() ) ) ),
+				),
+				array(
+					'label' => __( 'Verification contract', 'npcink-governance-core' ),
+					'value' => implode( ', ', array_map( 'strval', (array) ( $posture['verification_contract'] ?? array() ) ) ),
+				),
+				array(
+					'label' => __( 'Reference patterns', 'npcink-governance-core' ),
+					'value' => implode( ', ', array_map( 'strval', (array) ( $posture['reference_patterns'] ?? array() ) ) ),
+				),
+				array(
+					'label' => __( 'Boundary flags', 'npcink-governance-core' ),
+					'value' => $this->implementation_posture_boundary_label( $posture ),
+				),
+			),
+		);
+	}
+
+	/**
+	 * Returns a compact yes/no label for optional posture booleans.
+	 *
+	 * @param array<string,mixed> $posture Posture metadata.
+	 * @param string              $field Boolean field.
+	 * @return string
+	 */
+	private function posture_bool_label( array $posture, string $field ): string {
+		if ( ! array_key_exists( $field, $posture ) ) {
+			return '';
+		}
+
+		return ! empty( $posture[ $field ] ) ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' );
+	}
+
+	/**
+	 * Returns posture boundary status without making Core the provider owner.
+	 *
+	 * @param array<string,mixed> $posture Posture metadata.
+	 * @return string
+	 */
+	private function implementation_posture_boundary_label( array $posture ): string {
+		$enabled = array();
+		foreach (
+			array(
+				'workflow_' . 'runtime' => __( 'workflow runtime', 'npcink-governance-core' ),
+				'queue_or_scheduler'    => __( 'queue or scheduler', 'npcink-governance-core' ),
+				'model_' . 'routing'    => __( 'model routing', 'npcink-governance-core' ),
+				'provider_' . 'credentials' => __( 'provider credentials', 'npcink-governance-core' ),
+				'approval_storage'      => __( 'approval storage', 'npcink-governance-core' ),
+				'audit_storage'         => __( 'audit storage', 'npcink-governance-core' ),
+			) as $field => $label
+		) {
+			if ( ! empty( $posture[ $field ] ) ) {
+				$enabled[] = $label;
+			}
+		}
+
+		if ( empty( $enabled ) ) {
+			return __( 'No runtime, queue, model routing, credential, approval-store, or audit-store ownership declared.', 'npcink-governance-core' );
+		}
+
+		return sprintf(
+			/* translators: %s: comma-separated provider-declared ownership flags. */
+			__( 'Provider declares Core-forbidden ownership: %s', 'npcink-governance-core' ),
+			implode( ', ', $enabled )
+		);
 	}
 
 	/**
@@ -2624,6 +2892,7 @@ final class Admin_Page {
 		$caller         = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
 		$auth           = is_array( $caller['auth'] ?? null ) ? $caller['auth'] : array();
 		$policy_reasons = implode( ', ', array_map( 'strval', (array) ( $proposal['policy_reasons'] ?? array() ) ) );
+		$posture        = $this->proposal_governance_posture( $proposal );
 
 		return array(
 			array(
@@ -2704,6 +2973,16 @@ final class Admin_Page {
 					array(
 						'label' => __( 'Policy reasons', 'npcink-governance-core' ),
 						'value' => $policy_reasons,
+					),
+					array(
+						'label' => __( 'Classification', 'npcink-governance-core' ),
+						'value' => $posture['classification'],
+						'code'  => true,
+					),
+					array(
+						'label' => __( 'Intake path', 'npcink-governance-core' ),
+						'value' => $posture['intake_path'],
+						'code'  => true,
 					),
 				),
 			),
@@ -2799,6 +3078,7 @@ final class Admin_Page {
 		$risk_label            = $this->proposal_risk_label( $proposal );
 		$undeclared_risk_label = __( 'Not declared', 'npcink-governance-core' );
 		$target_ability        = (string) ( $preview['target_ability_id'] ?? $proposal['ability_id'] );
+		$posture               = $this->proposal_governance_posture( $proposal, $capability );
 		$reason                = (string) ( $preview['reason'] ?? '' );
 		$ready_label           = array_key_exists( 'proposal_ready', $preview )
 			? ( (bool) $preview['proposal_ready'] ? __( 'yes', 'npcink-governance-core' ) : __( 'no', 'npcink-governance-core' ) )
@@ -2882,7 +3162,62 @@ final class Admin_Page {
 					),
 				),
 			),
+			array(
+				'label' => __( 'Classification and handoff', 'npcink-governance-core' ),
+				'rows'  => array(
+					array(
+						'label' => __( 'Classification', 'npcink-governance-core' ),
+						'value' => $posture['classification_label'],
+					),
+					array(
+						'label' => __( 'Intake path', 'npcink-governance-core' ),
+						'value' => $posture['intake_path'],
+						'code'  => true,
+					),
+					array(
+						'label' => __( 'Request source', 'npcink-governance-core' ),
+						'value' => $posture['request_source'],
+						'code'  => true,
+					),
+					array(
+						'label' => __( 'Actor presence', 'npcink-governance-core' ),
+						'value' => $posture['actor_presence'],
+						'code'  => true,
+					),
+					array(
+						'label' => __( 'Preview completeness', 'npcink-governance-core' ),
+						'value' => $posture['preview_completeness'],
+						'code'  => true,
+					),
+					array(
+						'label' => __( 'Scope', 'npcink-governance-core' ),
+						'value' => $posture['scope'],
+						'code'  => true,
+					),
+					array(
+						'label' => __( 'Operation kind', 'npcink-governance-core' ),
+						'value' => $posture['operation_kind'],
+						'code'  => true,
+					),
+					array(
+						'label' => __( 'Write posture', 'npcink-governance-core' ),
+						'value' => $posture['write_posture'],
+					),
+					array(
+						'label' => __( 'Execution owner', 'npcink-governance-core' ),
+						'value' => $posture['execution_owner'],
+					),
+					array(
+						'label' => __( 'Blocked guidance', 'npcink-governance-core' ),
+						'value' => $posture['blocked_guidance'],
+					),
+				),
+			),
 		);
+		$implementation_posture_group = $this->implementation_posture_review_group( $capability );
+		if ( ! empty( $implementation_posture_group ) ) {
+			$review_groups[] = $implementation_posture_group;
+		}
 		if ( ! empty( $signal_rows ) ) {
 			$review_groups[] = array(
 				'label' => __( 'Preview signals', 'npcink-governance-core' ),
@@ -3244,11 +3579,13 @@ final class Admin_Page {
 	/**
 	 * Renders proposal audit timeline.
 	 *
+	 * @param array<string,mixed>            $proposal Proposal row.
 	 * @param array<int,array<string,mixed>> $events Audit events.
 	 * @return void
 	 */
-	private function render_audit_timeline( array $events, bool $open = false ): void {
+	private function render_audit_timeline( array $proposal, array $events, bool $open = false ): void {
 		unset( $open );
+		$this->render_audit_outcome_summary( $proposal, $events );
 		$this->render_audit_lifecycle_summary( $events );
 		?>
 		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide npcink-governance-core-disclosure-top">
@@ -3283,6 +3620,170 @@ final class Admin_Page {
 			</table>
 		</details>
 		<?php
+	}
+
+	/**
+	 * Renders the current proposal outcome before dense audit evidence.
+	 *
+	 * @param array<string,mixed>            $proposal Proposal row.
+	 * @param array<int,array<string,mixed>> $events Audit events.
+	 * @return void
+	 */
+	private function render_audit_outcome_summary( array $proposal, array $events ): void {
+		$summary = $this->audit_outcome_summary( $proposal, $events );
+		?>
+		<section class="npcink-governance-core-audit-outcome npcink-governance-core-max-wide" aria-label="<?php echo esc_attr__( 'Current governance outcome', 'npcink-governance-core' ); ?>">
+			<h3><?php echo esc_html__( 'Current governance outcome', 'npcink-governance-core' ); ?></h3>
+			<div class="npcink-governance-core-audit-outcome-grid">
+				<div>
+					<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Outcome', 'npcink-governance-core' ); ?></div>
+					<strong><?php echo esc_html( $summary['outcome'] ); ?></strong>
+				</div>
+				<div>
+					<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Next step', 'npcink-governance-core' ); ?></div>
+					<span><?php echo esc_html( $summary['next_step'] ); ?></span>
+				</div>
+				<div>
+					<div class="npcink-governance-core-summary-label"><?php echo esc_html__( 'Evidence trail', 'npcink-governance-core' ); ?></div>
+					<span><?php echo esc_html( $summary['evidence'] ); ?></span>
+				</div>
+			</div>
+		</section>
+		<?php
+	}
+
+	/**
+	 * Returns a user-facing current audit outcome summary.
+	 *
+	 * @param array<string,mixed>            $proposal Proposal row.
+	 * @param array<int,array<string,mixed>> $events Audit events.
+	 * @return array{outcome:string,next_step:string,evidence:string}
+	 */
+	private function audit_outcome_summary( array $proposal, array $events ): array {
+		$status          = (string) ( $proposal['status'] ?? '' );
+		$has_approval    = $this->audit_events_include( $events, 'proposal.approved' );
+		$has_rejection   = $this->audit_events_include( $events, 'proposal.rejected' );
+		$has_preflight   = $this->audit_events_include( $events, 'commit.preflighted' );
+		$has_executed    = $this->audit_events_include( $events, 'proposal.executed' );
+		$has_failed      = $this->audit_events_include( $events, 'proposal.execution_failed' );
+		$evidence_count  = count( $this->audit_lifecycle_steps( $events ) );
+		$evidence_suffix = sprintf(
+			/* translators: %d: audit lifecycle evidence count. */
+			_n( '%d lifecycle event recorded.', '%d lifecycle events recorded.', $evidence_count, 'npcink-governance-core' ),
+			absint( $evidence_count )
+		);
+
+		if ( Proposal_Repository::STATUS_PENDING === $status ) {
+			return array(
+				'outcome'   => __( 'Awaiting Core review.', 'npcink-governance-core' ),
+				'next_step' => __( 'Review the basis, then approve or reject. Approval still requires commit preflight before Adapter or host execution.', 'npcink-governance-core' ),
+				'evidence'  => $evidence_suffix,
+			);
+		}
+
+		if ( Proposal_Repository::STATUS_APPROVED === $status ) {
+			return array(
+				'outcome'   => $has_preflight ? __( 'Approved and preflight handoff issued.', 'npcink-governance-core' ) : __( 'Approved; preflight handoff not yet issued.', 'npcink-governance-core' ),
+				'next_step' => $has_preflight ? __( 'Adapter or host can use the bounded preflight context; Core still does not execute the write.', 'npcink-governance-core' ) : __( 'Run commit preflight before any external execution attempt.', 'npcink-governance-core' ),
+				'evidence'  => $this->audit_outcome_evidence_label( $evidence_suffix, $has_approval, $has_preflight, $has_executed, $has_failed, $has_rejection ),
+			);
+		}
+
+		if ( Proposal_Repository::STATUS_EXECUTED === $status ) {
+			return array(
+				'outcome'   => __( 'Execution result recorded outside Core.', 'npcink-governance-core' ),
+				'next_step' => __( 'Verify the execution record and related Adapter evidence; no Core decision is pending.', 'npcink-governance-core' ),
+				'evidence'  => $this->audit_outcome_evidence_label( $evidence_suffix, $has_approval, $has_preflight, $has_executed, $has_failed, $has_rejection ),
+			);
+		}
+
+		if ( Proposal_Repository::STATUS_EXECUTION_FAILED === $status ) {
+			return array(
+				'outcome'   => __( 'External execution failed after handoff.', 'npcink-governance-core' ),
+				'next_step' => __( 'Inspect Adapter execution evidence and submit a new proposal if another write attempt is needed.', 'npcink-governance-core' ),
+				'evidence'  => $this->audit_outcome_evidence_label( $evidence_suffix, $has_approval, $has_preflight, $has_executed, $has_failed, $has_rejection ),
+			);
+		}
+
+		if ( Proposal_Repository::STATUS_REJECTED === $status ) {
+			return array(
+				'outcome'   => __( 'Rejected by Core review.', 'npcink-governance-core' ),
+				'next_step' => __( 'Do not continue to commit preflight or external execution for this proposal.', 'npcink-governance-core' ),
+				'evidence'  => $this->audit_outcome_evidence_label( $evidence_suffix, $has_approval, $has_preflight, $has_executed, $has_failed, $has_rejection ),
+			);
+		}
+
+		if ( Proposal_Repository::STATUS_EXPIRED === $status || Proposal_Repository::STATUS_ARCHIVED === $status ) {
+			return array(
+				'outcome'   => __( 'Historical governance record.', 'npcink-governance-core' ),
+				'next_step' => __( 'Use this record for audit lookup only; no approval action is available here.', 'npcink-governance-core' ),
+				'evidence'  => $evidence_suffix,
+			);
+		}
+
+		return array(
+			'outcome'   => __( 'Lifecycle state needs audit review.', 'npcink-governance-core' ),
+			'next_step' => __( 'Read the lifecycle summary and full audit timeline before taking follow-up action.', 'npcink-governance-core' ),
+			'evidence'  => $evidence_suffix,
+		);
+	}
+
+	/**
+	 * Returns whether audit events include a lifecycle event name.
+	 *
+	 * @param array<int,array<string,mixed>> $events Audit events.
+	 * @param string                         $event_name Event name.
+	 * @return bool
+	 */
+	private function audit_events_include( array $events, string $event_name ): bool {
+		foreach ( $events as $event ) {
+			if ( $event_name === (string) ( $event['event_name'] ?? '' ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns a compact evidence label from known lifecycle events.
+	 *
+	 * @param string $base Base evidence count label.
+	 * @param bool   $has_approval Has approval evidence.
+	 * @param bool   $has_preflight Has preflight evidence.
+	 * @param bool   $has_executed Has execution evidence.
+	 * @param bool   $has_failed Has execution failure evidence.
+	 * @param bool   $has_rejection Has rejection evidence.
+	 * @return string
+	 */
+	private function audit_outcome_evidence_label( string $base, bool $has_approval, bool $has_preflight, bool $has_executed, bool $has_failed, bool $has_rejection ): string {
+		$parts = array();
+		if ( $has_approval ) {
+			$parts[] = __( 'approval', 'npcink-governance-core' );
+		}
+		if ( $has_preflight ) {
+			$parts[] = __( 'preflight', 'npcink-governance-core' );
+		}
+		if ( $has_executed ) {
+			$parts[] = __( 'execution result', 'npcink-governance-core' );
+		}
+		if ( $has_failed ) {
+			$parts[] = __( 'execution failure', 'npcink-governance-core' );
+		}
+		if ( $has_rejection ) {
+			$parts[] = __( 'rejection', 'npcink-governance-core' );
+		}
+
+		if ( empty( $parts ) ) {
+			return $base;
+		}
+
+		return sprintf(
+			/* translators: 1: base evidence count label, 2: comma-separated evidence labels. */
+			__( '%1$s Includes %2$s evidence.', 'npcink-governance-core' ),
+			$base,
+			implode( ', ', $parts )
+		);
 	}
 
 	/**

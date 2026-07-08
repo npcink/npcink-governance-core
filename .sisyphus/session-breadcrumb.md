@@ -1,5 +1,146 @@
 # Session Breadcrumb
 
+## 2026-07-08 — Core contract reuse readiness observed
+
+- **Module**: Core proposal, approval, preflight, and audit handoff readiness.
+- **Status**: Active observation found that Core already has the necessary
+  `proposal_handoff` contract for the merged Cloud/Add-on/Toolbox
+  `contract_reuse` stack.
+- **Completed**:
+  - Added `docs/core-contract-reuse-readiness-2026-07-08.md`.
+  - Linked the readiness record from `README.md`.
+  - Added static contract coverage for the role map, no-new-runtime-code
+    conclusion, operation classification evidence, external record-execution
+    boundary, stop rule, and next Toolkit-oriented slice.
+- **Next gate**:
+  - Run `composer test:all`.
+  - Do not add Core functionality for this pass unless that gate exposes a
+    real contract gap.
+- **Boundary**:
+  - This is observation and documentation only. It does not add REST routes,
+    tables, lifecycle states, final execution, workflow runtime, queues,
+    scheduler truth, model routing, provider credentials, Cloud runtime, or
+    product workflow UX.
+
+## 2026-07-07 — Core audit evidence outcome summary added
+
+- **Module**: Core proposal detail audit-evidence readability.
+- **Status**: Proposal detail now opens the `Audit evidence` tab with a
+  current governance outcome summary before the lifecycle summary and full
+  audit timeline.
+- **Completed**:
+  - Added a read-only outcome, next-step, and evidence-trail summary derived
+    from the existing proposal status and audit events.
+  - Kept the full audit timeline collapsed behind the existing technical table.
+  - Updated the admin surface standard, Core admin reference notes, static
+    contracts, CSS, and bundled translation files.
+- **Next gate**:
+  - Move to the Toolkit ability-contract lane only after Core gates and the
+    central cross-repo matrix pass.
+- **Boundary**:
+  - This is presentation-only. It does not add REST routes, tables, lifecycle
+    states, approval behavior, commit execution, queues, workflow runtime,
+    provider routing, or product writing UX.
+
+## 2026-07-07 — Reference plugin action plan becomes next-stage guide
+
+- **Module**: Reference-plugin benchmark follow-through and cross-repo next
+  stage planning.
+- **Status**: The benchmark work now has an active action guide that keeps
+  each project on one small improvement lane: Core review readability, Toolkit
+  ability contracts, Adapter channel feedback, Toolbox fixed-workflow
+  ergonomics, and Cloud/Add-on runtime diagnostics.
+- **Completed**:
+  - Added `docs/reference-plugin-action-plan.md`.
+  - Linked the action plan from README and the next-stage plan.
+  - Added static contract coverage so the plan keeps the five lane names,
+    central matrix gate, dependency ADR rule, and no-silent-write boundary.
+  - Tightened Adapter smoke coverage in a sibling commit so implementation
+    posture execution evidence must be `checked`.
+  - Ran the central cross-repo quality matrix with all listed gates passing.
+- **Next gate**:
+  - Pick exactly one benchmark-derived slice at a time, starting with a Core
+    proposal/audit readability improvement only if it does not change REST,
+    lifecycle, data ownership, execution, or runtime boundaries.
+- **Boundary**:
+  - This is planning, evidence, and regression discipline only. It does not add
+    Core execution, queues, workflow runtime, product writing UX, provider
+    routing, approval storage outside Core, or WordPress write ownership in
+    Cloud/Add-on.
+
+## 2026-07-07 — Implementation posture contract consumed by Core
+
+- **Module**: Core ability intake, proposal review visibility, and commit
+  preflight contract drift.
+- **Status**: Core now consumes provider-declared `implementation_posture`
+  metadata from Toolkit-style ability definitions without taking ownership of
+  the ability implementation. The posture is normalized on `/capabilities`,
+  discoverable through `/contract`, visible in proposal detail when the target
+  ability is available, and included in proposal/preflight ability contract
+  fingerprints so owner/evidence/reference-pattern drift requires fresh review.
+- **Completed**:
+  - Added safe read-only posture normalization from `implementation_posture`,
+    `meta.implementation_posture`, and `meta.npcink.implementation_posture`.
+  - Added proposal detail posture rows for write posture, commit authority,
+    final authorization owner, approval/audit truth owner, host evidence,
+    verification contract, reference patterns, and forbidden ownership flags.
+  - Added runtime contract metadata that points consumers to `/capabilities`
+    and declares posture validation as metadata-only.
+  - Updated REST, governance, approval-commit, ability-intake, and testing docs.
+  - Added static and WordPress smoke coverage for Toolkit priority write
+    abilities and preflight posture fingerprinting.
+- **Verified**:
+  - `composer validate --no-check-publish` passed.
+  - `composer test:all` passed.
+  - `composer analyse:phpstan` passed.
+  - `composer smoke:wp` passed.
+- **Next gate**:
+  - Apply the same contract-consumer discipline to Adapter next: read Core's
+    `/contract` posture metadata, validate `/capabilities` posture for target
+    abilities, and display/guard it before executing approved handoffs.
+- **Boundary**:
+  - This is metadata intake, review visibility, and drift validation only. It
+    does not add ability execution, fallback registration, workflow runtime,
+    queues, model routing, provider credential storage, approval storage, audit
+    storage, or final WordPress writes to Core.
+
+## 2026-07-07 — Core classification visibility stage implemented
+
+- **Module**: Core proposal review visibility and runtime contract metadata.
+- **Status**: Added first-class operation-classification and handoff posture
+  visibility for Core proposal review. The `/contract` response now exposes
+  metadata-only classification path discovery, and the proposal detail surface
+  shows governance path, write posture, execution owner, and blocked guidance
+  before reviewers need to inspect raw payload JSON.
+- **Completed**:
+  - Reused `preview.operation_classification` as the proposal review truth
+    source instead of adding new proposal fields or tables.
+  - Kept Core proposal intake fixed to `core_proposal_required` and
+    `intake_path=core_proposal`.
+  - Kept final WordPress writes owned by Adapter or host after Core commit
+    preflight.
+  - Updated REST contract docs, static contracts, WordPress smoke assertions,
+    and bundled zh_CN runtime translations.
+- **Next gate**:
+  - Apply the same visibility discipline to the next repo only after checking
+    that repo's owner/runtime boundary. Do not expand Core into execution,
+    queues, workflow runtime, product writing, or a second approval store.
+- **Boundary**:
+  - This is visibility and metadata discovery only. It does not add proposal
+    lifecycle states, REST write routes, tables, final execution, workflow
+    runtime, queues, Cloud writes, or product UX ownership.
+
+## 2026-07-07 — AI write classification stage closeout recorded
+
+- **Module**: Stage closeout documentation.
+- **Status**: Recording the discussion history, decisions, landed commits,
+  effects, stop condition, and future trigger rules for the AI Write
+  Classification stage.
+- **Boundary**:
+  - This is summary documentation only. It does not add content generation,
+    runtime code, queues, Cloud WordPress writes, Core final execution, or
+    another approval store.
+
 ## 2026-07-07 — AI write classification evidence template added
 
 - **Module**: Release evidence documentation.

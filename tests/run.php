@@ -187,11 +187,54 @@ foreach (
 		'AI Development Workstream Summary',
 		'Operation Classification Contract',
 		'Cross-Repo Release Acceptance',
+		'Core Contract Reuse Readiness - 2026-07-08',
 		'Release Candidate Version Matrix',
+		'Reference Plugin Action Plan',
 		'local admin consent with audit',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $readme, $required ), 'README contains required phrase: ' . $required );
+}
+
+$reference_plugin_action_plan = npcink_governance_core_read( $root . '/docs/reference-plugin-action-plan.md' );
+foreach (
+	array(
+		'Core governance review',
+		'Abilities Toolkit contracts',
+		'Adapter channel feedback',
+		'Workflow Toolbox product flow',
+		'Cloud Addon and Cloud runtime evidence',
+		'composer quality:matrix:run',
+		'does not add a new dependency unless a separate ADR accepts it',
+		'turn suggestions into silent WordPress writes',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $reference_plugin_action_plan, $required ), 'Reference plugin action plan contains required phrase: ' . $required );
+}
+
+$core_contract_reuse_readiness = npcink_governance_core_read( $root . '/docs/core-contract-reuse-readiness-2026-07-08.md' );
+foreach (
+	array(
+		'Core Contract Reuse Readiness',
+		'proposal_handoff',
+		'ability_contracts',
+		'execution_profiles',
+		'product_surface',
+		'signed_transport',
+		'runtime_detail',
+		'No new Core runtime code is needed for this pass.',
+		'preview.operation_classification',
+		'classification=core_proposal_required',
+		'intake_path=core_proposal',
+		'commit_execution=false',
+		'record-execution stores external execution outcomes',
+		'Stop and write a boundary note or ADR',
+		'final WordPress write execution',
+		'npcink-abilities-toolkit',
+		'composer test:all',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $core_contract_reuse_readiness, $required ), 'Core contract reuse readiness contains required phrase: ' . $required );
 }
 
 $wp_readme = npcink_governance_core_read( $root . '/readme.txt' );
@@ -775,6 +818,7 @@ npcink_governance_core_assert( false !== strpos( $readme, 'Taxonomy Terms Previe
 npcink_governance_core_assert( false !== strpos( $readme, 'Cross-Repo Release Acceptance' ), 'README links Cross-Repo Release Acceptance.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Release Candidate Version Matrix' ), 'README links Release Candidate Version Matrix.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'AI Write Classification Regression Evidence' ), 'README links AI write classification regression evidence template.' );
+npcink_governance_core_assert( false !== strpos( $readme, 'AI Write Classification Stage Closeout - 2026-07-07' ), 'README links AI write classification stage closeout.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'signed Adapter request through Core' ) && false !== strpos( $readme, 'Adapter status/readback without moving execution into Core' ), 'README summarizes the cross-repo release chain.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Article writing is an external product/ability concern' ), 'README keeps article product ownership outside Core.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Cloud must not provide Core with' ), 'README prohibits Cloud writing generation for Core intake.' );
@@ -1340,6 +1384,27 @@ foreach (
 	npcink_governance_core_assert( false !== strpos( $ai_write_regression_evidence, $required ), 'AI write classification regression evidence template contains required text: ' . $required );
 }
 
+$ai_write_stage_closeout = npcink_governance_core_read( $root . '/docs/ai-write-classification-stage-closeout-2026-07-07.md' );
+foreach (
+	array(
+		'AI Write Classification Stage Closeout - 2026-07-07',
+		'The current stage target is the AI Write Classification Matrix',
+		'first-party summary/category/tag generation.',
+		'Generic AI plugin output accepted',
+		'first-party summary/category/tag generation in Core',
+		'treating normal WordPress editor publish/save as a Core approval workflow',
+		'Persisted classification evidence at real Core write entrypoints',
+		'Promoted classification to release and new-entrypoint admission',
+		'Native editor or generic AI plugin acceptance keeps Core proposal and audit',
+		'This stage is complete. Do not continue by adding Core features.',
+		'Continue only when one of these triggers appears',
+		'Only fix code when the',
+		'classification or evidence shows a real gap',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $ai_write_stage_closeout, $required ), 'AI write classification stage closeout contains required text: ' . $required );
+}
+
 $wordpress_org_release_gate = npcink_governance_core_read( $root . '/docs/wordpress-org-release-gate.md' );
 foreach (
 	array(
@@ -1522,6 +1587,10 @@ npcink_governance_core_assert( false !== strpos( $ability_adapter, 'core_read_au
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'sensitivity'" ), 'Ability intake exposes read sensitivity.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'redaction_required'" ), 'Ability intake exposes read redaction requirement.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, 'infer_read_sensitivity' ), 'Ability intake infers read sensitivity when providers omit it.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, 'implementation_posture_metadata' ), 'Ability intake reads provider implementation posture metadata.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'implementation_posture_available'" ), 'Ability intake exposes implementation posture availability.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'implementation_posture'" ), 'Ability intake exposes implementation posture metadata.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'meta', 'npcink', 'implementation_posture'" ) || false !== strpos( $ability_adapter, "\$npcink_meta['implementation_posture']" ), 'Ability intake accepts Toolkit mirrored Npcink implementation posture metadata.' );
 
 $ability_intake = npcink_governance_core_read( $root . '/docs/ability-intake-contract.md' );
 npcink_governance_core_assert( false !== strpos( $ability_intake, 'reference provider and smoke-test' ), 'Ability intake contract treats npcink-abilities-toolkit as the reference provider.' );
@@ -1810,6 +1879,14 @@ npcink_governance_core_assert( false !== strpos( $contract_controller, 'npcink_g
 npcink_governance_core_assert( false !== strpos( $contract_controller, "'core_proxy_execute'      => false" ), 'Runtime contract keeps Core proxy execution disabled.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, "'commit_execution'        => false" ), 'Runtime contract keeps commit execution disabled.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, "'provider_secret_storage' => false" ), 'Runtime contract keeps provider secret storage outside Core.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'operation_classification'" ), 'Runtime contract exposes operation classification discovery metadata.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, 'Operation_Classifier::allowed_classifications()' ), 'Runtime contract reuses the shared operation classifier values.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, 'CLASSIFICATION_CORE_PROPOSAL_REQUIRED' ) && false !== strpos( $contract_controller, "'proposal_intake_path'               => 'core_proposal'" ), 'Runtime contract declares Core proposal intake classification and path.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'generic_editor_author_review_proposal_required' => false" ), 'Runtime contract keeps visible editor author review outside Core proposal intake.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'implementation_posture'" ), 'Runtime contract exposes implementation posture discovery metadata.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'commit_preflight_contract_validation' => true" ), 'Runtime contract declares implementation posture preflight validation.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'core_records_truth'                  => false" ), 'Runtime contract keeps implementation posture truth outside Core.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, "'forbidden_core_ownership_flags'" ), 'Runtime contract names forbidden Core ownership flags for provider posture.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'minimum_adapter_contract_version' ), 'Runtime contract exposes Adapter compatibility floor.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'context_bindings' ), 'Runtime contract exposes context binding metadata.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, "'fields'       => array( 'site_url', 'home_url', 'blog_id' )" ), 'Runtime contract declares site binding fields.' );
@@ -2001,6 +2078,7 @@ npcink_governance_core_assert( false !== strpos( $proposal_service, 'MAX_PROPOSA
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'validate_proposal_payload_size' ), 'Proposal service validates direct proposal payload size before persistence.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_proposal_payload_too_large' ), 'Proposal service uses a stable oversized direct proposal payload error.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal_intake_classification' ) && false !== strpos( $proposal_service, "'operation_classification'" ), 'Proposal service persists operation classification evidence on proposal intake.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, "'implementation_posture'" ), 'Proposal service stores implementation posture in the proposal ability contract fingerprint.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_proposal_classification_rejected' ), 'Proposal service rejects non-Core proposal classification evidence.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.policy_evaluated' ), 'Proposal service records policy evaluation audit event.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'proposal.auto_approved' ), 'Proposal service records auto approval audit event.' );
@@ -2066,6 +2144,7 @@ npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'re
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'governance_mode'" ), 'Commit preflight contract includes governance mode drift.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'execution_surface'" ), 'Commit preflight contract includes execution surface drift.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'required_scopes'" ), 'Commit preflight contract includes required scope drift.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'implementation_posture'" ), 'Commit preflight contract includes implementation posture drift.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "'input_schema'" ), 'Commit preflight contract includes input schema drift.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'signed_client_context' ), 'Commit preflight binds signed Adapter client fingerprint when present.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'site_binding_context' ), 'Commit preflight has a site binding helper.' );
@@ -2824,6 +2903,11 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Review basis' ), 
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_proposal_summary_panel' ), 'Admin proposal detail opens with a compact summary panel.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-proposal-summary' ), 'Admin proposal detail displays review id, status, and evidence summary.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Review ID' ), 'Admin proposal detail leads the summary with the operator-facing review id.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Governance path' ) && false !== strpos( $admin_page, 'proposal_governance_posture' ), 'Admin proposal detail summarizes the operation classification path before raw payload.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Classification and handoff' ), 'Admin proposal overview exposes classification and handoff posture.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Write posture' ) && false !== strpos( $admin_page, 'Execution owner' ) && false !== strpos( $admin_page, 'Blocked guidance' ), 'Admin proposal overview explains write posture, execution owner, and blocked guidance.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Core records proposal, approval, preflight, and audit only; final WordPress writes stay outside Core.' ), 'Admin proposal detail states Core does not execute final WordPress writes.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Adapter or host after Core commit preflight' ), 'Admin proposal detail names Adapter or host as execution owner after Core preflight.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'proposal_summary_request_meta' ), 'Admin proposal detail keeps the top request summary compact.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-summary-actions' ), 'Admin proposal detail integrates pending approve/reject controls into the summary panel.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'npcink-governance-core-decision-bar' ), 'Admin proposal detail does not render a separate empty decision bar.' );
@@ -2848,7 +2932,10 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Ability and polic
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Preview signals: no warnings, no blocked items, no required input, and no preflight blockers.' ), 'Admin proposal detail compresses zero-value preview signals into one line.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_proposed_change_details' ) && false !== strpos( $admin_page, 'proposal_has_proposed_change_details' ), 'Admin proposal detail moves structured preview details into the action-plan tab.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_lifecycle_summary' ), 'Admin proposal detail shows compact lifecycle evidence before the full audit table.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, '$this->render_audit_timeline( $timeline );' ) && false !== strpos( $admin_page, '$this->render_raw_proposal_payload( $proposal );' ), 'Admin proposal detail separates audit evidence from raw payload.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_outcome_summary' ) && false !== strpos( $admin_page, 'audit_outcome_summary' ), 'Admin proposal audit evidence opens with a current governance outcome summary.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Current governance outcome' ) && false !== strpos( $admin_page, 'Next step' ) && false !== strpos( $admin_page, 'Evidence trail' ), 'Admin proposal audit evidence summarizes outcome, next step, and evidence trail.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Awaiting Core review.' ) && false !== strpos( $admin_page, 'Approved; preflight handoff not yet issued.' ), 'Admin proposal audit outcome explains pending and approved states.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, '$this->render_audit_timeline( $proposal, $timeline );' ) && false !== strpos( $admin_page, '$this->render_raw_proposal_payload( $proposal );' ), 'Admin proposal detail separates audit evidence from raw payload.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_status_badge' ), 'Admin proposal status uses visual badges.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_risk_badge' ), 'Admin proposal risk uses visual badges.' );
 $decision_call_position        = strpos( $admin_page, '$this->render_decision_controls( $proposal );' );
@@ -2890,10 +2977,14 @@ npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-summary-actions' ) && false !== strpos( $admin_css, '.npcink-governance-core-reject-panel' ), 'Admin CSS styles the proposal detail inline summary actions.' );
 npcink_governance_core_assert( false === strpos( $admin_css, '.npcink-governance-core-decision-bar' ), 'Admin CSS does not keep obsolete separate decision bar styling.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-evidence-ok' ), 'Admin CSS styles the zero-risk evidence summary.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-classification-badge' ), 'Admin CSS styles classification badges in proposal detail.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-classification-core-proposal-required' ), 'Admin CSS distinguishes Core proposal required classification.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-ai-tabs' ) && false !== strpos( $admin_css, '.npcink-ai-tab-active' ) && false !== strpos( $admin_css, '.npcink-governance-core-detail-tabs' ) && false !== strpos( $admin_css, '.npcink-governance-core-tab-panel' ), 'Admin CSS styles the proposal detail tab shell with the shared Npcink AI tab visual standard.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-action-plan-table' ), 'Admin CSS keeps batch action rows vertically aligned.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-display-id-primary' ), 'Admin CSS emphasizes the proposal detail review id.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-signal-summary' ), 'Admin CSS styles compressed zero-value review signals.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-audit-outcome' ), 'Admin CSS styles the current governance outcome summary.' );
+npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-audit-outcome-grid' ), 'Admin CSS lays out the audit outcome summary.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-lifecycle-summary' ), 'Admin CSS styles compact proposal lifecycle evidence.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-empty-state' ), 'Admin CSS styles the active queue empty state.' );
 npcink_governance_core_assert( false !== strpos( $admin_css, '.npcink-governance-core-bulk-action-bar' ), 'Admin CSS styles the contextual bulk action bar.' );

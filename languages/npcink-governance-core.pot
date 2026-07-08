@@ -2209,6 +2209,118 @@ msgstr ""
 msgid "Content metadata apply plans submitted to Core must classify as Core proposal required."
 msgstr ""
 
+#: includes/Admin/Admin_Page.php
+msgid "Governance path"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Classification and handoff"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Classification"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Intake path"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Request source"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Actor presence"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Preview completeness"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Operation kind"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Write posture"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Execution owner"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Blocked guidance"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Suggestion only"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Local admin consent"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Strong local confirmation"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Core proposal required"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "No WordPress state write is declared."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Core records proposal, approval, preflight, and audit only; final WordPress writes stay outside Core."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "A present administrator may apply one bounded local write only with audit evidence."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "A present administrator needs stronger confirmation or Core proposal review before the write."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Adapter or host after Core commit preflight"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "No execution owner because no WordPress write is declared"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Local product module with Core-owned audit evidence"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Target ability is not discoverable; commit preflight will fail closed until the provider exposes it again."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Resolve blocked items, required input, or preflight blockers before approval can become executable."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Approve or reject this proposal; approved items still require commit preflight before external execution."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Run commit preflight to issue a bounded handoff; Core still will not execute the write."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "Review the Adapter execution result and submit a new proposal if another write attempt is needed."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php
+msgid "No pending Core decision is available for this lifecycle state."
+msgstr ""
+
 #: includes/Governance/Plan_Proposal_Service.php:1110
 msgid "Content metadata apply plans must target one post."
 msgstr ""
@@ -2956,4 +3068,111 @@ msgstr ""
 
 #: includes/Security/App_Key_Repository.php:188
 msgid "App key could not be stored."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3635
+#: includes/Admin/Admin_Page.php:3636
+msgid "Current governance outcome"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3639
+msgid "Outcome"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3643
+msgid "Next step"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3647
+msgid "Evidence trail"
+msgstr ""
+
+#. translators: %d: audit lifecycle evidence count.
+#: includes/Admin/Admin_Page.php:3670
+#, php-format
+msgid "%d lifecycle event recorded."
+msgid_plural "%d lifecycle events recorded."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/Admin_Page.php:3678
+msgid "Awaiting Core review."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3679
+msgid "Review the basis, then approve or reject. Approval still requires commit preflight before Adapter or host execution."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3686
+msgid "Approved and preflight handoff issued."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3686
+msgid "Approved; preflight handoff not yet issued."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3687
+msgid "Adapter or host can use the bounded preflight context; Core still does not execute the write."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3687
+msgid "Run commit preflight before any external execution attempt."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3694
+msgid "Execution result recorded outside Core."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3695
+msgid "Verify the execution record and related Adapter evidence; no Core decision is pending."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3702
+msgid "External execution failed after handoff."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3703
+msgid "Inspect Adapter execution evidence and submit a new proposal if another write attempt is needed."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3710
+msgid "Rejected by Core review."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3711
+msgid "Do not continue to commit preflight or external execution for this proposal."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3718
+msgid "Historical governance record."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3719
+msgid "Use this record for audit lookup only; no approval action is available here."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3726
+msgid "Lifecycle state needs audit review."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3727
+msgid "Read the lifecycle summary and full audit timeline before taking follow-up action."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3767
+msgid "execution result"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3770
+msgid "execution failure"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:3773
+msgid "rejection"
+msgstr ""
+
+#. translators: 1: base evidence count label, 2: comma-separated evidence labels.
+#: includes/Admin/Admin_Page.php:3784
+#, php-format
+msgid "%1$s Includes %2$s evidence."
 msgstr ""

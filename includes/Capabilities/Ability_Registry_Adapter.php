@@ -206,6 +206,7 @@ final class Ability_Registry_Adapter {
 		if ( ! empty( $read_policy['read_authorization_required'] ) ) {
 			$guidance['governance_mode'] = 'core_read_authorization_required';
 		}
+		$implementation_posture = $this->implementation_posture_metadata( $definition, $meta, $annotations );
 
 		return array(
 			'ability_id'        => $ability_id,
@@ -231,11 +232,106 @@ final class Ability_Registry_Adapter {
 			'sensitivity'       => $read_policy['sensitivity'],
 			'redaction_required' => $read_policy['redaction_required'],
 			'read_audit_mode'   => $read_policy['read_audit_mode'],
+			'implementation_posture_available' => ! empty( $implementation_posture ),
+			'implementation_posture' => $implementation_posture,
 			'input_schema'      => is_array( $definition['input_schema'] ?? null ) ? $definition['input_schema'] : array( 'type' => 'object' ),
 			'output_schema'     => is_array( $definition['output_schema'] ?? null ) ? $definition['output_schema'] : array( 'type' => 'object' ),
 			'source'            => $this->first_string( array( $definition['source'] ?? null ), $source ),
 			'raw'               => $this->redact_raw_definition( $definition ),
 		);
+	}
+
+	/**
+	 * Returns provider-declared implementation posture metadata.
+	 *
+	 * @param array<string,mixed> $definition Raw definition.
+	 * @param array<string,mixed> $meta Meta fields.
+	 * @param array<string,mixed> $annotations Annotation fields.
+	 * @return array<string,mixed>
+	 */
+	private function implementation_posture_metadata( array $definition, array $meta, array $annotations ): array {
+		$npcink_meta = is_array( $meta['npcink'] ?? null ) ? $meta['npcink'] : array();
+		foreach ( array( $definition['implementation_posture'] ?? null, $meta['implementation_posture'] ?? null, $npcink_meta['implementation_posture'] ?? null, $annotations['implementation_posture'] ?? null ) as $candidate ) {
+			if ( is_array( $candidate ) && ! empty( $candidate ) ) {
+				return $this->sanitize_implementation_posture( $candidate );
+			}
+		}
+
+		return array();
+	}
+
+	/**
+	 * Sanitizes implementation posture metadata without making Core its owner.
+	 *
+	 * @param array<string,mixed> $posture Raw posture metadata.
+	 * @return array<string,mixed>
+	 */
+	private function sanitize_implementation_posture( array $posture ): array {
+		$clean       = array();
+		$text_fields = array(
+			'schema_version',
+		);
+		$key_fields  = array(
+			'implementation_owner',
+			'execution_surface',
+			'write_posture',
+			'commit_authority',
+			'final_authorization_owner',
+			'approval_truth_owner',
+			'audit_truth_owner',
+		);
+		$bool_fields = array(
+			'direct_wordpress_write_default',
+			'dry_run_default',
+			'commit_default',
+			'workflow_' . 'runtime',
+			'queue_or_scheduler',
+			'model_' . 'routing',
+			'provider_' . 'credentials',
+			'approval_storage',
+			'audit_storage',
+		);
+		$list_fields = array(
+			'reference_patterns',
+			'verification_contract',
+			'required_host_evidence',
+			'non_goals',
+		);
+
+		foreach ( $text_fields as $field ) {
+			if ( isset( $posture[ $field ] ) && is_scalar( $posture[ $field ] ) ) {
+				$value = sanitize_text_field( (string) $posture[ $field ] );
+				if ( '' !== $value ) {
+					$clean[ $field ] = $value;
+				}
+			}
+		}
+
+		foreach ( $key_fields as $field ) {
+			if ( isset( $posture[ $field ] ) && is_scalar( $posture[ $field ] ) ) {
+				$value = sanitize_key( (string) $posture[ $field ] );
+				if ( '' !== $value ) {
+					$clean[ $field ] = $value;
+				}
+			}
+		}
+
+		foreach ( $bool_fields as $field ) {
+			if ( array_key_exists( $field, $posture ) ) {
+				$clean[ $field ] = $this->first_bool( array( $posture[ $field ] ), false );
+			}
+		}
+
+		foreach ( $list_fields as $field ) {
+			if ( isset( $posture[ $field ] ) && is_array( $posture[ $field ] ) ) {
+				$values = $this->sanitize_scope_list( (array) $posture[ $field ] );
+				if ( ! empty( $values ) ) {
+					$clean[ $field ] = $values;
+				}
+			}
+		}
+
+		return $clean;
 	}
 
 	/**

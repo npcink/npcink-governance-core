@@ -3208,6 +3208,225 @@ msgstr "无法保护应用密钥 secret。"
 msgid "App key could not be stored."
 msgstr "无法存储应用密钥。"
 
+#: includes/Admin/Admin_Page.php
+msgid "Governance path"
+msgstr "治理路径"
+
+#: includes/Admin/Admin_Page.php
+msgid "Classification and handoff"
+msgstr "分类与交接"
+
+#: includes/Admin/Admin_Page.php
+msgid "Classification"
+msgstr "分类"
+
+#: includes/Admin/Admin_Page.php
+msgid "Intake path"
+msgstr "接收路径"
+
+#: includes/Admin/Admin_Page.php
+msgid "Request source"
+msgstr "请求来源"
+
+#: includes/Admin/Admin_Page.php
+msgid "Actor presence"
+msgstr "操作者在场状态"
+
+#: includes/Admin/Admin_Page.php
+msgid "Preview completeness"
+msgstr "预览完整度"
+
+#: includes/Admin/Admin_Page.php
+msgid "Operation kind"
+msgstr "操作类型"
+
+#: includes/Admin/Admin_Page.php
+msgid "Write posture"
+msgstr "写入姿态"
+
+#: includes/Admin/Admin_Page.php
+msgid "Execution owner"
+msgstr "执行归属"
+
+#: includes/Admin/Admin_Page.php
+msgid "Blocked guidance"
+msgstr "阻塞指引"
+
+#: includes/Admin/Admin_Page.php
+msgid "Suggestion only"
+msgstr "仅建议"
+
+#: includes/Admin/Admin_Page.php
+msgid "Local admin consent"
+msgstr "本地管理员同意"
+
+#: includes/Admin/Admin_Page.php
+msgid "Strong local confirmation"
+msgstr "强本地确认"
+
+#: includes/Admin/Admin_Page.php
+msgid "Core proposal required"
+msgstr "需要 Core 提案"
+
+#: includes/Admin/Admin_Page.php
+msgid "No WordPress state write is declared."
+msgstr "未声明 WordPress 状态写入。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Core records proposal, approval, preflight, and audit only; final WordPress writes stay outside Core."
+msgstr "Core 仅记录提案、批准、预检和审计；最终 WordPress 写入仍在 Core 之外。"
+
+#: includes/Admin/Admin_Page.php
+msgid "A present administrator may apply one bounded local write only with audit evidence."
+msgstr "在场管理员只能在有审计证据时应用一个有边界的本地写入。"
+
+#: includes/Admin/Admin_Page.php
+msgid "A present administrator needs stronger confirmation or Core proposal review before the write."
+msgstr "在场管理员写入前需要更强确认，或改走 Core 提案审核。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Adapter or host after Core commit preflight"
+msgstr "Core 提交预检后的 Adapter 或主机"
+
+#: includes/Admin/Admin_Page.php
+msgid "No execution owner because no WordPress write is declared"
+msgstr "未声明 WordPress 写入，因此没有执行归属"
+
+#: includes/Admin/Admin_Page.php
+msgid "Local product module with Core-owned audit evidence"
+msgstr "带 Core 审计证据的本地产品模块"
+
+#: includes/Admin/Admin_Page.php
+msgid "Target ability is not discoverable; commit preflight will fail closed until the provider exposes it again."
+msgstr "目标能力当前不可发现；在提供方重新暴露前，提交预检会失败关闭。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Resolve blocked items, required input, or preflight blockers before approval can become executable."
+msgstr "先解决阻塞项、必填输入或预检阻塞，批准后才可能进入可执行状态。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Approve or reject this proposal; approved items still require commit preflight before external execution."
+msgstr "批准或拒绝此提案；已批准项目在外部执行前仍需要提交预检。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Run commit preflight to issue a bounded handoff; Core still will not execute the write."
+msgstr "运行提交预检以签发有边界的交接；Core 仍不会执行写入。"
+
+#: includes/Admin/Admin_Page.php
+msgid "Review the Adapter execution result and submit a new proposal if another write attempt is needed."
+msgstr "检查 Adapter 执行结果；如需再次尝试写入，请提交新提案。"
+
+#: includes/Admin/Admin_Page.php
+msgid "No pending Core decision is available for this lifecycle state."
+msgstr "此生命周期状态下没有待处理的 Core 决策。"
+
+#: includes/Admin/Admin_Page.php:3635
+#: includes/Admin/Admin_Page.php:3636
+msgid "Current governance outcome"
+msgstr "当前治理结论"
+
+#: includes/Admin/Admin_Page.php:3639
+msgid "Outcome"
+msgstr "结论"
+
+#: includes/Admin/Admin_Page.php:3643
+msgid "Next step"
+msgstr "下一步"
+
+#: includes/Admin/Admin_Page.php:3647
+msgid "Evidence trail"
+msgstr "证据链"
+
+#. translators: %d: audit lifecycle evidence count.
+#: includes/Admin/Admin_Page.php:3670
+#, php-format
+msgid "%d lifecycle event recorded."
+msgid_plural "%d lifecycle events recorded."
+msgstr[0] "已记录 %d 个生命周期事件。"
+msgstr[1] "已记录 %d 个生命周期事件。"
+
+#: includes/Admin/Admin_Page.php:3678
+msgid "Awaiting Core review."
+msgstr "等待 Core 审核。"
+
+#: includes/Admin/Admin_Page.php:3679
+msgid "Review the basis, then approve or reject. Approval still requires commit preflight before Adapter or host execution."
+msgstr "先检查审核依据，然后批准或拒绝。批准后仍需先进行提交前检查，Adapter 或主机才能执行。"
+
+#: includes/Admin/Admin_Page.php:3686
+msgid "Approved and preflight handoff issued."
+msgstr "已批准，并已发出提交前检查交接。"
+
+#: includes/Admin/Admin_Page.php:3686
+msgid "Approved; preflight handoff not yet issued."
+msgstr "已批准；尚未发出提交前检查交接。"
+
+#: includes/Admin/Admin_Page.php:3687
+msgid "Adapter or host can use the bounded preflight context; Core still does not execute the write."
+msgstr "Adapter 或主机可以使用有界的提交前检查上下文；Core 仍不执行写入。"
+
+#: includes/Admin/Admin_Page.php:3687
+msgid "Run commit preflight before any external execution attempt."
+msgstr "任何外部执行尝试前都要先运行提交前检查。"
+
+#: includes/Admin/Admin_Page.php:3694
+msgid "Execution result recorded outside Core."
+msgstr "已记录 Core 外部的执行结果。"
+
+#: includes/Admin/Admin_Page.php:3695
+msgid "Verify the execution record and related Adapter evidence; no Core decision is pending."
+msgstr "核对执行记录和相关 Adapter 证据；Core 当前没有待处理决策。"
+
+#: includes/Admin/Admin_Page.php:3702
+msgid "External execution failed after handoff."
+msgstr "交接后的外部执行失败。"
+
+#: includes/Admin/Admin_Page.php:3703
+msgid "Inspect Adapter execution evidence and submit a new proposal if another write attempt is needed."
+msgstr "检查 Adapter 执行证据；如果需要再次尝试写入，请提交新提案。"
+
+#: includes/Admin/Admin_Page.php:3710
+msgid "Rejected by Core review."
+msgstr "已被 Core 审核拒绝。"
+
+#: includes/Admin/Admin_Page.php:3711
+msgid "Do not continue to commit preflight or external execution for this proposal."
+msgstr "不要继续对此提案进行提交前检查或外部执行。"
+
+#: includes/Admin/Admin_Page.php:3718
+msgid "Historical governance record."
+msgstr "历史治理记录。"
+
+#: includes/Admin/Admin_Page.php:3719
+msgid "Use this record for audit lookup only; no approval action is available here."
+msgstr "此记录仅用于审计查询；这里没有可用的批准操作。"
+
+#: includes/Admin/Admin_Page.php:3726
+msgid "Lifecycle state needs audit review."
+msgstr "需要通过审计检查生命周期状态。"
+
+#: includes/Admin/Admin_Page.php:3727
+msgid "Read the lifecycle summary and full audit timeline before taking follow-up action."
+msgstr "采取后续操作前，请先查看生命周期摘要和完整审计时间线。"
+
+#: includes/Admin/Admin_Page.php:3767
+msgid "execution result"
+msgstr "执行结果"
+
+#: includes/Admin/Admin_Page.php:3770
+msgid "execution failure"
+msgstr "执行失败"
+
+#: includes/Admin/Admin_Page.php:3773
+msgid "rejection"
+msgstr "拒绝"
+
+#. translators: 1: base evidence count label, 2: comma-separated evidence labels.
+#: includes/Admin/Admin_Page.php:3784
+#, php-format
+msgid "%1$s Includes %2$s evidence."
+msgstr "%1$s 包含 %2$s 证据。"
+
 #~ msgid ""
 #~ "Sets how long historical proposal records should be kept. Scheduled "
 #~ "deletion will be wired in a separate cleanup pass."
