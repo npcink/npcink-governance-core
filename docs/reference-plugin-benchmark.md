@@ -2,6 +2,11 @@
 
 Status: advisory benchmark for future product and architecture planning.
 
+Authority note: Cross-project reference learning and platform coordination now
+start from `/Users/muze/gitee/npcink-workflow-toolbox/docs/platform/README.md`.
+This Core document is retained as advisory context, not as a platform
+implementation plan or dependency decision.
+
 Date: 2026-07-06.
 
 This note records mature WordPress plugins and platform projects that overlap

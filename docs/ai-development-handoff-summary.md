@@ -2,6 +2,10 @@
 
 Status: active.
 
+Authority note: Cross-project AI development coordination now starts from
+`/Users/muze/gitee/npcink-workflow-toolbox/docs/platform/README.md`. This Core
+document is retained as a quick handoff for Core-specific work only.
+
 This document summarizes the current development system for future AI agents.
 It is the quick handoff entry after `AGENTS.md`, `.sisyphus/session-breadcrumb.md`,
 `README.md`, and `docs/solo-ai-development-workflow.md`.

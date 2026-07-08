@@ -2,6 +2,10 @@
 
 Status: active.
 
+Authority note: Cross-project development coordination now starts from
+`/Users/muze/gitee/npcink-workflow-toolbox/docs/platform/README.md`. This Core
+document is retained for repository-local GitHub practices only.
+
 GitHub is the development repository for `npcink-governance-core`. WordPress.org
 SVN remains release-only.
 

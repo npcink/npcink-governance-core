@@ -2,6 +2,11 @@
 
 Status: active planning guide.
 
+Authority note: Cross-project platform coordination now starts from
+`/Users/muze/gitee/npcink-workflow-toolbox/docs/platform/README.md`. This Core
+document is retained for Core boundary context; product placement beyond Core
+should be governed by the Toolbox platform index and the owning repository.
+
 This document records the planning conclusion from the WordPress 7.0 research
 review and the current Npcink Governance Core product boundary.
 

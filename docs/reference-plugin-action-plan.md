@@ -2,6 +2,11 @@
 
 Status: active next-stage action guide.
 
+Authority note: Cross-project reference learning and platform coordination now
+start from `/Users/muze/gitee/npcink-workflow-toolbox/docs/platform/README.md`.
+This Core document is retained as a bounded planning note; do not expand it
+into Core ownership of Toolbox, Adapter, Toolkit, Cloud Addon, or Cloud work.
+
 This plan turns the reference-plugin benchmark into the next concrete work
 sequence. It is intentionally small: each project gets one benchmark-derived
 improvement lane, and each lane must keep the current authority boundary

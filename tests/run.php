@@ -190,10 +190,37 @@ foreach (
 		'Core Contract Reuse Readiness - 2026-07-08',
 		'Release Candidate Version Matrix',
 		'Reference Plugin Action Plan',
+		'Core Docs Authority Inventory - 2026-07-08',
+		'Cross-project platform',
+		'npcink-workflow-toolbox/docs/platform/README.md',
+		'Governance truth:',
+		'Platform coordination pointers and historical planning context',
+		'Core governance truth',
 		'local admin consent with audit',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $readme, $required ), 'README contains required phrase: ' . $required );
+}
+
+$core_docs_authority_inventory = npcink_governance_core_read( $root . '/docs/core-docs-authority-inventory-2026-07-08.md' );
+foreach (
+	array(
+		'Core Docs Authority Inventory',
+		'Cross-project platform coordination',
+		'npcink-workflow-toolbox/docs/platform/README.md',
+		'core_truth',
+		'core_consumer_note',
+		'platform_coordination_pointer',
+		'historical',
+		'Keep As Core Truth',
+		'Keep As Core Consumer Notes',
+		'Downgrade To Platform Coordination Pointers',
+		'Do not return to one flat "read everything" list',
+		'platform process, product UX, reference learning, release orchestration, or',
+		'cross-repo coordination',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $core_docs_authority_inventory, $required ), 'Core docs authority inventory contains required phrase: ' . $required );
 }
 
 $reference_plugin_action_plan = npcink_governance_core_read( $root . '/docs/reference-plugin-action-plan.md' );
@@ -1773,6 +1800,8 @@ foreach (
 
 $development_workflow = npcink_governance_core_read( $root . '/docs/development-workflow.md' );
 npcink_governance_core_assert( false !== strpos( $development_workflow, 'does not depend on the abandoned legacy Magick AI' ), 'Development workflow rejects the abandoned legacy Magick AI dependency.' );
+npcink_governance_core_assert( false !== strpos( $development_workflow, '/Users/muze/gitee/npcink-workflow-toolbox/docs/platform/README.md' ), 'Development workflow points cross-project platform coordination to Toolbox platform index.' );
+npcink_governance_core_assert( false !== strpos( $development_workflow, 'cd /Users/muze/gitee/npcink-workflow-toolbox' ), 'Development workflow runs the cross-repo quality matrix from npcink-workflow-toolbox.' );
 npcink_governance_core_assert( false !== strpos( $development_workflow, 'Smoke Failure Classification' ), 'Development workflow documents smoke failure classification.' );
 npcink_governance_core_assert( false !== strpos( $development_workflow, '[smoke:preflight:fail] environment:' ), 'Development workflow classifies smoke environment failures.' );
 npcink_governance_core_assert( false !== strpos( $development_workflow, '[smoke:preflight:fail] toolkit:' ), 'Development workflow classifies smoke Toolkit setup failures.' );
