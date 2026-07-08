@@ -2,6 +2,11 @@
 
 Status: active for the Core, Abilities, Adapter, and Cloud Addon plugins.
 
+Authority note: Cross-project platform coordination now starts from
+`/Users/muze/gitee/npcink-workflow-toolbox/docs/platform/README.md`. This Core
+document is retained as a release/consumer baseline note; do not expand it into
+the platform coordination source of truth.
+
 ## Baseline
 
 All Npcink WordPress plugins in this product group use the same minimum

@@ -2,6 +2,10 @@
 
 Status: active.
 
+Authority note: Cross-project AI development coordination now starts from
+`/Users/muze/gitee/npcink-workflow-toolbox/docs/platform/README.md`. This Core
+document is retained for repository-local Core workflow guidance only.
+
 This repository is primarily developed by one maintainer using AI coding
 agents. The workflow is intentionally lightweight, but every change must still
 leave reviewable evidence in GitHub.

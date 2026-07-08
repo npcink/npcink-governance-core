@@ -80,7 +80,16 @@ one, the signed local client fingerprint.
 
 ## Development
 
-Read the project handoff docs before starting a new implementation session:
+Use the grouped documentation below before starting a new implementation
+session. Governance truth remains in this repository. Cross-project platform
+coordination now starts from
+`/Users/muze/gitee/npcink-workflow-toolbox/docs/platform/README.md`; non-Core
+product, runtime, connector, reference-learning, and release-coordination rules
+should not be expanded in Core.
+
+- [Core Docs Authority Inventory - 2026-07-08](docs/core-docs-authority-inventory-2026-07-08.md)
+
+Governance truth:
 
 - [Product Positioning](docs/product-positioning.md)
 - [Architecture](docs/architecture.md)
@@ -103,15 +112,6 @@ Read the project handoff docs before starting a new implementation session:
 - [Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md)
 - [Governed AI Feedback Loop](docs/governed-ai-feedback-loop.md)
 - [Content Metadata Delta Operator Trial - Superseded Historical Protocol](docs/content-metadata-delta-operator-trial.md)
-- [Platform Baseline](docs/platform-baseline.md)
-- [Admin Menu Standard](docs/admin-menu-standard.md)
-- [Admin Menu Localization Closeout - 2026-06-21](docs/admin-menu-localization-closeout-2026-06-21.md)
-- [Admin Surface Standard](docs/admin-surface-standard.md)
-- [Admin Identity And Tab Visual Closeout - 2026-07-02](docs/admin-identity-tab-visual-closeout-2026-07-02.md)
-- [Reference Plugin Benchmark](docs/reference-plugin-benchmark.md)
-- [Reference Plugin Deep Dive - 2026-07-06](docs/reference-plugin-deep-dive-2026-07-06.md)
-- [Reference Plugin Action Plan](docs/reference-plugin-action-plan.md)
-- [Core Admin Reference Notes - 2026-07](docs/core-admin-reference-notes-2026-07.md)
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
 - [Operation Classification Contract](docs/operation-classification-contract.md)
 - [AI Write Classification Regression Evidence](docs/ai-write-classification-regression-evidence.md)
@@ -124,6 +124,9 @@ Read the project handoff docs before starting a new implementation session:
 - [Set Post SEO Meta Governance Scenario](docs/set-post-seo-meta-governance-scenario.md)
 - [Approve Comment Governance Scenario](docs/approve-comment-governance-scenario.md)
 - [Taxonomy Terms Preview Governance Scenario](docs/taxonomy-terms-preview-governance-scenario.md)
+
+Core-local workflow and release references:
+
 - [Development Workflow](docs/development-workflow.md)
 - [GitHub Development Support](docs/github-development-support.md)
 - [Solo AI Development Workflow](docs/solo-ai-development-workflow.md)
@@ -141,7 +144,23 @@ Read the project handoff docs before starting a new implementation session:
 - [Release Candidate Version Matrix](docs/release-candidate-version-matrix.md)
 - [Release Closeout - 2026-06-21](docs/release-closeout-2026-06-21.md)
 - [Next Stage Plan](docs/next-stage-plan.md)
+
+Platform coordination pointers and historical planning context. These are not
+Core governance truth; check the Toolbox platform index before expanding them:
+
+- [Platform Baseline](docs/platform-baseline.md)
+- [Admin Menu Standard](docs/admin-menu-standard.md)
+- [Admin Menu Localization Closeout - 2026-06-21](docs/admin-menu-localization-closeout-2026-06-21.md)
+- [Admin Surface Standard](docs/admin-surface-standard.md)
+- [Admin Identity And Tab Visual Closeout - 2026-07-02](docs/admin-identity-tab-visual-closeout-2026-07-02.md)
+- [Reference Plugin Benchmark](docs/reference-plugin-benchmark.md)
+- [Reference Plugin Deep Dive - 2026-07-06](docs/reference-plugin-deep-dive-2026-07-06.md)
+- [Reference Plugin Action Plan](docs/reference-plugin-action-plan.md)
+- [Core Admin Reference Notes - 2026-07](docs/core-admin-reference-notes-2026-07.md)
 - [Strategy And Product Split](docs/strategy-and-product-split.md)
+
+Architecture decisions:
+
 - [ADR-001: Rebuild Core As A Governance Layer](docs/decisions/ADR-001-rebuild-core-as-governance-layer.md)
 - [ADR-002: No Workflow Runtime In Core](docs/decisions/ADR-002-no-workflow-runtime-in-core.md)
 - [ADR-003: Keep Final Execution Outside Core For The Current Stage](docs/decisions/ADR-003-keep-final-execution-outside-core.md)

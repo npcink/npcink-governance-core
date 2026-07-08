@@ -2,6 +2,11 @@
 
 Status: decision-prep research, not an implementation plan.
 
+Authority note: Cross-project reference learning and platform coordination now
+start from `/Users/muze/gitee/npcink-workflow-toolbox/docs/platform/README.md`.
+This Core document is retained as research context; product placement and
+follow-up ownership should be confirmed from the Toolbox platform index.
+
 This document answers a narrow product question:
 
 > For the current Npcink project family, which capabilities already have

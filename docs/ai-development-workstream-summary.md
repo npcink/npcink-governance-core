@@ -2,6 +2,10 @@
 
 Status: active.
 
+Authority note: Cross-project AI development coordination now starts from
+`/Users/muze/gitee/npcink-workflow-toolbox/docs/platform/README.md`. This Core
+document is retained as Core-local workstream history and stop guidance.
+
 This document summarizes the recent AI-development workstreams so future
 maintainers and agents can understand what was done, why it was worth doing,
 and when to continue.

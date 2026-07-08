@@ -2,6 +2,11 @@
 
 Status: active for the local WordPress admin surfaces.
 
+Authority note: Cross-project admin-surface coordination now starts from
+`/Users/muze/gitee/npcink-workflow-toolbox/docs/platform/README.md`. This Core
+document is retained to protect Core's shared-menu expectations; do not expand
+it into a suite product-surface authority.
+
 ## Goal
 
 Npcink plugins share one WordPress admin entry without merging ownership.

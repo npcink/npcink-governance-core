@@ -143,6 +143,10 @@ and merge only after the required gate passes.
 
 ## AI Change Envelope And Cross-Repo Matrix
 
+Cross-project platform coordination now starts from
+`/Users/muze/gitee/npcink-workflow-toolbox/docs/platform/README.md`. Keep this
+document focused on Core-local workflow and Core governance admission rules.
+
 Before AI-assisted edits, write a compact change envelope in the task thread or
 pull request body:
 
@@ -164,10 +168,10 @@ composer test:all
 ```
 
 For multi-repo work or milestone closeout, run the central quality matrix from
-`npcink-toolbox` instead of duplicating the script in this repository:
+`npcink-workflow-toolbox` instead of duplicating the script in this repository:
 
 ```bash
-cd /Users/muze/gitee/npcink-toolbox
+cd /Users/muze/gitee/npcink-workflow-toolbox
 composer quality:matrix
 composer quality:matrix:run
 ```
