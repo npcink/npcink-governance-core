@@ -1,5 +1,27 @@
 # Session Breadcrumb
 
+## 2026-07-08 — Core contract reuse readiness observed
+
+- **Module**: Core proposal, approval, preflight, and audit handoff readiness.
+- **Status**: Active observation found that Core already has the necessary
+  `proposal_handoff` contract for the merged Cloud/Add-on/Toolbox
+  `contract_reuse` stack.
+- **Completed**:
+  - Added `docs/core-contract-reuse-readiness-2026-07-08.md`.
+  - Linked the readiness record from `README.md`.
+  - Added static contract coverage for the role map, no-new-runtime-code
+    conclusion, operation classification evidence, external record-execution
+    boundary, stop rule, and next Toolkit-oriented slice.
+- **Next gate**:
+  - Run `composer test:all`.
+  - Do not add Core functionality for this pass unless that gate exposes a
+    real contract gap.
+- **Boundary**:
+  - This is observation and documentation only. It does not add REST routes,
+    tables, lifecycle states, final execution, workflow runtime, queues,
+    scheduler truth, model routing, provider credentials, Cloud runtime, or
+    product workflow UX.
+
 ## 2026-07-07 — Core audit evidence outcome summary added
 
 - **Module**: Core proposal detail audit-evidence readability.

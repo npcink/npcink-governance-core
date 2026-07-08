@@ -187,6 +187,7 @@ foreach (
 		'AI Development Workstream Summary',
 		'Operation Classification Contract',
 		'Cross-Repo Release Acceptance',
+		'Core Contract Reuse Readiness - 2026-07-08',
 		'Release Candidate Version Matrix',
 		'Reference Plugin Action Plan',
 		'local admin consent with audit',
@@ -209,6 +210,31 @@ foreach (
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $reference_plugin_action_plan, $required ), 'Reference plugin action plan contains required phrase: ' . $required );
+}
+
+$core_contract_reuse_readiness = npcink_governance_core_read( $root . '/docs/core-contract-reuse-readiness-2026-07-08.md' );
+foreach (
+	array(
+		'Core Contract Reuse Readiness',
+		'proposal_handoff',
+		'ability_contracts',
+		'execution_profiles',
+		'product_surface',
+		'signed_transport',
+		'runtime_detail',
+		'No new Core runtime code is needed for this pass.',
+		'preview.operation_classification',
+		'classification=core_proposal_required',
+		'intake_path=core_proposal',
+		'commit_execution=false',
+		'record-execution stores external execution outcomes',
+		'Stop and write a boundary note or ADR',
+		'final WordPress write execution',
+		'npcink-abilities-toolkit',
+		'composer test:all',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $core_contract_reuse_readiness, $required ), 'Core contract reuse readiness contains required phrase: ' . $required );
 }
 
 $wp_readme = npcink_governance_core_read( $root . '/readme.txt' );

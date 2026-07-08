@@ -137,6 +137,7 @@ Read the project handoff docs before starting a new implementation session:
 - [WordPress.org Release Gate](docs/wordpress-org-release-gate.md)
 - [WordPress.org zh_CN Translation Status - 2026-07-03](docs/wordpress-org-zh-cn-translation-status-2026-07-03.md)
 - [Cross-Repo Release Acceptance](docs/cross-repo-release-acceptance.md)
+- [Core Contract Reuse Readiness - 2026-07-08](docs/core-contract-reuse-readiness-2026-07-08.md)
 - [Release Candidate Version Matrix](docs/release-candidate-version-matrix.md)
 - [Release Closeout - 2026-06-21](docs/release-closeout-2026-06-21.md)
 - [Next Stage Plan](docs/next-stage-plan.md)
