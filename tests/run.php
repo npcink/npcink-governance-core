@@ -190,6 +190,7 @@ foreach (
 		'Core Contract Reuse Readiness - 2026-07-08',
 		'Release Candidate Version Matrix',
 		'Reference Plugin Action Plan',
+		'Reference Plugin Evaluation Development Summary - 2026-07-08',
 		'Core Docs Authority Inventory - 2026-07-08',
 		'Cross-project platform',
 		'npcink-workflow-toolbox/docs/platform/README.md',
@@ -237,6 +238,24 @@ foreach (
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $reference_plugin_action_plan, $required ), 'Reference plugin action plan contains required phrase: ' . $required );
+}
+
+$reference_plugin_evaluation_summary = npcink_governance_core_read( $root . '/docs/reference-plugin-evaluation-development-summary-2026-07-08.md' );
+foreach (
+	array(
+		'Reference Plugin Evaluation Development Summary',
+		'pattern sources, not as ownership models',
+		'proposal_handoff',
+		'Core contract-reuse observation showing that no new Core runtime code was',
+		'operation classification',
+		'Does it need `suggestion_only`, `local_admin_consent`,',
+		'second ability registry',
+		'workflow runtime, jobs, tasks, runs, queues, schedulers, workers, or leases',
+		'final WordPress write execution',
+		'central matrix from `npcink-workflow-toolbox`',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $reference_plugin_evaluation_summary, $required ), 'Reference plugin evaluation summary contains required phrase: ' . $required );
 }
 
 $core_contract_reuse_readiness = npcink_governance_core_read( $root . '/docs/core-contract-reuse-readiness-2026-07-08.md' );
