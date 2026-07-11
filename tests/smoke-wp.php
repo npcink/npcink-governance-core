@@ -2322,6 +2322,49 @@ update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTI
 $plan_attachment_title = 'Core Plan Bridge Media Candidate ' . $npcink_governance_core_smoke_run_id;
 $plan_attachment_id    = npcink_governance_core_smoke_create_media_attachment_fixture( $plan_attachment_title );
 npcink_governance_core_smoke_assert( (int) $plan_attachment_id > 0, 'plan bridge media fixture attachment is created' );
+delete_post_meta( (int) $plan_attachment_id, '_wp_attachment_image_alt' );
+
+$media_alt_plan_input = array(
+	'attachment_id'                     => (int) $plan_attachment_id,
+	'alt'                               => 'Reviewed blue square image for the Core smoke test',
+	'expected_current_alt'              => '',
+	'operator_visual_review_confirmed' => true,
+	'review_set_contract'               => 'media_alt_caption_review_set.v1',
+	'source_item_id'                    => 'media-alt-caption:' . (int) $plan_attachment_id,
+	'evidence_refs'                     => array( 'core-smoke-visual-review:' . $npcink_governance_core_smoke_run_id ),
+);
+$media_alt_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-media-alt-apply-plan', $media_alt_plan_input );
+$media_alt_plan_result = npcink_governance_core_smoke_create_proposals_from_plan( 'npcink-abilities-toolkit/build-media-alt-apply-plan', $media_alt_plan, $media_alt_plan_input );
+npcink_governance_core_smoke_assert( 1 === (int) ( $media_alt_plan_result['proposal_count'] ?? 0 ), 'media ALT apply plan generates exactly one Core proposal' );
+$media_alt_plan_proposal = is_array( $media_alt_plan_result['proposals'][0] ?? null ) ? $media_alt_plan_result['proposals'][0] : array();
+npcink_governance_core_smoke_assert_plan_proposal_shape( $media_alt_plan_proposal, 'npcink-abilities-toolkit/update-media-details', true );
+npcink_governance_core_smoke_assert( 'pending' === (string) ( $media_alt_plan_proposal['status'] ?? '' ), 'manual Core policy keeps the media ALT proposal pending' );
+npcink_governance_core_smoke_assert( '' === (string) ( $media_alt_plan_proposal['input']['expected_current_alt'] ?? 'missing' ), 'media ALT proposal preserves the expected empty old value' );
+npcink_governance_core_smoke_assert( true === ( $media_alt_plan_proposal['input']['operator_visual_review_confirmed'] ?? false ), 'media ALT proposal preserves visual review confirmation' );
+npcink_governance_core_smoke_assert( 'media_alt_apply_plan_item' === (string) ( $media_alt_plan_proposal['preview']['media_alt_apply']['artifact_type'] ?? '' ), 'media ALT proposal preserves ALT-only review evidence' );
+$media_alt_audit = npcink_governance_core_smoke_rest(
+	'GET',
+	'/npcink-governance-core/v1/audit',
+	array( 'proposal_id' => (string) ( $media_alt_plan_proposal['proposal_id'] ?? '' ), 'limit' => 20 )
+);
+$media_alt_created_audit = array_values(
+	array_filter(
+		(array) ( $media_alt_audit['items'] ?? array() ),
+		static function ( $item ): bool {
+			return is_array( $item ) && 'proposal.created' === (string) ( $item['event_name'] ?? '' );
+		}
+	)
+);
+$media_alt_audit_evidence = is_array( $media_alt_created_audit[0]['metadata']['media_alt_evidence'] ?? null ) ? $media_alt_created_audit[0]['metadata']['media_alt_evidence'] : array();
+npcink_governance_core_smoke_assert( '' === (string) ( $media_alt_audit_evidence['expected_current_alt'] ?? 'missing' ), 'media ALT proposal audit preserves the empty old value' );
+npcink_governance_core_smoke_assert( 'Reviewed blue square image for the Core smoke test' === (string) ( $media_alt_audit_evidence['proposed_alt'] ?? '' ), 'media ALT proposal audit preserves the reviewed final value' );
+npcink_governance_core_smoke_assert( '' !== (string) ( $media_alt_audit_evidence['idempotency_key'] ?? '' ), 'media ALT proposal audit preserves the idempotency key' );
+$media_alt_preflight = npcink_governance_core_smoke_approve_and_preflight_plan_proposal( (string) ( $media_alt_plan_proposal['proposal_id'] ?? '' ) );
+npcink_governance_core_smoke_assert( true === (bool) ( $media_alt_preflight['proposal_item_preflight']['media_alt_guard']['valid'] ?? false ), 'Core preflight revalidates the approved media ALT evidence contract' );
+npcink_governance_core_smoke_assert( true === (bool) ( $media_alt_preflight['proposal_item_preflight']['media_alt_guard']['requires_live_value_check'] ?? false ), 'Core preflight requires Adapter and Toolkit to recheck the live ALT value' );
+$media_alt_dry_run = npcink_governance_core_smoke_run_external_ability_dry_run( 'npcink-abilities-toolkit/update-media-details', (array) ( $media_alt_plan_proposal['input'] ?? array() ) );
+npcink_governance_core_smoke_assert( true === (bool) ( $media_alt_dry_run['dry_run'] ?? false ), 'Toolkit executes the approved media ALT input as a dry run before commit' );
+npcink_governance_core_smoke_assert( '' === (string) get_post_meta( (int) $plan_attachment_id, '_wp_attachment_image_alt', true ), 'media ALT plan, Core proposal, preflight, and Toolkit dry run leave attachment ALT unchanged' );
 
 $media_plan_input = array(
 	'attachment_ids'  => array( (int) $plan_attachment_id ),

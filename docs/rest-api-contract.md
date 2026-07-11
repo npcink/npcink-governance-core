@@ -578,7 +578,7 @@ Proposal rows include policy fields:
 
 | Name | Type | Notes |
 | --- | --- | --- |
-| `policy_decision` | string | Defaults to `manual_required`. `smart_guarded` may return `auto_approved` only for trusted test cleanup trash-post batches, single draft-only create-draft proposals, guarded article-audio adoptions, single reviewed media derivative adoption proposals, and reviewed ALT-only media detail proposals. `dev_allow_all` may return `auto_approved` only in explicit local development mode. Reserved values are `manual_required`, `auto_approved`, and `blocked`. |
+| `policy_decision` | string | Defaults to `manual_required`. `smart_guarded` may return `auto_approved` only for trusted test cleanup trash-post batches, single draft-only create-draft proposals, guarded article-audio adoptions, single reviewed media derivative adoption proposals, and reviewed missing-ALT `media_alt_apply_plan.v1` proposals. `dev_allow_all` may return `auto_approved` only in explicit local development mode. Reserved values are `manual_required`, `auto_approved`, and `blocked`. |
 | `policy_profile` | string | Defaults to `manual`. `smart_guarded` and `dev_allow_all` candidate evaluation may return `guarded`; auto approval returns `trusted_local`. Reserved profiles are `manual`, `guarded`, `trusted_local`, and `break_glass`. |
 | `policy_version` | string | Current value is `core-approval-policy-v1`. |
 | `policy_reasons` | array | Stable, sanitized reason keys. |
@@ -817,6 +817,7 @@ abilities:
 - `npcink-toolbox/build-site-knowledge-review-plan`
 - `npcink-toolbox/build-nightly-inspection-review-plan`
 - `npcink-abilities-toolkit/build-content-metadata-apply-plan`
+- `npcink-abilities-toolkit/build-media-alt-apply-plan`
 
 Permission: `manage_options` or app scope `proposals:create`.
 
@@ -917,6 +918,15 @@ Accepted plan-generated proposals also receive
 `preview.operation_classification` from the shared Core proposal intake path, so
 the stored proposal has both the plan-specific preview evidence and a stable
 Core proposal classification envelope.
+
+For `npcink-abilities-toolkit/build-media-alt-apply-plan`, the plan must declare
+`media_alt_apply_plan.v1`, `proposal_mode=single`, and exactly one dry-run,
+non-commit `update-media-details` action. Core requires an explicitly empty
+`expected_current_alt`, `operator_visual_review_confirmed=true`, an ALT-only
+field set, a stable idempotency key, image MIME evidence, and matching
+`media_alt_caption_review_set.v1` review evidence. Non-empty current ALT,
+caption/title/description/source fields, mismatched evidence, or missing visual
+confirmation are rejected before proposal creation.
 
 For `npcink-abilities-toolkit/build-media-optimization-plan`, the plan must declare
 `artifact_type=media_optimization_plan`, `proposal_mode=batch`,

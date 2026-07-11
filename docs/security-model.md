@@ -135,8 +135,8 @@ The approval policy evaluator defaults to `manual`, records `manual_required`
 for every proposal, and writes `proposal.policy_evaluated`. `smart_guarded`
 may auto-approve only trusted test cleanup trash-post batches, single
 draft-only create-draft proposals, guarded article-audio adoptions, single
-reviewed media derivative adoption proposals, and reviewed ALT-only media
-detail proposals when explicit caller/app
+reviewed media derivative adoption proposals, and reviewed missing-ALT
+`media_alt_apply_plan.v1` proposals when explicit caller/app
 authorization, persisted evidence, quota, and audit checks pass. `dev_allow_all` is
 local-development only, requires
 `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL`, caller approval authority,
@@ -149,8 +149,9 @@ cannot be written, Core fails closed and deletes the created proposal row; if
 auto-approval audit cannot be written, the proposal is not left approved.
 
 Auto approval allowlist: trusted test cleanup trash-post batches, single
-draft-only create-draft proposals, guarded article-audio adoptions, and single
-reviewed media derivative adoption proposals.
+draft-only create-draft proposals, guarded article-audio adoptions, single
+reviewed media derivative adoption proposals, and single reviewed missing-ALT
+`media_alt_apply_plan.v1` proposals.
 
 Commit preflight returns Core-generated approval-commit context without running
 the target ability. Final write or destructive execution must require that

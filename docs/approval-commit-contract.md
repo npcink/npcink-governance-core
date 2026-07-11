@@ -53,6 +53,9 @@ Preflight must:
 - return `contract_preflight` and `permission_preflight` on success;
 - return `proposal_item_preflight` describing executable, blocked, warning, and
   needs-input state;
+- for `media_alt_apply_plan.v1`, return `media_alt_guard` proving the approved
+  input still matches saved missing-ALT evidence and requiring Adapter to run
+  the Toolkit live-value dry run before commit;
 - return `execution_handoff` so Adapter can route final execution without
   treating Core as the executor;
 - return a `correlation_id` in the response and

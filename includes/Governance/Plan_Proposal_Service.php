@@ -45,6 +45,7 @@ final class Plan_Proposal_Service {
 		'npcink-toolbox/build-site-knowledge-review-plan'                    => true,
 		'npcink-toolbox/build-nightly-inspection-review-plan'                => true,
 		'npcink-abilities-toolkit/build-content-metadata-apply-plan'         => true,
+		'npcink-abilities-toolkit/build-media-alt-apply-plan'               => true,
 	);
 
 	private const ARTICLE_BATCH_MAX_ACTIONS = 5;
@@ -191,6 +192,13 @@ final class Plan_Proposal_Service {
 			$content_metadata_contract_error = $this->validate_content_metadata_apply_plan_contract( $plan );
 			if ( is_wp_error( $content_metadata_contract_error ) ) {
 				return $content_metadata_contract_error;
+			}
+		}
+
+		if ( 'npcink-abilities-toolkit/build-media-alt-apply-plan' === $plan_ability_id ) {
+			$media_alt_contract_error = $this->validate_media_alt_apply_plan_contract( $plan );
+			if ( is_wp_error( $media_alt_contract_error ) ) {
+				return $media_alt_contract_error;
 			}
 		}
 
@@ -1067,6 +1075,75 @@ final class Plan_Proposal_Service {
 				__( 'Nightly Inspection review action input must remain dry-run and must not request commit.', 'npcink-governance-core' ),
 				array( 'status' => 422 )
 			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validates one Toolkit missing-ALT apply plan.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_media_alt_apply_plan_contract( array $plan ) {
+		if ( 'media_alt_apply_plan' !== sanitize_key( (string) ( $plan['artifact_type'] ?? '' ) ) || 'media_alt_apply_plan.v1' !== (string) ( $plan['contract_version'] ?? '' ) ) {
+			return new WP_Error( 'npcink_governance_core_media_alt_plan_invalid', __( 'Media ALT apply plans must declare media_alt_apply_plan.v1.', 'npcink-governance-core' ), array( 'status' => 422 ) );
+		}
+		if ( true === (bool) ( $plan['direct_wordpress_write'] ?? false ) || true !== (bool) ( $plan['dry_run'] ?? false ) || false !== (bool) ( $plan['commit_execution'] ?? true ) ) {
+			return new WP_Error( 'npcink_governance_core_media_alt_plan_write_posture_rejected', __( 'Media ALT apply plans must remain dry-run and must not claim execution or direct write authority.', 'npcink-governance-core' ), array( 'status' => 422 ) );
+		}
+		if ( 'single' !== sanitize_key( (string) ( $plan['proposal_mode'] ?? '' ) ) ) {
+			return new WP_Error( 'npcink_governance_core_media_alt_plan_single_required', __( 'Media ALT apply plans must contain one independently reviewed attachment.', 'npcink-governance-core' ), array( 'status' => 422 ) );
+		}
+		$authorization = is_array( $plan['authorization'] ?? null ) ? $plan['authorization'] : array();
+		if ( 'core_proposal_required' !== sanitize_key( (string) ( $authorization['classification'] ?? '' ) ) ) {
+			return new WP_Error( 'npcink_governance_core_media_alt_authorization_rejected', __( 'Media ALT apply plans must classify the write as Core proposal required.', 'npcink-governance-core' ), array( 'status' => 422 ) );
+		}
+
+		$actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		if ( 1 !== count( $actions ) || ! is_array( $actions[0] ?? null ) ) {
+			return new WP_Error( 'npcink_governance_core_media_alt_action_count_rejected', __( 'Media ALT apply plans must contain exactly one write action.', 'npcink-governance-core' ), array( 'status' => 422 ) );
+		}
+		$action = $actions[0];
+		if ( 'npcink-abilities-toolkit/update-media-details' !== sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) ) ) {
+			return new WP_Error( 'npcink_governance_core_media_alt_target_rejected', __( 'Media ALT apply plans may target only update-media-details.', 'npcink-governance-core' ), array( 'status' => 422 ) );
+		}
+		if ( true !== ( $action['requires_approval'] ?? false ) || false !== ( $action['commit_execution'] ?? true ) || false === (bool) ( $action['proposal_ready'] ?? false ) ) {
+			return new WP_Error( 'npcink_governance_core_media_alt_action_posture_rejected', __( 'Media ALT apply actions must be proposal-ready, require approval, and remain non-executing.', 'npcink-governance-core' ), array( 'status' => 422 ) );
+		}
+
+		$input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+		$allowed_input_keys = array_fill_keys( array( 'attachment_id', 'alt', 'expected_current_alt', 'operator_visual_review_confirmed', 'dry_run', 'commit', 'idempotency_key' ), true );
+		foreach ( array_keys( $input ) as $key ) {
+			if ( ! isset( $allowed_input_keys[ (string) $key ] ) ) {
+				return new WP_Error( 'npcink_governance_core_media_alt_input_key_rejected', __( 'Media ALT apply input contains a field outside the ALT-only contract.', 'npcink-governance-core' ), array( 'status' => 422, 'field' => (string) $key ) );
+			}
+		}
+		$attachment_id = absint( $input['attachment_id'] ?? 0 );
+		$alt           = trim( sanitize_text_field( (string) ( $input['alt'] ?? '' ) ) );
+		if ( $attachment_id <= 0 || strlen( $alt ) < 3 || strlen( $alt ) > 160 || preg_match( '/https?:\/\/|generated\s+by|prompt\s*:|model\s*:|provider\s*:|profile\s*:/i', $alt ) ) {
+			return new WP_Error( 'npcink_governance_core_media_alt_input_rejected', __( 'Media ALT apply input requires one attachment and one concise reviewed ALT.', 'npcink-governance-core' ), array( 'status' => 422 ) );
+		}
+		if ( ! array_key_exists( 'expected_current_alt', $input ) || '' !== (string) $input['expected_current_alt'] ) {
+			return new WP_Error( 'npcink_governance_core_media_alt_missing_only', __( 'The first media ALT apply contract accepts only an explicitly empty expected current ALT.', 'npcink-governance-core' ), array( 'status' => 422 ) );
+		}
+		if ( true !== ( $input['operator_visual_review_confirmed'] ?? false ) ) {
+			return new WP_Error( 'npcink_governance_core_media_alt_visual_confirmation_required', __( 'Media ALT apply input requires explicit operator visual confirmation.', 'npcink-governance-core' ), array( 'status' => 422 ) );
+		}
+		if ( true !== ( $input['dry_run'] ?? false ) || false !== ( $input['commit'] ?? true ) || '' === trim( sanitize_text_field( (string) ( $input['idempotency_key'] ?? '' ) ) ) ) {
+			return new WP_Error( 'npcink_governance_core_media_alt_controls_rejected', __( 'Media ALT apply input must stay dry-run, non-commit, and include an idempotency key.', 'npcink-governance-core' ), array( 'status' => 422 ) );
+		}
+
+		$evidence = is_array( $action['preview'] ?? null ) ? $action['preview'] : array();
+		if ( 'media_alt_apply_plan_item' !== sanitize_key( (string) ( $evidence['artifact_type'] ?? '' ) ) || 'media_alt_apply_plan.v1' !== (string) ( $evidence['contract_version'] ?? '' ) || 'media_alt_caption_review_set.v1' !== (string) ( $evidence['review_set_contract'] ?? '' ) ) {
+			return new WP_Error( 'npcink_governance_core_media_alt_evidence_contract_rejected', __( 'Media ALT apply actions must preserve the reviewed ALT plan and review-set contracts.', 'npcink-governance-core' ), array( 'status' => 422 ) );
+		}
+		if ( absint( $evidence['attachment_id'] ?? 0 ) !== $attachment_id || '' !== (string) ( $evidence['expected_current_alt'] ?? '' ) || 'missing' !== sanitize_key( (string) ( $evidence['current_alt_status'] ?? '' ) ) || true !== ( $evidence['operator_reviewed'] ?? false ) || true !== ( $evidence['operator_visual_review_confirmed'] ?? false ) || sanitize_text_field( (string) ( $evidence['proposed_alt'] ?? '' ) ) !== $alt ) {
+			return new WP_Error( 'npcink_governance_core_media_alt_evidence_mismatch', __( 'Media ALT review evidence does not match the guarded write input.', 'npcink-governance-core' ), array( 'status' => 422 ) );
+		}
+		if ( 0 !== strpos( sanitize_text_field( (string) ( $evidence['mime_type'] ?? '' ) ), 'image/' ) ) {
+			return new WP_Error( 'npcink_governance_core_media_alt_image_required', __( 'Media ALT apply evidence must identify an image attachment.', 'npcink-governance-core' ), array( 'status' => 422 ) );
 		}
 
 		return true;
@@ -3553,6 +3630,10 @@ final class Plan_Proposal_Service {
 		$requires_input = array_values( array_map( 'sanitize_key', (array) ( $action['requires_input'] ?? array() ) ) );
 		$risk           = $this->action_risk( $action, $target, $plan_risk );
 		$matched_preview = $this->matching_preview_row( $preview_rows, $input );
+		$action_preview  = is_array( $action['preview'] ?? null ) ? $this->sanitize_payload( $action['preview'] ) : array();
+		if ( ! empty( $action_preview ) ) {
+			$matched_preview = array_merge( $matched_preview, $action_preview );
+		}
 		$proposal_ready = array_key_exists( 'proposal_ready', $action ) ? (bool) $action['proposal_ready'] : empty( $requires_input );
 		$preflight_blockers = array();
 		if ( ! empty( $requires_input ) ) {
@@ -3644,6 +3725,9 @@ final class Plan_Proposal_Service {
 		}
 		if ( 'npcink-abilities-toolkit/build-content-metadata-apply-plan' === $plan_ability_id ) {
 			$preview['content_metadata_apply'] = $this->content_metadata_apply_preview( $plan );
+		}
+		if ( 'npcink-abilities-toolkit/build-media-alt-apply-plan' === $plan_ability_id ) {
+			$preview['media_alt_apply'] = $matched_preview;
 		}
 		if ( 'npcink-abilities-toolkit/build-article-audio-adoption-plan' === $plan_ability_id ) {
 			$preview['article_audio_adoption'] = $this->article_audio_adoption_preview( $plan );

@@ -1,5 +1,24 @@
 # Session Breadcrumb
 
+## 2026-07-11 — Missing media ALT governance contract accepted
+
+- **Module**: Plan-to-proposal intake, approval policy, commit preflight, and
+  audit evidence for `media_alt_apply_plan.v1`.
+- **Completed**:
+  - allowlisted and strictly validated the Toolkit missing-ALT planner;
+  - preserved expected old value, visual confirmation, plan evidence, and
+    idempotency key in ordinary Core proposals;
+  - narrowed optional `smart_guarded` ALT approval to the missing-only v1
+    contract;
+  - added preflight evidence consistency and an explicit Adapter/Toolkit live
+    value check requirement;
+  - passed static, fail-closed, PHPStan, and real WordPress smoke gates.
+- **Next gate**: Adapter must constrain the execution profile and run the
+  Toolkit dry-run immediately before commit. Core must not execute the media
+  write or copy attachment truth.
+- **Boundary**: No new route, table, lifecycle state, workflow runtime, queue,
+  media UI, or final WordPress execution was added.
+
 ## 2026-07-08 — Reference plugin evaluation development summary recorded
 
 - **Module**: Core-local documentation for reference-plugin learning and next
