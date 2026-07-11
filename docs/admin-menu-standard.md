@@ -9,9 +9,10 @@ it into a suite product-surface authority.
 
 ## Goal
 
-Npcink plugins share one WordPress admin entry without merging ownership.
-The top-level menu is a navigation shell only. Each plugin keeps its own
-runtime, settings, data, and capability boundary.
+Npcink plugins may share one WordPress admin entry without merging ownership.
+The top-level menu is a navigation shell only and is created exclusively by
+`npcink-workflow-toolbox`. Each plugin keeps its own runtime, settings, data,
+capability boundary, and standalone WordPress entry.
 
 ## Top-Level Menu
 
@@ -23,14 +24,15 @@ All Npcink operator surfaces should use:
 - icon: `dashicons-superhero`
 - position: `58`
 
-Each plugin that exposes a Npcink operator surface may ensure the parent
-menu exists, but it must first check the global admin menu and avoid registering
-a duplicate parent.
+Only `npcink-workflow-toolbox` may register this parent and its Overview.
+Core, Adapter, Abilities, and Cloud Addon may attach a submenu when the parent
+exists, but must not create a replacement suite Overview.
 
-Host plugins should use stable `admin_menu` priorities so submenu order does
-not depend on plugin activation order: Core at 10, Adapter at 20, Abilities at
-40, Workflow Toolbox at 45, and Cloud Addon at 50. `npcink-abilities-toolkit` keeps its standalone
-`Tools -> Abilities API Packages` fallback when no shared parent menu exists.
+Toolbox registers the parent at priority 5. Consumer plugins use stable
+`admin_menu` priorities so submenu order does not depend on plugin activation
+order: Core at 10, Adapter at 20, Abilities at 40, Workflow Toolbox at 45, and
+Cloud Addon at 50. Without Toolbox, Core and Abilities use Tools fallbacks;
+Adapter and Cloud Addon use Settings fallbacks.
 
 The parent page is `Overview`. It must stay shallow: show orientation and point
 operators to installed submenu entries. It must not duplicate governance,
@@ -58,9 +60,9 @@ wp-admin labels as shown below.
   define abilities, or own proposal/approval truth.
 - Cloud Addon remains a thin connector. It must not become a billing, router,
   prompt, preset, queue, scheduler, workflow, or WordPress write control plane.
-- Abilities remains an independent WordPress Abilities API package plugin.
-  When the Npcink parent menu exists, it may attach there. When installed
-  alone, it should keep a `Tools -> Abilities API Packages` fallback.
+- Every component remains independently installable. When the Toolbox parent
+  exists it may attach there; otherwise it must keep its native Tools or
+  Settings fallback.
 
 ## Documentation Rule
 
@@ -80,5 +82,6 @@ Simplified Chinese user-facing docs should refer to these admin paths:
 - `Npcink AI -> 流程工具箱`
 - `Npcink AI -> 云端扩展`
 
-Only the standalone Abilities fallback should mention
-`Tools -> Abilities API Packages`.
+Standalone paths are `Tools -> Npcink Governance Core`,
+`Settings -> Npcink AI Client Adapter`, `Tools -> Abilities API Packages`, and
+`Settings -> Npcink Cloud Addon`.

@@ -233,11 +233,16 @@ final class Plugin {
 	 * @return array<int|string,string>
 	 */
 	public function filter_plugin_action_links( array $links ): array {
+		$settings_url = menu_page_url( 'npcink-governance-core', false );
+		if ( '' === $settings_url ) {
+			$settings_url = admin_url( 'tools.php?page=npcink-governance-core' );
+		}
+
 		array_unshift(
 			$links,
 			sprintf(
 				'<a href="%1$s">%2$s</a>',
-				esc_url( admin_url( 'admin.php?page=npcink-governance-core' ) ),
+				esc_url( $settings_url ),
 				esc_html__( 'Settings', 'npcink-governance-core' )
 			)
 		);

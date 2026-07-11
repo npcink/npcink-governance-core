@@ -119,16 +119,25 @@ final class Admin_Page {
 	 * @return void
 	 */
 	public function add_menu(): void {
-		$this->ensure_parent_menu();
+		if ( $this->has_parent_menu() ) {
+			add_submenu_page(
+				self::PARENT_MENU_SLUG,
+				__( 'Npcink Governance Core', 'npcink-governance-core' ),
+				__( 'Core', 'npcink-governance-core' ),
+				self::MENU_CAPABILITY,
+				self::MENU_SLUG,
+				array( $this, 'render' ),
+				10
+			);
+			return;
+		}
 
-		add_submenu_page(
-			self::PARENT_MENU_SLUG,
+		add_management_page(
 			__( 'Npcink Governance Core', 'npcink-governance-core' ),
-			__( 'Core', 'npcink-governance-core' ),
+			__( 'Npcink Governance Core', 'npcink-governance-core' ),
 			self::MENU_CAPABILITY,
 			self::MENU_SLUG,
-			array( $this, 'render' ),
-			10
+			array( $this, 'render' )
 		);
 	}
 
@@ -160,37 +169,6 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Ensures the shared Npcink parent menu exists.
-	 *
-	 * @return void
-	 */
-	private function ensure_parent_menu(): void {
-		if ( $this->has_parent_menu() ) {
-			return;
-		}
-
-		add_menu_page(
-			__( 'Npcink AI', 'npcink-governance-core' ),
-			__( 'Npcink AI', 'npcink-governance-core' ),
-			self::MENU_CAPABILITY,
-			self::PARENT_MENU_SLUG,
-			array( $this, 'render_overview' ),
-			'dashicons-superhero',
-			58
-		);
-
-		add_submenu_page(
-			self::PARENT_MENU_SLUG,
-			__( 'Npcink AI Overview', 'npcink-governance-core' ),
-			__( 'Overview', 'npcink-governance-core' ),
-			self::MENU_CAPABILITY,
-			self::PARENT_MENU_SLUG,
-			array( $this, 'render_overview' ),
-			0
-		);
-	}
-
-	/**
 	 * Returns whether another Npcink plugin already created the parent menu.
 	 *
 	 * @return bool
@@ -200,77 +178,6 @@ final class Admin_Page {
 
 		foreach ( (array) $menu as $item ) {
 			if ( isset( $item[2] ) && self::PARENT_MENU_SLUG === $item[2] ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Renders the shared Npcink overview page.
-	 *
-	 * @return void
-	 */
-	public function render_overview(): void {
-		if ( ! current_user_can( self::MENU_CAPABILITY ) ) {
-			wp_die( esc_html__( 'You do not have permission to access this page.', 'npcink-governance-core' ) );
-		}
-		?>
-		<div class="wrap">
-			<h1><?php echo esc_html__( 'Npcink AI', 'npcink-governance-core' ); ?></h1>
-			<p><?php echo esc_html__( 'Local WordPress entry points for Npcink governance, connections, cloud connection pointers, and ability packages.', 'npcink-governance-core' ); ?></p>
-			<h2><?php echo esc_html__( 'Installed Surfaces', 'npcink-governance-core' ); ?></h2>
-			<table class="widefat striped npcink-governance-core-table-narrow npcink-governance-core-overview-table">
-				<tbody>
-					<?php
-					$this->render_overview_row( __( 'Core', 'npcink-governance-core' ), __( 'Review proposals, approval decisions, commit preflight, audit, and client access tokens.', 'npcink-governance-core' ), self::MENU_SLUG );
-					$this->render_overview_row( __( 'Adapter', 'npcink-governance-core' ), __( 'Connect OpenClaw through the Adapter surface.', 'npcink-governance-core' ), 'npcink-ai-client-adapter' );
-					$this->render_overview_row( __( 'Abilities', 'npcink-governance-core' ), __( 'Verify WordPress Abilities API packages and demo ability controls.', 'npcink-governance-core' ), 'npcink-abilities-toolkit' );
-					$this->render_overview_row( __( 'Workflow Toolbox', 'npcink-governance-core' ), __( 'Open fixed review-only workflow buttons for site checks, image handling, and governed handoffs.', 'npcink-governance-core' ), 'npcink-toolbox' );
-					$this->render_overview_row( __( 'Cloud Addon', 'npcink-governance-core' ), __( 'Connect this site to cloud services without moving local control-plane truth.', 'npcink-governance-core' ), 'npcink-cloud-addon' );
-					?>
-				</tbody>
-			</table>
-		</div>
-		<?php
-	}
-
-	/**
-	 * Renders one overview row.
-	 *
-	 * @param string $label       Row label.
-	 * @param string $description Row description.
-	 * @param string $slug        Menu page slug.
-	 * @return void
-	 */
-	private function render_overview_row( string $label, string $description, string $slug ): void {
-		?>
-		<tr>
-			<th scope="row"><?php echo esc_html( $label ); ?></th>
-			<td><?php echo esc_html( $description ); ?></td>
-			<td>
-				<?php if ( $this->is_submenu_registered( $slug ) ) : ?>
-					<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=' . $slug ) ); ?>"><?php echo esc_html__( 'Open', 'npcink-governance-core' ); ?></a>
-				<?php else : ?>
-					<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Not installed', 'npcink-governance-core' ); ?></span>
-				<?php endif; ?>
-			</td>
-		</tr>
-		<?php
-	}
-
-	/**
-	 * Returns whether a Npcink submenu has been registered.
-	 *
-	 * @param string $slug Menu page slug.
-	 * @return bool
-	 */
-	private function is_submenu_registered( string $slug ): bool {
-		global $submenu;
-
-		foreach ( (array) ( $submenu[ self::PARENT_MENU_SLUG ] ?? array() ) as $item ) {
-			if ( isset( $item[2] ) && $slug === $item[2] ) {
 				return true;
 			}
 		}
@@ -466,7 +373,7 @@ final class Admin_Page {
 				<strong><?php echo esc_html__( 'Proposal lookup', 'npcink-governance-core' ); ?></strong>
 				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Open a Core proposal by display ID or full proposal ID.', 'npcink-governance-core' ); ?></span>
 			</div>
-			<form class="npcink-governance-core-inline-actions" method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>">
+			<form class="npcink-governance-core-inline-actions" method="get" action="<?php echo esc_url( $this->admin_base_url() ); ?>">
 				<input type="hidden" name="page" value="<?php echo esc_attr( self::MENU_SLUG ); ?>" />
 				<label for="npcink-governance-core-proposal-lookup" class="screen-reader-text"><?php echo esc_html__( 'Proposal ID', 'npcink-governance-core' ); ?></label>
 				<input id="npcink-governance-core-proposal-lookup" class="regular-text" type="text" name="proposal_id" value="<?php echo esc_attr( $lookup_id ); ?>" placeholder="P-1234ABCD-EF90" />
@@ -5233,8 +5140,17 @@ final class Admin_Page {
 				),
 				$args
 			),
-			admin_url( 'admin.php' )
+			$this->admin_base_url()
 		);
+	}
+
+	/**
+	 * Returns the active parent URL for the Core page.
+	 *
+	 * @return string
+	 */
+	private function admin_base_url(): string {
+		return admin_url( defined( 'NPCINK_TOOLBOX_VERSION' ) ? 'admin.php' : 'tools.php' );
 	}
 
 	/**
