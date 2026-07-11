@@ -43,4 +43,3 @@ Core does not read or mutate attachment metadata during preflight. Adapter must
 run the Toolkit dry-run immediately before commit; Toolkit compares the live
 attachment ALT with `expected_current_alt` and rejects drift with a stable
 conflict error. Final execution and rollback remain outside Core.
-
