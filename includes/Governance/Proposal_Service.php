@@ -242,17 +242,49 @@ final class Proposal_Service {
 	 * @return array<string,mixed>
 	 */
 	private function policy_audit_metadata( array $proposal, array $policy, bool $auto_approval_applied ): array {
+		return array_merge(
+			array(
+				'ability_id'            => (string) ( $proposal['ability_id'] ?? '' ),
+				'status'                => (string) ( $proposal['status'] ?? '' ),
+				'policy_decision'       => (string) ( $policy['policy_decision'] ?? Approval_Policy_Evaluator::DECISION_MANUAL_REQUIRED ),
+				'policy_profile'        => (string) ( $policy['policy_profile'] ?? Approval_Policy_Evaluator::PROFILE_MANUAL ),
+				'policy_version'        => (string) ( $policy['policy_version'] ?? Approval_Policy_Evaluator::VERSION ),
+				'policy_mode'           => sanitize_key( (string) ( $policy['policy_mode'] ?? Approval_Policy_Evaluator::MODE_MANUAL ) ),
+				'policy_reasons'        => array_values( array_map( 'sanitize_key', (array) ( $policy['policy_reasons'] ?? array() ) ) ),
+				'auto_approval_quota'   => $this->auto_approval_quota_audit_metadata( is_array( $policy['auto_approval_quota'] ?? null ) ? $policy['auto_approval_quota'] : array() ),
+				'auto_approval_applied' => $auto_approval_applied,
+				'commit_execution'      => false,
+			),
+			$this->media_alt_audit_metadata( $proposal )
+		);
+	}
+
+	/**
+	 * Returns bounded missing-ALT evidence for proposal lifecycle audit rows.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return array<string,mixed>
+	 */
+	private function media_alt_audit_metadata( array $proposal ): array {
+		$preview  = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
+		$evidence = is_array( $preview['media_alt_apply'] ?? null ) ? $preview['media_alt_apply'] : array();
+		if ( 'media_alt_apply_plan_item' !== sanitize_key( (string) ( $evidence['artifact_type'] ?? '' ) ) ) {
+			return array();
+		}
+		$input = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
+
 		return array(
-			'ability_id'             => (string) ( $proposal['ability_id'] ?? '' ),
-			'status'                 => (string) ( $proposal['status'] ?? '' ),
-			'policy_decision'        => (string) ( $policy['policy_decision'] ?? Approval_Policy_Evaluator::DECISION_MANUAL_REQUIRED ),
-			'policy_profile'         => (string) ( $policy['policy_profile'] ?? Approval_Policy_Evaluator::PROFILE_MANUAL ),
-			'policy_version'         => (string) ( $policy['policy_version'] ?? Approval_Policy_Evaluator::VERSION ),
-			'policy_mode'            => sanitize_key( (string) ( $policy['policy_mode'] ?? Approval_Policy_Evaluator::MODE_MANUAL ) ),
-			'policy_reasons'         => array_values( array_map( 'sanitize_key', (array) ( $policy['policy_reasons'] ?? array() ) ) ),
-			'auto_approval_quota'    => $this->auto_approval_quota_audit_metadata( is_array( $policy['auto_approval_quota'] ?? null ) ? $policy['auto_approval_quota'] : array() ),
-			'auto_approval_applied'  => $auto_approval_applied,
-			'commit_execution'       => false,
+			'media_alt_evidence' => array(
+				'contract_version'                 => sanitize_text_field( (string) ( $evidence['contract_version'] ?? '' ) ),
+				'review_set_contract'              => sanitize_text_field( (string) ( $evidence['review_set_contract'] ?? '' ) ),
+				'source_item_id'                   => sanitize_text_field( (string) ( $evidence['source_item_id'] ?? '' ) ),
+				'attachment_id'                    => absint( $input['attachment_id'] ?? 0 ),
+				'expected_current_alt'             => (string) ( $input['expected_current_alt'] ?? '' ),
+				'proposed_alt'                     => sanitize_text_field( (string) ( $input['alt'] ?? '' ) ),
+				'operator_visual_review_confirmed' => true === ( $input['operator_visual_review_confirmed'] ?? false ),
+				'idempotency_key'                  => sanitize_text_field( (string) ( $input['idempotency_key'] ?? '' ) ),
+				'evidence_refs'                    => array_values( array_map( 'sanitize_text_field', array_slice( (array) ( $evidence['evidence_refs'] ?? array() ), 0, 20 ) ) ),
+			),
 		);
 	}
 

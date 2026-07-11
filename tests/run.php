@@ -592,6 +592,10 @@ foreach (
 		'ordered batch proposal',
 		'npcink-toolbox/build-article-batch-write-plan',
 		'npcink-abilities-toolkit/build-media-optimization-plan',
+		'npcink-abilities-toolkit/build-media-alt-apply-plan',
+		'media_alt_apply_plan.v1',
+		'operator_visual_review_confirmed',
+		'expected_current_alt',
 		'npcink-abilities-toolkit/build-media-adoption-enhancement-plan',
 		'npcink-abilities-toolkit/build-media-rename-plan',
 		'article_batch_write_plan',
@@ -2172,6 +2176,7 @@ npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_gove
 npcink_governance_core_assert( false !== strpos( $proposal_service, '$this->abilities->find' ), 'Proposal service validates against ability intake.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_proposal_audit_failed' ), 'Proposal service fails closed when creation audit fails.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'npcink_governance_core_proposal_decision_audit_failed' ), 'Proposal service fails closed when decision audit fails.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service, 'media_alt_audit_metadata' ) && false !== strpos( $proposal_service, "'media_alt_evidence'") && false !== strpos( $proposal_service, "'expected_current_alt'") && false !== strpos( $proposal_service, "'proposed_alt'") && false !== strpos( $proposal_service, "'idempotency_key'"), 'Proposal lifecycle audit preserves bounded missing-ALT old value, final value, and idempotency evidence.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'audit_failed_error' ), 'Proposal service uses stable audit failure errors.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'update_status_when( $proposal_id, $status, (string) $existing' ), 'Proposal service rolls back decision status when audit fails.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service, 'update_status_when( $proposal_id, Proposal_Repository::STATUS_APPROVED, Proposal_Repository::STATUS_PENDING' ), 'Proposal service rolls back auto approval status when audit fails.' );
@@ -2206,6 +2211,7 @@ npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'new
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'proposal_item_preflight' ), 'Commit preflight evaluates proposal item readiness.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'batch_review_summary' ), 'Commit preflight returns batch review summary when a proposal has one.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'batch_review_summary_preflight' ), 'Commit preflight bounds batch review summary response shape.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'media_alt_guard_preflight' ) && false !== strpos( $commit_preflight_service, 'requires_live_value_check' ) && false !== strpos( $commit_preflight_service, 'adapter_toolkit_dry_run_before_commit' ), 'Commit preflight preserves the media ALT evidence guard and delegates live-value truth to Adapter and Toolkit.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'npcink_governance_core_proposal_items_blocked' ), 'Commit preflight blocks incomplete proposal items.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'execution_handoff' ), 'Commit preflight returns adapter execution handoff.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'adapter_after_core_preflight' ), 'Commit preflight handoff points execution to Adapter.' );
@@ -2236,6 +2242,7 @@ foreach (
 		'npcink-toolbox/build-site-knowledge-review-plan',
 		'npcink-toolbox/build-nightly-inspection-review-plan',
 		'npcink-abilities-toolkit/build-content-metadata-apply-plan',
+		'npcink-abilities-toolkit/build-media-alt-apply-plan',
 		'proposal.plan_ingested',
 		'npcink-abilities-toolkit/delete-media-permanently',
 		'destructive_media_delete_not_explicitly_included',
@@ -2247,6 +2254,7 @@ foreach (
 		'validate_site_knowledge_review_plan_contract',
 		'validate_nightly_inspection_review_plan_contract',
 		'validate_content_metadata_apply_plan_contract',
+		'validate_media_alt_apply_plan_contract',
 		'validate_media_optimization_plan_contract',
 		'validate_media_adoption_enhancement_plan_contract',
 		'validate_media_rename_plan_contract',
@@ -2280,6 +2288,9 @@ foreach (
 		'nightly_site_inspection_review_plan',
 		'nightly_site_inspection_core_review_plan.v1',
 		'content_metadata_apply_plan',
+		'media_alt_apply_plan.v1',
+		'expected_current_alt',
+		'operator_visual_review_confirmed',
 		'image_candidate.v1',
 		'npcink_governance_core_site_knowledge_ready_rejected',
 		'npcink_governance_core_site_knowledge_evidence_missing',
@@ -2415,6 +2426,7 @@ npcink_governance_core_assert( false !== strpos( $testing_strategy, 'Proposal an
 npcink_governance_core_assert( false !== strpos( $development_workflow, 'NPCINK_GOVERNANCE_CORE_SMOKE_PURGE=1' ), 'Development workflow documents optional smoke purge.' );
 
 $plan_to_proposal_docs = npcink_governance_core_read( $root . '/docs/plan-to-proposal-governance.md' );
+$media_alt_governance = npcink_governance_core_read( $root . '/docs/media-alt-governance-scenario.md' );
 $canonical_plan_ability_ids = array(
 	'npcink-abilities-toolkit/build-content-inventory-fix-plan',
 	'npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan',
@@ -2452,6 +2464,8 @@ npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-site-knowledge-review-plan' ), 'Plan-to-proposal docs include the Toolbox Site Knowledge review handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-toolbox/build-nightly-inspection-review-plan' ), 'Plan-to-proposal docs include the Toolbox Nightly Inspection review handoff.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-content-metadata-apply-plan' ), 'Plan-to-proposal docs include the Toolkit content metadata apply handoff.' );
+npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'npcink-abilities-toolkit/build-media-alt-apply-plan' ), 'Plan-to-proposal docs include the Toolkit missing-ALT apply handoff.' );
+npcink_governance_core_assert( false !== strpos( $media_alt_governance, 'media_alt_apply_plan.v1' ) && false !== strpos( $media_alt_governance, 'expected_current_alt' ) && false !== strpos( $media_alt_governance, 'requires_live_value_check=true' ), 'Missing media ALT scenario documents the shared contract, old-value guard, and live Adapter check.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'blocked draft-review proposal' ), 'Plan-to-proposal docs keep Site Knowledge review non-executable before human input.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'review this Morning Brief item in Core' ) && false !== strpos( $plan_to_proposal_docs, 'preview.nightly_inspection_review' ) && false !== strpos( $plan_to_proposal_docs, 'selected Morning Brief review item ids/items' ), 'Plan-to-proposal docs preserve Nightly Morning Brief selected-item review context.' );
 npcink_governance_core_assert( false !== strpos( $plan_to_proposal_docs, 'needs_input_resolution_owner=toolbox_morning_brief_operator' ) && false !== strpos( $plan_to_proposal_docs, 'Return to Toolbox Morning Brief' ) && false !== strpos( $plan_to_proposal_docs, 'Core does not generate or edit missing draft fields' ), 'Plan-to-proposal docs route Nightly missing-input resolution back to Toolbox Morning Brief.' );

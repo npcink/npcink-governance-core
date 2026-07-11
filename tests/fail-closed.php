@@ -696,6 +696,16 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'input_schema'      => array( 'type' => 'object' ),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
+			'npcink-abilities-toolkit/build-media-alt-apply-plan' => array(
+				'ability_id'        => 'npcink-abilities-toolkit/build-media-alt-apply-plan',
+				'label'             => 'Build Media ALT Apply Plan',
+				'risk_level'        => 'read',
+				'requires_approval' => false,
+				'capability'        => 'upload_files',
+				'required_scopes'   => array( 'media.read' ),
+				'input_schema'      => array( 'type' => 'object' ),
+				'output_schema'     => array( 'type' => 'object' ),
+			),
 			'npcink-abilities-toolkit/build-media-optimization-plan' => array(
 				'ability_id'        => 'npcink-abilities-toolkit/build-media-optimization-plan',
 				'label'             => 'Build Media Optimization Plan',
@@ -3662,6 +3672,73 @@ npcink_governance_core_fail_closed_assert( 'npcink_governance_core_article_media
 
 $wpdb  = npcink_governance_core_fail_closed_reset_db();
 $stack = npcink_governance_core_fail_closed_plan_stack();
+$media_alt_plan = array(
+	'artifact_type'          => 'media_alt_apply_plan',
+	'contract_version'       => 'media_alt_apply_plan.v1',
+	'proposal_mode'          => 'single',
+	'requires_approval'      => true,
+	'dry_run'                => true,
+	'commit_execution'       => false,
+	'direct_wordpress_write' => false,
+	'authorization'          => array( 'classification' => 'core_proposal_required', 'authority' => 'npcink-governance-core' ),
+	'write_actions'          => array(
+		array(
+			'action_id'         => 'update_media_alt_321',
+			'target_ability_id' => 'npcink-abilities-toolkit/update-media-details',
+			'input'             => array(
+				'attachment_id'                     => 321,
+				'alt'                               => 'Small orange cat sitting beside a window',
+				'expected_current_alt'              => '',
+				'operator_visual_review_confirmed' => true,
+				'dry_run'                           => true,
+				'commit'                            => false,
+				'idempotency_key'                   => 'media-alt-missing-321-abcdef',
+			),
+			'requires_approval' => true,
+			'commit_execution'  => false,
+			'proposal_ready'    => true,
+			'required_scopes'   => array( 'media.write' ),
+			'risk'              => 'medium',
+			'preview'           => array(
+				'artifact_type'                     => 'media_alt_apply_plan_item',
+				'contract_version'                 => 'media_alt_apply_plan.v1',
+				'review_set_contract'              => 'media_alt_caption_review_set.v1',
+				'source_item_id'                   => 'media-alt-caption:321',
+				'attachment_id'                    => 321,
+				'mime_type'                        => 'image/jpeg',
+				'current_alt_status'               => 'missing',
+				'expected_current_alt'             => '',
+				'proposed_alt'                     => 'Small orange cat sitting beside a window',
+				'operator_reviewed'                => true,
+				'operator_visual_review_confirmed' => true,
+				'evidence_refs'                    => array( 'image-context:321' ),
+			),
+		),
+	),
+);
+$media_alt_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-alt-apply-plan', $media_alt_plan, array(), array( 'source' => 'toolbox_media_alt_review' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $media_alt_result ), 'Valid media ALT apply plan creates one Core proposal.' );
+npcink_governance_core_fail_closed_assert( 1 === (int) ( $media_alt_result['proposal_count'] ?? 0 ), 'Media ALT apply plan creates exactly one proposal.' );
+$media_alt_proposal = is_array( $media_alt_result['proposals'][0] ?? null ) ? $media_alt_result['proposals'][0] : array();
+npcink_governance_core_fail_closed_assert( '' === (string) ( $media_alt_proposal['input']['expected_current_alt'] ?? 'missing' ), 'Media ALT proposal preserves the expected empty old value.' );
+npcink_governance_core_fail_closed_assert( true === ( $media_alt_proposal['input']['operator_visual_review_confirmed'] ?? false ), 'Media ALT proposal preserves visual confirmation.' );
+npcink_governance_core_fail_closed_assert( 'media_alt_apply_plan_item' === (string) ( $media_alt_proposal['preview']['media_alt_apply']['artifact_type'] ?? '' ), 'Media ALT proposal preserves reviewed plan evidence.' );
+npcink_governance_core_fail_closed_assert( 'core_proposal_required' === (string) ( $media_alt_proposal['preview']['operation_classification']['classification'] ?? '' ), 'Media ALT proposal stores Core proposal classification evidence.' );
+
+$media_alt_unconfirmed = $media_alt_plan;
+$media_alt_unconfirmed['write_actions'][0]['input']['operator_visual_review_confirmed'] = false;
+$media_alt_unconfirmed_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-alt-apply-plan', $media_alt_unconfirmed );
+npcink_governance_core_fail_closed_assert( is_wp_error( $media_alt_unconfirmed_result ), 'Media ALT apply plan rejects missing visual confirmation.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_media_alt_visual_confirmation_required' === $media_alt_unconfirmed_result->get_error_code(), 'Media ALT visual confirmation rejection uses a stable code.' );
+
+$media_alt_overwrite = $media_alt_plan;
+$media_alt_overwrite['write_actions'][0]['input']['expected_current_alt'] = 'Existing ALT';
+$media_alt_overwrite_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-alt-apply-plan', $media_alt_overwrite );
+npcink_governance_core_fail_closed_assert( is_wp_error( $media_alt_overwrite_result ), 'Media ALT apply plan rejects overwriting a non-empty ALT.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_media_alt_missing_only' === $media_alt_overwrite_result->get_error_code(), 'Media ALT overwrite rejection uses a stable code.' );
+
+$wpdb  = npcink_governance_core_fail_closed_reset_db();
+$stack = npcink_governance_core_fail_closed_plan_stack();
 $media_optimization_plan = npcink_governance_core_fail_closed_media_optimization_plan();
 $media_optimization_result = $stack['service']->create_from_plan( 'npcink-abilities-toolkit/build-media-optimization-plan', $media_optimization_plan, array(), array( 'source' => 'toolbox_media_optimization' ) );
 npcink_governance_core_fail_closed_assert( ! is_wp_error( $media_optimization_result ), 'Valid media optimization plan creates a Core proposal.' );
@@ -4711,24 +4788,28 @@ $proposal = $stack['service']->create(
 		'title'      => 'Smart guarded media ALT proposal',
 		'summary'    => 'Apply one reviewed ALT suggestion.',
 		'input'      => array(
-			'attachment_id'   => 321,
-			'alt'             => 'Small orange cat sitting beside a window',
-			'dry_run'         => true,
-			'commit'          => false,
-			'idempotency_key' => 'guarded-media-alt',
+			'attachment_id'                     => 321,
+			'alt'                               => 'Small orange cat sitting beside a window',
+			'expected_current_alt'              => '',
+			'operator_visual_review_confirmed' => true,
+			'dry_run'                           => true,
+			'commit'                            => false,
+			'idempotency_key'                   => 'guarded-media-alt',
 		),
 		'preview'    => array(
-			'artifact_type'                     => 'media_alt_caption_review_item',
-			'contract_version'                 => 'media_alt_caption_review_item.v1',
-			'review_set_contract'              => 'media_alt_caption_review_set.v1',
-			'source'                           => array( 'type' => 'toolbox_media_alt_caption_review' ),
-			'attachment_id'                    => 321,
-			'current_alt_status'               => 'missing',
-			'current_alt'                      => '',
-			'proposed_alt'                     => 'Small orange cat sitting beside a window',
-			'operator_reviewed'                => true,
-			'operator_visual_review_confirmed' => true,
-			'direct_wordpress_write'           => false,
+			'source'          => array( 'type' => 'plan_to_proposal', 'plan_ability_id' => 'npcink-abilities-toolkit/build-media-alt-apply-plan' ),
+			'media_alt_apply' => array(
+				'artifact_type'                     => 'media_alt_apply_plan_item',
+				'contract_version'                 => 'media_alt_apply_plan.v1',
+				'review_set_contract'              => 'media_alt_caption_review_set.v1',
+				'source_item_id'                   => 'media-alt-caption:321',
+				'attachment_id'                    => 321,
+				'current_alt_status'               => 'missing',
+				'expected_current_alt'             => '',
+				'proposed_alt'                     => 'Small orange cat sitting beside a window',
+				'operator_reviewed'                => true,
+				'operator_visual_review_confirmed' => true,
+			),
 		),
 		'caller'     => array( 'source' => 'fault_injection' ),
 	)
@@ -4738,6 +4819,18 @@ npcink_governance_core_fail_closed_assert( 'approved' === (string) ( $proposal['
 npcink_governance_core_fail_closed_assert( 'auto_approved' === (string) ( $proposal['policy_decision'] ?? '' ), 'Smart guarded media ALT records auto-approved decision.' );
 npcink_governance_core_fail_closed_assert( in_array( 'guarded_media_alt_candidate', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded media ALT records candidate reason.' );
 npcink_governance_core_fail_closed_assert( in_array( 'smart_guarded_media_alt_auto_approved', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded media ALT records stable auto approval reason.' );
+$media_alt_created_events = array_values(
+	array_filter(
+		$wpdb->rows( $audit_table ),
+		static function ( array $row ) use ( $proposal ): bool {
+			return 'proposal.created' === (string) ( $row['event_name'] ?? '' ) && (string) ( $proposal['proposal_id'] ?? '' ) === (string) ( $row['proposal_id'] ?? '' );
+		}
+	)
+);
+$media_alt_created_metadata = json_decode( (string) ( $media_alt_created_events[0]['metadata_json'] ?? '{}' ), true );
+npcink_governance_core_fail_closed_assert( '' === (string) ( $media_alt_created_metadata['media_alt_evidence']['expected_current_alt'] ?? 'missing' ), 'Media ALT creation audit preserves the reviewed empty old value.' );
+npcink_governance_core_fail_closed_assert( 'Small orange cat sitting beside a window' === (string) ( $media_alt_created_metadata['media_alt_evidence']['proposed_alt'] ?? '' ), 'Media ALT creation audit preserves the reviewed final value.' );
+npcink_governance_core_fail_closed_assert( 'guarded-media-alt' === (string) ( $media_alt_created_metadata['media_alt_evidence']['idempotency_key'] ?? '' ), 'Media ALT creation audit preserves the idempotency key.' );
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();
 update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_SMART_GUARDED, false );
@@ -4758,21 +4851,29 @@ $proposal = $stack['service']->create(
 		'title'      => 'Smart guarded media ALT plus caption proposal',
 		'summary'    => 'Caption edits must stay in manual review.',
 		'input'      => array(
-			'attachment_id'   => 321,
-			'alt'             => 'Small orange cat sitting beside a window',
-			'caption'         => 'Cat by the window',
-			'dry_run'         => true,
-			'commit'          => false,
-			'idempotency_key' => 'guarded-media-alt-caption',
+			'attachment_id'                     => 321,
+			'alt'                               => 'Small orange cat sitting beside a window',
+			'caption'                           => 'Cat by the window',
+			'expected_current_alt'              => '',
+			'operator_visual_review_confirmed' => true,
+			'dry_run'                           => true,
+			'commit'                            => false,
+			'idempotency_key'                   => 'guarded-media-alt-caption',
 		),
 		'preview'    => array(
-			'artifact_type'                     => 'media_alt_caption_review_item',
-			'review_set_contract'              => 'media_alt_caption_review_set.v1',
-			'source'                           => array( 'type' => 'toolbox_media_alt_caption_review' ),
-			'current_alt_status'               => 'missing',
-			'proposed_alt'                     => 'Small orange cat sitting beside a window',
-			'operator_reviewed'                => true,
-			'operator_visual_review_confirmed' => true,
+			'source'          => array( 'type' => 'plan_to_proposal', 'plan_ability_id' => 'npcink-abilities-toolkit/build-media-alt-apply-plan' ),
+			'media_alt_apply' => array(
+				'artifact_type'                     => 'media_alt_apply_plan_item',
+				'contract_version'                 => 'media_alt_apply_plan.v1',
+				'review_set_contract'              => 'media_alt_caption_review_set.v1',
+				'source_item_id'                   => 'media-alt-caption:321',
+				'attachment_id'                    => 321,
+				'current_alt_status'               => 'missing',
+				'expected_current_alt'             => '',
+				'proposed_alt'                     => 'Small orange cat sitting beside a window',
+				'operator_reviewed'                => true,
+				'operator_visual_review_confirmed' => true,
+			),
 		),
 		'caller'     => array( 'source' => 'fault_injection' ),
 	)

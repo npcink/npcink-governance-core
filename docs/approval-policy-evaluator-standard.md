@@ -261,27 +261,27 @@ Core batch optimizer, media queue, Cloud runtime, or direct WordPress write.
 Status: implemented for `smart_guarded`.
 
 `npcink-abilities-toolkit/update-media-details` may be auto-approved only for
-one reviewed ALT-only proposal at a time. It is intended for Toolbox batch ALT
-review rows where an operator already inspected the image and accepted the ALT
-text.
+one `media_alt_apply_plan.v1` missing-ALT proposal at a time. The proposal must
+come from `npcink-abilities-toolkit/build-media-alt-apply-plan` after an
+operator inspected the image and accepted the ALT text.
 
 Required properties:
 
 - one `attachment_id`;
 - one concise `alt` value;
+- `expected_current_alt` is explicitly empty;
+- `operator_visual_review_confirmed=true` is present in input and evidence;
 - proposal input remains `dry_run=true` and `commit=false`;
 - no `title`, `caption`, `description`, source, attribution, or other media
   metadata fields are present;
-- preview identifies `media_alt_caption_review_item` from
-  `toolbox_media_alt_caption_review` and
-  `media_alt_caption_review_set.v1`;
+- preview identifies `media_alt_apply_plan_item`, `media_alt_apply_plan.v1`,
+  and its source `media_alt_caption_review_set.v1`;
 - preview marks `operator_reviewed=true` and
   `operator_visual_review_confirmed=true`;
-- current ALT status is missing, weak, filename-like, empty, or
-  long/keyword-stuffed;
+- current ALT status is exactly `missing`;
 - caller/app key is explicitly trusted and quota-bound;
 - Adapter still performs Core commit preflight and final execution outside
-  Core.
+  Core, including a Toolkit live-value dry run immediately before commit.
 
 Real auto approval additionally requires `guarded_media_alt_candidate` and
 `smart_guarded_media_alt_auto_approved` in `policy_reasons` and

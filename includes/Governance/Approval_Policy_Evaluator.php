@@ -567,9 +567,15 @@ final class Approval_Policy_Evaluator {
 		if ( false === (bool) ( $input['dry_run'] ?? true ) || true === (bool) ( $input['commit'] ?? false ) ) {
 			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_commit_input' ) );
 		}
+		if ( ! array_key_exists( 'expected_current_alt', $input ) || '' !== (string) $input['expected_current_alt'] ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_missing_only_guard' ) );
+		}
+		if ( true !== ( $input['operator_visual_review_confirmed'] ?? false ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_input_visual_confirmation' ) );
+		}
 
 		$allowed_input_keys = array_fill_keys(
-			array( 'attachment_id', 'alt', 'dry_run', 'commit', 'idempotency_key' ),
+			array( 'attachment_id', 'alt', 'expected_current_alt', 'operator_visual_review_confirmed', 'dry_run', 'commit', 'idempotency_key' ),
 			true
 		);
 		foreach ( array_keys( $input ) as $key ) {
@@ -578,33 +584,33 @@ final class Approval_Policy_Evaluator {
 			}
 		}
 
-		$source        = is_array( $preview['source'] ?? null ) ? $preview['source'] : array();
-		$artifact_type = sanitize_key( (string) ( $preview['artifact_type'] ?? '' ) );
-		if ( 'media_alt_caption_review_item' !== $artifact_type || 'toolbox_media_alt_caption_review' !== (string) ( $source['type'] ?? '' ) ) {
+		$source   = is_array( $preview['source'] ?? null ) ? $preview['source'] : array();
+		$evidence = is_array( $preview['media_alt_apply'] ?? null ) ? $preview['media_alt_apply'] : array();
+		if ( 'npcink-abilities-toolkit/build-media-alt-apply-plan' !== (string) ( $source['plan_ability_id'] ?? '' ) || 'media_alt_apply_plan_item' !== sanitize_key( (string) ( $evidence['artifact_type'] ?? '' ) ) || 'media_alt_apply_plan.v1' !== (string) ( $evidence['contract_version'] ?? '' ) ) {
 			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_preview_source' ) );
 		}
 
-		if ( 'media_alt_caption_review_set.v1' !== (string) ( $preview['review_set_contract'] ?? '' ) ) {
+		if ( 'media_alt_caption_review_set.v1' !== (string) ( $evidence['review_set_contract'] ?? '' ) ) {
 			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_review_contract' ) );
 		}
 
-		$current_status = sanitize_key( (string) ( $preview['current_alt_status'] ?? '' ) );
-		if ( ! in_array( $current_status, array( 'missing', 'empty', 'weak', 'filename_like', 'long_or_keyword_stuffed' ), true ) ) {
+		$current_status = sanitize_key( (string) ( $evidence['current_alt_status'] ?? '' ) );
+		if ( 'missing' !== $current_status || '' !== (string) ( $evidence['expected_current_alt'] ?? '' ) ) {
 			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_current_status' ) );
 		}
 
-		if ( empty( $preview['operator_reviewed'] ) || empty( $preview['operator_visual_review_confirmed'] ) ) {
+		if ( true !== ( $evidence['operator_reviewed'] ?? false ) || true !== ( $evidence['operator_visual_review_confirmed'] ?? false ) || absint( $evidence['attachment_id'] ?? 0 ) !== absint( $input['attachment_id'] ?? 0 ) || '' === trim( sanitize_text_field( (string) ( $evidence['source_item_id'] ?? '' ) ) ) ) {
 			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_operator_review' ) );
 		}
 
-		$proposed_alt = trim( sanitize_text_field( (string) ( $preview['proposed_alt'] ?? '' ) ) );
+		$proposed_alt = trim( sanitize_text_field( (string) ( $evidence['proposed_alt'] ?? '' ) ) );
 		if ( '' !== $proposed_alt && $proposed_alt !== $alt ) {
 			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_alt_rejected_preview_mismatch' ) );
 		}
 
 		return array(
 			'allowed' => true,
-			'reasons' => array( 'guarded_media_alt_single_attachment', 'guarded_media_alt_reviewed_alt_only', 'guarded_media_alt_toolbox_review_set' ),
+			'reasons' => array( 'guarded_media_alt_single_attachment', 'guarded_media_alt_missing_only', 'guarded_media_alt_reviewed_alt_only', 'guarded_media_alt_plan_contract_v1' ),
 		);
 	}
 

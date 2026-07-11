@@ -124,6 +124,7 @@ Governance truth:
 - [Set Post SEO Meta Governance Scenario](docs/set-post-seo-meta-governance-scenario.md)
 - [Approve Comment Governance Scenario](docs/approve-comment-governance-scenario.md)
 - [Taxonomy Terms Preview Governance Scenario](docs/taxonomy-terms-preview-governance-scenario.md)
+- [Missing Media ALT Governance Scenario](docs/media-alt-governance-scenario.md)
 
 Core-local workflow and release references:
 

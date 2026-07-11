@@ -28,6 +28,7 @@ an execution bridge.
 - `npcink-toolbox/build-site-knowledge-review-plan`
 - `npcink-toolbox/build-nightly-inspection-review-plan`
 - `npcink-abilities-toolkit/build-content-metadata-apply-plan`
+- `npcink-abilities-toolkit/build-media-alt-apply-plan`
 
 The `npcink-abilities-toolkit/*` planning abilities belong to
 `npcink-abilities-toolkit`; the Toolbox article and site-knowledge handoffs
@@ -59,6 +60,14 @@ editor may submit it after an operator accepts excerpt, existing category, and
 existing tag choices. The plan may package those choices into dry-run
 `write_actions`, but it must not create terms, mutate SEO fields, rewrite
 content, or claim direct write authority.
+
+`npcink-abilities-toolkit/build-media-alt-apply-plan` is the single-attachment
+missing-ALT handoff. Core accepts only `media_alt_apply_plan.v1`, one
+`update-media-details` action, an explicitly empty `expected_current_alt`, an
+ALT-only field set, visual-review confirmation, matching review evidence, and
+an idempotency key. Core preserves the evidence and stops at proposal,
+approval, and commit preflight; Adapter and Toolkit own the live-value dry run
+and final execution.
 
 ## Plan Handoff Admission Checklist
 

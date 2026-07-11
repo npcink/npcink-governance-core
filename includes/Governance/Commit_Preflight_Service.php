@@ -286,6 +286,13 @@ final class Commit_Preflight_Service {
 		$blocking_items  = is_array( $preview['preflight_blockers'] ?? null ) ? array_values( $preview['preflight_blockers'] ) : array();
 		$proposal_ready  = array_key_exists( 'proposal_ready', $preview ) ? (bool) $preview['proposal_ready'] : true;
 		$batch_review_summary = $this->batch_review_summary_preflight( $preview );
+		$media_alt_guard = $this->media_alt_guard_preflight( $proposal );
+		if ( ! empty( $media_alt_guard['applies'] ) && empty( $media_alt_guard['valid'] ) ) {
+			$blocking_items[] = array(
+				'code'   => 'media_alt_guard_invalid',
+				'reason' => 'The approved media ALT input no longer matches its missing-ALT review evidence.',
+			);
+		}
 
 		if ( ! $proposal_ready && empty( $blocking_items ) ) {
 			$blocking_items[] = array(
@@ -301,7 +308,51 @@ final class Commit_Preflight_Service {
 			'blocked_items'  => $blocking_items,
 			'warnings'       => is_array( $preview['warnings'] ?? null ) ? $preview['warnings'] : array(),
 			'batch_review_summary' => $batch_review_summary,
+			'media_alt_guard' => $media_alt_guard,
 			'commit_execution' => false,
+		);
+	}
+
+	/**
+	 * Revalidates the persisted missing-ALT contract before Adapter handoff.
+	 *
+	 * Core validates approved evidence consistency only. Adapter must still run
+	 * the Toolkit dry-run immediately before commit to compare live media truth.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return array<string,mixed>
+	 */
+	private function media_alt_guard_preflight( array $proposal ): array {
+		if ( 'npcink-abilities-toolkit/update-media-details' !== (string) ( $proposal['ability_id'] ?? '' ) ) {
+			return array();
+		}
+		$preview  = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
+		$evidence = is_array( $preview['media_alt_apply'] ?? null ) ? $preview['media_alt_apply'] : array();
+		if ( 'media_alt_apply_plan_item' !== sanitize_key( (string) ( $evidence['artifact_type'] ?? '' ) ) ) {
+			return array();
+		}
+		$input = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
+		$valid = absint( $input['attachment_id'] ?? 0 ) > 0
+			&& absint( $input['attachment_id'] ?? 0 ) === absint( $evidence['attachment_id'] ?? 0 )
+			&& array_key_exists( 'expected_current_alt', $input )
+			&& '' === (string) $input['expected_current_alt']
+			&& '' === (string) ( $evidence['expected_current_alt'] ?? '' )
+			&& true === ( $input['operator_visual_review_confirmed'] ?? false )
+			&& true === ( $evidence['operator_visual_review_confirmed'] ?? false )
+			&& 'missing' === sanitize_key( (string) ( $evidence['current_alt_status'] ?? '' ) )
+			&& sanitize_text_field( (string) ( $input['alt'] ?? '' ) ) === sanitize_text_field( (string) ( $evidence['proposed_alt'] ?? '' ) )
+			&& '' !== trim( sanitize_text_field( (string) ( $input['idempotency_key'] ?? '' ) ) );
+
+		return array(
+			'applies'                  => true,
+			'valid'                    => $valid,
+			'contract_version'         => 'media_alt_apply_plan.v1',
+			'attachment_id'            => absint( $input['attachment_id'] ?? 0 ),
+			'expected_current_alt'     => '',
+			'visual_review_confirmed'  => true === ( $input['operator_visual_review_confirmed'] ?? false ),
+			'idempotency_key_present'  => '' !== trim( sanitize_text_field( (string) ( $input['idempotency_key'] ?? '' ) ) ),
+			'live_value_check_owner'   => 'adapter_toolkit_dry_run_before_commit',
+			'requires_live_value_check' => true,
 		);
 	}
 
