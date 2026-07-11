@@ -125,6 +125,9 @@ Response `200`:
       "strong_local_confirmation",
       "core_proposal_required"
     ],
+    "pre_classification_exclusions": ["native_editor_commit"],
+    "native_editor_commit_is_core_classification": false,
+    "native_editor_commit_core_record_required": false,
     "proposal_intake_classification": "core_proposal_required",
     "proposal_intake_path": "core_proposal",
     "decision_envelope_required": true,
@@ -218,7 +221,9 @@ write entrypoints. It is discovery metadata only: it does not classify a
 specific request, create proposals, record local consent audit rows, or grant
 execution. Proposal intake remains fixed to `core_proposal_required` with
 `proposal_intake_path=core_proposal`; local-admin-consent and native editor
-author-review paths stay outside Core proposal intake.
+author-review paths stay outside Core proposal intake. `native_editor_commit`
+is exposed only as a pre-classification exclusion and is not a fifth Core
+classification or a Core record type.
 
 The `implementation_posture` object tells consumers where provider-owned
 implementation posture metadata appears and how Core treats it. Core surfaces

@@ -1388,6 +1388,9 @@ foreach (
 		'External Agent, OpenClaw, MCP, Adapter, CLI, scheduled task, Cloud callback',
 		'Release Regression Gate',
 		'Native editor / generic AI plugin acceptance stays outside Core',
+		'`native_editor_commit` is intentionally absent from this table',
+		'not a fifth Core classification',
+		'Media-library mutation, cross-object changes, global settings, external',
 		'exactly one requested plus one',
 		'completed local-consent audit pair',
 		'High-risk, external, delegated, or batch writes stay in Core proposal',
@@ -1397,6 +1400,9 @@ foreach (
 ) {
 	npcink_governance_core_assert( false !== strpos( $operation_classification, $required ), 'Operation classification contract contains required text: ' . $required );
 }
+npcink_governance_core_assert( false !== strpos( $operation_classifier, "PRE_CLASSIFICATION_NATIVE_EDITOR_COMMIT = 'native_editor_commit'" ), 'Operation classifier names native editor commit as a pre-classification exclusion.' );
+npcink_governance_core_assert( false !== strpos( $operation_classifier, 'pre_classification_exclusions()' ), 'Operation classifier exposes pre-classification exclusions separately from allowed classifications.' );
+npcink_governance_core_assert( false !== strpos( $rest_contract, '"pre_classification_exclusions": ["native_editor_commit"]' ), 'REST contract documents native editor commit as a pre-classification exclusion.' );
 
 $testing_strategy = npcink_governance_core_read( $root . '/docs/testing-strategy.md' );
 foreach (

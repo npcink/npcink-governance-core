@@ -108,6 +108,9 @@ final class Contract_Controller {
 				'operation_classification'               => array(
 					'policy_version'                     => Operation_Classifier::POLICY_VERSION,
 					'classification_values'              => Operation_Classifier::allowed_classifications(),
+					'pre_classification_exclusions'       => Operation_Classifier::pre_classification_exclusions(),
+					'native_editor_commit_is_core_classification' => false,
+					'native_editor_commit_core_record_required' => false,
 					'proposal_intake_classification'     => Operation_Classifier::CLASSIFICATION_CORE_PROPOSAL_REQUIRED,
 					'proposal_intake_path'               => 'core_proposal',
 					'decision_envelope_required'         => true,
