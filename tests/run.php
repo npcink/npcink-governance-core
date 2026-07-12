@@ -396,22 +396,15 @@ foreach ( array( '`Npcink AI`', '`npcink-ai`', '`Core`', '`Adapter`', '`Abilitie
 }
 
 $admin_page = npcink_governance_core_read( $root . '/includes/Admin/Admin_Page.php' );
-foreach ( array( 'PARENT_MENU_SLUG', 'add_menu_page', 'add_submenu_page', 'Core', 'admin.php' ) as $required ) {
+foreach ( array( 'PARENT_MENU_SLUG', 'has_parent_menu', 'add_submenu_page', 'add_management_page', 'Core' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $admin_page, $required ), 'Admin page implements shared menu contract: ' . $required );
 }
 $plugin_container = npcink_governance_core_read( $root . '/includes/Plugin.php' );
-npcink_governance_core_assert( false !== strpos( $plugin_container, 'plugin_action_links_' ) && false !== strpos( $plugin_container, 'filter_plugin_action_links' ) && false !== strpos( $plugin_container, 'admin.php?page=npcink-governance-core' ), 'Plugin screen exposes a Settings shortcut to Core admin.' );
+npcink_governance_core_assert( false !== strpos( $plugin_container, 'plugin_action_links_' ) && false !== strpos( $plugin_container, 'filter_plugin_action_links' ) && false !== strpos( $plugin_container, 'menu_page_url' ) && false !== strpos( $plugin_container, 'tools.php?page=npcink-governance-core' ), 'Plugin screen exposes a Settings shortcut to the registered Core page or standalone Tools fallback.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "const PARENT_MENU_SLUG  = 'npcink-ai';" ), 'Admin page targets the shared Npcink AI parent menu slug.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Npcink AI', 'npcink-governance-core' )" ), 'Admin parent menu title is Npcink AI.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Npcink AI Overview', 'npcink-governance-core' )" ), 'Admin parent overview title is Npcink AI Overview.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Core', 'npcink-governance-core' ),\n\t\t\tself::MENU_CAPABILITY" ), 'Admin submenu title is Core.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "'npcink-ai-client-adapter'" ), 'Admin overview links to the canonical Adapter slug.' );
-npcink_governance_core_assert( false === strpos( $admin_page, "'npcink-openclaw-adapter'" ), 'Admin overview does not link to the legacy Adapter slug.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "'npcink-toolbox'" ), 'Admin overview links to the canonical Workflow Toolbox slug.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Workflow Toolbox', 'npcink-governance-core' )" ), 'Admin overview labels the Workflow Toolbox surface.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "'npcink-cloud-addon'" ), 'Admin overview links to the canonical Cloud Addon slug.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Cloud Addon', 'npcink-governance-core' )" ), 'Admin overview labels the Cloud Addon surface.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-overview-table' ), 'Admin overview uses a dedicated table class for overview row alignment.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'add_menu_page' ) && false === strpos( $admin_page, 'render_overview' ), 'Core does not create the suite navigation shell or overview.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Core', 'npcink-governance-core' )" ) && false !== strpos( $admin_page, 'add_submenu_page' ), 'Admin submenu title is Core.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'add_management_page' ), 'Core remains independently usable through a Tools fallback.' );
 
 npcink_governance_core_assert( ! file_exists( $root . '/includes/Media/Media_Derivative_Settings.php' ), 'Core no longer owns media derivative product defaults.' );
 npcink_governance_core_assert( false === strpos( $main_plugin, 'npcink_governance_core_get_media_derivative_settings' ), 'Core no longer exposes a media derivative settings helper for local product surfaces.' );
@@ -1388,6 +1381,9 @@ foreach (
 		'External Agent, OpenClaw, MCP, Adapter, CLI, scheduled task, Cloud callback',
 		'Release Regression Gate',
 		'Native editor / generic AI plugin acceptance stays outside Core',
+		'`native_editor_commit` is intentionally absent from this table',
+		'not a fifth Core classification',
+		'Media-library mutation, cross-object changes, global settings, external',
 		'exactly one requested plus one',
 		'completed local-consent audit pair',
 		'High-risk, external, delegated, or batch writes stay in Core proposal',
@@ -1397,6 +1393,9 @@ foreach (
 ) {
 	npcink_governance_core_assert( false !== strpos( $operation_classification, $required ), 'Operation classification contract contains required text: ' . $required );
 }
+npcink_governance_core_assert( false !== strpos( $operation_classifier, "PRE_CLASSIFICATION_NATIVE_EDITOR_COMMIT = 'native_editor_commit'" ), 'Operation classifier names native editor commit as a pre-classification exclusion.' );
+npcink_governance_core_assert( false !== strpos( $operation_classifier, 'pre_classification_exclusions()' ), 'Operation classifier exposes pre-classification exclusions separately from allowed classifications.' );
+npcink_governance_core_assert( false !== strpos( $rest_contract, '"pre_classification_exclusions": ["native_editor_commit"]' ), 'REST contract documents native editor commit as a pre-classification exclusion.' );
 
 $testing_strategy = npcink_governance_core_read( $root . '/docs/testing-strategy.md' );
 foreach (
@@ -2751,7 +2750,7 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'array_slice( $pro
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_proposal_lookup' ), 'Admin review queue exposes proposal lookup.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "plugins_url( 'assets/admin.js'" ), 'Admin page enqueues the Core admin interaction script.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-proposal-lookup' ), 'Admin proposal lookup uses a stable field id.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "method=\"get\" action=\"<?php echo esc_url( admin_url( 'admin.php' ) ); ?>\"" ), 'Admin proposal lookup is read-only GET navigation.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "method=\"get\" action=\"<?php echo esc_url( \$this->admin_base_url() ); ?>\"" ), 'Admin proposal lookup is read-only GET navigation through the active Toolbox or standalone parent.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Find proposal' ), 'Admin proposal lookup opens an existing proposal detail by id.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_queue_summary' ), 'Admin default page renders a compact queue status summary.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-governance-core-summary-strip' ), 'Admin default page uses a compact status summary strip.' );

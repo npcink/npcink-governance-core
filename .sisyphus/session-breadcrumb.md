@@ -1,5 +1,19 @@
 # Session Breadcrumb
 
+## 2026-07-11 — Native editor commit pre-classification exclusion
+
+- **Module**: Operation classification discovery and Core runtime contract.
+- **Completed**:
+  - exposed `native_editor_commit` as a pre-classification exclusion;
+  - kept the four Core classification values unchanged;
+  - declared that eligible native editor commits require no Core proposal,
+    local-consent audit, approval record, or hidden post-save state;
+  - added static and real WordPress runtime contract coverage.
+- **Next gate**: Toolkit and Adapter must converge on one canonical workflow
+  definition and consumer projection without adding registries or runtime state.
+- **Boundary**: No route, table, lifecycle state, proposal path, audit path,
+  workflow runtime, queue, or WordPress execution behavior was added.
+
 ## 2026-07-11 — Missing media ALT governance contract accepted
 
 - **Module**: Plan-to-proposal intake, approval policy, commit preflight, and

@@ -8,6 +8,14 @@ This contract defines how Npcink modules decide whether an AI-assisted action
 is suggestion-only, eligible for local admin consent, needs strong local
 confirmation, or must enter Core proposal review.
 
+Before applying those four Core classifications, a consumer must first test
+whether the action is `native_editor_commit`. This is a pre-classification
+exclusion, not a fifth Core classification. It applies only when an author has
+reviewed a value in the current Gutenberg editor state and the value is saved
+solely by the author's normal WordPress Save, Update, or Publish action. The
+path creates no Core proposal, local-consent audit, approval record, or hidden
+post-save execution state.
+
 It applies to Core consumers such as Adapter, Toolbox, future MCP adapters,
 browser-agent adapters, cloud-agent adapters, and other product modules.
 
@@ -26,6 +34,11 @@ authorization path must be persisted by the caller in one of those governance
 evidence surfaces before execution or rejection is reported as final.
 
 ## Classification Values
+
+`native_editor_commit` is intentionally absent from this table and from
+`Operation_Classifier::allowed_classifications()`. Consumers can discover it
+through `Operation_Classifier::pre_classification_exclusions()` and Core's
+machine-readable `/contract` response.
 
 | Classification | Meaning | Core proposal |
 | --- | --- | --- |
@@ -100,6 +113,11 @@ review for the writes that actually need independent governance.
 The key distinction is not whether AI was involved. The key distinction is
 whether a present author can see and own the final editor action, or whether a
 separate system is asking WordPress to write on the author's behalf.
+
+Media-library mutation, cross-object changes, global settings, external
+effects, background actions, and batch operations never qualify for
+`native_editor_commit`, even when their controls are displayed beside the
+editor. Those actions continue through the appropriate Core classification.
 
 ## Release Regression Gate
 

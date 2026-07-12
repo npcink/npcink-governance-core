@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Operation_Classifier {
 	const POLICY_VERSION = 'operation-classification-v1';
+	const PRE_CLASSIFICATION_NATIVE_EDITOR_COMMIT = 'native_editor_commit';
 
 	const CLASSIFICATION_SUGGESTION_ONLY          = 'suggestion_only';
 	const CLASSIFICATION_LOCAL_ADMIN_CONSENT      = 'local_admin_consent';
@@ -149,6 +150,20 @@ final class Operation_Classifier {
 			self::CLASSIFICATION_LOCAL_ADMIN_CONSENT,
 			self::CLASSIFICATION_STRONG_LOCAL_CONFIRMATION,
 			self::CLASSIFICATION_CORE_PROPOSAL_REQUIRED,
+		);
+	}
+
+	/**
+	 * Returns operation paths that consumers must resolve before Core classification.
+	 *
+	 * These values are not Core classifications and must never be persisted as
+	 * proposal or local-consent classification truth.
+	 *
+	 * @return array<int,string>
+	 */
+	public static function pre_classification_exclusions(): array {
+		return array(
+			self::PRE_CLASSIFICATION_NATIVE_EDITOR_COMMIT,
 		);
 	}
 

@@ -158,3 +158,11 @@ ADR-004 remains valid as a packaging option. ADR-005 narrows the current
 implementation sequence: keep Core independent, standardize channel adapters,
 and add operation classification before moving specific flows to local admin
 consent or Core proposal paths.
+
+The later `native_editor_commit` rule is a pre-classification exclusion rather
+than another Core governance path. A reviewed value that exists only in the
+current Gutenberg editor state and is persisted solely by normal WordPress
+Save, Update, or Publish must not be converted into a Core proposal, Core audit
+record, or adapter execution request. Cross-object, media-library, external,
+background, global, and batch writes remain inside the shared classification
+contract.
