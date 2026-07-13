@@ -789,6 +789,23 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_get_abilities' ) ) {
+	/**
+	 * WordPress aggregate ability registry fixture.
+	 *
+	 * @return array<mixed>
+	 */
+	function wp_get_abilities(): array {
+		global $npcink_governance_core_fail_closed_native_abilities;
+
+		if ( is_array( $npcink_governance_core_fail_closed_native_abilities ?? null ) ) {
+			return $npcink_governance_core_fail_closed_native_abilities;
+		}
+
+		return npcink_abilities_toolkit_get_registered();
+	}
+}
+
 /**
  * In-memory WPDB stub with injectable table failures.
  */
@@ -1235,13 +1252,14 @@ require_once dirname( __DIR__ ) . '/includes/Plugin.php';
  * @return Npcink_Governance_Core_Fail_Closed_WPDB
  */
 function npcink_governance_core_fail_closed_reset_db(): Npcink_Governance_Core_Fail_Closed_WPDB {
-	global $wpdb, $npcink_governance_core_fail_closed_options, $npcink_governance_core_fail_closed_transients, $npcink_governance_core_fail_closed_caps, $npcink_governance_core_fail_closed_abilities, $npcink_governance_core_fail_closed_actions;
+	global $wpdb, $npcink_governance_core_fail_closed_options, $npcink_governance_core_fail_closed_transients, $npcink_governance_core_fail_closed_caps, $npcink_governance_core_fail_closed_abilities, $npcink_governance_core_fail_closed_native_abilities, $npcink_governance_core_fail_closed_actions;
 
 	$wpdb = new Npcink_Governance_Core_Fail_Closed_WPDB();
 	$npcink_governance_core_fail_closed_options = array();
 	$npcink_governance_core_fail_closed_transients = array();
 	$npcink_governance_core_fail_closed_caps = array();
 	$npcink_governance_core_fail_closed_abilities = null;
+	$npcink_governance_core_fail_closed_native_abilities = null;
 	$npcink_governance_core_fail_closed_actions = array();
 	\Npcink\GovernanceCore\Security\Request_Context::clear();
 
@@ -4320,6 +4338,66 @@ $content_metadata_duplicate_taxonomy_result = $stack['service']->create_from_pla
 npcink_governance_core_fail_closed_assert( is_wp_error( $content_metadata_duplicate_taxonomy_result ), 'Content metadata apply plan with duplicate taxonomy actions is rejected.' );
 npcink_governance_core_fail_closed_assert( 'npcink_governance_core_content_metadata_duplicate_action_rejected' === $content_metadata_duplicate_taxonomy_result->get_error_code(), 'Content metadata duplicate taxonomy rejection uses stable error code.' );
 
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+global $npcink_governance_core_fail_closed_native_abilities;
+$npcink_governance_core_fail_closed_native_abilities = array(
+	'third-party/native-only' => new class() {
+		public function get_name(): string {
+			return 'third-party/native-only';
+		}
+
+		public function get_label(): string {
+			return 'Native Only';
+		}
+
+		public function get_description(): string {
+			return 'Registered only through WordPress Abilities API.';
+		}
+
+		public function get_input_schema(): array {
+			return array( 'type' => 'object' );
+		}
+
+		public function get_output_schema(): array {
+			return array( 'type' => 'object' );
+		}
+
+		public function get_meta(): array {
+			return array(
+				'npcink' => array(
+					'risk_level'       => 'write',
+					'requires_approval' => true,
+					'required_scope'   => 'third-party.write',
+				),
+			);
+		}
+	},
+	'npcink-abilities-toolkit/create-draft' => array(
+		'ability_id'        => 'npcink-abilities-toolkit/create-draft',
+		'label'             => 'Native Aggregate Create Draft',
+		'risk_level'        => 'write',
+		'requires_approval' => true,
+	),
+);
+
+$discovered_capabilities = ( new \Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter() )->list_capabilities();
+$discovered_items = array();
+foreach ( (array) ( $discovered_capabilities['items'] ?? array() ) as $item ) {
+	if ( is_array( $item ) ) {
+		$discovered_items[ (string) ( $item['ability_id'] ?? '' ) ] = $item;
+	}
+}
+npcink_governance_core_fail_closed_assert( 'wordpress_abilities_api' === (string) ( $discovered_capabilities['source'] ?? '' ), 'WordPress Abilities API is the canonical aggregate discovery source.' );
+npcink_governance_core_fail_closed_assert( isset( $discovered_items['third-party/native-only'] ), 'Ability intake discovers an ability registered only through WordPress Abilities API.' );
+npcink_governance_core_fail_closed_assert( 'Native Only' === (string) ( $discovered_items['third-party/native-only']['label'] ?? '' ), 'Ability intake normalizes public WP_Ability getters.' );
+npcink_governance_core_fail_closed_assert( 'write' === (string) ( $discovered_items['third-party/native-only']['risk_level'] ?? '' ), 'Ability intake normalizes nested provider risk metadata from WP_Ability.' );
+npcink_governance_core_fail_closed_assert( true === (bool) ( $discovered_items['third-party/native-only']['requires_approval'] ?? false ), 'Ability intake normalizes nested provider approval metadata from WP_Ability.' );
+npcink_governance_core_fail_closed_assert( 'wordpress_abilities_api' === (string) ( $discovered_items['third-party/native-only']['source'] ?? '' ), 'Native-only ability retains its discovery source.' );
+npcink_governance_core_fail_closed_assert( isset( $discovered_items['npcink-abilities-toolkit/read-error-log'] ), 'Toolkit compatibility discovery fills abilities missing from the native aggregate.' );
+npcink_governance_core_fail_closed_assert( 'Native Aggregate Create Draft' === (string) ( $discovered_items['npcink-abilities-toolkit/create-draft']['label'] ?? '' ), 'Native aggregate definition wins when both public sources contain the same ability id.' );
+npcink_governance_core_fail_closed_assert( in_array( 'post.write', (array) ( $discovered_items['npcink-abilities-toolkit/create-draft']['required_scopes'] ?? array() ), true ), 'Toolkit compatibility definition fills governance metadata absent from the native object.' );
+
+$wpdb = npcink_governance_core_fail_closed_reset_db();
 $capabilities = ( new \Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter() )->list_capabilities();
 $sensitive_capability = array();
 foreach ( (array) ( $capabilities['items'] ?? array() ) as $item ) {

@@ -1617,8 +1617,9 @@ npcink_governance_core_assert( 'core_proposal_required' === (string) ( $batch_cl
 npcink_governance_core_assert( in_array( 'target_ability_id', (array) ( $batch_classification['required_evidence'] ?? array() ), true ), 'Core proposal classification requires target ability evidence.' );
 
 $ability_adapter = npcink_governance_core_read( $root . '/includes/Capabilities/Ability_Registry_Adapter.php' );
-npcink_governance_core_assert( false !== strpos( $ability_adapter, 'npcink_abilities_toolkit_get_registered' ), 'Ability intake prefers npcink-abilities-toolkit public API.' );
-npcink_governance_core_assert( false !== strpos( $ability_adapter, 'wp_get_abilities' ), 'Ability intake falls back to WordPress Abilities API.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, 'npcink_abilities_toolkit_get_registered' ), 'Ability intake keeps npcink-abilities-toolkit as a compatibility discovery source.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, 'wp_get_abilities' ), 'Ability intake uses WordPress Abilities API as the aggregate discovery source.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, 'definition_to_array' ), 'Ability intake normalizes public WP_Ability getter output.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'none'" ), 'Ability intake has missing-provider diagnostic state.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, 'execution_guidance' ), 'Ability intake adds capability execution guidance.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'governance_mode'" ), 'Ability intake exposes governance mode.' );

@@ -21,17 +21,41 @@ final class Ability_Registry_Adapter {
 	 * @return array<string,mixed>
 	 */
 	public function list_capabilities(): array {
-		$source  = $this->detect_source();
-		$raw_map = $this->raw_abilities_for_source( $source );
-		$items   = array();
+		$sources     = $this->discovery_sources();
+		$source      = ! empty( $sources ) ? (string) $sources[0]['source'] : 'none';
+		$definitions = array();
 
-		foreach ( $raw_map as $ability_id => $definition ) {
-			$normalized_id = $this->normalize_ability_id( $ability_id, $definition );
-			if ( '' === $normalized_id ) {
-				continue;
+		foreach ( $sources as $discovery_source ) {
+			$row_source = (string) $discovery_source['source'];
+			foreach ( (array) $discovery_source['abilities'] as $ability_id => $definition ) {
+				$definition   = $this->definition_to_array( $definition );
+				$normalized_id = $this->normalize_ability_id( $ability_id, $definition );
+				if ( '' === $normalized_id ) {
+					continue;
+				}
+
+				if ( isset( $definitions[ $normalized_id ] ) ) {
+					$definitions[ $normalized_id ]['definition'] = array_replace_recursive(
+						$definition,
+						$definitions[ $normalized_id ]['definition']
+					);
+					continue;
+				}
+
+				$definitions[ $normalized_id ] = array(
+					'definition' => $definition,
+					'source'     => $row_source,
+				);
 			}
+		}
 
-			$items[] = $this->normalize_row( $normalized_id, is_array( $definition ) ? $definition : array(), $source );
+		$items = array();
+		foreach ( $definitions as $ability_id => $discovery_definition ) {
+			$items[] = $this->normalize_row(
+				(string) $ability_id,
+				(array) $discovery_definition['definition'],
+				(string) $discovery_definition['source']
+			);
 		}
 
 		usort(
@@ -86,40 +110,67 @@ final class Ability_Registry_Adapter {
 	}
 
 	/**
-	 * Detects the best available discovery source.
+	 * Returns public discovery sources in precedence order.
 	 *
-	 * @return string
+	 * The WordPress Abilities API is the aggregate registry. The Toolkit helper
+	 * remains a compatibility source for missing definitions and fields.
+	 *
+	 * @return array<int,array{source:string,abilities:array<mixed>}>
 	 */
-	private function detect_source(): string {
-		if ( function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
-			return 'npcink_abilities_toolkit';
-		}
+	private function discovery_sources(): array {
+		$sources = array();
 
 		if ( function_exists( 'wp_get_abilities' ) ) {
-			return 'wordpress_abilities_api';
+			$registered = wp_get_abilities();
+			$sources[]  = array(
+				'source'    => 'wordpress_abilities_api',
+				'abilities' => is_array( $registered ) ? $registered : array(),
+			);
 		}
 
-		return 'none';
+		if ( function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
+			$registered = npcink_abilities_toolkit_get_registered();
+			$sources[]  = array(
+				'source'    => 'npcink_abilities_toolkit',
+				'abilities' => is_array( $registered ) ? $registered : array(),
+			);
+		}
+
+		return $sources;
 	}
 
 	/**
-	 * Returns raw ability definitions.
+	 * Converts one public WordPress ability object to the existing array shape.
 	 *
-	 * @param string $source Source name.
-	 * @return array<mixed>
+	 * @param mixed $definition Raw definition.
+	 * @return array<string,mixed>
 	 */
-	private function raw_abilities_for_source( string $source ): array {
-		if ( 'npcink_abilities_toolkit' === $source ) {
-			$registered = npcink_abilities_toolkit_get_registered();
-			return is_array( $registered ) ? $registered : array();
+	private function definition_to_array( $definition ): array {
+		if ( is_array( $definition ) ) {
+			return $definition;
 		}
 
-		if ( 'wordpress_abilities_api' === $source ) {
-			$registered = wp_get_abilities();
-			return is_array( $registered ) ? $registered : array();
+		if ( ! is_object( $definition ) ) {
+			return array();
 		}
 
-		return array();
+		$method_fields = array(
+			'get_name'          => 'ability_id',
+			'get_label'         => 'label',
+			'get_description'   => 'description',
+			'get_input_schema'  => 'input_schema',
+			'get_output_schema' => 'output_schema',
+			'get_meta'          => 'meta',
+		);
+		$normalized    = array();
+
+		foreach ( $method_fields as $method => $field ) {
+			if ( is_callable( array( $definition, $method ) ) ) {
+				$normalized[ $field ] = $definition->{$method}();
+			}
+		}
+
+		return $normalized;
 	}
 
 	/**
@@ -169,11 +220,13 @@ final class Ability_Registry_Adapter {
 	 */
 	private function normalize_row( string $ability_id, array $definition, string $source ): array {
 		$meta        = is_array( $definition['meta'] ?? null ) ? $definition['meta'] : array();
+		$npcink_meta = is_array( $meta['npcink'] ?? null ) ? $meta['npcink'] : array();
 		$annotations = is_array( $definition['annotations'] ?? null ) ? $definition['annotations'] : array();
 		$risk_level  = $this->first_string(
 			array(
 				$definition['risk_level'] ?? null,
 				$meta['risk_level'] ?? null,
+				$npcink_meta['risk_level'] ?? null,
 				$annotations['risk_level'] ?? null,
 				$definition['mode'] ?? null,
 			),
@@ -185,6 +238,9 @@ final class Ability_Registry_Adapter {
 				$definition['requires_confirm'] ?? null,
 				$definition['requires_approval'] ?? null,
 				$meta['requires_confirm'] ?? null,
+				$meta['requires_approval'] ?? null,
+				$npcink_meta['requires_confirm'] ?? null,
+				$npcink_meta['requires_approval'] ?? null,
 				$annotations['requires_confirm'] ?? null,
 			),
 			in_array( $risk_level, array( 'write', 'destructive' ), true )
@@ -194,6 +250,7 @@ final class Ability_Registry_Adapter {
 			array(
 				$definition['required_scope'] ?? null,
 				$meta['required_scope'] ?? null,
+				$npcink_meta['required_scope'] ?? null,
 			),
 			''
 		);
@@ -214,7 +271,7 @@ final class Ability_Registry_Adapter {
 			'description'       => $this->first_string( array( $definition['description'] ?? null ), '' ),
 			'risk_level'        => sanitize_key( $risk_level ),
 			'requires_approval' => $requires_approval,
-			'capability'        => $this->first_string( array( $definition['capability'] ?? null, $meta['capability'] ?? null ), '' ),
+			'capability'        => $this->first_string( array( $definition['capability'] ?? null, $meta['capability'] ?? null, $npcink_meta['capability'] ?? null ), '' ),
 			'required_scope'    => $required_scope,
 			'required_scopes'   => $required_scopes,
 			'governance_mode'   => $guidance['governance_mode'],

@@ -7,7 +7,7 @@ Status: MVP architecture.
 | Component | Responsibility |
 | --- | --- |
 | `Plugin` | Bootstrap hooks, activation, REST registration, and shared services. |
-| `Ability_Registry_Adapter` | Read-only intake from `npcink-abilities-toolkit` or WordPress Abilities API. |
+| `Ability_Registry_Adapter` | Read-only intake from the aggregate WordPress Abilities API with Toolkit compatibility fallback for missing IDs. |
 | `Proposal_Repository` | Persistence for proposal records. |
 | `Proposal_Service` | Proposal creation and audit coordination. |
 | `Plan_Proposal_Service` | Converts supported read-only planning ability outputs into pending Core proposals without running abilities or writes. |

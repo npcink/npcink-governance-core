@@ -329,9 +329,9 @@ Response `200`:
 ```json
 {
   "available": true,
-  "source": "npcink_abilities_toolkit",
+  "source": "wordpress_abilities_api",
   "count": 1,
-  "message": "Capabilities discovered through npcink-abilities-toolkit public API.",
+  "message": "Capabilities discovered through WordPress Abilities API.",
   "items": [
     {
       "ability_id": "npcink-abilities-toolkit/site-info",
@@ -358,7 +358,7 @@ Response `200`:
       "implementation_posture": {},
       "input_schema": { "type": "object" },
       "output_schema": { "type": "object" },
-      "source": "npcink_abilities_toolkit",
+      "source": "official",
       "raw": {}
     }
   ]

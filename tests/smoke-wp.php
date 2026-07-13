@@ -1405,7 +1405,7 @@ $capabilities = npcink_governance_core_smoke_rest( 'GET', '/npcink-governance-co
 $items        = is_array( $capabilities['items'] ?? null ) ? $capabilities['items'] : array();
 
 npcink_governance_core_smoke_assert( true === (bool) ( $capabilities['available'] ?? false ), 'capability source is available' );
-npcink_governance_core_smoke_assert( 'npcink_abilities_toolkit' === (string) ( $capabilities['source'] ?? '' ), 'capabilities are discovered from npcink-abilities-toolkit' );
+npcink_governance_core_smoke_assert( 'wordpress_abilities_api' === (string) ( $capabilities['source'] ?? '' ), 'capabilities use the WordPress Abilities API aggregate source' );
 npcink_governance_core_smoke_assert( count( $items ) > 0, 'capabilities endpoint returns abilities' );
 
 $runtime_contract = npcink_governance_core_smoke_rest( 'GET', '/npcink-governance-core/v1/contract' );

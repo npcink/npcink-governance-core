@@ -6,17 +6,26 @@ Npcink Governance Core consumes abilities. It does not define product abilities.
 
 ## Discovery Order
 
-1. Prefer `npcink_abilities_toolkit_get_registered()` when the
-   `npcink-abilities-toolkit` reference package is active.
-2. Fall back to WordPress Abilities API discovery with `wp_get_abilities()` when
-   available.
-3. Return an empty list with a diagnostic status when no ability source is
+1. Read the aggregate WordPress Abilities API registry with `wp_get_abilities()`
+   when available.
+2. Merge definitions missing from that aggregate through
+   `npcink_abilities_toolkit_get_registered()` when the reference package is
+   active. For a duplicate ID, WordPress aggregate values win while Toolkit
+   compatibility fields fill values absent from the public WordPress object.
+3. Fall back to the Toolkit helper alone when WordPress aggregate discovery is
+   unavailable.
+4. Return an empty list with a diagnostic status when no ability source is
    available.
 
 The `npcink-abilities-toolkit` package is the reference provider and smoke-test
 baseline, not the only valid source. Core's base intake can normalize any
 currently discoverable WordPress Abilities API row from a provider plugin. See
 [Third-Party Ability Provider Guide](third-party-ability-provider-guide.md).
+
+The top-level `source` reports the first available aggregate source. Each item
+retains its provider-declared `source` when present, otherwise the public source
+that supplied its selected definition. Core does not persist this merged view
+or become a second ability registry.
 
 ## Normalized Capability Row
 
