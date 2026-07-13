@@ -1,5 +1,35 @@
 # Session Breadcrumb
 
+## 2026-07-13 — Real URL article-writing feasibility trial
+
+- **Module**: Cross-repo article writing-pack and draft-preview validation;
+  Core remained a read-only governance boundary observer.
+- **Status**: Technical feasibility passed in an isolated local acceptance
+  window. Three real WordPress source URLs completed extraction, writing-pack
+  generation, and structured draft preview generation without WordPress
+  mutation.
+- **Observed**:
+  - the ordinary development API had previously produced one upstream
+    60-second timeout and one in-flight request cancellation during hot reload;
+  - an ephemeral API instance without hot reload completed all three cases;
+  - research generation took 43.8-48.2 seconds and draft generation took
+    23.6-30.9 seconds per case;
+  - the resulting drafts contained six sections and 7-11 source-grounded facts
+    per case, with actionable Chinese WordPress maintenance/developer angles.
+- **Verified**:
+  - Workflow Toolbox real-URL smoke passed all three cases and exported the
+    local human-review artifact;
+  - WordPress posts, Core proposals, and Core audit records all remained at
+    zero for the trial window;
+  - the temporary Cloud endpoint, WordPress option, and container were removed,
+    and the original local Cloud base URL was preserved.
+- **Next gate**: Have an author or editor judge whether at least two drafts are
+  faster to edit than writing from scratch. Do not add translation, retry
+  queues, vector rewriting, or automatic publishing before that value gate.
+- **Boundary**: No Core, Toolbox, Cloud, Add-on, or WordPress product behavior
+  changed. Core did not gain article workflow, provider, runtime, or final
+  write ownership.
+
 ## 2026-07-11 — Native editor commit pre-classification exclusion
 
 - **Module**: Operation classification discovery and Core runtime contract.
