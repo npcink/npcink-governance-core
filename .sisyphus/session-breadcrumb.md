@@ -23,9 +23,18 @@
     zero for the trial window;
   - the temporary Cloud endpoint, WordPress option, and container were removed,
     and the original local Cloud base URL was preserved.
-- **Next gate**: Have an author or editor judge whether at least two drafts are
-  faster to edit than writing from scratch. Do not add translation, retry
-  queues, vector rewriting, or automatic publishing before that value gate.
+- **Editor-value proxy**:
+  - fact-checking rejected the WordPress 6.9.2 release draft as a standalone
+    July article because WordPress 7.0 had already shipped;
+  - the April source was reframed from outdated delay coverage into a current
+    WordPress 7.0 upgrade checklist and saved as local draft `286721`;
+  - the June developer roundup became a focused plugin/theme testing checklist
+    and was saved as local draft `286722`;
+  - both drafts use native Gutenberg blocks, remain unpublished, retain source
+    links, and are marked `approved_for_draft` for operator review.
+- **Next gate**: The author or editor should open drafts `286721` and `286722`
+  and decide whether they are worth keeping. Do not add translation, retry
+  queues, vector rewriting, or automatic publishing before that adoption gate.
 - **Boundary**: No Core, Toolbox, Cloud, Add-on, or WordPress product behavior
   changed. Core did not gain article workflow, provider, runtime, or final
   write ownership.
