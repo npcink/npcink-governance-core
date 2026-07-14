@@ -10,7 +10,8 @@ Status: MVP architecture.
 | `Ability_Registry_Adapter` | Read-only intake from the aggregate WordPress Abilities API with Toolkit compatibility fallback for missing IDs. |
 | `Proposal_Repository` | Persistence for proposal records. |
 | `Proposal_Service` | Proposal creation and audit coordination. |
-| `Plan_Proposal_Service` | Converts supported read-only planning ability outputs into pending Core proposals without running abilities or writes. |
+| `Plan_Contract_Validator` | Owns the closed plan-ability allowlist and fail-closed, family-specific intake validation without executing or persisting plans. |
+| `Plan_Proposal_Service` | Orchestrates conversion of already-validated read-only plan outputs into pending Core proposals, including preview assembly, audit, and rollback, without running abilities or writes. |
 | `Commit_Preflight_Service` | Approval-commit readiness checks without executing abilities. |
 | `Read_Request_Repository` | Persistence for Core-owned sensitive read authorization requests. |
 | `Read_Request_Service` | Sensitive read request creation, approval/rejection, expiry, one-time consumption, bounded read preflight, and audit coordination. |

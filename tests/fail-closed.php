@@ -1236,6 +1236,7 @@ require_once dirname( __DIR__ ) . '/includes/Governance/Proposal_Repository.php'
 require_once dirname( __DIR__ ) . '/includes/Governance/Proposal_Service.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Read_Request_Repository.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Read_Request_Service.php';
+require_once dirname( __DIR__ ) . '/includes/Governance/Plan_Contract_Validator.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Plan_Proposal_Service.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Commit_Preflight_Service.php';
 require_once dirname( __DIR__ ) . '/includes/Security/App_Key_Repository.php';
@@ -1345,7 +1346,7 @@ function npcink_governance_core_fail_closed_proposals_controller_stack(): array 
 		new \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator()
 	);
 	$preflight = new \Npcink\GovernanceCore\Governance\Commit_Preflight_Service( $proposals, $abilities, $audit );
-	$plan      = new \Npcink\GovernanceCore\Governance\Plan_Proposal_Service( $abilities, $service, $audit );
+	$plan      = new \Npcink\GovernanceCore\Governance\Plan_Proposal_Service( $abilities, $service, $audit, new \Npcink\GovernanceCore\Governance\Plan_Contract_Validator() );
 	$auth      = new \Npcink\GovernanceCore\Security\App_Authenticator(
 		new \Npcink\GovernanceCore\Security\App_Key_Repository(),
 		new \Npcink\GovernanceCore\Security\App_Rate_Limiter(),
@@ -1446,7 +1447,7 @@ function npcink_governance_core_fail_closed_plan_stack(): array {
 	$preflight = new \Npcink\GovernanceCore\Governance\Commit_Preflight_Service( $proposals, $abilities, $audit );
 
 	return array(
-		'service'          => new \Npcink\GovernanceCore\Governance\Plan_Proposal_Service( $abilities, $proposal_service, $audit ),
+		'service'          => new \Npcink\GovernanceCore\Governance\Plan_Proposal_Service( $abilities, $proposal_service, $audit, new \Npcink\GovernanceCore\Governance\Plan_Contract_Validator() ),
 		'proposal_service' => $proposal_service,
 		'preflight'        => $preflight,
 		'proposals'        => $proposals,

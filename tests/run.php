@@ -2218,7 +2218,63 @@ npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'ada
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'confirm_token' ), 'Commit preflight rejects confirm_token input.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, 'write_confirmed' ), 'Commit preflight rejects write_confirmed input.' );
 
-$plan_proposal_service = npcink_governance_core_read( $root . '/includes/Governance/Plan_Proposal_Service.php' );
+$plan_proposal_service    = npcink_governance_core_read( $root . '/includes/Governance/Plan_Proposal_Service.php' );
+$plan_contract_validator  = npcink_governance_core_read( $root . '/includes/Governance/Plan_Contract_Validator.php' );
+$plan_contract_components = $plan_proposal_service . "\n" . $plan_contract_validator;
+npcink_governance_core_assert( false !== strpos( $plan_contract_validator, 'final class Plan_Contract_Validator' ), 'Plan contract validator class exists.' );
+npcink_governance_core_assert( false !== strpos( $plan_proposal_service, '$this->validator->supports( $plan_ability_id )' ), 'Plan proposal service delegates allowlist checks to the validator.' );
+npcink_governance_core_assert( false !== strpos( $plan_proposal_service, '$this->validator->validate( $plan_ability_id, $plan )' ), 'Plan proposal service delegates common and ability-specific validation to the validator.' );
+npcink_governance_core_assert( false === strpos( $plan_proposal_service, 'private $allowed_plan_abilities' ), 'Plan proposal service no longer owns the plan ability allowlist.' );
+foreach (
+	array(
+		'validate_plan_contract',
+		'validate_article_write_plan_contract',
+		'validate_article_batch_write_plan_contract',
+		'validate_article_media_batch_write_plan_contract',
+		'validate_image_candidate_adoption_plan_contract',
+		'validate_image_candidate_adoption_action',
+		'validate_article_audio_adoption_plan_contract',
+		'validate_site_knowledge_review_plan_contract',
+		'validate_nightly_inspection_review_plan_contract',
+		'validate_content_metadata_apply_plan_contract',
+		'validate_media_alt_apply_plan_contract',
+		'validate_media_optimization_plan_contract',
+		'validate_media_adoption_enhancement_plan_contract',
+		'validate_media_adoption_enhancement_action',
+		'validate_media_rename_plan_contract',
+		'validate_article_optimization_apply_plan_contract',
+		'validate_article_block_plan_contract',
+		'validate_pattern_page_plan_contract',
+		'validate_block_theme_site_plan_contract',
+		'validate_block_theme_site_blocks',
+		'validate_block_theme_site_layout_contract',
+		'validate_draft_blocks_batch_actions',
+		'validate_article_artifacts',
+		'validate_article_draft_action',
+		'validate_article_media_batch_action',
+	) as $validator_method
+) {
+	npcink_governance_core_assert( false !== strpos( $plan_contract_validator, 'function ' . $validator_method . '(' ), 'Plan contract validator owns method: ' . $validator_method );
+	npcink_governance_core_assert( false === strpos( $plan_proposal_service, 'function ' . $validator_method . '(' ), 'Plan proposal service no longer owns validator method: ' . $validator_method );
+}
+foreach (
+	array(
+		'inspect_block_theme_site_blocks',
+		'block_theme_site_allowed_blocks',
+		'block_theme_site_allowed_template_slugs',
+		'block_theme_site_block_contains_forbidden_html',
+		'block_class_names',
+		'sanitize_block_class_name',
+		'is_exact_output_reference',
+		'is_valid_absolute_url',
+		'article_workflow_artifact_keys',
+		'nightly_inspection_core_intake_package',
+		'nightly_inspection_selected_review_items',
+	) as $validator_helper
+) {
+	npcink_governance_core_assert( false !== strpos( $plan_contract_validator, 'function ' . $validator_helper . '(' ), 'Plan contract validator owns helper: ' . $validator_helper );
+	npcink_governance_core_assert( false === strpos( $plan_proposal_service, 'function ' . $validator_helper . '(' ), 'Plan proposal service no longer defines validator helper: ' . $validator_helper );
+}
 foreach (
 	array(
 		'Plan_Proposal_Service',
@@ -2399,7 +2455,7 @@ foreach (
 		'Preserve the original file as a local backup for rollback',
 	) as $required
 ) {
-	npcink_governance_core_assert( false !== strpos( $plan_proposal_service, $required ), 'Plan-to-proposal service contains required text: ' . $required );
+	npcink_governance_core_assert( false !== strpos( $plan_contract_components, $required ), 'Plan-to-proposal components contain required text: ' . $required );
 }
 
 $smoke_wp = npcink_governance_core_read( $root . '/tests/smoke-wp.php' );
@@ -2450,7 +2506,7 @@ $canonical_plan_ability_ids = array(
 	'npcink-abilities-toolkit/build-content-metadata-apply-plan',
 );
 foreach ( $canonical_plan_ability_ids as $ability_id ) {
-	npcink_governance_core_assert( false !== strpos( $plan_proposal_service, $ability_id ), 'Plan service allowlist contains canonical plan ability: ' . $ability_id );
+	npcink_governance_core_assert( false !== strpos( $plan_contract_validator, $ability_id ), 'Plan validator allowlist contains canonical plan ability: ' . $ability_id );
 	npcink_governance_core_assert( false !== strpos( $governance, $ability_id ), 'Governance contract contains canonical plan ability: ' . $ability_id );
 	npcink_governance_core_assert( false !== strpos( $rest_contract, $ability_id ), 'REST contract contains canonical plan ability: ' . $ability_id );
 	npcink_governance_core_assert( false !== strpos( $ability_intake, $ability_id ), 'Ability intake contract contains canonical plan ability: ' . $ability_id );
