@@ -244,6 +244,9 @@ Add or update tests when changing:
 - audit events;
 - table schema;
 - ability intake normalization;
+- fail-closed intake for missing, invalid, conflicting, REST-hidden, or
+  approval-conflicting provider metadata across proposal, plan, read, and
+  preflight entrypoints;
 - approval-commit contract;
 - security or permission behavior.
 - performance-sensitive bounded intake or indexed-filter behavior.

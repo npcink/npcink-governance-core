@@ -91,7 +91,24 @@ final class Plan_Proposal_Service {
 			);
 		}
 
-		if ( 'direct_read' !== (string) ( $plan_capability['governance_mode'] ?? '' ) || 'wp_abilities_rest' !== (string) ( $plan_capability['execution_surface'] ?? '' ) ) {
+		if ( 'ready' !== (string) ( $plan_capability['intake_status'] ?? '' ) ) {
+			return new WP_Error(
+				'npcink_governance_core_plan_ability_intake_blocked',
+				__( 'The planning ability is blocked by the Core ability intake contract.', 'npcink-governance-core' ),
+				array(
+					'status'         => 409,
+					'ability_id'     => $plan_ability_id,
+					'intake_reasons' => (array) ( $plan_capability['intake_reasons'] ?? array() ),
+				)
+			);
+		}
+
+		if (
+			'read' !== (string) ( $plan_capability['risk_level'] ?? '' )
+			|| true === (bool) ( $plan_capability['requires_approval'] ?? false )
+			|| 'wp_abilities_rest' !== (string) ( $plan_capability['execution_surface'] ?? '' )
+			|| ! in_array( (string) ( $plan_capability['governance_mode'] ?? '' ), array( 'direct_read', 'core_read_authorization_required' ), true )
+		) {
 			return new WP_Error(
 				'npcink_governance_core_plan_ability_not_read_only',
 				__( 'Plan-to-proposal intake accepts only direct-read planning abilities.', 'npcink-governance-core' ),
@@ -694,6 +711,17 @@ final class Plan_Proposal_Service {
 		$target = $this->abilities->find( $target_ability_id );
 		if ( null === $target ) {
 			return $this->blocked_error( 'target_ability_unavailable', 'Write action target ability is not currently discoverable.', array( 'target_ability_id' => $target_ability_id ) );
+		}
+
+		if ( 'ready' !== (string) ( $target['intake_status'] ?? '' ) ) {
+			return $this->blocked_error(
+				'target_ability_intake_blocked',
+				'Write action target ability is blocked by the Core ability intake contract.',
+				array(
+					'target_ability_id' => $target_ability_id,
+					'intake_reasons'    => (array) ( $target['intake_reasons'] ?? array() ),
+				)
+			);
 		}
 
 		if ( 'proposal_required' !== (string) ( $target['governance_mode'] ?? '' ) || true !== (bool) ( $target['requires_approval'] ?? false ) ) {

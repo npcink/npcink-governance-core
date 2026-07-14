@@ -14,6 +14,7 @@ A final write or destructive operation may execute only when all are true:
 - the proposal exists;
 - the proposal is approved;
 - the target ability is still available;
+- the target ability still has `intake_status=ready`;
 - the current user or caller has permission;
 - the request includes Core-generated approval context;
 - idempotency checks pass;
@@ -38,6 +39,8 @@ Preflight must:
 
 - fail unless the proposal exists and is approved;
 - fail when the target ability is no longer discoverable;
+- fail when the target ability is discoverable but blocked by fail-closed
+  intake;
 - fail when the target ability's governance-relevant contract has changed since
   proposal creation;
 - fail when the target ability's provider-declared `implementation_posture`

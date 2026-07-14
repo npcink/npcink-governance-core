@@ -170,6 +170,7 @@ Architecture decisions:
 - [ADR-005: Keep Core Independent And Standardize Channel Adapters](docs/decisions/ADR-005-keep-core-independent-and-standardize-channel-adapters.md)
 - [ADR-006: Unattended Batch Automation Runtime Boundary](docs/decisions/ADR-006-unattended-batch-automation-runtime-boundary.md)
 - [ADR-007: Dedicated Local Automation Runtime Owner](docs/decisions/ADR-007-dedicated-local-automation-runtime-owner.md)
+- [ADR-008: Fail Closed At Ability Intake](docs/decisions/ADR-008-fail-closed-ability-intake.md)
 
 External agent clients can start from the
 [OpenClaw governance adapter example](examples/openclaw-governance-adapter/README.md).

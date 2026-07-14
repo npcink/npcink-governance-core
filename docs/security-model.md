@@ -4,6 +4,13 @@ Status: active for MVP.
 
 Npcink Governance Core is a governance plugin. The security model must fail closed.
 
+Ability discovery is diagnostic, not authorization. Missing, invalid,
+contradictory, or explicitly REST-hidden provider contracts remain visible as
+`intake_status=blocked` but cannot create proposals, enter plan intake, receive
+sensitive-read grants, or pass commit preflight. Missing read sensitivity is
+treated as sensitive and requires a Core read request rather than being
+inferred public or directly readable.
+
 ## MVP Authorization
 
 MVP REST routes require either an administrator session or an explicitly

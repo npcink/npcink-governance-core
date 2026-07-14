@@ -36,12 +36,40 @@ Core normalizes each ability to:
 - `description`
 - `risk_level`
 - `requires_approval`
+- `intake_contract_version=core-ability-intake-v1`
+- `intake_status=ready|blocked`
+- `intake_reasons`
 - `input_schema`
 - `output_schema`
 - `implementation_posture_available`
 - `implementation_posture`
 - `source`
 - `raw`
+
+## Fail-Closed Intake Readiness
+
+Discovery is not authorization. Core keeps incomplete provider rows visible
+for diagnosis, but only `intake_status=ready` rows can enter proposal, plan,
+sensitive-read, or commit-preflight paths.
+
+Core consumes WordPress-standard `meta.annotations.readonly`,
+`meta.annotations.destructive`, and `meta.show_in_rest`. It preserves and
+compares every supported provider declaration before duplicate ability ids are
+merged instead of accepting a first-value winner, and
+accepts only the exact `read`, `write`, and `destructive` risk set. Missing or invalid
+risk evidence, conflicts within or across provider and standard annotations,
+`readonly=true` combined with `destructive=true`, write-like abilities that
+explicitly disable approval, read abilities that incorrectly request write
+approval, and any REST exposure state other than canonical
+`meta.show_in_rest === true` as a literal boolean produce stable reason keys
+and a blocked row. Top-level or Npcink mirrors can expose conflicts but cannot
+establish REST eligibility. Blocked rows use `governance_mode=blocked` and
+`execution_surface=none`.
+
+The top-level capability response includes `ready_count` and `blocked_count`.
+Missing read sensitivity defaults to `sensitive`, requires Core read
+authorization, and defaults to `redaction_required=true`. See
+[ADR-008](decisions/ADR-008-fail-closed-ability-intake.md).
 
 `implementation_posture` is provider-owned metadata. Core normalizes and
 redacts it for `/capabilities`, proposal review visibility, and ability
@@ -108,10 +136,12 @@ abilities:
 - `npcink-toolbox/build-nightly-inspection-review-plan`
 - `npcink-abilities-toolkit/build-content-metadata-apply-plan`
 
-They must remain discoverable as `governance_mode=direct_read` with
-`execution_surface=wp_abilities_rest`. Core does not execute them. A host or
-adapter runs the plan through WordPress Abilities API and submits the resulting
-plan payload to Core.
+They must remain discoverable as read-risk abilities with
+`execution_surface=wp_abilities_rest`. Their `governance_mode` may be
+`direct_read` or `core_read_authorization_required` according to declared read
+sensitivity. Core does not execute them. A host or adapter runs the plan
+through WordPress Abilities API, satisfying any read-authorization contract,
+and submits the resulting plan payload to Core.
 
 This bridge is intentionally narrower than ordinary proposal creation. It is
 not a generic third-party workflow runtime. Providers outside this list should

@@ -1,5 +1,18 @@
 # Session Breadcrumb
 
+## 2026-07-14 — Fail-closed ability intake hardening
+
+- **Module**: Core ability discovery admission and governance service gates.
+- **Status**: Discovered abilities remain diagnosable, but incomplete,
+  contradictory, approval-conflicting, or explicitly REST-hidden contracts are
+  blocked before proposal, plan, sensitive-read, or commit-preflight intake.
+- **Boundary**: No ability definitions, execution routes, tables, workflow
+  runtime, queues, product UI, or provider credential ownership were added.
+- **Verification**: Core static contracts, fail-closed fault injection,
+  PHPStan, Composer validation, and the real WordPress smoke all pass.
+- **Next gate**: Continue with the Toolbox-owned security/performance milestone,
+  then run the cross-repository quality matrix.
+
 ## 2026-07-13 — Real URL article-writing feasibility trial
 
 - **Module**: Cross-repo article writing-pack and draft-preview validation;

@@ -326,8 +326,10 @@ Write and destructive commits must fail closed unless the commit request carries
 host approval context created by Core.
 
 Proposal creation validates that the target ability is currently discoverable.
+It also requires `intake_status=ready`; discovery alone is not sufficient.
 Commit preflight repeats discovery against the stored real `ability_id` and
-fails closed if that ability disappeared after approval. Proposal creation also
+fails closed if that ability disappeared or became blocked after approval.
+Proposal creation also
 stores a governance-relevant ability contract fingerprint covering risk,
 approval requirement, execution guidance, WordPress capability, required scopes,
 input schema, and provider-declared `implementation_posture` metadata when

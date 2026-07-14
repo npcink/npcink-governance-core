@@ -1627,6 +1627,15 @@ npcink_governance_core_assert( false !== strpos( $ability_adapter, "'execution_s
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'core_proxy_execute'" ), 'Ability intake reports no Core proxy execution.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'direct_read'" ), 'Ability intake guides direct read abilities.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'proposal_required'" ), 'Ability intake guides proposal-required abilities.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'intake_contract_version'" ), 'Ability intake exposes a versioned readiness contract.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'intake_status'" ), 'Ability intake exposes ready or blocked status.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'intake_reasons'" ), 'Ability intake exposes stable fail-closed reason keys.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'ready_count'" ), 'Ability intake reports ready capability count.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'blocked_count'" ), 'Ability intake reports blocked capability count.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'risk_undeclared'" ), 'Ability intake blocks undeclared risk instead of defaulting to read.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'risk_annotations_conflict'" ), 'Ability intake blocks contradictory provider risk and WordPress annotations.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'rest_exposure_disabled'" ), 'Ability intake blocks explicitly REST-hidden abilities.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'write_approval_conflict'" ), 'Ability intake blocks write abilities that explicitly disable approval.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'read_policy'" ), 'Ability intake exposes read policy.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'read_authorization_required'" ), 'Ability intake exposes read authorization required flag.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'requires_read_authorization'" ), 'Ability intake exposes Adapter-compatible read authorization flag.' );
@@ -1636,7 +1645,9 @@ npcink_governance_core_assert( false !== strpos( $ability_adapter, 'read_authori
 npcink_governance_core_assert( false !== strpos( $ability_adapter, 'core_read_authorization_required' ), 'Ability intake marks sensitive reads as Core authorization required.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'sensitivity'" ), 'Ability intake exposes read sensitivity.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'redaction_required'" ), 'Ability intake exposes read redaction requirement.' );
-npcink_governance_core_assert( false !== strpos( $ability_adapter, 'infer_read_sensitivity' ), 'Ability intake infers read sensitivity when providers omit it.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, 'sensitivity_contract' ), 'Ability intake resolves undeclared and conflicting read sensitivity conservatively.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'risk_sources_conflict'" ), 'Ability intake compares risk declarations across provider sources.' );
+npcink_governance_core_assert( false !== strpos( $ability_adapter, "'rest_exposure_undeclared'" ), 'Ability intake requires explicit REST exposure.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, 'implementation_posture_metadata' ), 'Ability intake reads provider implementation posture metadata.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'implementation_posture_available'" ), 'Ability intake exposes implementation posture availability.' );
 npcink_governance_core_assert( false !== strpos( $ability_adapter, "'implementation_posture'" ), 'Ability intake exposes implementation posture metadata.' );
@@ -1655,6 +1666,24 @@ npcink_governance_core_assert( false !== strpos( $ability_intake, 'Set Post SEO 
 npcink_governance_core_assert( false !== strpos( $ability_intake, 'Approve Comment Governance Scenario' ), 'Ability intake contract points to the approve-comment scenario.' );
 npcink_governance_core_assert( false !== strpos( $ability_intake, 'Taxonomy Terms Preview Governance Scenario' ), 'Ability intake contract points to the taxonomy terms preview scenario.' );
 npcink_governance_core_assert( false !== strpos( $ability_intake, 'core/categories' ), 'Ability intake contract documents safe categories block for homepage layouts.' );
+npcink_governance_core_assert( false !== strpos( $ability_intake, 'Fail-Closed Intake Readiness' ), 'Ability intake contract documents discovery versus admission.' );
+npcink_governance_core_assert( false !== strpos( $ability_intake, 'intake_status=ready' ), 'Ability intake contract requires ready status at governance entrypoints.' );
+
+$ability_intake_adr = npcink_governance_core_read( $root . '/docs/decisions/ADR-008-fail-closed-ability-intake.md' );
+npcink_governance_core_assert( false !== strpos( $ability_intake_adr, 'Fail Closed At Ability Intake' ), 'ADR-008 records the fail-closed intake decision.' );
+npcink_governance_core_assert( false !== strpos( $ability_intake_adr, 'execution_surface=none' ), 'ADR-008 keeps blocked abilities non-executable.' );
+
+$proposal_service_source = npcink_governance_core_read( $root . '/includes/Governance/Proposal_Service.php' );
+$plan_service_source = npcink_governance_core_read( $root . '/includes/Governance/Plan_Proposal_Service.php' );
+$read_request_service_source = npcink_governance_core_read( $root . '/includes/Governance/Read_Request_Service.php' );
+$commit_preflight_source = npcink_governance_core_read( $root . '/includes/Governance/Commit_Preflight_Service.php' );
+npcink_governance_core_assert( false !== strpos( $proposal_service_source, 'npcink_governance_core_ability_intake_blocked' ), 'Proposal creation rejects blocked ability intake.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service_source, 'npcink_governance_core_ability_not_proposal_eligible' ), 'Proposal creation admits only governed write or destructive abilities.' );
+npcink_governance_core_assert( false !== strpos( $plan_service_source, 'npcink_governance_core_plan_ability_intake_blocked' ), 'Plan intake rejects a blocked planning ability.' );
+npcink_governance_core_assert( false !== strpos( $plan_service_source, 'target_ability_intake_blocked' ), 'Plan intake rejects blocked target abilities.' );
+npcink_governance_core_assert( false !== strpos( $read_request_service_source, 'intake_blocked_error' ), 'Sensitive read lifecycle rejects blocked ability intake.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_source, 'npcink_governance_core_ability_intake_blocked' ), 'Commit preflight rejects blocked ability intake.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_source, 'npcink_governance_core_ability_not_proposal_eligible' ), 'Commit preflight rechecks governed write eligibility.' );
 
 $shared_replay_path = npcink_governance_core_shared_replay_fixture_path( $root );
 npcink_governance_core_assert( '' !== $shared_replay_path, 'Shared npcink-abilities-toolkit replay fixture is available for Core static proof.' );

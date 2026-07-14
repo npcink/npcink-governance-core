@@ -105,6 +105,37 @@ final class Proposal_Service {
 			);
 		}
 
+		if ( 'ready' !== (string) ( $capability['intake_status'] ?? '' ) ) {
+			return new WP_Error(
+				'npcink_governance_core_ability_intake_blocked',
+				__( 'Proposal target ability is blocked by the Core ability intake contract.', 'npcink-governance-core' ),
+				array(
+					'status'         => 409,
+					'ability_id'     => $ability_id,
+					'intake_reasons' => (array) ( $capability['intake_reasons'] ?? array() ),
+				)
+			);
+		}
+		if (
+			! in_array( (string) ( $capability['risk_level'] ?? '' ), array( 'write', 'destructive' ), true )
+			|| true !== (bool) ( $capability['requires_approval'] ?? false )
+			|| 'proposal_required' !== (string) ( $capability['governance_mode'] ?? '' )
+			|| 'adapter_after_core_preflight' !== (string) ( $capability['execution_surface'] ?? '' )
+		) {
+			return new WP_Error(
+				'npcink_governance_core_ability_not_proposal_eligible',
+				__( 'Proposal target ability is not eligible for governed write approval.', 'npcink-governance-core' ),
+				array(
+					'status'            => 409,
+					'ability_id'        => $ability_id,
+					'risk_level'        => (string) ( $capability['risk_level'] ?? '' ),
+					'requires_approval' => (bool) ( $capability['requires_approval'] ?? false ),
+					'governance_mode'   => (string) ( $capability['governance_mode'] ?? '' ),
+					'execution_surface' => (string) ( $capability['execution_surface'] ?? '' ),
+				)
+			);
+		}
+
 		$input  = is_array( $payload['input'] ?? null ) ? $payload['input'] : array();
 		$preview = is_array( $payload['preview'] ?? null ) ? $payload['preview'] : array();
 		$caller = is_array( $payload['caller'] ?? null ) ? $payload['caller'] : array();
@@ -837,6 +868,8 @@ final class Proposal_Service {
 			'ability_id'        => sanitize_text_field( (string) ( $capability['ability_id'] ?? '' ) ),
 			'risk_level'        => sanitize_key( (string) ( $capability['risk_level'] ?? '' ) ),
 			'requires_approval' => (bool) ( $capability['requires_approval'] ?? false ),
+			'intake_status'     => sanitize_key( (string) ( $capability['intake_status'] ?? '' ) ),
+			'intake_reasons'    => array_values( array_map( 'sanitize_key', (array) ( $capability['intake_reasons'] ?? array() ) ) ),
 			'governance_mode'   => sanitize_key( (string) ( $capability['governance_mode'] ?? '' ) ),
 			'execution_surface' => sanitize_key( (string) ( $capability['execution_surface'] ?? '' ) ),
 			'capability'        => sanitize_key( (string) ( $capability['capability'] ?? '' ) ),

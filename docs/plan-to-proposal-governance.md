@@ -472,7 +472,9 @@ Plan intake fails closed when:
 
 - the planning ability id is not supported;
 - the planning ability is not discoverable;
-- the planning ability is not `governance_mode=direct_read`;
+- the planning ability is not read-risk, is write-approval gated, lacks the
+  WordPress Abilities REST surface, or has a governance mode other than
+  `direct_read` / `core_read_authorization_required`;
 - the plan does not include `requires_approval=true`;
 - the plan does not include `dry_run=true`;
 - the plan includes `commit_execution=true`;

@@ -468,7 +468,7 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 			return $npcink_governance_core_fail_closed_abilities;
 		}
 
-		return array(
+		$abilities = array(
 			'npcink-abilities-toolkit/create-draft' => array(
 				'ability_id'        => 'npcink-abilities-toolkit/create-draft',
 				'label'             => 'Create Draft',
@@ -519,7 +519,7 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 			'npcink-abilities-toolkit/update-template-blocks' => array(
 				'ability_id'        => 'npcink-abilities-toolkit/update-template-blocks',
 				'label'             => 'Update Template Blocks',
-				'risk_level'        => 'high',
+				'risk_level'        => 'write',
 				'requires_approval' => true,
 				'capability'        => 'edit_theme_options',
 				'required_scopes'   => array( 'site.write' ),
@@ -529,7 +529,7 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 			'npcink-abilities-toolkit/upsert-template-blocks' => array(
 				'ability_id'        => 'npcink-abilities-toolkit/upsert-template-blocks',
 				'label'             => 'Upsert Template Blocks',
-				'risk_level'        => 'high',
+				'risk_level'        => 'write',
 				'requires_approval' => true,
 				'capability'        => 'edit_theme_options',
 				'required_scopes'   => array( 'site.write' ),
@@ -786,6 +786,22 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'output_schema'     => array( 'type' => 'object' ),
 			),
 		);
+
+		foreach ( $abilities as &$ability ) {
+			$risk = (string) ( $ability['risk_level'] ?? '' );
+			$ability['meta'] = is_array( $ability['meta'] ?? null ) ? $ability['meta'] : array();
+			$ability['meta']['show_in_rest'] = true;
+			$ability['meta']['annotations'] = array(
+				'readonly'    => 'read' === $risk,
+				'destructive' => 'destructive' === $risk,
+			);
+			if ( 'read' === $risk && ! array_key_exists( 'sensitivity', $ability ) ) {
+				$ability['sensitivity'] = 'internal';
+			}
+		}
+		unset( $ability );
+
+		return $abilities;
 	}
 }
 
@@ -4365,6 +4381,11 @@ $npcink_governance_core_fail_closed_native_abilities = array(
 
 		public function get_meta(): array {
 			return array(
+				'annotations'  => array(
+					'readonly'    => false,
+					'destructive' => false,
+				),
+				'show_in_rest' => true,
 				'npcink' => array(
 					'risk_level'       => 'write',
 					'requires_approval' => true,
@@ -4373,6 +4394,150 @@ $npcink_governance_core_fail_closed_native_abilities = array(
 			);
 		}
 	},
+	'third-party/annotation-destructive' => array(
+		'ability_id' => 'third-party/annotation-destructive',
+		'label'      => 'Annotation Destructive',
+		'meta'       => array(
+			'annotations'  => array(
+				'readonly'    => false,
+				'destructive' => true,
+			),
+			'show_in_rest' => true,
+		),
+	),
+	'third-party/ambiguous-risk' => array(
+		'ability_id' => 'third-party/ambiguous-risk',
+		'label'      => 'Ambiguous Risk',
+		'meta'       => array(
+			'annotations'  => array(
+				'readonly'    => null,
+				'destructive' => null,
+			),
+			'show_in_rest' => true,
+		),
+	),
+	'third-party/conflicting-risk' => array(
+		'ability_id' => 'third-party/conflicting-risk',
+		'label'      => 'Conflicting Risk',
+		'risk_level' => 'read',
+		'meta'       => array(
+			'annotations'  => array(
+				'readonly'    => false,
+				'destructive' => true,
+			),
+			'show_in_rest' => true,
+		),
+	),
+	'third-party/provider-risk-conflict' => array(
+		'ability_id' => 'third-party/provider-risk-conflict',
+		'label'      => 'Provider Risk Conflict',
+		'risk_level' => 'read',
+		'meta'       => array(
+			'annotations'  => array( 'readonly' => null, 'destructive' => null ),
+			'show_in_rest' => true,
+			'npcink'       => array( 'risk_level' => 'destructive' ),
+		),
+	),
+	'npcink-abilities-toolkit/update-post' => array(
+		'ability_id'        => 'npcink-abilities-toolkit/update-post',
+		'label'             => 'Cross Source Risk Conflict',
+		'risk_level'        => 'read',
+		'requires_approval' => false,
+		'sensitivity'       => 'public',
+		'meta'              => array(
+			'annotations'  => array( 'readonly' => true, 'destructive' => false ),
+			'show_in_rest' => true,
+		),
+	),
+	'npcink-abilities-toolkit/patch-post-content' => array(
+		'ability_id'        => 'npcink-abilities-toolkit/patch-post-content',
+		'label'             => 'Cross Source Annotation Conflict',
+		'risk_level'        => 'write',
+		'requires_approval' => true,
+		'meta'              => array(
+			'annotations'  => array( 'readonly' => true, 'destructive' => false ),
+			'show_in_rest' => true,
+		),
+	),
+	'third-party/invalid-risk-alias' => array(
+		'ability_id' => 'third-party/invalid-risk-alias',
+		'label'      => 'Invalid Risk Alias',
+		'risk_level' => 'high',
+		'meta'       => array(
+			'annotations'  => array( 'readonly' => null, 'destructive' => null ),
+			'show_in_rest' => true,
+		),
+	),
+	'third-party/rest-hidden' => array(
+		'ability_id' => 'third-party/rest-hidden',
+		'label'      => 'REST Hidden',
+		'risk_level' => 'read',
+		'meta'       => array(
+			'annotations'  => array(
+				'readonly'    => true,
+				'destructive' => false,
+			),
+			'show_in_rest' => false,
+		),
+	),
+	'third-party/rest-undeclared' => array(
+		'ability_id' => 'third-party/rest-undeclared',
+		'label'      => 'REST Undeclared',
+		'risk_level' => 'read',
+		'meta'       => array(
+			'annotations' => array( 'readonly' => true, 'destructive' => false ),
+		),
+	),
+	'third-party/rest-top-level-only' => array(
+		'ability_id'   => 'third-party/rest-top-level-only',
+		'label'        => 'REST Top Level Only',
+		'risk_level'   => 'read',
+		'show_in_rest' => true,
+		'meta'         => array(
+			'annotations' => array( 'readonly' => true, 'destructive' => false ),
+		),
+	),
+	'third-party/rest-npcink-only' => array(
+		'ability_id' => 'third-party/rest-npcink-only',
+		'label'      => 'REST Npcink Only',
+		'risk_level' => 'read',
+		'meta'       => array(
+			'annotations' => array( 'readonly' => true, 'destructive' => false ),
+			'npcink'      => array( 'show_in_rest' => true ),
+		),
+	),
+	'third-party/rest-string-true' => array(
+		'ability_id' => 'third-party/rest-string-true',
+		'label'      => 'REST String True',
+		'risk_level' => 'read',
+		'meta'       => array(
+			'annotations'  => array( 'readonly' => true, 'destructive' => false ),
+			'show_in_rest' => '1',
+		),
+	),
+	'third-party/undeclared-sensitivity' => array(
+		'ability_id' => 'third-party/undeclared-sensitivity',
+		'label'      => 'Undeclared Sensitivity',
+		'risk_level' => 'read',
+		'meta'       => array(
+			'annotations'  => array(
+				'readonly'    => true,
+				'destructive' => false,
+			),
+			'show_in_rest' => true,
+		),
+	),
+	'npcink-toolbox/build-article-write-plan' => array(
+		'ability_id' => 'npcink-toolbox/build-article-write-plan',
+		'label'      => 'REST Hidden Article Plan',
+		'meta'       => array(
+			'annotations'  => array(
+				'readonly'    => true,
+				'destructive' => false,
+			),
+			'show_in_rest' => false,
+		),
+	),
 	'npcink-abilities-toolkit/create-draft' => array(
 		'ability_id'        => 'npcink-abilities-toolkit/create-draft',
 		'label'             => 'Native Aggregate Create Draft',
@@ -4397,6 +4562,80 @@ npcink_governance_core_fail_closed_assert( 'wordpress_abilities_api' === (string
 npcink_governance_core_fail_closed_assert( isset( $discovered_items['npcink-abilities-toolkit/read-error-log'] ), 'Toolkit compatibility discovery fills abilities missing from the native aggregate.' );
 npcink_governance_core_fail_closed_assert( 'Native Aggregate Create Draft' === (string) ( $discovered_items['npcink-abilities-toolkit/create-draft']['label'] ?? '' ), 'Native aggregate definition wins when both public sources contain the same ability id.' );
 npcink_governance_core_fail_closed_assert( in_array( 'post.write', (array) ( $discovered_items['npcink-abilities-toolkit/create-draft']['required_scopes'] ?? array() ), true ), 'Toolkit compatibility definition fills governance metadata absent from the native object.' );
+npcink_governance_core_fail_closed_assert( (int) ( $discovered_capabilities['count'] ?? 0 ) === (int) ( $discovered_capabilities['ready_count'] ?? 0 ) + (int) ( $discovered_capabilities['blocked_count'] ?? 0 ), 'Ability intake ready and blocked counts cover every discovered row.' );
+npcink_governance_core_fail_closed_assert( 'ready' === (string) ( $discovered_items['third-party/annotation-destructive']['intake_status'] ?? '' ), 'WordPress annotations can provide complete intake risk evidence.' );
+npcink_governance_core_fail_closed_assert( 'destructive' === (string) ( $discovered_items['third-party/annotation-destructive']['risk_level'] ?? '' ), 'Destructive WordPress annotation maps to destructive Core risk.' );
+npcink_governance_core_fail_closed_assert( true === (bool) ( $discovered_items['third-party/annotation-destructive']['requires_approval'] ?? false ), 'Destructive annotation forces proposal approval.' );
+npcink_governance_core_fail_closed_assert( 'blocked' === (string) ( $discovered_items['third-party/ambiguous-risk']['intake_status'] ?? '' ), 'Missing risk evidence is blocked instead of defaulting to read.' );
+npcink_governance_core_fail_closed_assert( in_array( 'risk_undeclared', (array) ( $discovered_items['third-party/ambiguous-risk']['intake_reasons'] ?? array() ), true ), 'Missing risk uses a stable intake reason.' );
+npcink_governance_core_fail_closed_assert( 'none' === (string) ( $discovered_items['third-party/ambiguous-risk']['execution_surface'] ?? '' ), 'Blocked ability has no execution surface.' );
+npcink_governance_core_fail_closed_assert( in_array( 'risk_annotations_conflict', (array) ( $discovered_items['third-party/conflicting-risk']['intake_reasons'] ?? array() ), true ), 'Conflicting provider risk and WordPress annotations fail closed.' );
+npcink_governance_core_fail_closed_assert( 'destructive' === (string) ( $discovered_items['third-party/provider-risk-conflict']['risk_level'] ?? '' ), 'Conflicting provider risk sources retain the strongest observed risk for diagnostics.' );
+npcink_governance_core_fail_closed_assert( in_array( 'risk_sources_conflict', (array) ( $discovered_items['third-party/provider-risk-conflict']['intake_reasons'] ?? array() ), true ), 'Conflicting provider risk sources fail closed instead of using the first declaration.' );
+npcink_governance_core_fail_closed_assert( 'blocked' === (string) ( $discovered_items['npcink-abilities-toolkit/update-post']['intake_status'] ?? '' ), 'Duplicate ability ids retain cross-discovery-source risk evidence before merge.' );
+npcink_governance_core_fail_closed_assert( in_array( 'risk_sources_conflict', (array) ( $discovered_items['npcink-abilities-toolkit/update-post']['intake_reasons'] ?? array() ), true ), 'Cross-discovery-source risk conflict fails closed.' );
+npcink_governance_core_fail_closed_assert( 'blocked' === (string) ( $discovered_items['npcink-abilities-toolkit/patch-post-content']['intake_status'] ?? '' ), 'Duplicate ability ids retain cross-discovery-source annotation evidence before merge.' );
+npcink_governance_core_fail_closed_assert( in_array( 'annotations_conflict', (array) ( $discovered_items['npcink-abilities-toolkit/patch-post-content']['intake_reasons'] ?? array() ), true ), 'Cross-discovery-source annotation conflict fails closed.' );
+npcink_governance_core_fail_closed_assert( 'blocked' === (string) ( $discovered_items['third-party/invalid-risk-alias']['intake_status'] ?? '' ), 'Risk aliases outside the exact closed set fail closed.' );
+npcink_governance_core_fail_closed_assert( in_array( 'risk_invalid', (array) ( $discovered_items['third-party/invalid-risk-alias']['intake_reasons'] ?? array() ), true ), 'Invalid risk aliases expose a stable intake reason.' );
+npcink_governance_core_fail_closed_assert( in_array( 'rest_exposure_disabled', (array) ( $discovered_items['third-party/rest-hidden']['intake_reasons'] ?? array() ), true ), 'Explicitly REST-hidden ability fails closed.' );
+npcink_governance_core_fail_closed_assert( in_array( 'rest_exposure_undeclared', (array) ( $discovered_items['third-party/rest-undeclared']['intake_reasons'] ?? array() ), true ), 'Missing REST exposure declaration fails closed.' );
+npcink_governance_core_fail_closed_assert( in_array( 'rest_exposure_undeclared', (array) ( $discovered_items['third-party/rest-top-level-only']['intake_reasons'] ?? array() ), true ), 'Top-level REST mirror cannot replace canonical meta.show_in_rest.' );
+npcink_governance_core_fail_closed_assert( in_array( 'rest_exposure_undeclared', (array) ( $discovered_items['third-party/rest-npcink-only']['intake_reasons'] ?? array() ), true ), 'Npcink REST mirror cannot replace canonical meta.show_in_rest.' );
+npcink_governance_core_fail_closed_assert( in_array( 'rest_exposure_invalid', (array) ( $discovered_items['third-party/rest-string-true']['intake_reasons'] ?? array() ), true ), 'Canonical REST exposure requires a literal boolean true.' );
+npcink_governance_core_fail_closed_assert( 'sensitive' === (string) ( $discovered_items['third-party/undeclared-sensitivity']['sensitivity'] ?? '' ), 'Undeclared read sensitivity defaults to sensitive.' );
+npcink_governance_core_fail_closed_assert( true === (bool) ( $discovered_items['third-party/undeclared-sensitivity']['redaction_required'] ?? false ), 'Undeclared sensitive read requires redaction.' );
+npcink_governance_core_fail_closed_assert( true === (bool) ( $discovered_items['third-party/undeclared-sensitivity']['read_authorization_required'] ?? false ), 'Undeclared read sensitivity requires Core read authorization.' );
+
+$read_proposal = npcink_governance_core_fail_closed_proposal_stack()['service']->create(
+	array(
+		'ability_id' => 'third-party/undeclared-sensitivity',
+		'input'      => array(),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $read_proposal ), 'A ready read ability cannot enter proposal intake.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_ability_not_proposal_eligible' === $read_proposal->get_error_code(), 'Ready read proposal rejection uses stable error code.' );
+
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+$npcink_governance_core_fail_closed_native_abilities = array(
+	'third-party/ambiguous-risk' => array(
+		'ability_id' => 'third-party/ambiguous-risk',
+		'label'      => 'Ambiguous Risk',
+		'meta'       => array(
+			'annotations'  => array( 'readonly' => null, 'destructive' => null ),
+			'show_in_rest' => true,
+		),
+	),
+	'npcink-toolbox/build-article-write-plan' => array(
+		'ability_id' => 'npcink-toolbox/build-article-write-plan',
+		'label'      => 'REST Hidden Article Plan',
+		'meta'       => array(
+			'annotations'  => array( 'readonly' => true, 'destructive' => false ),
+			'show_in_rest' => false,
+		),
+	),
+);
+$blocked_proposal = npcink_governance_core_fail_closed_proposal_stack()['service']->create(
+	array(
+		'ability_id' => 'third-party/ambiguous-risk',
+		'input'      => array(),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $blocked_proposal ), 'Proposal creation rejects a discovered but blocked ability.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_ability_intake_blocked' === $blocked_proposal->get_error_code(), 'Blocked proposal intake uses stable error code.' );
+
+$blocked_plan = npcink_governance_core_fail_closed_plan_stack()['service']->create_from_plan( 'npcink-toolbox/build-article-write-plan', array() );
+npcink_governance_core_fail_closed_assert( is_wp_error( $blocked_plan ), 'Plan intake rejects a discovered but blocked planning ability before payload validation.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_plan_ability_intake_blocked' === $blocked_plan->get_error_code(), 'Blocked planning ability uses stable error code.' );
+
+$blocked_read = npcink_governance_core_fail_closed_read_request_stack()['service']->create(
+	array(
+		'ability_id' => 'third-party/ambiguous-risk',
+		'input'      => array( 'probe' => true ),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $blocked_read ), 'Sensitive read request rejects a discovered but blocked ability.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_ability_intake_blocked' === $blocked_read->get_error_code(), 'Blocked sensitive read intake uses stable error code.' );
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();
 $capabilities = ( new \Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter() )->list_capabilities();
@@ -5488,6 +5727,25 @@ npcink_governance_core_fail_closed_assert( 'npcink_governance_core_execution_rec
 $rolled_back = $stack['proposals']->find( (string) $proposal['proposal_id'] );
 npcink_governance_core_fail_closed_assert( is_array( $rolled_back ) && 'approved' === $rolled_back['status'], 'Execution record audit failure rolls status back to approved.' );
 
+$wpdb     = npcink_governance_core_fail_closed_reset_db();
+$stack    = npcink_governance_core_fail_closed_governance_stack();
+$proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/update-post' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'REST exposure drift proposal is created while ability intake is ready.' );
+$approved = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'rest_exposure_drift' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'REST exposure drift proposal is approved.' );
+npcink_governance_core_fail_closed_mutate_ability(
+	'npcink-abilities-toolkit/update-post',
+	static function ( array $ability ): array {
+		$ability['meta'] = is_array( $ability['meta'] ?? null ) ? $ability['meta'] : array();
+		$ability['meta']['show_in_rest'] = false;
+		return $ability;
+	}
+);
+$blocked_intake_preflight = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
+npcink_governance_core_fail_closed_assert( is_wp_error( $blocked_intake_preflight ), 'Commit preflight rejects an ability that became blocked after approval.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_ability_intake_blocked' === $blocked_intake_preflight->get_error_code(), 'Blocked commit preflight uses stable intake error code.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), 'Blocked commit preflight is audited.' );
+
 $ability_drift_matrix = array(
 	// Static contract markers: Ability drift execution guidance; Ability drift required scopes.
 	'input schema'       => static function ( array $ability ): array {
@@ -5496,6 +5754,8 @@ $ability_drift_matrix = array(
 	},
 	'risk metadata'      => static function ( array $ability ): array {
 		$ability['risk_level'] = 'destructive';
+		$ability['meta'] = is_array( $ability['meta'] ?? null ) ? $ability['meta'] : array();
+		$ability['meta']['annotations'] = array( 'readonly' => false, 'destructive' => true );
 		return $ability;
 	},
 	'permission metadata' => static function ( array $ability ): array {
@@ -5517,6 +5777,9 @@ $ability_drift_matrix = array(
 	'execution guidance' => static function ( array $ability ): array {
 		$ability['risk_level']        = 'read';
 		$ability['requires_approval'] = false;
+		$ability['sensitivity']       = 'public';
+		$ability['meta'] = is_array( $ability['meta'] ?? null ) ? $ability['meta'] : array();
+		$ability['meta']['annotations'] = array( 'readonly' => true, 'destructive' => false );
 		return $ability;
 	},
 );
@@ -5532,7 +5795,12 @@ foreach ( $ability_drift_matrix as $drift_label => $drift_mutator ) {
 
 	$drift = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
 	npcink_governance_core_fail_closed_assert( is_wp_error( $drift ), 'Ability drift ' . $drift_label . ' fails commit preflight.' );
-	npcink_governance_core_fail_closed_assert( 'npcink_governance_core_ability_contract_changed' === $drift->get_error_code(), 'Ability drift ' . $drift_label . ' uses stable error code.' );
+	$expected_drift_code = 'approval flag' === $drift_label
+		? 'npcink_governance_core_ability_intake_blocked'
+		: ( 'execution guidance' === $drift_label
+			? 'npcink_governance_core_ability_not_proposal_eligible'
+			: 'npcink_governance_core_ability_contract_changed' );
+	npcink_governance_core_fail_closed_assert( $expected_drift_code === $drift->get_error_code(), 'Ability drift ' . $drift_label . ' uses stable error code.' );
 	npcink_governance_core_fail_closed_assert( 409 === npcink_governance_core_fail_closed_error_http_status( $drift ), 'Ability drift ' . $drift_label . ' maps to HTTP 409.' );
 	$after_drift = $stack['proposals']->find( (string) $proposal['proposal_id'] );
 	npcink_governance_core_fail_closed_assert( is_array( $after_drift ) && 'approved' === (string) ( $after_drift['status'] ?? '' ), 'Ability drift ' . $drift_label . ' leaves proposal approved.' );

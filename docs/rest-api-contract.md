@@ -331,6 +331,8 @@ Response `200`:
   "available": true,
   "source": "wordpress_abilities_api",
   "count": 1,
+  "ready_count": 1,
+  "blocked_count": 0,
   "message": "Capabilities discovered through WordPress Abilities API.",
   "items": [
     {
@@ -339,21 +341,24 @@ Response `200`:
       "description": "Returns site information.",
       "risk_level": "read",
       "requires_approval": false,
-      "governance_mode": "direct_read",
+      "intake_contract_version": "core-ability-intake-v1",
+      "intake_status": "ready",
+      "intake_reasons": [],
+      "governance_mode": "core_read_authorization_required",
       "execution_surface": "wp_abilities_rest",
       "core_proxy_execute": false,
       "commit_execution": false,
-      "read_policy": "direct_read_public",
-      "sensitivity": "public",
-      "redaction_required": false,
-      "read_authorization_required": false,
-      "requires_read_authorization": false,
-      "authorization_mode": "none",
-      "read_authorization": { "required": false },
-      "read_authorization_request_route": "",
-      "read_authorization_preflight_route": "",
-      "read_authorization_status_route": "",
-      "read_audit_mode": "adapter_read_envelope",
+      "read_policy": "core_read_authorization_required",
+      "sensitivity": "sensitive",
+      "redaction_required": true,
+      "read_authorization_required": true,
+      "requires_read_authorization": true,
+      "authorization_mode": "core_read_request",
+      "read_authorization": { "required": true },
+      "read_authorization_request_route": "/wp-json/npcink-governance-core/v1/read-requests",
+      "read_authorization_preflight_route": "/wp-json/npcink-governance-core/v1/read-requests/{request_id}/read-preflight",
+      "read_authorization_status_route": "/wp-json/npcink-governance-core/v1/read-requests/{request_id}",
+      "read_audit_mode": "core_read_request_audit",
       "implementation_posture_available": false,
       "implementation_posture": {},
       "input_schema": { "type": "object" },
@@ -377,6 +382,12 @@ App audit attribution:
 - `metadata.auth.scope_decision=allowed`
 
 Capability execution guidance:
+
+- `intake_status=ready` is required before any Core proposal, plan,
+  sensitive-read, or commit-preflight path may proceed.
+- `intake_status=blocked` keeps the row diagnosable while forcing
+  `governance_mode=blocked` and `execution_surface=none`; `intake_reasons`
+  contains stable provider-contract reason keys.
 
 - `governance_mode=direct_read` means an adapter may call the canonical
   WordPress Abilities API execution surface for a read-only ability.
@@ -613,6 +624,8 @@ Errors:
 | --- | --- | --- |
 | `npcink_governance_core_invalid_ability_id` | `400` | Missing or invalid namespaced `ability_id`. |
 | `npcink_governance_core_ability_not_available` | `404` | Target ability id is not currently discoverable. |
+| `npcink_governance_core_ability_intake_blocked` | `409` | Target ability is discoverable but its provider contract is incomplete, contradictory, or not REST-executable. |
+| `npcink_governance_core_ability_not_proposal_eligible` | `409` | Target ability is ready but is not a write/destructive, approval-required adapter handoff. |
 | `npcink_governance_core_proposal_payload_too_large` | `413` | Direct proposal payload exceeds Core's proposal byte limit. |
 | `npcink_governance_core_proposal_classification_rejected` | `422` | Proposal intake received classification evidence that is not `core_proposal_required`. |
 | `npcink_governance_core_proposal_classification_mismatch` | `500` | Core proposal intake could not produce a `core_proposal_required` classification. |
@@ -673,6 +686,7 @@ Errors:
 | --- | --- | --- |
 | `npcink_governance_core_invalid_read_request_ability_id` | `400` | Missing or invalid namespaced ability id. |
 | `npcink_governance_core_read_ability_not_available` | `404` | Target read ability is not currently discoverable. |
+| `npcink_governance_core_ability_intake_blocked` | `409` | Target read ability is discoverable but blocked by fail-closed intake. |
 | `npcink_governance_core_read_authorization_not_required` | `409` | Ability does not require Core read authorization. |
 | `npcink_governance_core_read_request_input_hash_required` | `400` | Neither input nor input_hash was supplied. |
 | `npcink_governance_core_read_request_insert_failed` | `500` | Read request row could not be stored. |
@@ -830,7 +844,7 @@ Request fields:
 
 | Name | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `plan_ability_id` | string | yes | Must be one of the supported read-only planning ability ids and currently discoverable as `governance_mode=direct_read`. |
+| `plan_ability_id` | string | yes | Must be one of the supported read-only planning ability ids, pass fail-closed intake, expose the WordPress Abilities REST surface, and use `governance_mode=direct_read` or `core_read_authorization_required`. |
 | `plan` | object | yes | Ability success envelope or its `data` object. Must include `requires_approval=true`, `dry_run=true`, `commit_execution=false`, and `write_actions`. |
 | `plan_input` | object | no | Input originally used to build the plan. Used for safety gates such as `include_delete_candidates=true`; media delete plans may also require source-side flags such as `include_unattached_nonproduction_media=true` or `include_trash_parent_media=true` before the plan emits a delete action. |
 | `caller` | object | no | Caller metadata copied into generated proposals. |
@@ -1126,6 +1140,7 @@ Errors:
 | --- | --- | --- |
 | `npcink_governance_core_plan_ability_not_allowed` | `400` | Unsupported planning ability id. |
 | `npcink_governance_core_plan_ability_unavailable` | `404` | Planning ability is not discoverable. |
+| `npcink_governance_core_plan_ability_intake_blocked` | `409` | Planning ability is discoverable but blocked by fail-closed intake. |
 | `npcink_governance_core_plan_ability_not_read_only` | `409` | Planning ability is not a direct-read ability. |
 | `npcink_governance_core_plan_requires_approval_missing` | `422` | Plan does not require approval. |
 | `npcink_governance_core_plan_commit_execution_rejected` | `422` | Plan requested commit execution. |
@@ -1332,6 +1347,8 @@ Errors:
 | `npcink_governance_core_proposal_not_approved` | `409` | Proposal is not approved. |
 | `npcink_governance_core_proposal_items_blocked` | `409` | Proposal preview has `proposal_ready=false`, `needs_input`, or `preflight_blockers`. |
 | `npcink_governance_core_ability_unavailable` | `409` | Target ability is no longer discoverable. |
+| `npcink_governance_core_ability_intake_blocked` | `409` | Target ability remains discoverable but no longer passes fail-closed intake. |
+| `npcink_governance_core_ability_not_proposal_eligible` | `409` | Target ability no longer satisfies the write/destructive proposal handoff contract. |
 | `npcink_governance_core_ability_contract_changed` | `409` | Target ability risk, approval, schema, scope, execution guidance, or WordPress capability changed after proposal creation. |
 | `npcink_governance_core_commit_preflight_already_issued` | `409` | Core already issued one execution handoff for this approved proposal input. |
 | `npcink_governance_core_preflight_forbidden` | `403` | Current user lacks permission. |
