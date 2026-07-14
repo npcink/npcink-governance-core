@@ -1,5 +1,44 @@
 # Session Breadcrumb
 
+## 2026-07-13 — Real URL article-writing feasibility trial
+
+- **Module**: Cross-repo article writing-pack and draft-preview validation;
+  Core remained a read-only governance boundary observer.
+- **Status**: Technical feasibility passed in an isolated local acceptance
+  window. Three real WordPress source URLs completed extraction, writing-pack
+  generation, and structured draft preview generation without WordPress
+  mutation.
+- **Observed**:
+  - the ordinary development API had previously produced one upstream
+    60-second timeout and one in-flight request cancellation during hot reload;
+  - an ephemeral API instance without hot reload completed all three cases;
+  - research generation took 43.8-48.2 seconds and draft generation took
+    23.6-30.9 seconds per case;
+  - the resulting drafts contained six sections and 7-11 source-grounded facts
+    per case, with actionable Chinese WordPress maintenance/developer angles.
+- **Verified**:
+  - Workflow Toolbox real-URL smoke passed all three cases and exported the
+    local human-review artifact;
+  - WordPress posts, Core proposals, and Core audit records all remained at
+    zero for the trial window;
+  - the temporary Cloud endpoint, WordPress option, and container were removed,
+    and the original local Cloud base URL was preserved.
+- **Editor-value proxy**:
+  - fact-checking rejected the WordPress 6.9.2 release draft as a standalone
+    July article because WordPress 7.0 had already shipped;
+  - the April source was reframed from outdated delay coverage into a current
+    WordPress 7.0 upgrade checklist and saved as local draft `286721`;
+  - the June developer roundup became a focused plugin/theme testing checklist
+    and was saved as local draft `286722`;
+  - both drafts use native Gutenberg blocks, remain unpublished, retain source
+    links, and are marked `approved_for_draft` for operator review.
+- **Next gate**: The author or editor should open drafts `286721` and `286722`
+  and decide whether they are worth keeping. Do not add translation, retry
+  queues, vector rewriting, or automatic publishing before that adoption gate.
+- **Boundary**: No Core, Toolbox, Cloud, Add-on, or WordPress product behavior
+  changed. Core did not gain article workflow, provider, runtime, or final
+  write ownership.
+
 ## 2026-07-11 — Native editor commit pre-classification exclusion
 
 - **Module**: Operation classification discovery and Core runtime contract.
