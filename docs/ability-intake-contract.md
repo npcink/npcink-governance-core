@@ -71,6 +71,13 @@ Missing read sensitivity defaults to `sensitive`, requires Core read
 authorization, and defaults to `redaction_required=true`. See
 [ADR-008](decisions/ADR-008-fail-closed-ability-intake.md).
 
+Ready intake proves that the provider contract is complete and unambiguous; it
+does not prove that an arbitrary proposal payload conforms to that provider
+schema. Any `smart_guarded` shortcut must therefore validate its own narrow
+approval evidence before it can skip manual review. The ability provider and
+final execution owner remain responsible for full public input validation and
+WordPress write safety.
+
 `implementation_posture` is provider-owned metadata. Core normalizes and
 redacts it for `/capabilities`, proposal review visibility, and ability
 contract drift checks, but Core does not become the implementation posture truth

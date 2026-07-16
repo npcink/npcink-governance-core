@@ -116,7 +116,8 @@ store local passwords or secrets in the repository.
      existing-content target; or
    - one guarded article-audio adoption proposal; or
    - one reviewed `npcink-abilities-toolkit/adopt-cloud-media-derivative`
-     proposal with a single attachment, derivative artifact evidence,
+     proposal with a single attachment, the exact local 11-field artifact
+     descriptor (`art_[0-9a-f]{32}` and no URL/transport/ACK fields),
      dry-run/non-commit input, and `media_optimization_plan` preview evidence.
 4. Confirm the proposal becomes `approved` without manual approval.
 5. Confirm policy fields show `policy_decision=auto_approved`,

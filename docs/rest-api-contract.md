@@ -611,8 +611,9 @@ direct `npcink-abilities-toolkit/create-draft` proposal that creates only a
 draft post with dry-run/non-commit input and no schedule/publish intent, or a
 guarded article-audio adoption proposal, or a single reviewed
 `npcink-abilities-toolkit/adopt-cloud-media-derivative` proposal with one
-attachment, derivative artifact evidence, dry-run/non-commit input, and
-`media_optimization_plan` preview evidence.
+attachment, an exact local 11-field proposal artifact descriptor with a
+canonical `art_[0-9a-f]{32}` id and no URL/transport/ACK fields,
+dry-run/non-commit input, and `media_optimization_plan` preview evidence.
 `dev_allow_all` is local-development only, requires
 `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL`, and still leaves commit
 preflight mandatory. It does not add a rules DSL, workflow runtime,

@@ -155,6 +155,14 @@ scheduler, final execution, or configuration center. If policy decision audit
 cannot be written, Core fails closed and deletes the created proposal row; if
 auto-approval audit cannot be written, the proposal is not left approved.
 
+For the media derivative shortcut, "reviewed evidence" means the exact local
+11-field proposal descriptor with a canonical `art_[0-9a-f]{32}` id, future
+expiry, integrity and image metadata, and WordPress-owned final filename
+policy. Legacy aliases, URLs, receive payloads, transfer evidence, and delivery
+ACKs are not approval evidence. Toolkit and the final execution owner still
+perform public schema, byte, transfer, write, and rollback validation outside
+Core.
+
 Auto approval allowlist: trusted test cleanup trash-post batches, single
 draft-only create-draft proposals, guarded article-audio adoptions, single
 reviewed media derivative adoption proposals, and single reviewed missing-ALT

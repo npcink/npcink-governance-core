@@ -640,8 +640,13 @@ final class Approval_Policy_Evaluator {
 		}
 
 		$artifact = is_array( $input['derivative_artifact'] ?? null ) ? $input['derivative_artifact'] : array();
-		if ( '' === trim( sanitize_text_field( (string) ( $artifact['artifact_id'] ?? ( $artifact['id'] ?? '' ) ) ) ) ) {
-			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_derivative_rejected_artifact' ) );
+		if ( ! $this->media_derivative_artifact_evidence_is_valid( $artifact ) ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_derivative_rejected_artifact_contract' ) );
+		}
+
+		$expected_mime_type = (string) ( $input['expected_derivative_mime_type'] ?? '' );
+		if ( '' !== $expected_mime_type && $expected_mime_type !== (string) $artifact['mime_type'] ) {
+			return array( 'allowed' => false, 'reasons' => array( 'guarded_media_derivative_rejected_artifact_mime_mismatch' ) );
 		}
 
 		$preview_media = is_array( $preview['media_optimization'] ?? null ) ? $preview['media_optimization'] : array();
@@ -663,8 +668,140 @@ final class Approval_Policy_Evaluator {
 
 		return array(
 			'allowed' => true,
-			'reasons' => array( 'guarded_media_derivative_single_attachment', 'guarded_media_derivative_artifact_evidence', 'guarded_media_derivative_preview_plan' ),
+			'reasons' => array( 'guarded_media_derivative_single_attachment', 'guarded_media_derivative_exact_local_artifact_evidence', 'guarded_media_derivative_preview_plan' ),
 		);
+	}
+
+	/**
+	 * Confirms that smart approval is bound to the exact local proposal artifact.
+	 *
+	 * Toolkit remains the public ability schema and final byte/write validator.
+	 * Core repeats only the evidence checks required to decide whether a direct
+	 * proposal is safe to auto-approve; it does not accept transport or delivery
+	 * fields here.
+	 *
+	 * @param array<string,mixed> $artifact Artifact evidence.
+	 * @return bool
+	 */
+	private function media_derivative_artifact_evidence_is_valid( array $artifact ): bool {
+		$expected_keys = array(
+			'artifact_id',
+			'expires_at',
+			'mime_type',
+			'format',
+			'width',
+			'height',
+			'filesize_bytes',
+			'sha256',
+			'suggested_filename',
+			'filename_basis',
+			'processing_warnings',
+		);
+		$actual_keys = array_keys( $artifact );
+		sort( $actual_keys );
+		sort( $expected_keys );
+		if ( $actual_keys !== $expected_keys ) {
+			return false;
+		}
+
+		if ( ! is_string( $artifact['artifact_id'] ) || 1 !== preg_match( '/^art_[0-9a-f]{32}$/D', $artifact['artifact_id'] ) ) {
+			return false;
+		}
+
+		$expires_at = is_string( $artifact['expires_at'] ) ? $artifact['expires_at'] : '';
+		if ( $this->media_derivative_expiry_timestamp( $expires_at ) <= time() ) {
+			return false;
+		}
+
+		$format_by_mime = array(
+			'image/webp' => 'webp',
+			'image/avif' => 'avif',
+			'image/jpeg' => 'jpeg',
+			'image/png'  => 'png',
+		);
+		$mime_type = is_string( $artifact['mime_type'] ) ? $artifact['mime_type'] : '';
+		$format    = is_string( $artifact['format'] ) ? $artifact['format'] : '';
+		if ( ! isset( $format_by_mime[ $mime_type ] ) || $format_by_mime[ $mime_type ] !== $format ) {
+			return false;
+		}
+
+		if (
+			! is_int( $artifact['width'] )
+			|| ! is_int( $artifact['height'] )
+			|| $artifact['width'] < 1
+			|| $artifact['height'] < 1
+			|| $artifact['width'] > 8192
+			|| $artifact['height'] > 8192
+			|| $artifact['width'] * $artifact['height'] > 16777216
+		) {
+			return false;
+		}
+		if ( ! is_int( $artifact['filesize_bytes'] ) || $artifact['filesize_bytes'] < 1 || $artifact['filesize_bytes'] > 26214400 ) {
+			return false;
+		}
+		if ( ! is_string( $artifact['sha256'] ) || 1 !== preg_match( '/^[a-f0-9]{64}$/D', $artifact['sha256'] ) ) {
+			return false;
+		}
+
+		$suggested_filename = is_string( $artifact['suggested_filename'] ) ? $artifact['suggested_filename'] : '';
+		if ( '' === $suggested_filename || strlen( $suggested_filename ) > 120 || sanitize_file_name( $suggested_filename ) !== $suggested_filename ) {
+			return false;
+		}
+
+		$filename_basis = is_array( $artifact['filename_basis'] ) ? $artifact['filename_basis'] : array();
+		$filename_basis_keys = array_keys( $filename_basis );
+		sort( $filename_basis_keys );
+		if (
+			array( 'final_sanitize_unique_required', 'owner', 'strategy' ) !== $filename_basis_keys
+			|| 'wordpress_write_ability_final' !== ( $filename_basis['owner'] ?? null )
+			|| 'format_checksum' !== ( $filename_basis['strategy'] ?? null )
+			|| true !== ( $filename_basis['final_sanitize_unique_required'] ?? null )
+		) {
+			return false;
+		}
+
+		$warnings = $artifact['processing_warnings'];
+		if ( ! is_array( $warnings ) || count( $warnings ) > 20 ) {
+			return false;
+		}
+		foreach ( $warnings as $warning ) {
+			if ( ! is_string( $warning ) || strlen( $warning ) > 200 || sanitize_text_field( $warning ) !== $warning ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Parses the RFC3339 forms emitted by the local artifact contract.
+	 *
+	 * @param string $value Expiry value.
+	 * @return int
+	 */
+	private function media_derivative_expiry_timestamp( string $value ): int {
+		$utc = new \DateTimeZone( 'UTC' );
+		$formats = array(
+			'!Y-m-d\TH:i:s\Z'   => 'Y-m-d\TH:i:s\Z',
+			'!Y-m-d\TH:i:sP'    => 'Y-m-d\TH:i:sP',
+			'!Y-m-d\TH:i:s.u\Z' => 'Y-m-d\TH:i:s.u\Z',
+			'!Y-m-d\TH:i:s.uP'  => 'Y-m-d\TH:i:s.uP',
+		);
+		foreach ( $formats as $parse_format => $roundtrip_format ) {
+			$parsed = \DateTimeImmutable::createFromFormat( $parse_format, $value, $utc );
+			$errors = \DateTimeImmutable::getLastErrors();
+			$has_errors = is_array( $errors ) && ( (int) ( $errors['warning_count'] ?? 0 ) > 0 || (int) ( $errors['error_count'] ?? 0 ) > 0 );
+			if (
+				$parsed instanceof \DateTimeImmutable
+				&& ! $has_errors
+				&& 0 === $parsed->getOffset()
+				&& $value === $parsed->format( $roundtrip_format )
+			) {
+				return $parsed->getTimestamp();
+			}
+		}
+
+		return 0;
 	}
 
 	/**

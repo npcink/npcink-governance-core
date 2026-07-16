@@ -232,6 +232,18 @@ if ( ! function_exists( 'sanitize_text_field' ) ) {
 	}
 }
 
+if ( ! function_exists( 'sanitize_file_name' ) ) {
+	/**
+	 * File name sanitizer stub.
+	 *
+	 * @param mixed $value Value.
+	 * @return string
+	 */
+	function sanitize_file_name( $value ): string {
+		return (string) preg_replace( '/[^A-Za-z0-9._-]/', '', basename( (string) $value ) );
+	}
+}
+
 if ( ! function_exists( 'sanitize_textarea_field' ) ) {
 	/**
 	 * Textarea sanitizer stub.
@@ -613,7 +625,35 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'requires_approval' => true,
 				'capability'        => 'upload_files',
 				'required_scopes'   => array( 'media.write' ),
-				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'attachment_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
+				'input_schema'      => array(
+					'type'                 => 'object',
+					'properties'           => array(
+						'attachment_id'       => array( 'type' => 'integer' ),
+						'derivative_artifact' => array(
+							'type'                 => 'object',
+							'properties'           => array(
+								'artifact_id'        => array( 'type' => 'string', 'pattern' => '^art_[0-9a-f]{32}$' ),
+								'expires_at'         => array( 'type' => 'string', 'format' => 'date-time' ),
+								'mime_type'          => array( 'type' => 'string', 'enum' => array( 'image/webp', 'image/avif', 'image/jpeg', 'image/png' ) ),
+								'format'             => array( 'type' => 'string', 'enum' => array( 'webp', 'avif', 'jpeg', 'png' ) ),
+								'width'              => array( 'type' => 'integer' ),
+								'height'             => array( 'type' => 'integer' ),
+								'filesize_bytes'     => array( 'type' => 'integer' ),
+								'sha256'             => array( 'type' => 'string', 'pattern' => '^[a-f0-9]{64}$' ),
+								'suggested_filename' => array( 'type' => 'string' ),
+								'filename_basis'     => array( 'type' => 'object' ),
+								'processing_warnings' => array( 'type' => 'array' ),
+							),
+							'required'             => array( 'artifact_id', 'expires_at', 'mime_type', 'format', 'width', 'height', 'filesize_bytes', 'sha256', 'suggested_filename', 'filename_basis', 'processing_warnings' ),
+							'additionalProperties' => false,
+						),
+						'dry_run'              => array( 'type' => 'boolean' ),
+						'commit'               => array( 'type' => 'boolean' ),
+						'idempotency_key'      => array( 'type' => 'string' ),
+					),
+					'required'             => array( 'attachment_id', 'derivative_artifact' ),
+					'additionalProperties' => false,
+				),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
 			'npcink-abilities-toolkit/rename-media-file' => array(
@@ -2240,6 +2280,35 @@ function npcink_governance_core_fail_closed_article_media_batch_write_plan(): ar
 }
 
 /**
+ * Creates exact local proposal evidence for one Cloud media derivative.
+ *
+ * @param array<string,mixed> $overrides Field overrides.
+ * @return array<string,mixed>
+ */
+function npcink_governance_core_fail_closed_media_derivative_artifact( array $overrides = array() ): array {
+	return array_merge(
+		array(
+			'artifact_id'        => 'art_00000000000000000000000000001493',
+			'expires_at'         => gmdate( 'Y-m-d\TH:i:s\Z', time() + 600 ),
+			'mime_type'          => 'image/webp',
+			'format'             => 'webp',
+			'width'              => 1200,
+			'height'             => 800,
+			'filesize_bytes'     => 210000,
+			'sha256'             => hash( 'sha256', 'core-media-derivative-fixture' ),
+			'suggested_filename' => 'optimized-1493.webp',
+			'filename_basis'     => array(
+				'owner'                          => 'wordpress_write_ability_final',
+				'strategy'                       => 'format_checksum',
+				'final_sanitize_unique_required' => true,
+			),
+			'processing_warnings' => array(),
+		),
+		$overrides
+	);
+}
+
+/**
  * Creates a representative media optimization plan.
  *
  * @return array<string,mixed>
@@ -2289,7 +2358,7 @@ function npcink_governance_core_fail_closed_media_optimization_plan(): array {
 				'target_ability_id' => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',
 				'input'             => array(
 					'attachment_id'                  => 1493,
-					'derivative_artifact'            => 'cloud://artifact/webp-1493',
+					'derivative_artifact'            => npcink_governance_core_fail_closed_media_derivative_artifact(),
 					'expected_current_mime_type'     => 'image/png',
 					'expected_derivative_mime_type'  => 'image/webp',
 					'dry_run'                        => true,
@@ -3813,7 +3882,12 @@ $multi_media_optimization_plan['write_actions'][] = array(
 	'target_ability_id' => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',
 	'input'             => array(
 		'attachment_id'                  => 1494,
-		'derivative_artifact'            => 'cloud://artifact/webp-1494',
+		'derivative_artifact'            => npcink_governance_core_fail_closed_media_derivative_artifact(
+			array(
+				'artifact_id'        => 'art_00000000000000000000000000001494',
+				'suggested_filename' => 'optimized-1494.webp',
+			)
+		),
 		'expected_current_mime_type'     => 'image/png',
 		'expected_derivative_mime_type'  => 'image/webp',
 		'dry_run'                        => true,
@@ -3846,7 +3920,12 @@ for ( $i = 0; $i < 6; $i++ ) {
 	$metadata_action['input']['idempotency_key'] = 'media-optimize-metadata-' . $attachment_id;
 	$derivative_action['action_id'] = 'adopt_webp_derivative_' . $attachment_id;
 	$derivative_action['input']['attachment_id'] = $attachment_id;
-	$derivative_action['input']['derivative_artifact'] = 'cloud://artifact/webp-' . $attachment_id;
+	$derivative_action['input']['derivative_artifact'] = npcink_governance_core_fail_closed_media_derivative_artifact(
+		array(
+			'artifact_id'        => 'art_' . str_pad( dechex( $attachment_id ), 32, '0', STR_PAD_LEFT ),
+			'suggested_filename' => 'optimized-' . $attachment_id . '.webp',
+		)
+	);
 	$derivative_action['input']['idempotency_key'] = 'media-optimize-derivative-' . $attachment_id;
 	$too_many_media_actions['attachment_ids'][] = $attachment_id;
 	$too_many_media_actions['write_actions'][] = $metadata_action;
@@ -5212,43 +5291,146 @@ update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTI
 		'route_family' => 'proposals_create',
 	)
 );
-$stack    = npcink_governance_core_fail_closed_proposal_stack();
-$proposal = $stack['service']->create(
-	array(
-		'ability_id' => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',
-		'title'      => 'Smart guarded media derivative proposal',
-		'summary'    => 'Adopt one reviewed derivative artifact.',
-		'input'      => array(
-			'attachment_id'                  => 123,
-			'derivative_artifact'            => array(
-				'artifact_id'    => 'cloud-derivative-123',
-				'mime_type'      => 'image/webp',
-				'format'         => 'webp',
-				'filesize_bytes' => 12345,
-				'sha256'         => 'abc123',
-			),
-			'expected_derivative_mime_type'  => 'image/webp',
-			'backup_suffix'                  => 'npcink-cloud-backup',
-			'dry_run'                        => true,
-			'commit'                         => false,
-			'idempotency_key'                => 'guarded-media-derivative',
+$stack = npcink_governance_core_fail_closed_proposal_stack();
+$media_derivative_payload = array(
+	'ability_id' => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',
+	'title'      => 'Smart guarded media derivative proposal',
+	'summary'    => 'Adopt one reviewed derivative artifact.',
+	'input'      => array(
+		'attachment_id'                  => 123,
+		'derivative_artifact'            => npcink_governance_core_fail_closed_media_derivative_artifact(
+			array(
+				'artifact_id'        => 'art_0000000000000000000000000000007b',
+				'filesize_bytes'     => 12345,
+				'sha256'             => hash( 'sha256', 'core-smart-media-derivative' ),
+				'suggested_filename' => 'optimized-123.webp',
+			)
 		),
-		'preview'    => array(
-			'artifact_type'     => 'media_optimization_plan',
-			'attachment_id'     => 123,
-			'requires_approval' => true,
-			'dry_run'           => true,
-			'commit_execution'  => false,
-		),
-		'caller'     => array( 'source' => 'fault_injection' ),
-	)
+		'expected_derivative_mime_type'  => 'image/webp',
+		'backup_suffix'                  => 'npcink-cloud-backup',
+		'dry_run'                        => true,
+		'commit'                         => false,
+		'idempotency_key'                => 'guarded-media-derivative',
+	),
+	'preview'    => array(
+		'artifact_type'     => 'media_optimization_plan',
+		'attachment_id'     => 123,
+		'requires_approval' => true,
+		'dry_run'           => true,
+		'commit_execution'  => false,
+	),
+	'caller'     => array( 'source' => 'fault_injection' ),
 );
+$proposal = $stack['service']->create( $media_derivative_payload );
 npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Smart guarded media derivative proposal is created.' );
 npcink_governance_core_fail_closed_assert( 'approved' === (string) ( $proposal['status'] ?? '' ), 'Smart guarded media derivative proposal is auto-approved.' );
 npcink_governance_core_fail_closed_assert( 'auto_approved' === (string) ( $proposal['policy_decision'] ?? '' ), 'Smart guarded media derivative records auto-approved decision.' );
 npcink_governance_core_fail_closed_assert( 'trusted_local' === (string) ( $proposal['policy_profile'] ?? '' ), 'Smart guarded media derivative records trusted_local profile.' );
 npcink_governance_core_fail_closed_assert( in_array( 'guarded_media_derivative_candidate', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded media derivative records candidate reason.' );
+npcink_governance_core_fail_closed_assert( in_array( 'guarded_media_derivative_exact_local_artifact_evidence', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded media derivative records exact local artifact evidence.' );
 npcink_governance_core_fail_closed_assert( in_array( 'smart_guarded_media_derivative_auto_approved', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded media derivative records stable auto approval reason.' );
+
+$decode_boundary_payload = $media_derivative_payload;
+$decode_boundary_payload['input']['derivative_artifact'] = npcink_governance_core_fail_closed_media_derivative_artifact(
+	array(
+		'artifact_id'        => 'art_00000000000000000000000000000081',
+		'width'              => 8192,
+		'height'             => 2048,
+		'expires_at'         => gmdate( 'c', time() + 600 ),
+		'suggested_filename' => 'decode-boundary.webp',
+	)
+);
+$decode_boundary_payload['input']['idempotency_key'] = 'guarded-media-derivative-decode-boundary';
+$decode_boundary_proposal = $stack['service']->create( $decode_boundary_payload );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $decode_boundary_proposal ) && 'approved' === (string) ( $decode_boundary_proposal['status'] ?? '' ), 'Cloud decode boundary 8192 x 2048 remains eligible for smart guarded approval.' );
+
+$invalid_media_derivative_artifacts = array(
+	'noncanonical id' => npcink_governance_core_fail_closed_media_derivative_artifact(
+		array(
+			'artifact_id'        => 'cloud-derivative-123',
+			'suggested_filename' => 'invalid-id.webp',
+		)
+	),
+	'expired descriptor' => npcink_governance_core_fail_closed_media_derivative_artifact(
+		array(
+			'artifact_id'        => 'art_0000000000000000000000000000007c',
+			'expires_at'         => gmdate( 'c', time() - 60 ),
+			'suggested_filename' => 'expired.webp',
+		)
+	),
+	'impossible calendar date' => npcink_governance_core_fail_closed_media_derivative_artifact(
+		array(
+			'artifact_id'        => 'art_00000000000000000000000000000082',
+			'expires_at'         => '2027-02-31T12:00:00Z',
+			'suggested_filename' => 'impossible-date.webp',
+		)
+	),
+	'non UTC expiry' => npcink_governance_core_fail_closed_media_derivative_artifact(
+		array(
+			'artifact_id'        => 'art_00000000000000000000000000000083',
+			'expires_at'         => '2099-01-01T12:00:00+08:00',
+			'suggested_filename' => 'non-utc-expiry.webp',
+		)
+	),
+	'axis above Cloud decode limit' => npcink_governance_core_fail_closed_media_derivative_artifact(
+		array(
+			'artifact_id'        => 'art_0000000000000000000000000000007f',
+			'width'              => 8193,
+			'height'             => 1,
+			'suggested_filename' => 'axis-too-large.webp',
+		)
+	),
+	'pixel area above Cloud decode limit' => npcink_governance_core_fail_closed_media_derivative_artifact(
+		array(
+			'artifact_id'        => 'art_00000000000000000000000000000080',
+			'width'              => 8192,
+			'height'             => 2049,
+			'suggested_filename' => 'area-too-large.webp',
+		)
+	),
+);
+$incomplete_media_derivative_artifact = npcink_governance_core_fail_closed_media_derivative_artifact(
+	array(
+		'artifact_id'        => 'art_0000000000000000000000000000007d',
+		'suggested_filename' => 'incomplete.webp',
+	)
+);
+unset( $incomplete_media_derivative_artifact['filename_basis'] );
+$invalid_media_derivative_artifacts['incomplete descriptor'] = $incomplete_media_derivative_artifact;
+$aliased_media_derivative_artifact = npcink_governance_core_fail_closed_media_derivative_artifact(
+	array( 'suggested_filename' => 'aliased-id.webp' )
+);
+$aliased_media_derivative_artifact['id'] = $aliased_media_derivative_artifact['artifact_id'];
+unset( $aliased_media_derivative_artifact['artifact_id'] );
+$invalid_media_derivative_artifacts['legacy id alias'] = $aliased_media_derivative_artifact;
+$legacy_media_derivative_artifact = npcink_governance_core_fail_closed_media_derivative_artifact(
+	array(
+		'artifact_id'        => 'art_0000000000000000000000000000007e',
+		'suggested_filename' => 'legacy-url.webp',
+	)
+);
+$legacy_media_derivative_artifact['download_url'] = 'https://cloud.example.test/legacy-download';
+$invalid_media_derivative_artifacts['legacy URL field'] = $legacy_media_derivative_artifact;
+
+$case_index = 0;
+foreach ( $invalid_media_derivative_artifacts as $case => $invalid_artifact ) {
+	$case_payload = $media_derivative_payload;
+	$case_payload['input']['derivative_artifact'] = $invalid_artifact;
+	$case_payload['input']['idempotency_key'] = 'guarded-media-derivative-invalid-' . $case_index;
+	$invalid_proposal = $stack['service']->create( $case_payload );
+	npcink_governance_core_fail_closed_assert( ! is_wp_error( $invalid_proposal ), 'Malformed smart guarded media derivative proposal remains reviewable: ' . $case . '.' );
+	npcink_governance_core_fail_closed_assert( 'pending' === (string) ( $invalid_proposal['status'] ?? '' ), 'Malformed smart guarded media derivative proposal is not auto-approved: ' . $case . '.' );
+	npcink_governance_core_fail_closed_assert( in_array( 'guarded_media_derivative_rejected_artifact_contract', (array) ( $invalid_proposal['policy_reasons'] ?? array() ), true ), 'Malformed smart guarded media derivative proposal records contract rejection: ' . $case . '.' );
+	++$case_index;
+}
+
+$mime_mismatch_payload = $media_derivative_payload;
+$mime_mismatch_payload['input']['expected_derivative_mime_type'] = 'image/avif';
+$mime_mismatch_payload['input']['idempotency_key'] = 'guarded-media-derivative-mime-mismatch';
+$mime_mismatch_proposal = $stack['service']->create( $mime_mismatch_payload );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $mime_mismatch_proposal ), 'MIME-mismatched smart guarded media derivative proposal remains reviewable.' );
+npcink_governance_core_fail_closed_assert( 'pending' === (string) ( $mime_mismatch_proposal['status'] ?? '' ), 'MIME-mismatched smart guarded media derivative proposal is not auto-approved.' );
+npcink_governance_core_fail_closed_assert( in_array( 'guarded_media_derivative_rejected_artifact_mime_mismatch', (array) ( $mime_mismatch_proposal['policy_reasons'] ?? array() ), true ), 'MIME-mismatched smart guarded media derivative proposal records mismatch rejection.' );
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();
 update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_SMART_GUARDED, false );
@@ -5270,7 +5452,12 @@ $proposal = $stack['service']->create(
 		'summary'    => 'Nested write actions must not auto approve.',
 		'input'      => array(
 			'attachment_id'       => 123,
-			'derivative_artifact' => array( 'artifact_id' => 'cloud-derivative-123' ),
+			'derivative_artifact' => npcink_governance_core_fail_closed_media_derivative_artifact(
+				array(
+					'artifact_id'        => 'art_0000000000000000000000000000007b',
+					'suggested_filename' => 'optimized-123.webp',
+				)
+			),
 			'write_actions'       => array(
 				array(
 					'target_ability_id' => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',

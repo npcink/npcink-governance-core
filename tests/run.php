@@ -482,6 +482,9 @@ foreach (
 		'smart_guarded_create_draft_auto_approved',
 		'smart_guarded_media_derivative_auto_approved',
 		'guarded_media_derivative_candidate',
+		'guarded_media_derivative_exact_local_artifact_evidence',
+		'exact local 11-field proposal',
+		'no legacy id, URL, run, checksum-alias, size-alias, receive, transfer, or',
 		'smart_guarded_media_alt_auto_approved',
 		'guarded_media_alt_candidate',
 		'media_alt_caption_review_set.v1',
@@ -2098,6 +2101,10 @@ foreach (
 		'smart_guarded_media_alt_auto_approved',
 		'guarded_media_alt_rejected_non_alt_field',
 		'media_derivative_adoption_evaluation',
+		'media_derivative_artifact_evidence_is_valid',
+		'guarded_media_derivative_exact_local_artifact_evidence',
+		'guarded_media_derivative_rejected_artifact_contract',
+		'guarded_media_derivative_rejected_artifact_mime_mismatch',
 		'guarded_media_derivative_preview_plan',
 		'consume_auto_approval_quota',
 		'AUTO_APPROVAL_TRANSIENT_PREFIX . $key_suffix',
@@ -2110,6 +2117,8 @@ npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'MO
 npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'auto_approval_dry_run_only' ), 'Approval policy evaluator removes dry-run-only approval reason.' );
 npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'local_guarded_cleanup_auto_approved' ), 'Approval policy evaluator removes local guarded cleanup reason.' );
 npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'local_guarded_create_draft_auto_approved' ), 'Approval policy evaluator removes local guarded create-draft reason.' );
+npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, "artifact['id']" ), 'Approval policy evaluator rejects legacy derivative artifact id aliases.' );
+npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'download_url' ) && false === strpos( $approval_policy_evaluator, 'preview_url' ), 'Approval policy evaluator does not consume media delivery URLs.' );
 npcink_governance_core_assert( false === strpos( $approval_policy_evaluator, 'set_transient( $prefixed_key' ), 'Approval policy evaluator does not pass variable-only transient keys.' );
 npcink_governance_core_assert( false !== strpos( $wporg_guard, 'variable-only key' ), 'WordPress.org guard rejects variable-only transient keys.' );
 npcink_governance_core_assert( false !== strpos( $wporg_guard, 'prefix visible at the call site' ), 'WordPress.org guard requires transient prefixes at the call site.' );

@@ -354,8 +354,10 @@ does not target existing content, stays dry-run/non-commit, and has no
 schedule/publish intent; or for a guarded `npcink-abilities-toolkit/adopt-article-audio`
 proposal from the article-audio plan path; or for one reviewed
 `npcink-abilities-toolkit/adopt-cloud-media-derivative` proposal with a single
-attachment, derivative artifact evidence, dry-run/non-commit input, and
-`media_optimization_plan` preview evidence; or for one reviewed
+attachment, the exact local 11-field proposal artifact descriptor with a
+canonical `art_[0-9a-f]{32}` id and no URL/transport/ACK fields,
+dry-run/non-commit input, and `media_optimization_plan` preview evidence; or
+for one reviewed
 `npcink-abilities-toolkit/update-media-details` ALT-only proposal from a
 Toolbox `media_alt_caption_review_set.v1` row. Mode `dev_allow_all` may auto-approve every proposal
 only in local development when
