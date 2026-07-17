@@ -4,6 +4,13 @@ Status: active for MVP.
 
 Npcink Governance Core is a governance plugin. The security model must fail closed.
 
+Ability discovery is diagnostic, not authorization. Missing, invalid,
+contradictory, or explicitly REST-hidden provider contracts remain visible as
+`intake_status=blocked` but cannot create proposals, enter plan intake, receive
+sensitive-read grants, or pass commit preflight. Missing read sensitivity is
+treated as sensitive and requires a Core read request rather than being
+inferred public or directly readable.
+
 ## MVP Authorization
 
 MVP REST routes require either an administrator session or an explicitly
@@ -147,6 +154,14 @@ caller-supplied policy rules and does not add a rules DSL, workflow runtime,
 scheduler, final execution, or configuration center. If policy decision audit
 cannot be written, Core fails closed and deletes the created proposal row; if
 auto-approval audit cannot be written, the proposal is not left approved.
+
+For the media derivative shortcut, "reviewed evidence" means the exact local
+11-field proposal descriptor with a canonical `art_[0-9a-f]{32}` id, future
+expiry, integrity and image metadata, and WordPress-owned final filename
+policy. Legacy aliases, URLs, receive payloads, transfer evidence, and delivery
+ACKs are not approval evidence. Toolkit and the final execution owner still
+perform public schema, byte, transfer, write, and rollback validation outside
+Core.
 
 Auto approval allowlist: trusted test cleanup trash-post batches, single
 draft-only create-draft proposals, guarded article-audio adoptions, single

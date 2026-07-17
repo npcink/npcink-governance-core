@@ -119,6 +119,41 @@ final class Commit_Preflight_Service {
 			);
 		}
 
+		if ( 'ready' !== (string) ( $capability['intake_status'] ?? '' ) ) {
+			return $this->preflight_error(
+				'npcink_governance_core_ability_intake_blocked',
+				__( 'The proposal target ability is blocked by the Core ability intake contract.', 'npcink-governance-core' ),
+				409,
+				$proposal_id,
+				array(
+					'ability_id'     => (string) ( $proposal['ability_id'] ?? '' ),
+					'status'         => (string) ( $proposal['status'] ?? '' ),
+					'intake_reasons' => (array) ( $capability['intake_reasons'] ?? array() ),
+				)
+			);
+		}
+		if (
+			! in_array( (string) ( $capability['risk_level'] ?? '' ), array( 'write', 'destructive' ), true )
+			|| true !== (bool) ( $capability['requires_approval'] ?? false )
+			|| 'proposal_required' !== (string) ( $capability['governance_mode'] ?? '' )
+			|| 'adapter_after_core_preflight' !== (string) ( $capability['execution_surface'] ?? '' )
+		) {
+			return $this->preflight_error(
+				'npcink_governance_core_ability_not_proposal_eligible',
+				__( 'The proposal target ability is no longer eligible for governed write approval.', 'npcink-governance-core' ),
+				409,
+				$proposal_id,
+				array(
+					'ability_id'        => (string) ( $proposal['ability_id'] ?? '' ),
+					'status'            => (string) ( $proposal['status'] ?? '' ),
+					'risk_level'        => (string) ( $capability['risk_level'] ?? '' ),
+					'requires_approval' => (bool) ( $capability['requires_approval'] ?? false ),
+					'governance_mode'   => (string) ( $capability['governance_mode'] ?? '' ),
+					'execution_surface' => (string) ( $capability['execution_surface'] ?? '' ),
+				)
+			);
+		}
+
 		$contract_preflight = $this->ability_contract_preflight( $proposal, $capability );
 		if ( false === (bool) ( $contract_preflight['contract_matches'] ?? false ) ) {
 			return $this->preflight_error(
@@ -601,6 +636,8 @@ final class Commit_Preflight_Service {
 			'ability_id'        => sanitize_text_field( (string) ( $capability['ability_id'] ?? '' ) ),
 			'risk_level'        => sanitize_key( (string) ( $capability['risk_level'] ?? '' ) ),
 			'requires_approval' => (bool) ( $capability['requires_approval'] ?? false ),
+			'intake_status'     => sanitize_key( (string) ( $capability['intake_status'] ?? '' ) ),
+			'intake_reasons'    => array_values( array_map( 'sanitize_key', (array) ( $capability['intake_reasons'] ?? array() ) ) ),
 			'governance_mode'   => sanitize_key( (string) ( $capability['governance_mode'] ?? '' ) ),
 			'execution_surface' => sanitize_key( (string) ( $capability['execution_surface'] ?? '' ) ),
 			'capability'        => sanitize_key( (string) ( $capability['capability'] ?? '' ) ),

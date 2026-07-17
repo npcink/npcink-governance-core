@@ -35,6 +35,7 @@ final class Ability_Registry_Adapter {
 				}
 
 				if ( isset( $definitions[ $normalized_id ] ) ) {
+					$definitions[ $normalized_id ]['source_definitions'][] = $definition;
 					$definitions[ $normalized_id ]['definition'] = array_replace_recursive(
 						$definition,
 						$definitions[ $normalized_id ]['definition']
@@ -43,8 +44,9 @@ final class Ability_Registry_Adapter {
 				}
 
 				$definitions[ $normalized_id ] = array(
-					'definition' => $definition,
-					'source'     => $row_source,
+					'definition'         => $definition,
+					'source_definitions' => array( $definition ),
+					'source'             => $row_source,
 				);
 			}
 		}
@@ -54,7 +56,8 @@ final class Ability_Registry_Adapter {
 			$items[] = $this->normalize_row(
 				(string) $ability_id,
 				(array) $discovery_definition['definition'],
-				(string) $discovery_definition['source']
+				(string) $discovery_definition['source'],
+				(array) ( $discovery_definition['source_definitions'] ?? array() )
 			);
 		}
 
@@ -65,12 +68,24 @@ final class Ability_Registry_Adapter {
 			}
 		);
 
+		$ready_count   = 0;
+		$blocked_count = 0;
+		foreach ( $items as $item ) {
+			if ( 'ready' === (string) ( $item['intake_status'] ?? '' ) ) {
+				++$ready_count;
+			} else {
+				++$blocked_count;
+			}
+		}
+
 		return array(
-			'available' => 'none' !== $source,
-			'source'    => $source,
-			'count'     => count( $items ),
-			'message'   => $this->message_for_source( $source ),
-			'items'     => $items,
+			'available'     => 'none' !== $source,
+			'source'        => $source,
+			'count'         => count( $items ),
+			'ready_count'   => $ready_count,
+			'blocked_count' => $blocked_count,
+			'message'       => $this->message_for_source( $source ),
+			'items'         => $items,
 		);
 	}
 
@@ -83,10 +98,12 @@ final class Ability_Registry_Adapter {
 		$capabilities = $this->list_capabilities();
 
 		return array(
-			'available' => (bool) $capabilities['available'],
-			'source'    => (string) $capabilities['source'],
-			'count'     => (int) $capabilities['count'],
-			'message'   => (string) $capabilities['message'],
+			'available'     => (bool) $capabilities['available'],
+			'source'        => (string) $capabilities['source'],
+			'count'         => (int) $capabilities['count'],
+			'ready_count'   => (int) ( $capabilities['ready_count'] ?? 0 ),
+			'blocked_count' => (int) ( $capabilities['blocked_count'] ?? 0 ),
+			'message'       => (string) $capabilities['message'],
 		);
 	}
 
@@ -216,36 +233,36 @@ final class Ability_Registry_Adapter {
 	 * @param string               $ability_id Ability id.
 	 * @param array<string,mixed>  $definition Raw definition.
 	 * @param string               $source Source name.
+	 * @param array<int,array<string,mixed>> $source_definitions Pre-merge source definitions.
 	 * @return array<string,mixed>
 	 */
-	private function normalize_row( string $ability_id, array $definition, string $source ): array {
+	private function normalize_row( string $ability_id, array $definition, string $source, array $source_definitions ): array {
 		$meta        = is_array( $definition['meta'] ?? null ) ? $definition['meta'] : array();
 		$npcink_meta = is_array( $meta['npcink'] ?? null ) ? $meta['npcink'] : array();
-		$annotations = is_array( $definition['annotations'] ?? null ) ? $definition['annotations'] : array();
-		$risk_level  = $this->first_string(
-			array(
-				$definition['risk_level'] ?? null,
-				$meta['risk_level'] ?? null,
-				$npcink_meta['risk_level'] ?? null,
-				$annotations['risk_level'] ?? null,
-				$definition['mode'] ?? null,
-			),
-			'read'
+		$source_definitions = empty( $source_definitions ) ? array( $definition ) : $source_definitions;
+		$annotation_sources = $this->ability_annotation_sources( $source_definitions );
+		$annotations        = $this->ability_annotations( $annotation_sources );
+		$risk_contract      = $this->risk_contract( $source_definitions, $annotation_sources );
+		$risk_level         = (string) $risk_contract['risk_level'];
+		$approval_contract  = $this->approval_contract( $source_definitions, $annotation_sources, $risk_level );
+		$sensitivity_contract = $this->sensitivity_contract( $source_definitions, $annotation_sources, $risk_level );
+		$requires_approval  = (bool) $approval_contract['requires_approval'];
+		$intake_reasons     = array_merge(
+			(array) $risk_contract['reasons'],
+			(array) $approval_contract['reasons'],
+			(array) $sensitivity_contract['reasons'],
+			$this->rest_exposure_reasons( $source_definitions )
 		);
 
-		$requires_approval = $this->first_bool(
-			array(
-				$definition['requires_confirm'] ?? null,
-				$definition['requires_approval'] ?? null,
-				$meta['requires_confirm'] ?? null,
-				$meta['requires_approval'] ?? null,
-				$npcink_meta['requires_confirm'] ?? null,
-				$npcink_meta['requires_approval'] ?? null,
-				$annotations['requires_confirm'] ?? null,
-			),
-			in_array( $risk_level, array( 'write', 'destructive' ), true )
-		);
+		$intake_reasons = array_values( array_unique( $intake_reasons ) );
+		$intake_status  = empty( $intake_reasons ) ? 'ready' : 'blocked';
 		$guidance          = $this->execution_guidance( sanitize_key( $risk_level ), $requires_approval );
+		if ( 'blocked' === $intake_status ) {
+			$guidance = array(
+				'governance_mode'   => 'blocked',
+				'execution_surface' => 'none',
+			);
+		}
 		$required_scope    = $this->first_string(
 			array(
 				$definition['required_scope'] ?? null,
@@ -259,7 +276,7 @@ final class Ability_Registry_Adapter {
 				? (array) $definition['required_scopes']
 				: ( '' !== $required_scope ? array( $required_scope ) : array() )
 		);
-		$read_policy       = $this->read_governance_policy( $ability_id, sanitize_key( $risk_level ), $guidance, $definition, $meta, $annotations );
+		$read_policy       = $this->read_governance_policy( sanitize_key( $risk_level ), $guidance, $definition, $meta, $annotations, (string) $sensitivity_contract['sensitivity'] );
 		if ( ! empty( $read_policy['read_authorization_required'] ) ) {
 			$guidance['governance_mode'] = 'core_read_authorization_required';
 		}
@@ -271,6 +288,9 @@ final class Ability_Registry_Adapter {
 			'description'       => $this->first_string( array( $definition['description'] ?? null ), '' ),
 			'risk_level'        => sanitize_key( $risk_level ),
 			'requires_approval' => $requires_approval,
+			'intake_contract_version' => 'core-ability-intake-v1',
+			'intake_status'     => $intake_status,
+			'intake_reasons'    => $intake_reasons,
 			'capability'        => $this->first_string( array( $definition['capability'] ?? null, $meta['capability'] ?? null, $npcink_meta['capability'] ?? null ), '' ),
 			'required_scope'    => $required_scope,
 			'required_scopes'   => $required_scopes,
@@ -296,6 +316,330 @@ final class Ability_Registry_Adapter {
 			'source'            => $this->first_string( array( $definition['source'] ?? null ), $source ),
 			'raw'               => $this->redact_raw_definition( $definition ),
 		);
+	}
+
+	/**
+	 * Returns every annotation payload that can enter through supported provider shapes.
+	 *
+	 * @param array<int,array<string,mixed>> $source_definitions Pre-merge source definitions.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function ability_annotation_sources( array $source_definitions ): array {
+		$sources = array();
+		foreach ( $source_definitions as $definition ) {
+			$meta        = is_array( $definition['meta'] ?? null ) ? $definition['meta'] : array();
+			$npcink_meta = is_array( $meta['npcink'] ?? null ) ? $meta['npcink'] : array();
+			foreach ( array( $meta['annotations'] ?? null, $definition['annotations'] ?? null, $npcink_meta['annotations'] ?? null ) as $candidate ) {
+				if ( is_array( $candidate ) ) {
+					$sources[] = $candidate;
+				}
+			}
+		}
+
+		return $sources;
+	}
+
+	/**
+	 * Returns the canonical annotation payload for non-risk metadata.
+	 *
+	 * Risk evidence is evaluated across every source before this helper is used.
+	 *
+	 * @param array<int,array<string,mixed>> $sources Annotation sources.
+	 * @return array<string,mixed>
+	 */
+	private function ability_annotations( array $sources ): array {
+		return is_array( $sources[0] ?? null ) ? $sources[0] : array();
+	}
+
+	/**
+	 * Resolves all risk declarations without allowing one source to hide another.
+	 *
+	 * @param array<int,array<string,mixed>> $source_definitions Pre-merge source definitions.
+	 * @param array<int,array<string,mixed>> $annotation_sources Annotation sources.
+	 * @return array{risk_level:string,reasons:array<int,string>}
+	 */
+	private function risk_contract( array $source_definitions, array $annotation_sources ): array {
+		$reasons            = array();
+		$provider_risks     = array();
+		$annotation_risks   = array();
+		$risk_declarations  = array();
+		foreach ( $source_definitions as $definition ) {
+			$meta        = is_array( $definition['meta'] ?? null ) ? $definition['meta'] : array();
+			$npcink_meta = is_array( $meta['npcink'] ?? null ) ? $meta['npcink'] : array();
+			$risk_declarations[] = $definition['risk_level'] ?? null;
+			$risk_declarations[] = $meta['risk_level'] ?? null;
+			$risk_declarations[] = $npcink_meta['risk_level'] ?? null;
+		}
+
+		foreach ( $risk_declarations as $candidate ) {
+			if ( null === $candidate ) {
+				continue;
+			}
+			if ( ! is_string( $candidate ) || ! in_array( $candidate, array( 'read', 'write', 'destructive' ), true ) ) {
+				$reasons[] = 'risk_invalid';
+				continue;
+			}
+			$provider_risks[] = $candidate;
+		}
+
+		foreach ( $source_definitions as $definition ) {
+			$meta        = is_array( $definition['meta'] ?? null ) ? $definition['meta'] : array();
+			$npcink_meta = is_array( $meta['npcink'] ?? null ) ? $meta['npcink'] : array();
+			foreach ( array( $meta['annotations'] ?? null, $definition['annotations'] ?? null, $npcink_meta['annotations'] ?? null ) as $candidate ) {
+				if ( null !== $candidate && ! is_array( $candidate ) ) {
+					$reasons[] = 'annotations_invalid';
+				}
+			}
+		}
+
+		foreach ( $annotation_sources as $annotations ) {
+			$annotation_risk = $this->risk_from_annotations( $annotations, $reasons );
+			if ( '' !== $annotation_risk ) {
+				$annotation_risks[] = $annotation_risk;
+			}
+		}
+
+		$provider_risks   = array_values( array_unique( $provider_risks ) );
+		$annotation_risks = array_values( array_unique( $annotation_risks ) );
+		$all_risks        = array_values( array_unique( array_merge( $provider_risks, $annotation_risks ) ) );
+		if ( count( $provider_risks ) > 1 ) {
+			$reasons[] = 'risk_sources_conflict';
+		}
+		if ( count( $annotation_risks ) > 1 ) {
+			$reasons[] = 'annotations_conflict';
+		}
+		if ( ! empty( $provider_risks ) && ! empty( $annotation_risks ) && count( $all_risks ) > 1 ) {
+			$reasons[] = 'risk_annotations_conflict';
+		}
+		if ( empty( $all_risks ) ) {
+			$reasons[] = empty( array_filter( $risk_declarations, static function ( $value ): bool { return null !== $value; } ) ) ? 'risk_undeclared' : 'risk_invalid';
+		}
+
+		return array(
+			'risk_level' => $this->most_conservative_risk( $all_risks ),
+			'reasons'    => array_values( array_unique( $reasons ) ),
+		);
+	}
+
+	/**
+	 * Derives one risk value from standard annotations and records invalid evidence.
+	 *
+	 * @param array<string,mixed> $annotations Annotation fields.
+	 * @param array<int,string>   $reasons Intake reasons passed by reference.
+	 * @return string
+	 */
+	private function risk_from_annotations( array $annotations, array &$reasons ): string {
+		foreach ( array( 'readonly', 'destructive' ) as $field ) {
+			if ( array_key_exists( $field, $annotations ) && null !== $annotations[ $field ] && ! $this->is_boolean_like( $annotations[ $field ] ) ) {
+				$reasons[] = 'annotations_invalid';
+				return '';
+			}
+		}
+
+		$readonly    = $this->annotation_bool( $annotations, 'readonly' );
+		$destructive = $this->annotation_bool( $annotations, 'destructive' );
+		if ( true === $readonly && true === $destructive ) {
+			$reasons[] = 'annotations_conflict';
+			return 'destructive';
+		}
+		if ( true === $destructive ) {
+			return 'destructive';
+		}
+		if ( true === $readonly ) {
+			return 'read';
+		}
+		if ( false === $readonly ) {
+			return 'write';
+		}
+
+		return '';
+	}
+
+	/**
+	 * Returns the strongest observed risk for diagnostics when intake is blocked.
+	 *
+	 * @param array<int,string> $risks Normalized risks.
+	 * @return string
+	 */
+	private function most_conservative_risk( array $risks ): string {
+		foreach ( array( 'destructive', 'write', 'read' ) as $risk ) {
+			if ( in_array( $risk, $risks, true ) ) {
+				return $risk;
+			}
+		}
+
+		return 'unknown';
+	}
+
+	/**
+	 * Resolves all approval declarations without first-value-wins behavior.
+	 *
+	 * @param array<int,array<string,mixed>> $source_definitions Pre-merge source definitions.
+	 * @param array<int,array<string,mixed>> $annotation_sources Annotation sources.
+	 * @param string                         $risk_level Normalized risk.
+	 * @return array{requires_approval:bool,reasons:array<int,string>}
+	 */
+	private function approval_contract( array $source_definitions, array $annotation_sources, string $risk_level ): array {
+		$reasons = array();
+		$values  = array();
+		foreach ( $source_definitions as $definition ) {
+			$meta        = is_array( $definition['meta'] ?? null ) ? $definition['meta'] : array();
+			$npcink_meta = is_array( $meta['npcink'] ?? null ) ? $meta['npcink'] : array();
+			$values[] = $definition['requires_confirm'] ?? null;
+			$values[] = $definition['requires_approval'] ?? null;
+			$values[] = $meta['requires_confirm'] ?? null;
+			$values[] = $meta['requires_approval'] ?? null;
+			$values[] = $npcink_meta['requires_confirm'] ?? null;
+			$values[] = $npcink_meta['requires_approval'] ?? null;
+		}
+		foreach ( $annotation_sources as $annotations ) {
+			$values[] = $annotations['requires_confirm'] ?? null;
+		}
+
+		$declared = array();
+		foreach ( $values as $value ) {
+			if ( null === $value ) {
+				continue;
+			}
+			if ( ! $this->is_boolean_like( $value ) ) {
+				$reasons[] = 'approval_invalid';
+				continue;
+			}
+			$declared[] = (bool) (int) $value;
+		}
+		$declared = array_values( array_unique( $declared, SORT_REGULAR ) );
+		if ( count( $declared ) > 1 ) {
+			$reasons[] = 'approval_sources_conflict';
+		}
+
+		$write_like        = in_array( $risk_level, array( 'write', 'destructive' ), true );
+		$requires_approval = 1 === count( $declared ) ? (bool) $declared[0] : $write_like;
+		if ( $write_like && in_array( false, $declared, true ) ) {
+			$reasons[]         = 'write_approval_conflict';
+			$requires_approval = true;
+		}
+		if ( 'read' === $risk_level && in_array( true, $declared, true ) ) {
+			$reasons[] = 'read_approval_conflict';
+		}
+
+		return array(
+			'requires_approval' => $requires_approval,
+			'reasons'           => array_values( array_unique( $reasons ) ),
+		);
+	}
+
+	/**
+	 * Resolves read sensitivity conservatively across every declared source.
+	 *
+	 * Missing sensitivity becomes sensitive and requires Core read authorization.
+	 *
+	 * @param array<int,array<string,mixed>> $source_definitions Pre-merge source definitions.
+	 * @param array<int,array<string,mixed>> $annotation_sources Annotation sources.
+	 * @param string                         $risk_level Normalized risk.
+	 * @return array{sensitivity:string,reasons:array<int,string>}
+	 */
+	private function sensitivity_contract( array $source_definitions, array $annotation_sources, string $risk_level ): array {
+		if ( 'read' !== $risk_level ) {
+			return array( 'sensitivity' => 'internal', 'reasons' => array() );
+		}
+
+		$values = array();
+		foreach ( $source_definitions as $definition ) {
+			$meta        = is_array( $definition['meta'] ?? null ) ? $definition['meta'] : array();
+			$npcink_meta = is_array( $meta['npcink'] ?? null ) ? $meta['npcink'] : array();
+			$values[] = $definition['sensitivity'] ?? null;
+			$values[] = $meta['sensitivity'] ?? null;
+			$values[] = $npcink_meta['sensitivity'] ?? null;
+		}
+		foreach ( $annotation_sources as $annotations ) {
+			$values[] = $annotations['sensitivity'] ?? null;
+		}
+
+		$declared = array();
+		$reasons  = array();
+		foreach ( $values as $value ) {
+			if ( null === $value ) {
+				continue;
+			}
+			if ( ! is_string( $value ) || ! in_array( $value, array( 'public', 'internal', 'sensitive' ), true ) ) {
+				$reasons[] = 'sensitivity_invalid';
+				continue;
+			}
+			$declared[] = $value;
+		}
+		$declared = array_values( array_unique( $declared ) );
+		if ( count( $declared ) > 1 ) {
+			$reasons[] = 'sensitivity_sources_conflict';
+		}
+
+		foreach ( array( 'sensitive', 'internal', 'public' ) as $sensitivity ) {
+			if ( in_array( $sensitivity, $declared, true ) ) {
+				return array( 'sensitivity' => $sensitivity, 'reasons' => array_values( array_unique( $reasons ) ) );
+			}
+		}
+
+		return array( 'sensitivity' => 'sensitive', 'reasons' => array_values( array_unique( $reasons ) ) );
+	}
+
+	/**
+	 * Requires an unambiguous, explicit REST exposure declaration.
+	 *
+	 * @param array<int,array<string,mixed>> $source_definitions Pre-merge source definitions.
+	 * @return array<int,string>
+	 */
+	private function rest_exposure_reasons( array $source_definitions ): array {
+		$canonical = array();
+		$mirrors   = array();
+		$reasons   = array();
+		foreach ( $source_definitions as $definition ) {
+			$meta        = is_array( $definition['meta'] ?? null ) ? $definition['meta'] : array();
+			$npcink_meta = is_array( $meta['npcink'] ?? null ) ? $meta['npcink'] : array();
+			if ( array_key_exists( 'show_in_rest', $meta ) ) {
+				if ( ! is_bool( $meta['show_in_rest'] ) ) {
+					$reasons[] = 'rest_exposure_invalid';
+				} else {
+					$canonical[] = $meta['show_in_rest'];
+				}
+			}
+			foreach ( array( $definition, $npcink_meta ) as $mirror_source ) {
+				if ( ! array_key_exists( 'show_in_rest', $mirror_source ) ) {
+					continue;
+				}
+				if ( ! is_bool( $mirror_source['show_in_rest'] ) ) {
+					$reasons[] = 'rest_exposure_mirror_invalid';
+				} else {
+					$mirrors[] = $mirror_source['show_in_rest'];
+				}
+			}
+		}
+
+		$canonical = array_values( array_unique( $canonical, SORT_REGULAR ) );
+		$mirrors   = array_values( array_unique( $mirrors, SORT_REGULAR ) );
+		if ( count( $canonical ) > 1 || ( ! empty( $canonical ) && ! empty( $mirrors ) && count( array_unique( array_merge( $canonical, $mirrors ), SORT_REGULAR ) ) > 1 ) ) {
+			$reasons[] = 'rest_exposure_conflict';
+		}
+		if ( empty( $canonical ) ) {
+			$reasons[] = 'rest_exposure_undeclared';
+		} elseif ( ! in_array( true, $canonical, true ) ) {
+			$reasons[] = 'rest_exposure_disabled';
+		}
+
+		return array_values( array_unique( $reasons ) );
+	}
+
+	/**
+	 * Returns a nullable standard annotation boolean.
+	 *
+	 * @param array<string,mixed> $annotations Annotation fields.
+	 * @param string              $field Field name.
+	 * @return bool|null
+	 */
+	private function annotation_bool( array $annotations, string $field ): ?bool {
+		if ( ! array_key_exists( $field, $annotations ) || null === $annotations[ $field ] || ! $this->is_boolean_like( $annotations[ $field ] ) ) {
+			return null;
+		}
+
+		return (bool) (int) $annotations[ $field ];
 	}
 
 	/**
@@ -415,15 +759,15 @@ final class Ability_Registry_Adapter {
 	/**
 	 * Returns read-side governance metadata for adapter routing.
 	 *
-	 * @param string              $ability_id Ability id.
 	 * @param string              $risk_level Risk level.
 	 * @param array<string,mixed> $guidance Execution guidance.
 	 * @param array<string,mixed> $definition Raw definition.
 	 * @param array<string,mixed> $meta Meta fields.
 	 * @param array<string,mixed> $annotations Annotation fields.
+	 * @param string              $resolved_sensitivity Fail-closed resolved sensitivity.
 	 * @return array{read_policy:string,sensitivity:string,redaction_required:bool,read_audit_mode:string,read_authorization_required:bool,read_authorization:array<string,mixed>}
 	 */
-	private function read_governance_policy( string $ability_id, string $risk_level, array $guidance, array $definition, array $meta, array $annotations ): array {
+	private function read_governance_policy( string $risk_level, array $guidance, array $definition, array $meta, array $annotations, string $resolved_sensitivity ): array {
 		if ( 'direct_read' !== (string) ( $guidance['governance_mode'] ?? '' ) || 'read' !== $risk_level ) {
 			return array(
 				'read_policy'        => 'not_direct_read',
@@ -435,19 +779,7 @@ final class Ability_Registry_Adapter {
 			);
 		}
 
-		$sensitivity = sanitize_key(
-			$this->first_string(
-				array(
-					$definition['sensitivity'] ?? null,
-					$meta['sensitivity'] ?? null,
-					$annotations['sensitivity'] ?? null,
-				),
-				$this->infer_read_sensitivity( $ability_id )
-			)
-		);
-		if ( ! in_array( $sensitivity, array( 'public', 'internal', 'sensitive' ), true ) ) {
-			$sensitivity = 'internal';
-		}
+		$sensitivity = in_array( $resolved_sensitivity, array( 'public', 'internal', 'sensitive' ), true ) ? $resolved_sensitivity : 'sensitive';
 
 		$redaction_required = $this->first_bool(
 			array(
@@ -455,7 +787,7 @@ final class Ability_Registry_Adapter {
 				$meta['redaction_required'] ?? null,
 				$annotations['redaction_required'] ?? null,
 			),
-			'sensitive' === $sensitivity
+			'public' !== $sensitivity
 		);
 		$read_authorization = $this->read_authorization_metadata( $definition, $meta, $annotations );
 		$auth_required      = 'sensitive' === $sensitivity
@@ -516,30 +848,6 @@ final class Ability_Registry_Adapter {
 	}
 
 	/**
-	 * Infers read sensitivity when the provider has not declared one.
-	 *
-	 * @param string $ability_id Ability id.
-	 * @return string
-	 */
-	private function infer_read_sensitivity( string $ability_id ): string {
-		$ability_id = strtolower( $ability_id );
-
-		foreach ( array( 'diagnostic', 'permissions', 'database', 'error-log', 'plugin-conflict', 'ops' ) as $needle ) {
-			if ( false !== strpos( $ability_id, $needle ) ) {
-				return 'sensitive';
-			}
-		}
-
-		foreach ( array( 'inventory', 'plan', 'media', 'pages', 'posts', 'users', 'menu', 'term', 'workflow' ) as $needle ) {
-			if ( false !== strpos( $ability_id, $needle ) ) {
-				return 'internal';
-			}
-		}
-
-		return 'public';
-	}
-
-	/**
 	 * Returns first non-empty string.
 	 *
 	 * @param array<mixed> $values Values.
@@ -575,6 +883,22 @@ final class Ability_Registry_Adapter {
 		}
 
 		return $fallback;
+	}
+
+	/**
+	 * Returns whether one value is an unambiguous boolean representation.
+	 *
+	 * @param mixed $value Value.
+	 * @return bool
+	 */
+	private function is_boolean_like( $value ): bool {
+		return is_bool( $value )
+			|| 0 === $value
+			|| 1 === $value
+			|| 0.0 === $value
+			|| 1.0 === $value
+			|| '0' === $value
+			|| '1' === $value;
 	}
 
 	/**

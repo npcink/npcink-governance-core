@@ -239,7 +239,16 @@ current user or trusted Adapter key already has approval authority.
 Required properties:
 
 - one `attachment_id`;
-- one `derivative_artifact` with artifact evidence;
+- one `derivative_artifact` that matches the exact local 11-field proposal
+  descriptor: `artifact_id`, `expires_at`, `mime_type`, `format`, `width`,
+  `height`, `filesize_bytes`, `sha256`, `suggested_filename`,
+  `filename_basis`, and `processing_warnings`;
+- canonical `artifact_id=art_[0-9a-f]{32}`, future RFC3339 expiry, lowercase
+  unprefixed SHA-256, supported matching MIME/format, bounded dimensions and
+  byte size, and WordPress-owned final filename policy;
+- no legacy id, URL, run, checksum-alias, size-alias, receive, transfer, or
+  delivery-ACK fields in proposal evidence;
+- `expected_derivative_mime_type`, when present, matches the descriptor MIME;
 - proposal input remains `dry_run=true` and `commit=false`;
 - preview identifies a `media_optimization_plan` or the
   `npcink-abilities-toolkit/build-media-optimization-plan` source ability;
@@ -251,10 +260,14 @@ Required properties:
 
 Real auto approval additionally requires
 `guarded_media_derivative_candidate` and
+`guarded_media_derivative_exact_local_artifact_evidence` and
 `smart_guarded_media_derivative_auto_approved` in `policy_reasons` and
 `proposal.auto_approved` audit if status changes. This is an approval reducer
 for reviewed single-attachment derivative replacement proposals; it is not a
-Core batch optimizer, media queue, Cloud runtime, or direct WordPress write.
+Core batch optimizer, media queue, Cloud runtime, delivery receiver, byte/ACK
+validator, or direct WordPress write. Toolkit remains the public ability schema
+and local validation/write owner; Core repeats only the fail-closed evidence
+checks needed to decide whether this direct proposal may skip manual approval.
 
 ## Fifth Narrow Candidate: Media ALT-Only Update
 

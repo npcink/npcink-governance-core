@@ -85,6 +85,10 @@ final class Read_Request_Service {
 			);
 		}
 
+		if ( 'ready' !== (string) ( $capability['intake_status'] ?? '' ) ) {
+			return $this->intake_blocked_error( $capability );
+		}
+
 		if ( ! $this->capability_requires_read_authorization( $capability ) ) {
 			return new WP_Error(
 				'npcink_governance_core_read_authorization_not_required',
@@ -180,7 +184,17 @@ final class Read_Request_Service {
 		}
 
 		$capability = $this->abilities->find( (string) $request['ability_id'] );
-		if ( null === $capability || ! $this->capability_requires_read_authorization( $capability ) ) {
+		if ( null === $capability ) {
+			return new WP_Error(
+				'npcink_governance_core_read_ability_not_available',
+				__( 'Sensitive read target ability is not available.', 'npcink-governance-core' ),
+				array( 'status' => 404 )
+			);
+		}
+		if ( 'ready' !== (string) ( $capability['intake_status'] ?? '' ) ) {
+			return $this->intake_blocked_error( $capability );
+		}
+		if ( ! $this->capability_requires_read_authorization( $capability ) ) {
 			return new WP_Error(
 				'npcink_governance_core_read_ability_not_available',
 				__( 'Sensitive read target ability is not available.', 'npcink-governance-core' ),
@@ -345,7 +359,24 @@ final class Read_Request_Service {
 		}
 
 		$capability = $this->abilities->find( $ability_id );
-		if ( null === $capability || ! $this->capability_requires_read_authorization( $capability ) ) {
+		if ( null === $capability ) {
+			return $this->preflight_error(
+				'npcink_governance_core_read_ability_not_available',
+				__( 'Sensitive read target ability is not available.', 'npcink-governance-core' ),
+				409,
+				$request
+			);
+		}
+		if ( 'ready' !== (string) ( $capability['intake_status'] ?? '' ) ) {
+			return $this->preflight_error(
+				'npcink_governance_core_ability_intake_blocked',
+				__( 'Sensitive read target ability is blocked by the Core ability intake contract.', 'npcink-governance-core' ),
+				409,
+				$request,
+				array( 'intake_reasons' => (array) ( $capability['intake_reasons'] ?? array() ) )
+			);
+		}
+		if ( ! $this->capability_requires_read_authorization( $capability ) ) {
 			return $this->preflight_error(
 				'npcink_governance_core_read_ability_not_available',
 				__( 'Sensitive read target ability is not available.', 'npcink-governance-core' ),
@@ -537,6 +568,24 @@ final class Read_Request_Service {
 			|| ! empty( $read_authorization['required'] )
 			|| 'core_read_authorization_required' === (string) ( $capability['read_policy'] ?? '' )
 			|| 'core_read_request' === (string) ( $capability['authorization_mode'] ?? '' );
+	}
+
+	/**
+	 * Returns a stable fail-closed error for a discovered but blocked ability.
+	 *
+	 * @param array<string,mixed> $capability Capability row.
+	 * @return WP_Error
+	 */
+	private function intake_blocked_error( array $capability ): WP_Error {
+		return new WP_Error(
+			'npcink_governance_core_ability_intake_blocked',
+			__( 'Sensitive read target ability is blocked by the Core ability intake contract.', 'npcink-governance-core' ),
+			array(
+				'status'         => 409,
+				'ability_id'     => (string) ( $capability['ability_id'] ?? '' ),
+				'intake_reasons' => (array) ( $capability['intake_reasons'] ?? array() ),
+			)
+		);
 	}
 
 	/**

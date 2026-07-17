@@ -232,6 +232,18 @@ if ( ! function_exists( 'sanitize_text_field' ) ) {
 	}
 }
 
+if ( ! function_exists( 'sanitize_file_name' ) ) {
+	/**
+	 * File name sanitizer stub.
+	 *
+	 * @param mixed $value Value.
+	 * @return string
+	 */
+	function sanitize_file_name( $value ): string {
+		return (string) preg_replace( '/[^A-Za-z0-9._-]/', '', basename( (string) $value ) );
+	}
+}
+
 if ( ! function_exists( 'sanitize_textarea_field' ) ) {
 	/**
 	 * Textarea sanitizer stub.
@@ -468,7 +480,7 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 			return $npcink_governance_core_fail_closed_abilities;
 		}
 
-		return array(
+		$abilities = array(
 			'npcink-abilities-toolkit/create-draft' => array(
 				'ability_id'        => 'npcink-abilities-toolkit/create-draft',
 				'label'             => 'Create Draft',
@@ -519,7 +531,7 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 			'npcink-abilities-toolkit/update-template-blocks' => array(
 				'ability_id'        => 'npcink-abilities-toolkit/update-template-blocks',
 				'label'             => 'Update Template Blocks',
-				'risk_level'        => 'high',
+				'risk_level'        => 'write',
 				'requires_approval' => true,
 				'capability'        => 'edit_theme_options',
 				'required_scopes'   => array( 'site.write' ),
@@ -529,7 +541,7 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 			'npcink-abilities-toolkit/upsert-template-blocks' => array(
 				'ability_id'        => 'npcink-abilities-toolkit/upsert-template-blocks',
 				'label'             => 'Upsert Template Blocks',
-				'risk_level'        => 'high',
+				'risk_level'        => 'write',
 				'requires_approval' => true,
 				'capability'        => 'edit_theme_options',
 				'required_scopes'   => array( 'site.write' ),
@@ -613,7 +625,35 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'requires_approval' => true,
 				'capability'        => 'upload_files',
 				'required_scopes'   => array( 'media.write' ),
-				'input_schema'      => array( 'type' => 'object', 'properties' => array( 'attachment_id' => array( 'type' => 'integer' ), 'dry_run' => array( 'type' => 'boolean' ), 'commit' => array( 'type' => 'boolean' ), 'idempotency_key' => array( 'type' => 'string' ) ) ),
+				'input_schema'      => array(
+					'type'                 => 'object',
+					'properties'           => array(
+						'attachment_id'       => array( 'type' => 'integer' ),
+						'derivative_artifact' => array(
+							'type'                 => 'object',
+							'properties'           => array(
+								'artifact_id'        => array( 'type' => 'string', 'pattern' => '^art_[0-9a-f]{32}$' ),
+								'expires_at'         => array( 'type' => 'string', 'format' => 'date-time' ),
+								'mime_type'          => array( 'type' => 'string', 'enum' => array( 'image/webp', 'image/avif', 'image/jpeg', 'image/png' ) ),
+								'format'             => array( 'type' => 'string', 'enum' => array( 'webp', 'avif', 'jpeg', 'png' ) ),
+								'width'              => array( 'type' => 'integer' ),
+								'height'             => array( 'type' => 'integer' ),
+								'filesize_bytes'     => array( 'type' => 'integer' ),
+								'sha256'             => array( 'type' => 'string', 'pattern' => '^[a-f0-9]{64}$' ),
+								'suggested_filename' => array( 'type' => 'string' ),
+								'filename_basis'     => array( 'type' => 'object' ),
+								'processing_warnings' => array( 'type' => 'array' ),
+							),
+							'required'             => array( 'artifact_id', 'expires_at', 'mime_type', 'format', 'width', 'height', 'filesize_bytes', 'sha256', 'suggested_filename', 'filename_basis', 'processing_warnings' ),
+							'additionalProperties' => false,
+						),
+						'dry_run'              => array( 'type' => 'boolean' ),
+						'commit'               => array( 'type' => 'boolean' ),
+						'idempotency_key'      => array( 'type' => 'string' ),
+					),
+					'required'             => array( 'attachment_id', 'derivative_artifact' ),
+					'additionalProperties' => false,
+				),
 				'output_schema'     => array( 'type' => 'object' ),
 			),
 			'npcink-abilities-toolkit/rename-media-file' => array(
@@ -786,6 +826,22 @@ if ( ! function_exists( 'npcink_abilities_toolkit_get_registered' ) ) {
 				'output_schema'     => array( 'type' => 'object' ),
 			),
 		);
+
+		foreach ( $abilities as &$ability ) {
+			$risk = (string) ( $ability['risk_level'] ?? '' );
+			$ability['meta'] = is_array( $ability['meta'] ?? null ) ? $ability['meta'] : array();
+			$ability['meta']['show_in_rest'] = true;
+			$ability['meta']['annotations'] = array(
+				'readonly'    => 'read' === $risk,
+				'destructive' => 'destructive' === $risk,
+			);
+			if ( 'read' === $risk && ! array_key_exists( 'sensitivity', $ability ) ) {
+				$ability['sensitivity'] = 'internal';
+			}
+		}
+		unset( $ability );
+
+		return $abilities;
 	}
 }
 
@@ -1236,6 +1292,7 @@ require_once dirname( __DIR__ ) . '/includes/Governance/Proposal_Repository.php'
 require_once dirname( __DIR__ ) . '/includes/Governance/Proposal_Service.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Read_Request_Repository.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Read_Request_Service.php';
+require_once dirname( __DIR__ ) . '/includes/Governance/Plan_Contract_Validator.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Plan_Proposal_Service.php';
 require_once dirname( __DIR__ ) . '/includes/Governance/Commit_Preflight_Service.php';
 require_once dirname( __DIR__ ) . '/includes/Security/App_Key_Repository.php';
@@ -1345,7 +1402,7 @@ function npcink_governance_core_fail_closed_proposals_controller_stack(): array 
 		new \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator()
 	);
 	$preflight = new \Npcink\GovernanceCore\Governance\Commit_Preflight_Service( $proposals, $abilities, $audit );
-	$plan      = new \Npcink\GovernanceCore\Governance\Plan_Proposal_Service( $abilities, $service, $audit );
+	$plan      = new \Npcink\GovernanceCore\Governance\Plan_Proposal_Service( $abilities, $service, $audit, new \Npcink\GovernanceCore\Governance\Plan_Contract_Validator() );
 	$auth      = new \Npcink\GovernanceCore\Security\App_Authenticator(
 		new \Npcink\GovernanceCore\Security\App_Key_Repository(),
 		new \Npcink\GovernanceCore\Security\App_Rate_Limiter(),
@@ -1446,7 +1503,7 @@ function npcink_governance_core_fail_closed_plan_stack(): array {
 	$preflight = new \Npcink\GovernanceCore\Governance\Commit_Preflight_Service( $proposals, $abilities, $audit );
 
 	return array(
-		'service'          => new \Npcink\GovernanceCore\Governance\Plan_Proposal_Service( $abilities, $proposal_service, $audit ),
+		'service'          => new \Npcink\GovernanceCore\Governance\Plan_Proposal_Service( $abilities, $proposal_service, $audit, new \Npcink\GovernanceCore\Governance\Plan_Contract_Validator() ),
 		'proposal_service' => $proposal_service,
 		'preflight'        => $preflight,
 		'proposals'        => $proposals,
@@ -2223,6 +2280,35 @@ function npcink_governance_core_fail_closed_article_media_batch_write_plan(): ar
 }
 
 /**
+ * Creates exact local proposal evidence for one Cloud media derivative.
+ *
+ * @param array<string,mixed> $overrides Field overrides.
+ * @return array<string,mixed>
+ */
+function npcink_governance_core_fail_closed_media_derivative_artifact( array $overrides = array() ): array {
+	return array_merge(
+		array(
+			'artifact_id'        => 'art_00000000000000000000000000001493',
+			'expires_at'         => gmdate( 'Y-m-d\TH:i:s\Z', time() + 600 ),
+			'mime_type'          => 'image/webp',
+			'format'             => 'webp',
+			'width'              => 1200,
+			'height'             => 800,
+			'filesize_bytes'     => 210000,
+			'sha256'             => hash( 'sha256', 'core-media-derivative-fixture' ),
+			'suggested_filename' => 'optimized-1493.webp',
+			'filename_basis'     => array(
+				'owner'                          => 'wordpress_write_ability_final',
+				'strategy'                       => 'format_checksum',
+				'final_sanitize_unique_required' => true,
+			),
+			'processing_warnings' => array(),
+		),
+		$overrides
+	);
+}
+
+/**
  * Creates a representative media optimization plan.
  *
  * @return array<string,mixed>
@@ -2272,7 +2358,7 @@ function npcink_governance_core_fail_closed_media_optimization_plan(): array {
 				'target_ability_id' => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',
 				'input'             => array(
 					'attachment_id'                  => 1493,
-					'derivative_artifact'            => 'cloud://artifact/webp-1493',
+					'derivative_artifact'            => npcink_governance_core_fail_closed_media_derivative_artifact(),
 					'expected_current_mime_type'     => 'image/png',
 					'expected_derivative_mime_type'  => 'image/webp',
 					'dry_run'                        => true,
@@ -3796,7 +3882,12 @@ $multi_media_optimization_plan['write_actions'][] = array(
 	'target_ability_id' => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',
 	'input'             => array(
 		'attachment_id'                  => 1494,
-		'derivative_artifact'            => 'cloud://artifact/webp-1494',
+		'derivative_artifact'            => npcink_governance_core_fail_closed_media_derivative_artifact(
+			array(
+				'artifact_id'        => 'art_00000000000000000000000000001494',
+				'suggested_filename' => 'optimized-1494.webp',
+			)
+		),
 		'expected_current_mime_type'     => 'image/png',
 		'expected_derivative_mime_type'  => 'image/webp',
 		'dry_run'                        => true,
@@ -3829,7 +3920,12 @@ for ( $i = 0; $i < 6; $i++ ) {
 	$metadata_action['input']['idempotency_key'] = 'media-optimize-metadata-' . $attachment_id;
 	$derivative_action['action_id'] = 'adopt_webp_derivative_' . $attachment_id;
 	$derivative_action['input']['attachment_id'] = $attachment_id;
-	$derivative_action['input']['derivative_artifact'] = 'cloud://artifact/webp-' . $attachment_id;
+	$derivative_action['input']['derivative_artifact'] = npcink_governance_core_fail_closed_media_derivative_artifact(
+		array(
+			'artifact_id'        => 'art_' . str_pad( dechex( $attachment_id ), 32, '0', STR_PAD_LEFT ),
+			'suggested_filename' => 'optimized-' . $attachment_id . '.webp',
+		)
+	);
 	$derivative_action['input']['idempotency_key'] = 'media-optimize-derivative-' . $attachment_id;
 	$too_many_media_actions['attachment_ids'][] = $attachment_id;
 	$too_many_media_actions['write_actions'][] = $metadata_action;
@@ -4364,6 +4460,11 @@ $npcink_governance_core_fail_closed_native_abilities = array(
 
 		public function get_meta(): array {
 			return array(
+				'annotations'  => array(
+					'readonly'    => false,
+					'destructive' => false,
+				),
+				'show_in_rest' => true,
 				'npcink' => array(
 					'risk_level'       => 'write',
 					'requires_approval' => true,
@@ -4372,6 +4473,150 @@ $npcink_governance_core_fail_closed_native_abilities = array(
 			);
 		}
 	},
+	'third-party/annotation-destructive' => array(
+		'ability_id' => 'third-party/annotation-destructive',
+		'label'      => 'Annotation Destructive',
+		'meta'       => array(
+			'annotations'  => array(
+				'readonly'    => false,
+				'destructive' => true,
+			),
+			'show_in_rest' => true,
+		),
+	),
+	'third-party/ambiguous-risk' => array(
+		'ability_id' => 'third-party/ambiguous-risk',
+		'label'      => 'Ambiguous Risk',
+		'meta'       => array(
+			'annotations'  => array(
+				'readonly'    => null,
+				'destructive' => null,
+			),
+			'show_in_rest' => true,
+		),
+	),
+	'third-party/conflicting-risk' => array(
+		'ability_id' => 'third-party/conflicting-risk',
+		'label'      => 'Conflicting Risk',
+		'risk_level' => 'read',
+		'meta'       => array(
+			'annotations'  => array(
+				'readonly'    => false,
+				'destructive' => true,
+			),
+			'show_in_rest' => true,
+		),
+	),
+	'third-party/provider-risk-conflict' => array(
+		'ability_id' => 'third-party/provider-risk-conflict',
+		'label'      => 'Provider Risk Conflict',
+		'risk_level' => 'read',
+		'meta'       => array(
+			'annotations'  => array( 'readonly' => null, 'destructive' => null ),
+			'show_in_rest' => true,
+			'npcink'       => array( 'risk_level' => 'destructive' ),
+		),
+	),
+	'npcink-abilities-toolkit/update-post' => array(
+		'ability_id'        => 'npcink-abilities-toolkit/update-post',
+		'label'             => 'Cross Source Risk Conflict',
+		'risk_level'        => 'read',
+		'requires_approval' => false,
+		'sensitivity'       => 'public',
+		'meta'              => array(
+			'annotations'  => array( 'readonly' => true, 'destructive' => false ),
+			'show_in_rest' => true,
+		),
+	),
+	'npcink-abilities-toolkit/patch-post-content' => array(
+		'ability_id'        => 'npcink-abilities-toolkit/patch-post-content',
+		'label'             => 'Cross Source Annotation Conflict',
+		'risk_level'        => 'write',
+		'requires_approval' => true,
+		'meta'              => array(
+			'annotations'  => array( 'readonly' => true, 'destructive' => false ),
+			'show_in_rest' => true,
+		),
+	),
+	'third-party/invalid-risk-alias' => array(
+		'ability_id' => 'third-party/invalid-risk-alias',
+		'label'      => 'Invalid Risk Alias',
+		'risk_level' => 'high',
+		'meta'       => array(
+			'annotations'  => array( 'readonly' => null, 'destructive' => null ),
+			'show_in_rest' => true,
+		),
+	),
+	'third-party/rest-hidden' => array(
+		'ability_id' => 'third-party/rest-hidden',
+		'label'      => 'REST Hidden',
+		'risk_level' => 'read',
+		'meta'       => array(
+			'annotations'  => array(
+				'readonly'    => true,
+				'destructive' => false,
+			),
+			'show_in_rest' => false,
+		),
+	),
+	'third-party/rest-undeclared' => array(
+		'ability_id' => 'third-party/rest-undeclared',
+		'label'      => 'REST Undeclared',
+		'risk_level' => 'read',
+		'meta'       => array(
+			'annotations' => array( 'readonly' => true, 'destructive' => false ),
+		),
+	),
+	'third-party/rest-top-level-only' => array(
+		'ability_id'   => 'third-party/rest-top-level-only',
+		'label'        => 'REST Top Level Only',
+		'risk_level'   => 'read',
+		'show_in_rest' => true,
+		'meta'         => array(
+			'annotations' => array( 'readonly' => true, 'destructive' => false ),
+		),
+	),
+	'third-party/rest-npcink-only' => array(
+		'ability_id' => 'third-party/rest-npcink-only',
+		'label'      => 'REST Npcink Only',
+		'risk_level' => 'read',
+		'meta'       => array(
+			'annotations' => array( 'readonly' => true, 'destructive' => false ),
+			'npcink'      => array( 'show_in_rest' => true ),
+		),
+	),
+	'third-party/rest-string-true' => array(
+		'ability_id' => 'third-party/rest-string-true',
+		'label'      => 'REST String True',
+		'risk_level' => 'read',
+		'meta'       => array(
+			'annotations'  => array( 'readonly' => true, 'destructive' => false ),
+			'show_in_rest' => '1',
+		),
+	),
+	'third-party/undeclared-sensitivity' => array(
+		'ability_id' => 'third-party/undeclared-sensitivity',
+		'label'      => 'Undeclared Sensitivity',
+		'risk_level' => 'read',
+		'meta'       => array(
+			'annotations'  => array(
+				'readonly'    => true,
+				'destructive' => false,
+			),
+			'show_in_rest' => true,
+		),
+	),
+	'npcink-toolbox/build-article-write-plan' => array(
+		'ability_id' => 'npcink-toolbox/build-article-write-plan',
+		'label'      => 'REST Hidden Article Plan',
+		'meta'       => array(
+			'annotations'  => array(
+				'readonly'    => true,
+				'destructive' => false,
+			),
+			'show_in_rest' => false,
+		),
+	),
 	'npcink-abilities-toolkit/create-draft' => array(
 		'ability_id'        => 'npcink-abilities-toolkit/create-draft',
 		'label'             => 'Native Aggregate Create Draft',
@@ -4396,6 +4641,80 @@ npcink_governance_core_fail_closed_assert( 'wordpress_abilities_api' === (string
 npcink_governance_core_fail_closed_assert( isset( $discovered_items['npcink-abilities-toolkit/read-error-log'] ), 'Toolkit compatibility discovery fills abilities missing from the native aggregate.' );
 npcink_governance_core_fail_closed_assert( 'Native Aggregate Create Draft' === (string) ( $discovered_items['npcink-abilities-toolkit/create-draft']['label'] ?? '' ), 'Native aggregate definition wins when both public sources contain the same ability id.' );
 npcink_governance_core_fail_closed_assert( in_array( 'post.write', (array) ( $discovered_items['npcink-abilities-toolkit/create-draft']['required_scopes'] ?? array() ), true ), 'Toolkit compatibility definition fills governance metadata absent from the native object.' );
+npcink_governance_core_fail_closed_assert( (int) ( $discovered_capabilities['count'] ?? 0 ) === (int) ( $discovered_capabilities['ready_count'] ?? 0 ) + (int) ( $discovered_capabilities['blocked_count'] ?? 0 ), 'Ability intake ready and blocked counts cover every discovered row.' );
+npcink_governance_core_fail_closed_assert( 'ready' === (string) ( $discovered_items['third-party/annotation-destructive']['intake_status'] ?? '' ), 'WordPress annotations can provide complete intake risk evidence.' );
+npcink_governance_core_fail_closed_assert( 'destructive' === (string) ( $discovered_items['third-party/annotation-destructive']['risk_level'] ?? '' ), 'Destructive WordPress annotation maps to destructive Core risk.' );
+npcink_governance_core_fail_closed_assert( true === (bool) ( $discovered_items['third-party/annotation-destructive']['requires_approval'] ?? false ), 'Destructive annotation forces proposal approval.' );
+npcink_governance_core_fail_closed_assert( 'blocked' === (string) ( $discovered_items['third-party/ambiguous-risk']['intake_status'] ?? '' ), 'Missing risk evidence is blocked instead of defaulting to read.' );
+npcink_governance_core_fail_closed_assert( in_array( 'risk_undeclared', (array) ( $discovered_items['third-party/ambiguous-risk']['intake_reasons'] ?? array() ), true ), 'Missing risk uses a stable intake reason.' );
+npcink_governance_core_fail_closed_assert( 'none' === (string) ( $discovered_items['third-party/ambiguous-risk']['execution_surface'] ?? '' ), 'Blocked ability has no execution surface.' );
+npcink_governance_core_fail_closed_assert( in_array( 'risk_annotations_conflict', (array) ( $discovered_items['third-party/conflicting-risk']['intake_reasons'] ?? array() ), true ), 'Conflicting provider risk and WordPress annotations fail closed.' );
+npcink_governance_core_fail_closed_assert( 'destructive' === (string) ( $discovered_items['third-party/provider-risk-conflict']['risk_level'] ?? '' ), 'Conflicting provider risk sources retain the strongest observed risk for diagnostics.' );
+npcink_governance_core_fail_closed_assert( in_array( 'risk_sources_conflict', (array) ( $discovered_items['third-party/provider-risk-conflict']['intake_reasons'] ?? array() ), true ), 'Conflicting provider risk sources fail closed instead of using the first declaration.' );
+npcink_governance_core_fail_closed_assert( 'blocked' === (string) ( $discovered_items['npcink-abilities-toolkit/update-post']['intake_status'] ?? '' ), 'Duplicate ability ids retain cross-discovery-source risk evidence before merge.' );
+npcink_governance_core_fail_closed_assert( in_array( 'risk_sources_conflict', (array) ( $discovered_items['npcink-abilities-toolkit/update-post']['intake_reasons'] ?? array() ), true ), 'Cross-discovery-source risk conflict fails closed.' );
+npcink_governance_core_fail_closed_assert( 'blocked' === (string) ( $discovered_items['npcink-abilities-toolkit/patch-post-content']['intake_status'] ?? '' ), 'Duplicate ability ids retain cross-discovery-source annotation evidence before merge.' );
+npcink_governance_core_fail_closed_assert( in_array( 'annotations_conflict', (array) ( $discovered_items['npcink-abilities-toolkit/patch-post-content']['intake_reasons'] ?? array() ), true ), 'Cross-discovery-source annotation conflict fails closed.' );
+npcink_governance_core_fail_closed_assert( 'blocked' === (string) ( $discovered_items['third-party/invalid-risk-alias']['intake_status'] ?? '' ), 'Risk aliases outside the exact closed set fail closed.' );
+npcink_governance_core_fail_closed_assert( in_array( 'risk_invalid', (array) ( $discovered_items['third-party/invalid-risk-alias']['intake_reasons'] ?? array() ), true ), 'Invalid risk aliases expose a stable intake reason.' );
+npcink_governance_core_fail_closed_assert( in_array( 'rest_exposure_disabled', (array) ( $discovered_items['third-party/rest-hidden']['intake_reasons'] ?? array() ), true ), 'Explicitly REST-hidden ability fails closed.' );
+npcink_governance_core_fail_closed_assert( in_array( 'rest_exposure_undeclared', (array) ( $discovered_items['third-party/rest-undeclared']['intake_reasons'] ?? array() ), true ), 'Missing REST exposure declaration fails closed.' );
+npcink_governance_core_fail_closed_assert( in_array( 'rest_exposure_undeclared', (array) ( $discovered_items['third-party/rest-top-level-only']['intake_reasons'] ?? array() ), true ), 'Top-level REST mirror cannot replace canonical meta.show_in_rest.' );
+npcink_governance_core_fail_closed_assert( in_array( 'rest_exposure_undeclared', (array) ( $discovered_items['third-party/rest-npcink-only']['intake_reasons'] ?? array() ), true ), 'Npcink REST mirror cannot replace canonical meta.show_in_rest.' );
+npcink_governance_core_fail_closed_assert( in_array( 'rest_exposure_invalid', (array) ( $discovered_items['third-party/rest-string-true']['intake_reasons'] ?? array() ), true ), 'Canonical REST exposure requires a literal boolean true.' );
+npcink_governance_core_fail_closed_assert( 'sensitive' === (string) ( $discovered_items['third-party/undeclared-sensitivity']['sensitivity'] ?? '' ), 'Undeclared read sensitivity defaults to sensitive.' );
+npcink_governance_core_fail_closed_assert( true === (bool) ( $discovered_items['third-party/undeclared-sensitivity']['redaction_required'] ?? false ), 'Undeclared sensitive read requires redaction.' );
+npcink_governance_core_fail_closed_assert( true === (bool) ( $discovered_items['third-party/undeclared-sensitivity']['read_authorization_required'] ?? false ), 'Undeclared read sensitivity requires Core read authorization.' );
+
+$read_proposal = npcink_governance_core_fail_closed_proposal_stack()['service']->create(
+	array(
+		'ability_id' => 'third-party/undeclared-sensitivity',
+		'input'      => array(),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $read_proposal ), 'A ready read ability cannot enter proposal intake.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_ability_not_proposal_eligible' === $read_proposal->get_error_code(), 'Ready read proposal rejection uses stable error code.' );
+
+$wpdb = npcink_governance_core_fail_closed_reset_db();
+$npcink_governance_core_fail_closed_native_abilities = array(
+	'third-party/ambiguous-risk' => array(
+		'ability_id' => 'third-party/ambiguous-risk',
+		'label'      => 'Ambiguous Risk',
+		'meta'       => array(
+			'annotations'  => array( 'readonly' => null, 'destructive' => null ),
+			'show_in_rest' => true,
+		),
+	),
+	'npcink-toolbox/build-article-write-plan' => array(
+		'ability_id' => 'npcink-toolbox/build-article-write-plan',
+		'label'      => 'REST Hidden Article Plan',
+		'meta'       => array(
+			'annotations'  => array( 'readonly' => true, 'destructive' => false ),
+			'show_in_rest' => false,
+		),
+	),
+);
+$blocked_proposal = npcink_governance_core_fail_closed_proposal_stack()['service']->create(
+	array(
+		'ability_id' => 'third-party/ambiguous-risk',
+		'input'      => array(),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $blocked_proposal ), 'Proposal creation rejects a discovered but blocked ability.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_ability_intake_blocked' === $blocked_proposal->get_error_code(), 'Blocked proposal intake uses stable error code.' );
+
+$blocked_plan = npcink_governance_core_fail_closed_plan_stack()['service']->create_from_plan( 'npcink-toolbox/build-article-write-plan', array() );
+npcink_governance_core_fail_closed_assert( is_wp_error( $blocked_plan ), 'Plan intake rejects a discovered but blocked planning ability before payload validation.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_plan_ability_intake_blocked' === $blocked_plan->get_error_code(), 'Blocked planning ability uses stable error code.' );
+
+$blocked_read = npcink_governance_core_fail_closed_read_request_stack()['service']->create(
+	array(
+		'ability_id' => 'third-party/ambiguous-risk',
+		'input'      => array( 'probe' => true ),
+	)
+);
+npcink_governance_core_fail_closed_assert( is_wp_error( $blocked_read ), 'Sensitive read request rejects a discovered but blocked ability.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_ability_intake_blocked' === $blocked_read->get_error_code(), 'Blocked sensitive read intake uses stable error code.' );
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();
 $capabilities = ( new \Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter() )->list_capabilities();
@@ -4972,43 +5291,146 @@ update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTI
 		'route_family' => 'proposals_create',
 	)
 );
-$stack    = npcink_governance_core_fail_closed_proposal_stack();
-$proposal = $stack['service']->create(
-	array(
-		'ability_id' => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',
-		'title'      => 'Smart guarded media derivative proposal',
-		'summary'    => 'Adopt one reviewed derivative artifact.',
-		'input'      => array(
-			'attachment_id'                  => 123,
-			'derivative_artifact'            => array(
-				'artifact_id'    => 'cloud-derivative-123',
-				'mime_type'      => 'image/webp',
-				'format'         => 'webp',
-				'filesize_bytes' => 12345,
-				'sha256'         => 'abc123',
-			),
-			'expected_derivative_mime_type'  => 'image/webp',
-			'backup_suffix'                  => 'npcink-cloud-backup',
-			'dry_run'                        => true,
-			'commit'                         => false,
-			'idempotency_key'                => 'guarded-media-derivative',
+$stack = npcink_governance_core_fail_closed_proposal_stack();
+$media_derivative_payload = array(
+	'ability_id' => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',
+	'title'      => 'Smart guarded media derivative proposal',
+	'summary'    => 'Adopt one reviewed derivative artifact.',
+	'input'      => array(
+		'attachment_id'                  => 123,
+		'derivative_artifact'            => npcink_governance_core_fail_closed_media_derivative_artifact(
+			array(
+				'artifact_id'        => 'art_0000000000000000000000000000007b',
+				'filesize_bytes'     => 12345,
+				'sha256'             => hash( 'sha256', 'core-smart-media-derivative' ),
+				'suggested_filename' => 'optimized-123.webp',
+			)
 		),
-		'preview'    => array(
-			'artifact_type'     => 'media_optimization_plan',
-			'attachment_id'     => 123,
-			'requires_approval' => true,
-			'dry_run'           => true,
-			'commit_execution'  => false,
-		),
-		'caller'     => array( 'source' => 'fault_injection' ),
-	)
+		'expected_derivative_mime_type'  => 'image/webp',
+		'backup_suffix'                  => 'npcink-cloud-backup',
+		'dry_run'                        => true,
+		'commit'                         => false,
+		'idempotency_key'                => 'guarded-media-derivative',
+	),
+	'preview'    => array(
+		'artifact_type'     => 'media_optimization_plan',
+		'attachment_id'     => 123,
+		'requires_approval' => true,
+		'dry_run'           => true,
+		'commit_execution'  => false,
+	),
+	'caller'     => array( 'source' => 'fault_injection' ),
 );
+$proposal = $stack['service']->create( $media_derivative_payload );
 npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'Smart guarded media derivative proposal is created.' );
 npcink_governance_core_fail_closed_assert( 'approved' === (string) ( $proposal['status'] ?? '' ), 'Smart guarded media derivative proposal is auto-approved.' );
 npcink_governance_core_fail_closed_assert( 'auto_approved' === (string) ( $proposal['policy_decision'] ?? '' ), 'Smart guarded media derivative records auto-approved decision.' );
 npcink_governance_core_fail_closed_assert( 'trusted_local' === (string) ( $proposal['policy_profile'] ?? '' ), 'Smart guarded media derivative records trusted_local profile.' );
 npcink_governance_core_fail_closed_assert( in_array( 'guarded_media_derivative_candidate', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded media derivative records candidate reason.' );
+npcink_governance_core_fail_closed_assert( in_array( 'guarded_media_derivative_exact_local_artifact_evidence', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded media derivative records exact local artifact evidence.' );
 npcink_governance_core_fail_closed_assert( in_array( 'smart_guarded_media_derivative_auto_approved', (array) ( $proposal['policy_reasons'] ?? array() ), true ), 'Smart guarded media derivative records stable auto approval reason.' );
+
+$decode_boundary_payload = $media_derivative_payload;
+$decode_boundary_payload['input']['derivative_artifact'] = npcink_governance_core_fail_closed_media_derivative_artifact(
+	array(
+		'artifact_id'        => 'art_00000000000000000000000000000081',
+		'width'              => 8192,
+		'height'             => 2048,
+		'expires_at'         => gmdate( 'c', time() + 600 ),
+		'suggested_filename' => 'decode-boundary.webp',
+	)
+);
+$decode_boundary_payload['input']['idempotency_key'] = 'guarded-media-derivative-decode-boundary';
+$decode_boundary_proposal = $stack['service']->create( $decode_boundary_payload );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $decode_boundary_proposal ) && 'approved' === (string) ( $decode_boundary_proposal['status'] ?? '' ), 'Cloud decode boundary 8192 x 2048 remains eligible for smart guarded approval.' );
+
+$invalid_media_derivative_artifacts = array(
+	'noncanonical id' => npcink_governance_core_fail_closed_media_derivative_artifact(
+		array(
+			'artifact_id'        => 'cloud-derivative-123',
+			'suggested_filename' => 'invalid-id.webp',
+		)
+	),
+	'expired descriptor' => npcink_governance_core_fail_closed_media_derivative_artifact(
+		array(
+			'artifact_id'        => 'art_0000000000000000000000000000007c',
+			'expires_at'         => gmdate( 'c', time() - 60 ),
+			'suggested_filename' => 'expired.webp',
+		)
+	),
+	'impossible calendar date' => npcink_governance_core_fail_closed_media_derivative_artifact(
+		array(
+			'artifact_id'        => 'art_00000000000000000000000000000082',
+			'expires_at'         => '2027-02-31T12:00:00Z',
+			'suggested_filename' => 'impossible-date.webp',
+		)
+	),
+	'non UTC expiry' => npcink_governance_core_fail_closed_media_derivative_artifact(
+		array(
+			'artifact_id'        => 'art_00000000000000000000000000000083',
+			'expires_at'         => '2099-01-01T12:00:00+08:00',
+			'suggested_filename' => 'non-utc-expiry.webp',
+		)
+	),
+	'axis above Cloud decode limit' => npcink_governance_core_fail_closed_media_derivative_artifact(
+		array(
+			'artifact_id'        => 'art_0000000000000000000000000000007f',
+			'width'              => 8193,
+			'height'             => 1,
+			'suggested_filename' => 'axis-too-large.webp',
+		)
+	),
+	'pixel area above Cloud decode limit' => npcink_governance_core_fail_closed_media_derivative_artifact(
+		array(
+			'artifact_id'        => 'art_00000000000000000000000000000080',
+			'width'              => 8192,
+			'height'             => 2049,
+			'suggested_filename' => 'area-too-large.webp',
+		)
+	),
+);
+$incomplete_media_derivative_artifact = npcink_governance_core_fail_closed_media_derivative_artifact(
+	array(
+		'artifact_id'        => 'art_0000000000000000000000000000007d',
+		'suggested_filename' => 'incomplete.webp',
+	)
+);
+unset( $incomplete_media_derivative_artifact['filename_basis'] );
+$invalid_media_derivative_artifacts['incomplete descriptor'] = $incomplete_media_derivative_artifact;
+$aliased_media_derivative_artifact = npcink_governance_core_fail_closed_media_derivative_artifact(
+	array( 'suggested_filename' => 'aliased-id.webp' )
+);
+$aliased_media_derivative_artifact['id'] = $aliased_media_derivative_artifact['artifact_id'];
+unset( $aliased_media_derivative_artifact['artifact_id'] );
+$invalid_media_derivative_artifacts['legacy id alias'] = $aliased_media_derivative_artifact;
+$legacy_media_derivative_artifact = npcink_governance_core_fail_closed_media_derivative_artifact(
+	array(
+		'artifact_id'        => 'art_0000000000000000000000000000007e',
+		'suggested_filename' => 'legacy-url.webp',
+	)
+);
+$legacy_media_derivative_artifact['download_url'] = 'https://cloud.example.test/legacy-download';
+$invalid_media_derivative_artifacts['legacy URL field'] = $legacy_media_derivative_artifact;
+
+$case_index = 0;
+foreach ( $invalid_media_derivative_artifacts as $case => $invalid_artifact ) {
+	$case_payload = $media_derivative_payload;
+	$case_payload['input']['derivative_artifact'] = $invalid_artifact;
+	$case_payload['input']['idempotency_key'] = 'guarded-media-derivative-invalid-' . $case_index;
+	$invalid_proposal = $stack['service']->create( $case_payload );
+	npcink_governance_core_fail_closed_assert( ! is_wp_error( $invalid_proposal ), 'Malformed smart guarded media derivative proposal remains reviewable: ' . $case . '.' );
+	npcink_governance_core_fail_closed_assert( 'pending' === (string) ( $invalid_proposal['status'] ?? '' ), 'Malformed smart guarded media derivative proposal is not auto-approved: ' . $case . '.' );
+	npcink_governance_core_fail_closed_assert( in_array( 'guarded_media_derivative_rejected_artifact_contract', (array) ( $invalid_proposal['policy_reasons'] ?? array() ), true ), 'Malformed smart guarded media derivative proposal records contract rejection: ' . $case . '.' );
+	++$case_index;
+}
+
+$mime_mismatch_payload = $media_derivative_payload;
+$mime_mismatch_payload['input']['expected_derivative_mime_type'] = 'image/avif';
+$mime_mismatch_payload['input']['idempotency_key'] = 'guarded-media-derivative-mime-mismatch';
+$mime_mismatch_proposal = $stack['service']->create( $mime_mismatch_payload );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $mime_mismatch_proposal ), 'MIME-mismatched smart guarded media derivative proposal remains reviewable.' );
+npcink_governance_core_fail_closed_assert( 'pending' === (string) ( $mime_mismatch_proposal['status'] ?? '' ), 'MIME-mismatched smart guarded media derivative proposal is not auto-approved.' );
+npcink_governance_core_fail_closed_assert( in_array( 'guarded_media_derivative_rejected_artifact_mime_mismatch', (array) ( $mime_mismatch_proposal['policy_reasons'] ?? array() ), true ), 'MIME-mismatched smart guarded media derivative proposal records mismatch rejection.' );
 
 $wpdb = npcink_governance_core_fail_closed_reset_db();
 update_option( \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::OPTION_POLICY_MODE, \Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator::MODE_SMART_GUARDED, false );
@@ -5030,7 +5452,12 @@ $proposal = $stack['service']->create(
 		'summary'    => 'Nested write actions must not auto approve.',
 		'input'      => array(
 			'attachment_id'       => 123,
-			'derivative_artifact' => array( 'artifact_id' => 'cloud-derivative-123' ),
+			'derivative_artifact' => npcink_governance_core_fail_closed_media_derivative_artifact(
+				array(
+					'artifact_id'        => 'art_0000000000000000000000000000007b',
+					'suggested_filename' => 'optimized-123.webp',
+				)
+			),
 			'write_actions'       => array(
 				array(
 					'target_ability_id' => 'npcink-abilities-toolkit/adopt-cloud-media-derivative',
@@ -5487,6 +5914,25 @@ npcink_governance_core_fail_closed_assert( 'npcink_governance_core_execution_rec
 $rolled_back = $stack['proposals']->find( (string) $proposal['proposal_id'] );
 npcink_governance_core_fail_closed_assert( is_array( $rolled_back ) && 'approved' === $rolled_back['status'], 'Execution record audit failure rolls status back to approved.' );
 
+$wpdb     = npcink_governance_core_fail_closed_reset_db();
+$stack    = npcink_governance_core_fail_closed_governance_stack();
+$proposal = $stack['service']->create( npcink_governance_core_fail_closed_governance_payload( 'npcink-abilities-toolkit/update-post' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $proposal ), 'REST exposure drift proposal is created while ability intake is ready.' );
+$approved = $stack['service']->approve( (string) $proposal['proposal_id'], array( 'reason' => 'rest_exposure_drift' ) );
+npcink_governance_core_fail_closed_assert( ! is_wp_error( $approved ), 'REST exposure drift proposal is approved.' );
+npcink_governance_core_fail_closed_mutate_ability(
+	'npcink-abilities-toolkit/update-post',
+	static function ( array $ability ): array {
+		$ability['meta'] = is_array( $ability['meta'] ?? null ) ? $ability['meta'] : array();
+		$ability['meta']['show_in_rest'] = false;
+		return $ability;
+	}
+);
+$blocked_intake_preflight = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
+npcink_governance_core_fail_closed_assert( is_wp_error( $blocked_intake_preflight ), 'Commit preflight rejects an ability that became blocked after approval.' );
+npcink_governance_core_fail_closed_assert( 'npcink_governance_core_ability_intake_blocked' === $blocked_intake_preflight->get_error_code(), 'Blocked commit preflight uses stable intake error code.' );
+npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( (string) $proposal['proposal_id'], 'commit.preflight_failed' ) ), 'Blocked commit preflight is audited.' );
+
 $ability_drift_matrix = array(
 	// Static contract markers: Ability drift execution guidance; Ability drift required scopes.
 	'input schema'       => static function ( array $ability ): array {
@@ -5495,6 +5941,8 @@ $ability_drift_matrix = array(
 	},
 	'risk metadata'      => static function ( array $ability ): array {
 		$ability['risk_level'] = 'destructive';
+		$ability['meta'] = is_array( $ability['meta'] ?? null ) ? $ability['meta'] : array();
+		$ability['meta']['annotations'] = array( 'readonly' => false, 'destructive' => true );
 		return $ability;
 	},
 	'permission metadata' => static function ( array $ability ): array {
@@ -5516,6 +5964,9 @@ $ability_drift_matrix = array(
 	'execution guidance' => static function ( array $ability ): array {
 		$ability['risk_level']        = 'read';
 		$ability['requires_approval'] = false;
+		$ability['sensitivity']       = 'public';
+		$ability['meta'] = is_array( $ability['meta'] ?? null ) ? $ability['meta'] : array();
+		$ability['meta']['annotations'] = array( 'readonly' => true, 'destructive' => false );
 		return $ability;
 	},
 );
@@ -5531,7 +5982,12 @@ foreach ( $ability_drift_matrix as $drift_label => $drift_mutator ) {
 
 	$drift = $stack['preflight']->preflight( (string) $proposal['proposal_id'] );
 	npcink_governance_core_fail_closed_assert( is_wp_error( $drift ), 'Ability drift ' . $drift_label . ' fails commit preflight.' );
-	npcink_governance_core_fail_closed_assert( 'npcink_governance_core_ability_contract_changed' === $drift->get_error_code(), 'Ability drift ' . $drift_label . ' uses stable error code.' );
+	$expected_drift_code = 'approval flag' === $drift_label
+		? 'npcink_governance_core_ability_intake_blocked'
+		: ( 'execution guidance' === $drift_label
+			? 'npcink_governance_core_ability_not_proposal_eligible'
+			: 'npcink_governance_core_ability_contract_changed' );
+	npcink_governance_core_fail_closed_assert( $expected_drift_code === $drift->get_error_code(), 'Ability drift ' . $drift_label . ' uses stable error code.' );
 	npcink_governance_core_fail_closed_assert( 409 === npcink_governance_core_fail_closed_error_http_status( $drift ), 'Ability drift ' . $drift_label . ' maps to HTTP 409.' );
 	$after_drift = $stack['proposals']->find( (string) $proposal['proposal_id'] );
 	npcink_governance_core_fail_closed_assert( is_array( $after_drift ) && 'approved' === (string) ( $after_drift['status'] ?? '' ), 'Ability drift ' . $drift_label . ' leaves proposal approved.' );

@@ -326,8 +326,10 @@ Write and destructive commits must fail closed unless the commit request carries
 host approval context created by Core.
 
 Proposal creation validates that the target ability is currently discoverable.
+It also requires `intake_status=ready`; discovery alone is not sufficient.
 Commit preflight repeats discovery against the stored real `ability_id` and
-fails closed if that ability disappeared after approval. Proposal creation also
+fails closed if that ability disappeared or became blocked after approval.
+Proposal creation also
 stores a governance-relevant ability contract fingerprint covering risk,
 approval requirement, execution guidance, WordPress capability, required scopes,
 input schema, and provider-declared `implementation_posture` metadata when
@@ -352,8 +354,10 @@ does not target existing content, stays dry-run/non-commit, and has no
 schedule/publish intent; or for a guarded `npcink-abilities-toolkit/adopt-article-audio`
 proposal from the article-audio plan path; or for one reviewed
 `npcink-abilities-toolkit/adopt-cloud-media-derivative` proposal with a single
-attachment, derivative artifact evidence, dry-run/non-commit input, and
-`media_optimization_plan` preview evidence; or for one reviewed
+attachment, the exact local 11-field proposal artifact descriptor with a
+canonical `art_[0-9a-f]{32}` id and no URL/transport/ACK fields,
+dry-run/non-commit input, and `media_optimization_plan` preview evidence; or
+for one reviewed
 `npcink-abilities-toolkit/update-media-details` ALT-only proposal from a
 Toolbox `media_alt_caption_review_set.v1` row. Mode `dev_allow_all` may auto-approve every proposal
 only in local development when

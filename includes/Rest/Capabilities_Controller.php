@@ -86,8 +86,10 @@ final class Capabilities_Controller {
 		$this->audit->record(
 			'capabilities.listed',
 			array(
-				'source' => $result['source'],
-				'count'  => $result['count'],
+				'source'        => $result['source'],
+				'count'         => $result['count'],
+				'ready_count'   => $result['ready_count'] ?? 0,
+				'blocked_count' => $result['blocked_count'] ?? 0,
 			)
 		);
 

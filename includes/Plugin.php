@@ -14,6 +14,7 @@ use Npcink\GovernanceCore\Governance\Approval_Policy_Evaluator;
 use Npcink\GovernanceCore\Governance\Commit_Preflight_Service;
 use Npcink\GovernanceCore\Governance\History_Cleanup_Service;
 use Npcink\GovernanceCore\Governance\Operation_Classifier;
+use Npcink\GovernanceCore\Governance\Plan_Contract_Validator;
 use Npcink\GovernanceCore\Governance\Plan_Proposal_Service;
 use Npcink\GovernanceCore\Governance\Proposal_Repository;
 use Npcink\GovernanceCore\Governance\Proposal_Service;
@@ -101,6 +102,13 @@ final class Plugin {
 	 * @var Plan_Proposal_Service|null
 	 */
 	private $plan_proposal_service = null;
+
+	/**
+	 * Inbound plan contract validator.
+	 *
+	 * @var Plan_Contract_Validator|null
+	 */
+	private $plan_contract_validator = null;
 
 	/**
 	 * Read request repository.
@@ -490,10 +498,23 @@ final class Plugin {
 	 */
 	public function plan_proposal_service(): Plan_Proposal_Service {
 		if ( null === $this->plan_proposal_service ) {
-			$this->plan_proposal_service = new Plan_Proposal_Service( $this->ability_adapter(), $this->proposal_service(), $this->audit_repository() );
+			$this->plan_proposal_service = new Plan_Proposal_Service( $this->ability_adapter(), $this->proposal_service(), $this->audit_repository(), $this->plan_contract_validator() );
 		}
 
 		return $this->plan_proposal_service;
+	}
+
+	/**
+	 * Returns the inbound plan contract validator.
+	 *
+	 * @return Plan_Contract_Validator
+	 */
+	public function plan_contract_validator(): Plan_Contract_Validator {
+		if ( null === $this->plan_contract_validator ) {
+			$this->plan_contract_validator = new Plan_Contract_Validator();
+		}
+
+		return $this->plan_contract_validator;
 	}
 
 	/**

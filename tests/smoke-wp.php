@@ -670,7 +670,8 @@ function npcink_governance_core_smoke_assert_taxonomy_terms_contract( array $ite
 
 	npcink_governance_core_smoke_assert( 'read' === (string) ( $preview['risk_level'] ?? '' ), 'propose-post-taxonomy-terms is discovered as read risk' );
 	npcink_governance_core_smoke_assert( false === (bool) ( $preview['requires_approval'] ?? true ), 'propose-post-taxonomy-terms does not require approval before read execution' );
-	npcink_governance_core_smoke_assert_capability_guidance( $preview, 'direct_read', 'wp_abilities_rest', 'propose-post-taxonomy-terms uses direct read guidance' );
+	npcink_governance_core_smoke_assert_capability_guidance( $preview, 'core_read_authorization_required', 'wp_abilities_rest', 'propose-post-taxonomy-terms uses fail-closed read authorization guidance' );
+	npcink_governance_core_smoke_assert_read_authorization_required( $preview, 'propose-post-taxonomy-terms undeclared sensitivity' );
 	npcink_governance_core_smoke_assert( in_array( 'post_id', $preview_required, true ), 'propose-post-taxonomy-terms input schema requires post_id' );
 	foreach ( array( 'taxonomy', 'mode', 'candidate_term_ids', 'candidate_terms' ) as $field ) {
 		npcink_governance_core_smoke_assert( array_key_exists( $field, $preview_properties ), 'propose-post-taxonomy-terms input schema exposes field ' . $field );
@@ -710,8 +711,10 @@ function npcink_governance_core_smoke_assert_plan_bridge_contract( array $items_
 		npcink_governance_core_smoke_assert( isset( $items_by_id[ $ability_id ] ), $ability_id . ' is discoverable for plan-to-proposal intake' );
 		npcink_governance_core_smoke_assert( 'read' === (string) ( $items_by_id[ $ability_id ]['risk_level'] ?? '' ), $ability_id . ' is a read-risk planning ability' );
 		npcink_governance_core_smoke_assert( false === (bool) ( $items_by_id[ $ability_id ]['requires_approval'] ?? true ), $ability_id . ' does not require approval before read execution' );
-		npcink_governance_core_smoke_assert_capability_guidance( $items_by_id[ $ability_id ], 'direct_read', 'wp_abilities_rest', $ability_id . ' uses direct read guidance' );
-		npcink_governance_core_smoke_assert_read_policy( $items_by_id[ $ability_id ], 'direct_read_internal', 'internal', false, $ability_id . ' uses internal read policy' );
+		npcink_governance_core_smoke_assert_capability_guidance( $items_by_id[ $ability_id ], 'core_read_authorization_required', 'wp_abilities_rest', $ability_id . ' uses fail-closed read authorization guidance' );
+		npcink_governance_core_smoke_assert( 'sensitive' === (string) ( $items_by_id[ $ability_id ]['sensitivity'] ?? '' ), $ability_id . ' defaults undeclared sensitivity to sensitive' );
+		npcink_governance_core_smoke_assert( true === (bool) ( $items_by_id[ $ability_id ]['redaction_required'] ?? false ), $ability_id . ' requires redaction' );
+		npcink_governance_core_smoke_assert_read_authorization_required( $items_by_id[ $ability_id ], $ability_id . ' requires Core read authorization' );
 	}
 }
 
@@ -1407,6 +1410,7 @@ $items        = is_array( $capabilities['items'] ?? null ) ? $capabilities['item
 npcink_governance_core_smoke_assert( true === (bool) ( $capabilities['available'] ?? false ), 'capability source is available' );
 npcink_governance_core_smoke_assert( 'wordpress_abilities_api' === (string) ( $capabilities['source'] ?? '' ), 'capabilities use the WordPress Abilities API aggregate source' );
 npcink_governance_core_smoke_assert( count( $items ) > 0, 'capabilities endpoint returns abilities' );
+npcink_governance_core_smoke_assert( count( $items ) === (int) ( $capabilities['ready_count'] ?? -1 ) + (int) ( $capabilities['blocked_count'] ?? -1 ), 'capability ready and blocked counts cover every discovered row' );
 
 $runtime_contract = npcink_governance_core_smoke_rest( 'GET', '/npcink-governance-core/v1/contract' );
 npcink_governance_core_smoke_assert( 'npcink_governance_core_contract.v1' === (string) ( $runtime_contract['schema_version'] ?? '' ), 'runtime contract exposes the expected schema version' );
@@ -1560,6 +1564,8 @@ $all_have_execution_surface      = true;
 $all_have_read_policy            = true;
 $all_have_sensitivity            = true;
 $all_have_redaction_requirement  = true;
+$all_have_intake_contract        = true;
+$all_blocked_disable_execution   = true;
 $all_disable_core_proxy_execute  = true;
 $all_disable_core_commit_execute = true;
 foreach ( $items as $item ) {
@@ -1569,6 +1575,15 @@ foreach ( $items as $item ) {
 		$all_have_read_policy            = $all_have_read_policy && array_key_exists( 'read_policy', $item );
 		$all_have_sensitivity            = $all_have_sensitivity && array_key_exists( 'sensitivity', $item );
 		$all_have_redaction_requirement  = $all_have_redaction_requirement && array_key_exists( 'redaction_required', $item );
+		$all_have_intake_contract        = $all_have_intake_contract
+			&& 'core-ability-intake-v1' === (string) ( $item['intake_contract_version'] ?? '' )
+			&& in_array( (string) ( $item['intake_status'] ?? '' ), array( 'ready', 'blocked' ), true )
+			&& is_array( $item['intake_reasons'] ?? null );
+		if ( 'blocked' === (string) ( $item['intake_status'] ?? '' ) ) {
+			$all_blocked_disable_execution = $all_blocked_disable_execution
+				&& 'blocked' === (string) ( $item['governance_mode'] ?? '' )
+				&& 'none' === (string) ( $item['execution_surface'] ?? '' );
+		}
 		$all_disable_core_proxy_execute  = $all_disable_core_proxy_execute && false === (bool) ( $item['core_proxy_execute'] ?? true );
 		$all_disable_core_commit_execute = $all_disable_core_commit_execute && false === (bool) ( $item['commit_execution'] ?? true );
 		$items_by_id[ (string) $item['ability_id'] ] = $item;
@@ -1579,8 +1594,17 @@ npcink_governance_core_smoke_assert( $all_have_execution_surface, 'all capabilit
 npcink_governance_core_smoke_assert( $all_have_read_policy, 'all capability rows expose read policy guidance' );
 npcink_governance_core_smoke_assert( $all_have_sensitivity, 'all capability rows expose read sensitivity guidance' );
 npcink_governance_core_smoke_assert( $all_have_redaction_requirement, 'all capability rows expose read redaction requirement' );
+npcink_governance_core_smoke_assert( $all_have_intake_contract, 'all capability rows expose versioned fail-closed intake readiness' );
+npcink_governance_core_smoke_assert( $all_blocked_disable_execution, 'all blocked capability rows disable execution guidance' );
 npcink_governance_core_smoke_assert( $all_disable_core_proxy_execute, 'all capability rows keep Core proxy execution disabled' );
 npcink_governance_core_smoke_assert( $all_disable_core_commit_execute, 'all capability rows keep Core commit execution disabled' );
+
+if ( isset( $items_by_id['mcp-adapter/execute-ability'] ) ) {
+	$mcp_execute = $items_by_id['mcp-adapter/execute-ability'];
+	npcink_governance_core_smoke_assert( 'destructive' === (string) ( $mcp_execute['risk_level'] ?? '' ), 'WordPress destructive annotation is not downgraded to read' );
+	npcink_governance_core_smoke_assert( 'blocked' === (string) ( $mcp_execute['intake_status'] ?? '' ), 'REST-hidden MCP execute ability remains diagnosable but blocked' );
+	npcink_governance_core_smoke_assert( in_array( 'rest_exposure_disabled', (array) ( $mcp_execute['intake_reasons'] ?? array() ), true ), 'REST-hidden MCP execute ability exposes stable blocked reason' );
+}
 
 foreach (
 	array(
@@ -1596,8 +1620,10 @@ foreach (
 }
 
 npcink_governance_core_smoke_assert( isset( $items_by_id['npcink-abilities-toolkit/site-info'] ), 'site-info read ability is discoverable for direct read guidance' );
-npcink_governance_core_smoke_assert_capability_guidance( $items_by_id['npcink-abilities-toolkit/site-info'], 'direct_read', 'wp_abilities_rest', 'site-info uses direct read execution guidance' );
-npcink_governance_core_smoke_assert_read_policy( $items_by_id['npcink-abilities-toolkit/site-info'], 'direct_read_public', 'public', false, 'site-info uses public read policy' );
+npcink_governance_core_smoke_assert_capability_guidance( $items_by_id['npcink-abilities-toolkit/site-info'], 'core_read_authorization_required', 'wp_abilities_rest', 'site-info uses fail-closed read authorization guidance' );
+npcink_governance_core_smoke_assert( 'sensitive' === (string) ( $items_by_id['npcink-abilities-toolkit/site-info']['sensitivity'] ?? '' ), 'site-info defaults undeclared sensitivity to sensitive' );
+npcink_governance_core_smoke_assert( true === (bool) ( $items_by_id['npcink-abilities-toolkit/site-info']['redaction_required'] ?? false ), 'site-info requires redaction when sensitivity is undeclared' );
+npcink_governance_core_smoke_assert_read_authorization_required( $items_by_id['npcink-abilities-toolkit/site-info'], 'site-info undeclared sensitivity' );
 
 $sensitive_read_ability_id = '';
 foreach ( array( 'npcink-abilities-toolkit/wp-ops-diagnostics-detail', 'npcink-abilities-toolkit/wp-diagnostics-summary' ) as $candidate_sensitive_read_ability_id ) {
@@ -1727,7 +1753,8 @@ foreach ( $workflow_cases as $case_id => $case ) {
 	npcink_governance_core_smoke_assert( isset( $items_by_id[ $preferred_id ] ), 'replay case ' . $case_id . ' preferred bundle is discoverable by Core' );
 	npcink_governance_core_smoke_assert( 'read' === (string) ( $items_by_id[ $preferred_id ]['risk_level'] ?? '' ), 'replay case ' . $case_id . ' preferred bundle remains read risk' );
 	npcink_governance_core_smoke_assert( false === (bool) ( $items_by_id[ $preferred_id ]['requires_approval'] ?? true ), 'replay case ' . $case_id . ' preferred bundle does not require approval' );
-	npcink_governance_core_smoke_assert_capability_guidance( $items_by_id[ $preferred_id ], 'direct_read', 'wp_abilities_rest', 'replay case ' . $case_id . ' preferred bundle uses direct read guidance' );
+		npcink_governance_core_smoke_assert_capability_guidance( $items_by_id[ $preferred_id ], 'core_read_authorization_required', 'wp_abilities_rest', 'replay case ' . $case_id . ' preferred bundle uses fail-closed read authorization guidance' );
+		npcink_governance_core_smoke_assert_read_authorization_required( $items_by_id[ $preferred_id ], 'replay case ' . $case_id . ' undeclared sensitivity' );
 
 	foreach ( (array) ( $case['disallowed_default_ability_ids'] ?? array() ) as $disallowed_id ) {
 		$disallowed_id = (string) $disallowed_id;
