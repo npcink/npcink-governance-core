@@ -136,6 +136,18 @@ gate, and the manual `Release Package` workflow builds a review artifact only.
 It does not replace the local `composer smoke:wp` or WordPress.org SVN release
 steps.
 
+After completing the checked-in PR template, publish a clean topic branch with:
+
+```bash
+composer pr:publish -- \
+  --title "fix: describe the focused change" \
+  --body-file /absolute/path/to/completed-pr-body.md
+```
+
+The publisher validates the shared `Scope`, `Boundary`, `Verification`, and
+`Risk` headings, requires the latest `origin/master`, and requests protected
+squash auto-merge without deleting branches.
+
 Solo maintainer + AI agent work is documented in
 `docs/solo-ai-development-workflow.md`. New implementation work should start
 from a GitHub Issue, move through a `codex/<task-name>` branch and pull request,

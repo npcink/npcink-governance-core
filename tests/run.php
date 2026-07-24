@@ -358,6 +358,8 @@ foreach ( array( 'tests', 'examples', 'docs', 'scripts', 'composer.json', 'AGENT
 }
 
 $pull_request_template = npcink_governance_core_read( $root . '/.github/pull_request_template.md' );
+$pr_publisher = npcink_governance_core_read( $root . '/scripts/publish-pr.sh' );
+$composer_source = npcink_governance_core_read( $root . '/composer.json' );
 foreach (
 	array(
 		'Core remains the governance layer for ability intake, proposals, approval/preflight, and audit.',
@@ -368,6 +370,15 @@ foreach (
 ) {
 	npcink_governance_core_assert( false !== strpos( $pull_request_template, $required ), 'Pull request template contains Core boundary checkpoint: ' . $required );
 }
+npcink_governance_core_assert(
+	false !== strpos( $composer_source, '"pr:publish": "bash scripts/publish-pr.sh"' )
+	&& false !== strpos( $pr_publisher, 'git status --porcelain' )
+	&& false !== strpos( $pr_publisher, 'git merge-base --is-ancestor "origin/${base_branch}" HEAD' )
+	&& false !== strpos( $pr_publisher, '--body-file "${body_path}"' )
+	&& false !== strpos( $pr_publisher, '--auto --squash --match-head-commit "${head_sha}"' )
+	&& false === strpos( $pr_publisher, '--delete-branch' ),
+	'PR publisher validates the checked-in body contract and preserves protected multi-worktree merging.'
+);
 
 $boundary_review_template = npcink_governance_core_read( $root . '/.github/ISSUE_TEMPLATE/boundary_review.yml' );
 foreach (
