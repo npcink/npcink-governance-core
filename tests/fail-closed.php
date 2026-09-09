@@ -1103,6 +1103,44 @@ final class Npcink_Governance_Core_Fail_Closed_WPDB {
 		$sql  = is_array( $query ) ? (string) ( $query['query'] ?? '' ) : (string) $query;
 		$args = is_array( $query ) ? (array) ( $query['args'] ?? array() ) : array();
 
+		if ( false !== strpos( $sql, 'npcink_governance_core_app_rate_limits' ) && false !== strpos( $sql, 'ON DUPLICATE KEY UPDATE' ) ) {
+			$table        = $this->prefix . 'npcink_governance_core_app_rate_limits';
+			$app_id       = (string) ( $args[0] ?? '' );
+			$key_id       = (string) ( $args[1] ?? '' );
+			$route_family = (string) ( $args[2] ?? '' );
+			$window_start = (string) ( $args[3] ?? '' );
+			$window_end   = (string) ( $args[4] ?? '' );
+			$now          = (string) ( $args[5] ?? '' );
+			$limit        = (int) ( $args[7] ?? 0 );
+
+			foreach ( $this->tables[ $table ] ?? array() as $index => $row ) {
+				if ( $app_id !== (string) ( $row['app_id'] ?? '' ) || $route_family !== (string) ( $row['route_family'] ?? '' ) || $window_start !== (string) ( $row['window_start'] ?? '' ) ) {
+					continue;
+				}
+				if ( (int) ( $row['request_count'] ?? 0 ) >= $limit ) {
+					return 0;
+				}
+				$this->tables[ $table ][ $index ]['request_count'] = (int) $row['request_count'] + 1;
+				$this->tables[ $table ][ $index ]['updated_at']    = $now;
+				return 2;
+			}
+
+			$this->auto_increment[ $table ] = ( $this->auto_increment[ $table ] ?? 0 ) + 1;
+			$this->insert_id               = $this->auto_increment[ $table ];
+			$this->tables[ $table ][]      = array(
+				'id'            => $this->insert_id,
+				'app_id'        => $app_id,
+				'key_id'        => $key_id,
+				'route_family'  => $route_family,
+				'window_start'  => $window_start,
+				'window_end'    => $window_end,
+				'request_count' => 1,
+				'created_at'    => $now,
+				'updated_at'    => $now,
+			);
+			return 1;
+		}
+
 		if ( false !== strpos( $sql, 'npcink_governance_core_app_rate_limits' ) && false !== strpos( $sql, 'request_count = request_count + 1' ) ) {
 			$table        = $this->prefix . 'npcink_governance_core_app_rate_limits';
 			$now          = (string) ( $args[0] ?? '' );
@@ -6250,5 +6288,19 @@ npcink_governance_core_fail_closed_assert( 2 === count( $revoke_audit_rows ), 'A
 npcink_governance_core_fail_closed_assert( 'revoked' === (string) $revoke_audit_rows[0]['status'] && 'revoked' === (string) $revoke_audit_rows[1]['status'], 'App rotation revoke audit failure revokes both old and replacement keys.' );
 npcink_governance_core_fail_closed_assert( 1 === count( npcink_governance_core_fail_closed_audit_rows( '', 'app.rotated' ) ), 'App rotation revoke audit failure preserves rotation audit evidence.' );
 npcink_governance_core_fail_closed_assert( 0 === count( npcink_governance_core_fail_closed_audit_rows( '', 'app.revoked' ) ), 'App rotation revoke audit failure does not pretend old-key revocation was audited.' );
+
+$wpdb        = npcink_governance_core_fail_closed_reset_db();
+$rate_limiter = new \Npcink\GovernanceCore\Security\App_Rate_Limiter();
+$rate_fixture = array(
+	'app_id'             => 'app-rate-race',
+	'key_id'             => 'key-rate-race',
+	'rate_limit'         => 1,
+	'rate_window_seconds' => 3600,
+);
+$first_rate  = $rate_limiter->consume( $rate_fixture, 'capabilities' );
+$second_rate = $rate_limiter->consume( $rate_fixture, 'capabilities' );
+npcink_governance_core_fail_closed_assert( true === $first_rate['allowed'] && 1 === (int) $first_rate['request_count'], 'Rate limiter atomically inserts the first fixed-window request.' );
+npcink_governance_core_fail_closed_assert( false === $second_rate['allowed'] && 1 === (int) $second_rate['request_count'], 'Rate limiter atomically rejects an exhausted window without duplicate-key failure.' );
+npcink_governance_core_fail_closed_assert( 1 === count( $wpdb->rows( $wpdb->prefix . 'npcink_governance_core_app_rate_limits' ) ), 'Rate limiter keeps one row for concurrent first-use semantics.' );
 
 echo "Fail-closed fault injection: ok\n";

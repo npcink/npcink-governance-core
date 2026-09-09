@@ -117,7 +117,8 @@ unbounded storage.
   decision, expiry, reopen, or execution-outcome request must fail closed
   instead of overwriting a newer lifecycle state.
 - App rate-limit counters must use a conditional SQL increment
-  (`request_count < limit`) for existing fixed windows, with the unique
+  (`request_count < limit`) in an atomic upsert for both new and existing
+  windows, with the unique
   app/route/window key as the race guard for first insert.
 
 ## Approval Boundary

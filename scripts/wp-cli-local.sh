@@ -67,9 +67,17 @@ if [[ -z "$WP_CLI_PHP" ]]; then
 fi
 
 if [[ -z "$WP_CLI_MYSQL_SOCKET" ]]; then
-	default_socket="$HOME/Library/Application Support/Local/run/NPb24Zg9g/mysql/mysqld.sock"
+	local_run_root="${LOCALWP_RUN_ROOT:-$HOME/Library/Application Support/Local/run}"
+	default_socket="$local_run_root/NPb24Zg9g/mysql/mysqld.sock"
 	if [[ -S "$default_socket" ]]; then
 		WP_CLI_MYSQL_SOCKET="$default_socket"
+	else
+		while IFS= read -r candidate; do
+			if [[ -S "$candidate" ]]; then
+				WP_CLI_MYSQL_SOCKET="$candidate"
+				break
+			fi
+		done < <(find "$local_run_root" -type s -path '*/mysql/mysqld.sock' -print 2>/dev/null)
 	fi
 fi
 

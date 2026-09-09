@@ -34,6 +34,7 @@ WORDPRESS_ZIP="$WORDPRESS_CACHE/wordpress-$WORDPRESS_VERSION.zip"
 WORDPRESS_SOURCE="$WORDPRESS_CACHE/wordpress"
 CORE_CACHE_ZIP="$CACHE_DIR/npcink-governance-core.zip"
 CORE_SMOKE_FILE="$CACHE_DIR/npcink-governance-core-smoke-wp.php"
+SMOKE_LOG="$(mktemp)"
 
 compose() {
 	COMPOSE_PROJECT_NAME="$PROJECT_NAME" \
@@ -45,6 +46,7 @@ compose() {
 
 cleanup() {
 	compose down -v --remove-orphans >/dev/null 2>&1 || true
+	rm -f "$SMOKE_LOG"
 }
 trap cleanup EXIT
 
@@ -90,12 +92,14 @@ if [[ "$installed_version" != "0.2.0" ]]; then
 	exit 1
 fi
 
-smoke_output="$(
-	compose run --rm \
+if ! compose run --rm \
 		-e NPCINK_ABILITIES_TOOLKIT_PATH=/var/www/html/wp-content/plugins/npcink-abilities-toolkit \
 		-e NPCINK_GOVERNANCE_CORE_SMOKE_PURGE=1 \
-		cli --allow-root eval-file /official-stack-cache/npcink-governance-core-smoke-wp.php
-)"
+		cli --allow-root eval-file /official-stack-cache/npcink-governance-core-smoke-wp.php > "$SMOKE_LOG" 2>&1; then
+	sed -n '1,8000p' "$SMOKE_LOG" >&2
+	exit 1
+fi
+smoke_output="$(<"$SMOKE_LOG")"
 printf '%s\n' "$smoke_output"
 
 if ! printf '%s\n' "$smoke_output" | grep -Fx 'npcink-governance-core WordPress smoke: ok' >/dev/null; then

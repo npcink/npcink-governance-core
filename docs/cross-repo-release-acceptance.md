@@ -95,6 +95,12 @@ composer rc:version-matrix
 That follow-up freezes which Core, Adapter, and Toolkit plugin versions and
 commits the accepted candidate actually represents.
 
+For the full order from candidate freeze through M4 evidence, tag verification,
+and worktree audit, use
+[Release Closeout Standard](release-closeout-standard.md). Acceptance success
+does not by itself prove that tags were pushed or that every registered
+worktree is clean.
+
 ## Real-Chain Proof
 
 The Adapter fixture is the stack-level proof. It must show:
@@ -115,6 +121,12 @@ The fixture creates a local draft through the approved
 post through WP-CLI. A failure before the first status response is usually a
 LocalWP setup problem, inactive Adapter plugin, or profile/signature mismatch;
 classify that before changing code.
+
+If a signed status call returns 401 after the LocalWP database has been reset,
+confirm that WordPress still contains the approved public-key record. A local
+profile can remain syntactically valid after its server-side public key has
+disappeared. Re-pair the profile instead of bypassing the fixture, and never
+print private key material while diagnosing it.
 
 ## Boundary Checks
 

@@ -1,5 +1,117 @@
 # Session Breadcrumb
 
+## 2026-09-06 — Release closeout method documented
+
+- **Module**: Core-local release and development workflow documentation.
+- **Completed**: Consolidated the 0.2.0/0.3.3/0.5.5 release lessons into an
+  active closeout standard covering exact artifact identity, M4 evidence,
+  signed Adapter recovery, protected-merge retesting, tag verification, and
+  conservative branch/worktree auditing. Updated the 0.2.0 record to the
+  published exact tags and commits.
+- **Key distinction**: Central matrix cleanliness covers configured repository
+  roots, not every registered auxiliary worktree. Release publication and
+  global workspace cleanup are independent completion states.
+- **Next action**: WordPress.org SVN publication remains release-owner only;
+  unrelated dirty or locked historical worktrees require separate owner-aware
+  cleanup.
+- **Boundary**: Documentation only. No REST, data, lifecycle, execution,
+  workflow runtime, queue, provider credential, or product UX behavior changed.
+
+## 2026-09-06 — Final exact-head M4 after smoke-tool merge
+
+- **Module**: Core final release evidence after protected tooling merge.
+- **Completed**: Protected PR #74 merged the LocalWP socket-discovery fix as
+  `35fc4eb6f4847d15a1e9ff70b96ae6c320b32cdc`.
+- **Verified**: Exact merged HEAD passed M4 Docker WordPress 7.0/PHP 8.0 and
+  8.5, with 1,426 assertions per profile and ZIP installation. The evidence
+  source archive is `60e2eed73df9c1d9382301ef877414f007783e95945c660df2ec28b3c6e00230`.
+- **Next gate**: Complete Toolbox owner closeout and coordinated final tags;
+  keep release publication blocked until all exact heads are clean.
+- **Boundary**: No REST route, data shape, table, lifecycle, approval,
+  execution, workflow runtime, queue, provider credential, or product UX
+  behavior changed.
+
+## 2026-09-06 — LocalWP socket discovery hardening
+
+- **Module**: Core-local WordPress release-smoke tooling.
+- **Completed**: Updated `scripts/wp-cli-local.sh` and `tests/smoke-wp.sh` to
+  preserve explicit socket overrides and legacy-path preference while
+  discovering the active LocalWP `mysql/mysqld.sock` when the run identifier
+  changes. Added static contract coverage for the fallback.
+- **Verified**: With the active LocalWP socket `s63K4c8XP`, the wrapper reached
+  WordPress 7.1, Plugin Check returned `Success: Checks complete. No errors
+  found.`, and `composer release:verify:m4` passed including the exact
+  post-merge evidence check.
+- **Next gate**: Run final local gates, publish this focused tooling fix by the
+  standard protected PR publisher, and keep the broader release blocked on the
+  Toolbox owner closeout.
+- **Boundary**: No REST route, data shape, table, lifecycle, approval,
+  execution, workflow runtime, queue, provider credential, or product UX
+  behavior changed.
+
+## 2026-09-05 — Core protected merge and post-merge M4 evidence
+
+- **Module**: Core protected release merge and exact-head verification.
+- **Completed**: Merged Core release candidate PR #72 into `master` as
+  `9771b9536e8c3a2029be0d5872acf4afe34c3b30` after PR body and static checks
+  passed.
+- **Verified**: Re-ran the packaged Core smoke on M4 Docker Server 29.7.2 for
+  WordPress 7.0/PHP 8.0 and 8.5; both passed 1,426 assertions and installed
+  Core from ZIP. Evidence is bound to source archive
+  `eb8b549095a42162998a131f2effdf79e1b2d27658c16f2fae8c7c52f78e635e` and
+  package `608676d35cc6ea1934513a9a76a822e3e62ca646339c67a62cd73845e5647e48`.
+  `release:verify:m4` passed. The Composer wrapper's first attempt hit its
+  300-second process timeout; the rerun with `COMPOSER_PROCESS_TIMEOUT=0`
+  completed successfully. The validated remote temporary workspace was
+  removed afterward.
+- **Next gate**: Close out Adapter, Toolkit, and Toolbox through their owning
+  branches and protected PRs; rerun the central matrix before tagging.
+- **Boundary**: No REST route, data shape, table, lifecycle, approval,
+  execution, workflow runtime, queue, provider credential, or product UX
+  behavior changed.
+
+## 2026-09-05 — M4 packaged Core smoke clean-log verification
+
+- **Module**: Core release artifact installation and WordPress compatibility
+  evidence.
+- **Completed**: Re-ran the exact Core ZIP from `4aaf3383ad33afcd6a12000e77e82078362c60cd`
+  on M4 Docker Server 29.7.2 using WordPress 7.0 with PHP 8.0 and 8.5.
+  Both profiles installed Core from ZIP and passed 1,426 assertions.
+- **Verified**: Evidence is bound to Core source archive
+  `fd9a4a87f8a80ad48fa09ff93ae0b26be7d92f70b079aa2cd371f14019712f2b`, Core
+  package `608676d35cc6ea1934513a9a76a822e3e62ca646339c67a62cd73845e5647e48`,
+  Toolkit archive `00af0bf9c7775c6722b40a4ba05d060c39afd007da3acb96a656f6be71edc777`,
+  and Docker Server `29.7.2`. No duplicate-key or WordPress database errors
+  appeared, and all remote Docker resources were cleaned up.
+- **Next gate**: Run final local quality gates, review the diff, then push this
+  topic branch and use a protected PR. Do not tag before exact post-merge
+  evidence is regenerated.
+- **Boundary**: No REST route, data shape, table, lifecycle, approval,
+  execution, workflow runtime, queue, provider credential, or product UX
+  behavior changed.
+
+## 2026-09-05 — M4 packaged Core smoke accepted
+
+- **Module**: Core release artifact installation and WordPress compatibility
+  evidence.
+- **Completed**: Added a revision-bound M4 runner that sends Core and Toolkit
+  tracked test workspaces plus the reproducible Core ZIP to the M4 host. It
+  installs Core from the ZIP in disposable WordPress 7.0/PHP 8.0 and
+  WordPress 7.0/PHP 8.5 profiles, verifies actual runtime versions, runs the
+  real Core smoke, records exact source/archive/package hashes, and cleans all
+  remote Docker resources.
+- **Verified**: Both profiles passed 1,426 assertions; `release:verify:m4`
+  accepted evidence for Core `e98f2a90...`, Toolkit `3e237d91...`, package
+  SHA `6b87a88b...`, and Docker Server `29.7.2`.
+- **Observed**: The smoke still logs a duplicate-key error when the app rate
+  limiter races its first window insert. The request is handled, but this is a
+  release-quality defect for the next focused Core security module slice.
+- **Next gate**: Fix the rate limiter's insert/increment race without changing
+  its public contract, add a regression, and rerun M4 to prove clean logs.
+- **Boundary**: No REST route, data shape, table, lifecycle, approval,
+  execution, workflow runtime, queue, provider credential, or product UX
+  behavior changed.
+
 ## 2026-09-05 — Reproducible Core release packaging
 
 - **Module**: Core release packaging and verification only.

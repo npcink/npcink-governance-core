@@ -196,6 +196,11 @@ must prove all repositories are clean, run:
 php scripts/cross-repo-quality-matrix.php --run-gates --fail-on-dirty
 ```
 
+This command checks the configured repository roots. It does not prove that
+every auxiliary worktree is clean. Before claiming global branch/worktree
+cleanup, follow the separate audit and ownership rules in
+[Release Closeout Standard](release-closeout-standard.md).
+
 AI agents must not run `git reset --hard`, `git checkout -- .`, or use
 `git add -A` in mixed worktrees unless the user explicitly asks for that exact
 operation.

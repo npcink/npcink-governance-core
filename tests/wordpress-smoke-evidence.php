@@ -117,5 +117,9 @@ if ( false === strpos( $profile_runner, 'runtime_wordpress' ) || false === strpo
 	fwrite( STDERR, "FAIL: Core M4 profile does not verify actual WordPress and PHP versions.\n" );
 	exit( 1 );
 }
+if ( false === strpos( $profile_runner, "sed -n '1,8000p'" ) ) {
+	fwrite( STDERR, "FAIL: Core M4 profile does not preserve the WordPress smoke failure log.\n" );
+	exit( 1 );
+}
 
 echo "Revision-bound Core M4 WordPress smoke evidence behavior: ok\n";

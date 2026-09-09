@@ -450,10 +450,19 @@ register_shutdown_function( 'npcink_governance_core_smoke_cleanup_fixtures' );
  */
 function npcink_governance_core_smoke_rest( string $method, string $route, array $params = array() ): array {
 	$result = npcink_governance_core_smoke_rest_result( $method, $route, $params );
+	$data   = is_array( $result['data'] ) ? $result['data'] : array();
+	$detail = '';
+	if ( $result['status'] < 200 || $result['status'] >= 300 ) {
+		$detail = sprintf(
+			' (%s: %s)',
+			(string) ( $data['code'] ?? 'unknown_error' ),
+			(string) ( $data['message'] ?? 'No error message returned.' )
+		);
+	}
 
-	npcink_governance_core_smoke_assert( $result['status'] >= 200 && $result['status'] < 300, $method . ' ' . $route . ' returned HTTP ' . $result['status'] );
+	npcink_governance_core_smoke_assert( $result['status'] >= 200 && $result['status'] < 300, $method . ' ' . $route . ' returned HTTP ' . $result['status'] . $detail );
 
-	return is_array( $result['data'] ) ? $result['data'] : array();
+	return $data;
 }
 
 /**
@@ -494,10 +503,19 @@ function npcink_governance_core_smoke_rest_result( string $method, string $route
  */
 function npcink_governance_core_smoke_rest_as_app( string $method, string $route, string $token, array $params = array() ): array {
 	$result = npcink_governance_core_smoke_rest_result_as_app( $method, $route, $token, $params );
+	$data   = is_array( $result['data'] ) ? $result['data'] : array();
+	$detail = '';
+	if ( $result['status'] < 200 || $result['status'] >= 300 ) {
+		$detail = sprintf(
+			' (%s: %s)',
+			(string) ( $data['code'] ?? 'unknown_error' ),
+			(string) ( $data['message'] ?? 'No error message returned.' )
+		);
+	}
 
-	npcink_governance_core_smoke_assert( $result['status'] >= 200 && $result['status'] < 300, $method . ' ' . $route . ' returned HTTP ' . $result['status'] . ' for app token' );
+	npcink_governance_core_smoke_assert( $result['status'] >= 200 && $result['status'] < 300, $method . ' ' . $route . ' returned HTTP ' . $result['status'] . ' for app token' . $detail );
 
-	return is_array( $result['data'] ) ? $result['data'] : array();
+	return $data;
 }
 
 /**
@@ -2078,6 +2096,10 @@ $block_theme_homepage_plan_input = array(
 	'include_latest_posts'   => true,
 	'include_category_links' => true,
 	'include_cta'            => true,
+	'variables'              => array(
+		'cta_url'   => 'https://example.test/get-started/',
+		'cta_label' => 'Get started',
+	),
 );
 $block_theme_homepage_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_homepage_plan_input );
 $block_theme_homepage_result = npcink_governance_core_smoke_create_proposals_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_homepage_plan, $block_theme_homepage_plan_input );

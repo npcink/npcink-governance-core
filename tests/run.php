@@ -1221,8 +1221,8 @@ npcink_governance_core_assert( 1 !== preg_match( '/SELECT app_id, app_label, key
 $app_rate_limiter = npcink_governance_core_read( $root . '/includes/Security/App_Rate_Limiter.php' );
 npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'npcink_governance_core_app_rate_limits' ), 'App rate limiter stores fixed-window counters.' );
 npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'app_route_window' ), 'App rate limiter has unique app route window key.' );
-npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'increment_existing_window' ), 'App rate limiter uses a conditional increment helper.' );
-npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'request_count = request_count + 1' ), 'App rate limiter increments counters in SQL.' );
+npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'ON DUPLICATE KEY UPDATE' ), 'App rate limiter uses an atomic upsert.' );
+npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'request_count + 1' ), 'App rate limiter increments counters in SQL.' );
 npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'request_count < %d' ), 'App rate limiter only increments while under limit.' );
 
 $sensitive_data_redactor = npcink_governance_core_read( $root . '/includes/Security/Sensitive_Data_Redactor.php' );
@@ -1831,6 +1831,8 @@ npcink_governance_core_assert( false !== strpos( $proposal_service_source, 'batc
 npcink_governance_core_assert( false !== strpos( $preflight_service_source, 'batch_ability_contract_preflight' ), 'Commit preflight revalidates batch action contracts.' );
 npcink_governance_core_assert( false !== strpos( $smoke_source, 'array_keys( (array) $npcink_governance_core_smoke_proposal_fixture_ids )' ), 'Smoke shutdown cleanup tolerates early failure before fixture globals are populated.' );
 npcink_governance_core_assert( false !== strpos( $smoke_source, 'history cleanup removes the fixture or fills the bounded batch' ), 'History cleanup smoke respects bounded deletion when the site has an older backlog.' );
+npcink_governance_core_assert( false !== strpos( $smoke_source, 'No error message returned.' ), 'WordPress smoke reports REST error details for failed requests.' );
+npcink_governance_core_assert( false !== strpos( $smoke_source, "'cta_url'   => 'https://example.test/get-started/'" ), 'Homepage layout smoke supplies deterministic CTA evidence instead of depending on site content.' );
 npcink_governance_core_assert( false !== strpos( $authenticator_source, 'hash_hmac' ) && false !== strpos( $authenticator_source, 'wp_salt' ), 'Request IP metadata uses a site-keyed HMAC.' );
 npcink_governance_core_assert( false !== strpos( $plugin_source, 'network_wide' ) && false !== strpos( $plugin_source, 'wp_initialize_site' ), 'Plugin lifecycle provisions multisite tables.' );
 npcink_governance_core_assert( false !== strpos( $plugin_source, 'OPTION_SCHEMA_VERSION' ) && false !== strpos( $plugin_source, 'maybe_upgrade_schema' ), 'Plugin lifecycle persists and checks schema version.' );
@@ -1955,6 +1957,8 @@ npcink_governance_core_assert( false === strpos( $smoke_wp_sh, 'magick-ai-root' 
 npcink_governance_core_assert( false !== strpos( $wp_cli_local_sh, 'php-8.5.3+1' ), 'Local WP-CLI wrapper prefers the current LocalWP smoke PHP runtime.' );
 npcink_governance_core_assert( false !== strpos( $wp_cli_local_sh, 'display_errors=0' ), 'Local WP-CLI wrapper suppresses PHP display errors for release-smoke noise control.' );
 npcink_governance_core_assert( false !== strpos( $wp_cli_local_sh, 'pdo_mysql.default_socket' ), 'Local WP-CLI wrapper sets both mysqli and PDO MySQL sockets.' );
+npcink_governance_core_assert( false !== strpos( $wp_cli_local_sh, 'LOCALWP_RUN_ROOT' ), 'Local WP-CLI wrapper supports an overridable LocalWP run root.' );
+npcink_governance_core_assert( false !== strpos( $wp_cli_local_sh, "-path '*/mysql/mysqld.sock'" ), 'Local WP-CLI wrapper discovers the active LocalWP MySQL socket when the legacy path is absent.' );
 
 $smoke_wp = npcink_governance_core_read( $root . '/tests/smoke-wp.php' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'NPCINK_ABILITIES_TOOLKIT_PATH' ), 'WordPress smoke can locate the shared npcink-abilities-toolkit repository explicitly.' );

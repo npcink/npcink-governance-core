@@ -80,41 +80,37 @@ final class App_Rate_Limiter {
 		$window_end     = gmdate( 'Y-m-d H:i:s', $window_end_ts );
 		$now            = current_time( 'mysql', true );
 
-		$updated = $this->increment_existing_window( $app_id, $route_family, $window_start, $limit, $now );
-		if ( false === $updated ) {
-			return $this->result_from_row( null, $limit, $window_end, false );
-		}
-		if ( $updated > 0 ) {
-			return $this->result_from_row( $this->find_window( $app_id, $route_family, $window_start ), $limit, $window_end, true );
-		}
-
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
-		$inserted = $wpdb->insert(
-			$this->table_name(),
-			array(
-				'app_id'        => $app_id,
-				'key_id'        => $key_id,
-				'route_family'  => $route_family,
-				'window_start'  => $window_start,
-				'window_end'    => $window_end,
-				'request_count' => 1,
-				'created_at'    => $now,
-				'updated_at'    => $now,
-			),
-			array( '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s' )
+		// One atomic upsert handles first use, concurrent first use, and the
+		// exhausted-window case without a duplicate-key error or race window.
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		$upserted = $wpdb->query(
+			$wpdb->prepare(
+				'INSERT INTO %i (app_id, key_id, route_family, window_start, window_end, request_count, created_at, updated_at) VALUES (%s, %s, %s, %s, %s, 1, %s, %s) ON DUPLICATE KEY UPDATE request_count = IF(request_count < %d, request_count + 1, request_count), updated_at = IF(request_count < %d, %s, updated_at)',
+				$this->table_name(),
+				$app_id,
+				$key_id,
+				$route_family,
+				$window_start,
+				$window_end,
+				$now,
+				$now,
+				$limit,
+				$limit,
+				$now
+			)
 		);
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
-		if ( false !== $inserted ) {
-			return $this->result_from_row( $this->find_window( $app_id, $route_family, $window_start ), $limit, $window_end, true );
-		}
-
-		$updated = $this->increment_existing_window( $app_id, $route_family, $window_start, $limit, $now );
-		if ( false === $updated ) {
+		if ( false === $upserted ) {
 			return $this->result_from_row( null, $limit, $window_end, false );
 		}
 
-		return $this->result_from_row( $this->find_window( $app_id, $route_family, $window_start ), $limit, $window_end, $updated > 0 );
+		return $this->result_from_row(
+			$this->find_window( $app_id, $route_family, $window_start ),
+			$limit,
+			$window_end,
+			$upserted > 0
+		);
 	}
 
 	/**
@@ -139,34 +135,6 @@ final class App_Rate_Limiter {
 		global $wpdb;
 		return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE window_end < %s', $this->table_name(), sanitize_text_field( $cutoff ) ) );
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-	}
-
-	/**
-	 * Atomically increments an existing fixed window only while under limit.
-	 *
-	 * @param string $app_id App id.
-	 * @param string $route_family Route family.
-	 * @param string $window_start Window start.
-	 * @param int    $limit Rate limit.
-	 * @param string $now Current UTC timestamp.
-	 * @return int|false Updated row count, or false on DB error.
-	 */
-	private function increment_existing_window( string $app_id, string $route_family, string $window_start, int $limit, string $now ) {
-		global $wpdb;
-
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table and needs an atomic conditional increment.
-		return $wpdb->query(
-			$wpdb->prepare(
-				'UPDATE %i SET request_count = request_count + 1, updated_at = %s WHERE app_id = %s AND route_family = %s AND window_start = %s AND request_count < %d',
-				$this->table_name(),
-				$now,
-				$app_id,
-				$route_family,
-				$window_start,
-				$limit
-			)
-		);
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**

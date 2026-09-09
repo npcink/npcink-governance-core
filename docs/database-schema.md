@@ -264,8 +264,11 @@ Indexes:
 - key: `key_id`
 - key: `window_end`
 
-Existing fixed-window rows are incremented with a conditional SQL update that
-requires `request_count < limit`; the unique `app_route_window` key guards
+Fixed-window counters use one atomic `INSERT ... ON DUPLICATE KEY UPDATE`
+statement. It inserts the first request, increments only while
+`request_count < limit`, and leaves exhausted windows unchanged; the unique
+`app_route_window` key provides the conflict target without emitting duplicate
+key errors under concurrent first requests.
 concurrent first writes for the same app, route family, and window.
 
 ## Migration Rules
