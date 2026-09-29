@@ -11,6 +11,13 @@ evaluation, commit preflight, scoped app-key policy, and audit. Adapter remains
 responsible for final WordPress Abilities API execution after Core approval and
 preflight.
 
+The Toolkit-side commit gate that Adapter's execution ultimately passes
+through is documented host-agnostically in the
+[Host Approval Contract](https://github.com/npcink/npcink-abilities-toolkit/blob/master/docs/host-approval-contract.md)
+(`npcink-abilities-toolkit`, `docs/host-approval-contract.md`). Toolkit owns
+the gate mechanics; Core approval policy consumes that boundary and Core does
+not implement the gate.
+
 ## Adapter Next Step
 
 The next product implementation should happen in
