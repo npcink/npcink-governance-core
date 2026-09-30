@@ -2701,9 +2701,13 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Required next ste
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Morning Brief source' ) && false !== strpos( $admin_page, 'Selected review items' ) && false !== strpos( $admin_page, 'Evidence refs' ) && false !== strpos( $admin_page, 'Completed draft input' ), 'Admin proposal detail exposes Nightly source, selected review items, evidence refs, and completed draft input.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Review the completed Morning Brief draft in Core' ) && false !== strpos( $admin_page, 'run commit preflight before Adapter execution' ) && false !== strpos( $admin_page, 'Core still does not generate or edit draft fields' ), 'Admin proposal detail gives explicit completed Nightly draft review guidance.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink-toolbox/build-nightly-inspection-review-plan' ) && false !== strpos( $admin_page, 'Nightly Inspection' ) && false !== strpos( $admin_page, 'Morning Brief' ), 'Admin review queue summarizes Nightly Inspection proposal source as Morning Brief.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_activity_overview' ) && false !== strpos( $admin_page, 'count_grouped_by_event_name' ) && false !== strpos( $admin_page, 'npcink-governance-core-activity-overview' ), 'Admin audit view renders a linked AI activity overview strip.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Requests created' ) && false !== strpos( $admin_page, 'Preflight checks' ) && false !== strpos( $admin_page, 'Approved writes completed through Adapter execution profiles' ), 'Admin activity overview summarizes creation, approval, preflight, and execution outcomes.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_event_name' ) && false !== strpos( $admin_page, 'audit_time_range' ) && false !== strpos( $admin_page, 'npcink-governance-core-summary-link' ), 'Admin activity overview counters link into the filtered activity list.' );
 
 $audit_repository = npcink_governance_core_read( $root . '/includes/Audit/Audit_Log_Repository.php' );
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'sanitize_text_field( $event_name )' ), 'Audit repository preserves dotted event names.' );
+npcink_governance_core_assert( false !== strpos( $audit_repository, 'count_grouped_by_event_name' ) && false !== strpos( $audit_repository, 'GROUP BY event_name' ), 'Audit repository can group event counts for the activity overview.' );
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'list_filtered' ), 'Audit repository supports filtered event lists.' );
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'proposal_id = %s' ), 'Audit repository filters by proposal id safely.' );
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'event_name = %s' ), 'Audit repository filters by event name safely.' );
@@ -2782,6 +2786,8 @@ foreach (
 		'read-only lookup',
 		'technical details',
 		'Activity Log',
+		'AI activity overview',
+		'Adapter bridge state and provider logs stay out of the overview',
 		'History',
 		'read-only',
 		'row selection, bulk actions, archive actions, or reopen actions',

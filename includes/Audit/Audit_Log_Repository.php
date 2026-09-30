@@ -206,6 +206,45 @@ final class Audit_Log_Repository {
 	}
 
 	/**
+	 * Counts filtered events grouped by event name.
+	 *
+	 * The event-name filter is ignored so the grouping covers every event
+	 * class within the same scope as the "All events" filtered list; every
+	 * other filter, including read-event exclusion, keeps applying.
+	 *
+	 * @param array<string,mixed> $filters Filters.
+	 * @return array<string,int> Map of event name to event count.
+	 */
+	public function count_grouped_by_event_name( array $filters = array() ): array {
+		global $wpdb;
+
+		unset( $filters['event_name'] );
+
+		$parts = $this->filtered_query_parts( $filters );
+		$where = $parts['where'];
+		$args  = $parts['args'];
+		$sql   = 'SELECT event_name, COUNT(*) AS event_count FROM %i';
+		array_unshift( $args, $this->table_name() );
+
+		if ( ! empty( $where ) ) {
+			$sql .= ' WHERE ' . $this->join_where_clauses( $where );
+		}
+
+		$sql .= ' GROUP BY event_name';
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- SQL is assembled from fixed clauses and placeholder values for a custom governance table.
+		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $args ), ARRAY_A );
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		$counts = array();
+		foreach ( is_array( $rows ) ? $rows : array() as $row ) {
+			$counts[ (string) ( $row['event_name'] ?? '' ) ] = (int) ( $row['event_count'] ?? 0 );
+		}
+
+		return $counts;
+	}
+
+	/**
 	 * Counts audit records.
 	 *
 	 * @return int
