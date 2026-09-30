@@ -225,6 +225,13 @@ on the left, item count plus square first/previous/next/last page buttons on
 the right. Selection checkboxes and bulk action controls should appear only on
 lists with real bulk lifecycle actions, such as bounded Review Queue rejection.
 
+The `Activity Log` tab opens with a read-only AI activity overview strip:
+grouped counters for requests created, approved, rejected, commit preflights,
+executed, and execution failures within the current filter scope, where each
+counter links to that event's filtered activity list. The overview changes no
+approval or execution state, adds no bulk actions, and counts Core audit
+events only; Adapter bridge state and provider logs stay out of the overview.
+
 Client access token creation is a low-frequency fallback action backed by
 Core's app-key contract. It should be reachable from a directly visible
 `Client access tokens` section in Settings, and once an administrator opens the

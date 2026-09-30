@@ -236,6 +236,7 @@ final class Admin_Page {
 				<?php $audit_total = $this->audit->count_filtered( $audit_filters ); ?>
 				<?php $audit_filters = $this->bounded_audit_filters( $audit_filters, $audit_total ); ?>
 				<?php $this->render_admin_tabs( 'audit' ); ?>
+				<?php $this->render_activity_overview( $audit_filters ); ?>
 				<?php $this->render_governance_audit( $this->audit->list_filtered( $audit_filters ), $audit_filters, $audit_total ); ?>
 			<?php elseif ( 'archive' === $view ) : ?>
 				<?php $this->render_admin_tabs( 'archive' ); ?>
@@ -3742,6 +3743,82 @@ final class Admin_Page {
 		}
 
 		return $steps;
+	}
+
+	/**
+	 * Renders the AI activity overview summary strip for the audit view.
+	 *
+	 * Counters group audit events by outcome within the current filter scope
+	 * (excluding the event-type filter), so one screen answers what the AI
+	 * requested, what was approved or rejected, and what executed or failed.
+	 * Each counter links to that event's filtered activity list. Read-only;
+	 * no approval or execution state is changed from this strip.
+	 *
+	 * @param array<string,mixed> $filters Audit filters.
+	 * @return void
+	 */
+	private function render_activity_overview( array $filters ): void {
+		$counts = $this->audit->count_grouped_by_event_name( $filters );
+
+		$cards = array(
+			array(
+				'event'  => 'proposal.created',
+				'label'  => __( 'Requests created', 'npcink-governance-core' ),
+				'detail' => __( 'AI-initiated proposals submitted for governance.', 'npcink-governance-core' ),
+				'tone'   => 'neutral',
+			),
+			array(
+				'event'  => 'proposal.approved',
+				'label'  => __( 'Approved', 'npcink-governance-core' ),
+				'detail' => __( 'Administrator-approved proposals.', 'npcink-governance-core' ),
+				'tone'   => 'ok',
+			),
+			array(
+				'event'  => 'proposal.rejected',
+				'label'  => __( 'Rejected', 'npcink-governance-core' ),
+				'detail' => __( 'Proposals rejected before any write happened.', 'npcink-governance-core' ),
+				'tone'   => 'warning',
+			),
+			array(
+				'event'  => 'commit.preflighted',
+				'label'  => __( 'Preflight checks', 'npcink-governance-core' ),
+				'detail' => __( 'Commit preflights run before final execution.', 'npcink-governance-core' ),
+				'tone'   => 'neutral',
+			),
+			array(
+				'event'  => 'proposal.executed',
+				'label'  => __( 'Executed', 'npcink-governance-core' ),
+				'detail' => __( 'Approved writes completed through Adapter execution profiles.', 'npcink-governance-core' ),
+				'tone'   => 'ok',
+			),
+			array(
+				'event'  => 'proposal.execution_failed',
+				'label'  => __( 'Execution failed', 'npcink-governance-core' ),
+				'detail' => __( 'Failures that need operator follow-up.', 'npcink-governance-core' ),
+				'tone'   => 'error',
+			),
+		);
+		?>
+		<div class="npcink-governance-core-summary-strip npcink-governance-core-max-wide npcink-governance-core-activity-overview">
+			<?php foreach ( $cards as $card ) : ?>
+				<?php
+				$count = (int) ( $counts[ $card['event'] ] ?? 0 );
+				$tone  = 'error' === $card['tone'] && 0 === $count ? 'inactive' : $card['tone'];
+				$url   = $this->admin_url(
+					array_merge(
+						$this->audit_query_args( $filters ),
+						array( 'audit_event_name' => $card['event'] )
+					)
+				);
+				?>
+				<a class="npcink-governance-core-summary-item npcink-governance-core-summary-<?php echo esc_attr( sanitize_html_class( $tone ) ); ?> npcink-governance-core-summary-link" href="<?php echo esc_url( $url ); ?>">
+					<div class="npcink-governance-core-summary-label"><?php echo esc_html( $card['label'] ); ?></div>
+					<div class="npcink-governance-core-summary-value"><?php echo esc_html( (string) $count ); ?></div>
+					<div class="npcink-governance-core-summary-detail"><?php echo esc_html( $card['detail'] ); ?></div>
+				</a>
+			<?php endforeach; ?>
+		</div>
+		<?php
 	}
 
 	/**

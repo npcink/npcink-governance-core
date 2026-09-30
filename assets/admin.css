@@ -119,6 +119,10 @@
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.npcink-governance-core-activity-overview {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .npcink-governance-core-summary-item {
 	box-sizing: border-box;
 	min-height: 104px;
@@ -1239,6 +1243,7 @@
 @media screen and (max-width: 960px) {
 	.npcink-governance-core-summary-strip,
 	.npcink-governance-core-token-summary,
+	.npcink-governance-core-activity-overview,
 	.npcink-governance-core-audit-filter-toolbar,
 	.npcink-governance-core-audit-advanced-grid,
 	.npcink-governance-core-token-form-grid,
@@ -1312,4 +1317,16 @@
 		justify-content: space-between;
 		width: 100%;
 	}
+}
+
+/* AI activity overview strip link styles; the 3-column layout rule lives
+   before the 960px media query so the responsive collapse still wins. */
+.npcink-governance-core-activity-overview .npcink-governance-core-summary-link {
+	display: block;
+	text-decoration: none;
+	color: inherit;
+}
+.npcink-governance-core-activity-overview .npcink-governance-core-summary-link:hover,
+.npcink-governance-core-activity-overview .npcink-governance-core-summary-link:focus {
+	border-color: #2271b1;
 }
