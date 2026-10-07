@@ -1136,13 +1136,14 @@ must also have accepted its own narrow destructive flag, such as
 `include_unattached_nonproduction_media=true` or `include_trash_parent_media=true`, before
 Core has a delete action to review. Actions with `requires_input` still become
 reviewable proposals, but their preview carries `proposal_ready=false`,
-Response `201` is returned only when at least one proposal was created. When
-every action is blocked and `proposals` is empty, Core returns `422` with the
-same body, so `blocked_items` / `needs_input` carry the per-index rejection
-details (`index`, `action_id`, `code`, `reason`).
-
 `needs_input`, and `preflight_blockers`; commit preflight must return `409`
 until the missing input is resolved by the host.
+
+Response `201` is returned only when at least one proposal was created. When
+every action is blocked and `proposals` is empty, Core returns `200` with the
+same body, so `blocked_items` / `needs_input` carry the per-index rejection
+details (`index`, `action_id`, `code`, `reason`) as a successful intake result
+rather than a transport error.
 
 When the plan creates one `plan_to_proposal_batch` proposal, the proposal
 preview includes `batch_review_summary`. The summary standardizes

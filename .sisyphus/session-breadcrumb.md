@@ -5483,7 +5483,7 @@
 - **Completed** (branch `fix/ux-audit-p0-p2`, 7 commits):
   - P0: bulk-reject failure counts rendered (was silently dropped), app
     audit-failure message mapping plus code-suffix fallback for unknown
-    errors, from-plan 422 on zero created, audit/read-requests offset +
+    errors, from-plan 200 on zero created (initially 422; smoke proved all-blocked intake is a successful body contract, not a transport error), audit/read-requests offset +
     audit search + total counts, commit-preflight 409 echoes the original
     correlation_id/expires_at for lost-response recovery.
   - P1: decisions keep review page + filters and open the next pending

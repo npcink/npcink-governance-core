@@ -473,9 +473,10 @@ final class Proposals_Controller {
 			)
 		);
 
-		// A 201 would claim resource creation; when every action was blocked
-		// the response body carries only blocked/needs-input details.
-		$status = ( 0 === $created_count ) ? 422 : 201;
+		// 201 would claim resource creation; when every action was blocked
+		// the body carries only blocked/needs-input details, so the intake
+		// succeeds without creating anything and reports 200.
+		$status = ( 0 === $created_count ) ? 200 : 201;
 
 		if ( is_array( $result['proposals'] ?? null ) ) {
 			$result['proposals'] = Rest_Format::rows( $result['proposals'], self::PROPOSAL_TIMESTAMP_FIELDS );

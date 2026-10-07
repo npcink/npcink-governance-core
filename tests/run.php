@@ -2034,7 +2034,7 @@ npcink_governance_core_assert( false !== strpos( $audit_controller, 'X-WP-Total'
 $read_requests_controller = npcink_governance_core_read( $root . '/includes/Rest/Read_Requests_Controller.php' );
 npcink_governance_core_assert( false !== strpos( $read_requests_controller, "'offset'" ), 'Read-requests REST route supports offset pagination.' );
 
-npcink_governance_core_assert( false !== strpos( $proposals_controller, '0 === $created_count ) ? 422 : 201' ), 'From-plan returns 422 instead of 201 when no proposal was created.' );
+npcink_governance_core_assert( false !== strpos( $proposals_controller, '0 === $created_count ) ? 200 : 201' ), 'From-plan avoids a false 201 Created when no proposal was created; blocked intake stays a 200 body contract.' );
 
 $commit_preflight_service = npcink_governance_core_read( $root . '/includes/Governance/Commit_Preflight_Service.php' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "prior_handoff['correlation_id']" ), 'Repeated commit preflight echoes the original correlation id for lost-response recovery.' );
