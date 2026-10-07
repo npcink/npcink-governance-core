@@ -274,6 +274,115 @@ final class Proposal_Repository {
 	}
 
 	/**
+	 * Builds the WHERE clauses for filtered pending-proposal queries.
+	 *
+	 * Supported filters: exact ability_id and created_before (UTC cutoff,
+	 * inclusive) for age-based narrowing.
+	 *
+	 * @param array<string,mixed> $filters Filters.
+	 * @return array{where:string,args:array<int,mixed>}
+	 */
+	private function pending_filter_parts( array $filters ): array {
+		global $wpdb;
+
+		$where          = 'status = %s';
+		$args           = array( self::STATUS_PENDING );
+		$ability_id     = sanitize_text_field( (string) ( $filters['ability_id'] ?? '' ) );
+		$created_before = sanitize_text_field( (string) ( $filters['created_before'] ?? '' ) );
+
+		if ( '' !== $ability_id ) {
+			$where  .= ' AND ability_id = %s';
+			$args[] = $ability_id;
+		}
+
+		if ( '' !== $created_before && false !== strtotime( $created_before ) ) {
+			$where  .= ' AND created_at <= %s';
+			$args[] = $created_before;
+		}
+
+		return array( 'where' => $where, 'args' => $args );
+	}
+
+	/**
+	 * Lists pending proposals with review-queue filters.
+	 *
+	 * @param int                $limit Maximum rows.
+	 * @param int                $offset Rows to skip.
+	 * @param array<string,mixed> $filters Filters.
+	 * @return array<int,array<string,mixed>>
+	 */
+	public function list_pending_filtered( int $limit = 50, int $offset = 0, array $filters = array() ): array {
+		global $wpdb;
+
+		$limit  = max( 1, min( 200, $limit ) );
+		$offset = max( 0, $offset );
+		$parts  = $this->pending_filter_parts( $filters );
+		$args   = $parts['args'];
+		$args[] = $limit;
+		$args[] = $offset;
+		array_unshift( $args, $this->table_name() );
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- SQL uses fixed clauses with placeholder values for Core's custom governance table.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT proposal_id, ability_id, status, title, summary, input_json, preview_json, caller_json, created_by, created_at, updated_at FROM %i WHERE ' . $parts['where'] . ' ORDER BY id DESC LIMIT %d OFFSET %d',
+				...$args
+			),
+			ARRAY_A
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
+	}
+
+	/**
+	 * Counts pending proposals with review-queue filters.
+	 *
+	 * @param array<string,mixed> $filters Filters.
+	 * @return int
+	 */
+	public function count_pending_filtered( array $filters = array() ): int {
+		global $wpdb;
+
+		$parts = $this->pending_filter_parts( $filters );
+		$args  = $parts['args'];
+		array_unshift( $args, $this->table_name() );
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- SQL uses fixed clauses with placeholder values for Core's custom governance table.
+		$count = (int) $wpdb->get_var(
+			$wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE ' . $parts['where'], ...$args )
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return $count;
+	}
+
+	/**
+	 * Lists distinct ability ids among pending proposals for queue filters.
+	 *
+	 * @param int $limit Maximum distinct ids.
+	 * @return array<int,string>
+	 */
+	public function distinct_pending_ability_ids( int $limit = 100 ): array {
+		global $wpdb;
+
+		$limit = max( 1, min( 200, $limit ) );
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		$rows = $wpdb->get_col(
+			$wpdb->prepare(
+				'SELECT DISTINCT ability_id FROM %i WHERE status = %s ORDER BY ability_id ASC LIMIT %d',
+				$this->table_name(),
+				self::STATUS_PENDING,
+				$limit
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return is_array( $rows ) ? array_values( array_filter( array_map( 'strval', $rows ) ) ) : array();
+	}
+
+	/**
 	 * Lists stale pending proposals older than a TTL.
 	 *
 	 * @param int $ttl_seconds Pending TTL in seconds.

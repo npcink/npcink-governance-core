@@ -46,12 +46,37 @@
 
 	document.addEventListener( 'click', function ( event ) {
 		var toggle = event.target.closest( '.npcink-governance-core-row-details-toggle' );
+		var copyButton = event.target.closest( '[data-npcink-copy-target]' );
 		var bulkClear = event.target.closest( '[data-npcink-bulk-clear]' );
 		var bulkApply = event.target.closest( '[data-npcink-bulk-apply]' );
 		var bulkSelect;
 		var disclosure;
 		var target;
 		var expanded;
+		var source;
+		var previousLabel;
+
+		if ( copyButton ) {
+			source = document.getElementById( copyButton.getAttribute( 'data-npcink-copy-target' ) || '' );
+			if ( source ) {
+				source.select();
+				source.setSelectionRange( 0, source.value.length );
+				try {
+					document.execCommand( 'copy' );
+				} catch ( copyError ) {}
+				if ( navigator.clipboard && source.value ) {
+					navigator.clipboard.writeText( source.value );
+				}
+				previousLabel = copyButton.getAttribute( 'data-original-label' ) || copyButton.textContent;
+				copyButton.setAttribute( 'data-original-label', previousLabel );
+				copyButton.textContent = copyButton.getAttribute( 'data-copied-label' ) || previousLabel;
+				window.setTimeout( function () {
+					copyButton.textContent = previousLabel;
+				}, 2000 );
+				source.focus();
+			}
+			return;
+		}
 
 		if ( bulkApply ) {
 			bulkSelect = document.querySelector( '[data-npcink-bulk-select]' );

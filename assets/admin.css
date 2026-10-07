@@ -1330,3 +1330,20 @@
 .npcink-governance-core-activity-overview .npcink-governance-core-summary-link:focus {
 	border-color: #2271b1;
 }
+
+/* Review queue filter bar: inline selects like the activity-log toolbar. */
+.npcink-governance-core-review-filters {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin: 0 0 12px;
+}
+
+.npcink-governance-core-review-filters label {
+	font-weight: 600;
+}
+
+.npcink-governance-core-review-filters select {
+	min-width: 180px;
+}
