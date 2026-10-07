@@ -5513,3 +5513,25 @@
     before any multi-repo closeout.
   - zh_CN strings added here are local-first; submit them to wp.org when
     the PTE path reopens so language packs stay in sync.
+# 2026-10-07 - Post-merge visual smoke and Adapter follow-through
+
+- **Evidence** (PR #91 merged as 36e8090; local master synced):
+  - Browser visual smoke passed on the live LocalWP site against the merged
+    master: review-queue ability/age filters (40 filtered rows, clear-filters
+    link), decision flow (approve with note auto-opened the next pending
+    proposal with a success notice, filters preserved), one-time client token
+    panel rendered inside the normal admin screen with working copy buttons
+    and single-display semantics, and the AI activity overview strip. The
+    entire admin surface rendered in zh_CN, confirming the bundled-catalog
+    load fix end to end. This closes the 2026-06-19 token-screen visual smoke
+    debt and the #84 overview-strip browser verification debt. Screenshots in
+    /tmp/core-visual-smoke/ (local only).
+  - A stale `.maintenance` file from the smoke run was causing HTTP 503 on
+    the local site; removed it. If the site shows 503 after smoke runs, check
+    that file first.
+  - Temp visual-smoke admin user and test token were created and cleaned up.
+- **Cross-repo**: npcink-ai-client-adapter PR #89 adopts the new contract
+  (409 recoverable_handoff, app_auth_expired hint, 429 retry relay,
+  contract:read fallback, offset passthrough, zh_CN backlog). Three advisory
+  review rounds triaged; final review raised no findings. Run the central
+  quality matrix before the next multi-repo closeout.
