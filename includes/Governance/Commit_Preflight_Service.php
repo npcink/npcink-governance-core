@@ -224,19 +224,9 @@ final class Commit_Preflight_Service {
 		}
 
 		$approved_input_hash = $this->payload_hash( $proposal['input'] ?? array() );
-		if ( $this->has_prior_preflight( $proposal_id, $approved_input_hash ) ) {
-			return $this->preflight_error(
-				'npcink_governance_core_commit_preflight_already_issued',
-				__( 'Commit preflight has already issued an execution handoff for this approved proposal.', 'npcink-governance-core' ),
-				409,
-				$proposal_id,
-				array(
-					'ability_id'             => (string) ( $proposal['ability_id'] ?? '' ),
-					'status'                 => (string) ( $proposal['status'] ?? '' ),
-					'approved_input_hash'    => $approved_input_hash,
-					'idempotency_required'   => true,
-				)
-			);
+		$prior_handoff       = $this->prior_preflight_handoff( $proposal_id, $approved_input_hash );
+		if ( null !== $prior_handoff ) {
+			return $this->already_issued_error( $proposal_id, $approved_input_hash, $proposal, $prior_handoff );
 		}
 
 		$correlation_id = $this->new_correlation_id();
@@ -289,19 +279,9 @@ final class Commit_Preflight_Service {
 		);
 
 		if ( '' === $event_id ) {
-			if ( $this->has_prior_preflight( $proposal_id, $approved_input_hash ) ) {
-				return $this->preflight_error(
-					'npcink_governance_core_commit_preflight_already_issued',
-					__( 'Commit preflight has already issued an execution handoff for this approved proposal.', 'npcink-governance-core' ),
-					409,
-					$proposal_id,
-					array(
-						'ability_id'           => (string) ( $proposal['ability_id'] ?? '' ),
-						'status'               => (string) ( $proposal['status'] ?? '' ),
-						'approved_input_hash'  => $approved_input_hash,
-						'idempotency_required' => true,
-					)
-				);
+			$prior_handoff = $this->prior_preflight_handoff( $proposal_id, $approved_input_hash );
+			if ( null !== $prior_handoff ) {
+				return $this->already_issued_error( $proposal_id, $approved_input_hash, $proposal, $prior_handoff );
 			}
 
 			return new WP_Error(
@@ -590,13 +570,14 @@ final class Commit_Preflight_Service {
 	}
 
 	/**
-	 * Returns whether an execution handoff was already issued for this approved input.
+	 * Returns the prior execution-handoff metadata for this approved input, or
+	 * null when no commit preflight was issued yet.
 	 *
 	 * @param string $proposal_id Proposal id.
 	 * @param string $approved_input_hash Approved input hash.
-	 * @return bool
+	 * @return array<string,mixed>|null
 	 */
-	private function has_prior_preflight( string $proposal_id, string $approved_input_hash ): bool {
+	private function prior_preflight_handoff( string $proposal_id, string $approved_input_hash ): ?array {
 		$events = $this->audit->list_filtered(
 			array(
 				'proposal_id' => $proposal_id,
@@ -608,11 +589,42 @@ final class Commit_Preflight_Service {
 		foreach ( $events as $event ) {
 			$metadata = is_array( $event['metadata'] ?? null ) ? $event['metadata'] : array();
 			if ( $approved_input_hash === (string) ( $metadata['approved_input_hash'] ?? '' ) ) {
-				return true;
+				return $metadata;
 			}
 		}
 
-		return false;
+		return null;
+	}
+
+	/**
+	 * Returns the 409 error for a repeated preflight, echoing the original
+	 * handoff identifiers so a client that lost the first response can still
+	 * record execution.
+	 *
+	 * @param string $proposal_id Proposal id.
+	 * @param string $approved_input_hash Approved input hash.
+	 * @param array<string,mixed> $prior_handoff Prior handoff metadata.
+	 * @return WP_Error
+	 */
+	private function already_issued_error( string $proposal_id, string $approved_input_hash, array $proposal, array $prior_handoff ): WP_Error {
+		return $this->preflight_error(
+			'npcink_governance_core_commit_preflight_already_issued',
+			__( 'Commit preflight has already issued an execution handoff for this approved proposal.', 'npcink-governance-core' ),
+			409,
+			$proposal_id,
+			array(
+				'ability_id'           => (string) ( $proposal['ability_id'] ?? '' ),
+				'status'               => (string) ( $proposal['status'] ?? '' ),
+				'approved_input_hash'  => $approved_input_hash,
+				'idempotency_required' => true,
+			),
+			array(
+				'approved_input_hash'  => $approved_input_hash,
+				'correlation_id'       => (string) ( $prior_handoff['correlation_id'] ?? '' ),
+				'expires_at'           => (string) ( $prior_handoff['expires_at'] ?? '' ),
+				'idempotency_required' => true,
+			)
+		);
 	}
 
 	/**

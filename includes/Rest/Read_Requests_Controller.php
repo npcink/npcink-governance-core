@@ -77,6 +77,11 @@ final class Read_Requests_Controller {
 							'default'           => 50,
 							'sanitize_callback' => 'absint',
 						),
+						'offset' => array(
+							'type'              => 'integer',
+							'default'           => 0,
+							'sanitize_callback' => 'absint',
+						),
 						'status' => array(
 							'type'              => 'string',
 							'default'           => '',
@@ -168,10 +173,29 @@ final class Read_Requests_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function list_requests( WP_REST_Request $request ): WP_REST_Response {
-		$items = $this->repository->list_recent( (int) $request->get_param( 'limit' ), (string) $request->get_param( 'status' ) );
+		$limit  = (int) $request->get_param( 'limit' );
+		$offset = (int) $request->get_param( 'offset' );
+		$status = (string) $request->get_param( 'status' );
+
+		$items = $this->repository->list_recent( $limit, $status, $offset );
+		$total = $this->repository->count_recent( $status );
 		$this->service->record_listed( count( $items ) );
 
-		return new WP_REST_Response( array( 'items' => $items ), 200 );
+		$response = new WP_REST_Response(
+			array(
+				'items' => $items,
+				'meta'  => array(
+					'limit'  => $limit,
+					'offset' => $offset,
+					'status' => $status,
+					'total'  => $total,
+				),
+			),
+			200
+		);
+		$response->header( 'X-WP-Total', (string) $total );
+
+		return $response;
 	}
 
 	/**

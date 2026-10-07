@@ -445,18 +445,25 @@ final class Proposals_Controller {
 			return $result;
 		}
 
+		$created_count  = is_array( $result['proposals'] ?? null ) ? count( $result['proposals'] ) : 0;
+		$blocked_count  = is_array( $result['blocked_items'] ?? null ) ? count( $result['blocked_items'] ) : 0;
+
 		$this->emit_operation_event(
 			'core.proposal.plan_ingest',
 			$started,
 			null,
 			array(
 				'ability_id'     => (string) $request->get_param( 'plan_ability_id' ),
-				'proposal_count' => is_array( $result['proposals'] ?? null ) ? count( $result['proposals'] ) : 0,
-				'blocked_count'  => is_array( $result['blocked_items'] ?? null ) ? count( $result['blocked_items'] ) : 0,
+				'proposal_count' => $created_count,
+				'blocked_count'  => $blocked_count,
 			)
 		);
 
-		return new WP_REST_Response( $result, 201 );
+		// A 201 would claim resource creation; when every action was blocked
+		// the response body carries only blocked/needs-input details.
+		$status = ( 0 === $created_count ) ? 422 : 201;
+
+		return new WP_REST_Response( $result, $status );
 	}
 
 	/**

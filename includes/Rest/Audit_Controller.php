@@ -67,6 +67,27 @@ final class Audit_Controller {
 							'default'           => 50,
 							'sanitize_callback' => 'absint',
 						),
+						'offset' => array(
+							'type'              => 'integer',
+							'default'           => 0,
+							'sanitize_callback' => 'absint',
+						),
+						'order' => array(
+							'type'              => 'string',
+							'default'           => 'desc',
+							'enum'              => array( 'asc', 'desc' ),
+							'sanitize_callback' => 'sanitize_key',
+						),
+						'search' => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'created_after' => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
 						'proposal_id' => array(
 							'type'              => 'string',
 							'default'           => '',
@@ -115,38 +136,53 @@ final class Audit_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function list_events( WP_REST_Request $request ): WP_REST_Response {
-		$items = $this->audit->list_filtered(
-			array(
-				'limit'       => (int) $request->get_param( 'limit' ),
-				'proposal_id' => (string) $request->get_param( 'proposal_id' ),
-				'event_name'  => (string) $request->get_param( 'event_name' ),
-				'ability_id'  => (string) $request->get_param( 'ability_id' ),
-				'app_id'      => (string) $request->get_param( 'app_id' ),
-				'key_id'      => (string) $request->get_param( 'key_id' ),
-				'caller_type' => (string) $request->get_param( 'caller_type' ),
-				'correlation_id' => (string) $request->get_param( 'correlation_id' ),
-			)
+		$filters = array(
+			'limit'          => (int) $request->get_param( 'limit' ),
+			'offset'         => (int) $request->get_param( 'offset' ),
+			'order'          => (string) $request->get_param( 'order' ),
+			'search'         => (string) $request->get_param( 'search' ),
+			'created_after'  => (string) $request->get_param( 'created_after' ),
+			'proposal_id'    => (string) $request->get_param( 'proposal_id' ),
+			'event_name'     => (string) $request->get_param( 'event_name' ),
+			'ability_id'     => (string) $request->get_param( 'ability_id' ),
+			'app_id'         => (string) $request->get_param( 'app_id' ),
+			'key_id'         => (string) $request->get_param( 'key_id' ),
+			'caller_type'    => (string) $request->get_param( 'caller_type' ),
+			'correlation_id' => (string) $request->get_param( 'correlation_id' ),
 		);
+		$items = $this->audit->list_filtered( $filters );
 
 		$this->audit->record(
 			'audit.listed',
 			array(
 				'count'       => count( $items ),
-				'proposal_id' => (string) $request->get_param( 'proposal_id' ),
-				'event_name'  => (string) $request->get_param( 'event_name' ),
-				'ability_id'  => (string) $request->get_param( 'ability_id' ),
-				'app_id'      => (string) $request->get_param( 'app_id' ),
-				'key_id'      => (string) $request->get_param( 'key_id' ),
-				'caller_type' => (string) $request->get_param( 'caller_type' ),
-				'correlation_id' => (string) $request->get_param( 'correlation_id' ),
+				'offset'      => $filters['offset'],
+				'search'      => $filters['search'],
+				'proposal_id' => $filters['proposal_id'],
+				'event_name'  => $filters['event_name'],
+				'ability_id'  => $filters['ability_id'],
+				'app_id'      => $filters['app_id'],
+				'key_id'      => $filters['key_id'],
+				'caller_type' => $filters['caller_type'],
+				'correlation_id' => $filters['correlation_id'],
 			)
 		);
 
-		return new WP_REST_Response(
+		$total = $this->audit->count_filtered( $filters );
+
+		$response = new WP_REST_Response(
 			array(
 				'items' => $items,
+				'meta'  => array(
+					'limit'  => $filters['limit'],
+					'offset' => $filters['offset'],
+					'total'  => $total,
+				),
 			),
 			200
 		);
+		$response->header( 'X-WP-Total', (string) $total );
+
+		return $response;
 	}
 }

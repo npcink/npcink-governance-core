@@ -211,22 +211,25 @@ final class Read_Request_Repository {
 	 *
 	 * @param int    $limit Limit.
 	 * @param string $status Optional status.
+	 * @param int    $offset Row offset for pagination.
 	 * @return array<int,array<string,mixed>>
 	 */
-	public function list_recent( int $limit = 50, string $status = '' ): array {
+	public function list_recent( int $limit = 50, string $status = '', int $offset = 0 ): array {
 		global $wpdb;
 
 		$limit  = max( 1, min( 200, $limit ) );
+		$offset = max( 0, $offset );
 		$status = sanitize_key( $status );
 
 		if ( '' !== $status && in_array( $status, $this->allowed_statuses(), true ) ) {
 			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
-					'SELECT request_id, ability_id, input_hash, status, requested_input_summary, sensitivity, data_classes_json, redaction_level, purpose, caller_json, bounds_json, correlation_id, expires_at, consumed_at, created_by, created_at, updated_at FROM %i WHERE status = %s ORDER BY id DESC LIMIT %d',
+					'SELECT request_id, ability_id, input_hash, status, requested_input_summary, sensitivity, data_classes_json, redaction_level, purpose, caller_json, bounds_json, correlation_id, expires_at, consumed_at, created_by, created_at, updated_at FROM %i WHERE status = %s ORDER BY id DESC LIMIT %d OFFSET %d',
 					$this->table_name(),
 					$status,
-					$limit
+					$limit,
+					$offset
 				),
 				ARRAY_A
 			);
@@ -237,15 +240,40 @@ final class Read_Request_Repository {
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT request_id, ability_id, input_hash, status, requested_input_summary, sensitivity, data_classes_json, redaction_level, purpose, caller_json, bounds_json, correlation_id, expires_at, consumed_at, created_by, created_at, updated_at FROM %i ORDER BY id DESC LIMIT %d',
+				'SELECT request_id, ability_id, input_hash, status, requested_input_summary, sensitivity, data_classes_json, redaction_level, purpose, caller_json, bounds_json, correlation_id, expires_at, consumed_at, created_by, created_at, updated_at FROM %i ORDER BY id DESC LIMIT %d OFFSET %d',
 				$this->table_name(),
-				$limit
+				$limit,
+				$offset
 			),
 			ARRAY_A
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return array_map( array( $this, 'normalize_row' ), is_array( $rows ) ? $rows : array() );
+	}
+
+	/**
+	 * Counts recent requests, optionally filtered by status.
+	 *
+	 * @param string $status Optional status.
+	 * @return int
+	 */
+	public function count_recent( string $status = '' ): int {
+		global $wpdb;
+
+		$status = sanitize_key( $status );
+
+		if ( '' !== $status && in_array( $status, $this->allowed_statuses(), true ) ) {
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+			return (int) $wpdb->get_var(
+				$wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE status = %s', $this->table_name(), $status )
+			);
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		}
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $this->table_name() ) );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**
