@@ -58,7 +58,7 @@ final class Contract_Controller {
 				array(
 					'methods'             => 'GET',
 					'callback'            => array( $this, 'contract' ),
-					'permission_callback' => array( $this->auth, 'can_manage' ),
+					'permission_callback' => array( $this->auth, 'can_read_contract' ),
 				),
 			)
 		);

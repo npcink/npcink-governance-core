@@ -75,6 +75,16 @@ final class App_Authenticator {
 	}
 
 	/**
+	 * Authorizes a runtime contract read.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return bool|WP_Error
+	 */
+	public function can_read_contract( WP_REST_Request $request ) {
+		return $this->authorize( $request, 'contract:read', 'contract' );
+	}
+
+	/**
 	 * Authorizes proposal creation.
 	 *
 	 * @param WP_REST_Request $request Request.
@@ -237,7 +247,7 @@ final class App_Authenticator {
 					'denial_reason'  => 'app_key_expired',
 				)
 			);
-			return $this->error( 'npcink_governance_core_app_auth_invalid', __( 'App authentication token is invalid.', 'npcink-governance-core' ), 401 );
+			return $this->error( 'npcink_governance_core_app_auth_expired', __( 'App authentication token has expired. Ask the administrator to rotate this key.', 'npcink-governance-core' ), 401 );
 		}
 
 		if ( ! in_array( $scope, (array) ( $app['scopes'] ?? array() ), true ) ) {
@@ -257,23 +267,34 @@ final class App_Authenticator {
 		$rate = $this->rate_limiter->consume( $app, $route_family );
 		if ( empty( $rate['allowed'] ) ) {
 			Request_Context::mark_scope_decision( 'rate_limited' );
+			$reset_at        = (string) ( $rate['reset_at'] ?? '' );
+			$reset_timestamp = '' !== $reset_at ? strtotime( $reset_at ) : false;
+			$retry_after     = false === $reset_timestamp ? 0 : max( 0, (int) ( $reset_timestamp - time() ) );
 			$this->audit->record(
 				'app.rate_limited',
 				array(
 					'route_family' => sanitize_key( $route_family ),
 					'limit'        => (int) ( $rate['limit'] ?? 0 ),
-					'reset_at'     => (string) ( $rate['reset_at'] ?? '' ),
+					'reset_at'     => $reset_at,
 				)
 			);
+
+			// WP_Error cannot carry response headers, so the standard 429
+			// Retry-After hint is emitted before the REST response is sent.
+			if ( $retry_after > 0 && ! headers_sent() ) {
+				header( 'Retry-After: ' . $retry_after, true );
+			}
 
 			return new WP_Error(
 				'npcink_governance_core_app_rate_limited',
 				__( 'App key rate limit exceeded.', 'npcink-governance-core' ),
 				array(
-					'status'     => 429,
-					'limit'      => (int) ( $rate['limit'] ?? 0 ),
-					'reset_at'   => (string) ( $rate['reset_at'] ?? '' ),
-					'route_family' => sanitize_key( $route_family ),
+					'status'              => 429,
+					'limit'               => (int) ( $rate['limit'] ?? 0 ),
+					'remaining'           => 0,
+					'retry_after_seconds' => $retry_after,
+					'reset_at'            => false !== $reset_timestamp ? gmdate( 'c', $reset_timestamp ) : $reset_at,
+					'route_family'        => sanitize_key( $route_family ),
 				)
 			);
 		}

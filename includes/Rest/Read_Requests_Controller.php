@@ -24,6 +24,13 @@ final class Read_Requests_Controller {
 	const NAMESPACE = 'npcink-governance-core/v1';
 
 	/**
+	 * Read-request row timestamp fields normalized to ISO8601 in REST responses.
+	 *
+	 * @var array<int,string>
+	 */
+	const REQUEST_TIMESTAMP_FIELDS = array( 'created_at', 'updated_at', 'expires_at', 'consumed_at' );
+
+	/**
 	 * Service.
 	 *
 	 * @var Read_Request_Service
@@ -173,11 +180,11 @@ final class Read_Requests_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function list_requests( WP_REST_Request $request ): WP_REST_Response {
-		$limit  = (int) $request->get_param( 'limit' );
-		$offset = (int) $request->get_param( 'offset' );
+		$limit  = max( 1, min( 200, (int) $request->get_param( 'limit' ) ) );
+		$offset = max( 0, (int) $request->get_param( 'offset' ) );
 		$status = (string) $request->get_param( 'status' );
 
-		$items = $this->repository->list_recent( $limit, $status, $offset );
+		$items = Rest_Format::rows( $this->repository->list_recent( $limit, $status, $offset ), self::REQUEST_TIMESTAMP_FIELDS );
 		$total = $this->repository->count_recent( $status );
 		$this->service->record_listed( count( $items ) );
 
@@ -212,7 +219,8 @@ final class Read_Requests_Controller {
 		}
 
 		$this->service->record_viewed( $row );
-		$row['audit_timeline'] = $this->service->audit_timeline( $request_id );
+		$row['audit_timeline'] = Rest_Format::rows( $this->service->audit_timeline( $request_id ), array( 'created_at' ) );
+		$row                    = Rest_Format::row( $row, self::REQUEST_TIMESTAMP_FIELDS );
 
 		return new WP_REST_Response( $row, 200 );
 	}
@@ -226,7 +234,7 @@ final class Read_Requests_Controller {
 	public function create_request( WP_REST_Request $request ) {
 		$result = $this->service->create( $request->get_params() );
 
-		return is_wp_error( $result ) ? $result : new WP_REST_Response( $result, 201 );
+		return is_wp_error( $result ) ? $result : new WP_REST_Response( Rest_Format::row( $result, self::REQUEST_TIMESTAMP_FIELDS ), 201 );
 	}
 
 	/**
@@ -238,7 +246,7 @@ final class Read_Requests_Controller {
 	public function approve_request( WP_REST_Request $request ) {
 		$result = $this->service->approve( (string) $request->get_param( 'request_id' ), $request->get_params() );
 
-		return is_wp_error( $result ) ? $result : new WP_REST_Response( $result, 200 );
+		return is_wp_error( $result ) ? $result : new WP_REST_Response( Rest_Format::row( $result, self::REQUEST_TIMESTAMP_FIELDS ), 200 );
 	}
 
 	/**
@@ -250,7 +258,7 @@ final class Read_Requests_Controller {
 	public function reject_request( WP_REST_Request $request ) {
 		$result = $this->service->reject( (string) $request->get_param( 'request_id' ), $request->get_params() );
 
-		return is_wp_error( $result ) ? $result : new WP_REST_Response( $result, 200 );
+		return is_wp_error( $result ) ? $result : new WP_REST_Response( Rest_Format::row( $result, self::REQUEST_TIMESTAMP_FIELDS ), 200 );
 	}
 
 	/**
@@ -264,7 +272,7 @@ final class Read_Requests_Controller {
 		$params['_input_provided']  = $this->request_contains_param( $request, 'input' );
 		$result                     = $this->service->preflight( (string) $request->get_param( 'request_id' ), $params );
 
-		return is_wp_error( $result ) ? $result : new WP_REST_Response( $result, 200 );
+		return is_wp_error( $result ) ? $result : new WP_REST_Response( Rest_Format::row( $result, self::REQUEST_TIMESTAMP_FIELDS ), 200 );
 	}
 
 	/**

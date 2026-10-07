@@ -25,6 +25,13 @@ final class Apps_Controller {
 	const NAMESPACE = 'npcink-governance-core/v1';
 
 	/**
+	 * App row timestamp fields normalized to ISO8601 in REST responses.
+	 *
+	 * @var array<int,string>
+	 */
+	const APP_TIMESTAMP_FIELDS = array( 'created_at', 'updated_at', 'expires_at', 'last_used_at', 'revoked_at' );
+
+	/**
 	 * App key repository.
 	 *
 	 * @var App_Key_Repository
@@ -76,6 +83,11 @@ final class Apps_Controller {
 						'limit' => array(
 							'type'              => 'integer',
 							'default'           => 50,
+							'sanitize_callback' => 'absint',
+						),
+						'offset' => array(
+							'type'              => 'integer',
+							'default'           => 0,
 							'sanitize_callback' => 'absint',
 						),
 					),
@@ -151,7 +163,10 @@ final class Apps_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function list_apps( WP_REST_Request $request ): WP_REST_Response {
-		$items = $this->apps->list_recent( (int) $request->get_param( 'limit' ) );
+		$limit  = max( 1, min( 200, (int) $request->get_param( 'limit' ) ) );
+		$offset = max( 0, (int) $request->get_param( 'offset' ) );
+		$items  = Rest_Format::rows( $this->apps->list_recent( $limit, $offset ), self::APP_TIMESTAMP_FIELDS );
+		$total  = $this->apps->count();
 		$this->audit->record(
 			'app.listed',
 			array(
@@ -159,7 +174,20 @@ final class Apps_Controller {
 			)
 		);
 
-		return new WP_REST_Response( array( 'items' => $items ), 200 );
+		$response = new WP_REST_Response(
+			array(
+				'items' => $items,
+				'meta'  => array(
+					'limit'  => $limit,
+					'offset' => $offset,
+					'total'  => $total,
+				),
+			),
+			200
+		);
+		$response->header( 'X-WP-Total', (string) $total );
+
+		return $response;
 	}
 
 	/**
@@ -210,7 +238,7 @@ final class Apps_Controller {
 			);
 		}
 
-		return new WP_REST_Response( $app, 201 );
+		return new WP_REST_Response( Rest_Format::row( $app, self::APP_TIMESTAMP_FIELDS ), 201 );
 	}
 
 	/**
@@ -295,6 +323,6 @@ final class Apps_Controller {
 		$replacement['rotated_from_key_id'] = $key_id;
 		$replacement['old_key_revoked']    = true;
 
-		return new WP_REST_Response( $replacement, 201 );
+		return new WP_REST_Response( Rest_Format::row( $replacement, self::APP_TIMESTAMP_FIELDS ), 201 );
 	}
 }

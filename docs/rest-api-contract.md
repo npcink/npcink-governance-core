@@ -31,7 +31,7 @@ scope map is:
 
 | Route family | Required scope |
 | --- | --- |
-| `GET /contract` | admin-only `manage_options` |
+| `GET /contract` | `contract:read` (administrators always allowed) |
 | `GET /capabilities` | `capabilities:read` |
 | `POST /proposals`, `POST /proposals/from-plan` | `proposals:create` |
 | `GET /proposals`, `GET /proposals/{proposal_id}` | `proposals:read` |
@@ -58,8 +58,9 @@ App auth error codes:
 | `npcink_governance_core_app_auth_missing` | `401` | No WordPress admin session and no app token. |
 | `npcink_governance_core_app_auth_malformed` | `400` | Bearer app token does not match the Core token shape. |
 | `npcink_governance_core_app_auth_invalid` | `401` | App token is unknown, inactive, or has an invalid secret. |
+| `npcink_governance_core_app_auth_expired` | `401` | App token is valid but past its expiry; ask an administrator to rotate the key. |
 | `npcink_governance_core_app_scope_forbidden` | `403` | App key does not include the route's required scope. |
-| `npcink_governance_core_app_rate_limited` | `429` | App key exceeded its fixed-window route-family limit. |
+| `npcink_governance_core_app_rate_limited` | `429` | App key exceeded its fixed-window route-family limit. Error data carries `limit`, `remaining=0`, `retry_after_seconds`, ISO8601 `reset_at`, and `route_family`; the response also sends a standard `Retry-After` header. |
 | `npcink_governance_core_pending_proposal_quota_exceeded` | `429` | Caller already has too many pending proposals. |
 
 App tokens use:
@@ -75,10 +76,10 @@ The raw secret is returned only by `POST /apps`.
 
 ## `GET /contract`
 
-Purpose: expose a stable admin-only runtime discovery surface for local host
-and adapter compatibility checks.
+Purpose: expose a stable runtime discovery surface for local host and
+adapter compatibility checks.
 
-Permission: `manage_options`.
+Permission: `manage_options` or app scope `contract:read`.
 
 Response `200`:
 
@@ -247,7 +248,10 @@ Purpose: list Core app identities without raw secrets or secret hashes.
 
 Permission: `manage_options`.
 
-Response `200`: app identity rows without secret material. Rows include
+Query parameters: `limit` (clamped to `1..200`) and `offset`.
+
+Response `200`: `items` plus `meta` (`limit`, `offset`, `total`) and the
+`X-WP-Total` header. App identity rows carry no secret material. Rows include
 `expires_soon` and `rotation_recommended` lifecycle hints.
 
 Audit event:
@@ -460,20 +464,25 @@ Response `200`:
       "summary": "Reviewable operation summary.",
       "payload_included": false,
       "created_by": 1,
-      "created_at": "2026-05-29 00:00:00",
-      "updated_at": "2026-05-29 00:00:00"
+      "created_at": "2026-05-29T00:00:00+00:00",
+      "updated_at": "2026-05-29T00:00:00+00:00"
     }
   ],
   "meta": {
     "limit": 50,
     "offset": 0,
     "status": "",
-    "payload_included": false
+    "payload_included": false,
+    "total": 123
   }
 }
 ```
 
-When `include_payload=true`, rows use the full proposal shape and may include
+All REST row timestamps (`created_at`, `updated_at`, `expires_at`,
+`consumed_at`, `last_used_at`, `revoked_at`, and 429 `reset_at`) are ISO8601
+UTC strings with a `+00:00` designator. List endpoints also return the matched
+row count in `meta.total` and the `X-WP-Total` header, so clients can page
+without blind iteration. `meta.limit` echoes the clamped `1..200` value., rows use the full proposal shape and may include
 `input`, `preview`, `caller`, and promoted policy fields. New clients should use
 `GET /proposals/{proposal_id}` for full review payloads.
 
@@ -707,8 +716,12 @@ Query parameters:
 
 | Name | Type | Default |
 | --- | --- | --- |
-| `limit` | integer | `50` |
+| `limit` | integer | `50` (clamped to `1..200`) |
+| `offset` | integer | `0` |
 | `status` | string | empty |
+
+Response `200`: `items` plus `meta` (`limit`, `offset`, `status`, `total`) and
+the `X-WP-Total` header.
 
 Audit event:
 
@@ -1123,6 +1136,11 @@ must also have accepted its own narrow destructive flag, such as
 `include_unattached_nonproduction_media=true` or `include_trash_parent_media=true`, before
 Core has a delete action to review. Actions with `requires_input` still become
 reviewable proposals, but their preview carries `proposal_ready=false`,
+Response `201` is returned only when at least one proposal was created. When
+every action is blocked and `proposals` is empty, Core returns `422` with the
+same body, so `blocked_items` / `needs_input` carry the per-index rejection
+details (`index`, `action_id`, `code`, `reason`).
+
 `needs_input`, and `preflight_blockers`; commit preflight must return `409`
 until the missing input is resolved by the host.
 
@@ -1183,7 +1201,7 @@ Errors:
 | --- | --- | --- |
 | `npcink_governance_core_proposal_not_found` | `404` | Proposal id does not exist. |
 | `npcink_governance_core_proposal_expired` | `409` | Proposal expired before a decision was made. |
-| `npcink_governance_core_proposal_already_decided` | `409` | Proposal is not pending. |
+| `npcink_governance_core_proposal_already_decided` | `409` | Proposal is not pending. Error data carries `proposal_status` so a retried approve can distinguish an idempotent success from an opposite decision. |
 | `npcink_governance_core_proposal_transition_failed` | `500` | Status update failed. |
 | `npcink_governance_core_proposal_decision_audit_failed` | `500` | Approval could not be audited; Core rolls the proposal back to its previous status before failing. |
 
@@ -1231,6 +1249,10 @@ Query parameters:
 | Name | Type | Default | Notes |
 | --- | --- | --- | --- |
 | `limit` | integer | `50` | Clamped by repository to `1..200`. |
+| `offset` | integer | `0` | Row offset for pagination. |
+| `order` | string | `desc` | `asc` or `desc` row order. |
+| `search` | string | empty | Prefix-matched against the indexed proposal/event/ability/app/key/caller/correlation columns. |
+| `created_after` | string | empty | UTC ISO8601 or `Y-m-d H:i:s` lower bound on `created_at`. |
 | `proposal_id` | string | empty | Optional proposal id filter. |
 | `event_name` | string | empty | Optional dotted event name filter. |
 | `ability_id` | string | empty | Optional metadata filter for target ability id. |
@@ -1255,9 +1277,14 @@ Response `200`:
       "proposal_id": "uuid",
       "actor_id": 1,
       "metadata": {},
-      "created_at": "2026-05-29 00:00:00"
+      "created_at": "2026-05-29T00:00:00+00:00"
     }
-  ]
+  ],
+  "meta": {
+    "limit": 50,
+    "offset": 0,
+    "total": 123
+  }
 }
 ```
 
@@ -1351,7 +1378,7 @@ Errors:
 | `npcink_governance_core_ability_intake_blocked` | `409` | Target ability remains discoverable but no longer passes fail-closed intake. |
 | `npcink_governance_core_ability_not_proposal_eligible` | `409` | Target ability no longer satisfies the write/destructive proposal handoff contract. |
 | `npcink_governance_core_ability_contract_changed` | `409` | Target ability risk, approval, schema, scope, execution guidance, or WordPress capability changed after proposal creation. |
-| `npcink_governance_core_commit_preflight_already_issued` | `409` | Core already issued one execution handoff for this approved proposal input. |
+| `npcink_governance_core_commit_preflight_already_issued` | `409` | Core already issued one execution handoff for this approved proposal input. The error data echoes `approved_input_hash`, `correlation_id`, and `expires_at` from the original handoff, so a client that lost the first response can still record execution. |
 | `npcink_governance_core_preflight_forbidden` | `403` | Current user lacks permission. |
 | `npcink_governance_core_ability_permission_denied` | `403` | Current WordPress user lacks the target ability's declared WordPress capability. |
 | `npcink_governance_core_preflight_audit_failed` | `500` | Preflight could not be audited. |

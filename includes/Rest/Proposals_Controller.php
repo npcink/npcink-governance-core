@@ -27,6 +27,13 @@ final class Proposals_Controller {
 	const NAMESPACE = 'npcink-governance-core/v1';
 
 	/**
+	 * Proposal row timestamp fields normalized to ISO8601 in REST responses.
+	 *
+	 * @var array<int,string>
+	 */
+	const PROPOSAL_TIMESTAMP_FIELDS = array( 'created_at', 'updated_at' );
+
+	/**
 	 * Proposal service.
 	 *
 	 * @var Proposal_Service
@@ -343,16 +350,18 @@ final class Proposals_Controller {
 	 */
 	public function list_proposals( WP_REST_Request $request ): WP_REST_Response {
 		$this->service->expire_stale_pending();
-		$limit           = (int) $request->get_param( 'limit' );
-		$offset          = (int) $request->get_param( 'offset' );
+		$limit           = max( 1, min( 200, (int) $request->get_param( 'limit' ) ) );
+		$offset          = max( 0, (int) $request->get_param( 'offset' ) );
 		$status          = sanitize_key( (string) $request->get_param( 'status' ) );
 		$include_payload = (bool) $request->get_param( 'include_payload' );
 		$items           = $include_payload
 			? $this->repository->list_recent( $limit, $status, $offset )
 			: $this->repository->list_recent_summaries( $limit, $status, $offset );
+		$items           = Rest_Format::rows( $items, self::PROPOSAL_TIMESTAMP_FIELDS );
+		$total           = '' !== $status ? $this->repository->count_by_statuses( array( $status ) ) : $this->repository->count_all();
 		$this->service->record_listed( count( $items ) );
 
-		return new WP_REST_Response(
+		$response = new WP_REST_Response(
 			array(
 				'items' => $items,
 				'meta'  => array(
@@ -360,10 +369,14 @@ final class Proposals_Controller {
 					'offset'           => $offset,
 					'status'           => $status,
 					'payload_included' => $include_payload,
+					'total'            => $total,
 				),
 			),
 			200
 		);
+		$response->header( 'X-WP-Total', (string) $total );
+
+		return $response;
 	}
 
 	/**
@@ -382,7 +395,8 @@ final class Proposals_Controller {
 		}
 
 		$this->service->record_viewed( $proposal );
-		$proposal['audit_timeline'] = $this->service->audit_timeline( $proposal_id );
+		$proposal['audit_timeline'] = Rest_Format::rows( $this->service->audit_timeline( $proposal_id ), array( 'created_at' ) );
+		$proposal                   = Rest_Format::row( $proposal, self::PROPOSAL_TIMESTAMP_FIELDS );
 
 		return new WP_REST_Response( $proposal, 200 );
 	}
@@ -422,7 +436,7 @@ final class Proposals_Controller {
 			)
 		);
 
-		return new WP_REST_Response( $result, ! empty( $result['deduplicated'] ) ? 200 : 201 );
+		return new WP_REST_Response( Rest_Format::row( $result, self::PROPOSAL_TIMESTAMP_FIELDS ), ! empty( $result['deduplicated'] ) ? 200 : 201 );
 	}
 
 	/**
@@ -463,6 +477,10 @@ final class Proposals_Controller {
 		// the response body carries only blocked/needs-input details.
 		$status = ( 0 === $created_count ) ? 422 : 201;
 
+		if ( is_array( $result['proposals'] ?? null ) ) {
+			$result['proposals'] = Rest_Format::rows( $result['proposals'], self::PROPOSAL_TIMESTAMP_FIELDS );
+		}
+
 		return new WP_REST_Response( $result, $status );
 	}
 
@@ -496,7 +514,7 @@ final class Proposals_Controller {
 			)
 		);
 
-		return new WP_REST_Response( $result, 200 );
+		return new WP_REST_Response( Rest_Format::row( $result, self::PROPOSAL_TIMESTAMP_FIELDS ), 200 );
 	}
 
 	/**
@@ -529,7 +547,7 @@ final class Proposals_Controller {
 			)
 		);
 
-		return new WP_REST_Response( $result, 200 );
+		return new WP_REST_Response( Rest_Format::row( $result, self::PROPOSAL_TIMESTAMP_FIELDS ), 200 );
 	}
 
 	/**
@@ -560,6 +578,13 @@ final class Proposals_Controller {
 				'correlation_id' => (string) ( $result['correlation_id'] ?? '' ),
 			)
 		);
+
+		if ( is_array( $result['proposal'] ?? null ) ) {
+			$result['proposal'] = Rest_Format::row( $result['proposal'], self::PROPOSAL_TIMESTAMP_FIELDS );
+		}
+		if ( is_array( $result['approval_context'] ?? null ) && isset( $result['approval_context']['approval_updated_at'] ) ) {
+			$result['approval_context']['approval_updated_at'] = Rest_Format::iso8601( (string) $result['approval_context']['approval_updated_at'] );
+		}
 
 		return new WP_REST_Response( $result, 200 );
 	}
@@ -602,7 +627,7 @@ final class Proposals_Controller {
 			)
 		);
 
-		return new WP_REST_Response( $result, 200 );
+		return new WP_REST_Response( Rest_Format::row( $result, self::PROPOSAL_TIMESTAMP_FIELDS ), 200 );
 	}
 
 	/**

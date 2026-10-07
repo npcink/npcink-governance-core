@@ -430,7 +430,7 @@ final class Proposal_Service {
 		if ( in_array( $previous_status, array( Proposal_Repository::STATUS_EXECUTED, Proposal_Repository::STATUS_EXECUTION_FAILED ), true ) ) {
 			return new WP_Error(
 				'npcink_governance_core_execution_record_already_recorded',
-				__( 'Only approved proposals can record final execution results.', 'npcink-governance-core' ),
+				__( 'This proposal already has a recorded final execution result.', 'npcink-governance-core' ),
 				array(
 					'status'          => 409,
 					'proposal_status' => $previous_status,
@@ -1287,7 +1287,10 @@ final class Proposal_Service {
 			return new WP_Error(
 				'npcink_governance_core_proposal_already_decided',
 				__( 'Only pending proposals can be approved or rejected.', 'npcink-governance-core' ),
-				array( 'status' => 409 )
+				array(
+					'status'          => 409,
+					'proposal_status' => (string) ( $existing['status'] ?? '' ),
+				)
 			);
 		}
 

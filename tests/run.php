@@ -557,7 +557,8 @@ foreach (
 		'core_proxy_execute',
 		'commit_execution=false',
 		'npcink_governance_core_contract.v1',
-		'admin-only runtime discovery surface',
+		'runtime discovery surface',
+		'or app scope `contract:read`',
 		'runtime_contract_endpoint_version',
 		'minimum_adapter_contract_version',
 		'metadata_only',
@@ -2022,8 +2023,29 @@ npcink_governance_core_assert( false !== strpos( $capabilities_controller, "'/ca
 npcink_governance_core_assert( false !== strpos( $capabilities_controller, 'capabilities.listed' ), 'Capabilities route records audit event.' );
 
 $contract_controller = npcink_governance_core_read( $root . '/includes/Rest/Contract_Controller.php' );
+$proposals_controller = npcink_governance_core_read( $root . '/includes/Rest/Proposals_Controller.php' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, "'/contract'" ), 'Runtime contract REST route is registered.' );
-npcink_governance_core_assert( false !== strpos( $contract_controller, 'can_manage' ), 'Runtime contract REST route is admin-only.' );
+npcink_governance_core_assert( false !== strpos( $contract_controller, 'can_read_contract' ), 'Runtime contract REST route accepts administrators or the contract:read app scope.' );
+
+$audit_controller = npcink_governance_core_read( $root . '/includes/Rest/Audit_Controller.php' );
+npcink_governance_core_assert( false !== strpos( $audit_controller, "'offset'" ) && false !== strpos( $audit_controller, "'search'" ), 'Audit REST route forwards offset and documented search pagination.' );
+npcink_governance_core_assert( false !== strpos( $audit_controller, 'X-WP-Total' ), 'Audit REST list returns total counts.' );
+
+$read_requests_controller = npcink_governance_core_read( $root . '/includes/Rest/Read_Requests_Controller.php' );
+npcink_governance_core_assert( false !== strpos( $read_requests_controller, "'offset'" ), 'Read-requests REST route supports offset pagination.' );
+
+npcink_governance_core_assert( false !== strpos( $proposals_controller, '0 === $created_count ) ? 422 : 201' ), 'From-plan returns 422 instead of 201 when no proposal was created.' );
+
+$commit_preflight_service = npcink_governance_core_read( $root . '/includes/Governance/Commit_Preflight_Service.php' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "prior_handoff['correlation_id']" ), 'Repeated commit preflight echoes the original correlation id for lost-response recovery.' );
+
+$app_authenticator = npcink_governance_core_read( $root . '/includes/Security/App_Authenticator.php' );
+npcink_governance_core_assert( false !== strpos( $app_authenticator, 'npcink_governance_core_app_auth_expired' ), 'Expired app keys return a distinct rotate-key error code.' );
+npcink_governance_core_assert( false !== strpos( $app_authenticator, 'Retry-After' ) && false !== strpos( $app_authenticator, 'retry_after_seconds' ), 'Rate-limited responses carry Retry-After guidance.' );
+npcink_governance_core_assert( false !== strpos( $app_key_repository, "'contract:read'" ), 'App scope allowlist includes the contract:read compatibility scope.' );
+
+$rest_format = npcink_governance_core_read( $root . '/includes/Rest/Rest_Format.php' );
+npcink_governance_core_assert( false !== strpos( $rest_format, "gmdate( 'c'" ), 'REST timestamps are normalized to ISO8601 with a timezone designator.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, 'npcink_governance_core_contract.v1' ), 'Runtime contract exposes the Core contract schema.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, "'core_proxy_execute'      => false" ), 'Runtime contract keeps Core proxy execution disabled.' );
 npcink_governance_core_assert( false !== strpos( $contract_controller, "'commit_execution'        => false" ), 'Runtime contract keeps commit execution disabled.' );

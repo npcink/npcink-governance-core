@@ -66,6 +66,7 @@ ability ids.
 | Scope | Allows |
 | --- | --- |
 | `capabilities:read` | Read normalized Core capability rows. |
+| `contract:read` | Read the `GET /contract` runtime compatibility surface. Opt-in only; administrators can always read it with `manage_options`. |
 | `proposals:create` | Create proposals for real `ability_id` values. |
 | `proposals:read` | List or fetch proposal records. |
 | `proposals:approve` | Approve proposals when a trusted host policy is allowed to do so; also authorizes `smart_guarded` cleanup, draft-only create-draft, guarded article-audio, single reviewed media derivative, and reviewed ALT-only media detail auto approval when paired with `proposals:create`. |

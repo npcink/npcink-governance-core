@@ -699,6 +699,19 @@ final class Proposal_Repository {
 	}
 
 	/**
+	 * Counts proposals regardless of status.
+	 *
+	 * @return int
+	 */
+	public function count_all(): int {
+		global $wpdb;
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $this->table_name() ) );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+	}
+
+	/**
 	 * Counts proposals by status.
 	 *
 	 * @param string $status Status filter.

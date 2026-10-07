@@ -83,6 +83,7 @@ final class App_Key_Repository {
 	public function allowed_scopes(): array {
 		return array(
 			'capabilities:read',
+			'contract:read',
 			'proposals:create',
 			'proposals:read',
 			'proposals:approve',

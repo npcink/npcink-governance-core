@@ -151,6 +151,7 @@ final class Audit_Controller {
 			'correlation_id' => (string) $request->get_param( 'correlation_id' ),
 		);
 		$items = $this->audit->list_filtered( $filters );
+		$items = Rest_Format::rows( $items, array( 'created_at' ) );
 
 		$this->audit->record(
 			'audit.listed',
