@@ -979,7 +979,7 @@ final class Admin_Page {
 			),
 			array(
 				'label' => __( 'Caller type', 'npcink-governance-core' ),
-				'value' => (string) ( $auth['caller_type'] ?? $caller['caller_type'] ?? '' ),
+				'value' => $this->caller_type_label( (string) ( $auth['caller_type'] ?? $caller['caller_type'] ?? '' ) ),
 				'code'  => true,
 			),
 			array(
@@ -1002,12 +1002,12 @@ final class Admin_Page {
 			),
 			array(
 				'label' => __( 'Policy decision', 'npcink-governance-core' ),
-				'value' => (string) ( $proposal['policy_decision'] ?? '' ),
+				'value' => $this->policy_decision_label( (string) ( $proposal['policy_decision'] ?? '' ) ),
 				'code'  => true,
 			),
 			array(
 				'label' => __( 'Policy profile', 'npcink-governance-core' ),
-				'value' => (string) ( $proposal['policy_profile'] ?? '' ),
+				'value' => $this->policy_profile_label( (string) ( $proposal['policy_profile'] ?? '' ) ),
 				'code'  => true,
 			),
 			array(
@@ -1293,6 +1293,116 @@ final class Admin_Page {
 		);
 
 		return (string) ( $labels[ $caller_type ] ?? str_replace( '_', ' ', $caller_type ) );
+	}
+
+	/**
+	 * Returns the operator-facing label for a caller type value.
+	 *
+	 * @param string $value Raw caller type.
+	 * @return string
+	 */
+	private function caller_type_label( string $value ): string {
+		$labels = array(
+			'external_app'    => __( 'External app', 'npcink-governance-core' ),
+			'product_adapter' => __( 'Product adapter', 'npcink-governance-core' ),
+			'mcp_adapter'     => __( 'MCP adapter', 'npcink-governance-core' ),
+			'agent_host'      => __( 'Agent host', 'npcink-governance-core' ),
+			'internal'        => __( 'Internal governance client', 'npcink-governance-core' ),
+			'wp_admin'        => __( 'WordPress admin', 'npcink-governance-core' ),
+			'admin'           => __( 'WordPress admin', 'npcink-governance-core' ),
+		);
+
+		return (string) ( $labels[ $value ] ?? $value );
+	}
+
+	/**
+	 * Returns the operator-facing label for an approval policy decision.
+	 *
+	 * @param string $value Raw policy decision.
+	 * @return string
+	 */
+	private function policy_decision_label( string $value ): string {
+		$labels = array(
+			'manual_required' => __( 'Manual approval required', 'npcink-governance-core' ),
+			'auto_approved'   => __( 'Auto-approved by policy', 'npcink-governance-core' ),
+			'blocked'         => __( 'Blocked by policy', 'npcink-governance-core' ),
+		);
+
+		return (string) ( $labels[ $value ] ?? $value );
+	}
+
+	/**
+	 * Returns the operator-facing label for an approval policy profile.
+	 *
+	 * @param string $value Raw policy profile.
+	 * @return string
+	 */
+	private function policy_profile_label( string $value ): string {
+		$labels = array(
+			'manual'        => __( 'Manual review', 'npcink-governance-core' ),
+			'guarded'       => __( 'Guarded automation', 'npcink-governance-core' ),
+			'trusted_local' => __( 'Trusted local consent', 'npcink-governance-core' ),
+			'break_glass'   => __( 'Break-glass', 'npcink-governance-core' ),
+		);
+
+		return (string) ( $labels[ $value ] ?? $value );
+	}
+
+	/**
+	 * Returns the operator-facing label for one governance-envelope value.
+	 *
+	 * @param string $field Envelope field key.
+	 * @param string $value Raw enum value.
+	 * @return string
+	 */
+	private function review_basis_label( string $field, string $value ): string {
+		$maps = array(
+			'request_source'       => array(
+				'wp_admin_ui'      => __( 'WordPress admin UI', 'npcink-governance-core' ),
+				'external_adapter' => __( 'External adapter', 'npcink-governance-core' ),
+				'scheduled_task'   => __( 'Scheduled task', 'npcink-governance-core' ),
+				'cli'              => __( 'CLI', 'npcink-governance-core' ),
+				'cloud_callback'   => __( 'Cloud callback', 'npcink-governance-core' ),
+			),
+			'actor_presence'       => array(
+				'present_click' => __( 'Operator present at click', 'npcink-governance-core' ),
+				'background'    => __( 'Background automation', 'npcink-governance-core' ),
+				'delegated'     => __( 'Delegated agent', 'npcink-governance-core' ),
+			),
+			'preview_completeness' => array(
+				'exact_final' => __( 'Exact final preview', 'npcink-governance-core' ),
+				'sufficient'  => __( 'Sufficient preview', 'npcink-governance-core' ),
+				'partial'     => __( 'Partial preview', 'npcink-governance-core' ),
+				'none'        => __( 'No preview', 'npcink-governance-core' ),
+			),
+			'scope'                => array(
+				'one_field'        => __( 'One field', 'npcink-governance-core' ),
+				'one_object'       => __( 'One object', 'npcink-governance-core' ),
+				'multiple_objects' => __( 'Multiple objects', 'npcink-governance-core' ),
+				'site_wide'        => __( 'Site-wide', 'npcink-governance-core' ),
+				'external_account' => __( 'External account', 'npcink-governance-core' ),
+			),
+			'operation_kind'       => array(
+				'suggest'                 => __( 'Suggestion only', 'npcink-governance-core' ),
+				'create_draft'            => __( 'Create draft', 'npcink-governance-core' ),
+				'update_metadata'         => __( 'Update metadata', 'npcink-governance-core' ),
+				'update_existing_terms'   => __( 'Update existing terms', 'npcink-governance-core' ),
+				'set_featured_image'      => __( 'Set featured image', 'npcink-governance-core' ),
+				'publish'                 => __( 'Publish', 'npcink-governance-core' ),
+				'unpublish'               => __( 'Unpublish', 'npcink-governance-core' ),
+				'delete'                  => __( 'Delete', 'npcink-governance-core' ),
+				'replace_file'            => __( 'Replace file', 'npcink-governance-core' ),
+				'overwrite_content'       => __( 'Overwrite content', 'npcink-governance-core' ),
+				'settings_change'         => __( 'Settings change', 'npcink-governance-core' ),
+				'permission_change'       => __( 'Permission change', 'npcink-governance-core' ),
+				'external_account_change' => __( 'External account change', 'npcink-governance-core' ),
+				'batch_plan'              => __( 'Batch plan', 'npcink-governance-core' ),
+			),
+		);
+
+		$field_map = $maps[ $field ] ?? array();
+
+		return (string) ( $field_map[ $value ] ?? $value );
 	}
 
 	/**
@@ -3081,7 +3191,7 @@ final class Admin_Page {
 					),
 					array(
 						'label' => __( 'Caller type', 'npcink-governance-core' ),
-						'value' => (string) ( $auth['caller_type'] ?? $caller['caller_type'] ?? '' ),
+						'value' => $this->caller_type_label( (string) ( $auth['caller_type'] ?? $caller['caller_type'] ?? '' ) ),
 						'code'  => true,
 					),
 					array(
@@ -3091,12 +3201,12 @@ final class Admin_Page {
 					),
 					array(
 						'label' => __( 'Policy decision', 'npcink-governance-core' ),
-						'value' => (string) ( $proposal['policy_decision'] ?? '' ),
+						'value' => $this->policy_decision_label( (string) ( $proposal['policy_decision'] ?? '' ) ),
 						'code'  => true,
 					),
 					array(
 						'label' => __( 'Policy profile', 'npcink-governance-core' ),
-						'value' => (string) ( $proposal['policy_profile'] ?? '' ),
+						'value' => $this->policy_profile_label( (string) ( $proposal['policy_profile'] ?? '' ) ),
 						'code'  => true,
 					),
 					array(
@@ -3294,7 +3404,7 @@ final class Admin_Page {
 					),
 					array(
 						'label' => __( 'Policy decision', 'npcink-governance-core' ),
-						'value' => (string) ( $proposal['policy_decision'] ?? '' ),
+						'value' => $this->policy_decision_label( (string) ( $proposal['policy_decision'] ?? '' ) ),
 						'code'  => true,
 					),
 				),
@@ -3313,27 +3423,27 @@ final class Admin_Page {
 					),
 					array(
 						'label' => __( 'Request source', 'npcink-governance-core' ),
-						'value' => $posture['request_source'],
+						'value' => $this->review_basis_label( 'request_source', (string) $posture['request_source'] ),
 						'code'  => true,
 					),
 					array(
 						'label' => __( 'Actor presence', 'npcink-governance-core' ),
-						'value' => $posture['actor_presence'],
+						'value' => $this->review_basis_label( 'actor_presence', (string) $posture['actor_presence'] ),
 						'code'  => true,
 					),
 					array(
 						'label' => __( 'Preview completeness', 'npcink-governance-core' ),
-						'value' => $posture['preview_completeness'],
+						'value' => $this->review_basis_label( 'preview_completeness', (string) $posture['preview_completeness'] ),
 						'code'  => true,
 					),
 					array(
 						'label' => __( 'Scope', 'npcink-governance-core' ),
-						'value' => $posture['scope'],
+						'value' => $this->review_basis_label( 'scope', (string) $posture['scope'] ),
 						'code'  => true,
 					),
 					array(
 						'label' => __( 'Operation kind', 'npcink-governance-core' ),
-						'value' => $posture['operation_kind'],
+						'value' => $this->review_basis_label( 'operation_kind', (string) $posture['operation_kind'] ),
 						'code'  => true,
 					),
 					array(
