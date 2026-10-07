@@ -197,10 +197,11 @@ final class Admin_Page {
 
 		$this->service->expire_stale_pending();
 
+		$review_filters = $this->review_filters_from_request();
 		$review_page    = $this->page_from_request( 'review_page' );
-		$pending_count  = $this->proposals->count_by_status( Proposal_Repository::STATUS_PENDING );
+		$pending_count  = $this->proposals->count_pending_filtered( $review_filters );
 		$review_page    = $this->bounded_page( $pending_count, $review_page, self::REVIEW_PAGE_SIZE );
-		$pending        = $this->proposals->list_recent( self::REVIEW_PAGE_SIZE, Proposal_Repository::STATUS_PENDING, $this->offset_for_page( $review_page, self::REVIEW_PAGE_SIZE ) );
+		$pending        = $this->proposals->list_pending_filtered( self::REVIEW_PAGE_SIZE, $this->offset_for_page( $review_page, self::REVIEW_PAGE_SIZE ), $review_filters );
 		$selected_id    = $this->admin_query_text( 'proposal_id' );
 		$selected       = '' !== $selected_id ? $this->find_proposal_for_lookup( $selected_id ) : null;
 		$view           = $this->admin_query_key( 'view' );
@@ -211,7 +212,12 @@ final class Admin_Page {
 			<h1><?php echo esc_html( 'Npcink Governance Core' ); ?></h1>
 			<p><?php echo esc_html__( 'Review, approve, and audit AI-initiated WordPress operations.', 'npcink-governance-core' ); ?></p>
 
-			<?php if ( '' !== $message ) : ?>
+			<?php $bulk_outcome = $this->bulk_reject_outcome(); ?>
+			<?php if ( null !== $bulk_outcome ) : ?>
+				<div class="notice <?php echo esc_attr( $bulk_outcome['classes'] ); ?> is-dismissible">
+					<p><?php echo esc_html( $bulk_outcome['text'] ); ?></p>
+				</div>
+			<?php elseif ( '' !== $message ) : ?>
 				<div class="notice notice-success is-dismissible">
 					<p><?php echo esc_html( $this->message_text( $message ) ); ?></p>
 				</div>
@@ -230,7 +236,7 @@ final class Admin_Page {
 					<p><?php echo esc_html__( 'Selected proposal was not found.', 'npcink-governance-core' ); ?></p>
 				</div>
 				<?php $this->render_admin_tabs( 'review' ); ?>
-				<?php $this->render_review_workbench( $pending, $pending_count, $review_page, $selected_id ); ?>
+				<?php $this->render_review_workbench( $pending, $pending_count, $review_page, $review_filters, $selected_id ); ?>
 			<?php elseif ( 'audit' === $view ) : ?>
 				<?php $audit_filters = $this->audit_filters_from_request(); ?>
 				<?php $audit_total = $this->audit->count_filtered( $audit_filters ); ?>
@@ -249,7 +255,7 @@ final class Admin_Page {
 				<?php $this->render_external_access(); ?>
 			<?php else : ?>
 				<?php $this->render_admin_tabs( 'review' ); ?>
-				<?php $this->render_review_workbench( $pending, $pending_count, $review_page ); ?>
+				<?php $this->render_review_workbench( $pending, $pending_count, $review_page, $review_filters ); ?>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -299,11 +305,105 @@ final class Admin_Page {
 	 * @param int                            $page Current review page.
 	 * @return void
 	 */
-	private function render_review_workbench( array $pending, int $pending_count, int $page, string $lookup_id = '' ): void {
+	private function render_review_workbench( array $pending, int $pending_count, int $page, array $filters = array(), string $lookup_id = '' ): void {
 		?>
-		<?php $this->render_queue_summary( $pending_count ); ?>
+		<?php $this->render_queue_summary( $this->proposals->count_by_status( Proposal_Repository::STATUS_PENDING ) ); ?>
 		<?php $this->render_workbench_toolbar( $lookup_id ); ?>
-		<?php $this->render_pending_proposals( $pending, $pending_count, $page ); ?>
+		<?php $this->render_review_filters( $filters, $this->proposals->distinct_pending_ability_ids() ); ?>
+		<?php $this->render_pending_proposals( $pending, $pending_count, $page, $filters ); ?>
+		<?php
+	}
+
+	/**
+	 * Returns active review-queue filters from the request.
+	 *
+	 * @return array<string,mixed>
+	 */
+	private function review_filters_from_request(): array {
+		$filters = array();
+		$ability = $this->admin_query_text( 'review_ability' );
+		if ( '' !== $ability ) {
+			$filters['ability_id'] = $ability;
+		}
+
+		$age  = $this->admin_query_key( 'review_age', '' );
+		$ages = array(
+			'24h' => DAY_IN_SECONDS,
+			'7d'  => 7 * DAY_IN_SECONDS,
+			'30d' => 30 * DAY_IN_SECONDS,
+		);
+		if ( isset( $ages[ $age ] ) ) {
+			$filters['age_key']        = $age;
+			$filters['created_before'] = gmdate( 'Y-m-d H:i:s', time() - $ages[ $age ] );
+		}
+
+		return $filters;
+	}
+
+	/**
+	 * Returns URL query args that preserve the current review filters.
+	 *
+	 * @return array<string,string>
+	 */
+	private function review_filter_query_args(): array {
+		return $this->review_filter_query_args_for( $this->review_filters_from_request() );
+	}
+
+	/**
+	 * Returns URL query args for the given review filters.
+	 *
+	 * @param array<string,mixed> $filters Filters.
+	 * @return array<string,string>
+	 */
+	private function review_filter_query_args_for( array $filters ): array {
+		$args = array();
+		if ( ! empty( $filters['ability_id'] ) ) {
+			$args['review_ability'] = (string) $filters['ability_id'];
+		}
+		if ( ! empty( $filters['age_key'] ) ) {
+			$args['review_age'] = (string) $filters['age_key'];
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Renders the review queue filter bar.
+	 *
+	 * @param array<string,mixed> $filters Active filters.
+	 * @param array<int,string>   $ability_options Distinct pending ability ids.
+	 * @return void
+	 */
+	private function render_review_filters( array $filters, array $ability_options ): void {
+		$ability = (string) ( $filters['ability_id'] ?? '' );
+		$age     = (string) ( $filters['age_key'] ?? '' );
+		$ages    = array(
+			'24h' => __( 'Older than 24 hours', 'npcink-governance-core' ),
+			'7d'  => __( 'Older than 7 days', 'npcink-governance-core' ),
+			'30d' => __( 'Older than 30 days', 'npcink-governance-core' ),
+		);
+		?>
+		<form class="npcink-governance-core-review-filters npcink-governance-core-max-wide" method="get" action="<?php echo esc_url( $this->admin_base_url() ); ?>">
+			<input type="hidden" name="page" value="<?php echo esc_attr( self::MENU_SLUG ); ?>" />
+			<label for="npcink-governance-core-filter-ability"><?php echo esc_html__( 'Ability', 'npcink-governance-core' ); ?></label>
+			<select id="npcink-governance-core-filter-ability" name="review_ability">
+				<option value=""><?php echo esc_html__( 'All abilities', 'npcink-governance-core' ); ?></option>
+				<?php foreach ( $ability_options as $option ) : ?>
+					<option value="<?php echo esc_attr( $option ); ?>" <?php selected( $option, $ability ); ?>><?php echo esc_html( $option ); ?></option>
+				<?php endforeach; ?>
+			</select>
+			<label for="npcink-governance-core-filter-age"><?php echo esc_html__( 'Waiting', 'npcink-governance-core' ); ?></label>
+			<select id="npcink-governance-core-filter-age" name="review_age">
+				<option value=""><?php echo esc_html__( 'Any age', 'npcink-governance-core' ); ?></option>
+				<?php foreach ( $ages as $key => $label ) : ?>
+					<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $key, $age ); ?>><?php echo esc_html( $label ); ?></option>
+				<?php endforeach; ?>
+			</select>
+			<button type="submit" class="button"><?php echo esc_html__( 'Filter', 'npcink-governance-core' ); ?></button>
+			<?php if ( '' !== $ability || '' !== $age ) : ?>
+				<a class="button-link" href="<?php echo esc_url( $this->admin_url() ); ?>"><?php echo esc_html__( 'Clear filters', 'npcink-governance-core' ); ?></a>
+			<?php endif; ?>
+		</form>
 		<?php
 	}
 
@@ -494,13 +594,17 @@ final class Admin_Page {
 	 * @param int                            $page Current review page.
 	 * @return void
 	 */
-	private function render_pending_proposals( array $pending, int $total, int $page ): void {
+	private function render_pending_proposals( array $pending, int $total, int $page, array $filters = array() ): void {
 		?>
 		<h2><?php echo esc_html__( 'Pending requests', 'npcink-governance-core' ); ?></h2>
 		<form class="npcink-governance-core-max-wide" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="npcink_governance_core_bulk_reject_proposals" />
+			<input type="hidden" name="review_page" value="<?php echo esc_attr( (string) max( 1, $page ) ); ?>" />
+			<?php foreach ( $this->review_filter_query_args_for( $filters ) as $filter_key => $filter_value ) : ?>
+				<input type="hidden" name="<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $filter_value ); ?>" />
+			<?php endforeach; ?>
 			<?php wp_nonce_field( 'npcink_governance_core_bulk_reject_proposals' ); ?>
-			<?php $this->render_review_queue_nav( $total, $page, ! empty( $pending ) ); ?>
+			<?php $this->render_review_queue_nav( $total, $page, ! empty( $pending ), $this->review_filter_query_args_for( $filters ) ); ?>
 			<table class="widefat striped npcink-governance-core-review-table">
 				<thead>
 					<tr>
@@ -515,22 +619,35 @@ final class Admin_Page {
 						<th scope="col"><?php echo esc_html__( 'Action', 'npcink-governance-core' ); ?></th>
 					</tr>
 				</thead>
-				<tbody>
-					<?php if ( empty( $pending ) ) : ?>
-						<tr>
-							<td colspan="7">
-								<div class="npcink-governance-core-empty-state">
-									<strong><?php echo esc_html__( 'No requests need review.', 'npcink-governance-core' ); ?></strong>
-									<span><?php echo esc_html__( 'Find a proposal by ID, inspect recent activity, or open historical records when you need audit context.', 'npcink-governance-core' ); ?></span>
-									<span class="npcink-governance-core-empty-actions">
-										<a href="#npcink-governance-core-proposal-lookup"><?php echo esc_html__( 'Find proposal', 'npcink-governance-core' ); ?></a>
-										<a href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Open activity log', 'npcink-governance-core' ); ?></a>
-										<a href="<?php echo esc_url( $this->view_url( 'archive' ) ); ?>"><?php echo esc_html__( 'Open history', 'npcink-governance-core' ); ?></a>
-									</span>
-								</div>
-							</td>
-						</tr>
-					<?php endif; ?>
+					<tbody>
+						<?php if ( empty( $pending ) ) : ?>
+							<?php if ( ! empty( $filters ) ) : ?>
+								<tr>
+									<td colspan="7">
+										<div class="npcink-governance-core-empty-state">
+											<strong><?php echo esc_html__( 'No pending requests match the current filters.', 'npcink-governance-core' ); ?></strong>
+											<span class="npcink-governance-core-empty-actions">
+												<a href="<?php echo esc_url( $this->admin_url() ); ?>"><?php echo esc_html__( 'Clear filters', 'npcink-governance-core' ); ?></a>
+											</span>
+										</div>
+									</td>
+								</tr>
+							<?php else : ?>
+							<tr>
+								<td colspan="7">
+									<div class="npcink-governance-core-empty-state">
+										<strong><?php echo esc_html__( 'No requests need review.', 'npcink-governance-core' ); ?></strong>
+										<span><?php echo esc_html__( 'Find a proposal by ID, inspect recent activity, or open historical records when you need audit context.', 'npcink-governance-core' ); ?></span>
+										<span class="npcink-governance-core-empty-actions">
+											<a href="#npcink-governance-core-proposal-lookup"><?php echo esc_html__( 'Find proposal', 'npcink-governance-core' ); ?></a>
+											<a href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Open activity log', 'npcink-governance-core' ); ?></a>
+											<a href="<?php echo esc_url( $this->view_url( 'archive' ) ); ?>"><?php echo esc_html__( 'Open history', 'npcink-governance-core' ); ?></a>
+										</span>
+									</div>
+								</td>
+							</tr>
+							<?php endif; ?>
+						<?php endif; ?>
 					<?php foreach ( $pending as $proposal ) : ?>
 						<?php $proposal_id = (string) $proposal['proposal_id']; ?>
 						<?php $display_id = $this->proposal_display_id( $proposal ); ?>
@@ -646,7 +763,7 @@ final class Admin_Page {
 	 * @param bool $show_bulk Whether to show bulk action controls.
 	 * @return void
 	 */
-	private function render_review_queue_nav( int $total, int $page, bool $show_bulk ): void {
+	private function render_review_queue_nav( int $total, int $page, bool $show_bulk, array $args = array() ): void {
 		if ( $total <= 0 ) {
 			return;
 		}
@@ -656,7 +773,7 @@ final class Admin_Page {
 			$page,
 			self::REVIEW_PAGE_SIZE,
 			'review_page',
-			array(),
+			$args,
 			array(
 				'show_bulk'  => $show_bulk,
 				'show_range' => false,
@@ -862,7 +979,7 @@ final class Admin_Page {
 			),
 			array(
 				'label' => __( 'Caller type', 'npcink-governance-core' ),
-				'value' => (string) ( $auth['caller_type'] ?? $caller['caller_type'] ?? '' ),
+				'value' => $this->caller_type_label( (string) ( $auth['caller_type'] ?? $caller['caller_type'] ?? '' ) ),
 				'code'  => true,
 			),
 			array(
@@ -885,12 +1002,12 @@ final class Admin_Page {
 			),
 			array(
 				'label' => __( 'Policy decision', 'npcink-governance-core' ),
-				'value' => (string) ( $proposal['policy_decision'] ?? '' ),
+				'value' => $this->policy_decision_label( (string) ( $proposal['policy_decision'] ?? '' ) ),
 				'code'  => true,
 			),
 			array(
 				'label' => __( 'Policy profile', 'npcink-governance-core' ),
-				'value' => (string) ( $proposal['policy_profile'] ?? '' ),
+				'value' => $this->policy_profile_label( (string) ( $proposal['policy_profile'] ?? '' ) ),
 				'code'  => true,
 			),
 			array(
@@ -1179,6 +1296,116 @@ final class Admin_Page {
 	}
 
 	/**
+	 * Returns the operator-facing label for a caller type value.
+	 *
+	 * @param string $value Raw caller type.
+	 * @return string
+	 */
+	private function caller_type_label( string $value ): string {
+		$labels = array(
+			'external_app'    => __( 'External app', 'npcink-governance-core' ),
+			'product_adapter' => __( 'Product adapter', 'npcink-governance-core' ),
+			'mcp_adapter'     => __( 'MCP adapter', 'npcink-governance-core' ),
+			'agent_host'      => __( 'Agent host', 'npcink-governance-core' ),
+			'internal'        => __( 'Internal governance client', 'npcink-governance-core' ),
+			'wp_admin'        => __( 'WordPress admin', 'npcink-governance-core' ),
+			'admin'           => __( 'WordPress admin', 'npcink-governance-core' ),
+		);
+
+		return (string) ( $labels[ $value ] ?? $value );
+	}
+
+	/**
+	 * Returns the operator-facing label for an approval policy decision.
+	 *
+	 * @param string $value Raw policy decision.
+	 * @return string
+	 */
+	private function policy_decision_label( string $value ): string {
+		$labels = array(
+			'manual_required' => __( 'Manual approval required', 'npcink-governance-core' ),
+			'auto_approved'   => __( 'Auto-approved by policy', 'npcink-governance-core' ),
+			'blocked'         => __( 'Blocked by policy', 'npcink-governance-core' ),
+		);
+
+		return (string) ( $labels[ $value ] ?? $value );
+	}
+
+	/**
+	 * Returns the operator-facing label for an approval policy profile.
+	 *
+	 * @param string $value Raw policy profile.
+	 * @return string
+	 */
+	private function policy_profile_label( string $value ): string {
+		$labels = array(
+			'manual'        => __( 'Manual review', 'npcink-governance-core' ),
+			'guarded'       => __( 'Guarded automation', 'npcink-governance-core' ),
+			'trusted_local' => __( 'Trusted local consent', 'npcink-governance-core' ),
+			'break_glass'   => __( 'Break-glass', 'npcink-governance-core' ),
+		);
+
+		return (string) ( $labels[ $value ] ?? $value );
+	}
+
+	/**
+	 * Returns the operator-facing label for one governance-envelope value.
+	 *
+	 * @param string $field Envelope field key.
+	 * @param string $value Raw enum value.
+	 * @return string
+	 */
+	private function review_basis_label( string $field, string $value ): string {
+		$maps = array(
+			'request_source'       => array(
+				'wp_admin_ui'      => __( 'WordPress admin UI', 'npcink-governance-core' ),
+				'external_adapter' => __( 'External adapter', 'npcink-governance-core' ),
+				'scheduled_task'   => __( 'Scheduled task', 'npcink-governance-core' ),
+				'cli'              => __( 'CLI', 'npcink-governance-core' ),
+				'cloud_callback'   => __( 'Cloud callback', 'npcink-governance-core' ),
+			),
+			'actor_presence'       => array(
+				'present_click' => __( 'Operator present at click', 'npcink-governance-core' ),
+				'background'    => __( 'Background automation', 'npcink-governance-core' ),
+				'delegated'     => __( 'Delegated agent', 'npcink-governance-core' ),
+			),
+			'preview_completeness' => array(
+				'exact_final' => __( 'Exact final preview', 'npcink-governance-core' ),
+				'sufficient'  => __( 'Sufficient preview', 'npcink-governance-core' ),
+				'partial'     => __( 'Partial preview', 'npcink-governance-core' ),
+				'none'        => __( 'No preview', 'npcink-governance-core' ),
+			),
+			'scope'                => array(
+				'one_field'        => __( 'One field', 'npcink-governance-core' ),
+				'one_object'       => __( 'One object', 'npcink-governance-core' ),
+				'multiple_objects' => __( 'Multiple objects', 'npcink-governance-core' ),
+				'site_wide'        => __( 'Site-wide', 'npcink-governance-core' ),
+				'external_account' => __( 'External account', 'npcink-governance-core' ),
+			),
+			'operation_kind'       => array(
+				'suggest'                 => __( 'Suggestion only', 'npcink-governance-core' ),
+				'create_draft'            => __( 'Create draft', 'npcink-governance-core' ),
+				'update_metadata'         => __( 'Update metadata', 'npcink-governance-core' ),
+				'update_existing_terms'   => __( 'Update existing terms', 'npcink-governance-core' ),
+				'set_featured_image'      => __( 'Set featured image', 'npcink-governance-core' ),
+				'publish'                 => __( 'Publish', 'npcink-governance-core' ),
+				'unpublish'               => __( 'Unpublish', 'npcink-governance-core' ),
+				'delete'                  => __( 'Delete', 'npcink-governance-core' ),
+				'replace_file'            => __( 'Replace file', 'npcink-governance-core' ),
+				'overwrite_content'       => __( 'Overwrite content', 'npcink-governance-core' ),
+				'settings_change'         => __( 'Settings change', 'npcink-governance-core' ),
+				'permission_change'       => __( 'Permission change', 'npcink-governance-core' ),
+				'external_account_change' => __( 'External account change', 'npcink-governance-core' ),
+				'batch_plan'              => __( 'Batch plan', 'npcink-governance-core' ),
+			),
+		);
+
+		$field_map = $maps[ $field ] ?? array();
+
+		return (string) ( $field_map[ $value ] ?? $value );
+	}
+
+	/**
 	 * Returns a compact source label.
 	 *
 	 * @param string $source Source value.
@@ -1323,10 +1550,22 @@ final class Admin_Page {
 			++$rejected;
 		}
 
-		$args = array(
+		$review_page = isset( $_POST['review_page'] ) ? absint( wp_unslash( (string) $_POST['review_page'] ) ) : 1;
+		$args        = array(
 			'npcink_governance_core_message' => 'bulk_rejected',
 			'bulk_rejected'          => (string) $rejected,
 		);
+		if ( $review_page > 1 ) {
+			$args['review_page'] = (string) $review_page;
+		}
+		foreach ( array( 'review_ability', 'review_age' ) as $filter_key ) {
+			if ( isset( $_POST[ $filter_key ] ) ) {
+				$filter_value = sanitize_text_field( wp_unslash( (string) $_POST[ $filter_key ] ) );
+				if ( '' !== $filter_value ) {
+					$args[ $filter_key ] = $filter_value;
+				}
+			}
+		}
 		if ( $failed > 0 ) {
 			$args['bulk_failed'] = (string) $failed;
 		}
@@ -1474,9 +1713,20 @@ final class Admin_Page {
 			exit;
 		}
 
-		status_header( 200 );
-		nocache_headers();
-		$this->render_created_app_key( $app );
+		// The raw token never enters a URL or referrer; it crosses the redirect
+		// through a short-lived per-user transient and renders once.
+		set_transient(
+			'npcink_governance_core_new_app_key_' . get_current_user_id(),
+			array(
+				'app_id'    => (string) $app['app_id'],
+				'key_id'    => (string) $app['key_id'],
+				'app_label' => (string) ( $app['app_label'] ?? '' ),
+				'token'     => (string) ( $app['token'] ?? '' ),
+			),
+			5 * MINUTE_IN_SECONDS
+		);
+
+		wp_safe_redirect( $this->admin_url( array( 'view' => 'app-keys', 'npcink_governance_core_message' => 'app_key_created' ) ) );
 		exit;
 	}
 
@@ -1537,6 +1787,7 @@ final class Admin_Page {
 		<p><a href="<?php echo esc_url( $this->view_url( 'settings' ) ); ?>">&larr; <?php echo esc_html__( 'Back to settings', 'npcink-governance-core' ); ?></a></p>
 		<h2><?php echo esc_html__( 'Client Access Tokens', 'npcink-governance-core' ); ?></h2>
 		<p><?php echo esc_html__( 'Manage limited REST access tokens for trusted Adapter or internal governance clients. These are not model API keys or productized OpenClaw connection settings.', 'npcink-governance-core' ); ?></p>
+		<?php $this->render_created_app_key_panel(); ?>
 
 		<div class="npcink-governance-core-summary-strip npcink-governance-core-token-summary">
 			<div class="npcink-governance-core-summary-item npcink-governance-core-summary-ok">
@@ -2108,56 +2359,61 @@ final class Admin_Page {
 	}
 
 	/**
-	 * Renders one-time client access token result.
+	 * Renders the one-time client access token result inside the normal admin
+	 * page, or nothing when no token payload is pending.
 	 *
-	 * @param array<string,mixed> $app App row with one-time token.
 	 * @return void
 	 */
-	private function render_created_app_key( array $app ): void {
-		$token = (string) ( $app['token'] ?? '' );
+	private function render_created_app_key_panel(): void {
+		$payload = get_transient( 'npcink_governance_core_new_app_key_' . get_current_user_id() );
+		if ( ! is_array( $payload ) || '' === (string) ( $payload['token'] ?? '' ) ) {
+			return;
+		}
+		delete_transient( 'npcink_governance_core_new_app_key_' . get_current_user_id() );
+
+		$token = (string) $payload['token'];
 		?>
-		<!doctype html>
-		<html <?php language_attributes(); ?>>
-		<head>
-			<meta charset="<?php echo esc_attr( get_bloginfo( 'charset' ) ); ?>" />
-			<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<title><?php echo esc_html__( 'Client access token created', 'npcink-governance-core' ); ?></title>
-			<?php
-			wp_enqueue_style( 'npcink-governance-core-admin', $this->admin_stylesheet_url(), array(), NPCINK_GOVERNANCE_CORE_VERSION );
-			wp_print_styles( 'npcink-governance-core-admin' );
-			?>
-		</head>
-		<body>
-			<main>
-					<h1><?php echo esc_html__( 'Client access token created', 'npcink-governance-core' ); ?></h1>
-				<div class="notice">
-					<p><?php echo esc_html__( 'Copy this token now. It is shown only once and is not stored in raw form.', 'npcink-governance-core' ); ?></p>
-					<p><?php echo esc_html__( 'Use this token only in a trusted adapter or internal governance client secret store.', 'npcink-governance-core' ); ?></p>
-				</div>
-				<table>
-					<tbody>
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'App ID', 'npcink-governance-core' ); ?></th>
-							<td><code><?php echo esc_html( (string) $app['app_id'] ); ?></code></td>
-						</tr>
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Key ID', 'npcink-governance-core' ); ?></th>
-							<td><code><?php echo esc_html( (string) $app['key_id'] ); ?></code></td>
-						</tr>
-						<tr>
-								<th scope="row"><?php echo esc_html__( 'Access token', 'npcink-governance-core' ); ?></th>
-							<td><textarea rows="3" readonly><?php echo esc_textarea( $token ); ?></textarea></td>
-						</tr>
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Core env', 'npcink-governance-core' ); ?></th>
-							<td><textarea rows="4" readonly><?php echo esc_textarea( $this->core_env_text( $token ) ); ?></textarea></td>
-						</tr>
-					</tbody>
-				</table>
-					<p class="actions"><a class="button" href="<?php echo esc_url( $this->view_url( 'app-keys' ) ); ?>"><?php echo esc_html__( 'Back to client access tokens', 'npcink-governance-core' ); ?></a></p>
-			</main>
-		</body>
-		</html>
+		<section class="npcink-governance-core-token-panel npcink-governance-core-max-wide" aria-labelledby="npcink-governance-core-token-panel-heading">
+			<h3 id="npcink-governance-core-token-panel-heading"><?php echo esc_html__( 'Client access token created', 'npcink-governance-core' ); ?></h3>
+			<div class="notice notice-warning inline">
+				<p><?php echo esc_html__( 'Copy this token now. It is shown only once and is not stored in raw form.', 'npcink-governance-core' ); ?></p>
+				<p><?php echo esc_html__( 'Use this token only in a trusted adapter or internal governance client secret store.', 'npcink-governance-core' ); ?></p>
+			</div>
+			<table class="form-table">
+				<tbody>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'App ID', 'npcink-governance-core' ); ?></th>
+						<td><code><?php echo esc_html( (string) $payload['app_id'] ); ?></code></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php echo esc_html__( 'Key ID', 'npcink-governance-core' ); ?></th>
+						<td><code><?php echo esc_html( (string) $payload['key_id'] ); ?></code></td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<label for="npcink-governance-core-new-token"><?php echo esc_html__( 'Access token', 'npcink-governance-core' ); ?></label>
+						</th>
+						<td>
+							<textarea id="npcink-governance-core-new-token" rows="3" readonly class="large-text"><?php echo esc_textarea( $token ); ?></textarea>
+							<button type="button" class="button" data-npcink-copy-target="npcink-governance-core-new-token" data-copied-label="<?php echo esc_attr__( 'Copied', 'npcink-governance-core' ); ?>">
+								<?php echo esc_html__( 'Copy token', 'npcink-governance-core' ); ?>
+							</button>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<label for="npcink-governance-core-new-token-env"><?php echo esc_html__( 'Core env', 'npcink-governance-core' ); ?></label>
+						</th>
+						<td>
+							<textarea id="npcink-governance-core-new-token-env" rows="4" readonly class="large-text"><?php echo esc_textarea( $this->core_env_text( $token ) ); ?></textarea>
+							<button type="button" class="button" data-npcink-copy-target="npcink-governance-core-new-token-env" data-copied-label="<?php echo esc_attr__( 'Copied', 'npcink-governance-core' ); ?>">
+								<?php echo esc_html__( 'Copy env snippet', 'npcink-governance-core' ); ?>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
 		<?php
 	}
 
@@ -2175,16 +2431,82 @@ final class Admin_Page {
 		$proposal_id = isset( $_POST['proposal_id'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['proposal_id'] ) ) : '';
 		check_admin_referer( 'npcink_governance_core_decide_proposal_' . $proposal_id );
 
+		$review_page = isset( $_POST['review_page'] ) ? absint( wp_unslash( (string) $_POST['review_page'] ) ) : 1;
+		$review_page = max( 1, $review_page );
+		$open_next   = ! isset( $_POST['open_next'] ) || '1' === sanitize_key( (string) wp_unslash( (string) $_POST['open_next'] ) );
+
 		$note   = isset( $_POST['note'] ) ? sanitize_textarea_field( wp_unslash( (string) $_POST['note'] ) ) : '';
 		$result = 'approve' === $decision ? $this->service->approve( $proposal_id, array( 'note' => $note ) ) : $this->service->reject( $proposal_id, array( 'note' => $note ) );
 
+		$message = 'approve' === $decision ? 'approved' : 'rejected';
+
 		if ( is_wp_error( $result ) ) {
-			wp_safe_redirect( $this->admin_url( array( 'npcink_governance_core_error' => $result->get_error_code() ) ) );
+			wp_safe_redirect(
+				$this->admin_url(
+					array(
+						'proposal_id'                   => $proposal_id,
+						'review_page'                   => (string) $review_page,
+						'npcink_governance_core_error'  => $result->get_error_code(),
+					)
+				)
+			);
 			exit;
 		}
 
-		wp_safe_redirect( $this->admin_url( array( 'npcink_governance_core_message' => 'approve' === $decision ? 'approved' : 'rejected' ) ) );
+		$next_pending_id = $open_next ? $this->next_pending_proposal_id() : '';
+		if ( '' !== $next_pending_id ) {
+			wp_safe_redirect(
+				$this->admin_url(
+					array(
+						'proposal_id'                    => $next_pending_id,
+						'review_page'                    => (string) $review_page,
+						'npcink_governance_core_message' => $message,
+					)
+				)
+			);
+			exit;
+		}
+
+		wp_safe_redirect( $this->admin_url( $this->queue_redirect_args( $review_page, $message ) ) );
 		exit;
+	}
+
+	/**
+	 * Returns queue redirect args that preserve the current review page.
+	 *
+	 * @param int    $review_page Review queue page.
+	 * @param string $message Message code.
+	 * @return array<string,string>
+	 */
+	private function queue_redirect_args( int $review_page, string $message ): array {
+		$args = array( 'npcink_governance_core_message' => $message );
+		if ( $review_page > 1 ) {
+			$args['review_page'] = (string) $review_page;
+		}
+
+		foreach ( array( 'review_ability', 'review_age' ) as $filter_key ) {
+			if ( isset( $_POST[ $filter_key ] ) ) {
+				$filter_value = sanitize_text_field( wp_unslash( (string) $_POST[ $filter_key ] ) );
+				if ( '' !== $filter_value ) {
+					$args[ $filter_key ] = $filter_value;
+				}
+			}
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Returns the id of the next pending proposal in queue order, or an empty
+	 * string when the pending queue is empty.
+	 *
+	 * @return string
+	 */
+	private function next_pending_proposal_id(): string {
+		$rows = $this->proposals->list_recent_summaries( 1, Proposal_Repository::STATUS_PENDING );
+		$row  = $rows[0] ?? array();
+
+		return isset( $row['proposal_id'] ) ? (string) $row['proposal_id'] : '';
 	}
 
 	/**
@@ -2239,7 +2561,7 @@ final class Admin_Page {
 			)
 		);
 		?>
-		<p><a href="<?php echo esc_url( $this->admin_url() ); ?>">&larr; <?php echo esc_html__( 'Back to review queue', 'npcink-governance-core' ); ?></a></p>
+		<p><a href="<?php echo esc_url( $this->queue_url( max( 1, $this->page_from_request( 'review_page' ) ) ) ); ?>">&larr; <?php echo esc_html__( 'Back to review queue', 'npcink-governance-core' ); ?></a></p>
 		<h2><?php echo esc_html__( 'Proposal Detail', 'npcink-governance-core' ); ?></h2>
 		<p class="npcink-governance-core-subtle npcink-governance-core-copy-width"><?php echo esc_html__( 'Review the governance record, action plan, and audit evidence for this proposal.', 'npcink-governance-core' ); ?></p>
 		<?php $this->render_proposal_summary_panel( $proposal ); ?>
@@ -2860,7 +3182,7 @@ final class Admin_Page {
 					),
 					array(
 						'label' => __( 'Caller type', 'npcink-governance-core' ),
-						'value' => (string) ( $auth['caller_type'] ?? $caller['caller_type'] ?? '' ),
+						'value' => $this->caller_type_label( (string) ( $auth['caller_type'] ?? $caller['caller_type'] ?? '' ) ),
 						'code'  => true,
 					),
 					array(
@@ -2870,12 +3192,12 @@ final class Admin_Page {
 					),
 					array(
 						'label' => __( 'Policy decision', 'npcink-governance-core' ),
-						'value' => (string) ( $proposal['policy_decision'] ?? '' ),
+						'value' => $this->policy_decision_label( (string) ( $proposal['policy_decision'] ?? '' ) ),
 						'code'  => true,
 					),
 					array(
 						'label' => __( 'Policy profile', 'npcink-governance-core' ),
-						'value' => (string) ( $proposal['policy_profile'] ?? '' ),
+						'value' => $this->policy_profile_label( (string) ( $proposal['policy_profile'] ?? '' ) ),
 						'code'  => true,
 					),
 					array(
@@ -2956,15 +3278,23 @@ final class Admin_Page {
 		?>
 		<form class="npcink-governance-core-decision-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="proposal_id" value="<?php echo esc_attr( $proposal_id ); ?>" />
+			<input type="hidden" name="review_page" value="<?php echo esc_attr( (string) max( 1, $this->page_from_request( 'review_page' ) ) ); ?>" />
+			<?php foreach ( $this->review_filter_query_args() as $filter_key => $filter_value ) : ?>
+				<input type="hidden" name="<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $filter_value ); ?>" />
+			<?php endforeach; ?>
 			<?php wp_nonce_field( 'npcink_governance_core_decide_proposal_' . $proposal_id ); ?>
+			<label for="npcink-governance-core-note-<?php echo esc_attr( $proposal_id ); ?>"><?php echo esc_html__( 'Decision note (optional)', 'npcink-governance-core' ); ?></label>
+			<textarea id="npcink-governance-core-note-<?php echo esc_attr( $proposal_id ); ?>" name="note" rows="2" class="large-text"></textarea>
+			<label class="npcink-governance-core-open-next">
+				<input type="checkbox" name="open_next" value="1" checked />
+				<?php echo esc_html__( 'After this decision, open the next pending proposal', 'npcink-governance-core' ); ?>
+			</label>
 			<button type="submit" class="button button-primary" name="action" value="npcink_governance_core_approve_proposal">
 				<?php echo esc_html__( 'Approve', 'npcink-governance-core' ); ?>
 			</button>
 			<details class="npcink-governance-core-reject-disclosure">
 				<summary class="button"><?php echo esc_html__( 'Reject', 'npcink-governance-core' ); ?></summary>
 				<div class="npcink-governance-core-reject-panel">
-					<label for="npcink-governance-core-note"><?php echo esc_html__( 'Rejection note', 'npcink-governance-core' ); ?></label>
-					<textarea id="npcink-governance-core-note" name="note" rows="3" class="large-text"></textarea>
 					<button type="submit" class="button" name="action" value="npcink_governance_core_reject_proposal">
 						<?php echo esc_html__( 'Confirm rejection', 'npcink-governance-core' ); ?>
 					</button>
@@ -3065,7 +3395,7 @@ final class Admin_Page {
 					),
 					array(
 						'label' => __( 'Policy decision', 'npcink-governance-core' ),
-						'value' => (string) ( $proposal['policy_decision'] ?? '' ),
+						'value' => $this->policy_decision_label( (string) ( $proposal['policy_decision'] ?? '' ) ),
 						'code'  => true,
 					),
 				),
@@ -3084,27 +3414,27 @@ final class Admin_Page {
 					),
 					array(
 						'label' => __( 'Request source', 'npcink-governance-core' ),
-						'value' => $posture['request_source'],
+						'value' => $this->review_basis_label( 'request_source', (string) $posture['request_source'] ),
 						'code'  => true,
 					),
 					array(
 						'label' => __( 'Actor presence', 'npcink-governance-core' ),
-						'value' => $posture['actor_presence'],
+						'value' => $this->review_basis_label( 'actor_presence', (string) $posture['actor_presence'] ),
 						'code'  => true,
 					),
 					array(
 						'label' => __( 'Preview completeness', 'npcink-governance-core' ),
-						'value' => $posture['preview_completeness'],
+						'value' => $this->review_basis_label( 'preview_completeness', (string) $posture['preview_completeness'] ),
 						'code'  => true,
 					),
 					array(
 						'label' => __( 'Scope', 'npcink-governance-core' ),
-						'value' => $posture['scope'],
+						'value' => $this->review_basis_label( 'scope', (string) $posture['scope'] ),
 						'code'  => true,
 					),
 					array(
 						'label' => __( 'Operation kind', 'npcink-governance-core' ),
-						'value' => $posture['operation_kind'],
+						'value' => $this->review_basis_label( 'operation_kind', (string) $posture['operation_kind'] ),
 						'code'  => true,
 					),
 					array(
@@ -5190,7 +5520,28 @@ final class Admin_Page {
 	 * @return string
 	 */
 	private function detail_url( string $proposal_id ): string {
-		return $this->admin_url( array( 'proposal_id' => $proposal_id ) );
+		$args        = array( 'proposal_id' => $proposal_id );
+		$review_page = $this->page_from_request( 'review_page' );
+		if ( $review_page > 1 ) {
+			$args['review_page'] = (string) $review_page;
+		}
+
+		return $this->admin_url( array_merge( $args, $this->review_filter_query_args() ) );
+	}
+
+	/**
+	 * Returns the review queue URL, preserving the page number and filters.
+	 *
+	 * @param int $page Review queue page.
+	 * @return string
+	 */
+	private function queue_url( int $page = 1 ): string {
+		$args = array();
+		if ( $page > 1 ) {
+			$args['review_page'] = (string) $page;
+		}
+
+		return $this->admin_url( array_merge( $args, $this->review_filter_query_args() ) );
 	}
 
 	/**
@@ -5286,6 +5637,43 @@ final class Admin_Page {
 	}
 
 	/**
+	 * Returns the bulk-rejection outcome notice, or null when the current
+	 * request is not a bulk-rejection result.
+	 *
+	 * @return array{classes:string,text:string}|null
+	 */
+	private function bulk_reject_outcome(): ?array {
+		$message = $this->admin_query_key( 'npcink_governance_core_message' );
+		if ( 'bulk_rejected' !== $message ) {
+			return null;
+		}
+
+		$rejected = $this->admin_query_absint( 'bulk_rejected', 0 );
+		$failed   = $this->admin_query_absint( 'bulk_failed', 0 );
+
+		if ( $failed > 0 ) {
+			return array(
+				'classes' => 'notice-error',
+				'text'    => sprintf(
+					/* translators: 1: rejected proposal count, 2: failed proposal count. */
+					__( 'Rejected %1$d proposals, but %2$d could not be rejected; they may have expired or already been decided. Review the queue and retry the remaining items.', 'npcink-governance-core' ),
+					$rejected,
+					$failed
+				),
+			);
+		}
+
+		return array(
+			'classes' => 'notice-success',
+			'text'    => sprintf(
+				/* translators: %d: rejected proposal count. */
+				__( 'Rejected %d proposals.', 'npcink-governance-core' ),
+				$rejected
+			),
+		);
+	}
+
+	/**
 	 * Returns user-facing message text.
 	 *
 	 * @param string $code Message code.
@@ -5299,6 +5687,7 @@ final class Admin_Page {
 			'archived'                                      => __( 'Proposal archived.', 'npcink-governance-core' ),
 			'reopened'                                      => __( 'Proposal reopened for review.', 'npcink-governance-core' ),
 			'app_key_revoked'                               => __( 'App key disabled.', 'npcink-governance-core' ),
+			'app_key_created'                               => __( 'Client access token created. Copy it below now; it is shown only once.', 'npcink-governance-core' ),
 			'approval_policy_updated'                       => __( 'Approval policy mode updated.', 'npcink-governance-core' ),
 			'settings_updated'                              => __( 'Settings updated.', 'npcink-governance-core' ),
 			'history_cleanup_completed'                     => __( 'History cleanup completed.', 'npcink-governance-core' ),
@@ -5315,9 +5704,23 @@ final class Admin_Page {
 			'npcink_governance_core_proposal_already_decided'       => __( 'Only pending proposals can be approved or rejected.', 'npcink-governance-core' ),
 			'npcink_governance_core_proposal_transition_failed'     => __( 'Proposal status could not be updated.', 'npcink-governance-core' ),
 			'npcink_governance_core_bulk_reject_empty'              => __( 'Select at least one pending proposal to reject.', 'npcink-governance-core' ),
+			'npcink_governance_core_app_audit_failed'               => __( 'The client access token could not be created because its audit record could not be stored. No token was issued; please retry.', 'npcink-governance-core' ),
+			'npcink_governance_core_app_scopes_empty'               => __( 'Client access tokens must include at least one valid scope.', 'npcink-governance-core' ),
+			'npcink_governance_core_app_secret_hash_failed'         => __( 'The client access token secret could not be protected. Please retry.', 'npcink-governance-core' ),
+			'npcink_governance_core_app_insert_failed'              => __( 'The client access token could not be stored. Please retry.', 'npcink-governance-core' ),
 		);
 
-		return (string) ( $messages[ $code ] ?? __( 'Proposal action could not be completed.', 'npcink-governance-core' ) );
+		$fallback = __( 'Proposal action could not be completed.', 'npcink-governance-core' );
+		if ( ! isset( $messages[ $code ] ) && '' !== $code ) {
+			return sprintf(
+				/* translators: 1: failure message, 2: machine-readable error code. */
+				__( '%1$s Error code: %2$s', 'npcink-governance-core' ),
+				$fallback,
+				$code
+			);
+		}
+
+		return (string) ( $messages[ $code ] ?? $fallback );
 	}
 
 	/**

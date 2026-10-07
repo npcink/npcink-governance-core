@@ -202,6 +202,7 @@ final class Plugin {
 	 * @return void
 	 */
 	public function register(): void {
+		add_action( 'init', array( $this, 'load_textdomain' ) );
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 		add_action( self::HISTORY_CLEANUP_HOOK, array( $this, 'run_history_cleanup' ) );
 		add_filter( 'npcink_governance_core_record_local_admin_consent', array( $this, 'record_local_admin_consent_audit' ), 10, 3 );
@@ -213,6 +214,24 @@ final class Plugin {
 		if ( is_admin() ) {
 			( new Admin_Page( $this->ability_adapter(), $this->proposal_repository(), $this->audit_repository(), $this->proposal_service(), $this->app_key_repository(), $this->history_cleanup_service() ) )->register();
 		}
+	}
+
+	/**
+	 * Loads the bundled plugin translations.
+	 *
+	 * WordPress.org language packs keep loading automatically for wp.org
+	 * installs; this call additionally enables the bundled
+	 * languages/npcink-governance-core-*.mo files on locally distributed
+	 * plugin zips, where the translate.wordpress.org lookup finds nothing.
+	 *
+	 * @return void
+	 */
+	public function load_textdomain(): void {
+		load_plugin_textdomain(
+			'npcink-governance-core',
+			false,
+			dirname( plugin_basename( NPCINK_GOVERNANCE_CORE_FILE ) ) . '/languages'
+		);
 	}
 
 	/** Installs or upgrades all Core tables for the current site. */

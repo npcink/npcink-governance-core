@@ -1337,6 +1337,7 @@ require_once dirname( __DIR__ ) . '/includes/Security/App_Key_Repository.php';
 require_once dirname( __DIR__ ) . '/includes/Security/App_Rate_Limiter.php';
 require_once dirname( __DIR__ ) . '/includes/Security/App_Authenticator.php';
 require_once dirname( __DIR__ ) . '/includes/Rest/Apps_Controller.php';
+require_once dirname( __DIR__ ) . '/includes/Rest/Rest_Format.php';
 require_once dirname( __DIR__ ) . '/includes/Rest/Proposals_Controller.php';
 require_once dirname( __DIR__ ) . '/includes/Rest/Read_Requests_Controller.php';
 require_once dirname( __DIR__ ) . '/includes/Plugin.php';
