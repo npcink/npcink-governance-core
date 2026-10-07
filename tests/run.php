@@ -127,6 +127,8 @@ npcink_governance_core_assert( false !== strpos( $main_plugin, 'Description: Npc
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Text Domain: npcink-governance-core' ), 'Main plugin file keeps the canonical text domain.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'Domain Path: /languages' ), 'Main plugin file declares the bundled languages path.' );
 npcink_governance_core_assert( false === strpos( $main_plugin, 'load_plugin_textdomain' ), 'Main plugin file lets WordPress.org load translations automatically.' );
+$plugin_class = npcink_governance_core_read( $root . '/includes/Plugin.php' );
+npcink_governance_core_assert( false !== strpos( $plugin_class, 'load_plugin_textdomain' ), 'Plugin class loads bundled translations so locally distributed zips get zh_CN strings before wp.org language packs exist.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'register_activation_hook' ), 'Main plugin file registers activation hook.' );
 npcink_governance_core_assert( false !== strpos( $main_plugin, 'plugins_loaded' ), 'Main plugin file boots after plugins_loaded.' );
 npcink_governance_core_assert( false === strpos( $main_plugin, 'example.com' ), 'Main plugin header does not use placeholder Plugin URI.' );
@@ -146,7 +148,8 @@ npcink_governance_core_assert( false !== strpos( $translation_po, '"Language: zh
 npcink_governance_core_assert( false !== strpos( $translation_po, 'msgid "Review Queue"' ) && false !== strpos( $translation_po, 'msgstr "审核队列"' ), 'Bundled zh_CN PO translates Review Queue.' );
 npcink_governance_core_assert( false !== strpos( $translation_po, 'msgid "Workflow Toolbox"' ) && false !== strpos( $translation_po, 'msgstr "流程工具箱"' ), 'Bundled zh_CN PO translates the Workflow Toolbox menu label.' );
 npcink_governance_core_assert( false !== strpos( $translation_po, '"connection pointers, and ability packages."' ) && false !== strpos( $translation_po, 'Npcink 治理、连接、云端连接指引和能力包的本地 WordPress 入口。' ), 'Bundled zh_CN PO translates the shared Npcink AI overview description.' );
-npcink_governance_core_assert( false !== strpos( $translation_po, 'msgid "Commit preflight has already issued an execution handoff for this approved proposal."' ), 'Bundled zh_CN PO keeps commit preflight source strings.' );
+$translation_po_unwrapped = str_replace( "\"\n\"", '', $translation_po );
+npcink_governance_core_assert( false !== strpos( $translation_po_unwrapped, 'msgid "Commit preflight has already issued an execution handoff for this approved proposal."' ), 'Bundled zh_CN PO keeps commit preflight source strings.' );
 
 $readme = npcink_governance_core_read( $root . '/README.md' );
 foreach (
@@ -3115,9 +3118,10 @@ npcink_governance_core_assert( false === strpos( $admin_page, 'create-draft-prop
 npcink_governance_core_assert( false === strpos( $admin_page, 'create-taxonomy-terms-proposal' ), 'Admin page no longer embeds taxonomy adapter commands.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'NPCINK_GOVERNANCE_CORE_BASE_URL' ), 'Admin page shows base URL env value.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'NPCINK_GOVERNANCE_CORE_APP_TOKEN' ), 'Admin page shows app token env value.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'render_created_app_key' ), 'Admin page renders one-time app key result.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'nocache_headers' ), 'Admin app-key result prevents caching the one-time token.' );
-npcink_governance_core_assert( false === strpos( $admin_page, 'wp-admin/admin-header.php' ), 'Admin app-key result avoids admin header inside admin-post context.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'render_created_app_key_panel' ), 'Admin page renders one-time app key result inside the token screen.' );
+npcink_governance_core_assert( false === strpos( $admin_page, '<!doctype html>' ) && false === strpos( $admin_page, 'language_attributes' ), 'Admin one-time token result no longer renders a standalone unstyled document.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'created_app_key_transient' ) && false !== strpos( $admin_page, 'delete_transient' ), 'Admin one-time token crosses the redirect through a per-user transient and renders once.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'data-npcink-copy-target' ), 'Admin one-time token result exposes a copy-to-clipboard control.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'shown only once and is not stored in raw form' ), 'Admin page warns that app token is one-time only.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink_governance_core_app_audit_failed' ), 'Admin page does not show one-time app token when creation audit fails.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'default_scopes' ), 'Admin page defaults to scoped external adapter access.' );
