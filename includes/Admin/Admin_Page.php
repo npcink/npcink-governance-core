@@ -211,7 +211,12 @@ final class Admin_Page {
 			<h1><?php echo esc_html( 'Npcink Governance Core' ); ?></h1>
 			<p><?php echo esc_html__( 'Review, approve, and audit AI-initiated WordPress operations.', 'npcink-governance-core' ); ?></p>
 
-			<?php if ( '' !== $message ) : ?>
+			<?php $bulk_outcome = $this->bulk_reject_outcome(); ?>
+			<?php if ( null !== $bulk_outcome ) : ?>
+				<div class="notice <?php echo esc_attr( $bulk_outcome['classes'] ); ?> is-dismissible">
+					<p><?php echo esc_html( $bulk_outcome['text'] ); ?></p>
+				</div>
+			<?php elseif ( '' !== $message ) : ?>
 				<div class="notice notice-success is-dismissible">
 					<p><?php echo esc_html( $this->message_text( $message ) ); ?></p>
 				</div>
@@ -5286,6 +5291,43 @@ final class Admin_Page {
 	}
 
 	/**
+	 * Returns the bulk-rejection outcome notice, or null when the current
+	 * request is not a bulk-rejection result.
+	 *
+	 * @return array{classes:string,text:string}|null
+	 */
+	private function bulk_reject_outcome(): ?array {
+		$message = $this->admin_query_key( 'npcink_governance_core_message' );
+		if ( 'bulk_rejected' !== $message ) {
+			return null;
+		}
+
+		$rejected = $this->admin_query_absint( 'bulk_rejected', 0 );
+		$failed   = $this->admin_query_absint( 'bulk_failed', 0 );
+
+		if ( $failed > 0 ) {
+			return array(
+				'classes' => 'notice-error',
+				'text'    => sprintf(
+					/* translators: 1: rejected proposal count, 2: failed proposal count. */
+					__( 'Rejected %1$d proposals, but %2$d could not be rejected; they may have expired or already been decided. Review the queue and retry the remaining items.', 'npcink-governance-core' ),
+					$rejected,
+					$failed
+				),
+			);
+		}
+
+		return array(
+			'classes' => 'notice-success',
+			'text'    => sprintf(
+				/* translators: %d: rejected proposal count. */
+				__( 'Rejected %d proposals.', 'npcink-governance-core' ),
+				$rejected
+			),
+		);
+	}
+
+	/**
 	 * Returns user-facing message text.
 	 *
 	 * @param string $code Message code.
@@ -5315,9 +5357,23 @@ final class Admin_Page {
 			'npcink_governance_core_proposal_already_decided'       => __( 'Only pending proposals can be approved or rejected.', 'npcink-governance-core' ),
 			'npcink_governance_core_proposal_transition_failed'     => __( 'Proposal status could not be updated.', 'npcink-governance-core' ),
 			'npcink_governance_core_bulk_reject_empty'              => __( 'Select at least one pending proposal to reject.', 'npcink-governance-core' ),
+			'npcink_governance_core_app_audit_failed'               => __( 'The client access token could not be created because its audit record could not be stored. No token was issued; please retry.', 'npcink-governance-core' ),
+			'npcink_governance_core_app_scopes_empty'               => __( 'Client access tokens must include at least one valid scope.', 'npcink-governance-core' ),
+			'npcink_governance_core_app_secret_hash_failed'         => __( 'The client access token secret could not be protected. Please retry.', 'npcink-governance-core' ),
+			'npcink_governance_core_app_insert_failed'              => __( 'The client access token could not be stored. Please retry.', 'npcink-governance-core' ),
 		);
 
-		return (string) ( $messages[ $code ] ?? __( 'Proposal action could not be completed.', 'npcink-governance-core' ) );
+		$fallback = __( 'Proposal action could not be completed.', 'npcink-governance-core' );
+		if ( ! isset( $messages[ $code ] ) && '' !== $code ) {
+			return sprintf(
+				/* translators: %s: machine-readable error code. */
+				__( '%1$s Error code: %2$s', 'npcink-governance-core' ),
+				$fallback,
+				$code
+			);
+		}
+
+		return (string) ( $messages[ $code ] ?? $fallback );
 	}
 
 	/**
