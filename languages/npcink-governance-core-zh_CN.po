@@ -2295,7 +2295,7 @@ msgstr "客户端访问令牌无法存储。请重试。"
 msgid "Proposal action could not be completed."
 msgstr "无法完成提案操作。"
 
-#. translators: %s: machine-readable error code.
+#. translators: 1: failure message, 2: machine-readable error code.
 #: includes/Admin/Admin_Page.php:5616
 #, php-format
 msgid "%1$s Error code: %2$s"

@@ -5722,7 +5722,7 @@ final class Admin_Page {
 		$fallback = __( 'Proposal action could not be completed.', 'npcink-governance-core' );
 		if ( ! isset( $messages[ $code ] ) && '' !== $code ) {
 			return sprintf(
-				/* translators: %s: machine-readable error code. */
+				/* translators: 1: failure message, 2: machine-readable error code. */
 				__( '%1$s Error code: %2$s', 'npcink-governance-core' ),
 				$fallback,
 				$code
