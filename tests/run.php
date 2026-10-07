@@ -3142,7 +3142,7 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'NPCINK_GOVERNANCE
 npcink_governance_core_assert( false !== strpos( $admin_page, 'NPCINK_GOVERNANCE_CORE_APP_TOKEN' ), 'Admin page shows app token env value.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_created_app_key_panel' ), 'Admin page renders one-time app key result inside the token screen.' );
 npcink_governance_core_assert( false === strpos( $admin_page, '<!doctype html>' ) && false === strpos( $admin_page, 'language_attributes' ), 'Admin one-time token result no longer renders a standalone unstyled document.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'created_app_key_transient' ) && false !== strpos( $admin_page, 'delete_transient' ), 'Admin one-time token crosses the redirect through a per-user transient and renders once.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink_governance_core_new_app_key_' ) && false !== strpos( $admin_page, 'delete_transient' ), 'Admin one-time token crosses the redirect through a prefixed per-user transient and renders once.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'data-npcink-copy-target' ), 'Admin one-time token result exposes a copy-to-clipboard control.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'shown only once and is not stored in raw form' ), 'Admin page warns that app token is one-time only.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'npcink_governance_core_app_audit_failed' ), 'Admin page does not show one-time app token when creation audit fails.' );

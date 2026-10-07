@@ -1716,7 +1716,7 @@ final class Admin_Page {
 		// The raw token never enters a URL or referrer; it crosses the redirect
 		// through a short-lived per-user transient and renders once.
 		set_transient(
-			$this->created_app_key_transient(),
+			'npcink_governance_core_new_app_key_' . get_current_user_id(),
 			array(
 				'app_id'    => (string) $app['app_id'],
 				'key_id'    => (string) $app['key_id'],
@@ -1728,15 +1728,6 @@ final class Admin_Page {
 
 		wp_safe_redirect( $this->admin_url( array( 'view' => 'app-keys', 'npcink_governance_core_message' => 'app_key_created' ) ) );
 		exit;
-	}
-
-	/**
-	 * Returns the per-user transient key carrying a one-time token payload.
-	 *
-	 * @return string
-	 */
-	private function created_app_key_transient(): string {
-		return 'npcink_governance_core_new_app_key_' . get_current_user_id();
 	}
 
 	/**
@@ -2374,11 +2365,11 @@ final class Admin_Page {
 	 * @return void
 	 */
 	private function render_created_app_key_panel(): void {
-		$payload = get_transient( $this->created_app_key_transient() );
+		$payload = get_transient( 'npcink_governance_core_new_app_key_' . get_current_user_id() );
 		if ( ! is_array( $payload ) || '' === (string) ( $payload['token'] ?? '' ) ) {
 			return;
 		}
-		delete_transient( $this->created_app_key_transient() );
+		delete_transient( 'npcink_governance_core_new_app_key_' . get_current_user_id() );
 
 		$token = (string) $payload['token'];
 		?>
