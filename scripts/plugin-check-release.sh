@@ -22,7 +22,7 @@ fi
 output="$(bash "$ROOT_DIR/scripts/wp-cli-local.sh" plugin check "$TARGET" \
 	--format=strict-json \
 	--exclude-directories=tests,.git,.github,.sisyphus,.workbuddy,vendor,node_modules,build,dist,docs,examples,sj,scripts,stubs \
-	--exclude-files=.DS_Store,.gitignore,.distignore,AGENTS.md,README.md,composer.json,composer.lock,phpcs.xml,phpcs.xml.dist,phpstan.neon,phpstan.neon.dist)"
+	--exclude-files=.DS_Store,.gitignore,.distignore,.phpunit.result.cache,AGENTS.md,README.md,composer.json,composer.lock,phpcs.xml,phpcs.xml.dist,phpstan.neon,phpstan.neon.dist,phpunit.xml,phpunit.xml.dist)"
 printf '%s\n' "$output"
 if [[ "$output" == "Success: Checks complete. No errors found." ]]; then
 	exit 0
