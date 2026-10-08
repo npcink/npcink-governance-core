@@ -5,7 +5,9 @@
 Every new AI development session should start with:
 
 1. Run `git status --short --branch`.
-2. Read `.sisyphus/session-breadcrumb.md`.
+2. Read `.sisyphus/session-breadcrumb.md` (rolling newest sessions only).
+   Older session history lives in `.sisyphus/archive/YYYY-MM.md`; consult an
+   archive file only when the task needs that period.
 3. Read `README.md`.
 4. Read these docs when the task touches their area:
    - `docs/product-positioning.md`
@@ -148,4 +150,7 @@ Before final response:
 - commit if the task produced a complete change;
 - update `.sisyphus/session-breadcrumb.md` when the session changes project
   direction or leaves important next steps;
+- keep `.sisyphus/session-breadcrumb.md` bounded: it must hold at most 10
+  session entries. When appending an entry makes it exceed 10, move the oldest
+  entries into `.sisyphus/archive/<session-month>.md` in the same commit;
 - report changed files, commit hash, and verification results.

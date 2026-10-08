@@ -137,7 +137,8 @@ release record are complete.
 Every AI agent resuming work should:
 
 1. Run `git status --short --branch`.
-2. Read `.sisyphus/session-breadcrumb.md`.
+2. Read `.sisyphus/session-breadcrumb.md` (rolling newest sessions only;
+   older history is in `.sisyphus/archive/YYYY-MM.md`, consult on demand).
 3. Read `README.md`.
 4. Read this file and the area-specific docs for the task.
 5. Report the module, Core boundary, and focused verification gate before
