@@ -5535,3 +5535,29 @@
   contract:read fallback, offset passthrough, zh_CN backlog). Three advisory
   review rounds triaged; final review raised no findings. Run the central
   quality matrix before the next multi-repo closeout.
+# 2026-10-07 - Core 0.3.0 release preparation
+
+- **Fact recalibration**: the rate-limiter duplicate-key race was already
+  fixed by 4aaf338 (atomic upsert + fail-closed regression) and M4 rerun
+  proved clean logs; v0.2.0 was published as git tag v0.2.0 with full
+  six-repo evidence. Both earlier "pending" readings came from stale
+  breadcrumb entries.
+- **Completed** (branch `release/0.3.0`): bumped Core to 0.3.0 (12 commits
+  since v0.2.0, including the operator-experience and REST contract work),
+  refreshed the candidate matrix to Core 0.3.0 / Adapter 0.4.1 / Toolkit
+  0.5.8, wrote the next-decisions briefs (app-key rotation, provider-log
+  correlation gating, final-commit ownership triggers), and covered the new
+  query/form/textdomain paths in the strict Plugin Check gate.
+- **Verified**: full `composer prepare:release -- --version 0.3.0` passed —
+  static gates, real WordPress smoke, strict packaged Plugin Check with zero
+  findings, reproducible packaging. Artifact
+  `build/npcink-governance-core.zip` SHA-256
+  `df89c613c18d501dcfd37c871649890ec7908c92f565cebb4a0dcdc7c43660f0`.
+- **Remaining release steps (owner-dependent)**: Toolkit has an uncommitted
+  OCR-retry workflow edit on codex/ocr-review-retry-sync (same template sync
+  as Core #90) and npcink-ai-cloud has an in-flight 69-modified/24-untracked
+  runtime-diagnostics branch — both must be landed before the central matrix
+  `--fail-on-dirty` closeout. Then cross-repo acceptance, tag v0.3.0, and the
+  separately authorized wp.org SVN submission. Editor drafts 286721/286722 no
+  longer exist on the local site; the adoption gate is moot and the article
+  pilot can start from current drafts.
