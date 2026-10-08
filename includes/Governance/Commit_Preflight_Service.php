@@ -9,6 +9,7 @@ namespace Npcink\GovernanceCore\Governance;
 
 use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
 use Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter;
+use Npcink\GovernanceCore\Governance\Read_Request_Service;
 use Npcink\GovernanceCore\Security\Request_Context;
 use Npcink\GovernanceCore\Security\Sensitive_Data_Redactor;
 use WP_Error;
@@ -22,6 +23,21 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Commit_Preflight_Service {
 	const PREFLIGHT_TTL_SECONDS = 300;
+
+	/**
+	 * Write ability to permitted post-execution verification read ability.
+	 *
+	 * Narrow by design: only the block readback pairing the Adapter execution
+	 * contract defines. Generalization requires a new decision record.
+	 *
+	 * @var array<string,string>
+	 */
+	const VERIFICATION_READ_ABILITIES = array(
+		'npcink-abilities-toolkit/update-post-blocks'          => 'npcink-abilities-toolkit/get-post-blocks',
+		'npcink-abilities-toolkit/update-template-blocks'      => 'npcink-abilities-toolkit/get-template-blocks',
+		'npcink-abilities-toolkit/upsert-template-blocks'      => 'npcink-abilities-toolkit/get-template-blocks',
+		'npcink-abilities-toolkit/update-template-part-blocks' => 'npcink-abilities-toolkit/get-template-part-blocks',
+	);
 
 	/**
 	 * Proposal repository.
@@ -45,16 +61,25 @@ final class Commit_Preflight_Service {
 	private $audit;
 
 	/**
+	 * Read request service, used only to mint execution verification reads.
+	 *
+	 * @var Read_Request_Service|null
+	 */
+	private $read_requests;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Proposal_Repository      $proposals Proposal repository.
 	 * @param Ability_Registry_Adapter $abilities Ability adapter.
 	 * @param Audit_Log_Repository     $audit Audit repository.
+	 * @param Read_Request_Service|null $read_requests Read request service, used only to mint execution verification reads.
 	 */
-	public function __construct( Proposal_Repository $proposals, Ability_Registry_Adapter $abilities, Audit_Log_Repository $audit ) {
-		$this->proposals = $proposals;
-		$this->abilities = $abilities;
-		$this->audit     = $audit;
+	public function __construct( Proposal_Repository $proposals, Ability_Registry_Adapter $abilities, Audit_Log_Repository $audit, ?Read_Request_Service $read_requests = null ) {
+		$this->proposals     = $proposals;
+		$this->abilities     = $abilities;
+		$this->audit         = $audit;
+		$this->read_requests = $read_requests;
 	}
 
 	/**
@@ -291,6 +316,11 @@ final class Commit_Preflight_Service {
 			);
 		}
 
+		$verification_reads = $this->mint_execution_verification_reads( $proposal, $request_params, $correlation_id );
+		if ( ! empty( $verification_reads['granted'] ) ) {
+			$execution_handoff['execution_verification_reads'] = $verification_reads['granted'];
+		}
+
 		return array(
 			'proposal'             => $proposal,
 			'capability'           => $capability,
@@ -302,7 +332,131 @@ final class Commit_Preflight_Service {
 			'correlation_id'       => $correlation_id,
 			'commit_execution'     => false,
 			'idempotency_required' => true,
+			'execution_verification_reads' => $verification_reads,
 		);
+	}
+
+	/**
+	 * Mints single-use approved read requests for post-execution verification.
+	 *
+	 * The Adapter names the verification reads it will need; Core stays the
+	 * authorization owner: each request must match the write ability's
+	 * contract-paired readback ability and target the same object as the
+	 * approved write input. Mint failures never block the write - the
+	 * readback degrades exactly as it does today - but every denial is
+	 * recorded for audit.
+	 *
+	 * @param array<string,mixed> $proposal Approved proposal row.
+	 * @param array<string,mixed> $request_params Preflight request parameters.
+	 * @param string              $correlation_id Preflight correlation id.
+	 * @return array<string,mixed> Granted and denied verification reads.
+	 */
+	private function mint_execution_verification_reads( array $proposal, array $request_params, string $correlation_id ): array {
+		$requested = is_array( $request_params['verification_reads'] ?? null ) ? array_values( (array) $request_params['verification_reads'] ) : array();
+		$granted   = array();
+		$denied    = array();
+
+		if ( empty( $requested ) || null === $this->read_requests ) {
+			return array( 'granted' => $granted, 'denied' => $denied );
+		}
+
+		$write_ability_id = (string) ( $proposal['ability_id'] ?? '' );
+		$write_input      = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
+		$paired_read      = (string) ( self::VERIFICATION_READ_ABILITIES[ $write_ability_id ] ?? '' );
+
+		foreach ( $requested as $read ) {
+			$read          = is_array( $read ) ? $read : array();
+			$ability_id    = sanitize_text_field( (string) ( $read['ability_id'] ?? '' ) );
+			$read_input    = is_array( $read['input'] ?? null ) ? $read['input'] : array();
+			$denial_reason = '';
+
+			if ( '' === $paired_read || $ability_id !== $paired_read ) {
+				$denial_reason = 'ability_not_paired_with_write';
+			} elseif ( ! $this->verification_read_targets_same_object( $write_ability_id, $write_input, $read_input ) ) {
+				$denial_reason = 'object_mismatch';
+			}
+
+			if ( '' !== $denial_reason ) {
+				$denied[] = array(
+					'ability_id' => $ability_id,
+					'reason'     => $denial_reason,
+				);
+				continue;
+			}
+
+			$request = $this->read_requests->create(
+				array(
+					'ability_id'              => $ability_id,
+					'input'                   => $read_input,
+					'requested_input_summary' => 'Post-execution verification read for proposal ' . (string) ( $proposal['proposal_id'] ?? '' ),
+					'data_classes'            => array( 'content_blocks' ),
+					'purpose'                 => 'Post-execution verification read minted at commit preflight (proposal ' . (string) ( $proposal['proposal_id'] ?? '' ) . ', correlation ' . $correlation_id . ').',
+					'caller'                  => array( 'correlation_id' => $correlation_id ),
+					'expires_at'              => gmdate( 'Y-m-d H:i:s', time() + self::PREFLIGHT_TTL_SECONDS ),
+				)
+			);
+
+			if ( is_wp_error( $request ) ) {
+				$denied[] = array(
+					'ability_id' => $ability_id,
+					'reason'     => 'mint_rejected:' . sanitize_key( $request->get_error_code() ),
+				);
+				continue;
+			}
+
+			$approved = $this->read_requests->approve(
+				(string) $request['request_id'],
+				array(
+					'note'        => 'Execution verification read attached to commit preflight.',
+					'proposal_id' => (string) ( $proposal['proposal_id'] ?? '' ),
+					'source'      => 'execution_verification',
+				)
+			);
+
+			if ( is_wp_error( $approved ) ) {
+				$denied[] = array(
+					'ability_id' => $ability_id,
+					'reason'     => 'approve_rejected:' . sanitize_key( $approved->get_error_code() ),
+				);
+				continue;
+			}
+
+			$granted[] = array(
+				'request_id' => (string) $request['request_id'],
+				'ability_id' => $ability_id,
+			);
+		}
+
+		return array( 'granted' => $granted, 'denied' => $denied );
+	}
+
+	/**
+	 * Returns whether one verification read targets the same object as the write.
+	 *
+	 * @param string              $write_ability_id Write ability id.
+	 * @param array<string,mixed> $write_input Approved write input.
+	 * @param array<string,mixed> $read_input Verification read input.
+	 * @return bool
+	 */
+	private function verification_read_targets_same_object( string $write_ability_id, array $write_input, array $read_input ): bool {
+		if ( 'npcink-abilities-toolkit/update-post-blocks' === $write_ability_id ) {
+			return (int) ( $write_input['post_id'] ?? 0 ) > 0
+				&& (int) ( $write_input['post_id'] ?? 0 ) === (int) ( $read_input['post_id'] ?? 0 );
+		}
+
+		$write_slug = sanitize_key( (string) ( $write_input['slug'] ?? '' ) );
+		$write_post = (int) ( $write_input['post_id'] ?? 0 );
+		$read_slug  = sanitize_key( (string) ( $read_input['slug'] ?? '' ) );
+		$read_post  = (int) ( $read_input['post_id'] ?? 0 );
+
+		if ( $write_post > 0 ) {
+			return $write_post === $read_post && ( '' === $read_slug || $read_slug === $write_slug );
+		}
+		if ( '' !== $write_slug ) {
+			return $read_slug === $write_slug;
+		}
+
+		return false;
 	}
 
 	/**

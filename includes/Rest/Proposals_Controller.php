@@ -278,6 +278,17 @@ final class Proposals_Controller {
 							'required'          => true,
 							'sanitize_callback' => 'sanitize_text_field',
 						),
+						'verification_reads' => array(
+							'type'     => 'array',
+							'required' => false,
+							'items'    => array(
+								'type'       => 'object',
+								'properties' => array(
+									'ability_id' => array( 'type' => 'string' ),
+									'input'      => array( 'type' => 'object' ),
+								),
+							),
+						),
 					),
 				),
 			)
