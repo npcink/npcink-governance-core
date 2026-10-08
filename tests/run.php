@@ -942,6 +942,13 @@ npcink_governance_core_assert( false !== strpos( $readme, 'OpenClaw Execution Gu
 npcink_governance_core_assert( false !== strpos( $readme, 'Adapter Handoff And Approval Policy Acceptance' ), 'README links Adapter handoff and approval policy acceptance.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'ADR-003: Keep Final Execution Outside Core For The Current Stage' ), 'README links ADR-003.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Resume After A Break' ), 'README links the resume-after-break guide.' );
+npcink_governance_core_assert( false !== strpos( $readme, 'Real Usage Validation' ), 'README links the real-usage validation program.' );
+$real_usage_validation = npcink_governance_core_read( $root . '/docs/real-usage-validation.md' );
+npcink_governance_core_assert( false !== strpos( $real_usage_validation, 'Weekly Ledger' ) && false !== strpos( $real_usage_validation, 'Recorded-Evidence Exit Criteria' ) && false !== strpos( $real_usage_validation, 'Release Gating' ), 'Real-usage validation keeps its ledger, exit-criteria, and release-gating sections.' );
+npcink_governance_core_assert( false !== strpos( $real_usage_validation, 'Low usage is itself the primary product signal' ), 'Real-usage validation records low-usage weeks with a why-line.' );
+$approval_policy_standard = npcink_governance_core_read( $root . '/docs/approval-policy-evaluator-standard.md' );
+npcink_governance_core_assert( false !== strpos( $approval_policy_standard, 'Observation Window: Widening Standard' ) && false !== strpos( $approval_policy_standard, 'four consecutive ledger weeks of real usage' ), 'smart_guarded widening is gated on the validation ledger observation window.' );
+npcink_governance_core_assert( false !== strpos( $approval_policy_standard, 'reverts that site' ) && false !== strpos( $approval_policy_standard, 'policy mode to `manual` the same day' ), 'A recorded misapproval reverts the site to manual the same day.' );
 $resume_after_break = npcink_governance_core_read( $root . '/docs/resume-after-break.md' );
 npcink_governance_core_assert( false !== strpos( $resume_after_break, 'Shortest Path' ) && false !== strpos( $resume_after_break, 'Gate Cheat Sheet' ) && false !== strpos( $resume_after_break, 'Known Pitfalls' ), 'Resume-after-break guide keeps its shortest path, gate, and pitfalls sections.' );
 npcink_governance_core_assert( false !== strpos( $resume_after_break, 'session-breadcrumb' ) && false !== strpos( $resume_after_break, 'docs/next-stage-plan.md' ), 'Resume-after-break guide points at the rolling breadcrumb and the next-stage plan instead of duplicating state.' );

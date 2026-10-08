@@ -345,6 +345,29 @@ source-policy evidence only, not as permission to bypass manual approval.
 
 ## Implementation Plan
 
+### Observation Window: Widening Standard
+
+Status: active (opened 2026-10-08).
+
+`smart_guarded` runs in its current narrow allowlist for an observation
+window before any widening is even considered. The window's input is the
+[Real Usage Validation](real-usage-validation.md) ledger, not local test
+runs:
+
+- Graduate consideration requires four consecutive ledger weeks of real usage
+  with zero misapprovals recorded in the misapproval column, and at least one
+  week where a guarded candidate actually auto-approved (a window with no
+  auto-approvals proves nothing).
+- Any recorded misapproval (an auto-approval the operator would have
+  rejected) reverts that site's policy mode to `manual` the same day, is
+  recorded in the ledger with its reason keys, and resets the window to zero.
+- Widening means adding at most one candidate class per reviewed change with
+  its own evidence paragraph; it never means a rules DSL, batch article or
+  publish auto-approval, or any entry on the Explicit Non-Candidates list.
+- The window has no end date. If real usage never exercises the guarded
+  candidates, that is recorded as evidence that the allowlist is already
+  wider than demand, and widening stays closed.
+
 ### Phase 0: Observation-Only Baseline
 
 Status: implemented.
