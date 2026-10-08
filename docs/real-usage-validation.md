@@ -43,6 +43,9 @@ Each pending item fires only on a ledger entry; no item fires on opinion:
 - ADR-007 local automation runtime: its start trigger is a ledger entry
   recording a concrete unattended-automation requirement that reviewed
   governance cannot cover.
+- ADR-011 verification read-request kind: implemented when the 0.4.0 scope
+  batch names it, or when a ledger entry records a real grant-mode
+  deployment hitting the silent `readback_failed` readback degradation.
 
 ## Release Gating
 
