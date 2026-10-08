@@ -5655,3 +5655,21 @@
 - **Not done (owner decisions pending)**: notification channel (brief D
   rejected / C recommended); `updated_since` polling filter (deferred);
   OpenAPI; browser visual smoke of the new badge/cards/timeline panel.
+# 2026-10-08 - UX round 2 review closeout (fix commits 432d4c4, follow-up)
+
+- Advisory review round 1 (15 findings) and round 2 (11 findings) fully
+  triaged; every real defect fixed, no waivers. Key late catches:
+  audit.listed total-snapshot drift, exact-window rate refunds
+  (consume now returns window_start), 429 responses carrying
+  X-RateLimit headers, admin detail timeline must exclude read-noise or
+  polled proposals evict their own approval/preflight evidence from the
+  bounded window, read-request lazy expiry inflating a naive pending
+  count (count_pending_unexpired added), plural-form portability of the
+  JS confirm (now plural-neutral "proposal(s)"), status enums reusing
+  allowed_statuses() (instance call — static call fatalled smoke).
+- zh_CN terminology realignments: 读预检已检查, Agent 主机.
+- All gates green after each fix batch: test:all, smoke:wp, validate,
+  check:wporg; final catalog 861 translated / 0 untranslated with
+  obsolete entries preserved.
+- PR body at /tmp/ux-round2-pr-body.md; publish with
+  `composer pr:publish -- --title "ux: round-2 consumer and admin experience fixes" --body-file /tmp/ux-round2-pr-body.md`.
