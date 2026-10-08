@@ -57,6 +57,18 @@ Ownership stays put: Core remains the read-authorization truth source, the
 Adapter remains the execution surface that names what it will verify, and
 no new scope is granted to any channel.
 
+## Hardening (2026-10-08, post-merge review)
+
+- The requested `verification_reads` list is deduplicated per read ability
+  and object and capped at four entries per preflight, so a caller cannot
+  mint an unbounded number of approved rows.
+- Granted request ids travel only inside the client-bound execution
+  handoff. The top-level preflight response exposes granted ability ids
+  and denial reasons, never usable request ids.
+- Unconsumed grants are invalidated by the preflight TTL (300 seconds);
+  there is no separate rollback path, and expired single-use rows are
+  inert by construction.
+
 ## Consequences
 - Governed writes keep their block-readback verification evidence under
   read-authorization-requiring deployments (acceptance: the Adapter

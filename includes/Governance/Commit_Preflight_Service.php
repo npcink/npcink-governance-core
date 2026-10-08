@@ -318,7 +318,15 @@ final class Commit_Preflight_Service {
 
 		$verification_reads = $this->mint_execution_verification_reads( $proposal, $request_params, $correlation_id );
 		if ( ! empty( $verification_reads['granted'] ) ) {
+			// Granted ids travel only inside the client-bound execution handoff; the
+			// top-level response exposes counts and denials, never usable request ids.
 			$execution_handoff['execution_verification_reads'] = $verification_reads['granted'];
+			$verification_reads['granted']                      = array_map(
+				static function ( array $grant ): array {
+					return array( 'ability_id' => (string) ( $grant['ability_id'] ?? '' ) );
+				},
+				$verification_reads['granted']
+			);
 		}
 
 		return array(
@@ -359,6 +367,23 @@ final class Commit_Preflight_Service {
 		if ( empty( $requested ) || null === $this->read_requests ) {
 			return array( 'granted' => $granted, 'denied' => $denied );
 		}
+
+		// Cap and dedupe: one mint per distinct read ability and object, bounded batch size.
+		$deduped = array();
+		foreach ( $requested as $read ) {
+			$read       = is_array( $read ) ? $read : array();
+			$ability_id = sanitize_text_field( (string) ( $read['ability_id'] ?? '' ) );
+			$read_input = is_array( $read['input'] ?? null ) ? $read['input'] : array();
+			$object_key = (string) ( $read_input['post_id'] ?? ( $read_input['slug'] ?? '' ) );
+			$deduped[ $ability_id . '|' . $object_key ] = array(
+				'ability_id' => $ability_id,
+				'input'      => $read_input,
+			);
+			if ( count( $deduped ) >= 4 ) {
+				break;
+			}
+		}
+		$requested = array_values( $deduped );
 
 		$write_ability_id = (string) ( $proposal['ability_id'] ?? '' );
 		$write_input      = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
