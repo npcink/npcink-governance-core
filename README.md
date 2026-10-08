@@ -154,6 +154,7 @@ Core-local workflow and release references:
 - [Release Candidate Version Matrix](docs/release-candidate-version-matrix.md)
 - [Release Closeout - 2026-06-21](docs/history/release-closeout-2026-06-21.md)
 - [Next Stage Plan](docs/next-stage-plan.md)
+- [Real Usage Validation](docs/real-usage-validation.md)
 
 Platform coordination pointers and historical planning context. These are not
 Core governance truth; check the Toolbox platform index before expanding them.

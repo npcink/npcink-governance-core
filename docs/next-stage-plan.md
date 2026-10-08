@@ -68,6 +68,13 @@ Documented, accepted, or readiness-complete (no longer "not implemented"):
 
 ## Current Execution Decision
 
+The current stage's product validation program is
+[Real Usage Validation](real-usage-validation.md): at least four weeks of
+real chain usage on one operating site, recorded weekly. The 0.4.0 scope is
+set by the first feedback batch from that ledger (at least two recorded
+weeks); pending decisions (`updated_since`, notification add-on,
+smart_guarded widening, ADR-007 start) fire only on recorded ledger entries.
+
 Core can now govern both single dry-run write proposals and supported
 read-only plans that produce multiple `write_actions`. It can also accept the
 P0 Toolbox `article_write_plan` handoff as one governed `npcink-abilities-toolkit/create-draft`
