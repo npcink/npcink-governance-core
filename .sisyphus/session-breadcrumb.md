@@ -5561,3 +5561,48 @@
   separately authorized wp.org SVN submission. Editor drafts 286721/286722 no
   longer exist on the local site; the adoption gate is moot and the article
   pilot can start from current drafts.
+# 2026-10-08 - Pre-release boundary audit and 0.3.0 hygiene closeout
+
+- **Module**: Release hygiene only — translation catalogs, wp.org readme,
+  decision records, docs corrections, static contracts.
+- **Audit**: Positioning/boundary-vs-implementation audit found the codebase
+  boundary-clean (no workflow runtime, no credential storage, no write
+  execution; tokens hashed; packaging correct). Real gaps were process and
+  public-facing: stale catalog version headers, missing wp.org readme
+  statements (WP 7.0 floor reason, multisite, record retention, executor
+  story), unclosed decision briefs, and doc drift.
+- **Fact recalibration (again)**: the Toolkit OCR-retry edit already landed
+  as #212 (`b05a45f`); the central matrix now shows 6/7 roots clean. The only
+  dirty participating root left is npcink-ai-cloud
+  `codex/runtime-diagnostics-review` (93 entries, behind origin/master by 1).
+- **Completed** (branch `fix/release-hygiene-0.3.0`, PR #95):
+  - Catalogs: POT/zh_CN PO/MO Project-Id-Version 0.2.0/0.1.0 -> 0.3.0
+    (msgfmt --check + MO magic verified); new static contract binds catalog
+    version headers to the plugin header version.
+  - readme.txt: Upgrade Notice; FAQs for WP 7.0 floor (fail-closed intake),
+    multisite provisioning, deactivate/delete retention; named Npcink AI
+    Client Adapter as the reference executor in Requirements.
+  - README: documented `POST /apps/{key_id}/rotate`; linked ADR-010.
+  - Decisions: 2026-10 briefs marked decided 2026-10-08 (1: B awareness +
+    runbook; 2: B at next acceptance authoring pass; 3: B via new ADR);
+    accepted
+    `docs/decisions/ADR-010-defer-final-commit-ownership-until-trigger.md`;
+    added the manual app-key rotation runbook to app-auth-scope-policy.md.
+  - Docs: fixed rest-api-contract include_payload sentence, next-stage-plan
+    stale baseline, Core 0.4 naming note (Toolkit 0.4.0 handoff, not Core
+    0.4.0).
+- **Verified**: `composer test:all`, `composer validate --no-check-publish`,
+  `composer check:wporg`, and advisory `ocr review` (0 findings) all passed
+  on f796585. Package SHA changed to
+  `944afccf02524b832d79407fd106b785b46d2928818ef2d0a708dc64ed4d5f9f`
+  (catalog headers) — release evidence must be re-bound at exact HEAD.
+- **Remaining release steps (owner-dependent)**: land npcink-ai-cloud
+  runtime-diagnostics; central matrix `--fail-on-dirty`; cross-repo
+  acceptance; rerun `prepare:release` to re-bind package evidence; tag
+  v0.3.0; separately authorized SVN submission. readme.txt added new Stable
+  Readme strings — refresh `sj/` 8-locale drafts and submit zh_CN (PTE
+  follow-up). New contract means every future version bump must also bump
+  the catalog headers.
+- **Boundary**: No REST route, data shape, table, lifecycle, approval,
+  execution, workflow runtime, queue, provider credential, or product UX
+  behavior changed. ADR-010 only names triggers; ADR-003 stands.
