@@ -5,21 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-## 2026-09-06 — Final exact-head M4 after smoke-tool merge
-
-- **Module**: Core final release evidence after protected tooling merge.
-- **Completed**: Protected PR #74 merged the LocalWP socket-discovery fix as
-  `35fc4eb6f4847d15a1e9ff70b96ae6c320b32cdc`.
-- **Verified**: Exact merged HEAD passed M4 Docker WordPress 7.0/PHP 8.0 and
-  8.5, with 1,426 assertions per profile and ZIP installation. The evidence
-  source archive is `60e2eed73df9c1d9382301ef877414f007783e95945c660df2ec28b3c6e00230`.
-- **Next gate**: Complete Toolbox owner closeout and coordinated final tags;
-  keep release publication blocked until all exact heads are clean.
-- **Boundary**: No REST route, data shape, table, lifecycle, approval,
-  execution, workflow runtime, queue, provider credential, or product UX
-  behavior changed.
-
-
 ## 2026-09-06 — LocalWP socket discovery hardening
 
 - **Module**: Core-local WordPress release-smoke tooling.
@@ -300,3 +285,23 @@ Older history: `.sisyphus/archive/`.
   sessions)**: notification channel brief (D rejected / C recommended);
   `updated_since` polling filter; zh_CN wp.org language pack still waits on
   the PTE path.
+
+# 2026-10-08 - Next-stage kickoff: validation program opened, decisions closed, ADR-007 parked
+
+- **Module**: Next-stage planning docs only (no runtime class changed).
+- **Completed**: Three merged PRs executing the accepted next-stage advice:
+  #117 closed briefs Decision 1 as option C (observability hook is the
+  contracted notification seam; Decision 2 stays open on its recorded
+  trigger); #119 opened docs/real-usage-validation.md (4+ week program,
+  weekly ledger with low-usage why-lines, recorded-evidence exit criteria,
+  0.4.0 scope gated on the first feedback batch) plus the smart_guarded
+  widening standard (four clean ledger weeks, any misapproval reverts to
+  manual same day, no end date); #121 parked the ADR-007 runtime behind a
+  ledger-recorded start trigger with the state carried on the ADR-010
+  closeout checkpoint line.
+- **Owner next actions (the real main line)**: run the governed chain on one
+  real operating site weekly and append ledger rows; nothing else fires
+  until the ledger has entries.
+- **Verification**: `composer test:all` exit 0 on every PR; advisory ocr
+  review zero findings pre-publish each time; release package hash at
+  baseline.
