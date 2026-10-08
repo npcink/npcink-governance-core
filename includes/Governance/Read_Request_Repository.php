@@ -253,6 +253,31 @@ final class Read_Request_Repository {
 	}
 
 	/**
+	 * Counts pending requests whose grant window has not passed.
+	 *
+	 * Read-request expiry is lazy: rows are only flipped to `expired` when a
+	 * decision or grant is attempted, so a raw pending count also counts
+	 * un-actionable expired-but-unmarked rows. This count stays honest for
+	 * operator-facing badges.
+	 *
+	 * @return int
+	 */
+	public function count_pending_unexpired(): int {
+		global $wpdb;
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		return (int) $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %i WHERE status = %s AND expires_at > %s',
+				$this->table_name(),
+				self::STATUS_PENDING,
+				current_time( 'mysql', true )
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+	}
+
+	/**
 	 * Counts recent requests, optionally filtered by status.
 	 *
 	 * @param string $status Optional status.

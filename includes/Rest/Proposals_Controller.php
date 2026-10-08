@@ -119,16 +119,7 @@ final class Proposals_Controller {
 						'status' => array(
 							'type'              => 'string',
 							'default'           => '',
-							'enum'              => array(
-								'',
-								Proposal_Repository::STATUS_PENDING,
-								Proposal_Repository::STATUS_APPROVED,
-								Proposal_Repository::STATUS_REJECTED,
-								Proposal_Repository::STATUS_EXPIRED,
-								Proposal_Repository::STATUS_ARCHIVED,
-								Proposal_Repository::STATUS_EXECUTED,
-								Proposal_Repository::STATUS_EXECUTION_FAILED,
-							),
+							'enum'              => array_merge( array( '' ), $this->repository->allowed_statuses() ),
 							'sanitize_callback' => 'sanitize_key',
 						),
 						'include_payload' => array(

@@ -195,15 +195,21 @@ final class Proposal_Service {
 			return $duplicate;
 		}
 
-		$pending_count = $this->count_pending_for_quota( $pending, (string) $guardrail['pending_quota_key'] );
+		$quota_pending = array();
+		foreach ( $pending as $quota_candidate ) {
+			if ( $this->proposal_matches_quota_key( $quota_candidate, (string) $guardrail['pending_quota_key'] ) ) {
+				$quota_pending[] = $quota_candidate;
+			}
+		}
+		$pending_count = count( $quota_pending );
 		if ( $pending_count >= (int) $guardrail['pending_quota_limit'] ) {
 			$this->audit->record(
 				'proposal.quota_blocked',
 				array(
-					'ability_id'     => $ability_id,
-					'pending_count'  => $pending_count,
-					'quota_limit'    => (int) $guardrail['pending_quota_limit'],
-					'quota_subject'  => (string) $guardrail['pending_quota_subject'],
+					'ability_id'    => $ability_id,
+					'pending_count' => $pending_count,
+					'quota_limit'   => (int) $guardrail['pending_quota_limit'],
+					'quota_subject' => (string) $guardrail['pending_quota_subject'],
 				)
 			);
 
@@ -215,7 +221,7 @@ final class Proposal_Service {
 					'pending_count'               => $pending_count,
 					'quota_limit'                 => (int) $guardrail['pending_quota_limit'],
 					'quota_subject'               => (string) $guardrail['pending_quota_subject'],
-					'earliest_pending_expires_at' => $this->earliest_pending_expires_at( $pending ),
+					'earliest_pending_expires_at' => $this->earliest_pending_expires_at( $quota_pending ),
 				)
 			);
 		}
@@ -940,24 +946,6 @@ final class Proposal_Service {
 		}
 
 		return null;
-	}
-
-	/**
-	 * Counts pending proposals for a caller quota bucket.
-	 *
-	 * @param array<int,array<string,mixed>> $pending Pending proposals.
-	 * @param string                         $quota_key Quota key.
-	 * @return int
-	 */
-	private function count_pending_for_quota( array $pending, string $quota_key ): int {
-		$count = 0;
-		foreach ( $pending as $proposal ) {
-			if ( $this->proposal_matches_quota_key( $proposal, $quota_key ) ) {
-				++$count;
-			}
-		}
-
-		return $count;
 	}
 
 	/**

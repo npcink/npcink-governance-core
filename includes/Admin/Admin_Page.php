@@ -449,7 +449,7 @@ final class Admin_Page {
 	private function render_queue_summary( int $pending_count ): void {
 		$approved_count         = $this->proposals->count_by_status( Proposal_Repository::STATUS_APPROVED );
 		$execution_failed_count = $this->proposals->count_by_status( Proposal_Repository::STATUS_EXECUTION_FAILED );
-		$pending_reads_count    = $this->read_requests->count_recent( Read_Request_Repository::STATUS_PENDING );
+		$pending_reads_count    = $this->read_requests->count_pending_unexpired();
 		$activity_filters       = array(
 			'exclude_event_names' => $this->low_value_audit_events(),
 			'created_after'       => $this->audit_created_after_for_range( '30d' ),
@@ -798,8 +798,7 @@ final class Admin_Page {
 							type="submit"
 							class="button"
 							<?php /* translators: %d: number of selected proposals. */ ?>
-							data-npcink-bulk-confirm-singular="<?php echo esc_attr( _n( 'Reject %d selected proposal? Rejections cannot be undone.', 'Reject %d selected proposals? Rejections cannot be undone.', 1, 'npcink-governance-core' ) ); ?>"
-							data-npcink-bulk-confirm-plural="<?php echo esc_attr( _n( 'Reject %d selected proposal? Rejections cannot be undone.', 'Reject %d selected proposals? Rejections cannot be undone.', 2, 'npcink-governance-core' ) ); ?>"
+							data-npcink-bulk-confirm="<?php echo esc_attr__( 'Reject the %d selected proposal(s)? Rejections cannot be undone.', 'npcink-governance-core' ); ?>"
 						>
 							<?php echo esc_html__( 'Reject selected', 'npcink-governance-core' ); ?>
 						</button>
@@ -2629,12 +2628,18 @@ final class Admin_Page {
 		$active_tab  = $this->proposal_detail_tab_from_request();
 		$timeline    = $this->audit->list_filtered(
 			array(
-				'proposal_id' => $proposal_id,
-				'limit'       => 50,
-				'order'       => 'desc',
+				'proposal_id'         => $proposal_id,
+				'limit'               => 50,
+				'order'               => 'desc',
+				'exclude_event_names' => $this->low_value_audit_events(),
 			)
 		);
-		$timeline_total = $this->audit->count_filtered( array( 'proposal_id' => $proposal_id ) );
+		$timeline_total = $this->audit->count_filtered(
+			array(
+				'proposal_id'         => $proposal_id,
+				'exclude_event_names' => $this->low_value_audit_events(),
+			)
+		);
 		?>
 		<p><a href="<?php echo esc_url( $this->queue_url( max( 1, $this->page_from_request( 'review_page' ) ) ) ); ?>">&larr; <?php echo esc_html__( 'Back to review queue', 'npcink-governance-core' ); ?></a></p>
 		<h2><?php echo esc_html__( 'Proposal Detail', 'npcink-governance-core' ); ?></h2>
@@ -4869,18 +4874,13 @@ final class Admin_Page {
 	/**
 	 * Returns low-value read events hidden by default from the admin audit.
 	 *
+	 * Reuses the repository's canonical noise list so REST and admin defaults
+	 * can never diverge.
+	 *
 	 * @return array<int,string>
 	 */
 	private function low_value_audit_events(): array {
-		return array(
-			'proposal.viewed',
-			'proposal.listed',
-			'capabilities.listed',
-			'audit.listed',
-			'app.listed',
-			'read_request.listed',
-			'read_request.viewed',
-		);
+		return $this->audit->read_noise_event_names();
 	}
 
 	/**

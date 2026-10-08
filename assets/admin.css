@@ -201,6 +201,7 @@
 
 .npcink-governance-core-recent-activity-list {
 	margin: 0;
+	padding: 0;
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
@@ -1337,13 +1338,13 @@
 
 /* AI activity overview strip link styles; the 3-column layout rule lives
    before the 960px media query so the responsive collapse still wins. */
-.npcink-governance-core-activity-overview .npcink-governance-core-summary-link {
+.npcink-governance-core-summary-link {
 	display: block;
 	text-decoration: none;
 	color: inherit;
 }
-.npcink-governance-core-activity-overview .npcink-governance-core-summary-link:hover,
-.npcink-governance-core-activity-overview .npcink-governance-core-summary-link:focus {
+.npcink-governance-core-summary-link:hover,
+.npcink-governance-core-summary-link:focus {
 	border-color: #2271b1;
 }
 

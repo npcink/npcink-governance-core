@@ -2039,8 +2039,8 @@ npcink_governance_core_assert( false !== strpos( $audit_controller, 'X-WP-Total'
 $read_requests_controller = npcink_governance_core_read( $root . '/includes/Rest/Read_Requests_Controller.php' );
 npcink_governance_core_assert( false !== strpos( $read_requests_controller, "'offset'" ), 'Read-requests REST route supports offset pagination.' );
 
-npcink_governance_core_assert( false !== strpos( $proposals_controller, "Proposal_Repository::STATUS_EXECUTION_FAILED," ) && false !== strpos( $proposals_controller, "'enum'" ), 'Proposal list status filter is enumerated so typos return 400 instead of an empty list.' );
-npcink_governance_core_assert( false !== strpos( $read_requests_controller, "Read_Request_Repository::STATUS_CONSUMED," ) && false !== strpos( $read_requests_controller, "'enum'" ), 'Read-request list status filter is enumerated.' );
+npcink_governance_core_assert( false !== strpos( $proposals_controller, "array_merge( array( '' ), \$this->repository->allowed_statuses() )" ) && false !== strpos( $proposals_controller, "'enum'" ), 'Proposal list status filter reuses the canonical status allowlist so typos return 400 instead of an empty list.' );
+npcink_governance_core_assert( false !== strpos( $read_requests_controller, "array_merge( array( '' ), \$this->repository->allowed_statuses() )" ) && false !== strpos( $read_requests_controller, "'enum'" ), 'Read-request list status filter reuses the canonical status allowlist.' );
 npcink_governance_core_assert( false !== strpos( $read_request_service_source, "'request_status'" ), 'Read-request already-decided 409 echoes the stored request status.' );
 npcink_governance_core_assert( false !== strpos( $read_requests_controller, "read_authorization_context']['expires_at'] = Rest_Format::iso8601" ), 'Read-preflight nested grant expiry is normalized to ISO8601.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service_source, 'earliest_pending_expires_at' ), 'Pending-quota 429 reports when the oldest pending proposal frees a slot.' );
@@ -3206,7 +3206,7 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'render_audit_outc
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Current governance outcome' ) && false !== strpos( $admin_page, 'Next step' ) && false !== strpos( $admin_page, 'Evidence trail' ), 'Admin proposal audit evidence summarizes outcome, next step, and evidence trail.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Awaiting Core review.' ) && false !== strpos( $admin_page, 'Approved; preflight handoff not yet issued.' ), 'Admin proposal audit outcome explains pending and approved states.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, '$this->render_audit_timeline( $proposal, $timeline, false, $timeline_total );' ) && false !== strpos( $admin_page, '$this->render_raw_proposal_payload( $proposal );' ), 'Admin proposal detail separates audit evidence from raw payload.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, "'order'       => 'desc'," ), 'Admin proposal detail timeline lists the newest audit events first.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "'order'               => 'desc'," ), 'Admin proposal detail timeline lists the newest audit events first.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Showing the latest %1$d of %2$d recorded events.' ), 'Admin proposal detail timeline discloses truncation.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_status_badge' ), 'Admin proposal status uses visual badges.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_risk_badge' ), 'Admin proposal risk uses visual badges.' );

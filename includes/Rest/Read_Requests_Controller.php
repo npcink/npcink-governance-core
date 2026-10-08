@@ -92,14 +92,7 @@ final class Read_Requests_Controller {
 						'status' => array(
 							'type'              => 'string',
 							'default'           => '',
-							'enum'              => array(
-								'',
-								Read_Request_Repository::STATUS_PENDING,
-								Read_Request_Repository::STATUS_APPROVED,
-								Read_Request_Repository::STATUS_REJECTED,
-								Read_Request_Repository::STATUS_EXPIRED,
-								Read_Request_Repository::STATUS_CONSUMED,
-							),
+							'enum'              => array_merge( array( '' ), $this->repository->allowed_statuses() ),
 							'sanitize_callback' => 'sanitize_key',
 						),
 					),
