@@ -1346,6 +1346,7 @@ $adr_004 = npcink_governance_core_read( $root . '/docs/decisions/ADR-004-suite-c
 $adr_005 = npcink_governance_core_read( $root . '/docs/decisions/ADR-005-keep-core-independent-and-standardize-channel-adapters.md' );
 $adr_006 = npcink_governance_core_read( $root . '/docs/decisions/ADR-006-unattended-batch-automation-runtime-boundary.md' );
 $adr_007 = npcink_governance_core_read( $root . '/docs/decisions/ADR-007-dedicated-local-automation-runtime-owner.md' );
+$adr_010 = npcink_governance_core_read( $root . '/docs/decisions/ADR-010-defer-final-commit-ownership-until-trigger.md' );
 npcink_governance_core_assert( false !== strpos( $adr_001, 'Create a new standalone `npcink-governance-core` plugin' ), 'ADR-001 records rebuild decision.' );
 npcink_governance_core_assert( false !== strpos( $adr_002, '`npcink-governance-core` must not implement a workflow runtime' ), 'ADR-002 bans workflow runtime ownership.' );
 npcink_governance_core_assert( false !== strpos( $adr_003, 'Core remains governance-only' ), 'ADR-003 keeps Core governance-only for the current stage.' );
@@ -1376,6 +1377,11 @@ npcink_governance_core_assert( false !== strpos( $adr_007, 'module path: `module
 npcink_governance_core_assert( false !== strpos( $adr_007, 'Toolbox fixed-flow' ) && false !== strpos( $adr_007, 'runtime state machine' ), 'ADR-007 keeps Toolbox fixed buttons out of runtime ownership.' );
 npcink_governance_core_assert( false !== strpos( $adr_007, 'Phase 1 is contract and replay only' ), 'ADR-007 keeps Phase 1 contract and replay only.' );
 npcink_governance_core_assert( false !== strpos( $adr_007, 'This Core pass does not create the development repository' ), 'ADR-007 keeps this Core pass implementation-free.' );
+npcink_governance_core_assert( false !== strpos( $adr_010, 'Trigger Review Checkpoint' ) && false !== strpos( $adr_010, 'the current count of production execution consumers' ), 'ADR-010 defines an observable trigger review checkpoint.' );
+npcink_governance_core_assert( false !== strpos( $adr_010, 'successor ADR is opened before release work continues' ), 'ADR-010 stops the release closeout when a trigger fires.' );
+npcink_governance_core_assert( false !== strpos( $adr_010, 'not a runtime feature' ), 'ADR-010 keeps the checkpoint review-only.' );
+$release_closeout_standard = npcink_governance_core_read( $root . '/docs/release-closeout-standard.md' );
+npcink_governance_core_assert( false !== strpos( $release_closeout_standard, 'ADR-010 trigger review checkpoint' ), 'Release closeout standard runs the ADR-010 checkpoint before candidate freeze.' );
 
 $external_owner_boundary = npcink_governance_core_read( $root . '/docs/external-owner-boundary-notes.md' );
 foreach (
