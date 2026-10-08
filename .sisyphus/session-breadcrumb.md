@@ -5,24 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-## 2026-09-06 — Release closeout method documented
-
-- **Module**: Core-local release and development workflow documentation.
-- **Completed**: Consolidated the 0.2.0/0.3.3/0.5.5 release lessons into an
-  active closeout standard covering exact artifact identity, M4 evidence,
-  signed Adapter recovery, protected-merge retesting, tag verification, and
-  conservative branch/worktree auditing. Updated the 0.2.0 record to the
-  published exact tags and commits.
-- **Key distinction**: Central matrix cleanliness covers configured repository
-  roots, not every registered auxiliary worktree. Release publication and
-  global workspace cleanup are independent completion states.
-- **Next action**: WordPress.org SVN publication remains release-owner only;
-  unrelated dirty or locked historical worktrees require separate owner-aware
-  cleanup.
-- **Boundary**: Documentation only. No REST, data, lifecycle, execution,
-  workflow runtime, queue, provider credential, or product UX behavior changed.
-
-
 ## 2026-09-06 — Final exact-head M4 after smoke-tool merge
 
 - **Module**: Core final release evidence after protected tooling merge.
@@ -285,3 +267,36 @@ Older history: `.sisyphus/archive/`.
   briefs (notification channel, updated_since polling); Adapter consumers
   adopt the new contract additions on next sync; zh_CN wp.org language
   pack submission still waits on the PTE path.
+
+# 2026-10-08 - Solo+AI process hardening: breadcrumb rotation, docs history, behavioral tests, ADR-010 checkpoint, smoke self-cleanup, resume guide
+
+- **Module**: Cross-cutting solo-developer process (no runtime class changed).
+- **Completed**: Six merged PRs implementing the accepted assessment:
+  #101 breadcrumb split (295KB -> 17KB rolling + monthly archives, 10-entry
+  rotation rule in AGENTS.md); #103 docs authority inventory made physical
+  (13 historical docs -> docs/history/, layout pinned both directions);
+  #104/#106 PHPUnit 9.6 behavioral suite (31 tests / 95 assertions over
+  Approval_Policy_Evaluator, Plan_Contract_Validator, App_Rate_Limiter;
+  runners now report the full failure list, capped printing at 50); #109
+  ADR-010 Trigger Review Checkpoint wired into release closeout step 1;
+  #111 process de-load (visual smoke cadence, weekly docs batching, smoke
+  deletes its own fixtures with 54 cleanup assertions; 220 stale pending
+  rows wiped locally, 17 remaining belong to cross-repo smokes); #113
+  docs/resume-after-break.md solo-gap insurance page. Issue #5 closed by
+  coverage audit; #105 tracks the deferred runner-monolith split.
+- **Gotchas hit**: composer require on local PHP 8.4 locked a PHP ^8.4
+  transitive dep that CI's 8.0 floor rejected - config.platform.php=8.0.30
+  pins resolution; phpunit.xml.dist leaked into the release package until
+  .distignore caught it; wp eval-file includes files in method scope, so
+  helpers must declare `global` explicitly; pinned phrases must survive on
+  one unwrapped line; GitHub required_conversation_resolution blocks
+  auto-merge until advisory-review threads are resolved - run local
+  `ocr review` BEFORE pr:publish so CI review lands zero threads.
+- **Verification**: `composer test:all` green on every PR; `composer
+  smoke:wp` green twice on #111 (54 cleanup assertions executing); advisory
+  ocr review pre-publish each time; release package hash unchanged
+  throughout.
+- **Not done (owner decisions pending, unchanged from earlier 2026-10-08
+  sessions)**: notification channel brief (D rejected / C recommended);
+  `updated_since` polling filter; zh_CN wp.org language pack still waits on
+  the PTE path.
