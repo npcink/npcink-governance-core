@@ -112,7 +112,8 @@ jobs:
         # a758d9c) plus post-tag fix 182898c "allow unlisted OpenRouter model
         # overrides" (upstream #1610); pinned by commit SHA because the action
         # receives the LLM auth token - bump deliberately and record the new
-        # tag->commit pair).
+        # tag->commit pair). TODO: re-pin to the next stable upstream tag once
+        # a release includes #1610, so tag-based provenance matches again.
         uses: alibaba/open-code-review@182898cf522da3d04157b422752d028417974e19
         with:
           llm_url: ${{ secrets.OCR_LLM_URL }}
