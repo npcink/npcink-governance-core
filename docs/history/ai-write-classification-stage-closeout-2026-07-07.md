@@ -84,15 +84,15 @@ The stage landed in several small increments:
 
 The resulting documentation and gates are:
 
-- [Operation Classification Contract](operation-classification-contract.md):
+- [Operation Classification Contract](../operation-classification-contract.md):
   source of truth for classification rules and the matrix.
-- [Development Workflow](development-workflow.md): requires a classification
+- [Development Workflow](../development-workflow.md): requires a classification
   answer before new AI-assisted write entrypoint implementation.
-- [Testing Strategy](testing-strategy.md): defines the AI write classification
+- [Testing Strategy](../testing-strategy.md): defines the AI write classification
   release regression.
-- [WordPress.org Release Gate](wordpress-org-release-gate.md): requires the
+- [WordPress.org Release Gate](../wordpress-org-release-gate.md): requires the
   regression when AI-assisted write entrypoints are in release scope.
-- [Cross-Repo Release Acceptance](cross-repo-release-acceptance.md): includes
+- [Cross-Repo Release Acceptance](../cross-repo-release-acceptance.md): includes
   the classification regression as a stack boundary check when relevant.
 - [AI Write Classification Regression Evidence](ai-write-classification-regression-evidence.md):
   provides the copyable evidence record template.

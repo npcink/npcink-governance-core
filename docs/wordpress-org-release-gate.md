@@ -24,7 +24,7 @@ AI-assisted WordPress write entrypoints, also run the AI Write Classification
 release regression from [Testing Strategy](testing-strategy.md) and
 [Operation Classification Contract](operation-classification-contract.md), and
 record the result with
-[AI Write Classification Regression Evidence](ai-write-classification-regression-evidence.md).
+[AI Write Classification Regression Evidence](history/ai-write-classification-regression-evidence.md).
 The release is not ready until the three lanes are still true:
 
 - visible generic AI plugin or native editor acceptance remains an ordinary

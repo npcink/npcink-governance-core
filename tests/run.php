@@ -232,6 +232,28 @@ foreach (
 	npcink_governance_core_assert( false !== strpos( $core_docs_authority_inventory, $required ), 'Core docs authority inventory contains required phrase: ' . $required );
 }
 
+$docs_history_moved = array(
+	'content-metadata-delta-operator-trial.md',
+	'ai-write-classification-regression-evidence.md',
+	'ai-write-classification-stage-closeout-2026-07-07.md',
+	'eval-lab-governance-hardening-closeout-2026-07-01.md',
+	'wordpress-org-zh-cn-translation-status-2026-07-03.md',
+	'release-closeout-2026-06-21.md',
+	'admin-menu-localization-closeout-2026-06-21.md',
+	'admin-identity-tab-visual-closeout-2026-07-02.md',
+	'reference-plugin-evaluation-development-summary-2026-07-08.md',
+	'article-content-production-discussion-summary-2026-09-05.md',
+	'current-stage-closeout-and-handoff.md',
+	'approval-policy-stage-closeout.md',
+	'project-history-summary.md',
+);
+foreach ( $docs_history_moved as $docs_history_doc ) {
+	npcink_governance_core_assert( is_readable( $root . '/docs/history/' . $docs_history_doc ), 'Historical doc lives under docs/history/: ' . $docs_history_doc );
+	npcink_governance_core_assert( ! is_readable( $root . '/docs/' . $docs_history_doc ), 'Historical doc no longer sits in the docs root: ' . $docs_history_doc );
+	npcink_governance_core_assert( false !== strpos( $readme, '](docs/history/' . $docs_history_doc . ')' ), 'README links the historical doc at its docs/history path: ' . $docs_history_doc );
+	npcink_governance_core_assert( false === strpos( $readme, '](docs/' . $docs_history_doc . ')' ), 'README no longer links the historical doc from the docs root: ' . $docs_history_doc );
+}
+
 $reference_plugin_action_plan = npcink_governance_core_read( $root . '/docs/reference-plugin-action-plan.md' );
 foreach (
 	array(
@@ -248,7 +270,7 @@ foreach (
 	npcink_governance_core_assert( false !== strpos( $reference_plugin_action_plan, $required ), 'Reference plugin action plan contains required phrase: ' . $required );
 }
 
-$reference_plugin_evaluation_summary = npcink_governance_core_read( $root . '/docs/reference-plugin-evaluation-development-summary-2026-07-08.md' );
+$reference_plugin_evaluation_summary = npcink_governance_core_read( $root . '/docs/history/reference-plugin-evaluation-development-summary-2026-07-08.md' );
 foreach (
 	array(
 		'Reference Plugin Evaluation Development Summary',
@@ -266,7 +288,7 @@ foreach (
 	npcink_governance_core_assert( false !== strpos( $reference_plugin_evaluation_summary, $required ), 'Reference plugin evaluation summary contains required phrase: ' . $required );
 }
 
-$article_content_production_discussion_summary = npcink_governance_core_read( $root . '/docs/article-content-production-discussion-summary-2026-09-05.md' );
+$article_content_production_discussion_summary = npcink_governance_core_read( $root . '/docs/history/article-content-production-discussion-summary-2026-09-05.md' );
 foreach (
 	array(
 		'Article Content Production Discussion Summary',
@@ -1354,7 +1376,7 @@ foreach (
 	npcink_governance_core_assert( ! file_exists( $root . '/' . $removed_path ), 'Core must not keep local automation runtime artifact: ' . $removed_path );
 }
 
-$content_metadata_operator_trial = npcink_governance_core_read( $root . '/docs/content-metadata-delta-operator-trial.md' );
+$content_metadata_operator_trial = npcink_governance_core_read( $root . '/docs/history/content-metadata-delta-operator-trial.md' );
 foreach (
 	array(
 		'Status: superseded as the current next-stage target',
@@ -1445,7 +1467,7 @@ foreach (
 	npcink_governance_core_assert( false !== strpos( $testing_strategy, $required ), 'Testing strategy documents AI write classification release regression text: ' . $required );
 }
 
-$ai_write_regression_evidence = npcink_governance_core_read( $root . '/docs/ai-write-classification-regression-evidence.md' );
+$ai_write_regression_evidence = npcink_governance_core_read( $root . '/docs/history/ai-write-classification-regression-evidence.md' );
 foreach (
 	array(
 		'AI Write Classification Regression Evidence',
@@ -1466,7 +1488,7 @@ foreach (
 	npcink_governance_core_assert( false !== strpos( $ai_write_regression_evidence, $required ), 'AI write classification regression evidence template contains required text: ' . $required );
 }
 
-$ai_write_stage_closeout = npcink_governance_core_read( $root . '/docs/ai-write-classification-stage-closeout-2026-07-07.md' );
+$ai_write_stage_closeout = npcink_governance_core_read( $root . '/docs/history/ai-write-classification-stage-closeout-2026-07-07.md' );
 foreach (
 	array(
 		'AI Write Classification Stage Closeout - 2026-07-07',
@@ -2806,7 +2828,7 @@ $plugin_bootstrap = npcink_governance_core_read( $root . '/includes/Plugin.php' 
 $admin_css = npcink_governance_core_read( $root . '/assets/admin.css' );
 $admin_js = npcink_governance_core_read( $root . '/assets/admin.js' );
 $admin_surface_standard = npcink_governance_core_read( $root . '/docs/admin-surface-standard.md' );
-$admin_identity_tab_visual_closeout = npcink_governance_core_read( $root . '/docs/admin-identity-tab-visual-closeout-2026-07-02.md' );
+$admin_identity_tab_visual_closeout = npcink_governance_core_read( $root . '/docs/history/admin-identity-tab-visual-closeout-2026-07-02.md' );
 foreach (
 	array(
 		'local governance workbench',
