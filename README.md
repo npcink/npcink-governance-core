@@ -135,6 +135,7 @@ Governance truth:
 
 Core-local workflow and release references:
 
+- [Resume After A Break](docs/resume-after-break.md)
 - [Development Workflow](docs/development-workflow.md)
 - [GitHub Development Support](docs/github-development-support.md)
 - [Solo AI Development Workflow](docs/solo-ai-development-workflow.md)
