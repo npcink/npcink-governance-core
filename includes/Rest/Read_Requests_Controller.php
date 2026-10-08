@@ -285,6 +285,9 @@ final class Read_Requests_Controller {
 			return $result;
 		}
 
+		if ( is_array( $result['request'] ?? null ) ) {
+			$result['request'] = Rest_Format::row( $result['request'], self::REQUEST_TIMESTAMP_FIELDS );
+		}
 		if ( is_array( $result['read_authorization_context'] ?? null ) && isset( $result['read_authorization_context']['expires_at'] ) ) {
 			$result['read_authorization_context']['expires_at'] = Rest_Format::iso8601( (string) $result['read_authorization_context']['expires_at'] );
 		}

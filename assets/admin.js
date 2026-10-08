@@ -47,7 +47,7 @@
 	document.addEventListener( 'click', function ( event ) {
 		var toggle = event.target.closest( '.npcink-governance-core-row-details-toggle' );
 		var copyButton = event.target.closest( '[data-npcink-copy-target]' );
-		var bulkConfirm = event.target.closest( '[data-npcink-bulk-confirm]' );
+		var bulkConfirm = event.target.closest( '[data-npcink-bulk-confirm-singular]' );
 		var bulkClear = event.target.closest( '[data-npcink-bulk-clear]' );
 		var bulkApply = event.target.closest( '[data-npcink-bulk-apply]' );
 		var bulkSelect;
@@ -56,17 +56,21 @@
 		var expanded;
 		var source;
 		var previousLabel;
-		var selected;
 		var confirmMessage;
 
 		if ( bulkConfirm ) {
-			selected = document.querySelectorAll( 'input[name="proposal_ids[]"]:checked' ).length;
+			let selected = document.querySelectorAll( 'input[name="proposal_ids[]"]:checked' ).length;
 			if ( selected === 0 ) {
 				event.preventDefault();
 				return;
 			}
-			confirmMessage = bulkConfirm.getAttribute( 'data-npcink-bulk-confirm' ) || '';
-			if ( ! window.confirm( confirmMessage.replace( '%d', selected ) ) ) {
+			confirmMessage = selected === 1
+				? bulkConfirm.getAttribute( 'data-npcink-bulk-confirm-singular' ) || ''
+				: bulkConfirm.getAttribute( 'data-npcink-bulk-confirm-plural' ) || '';
+			if ( confirmMessage === '' ) {
+				return;
+			}
+			if ( ! window.confirm( confirmMessage.split( '%d' ).join( String( selected ) ) ) ) {
 				event.preventDefault();
 			}
 			return;

@@ -450,17 +450,21 @@ final class Admin_Page {
 		$approved_count         = $this->proposals->count_by_status( Proposal_Repository::STATUS_APPROVED );
 		$execution_failed_count = $this->proposals->count_by_status( Proposal_Repository::STATUS_EXECUTION_FAILED );
 		$pending_reads_count    = $this->read_requests->count_recent( Read_Request_Repository::STATUS_PENDING );
-		$activity_count         = $this->audit->count();
-		$audit_base             = array( 'view' => 'audit', 'audit_time_range' => 'all' );
+		$activity_filters       = array(
+			'exclude_event_names' => $this->low_value_audit_events(),
+			'created_after'       => $this->audit_created_after_for_range( '30d' ),
+		);
+		$activity_count         = $this->audit->count_filtered( $activity_filters );
+		$audit_overview_url     = $this->view_url( 'audit' );
 		?>
 		<div class="npcink-governance-core-summary-strip npcink-governance-core-max-wide">
 			<?php $this->render_summary_item( __( 'Needs review', 'npcink-governance-core' ), (string) $pending_count, __( 'Pending proposals waiting for an administrator decision.', 'npcink-governance-core' ), 'warning', $this->admin_url() ); ?>
-			<?php $this->render_summary_item( __( 'Approved', 'npcink-governance-core' ), (string) $approved_count, __( 'Approved proposals waiting for Adapter preflight or execution record.', 'npcink-governance-core' ), 'ok', $this->admin_url( array_merge( $audit_base, array( 'audit_event_name' => 'proposal.approved' ) ) ) ); ?>
-			<?php $this->render_summary_item( __( 'Execution failed', 'npcink-governance-core' ), (string) $execution_failed_count, __( 'Adapter-reported failures that need operator follow-up.', 'npcink-governance-core' ), $execution_failed_count > 0 ? 'error' : 'inactive', $this->admin_url( array_merge( $audit_base, array( 'audit_event_name' => 'proposal.execution_failed' ) ) ) ); ?>
+			<?php $this->render_summary_item( __( 'Approved', 'npcink-governance-core' ), (string) $approved_count, __( 'Approved proposals waiting for Adapter preflight or execution record. The activity log shows recent decision events.', 'npcink-governance-core' ), 'ok', $audit_overview_url ); ?>
+			<?php $this->render_summary_item( __( 'Execution failed', 'npcink-governance-core' ), (string) $execution_failed_count, __( 'Adapter-reported failures that need operator follow-up. The activity log shows recent failure events.', 'npcink-governance-core' ), $execution_failed_count > 0 ? 'error' : 'inactive', $audit_overview_url ); ?>
 			<?php if ( $pending_reads_count > 0 ) : ?>
-				<?php $this->render_summary_item( __( 'Sensitive reads', 'npcink-governance-core' ), (string) $pending_reads_count, __( 'Pending sensitive read requests waiting for approval. Decide them through the read-request API or a trusted Adapter.', 'npcink-governance-core' ), 'warning', $this->admin_url( array_merge( $audit_base, array( 'audit_event_name' => 'read_request.created' ) ) ) ); ?>
+				<?php $this->render_summary_item( __( 'Sensitive reads', 'npcink-governance-core' ), (string) $pending_reads_count, __( 'Pending sensitive read requests waiting for approval. The linked activity view lists every created request.', 'npcink-governance-core' ), 'warning', $this->admin_url( array( 'view' => 'audit', 'audit_time_range' => 'all', 'audit_event_name' => 'read_request.created' ) ) ); ?>
 			<?php endif; ?>
-			<?php $this->render_summary_item( __( 'Audit events', 'npcink-governance-core' ), (string) $activity_count, __( 'Recorded Core governance events.', 'npcink-governance-core' ), 'neutral', $this->admin_url( $audit_base ) ); ?>
+			<?php $this->render_summary_item( __( 'Audit events', 'npcink-governance-core' ), (string) $activity_count, __( 'Governance events in the last 30 days, excluding list and view noise.', 'npcink-governance-core' ), 'neutral', $audit_overview_url ); ?>
 		</div>
 		<?php
 	}
@@ -794,7 +798,8 @@ final class Admin_Page {
 							type="submit"
 							class="button"
 							<?php /* translators: %d: number of selected proposals. */ ?>
-							data-npcink-bulk-confirm="<?php echo esc_attr__( 'Reject %d selected proposals? Rejections cannot be undone.', 'npcink-governance-core' ); ?>"
+							data-npcink-bulk-confirm-singular="<?php echo esc_attr( _n( 'Reject %d selected proposal? Rejections cannot be undone.', 'Reject %d selected proposals? Rejections cannot be undone.', 1, 'npcink-governance-core' ) ); ?>"
+							data-npcink-bulk-confirm-plural="<?php echo esc_attr( _n( 'Reject %d selected proposal? Rejections cannot be undone.', 'Reject %d selected proposals? Rejections cannot be undone.', 2, 'npcink-governance-core' ) ); ?>"
 						>
 							<?php echo esc_html__( 'Reject selected', 'npcink-governance-core' ); ?>
 						</button>
@@ -4121,7 +4126,9 @@ final class Admin_Page {
 	 * @return void
 	 */
 	private function render_audit_lifecycle_summary( array $events ): void {
-		$steps = $this->audit_lifecycle_steps( $events );
+		// The evidence tab receives newest-first events; the ordered list is a
+		// stage sequence, so it renders chronologically regardless.
+		$steps = $this->audit_lifecycle_steps( array_reverse( $events ) );
 		?>
 		<section class="npcink-governance-core-lifecycle-summary npcink-governance-core-max-wide" aria-label="<?php echo esc_attr__( 'Lifecycle summary', 'npcink-governance-core' ); ?>">
 			<h3><?php echo esc_html__( 'Lifecycle summary', 'npcink-governance-core' ); ?></h3>

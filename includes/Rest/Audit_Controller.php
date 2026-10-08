@@ -118,18 +118,18 @@ final class Audit_Controller {
 							'default'           => '',
 							'sanitize_callback' => 'sanitize_key',
 						),
-					'correlation_id' => array(
-						'type'              => 'string',
-						'default'           => '',
-						'sanitize_callback' => 'sanitize_text_field',
+						'correlation_id' => array(
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'include_read_events' => array(
+							'type'              => 'boolean',
+							'default'           => false,
+							'sanitize_callback' => 'rest_sanitize_boolean',
+						),
 					),
-					'include_read_events' => array(
-						'type'              => 'boolean',
-						'default'           => false,
-						'sanitize_callback' => 'rest_sanitize_boolean',
-					),
-				),
-				),
+				)
 			)
 		);
 	}
@@ -167,6 +167,10 @@ final class Audit_Controller {
 		$items = $this->audit->list_filtered( $filters );
 		$items = Rest_Format::rows( $items, array( 'created_at' ) );
 
+		// Counted before the audit.listed event below is written so meta.total
+		// always describes the same snapshot the items were listed from.
+		$total = $this->audit->count_filtered( $filters );
+
 		$this->audit->record(
 			'audit.listed',
 			array(
@@ -182,8 +186,6 @@ final class Audit_Controller {
 				'correlation_id' => $filters['correlation_id'],
 			)
 		);
-
-		$total = $this->audit->count_filtered( $filters );
 
 		$response = new WP_REST_Response(
 			array(

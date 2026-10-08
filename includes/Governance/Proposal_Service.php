@@ -195,30 +195,30 @@ final class Proposal_Service {
 			return $duplicate;
 		}
 
-			$pending_count = $this->count_pending_for_quota( $pending, (string) $guardrail['pending_quota_key'] );
-			if ( $pending_count >= (int) $guardrail['pending_quota_limit'] ) {
-				$this->audit->record(
-					'proposal.quota_blocked',
-					array(
-						'ability_id'     => $ability_id,
-						'pending_count'  => $pending_count,
-						'quota_limit'    => (int) $guardrail['pending_quota_limit'],
-						'quota_subject'  => (string) $guardrail['pending_quota_subject'],
-					)
-				);
+		$pending_count = $this->count_pending_for_quota( $pending, (string) $guardrail['pending_quota_key'] );
+		if ( $pending_count >= (int) $guardrail['pending_quota_limit'] ) {
+			$this->audit->record(
+				'proposal.quota_blocked',
+				array(
+					'ability_id'     => $ability_id,
+					'pending_count'  => $pending_count,
+					'quota_limit'    => (int) $guardrail['pending_quota_limit'],
+					'quota_subject'  => (string) $guardrail['pending_quota_subject'],
+				)
+			);
 
-				return new WP_Error(
-					'npcink_governance_core_pending_proposal_quota_exceeded',
-					__( 'Too many pending proposals exist for this caller.', 'npcink-governance-core' ),
-					array(
-						'status'                      => 429,
-						'pending_count'               => $pending_count,
-						'quota_limit'                 => (int) $guardrail['pending_quota_limit'],
-						'quota_subject'               => (string) $guardrail['pending_quota_subject'],
-						'earliest_pending_expires_at' => $this->earliest_pending_expires_at( $pending ),
-					)
-				);
-			}
+			return new WP_Error(
+				'npcink_governance_core_pending_proposal_quota_exceeded',
+				__( 'Too many pending proposals exist for this caller.', 'npcink-governance-core' ),
+				array(
+					'status'                      => 429,
+					'pending_count'               => $pending_count,
+					'quota_limit'                 => (int) $guardrail['pending_quota_limit'],
+					'quota_subject'               => (string) $guardrail['pending_quota_subject'],
+					'earliest_pending_expires_at' => $this->earliest_pending_expires_at( $pending ),
+				)
+			);
+		}
 
 		$proposal = $this->proposals->create(
 			array(

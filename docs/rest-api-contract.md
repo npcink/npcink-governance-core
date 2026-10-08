@@ -852,8 +852,8 @@ Response `200`:
 ```
 
 Timestamps inside `read_authorization_context` — including `expires_at`, the
-field Adapters must check for grant expiry — are ISO8601 UTC strings, matching
-the top-level row format.
+field Adapters must check for grant expiry — and inside the nested `request`
+row are ISO8601 UTC strings, matching the top-level row format.
 
 Errors:
 
