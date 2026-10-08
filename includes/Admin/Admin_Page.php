@@ -793,6 +793,7 @@ final class Admin_Page {
 						<button
 							type="submit"
 							class="button"
+							<?php /* translators: %d: number of selected proposals. */ ?>
 							data-npcink-bulk-confirm="<?php echo esc_attr__( 'Reject %d selected proposals? Rejections cannot be undone.', 'npcink-governance-core' ); ?>"
 						>
 							<?php echo esc_html__( 'Reject selected', 'npcink-governance-core' ); ?>

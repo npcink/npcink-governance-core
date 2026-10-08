@@ -205,7 +205,11 @@ request record. See [AI Provider Log Correlation](ai-provider-log-correlation.md
 - `key_id`;
 - `caller_type`;
 - `correlation_id`;
-- `limit`.
+- `search`, `created_after`, `order`, `limit`, and `offset` for paging.
+
+Read-noise access events (`audit.listed`, `proposal.listed`, and similar) are
+excluded by default so offset paging stays stable; `include_read_events=true`
+opts back in.
 
 The metadata filters are intentionally narrow string filters over sanitized
 audit metadata. They make governance review and smoke diagnostics useful
@@ -271,9 +275,15 @@ bounded to operational metadata and must not include proposal input, preview,
 caller payloads, approval notes, generated content, or policy payloads.
 
 This hook is optional operational detail for local listeners such as a Cloud
-Addon. It is not an audit replacement, not a Cloud transport client, not a
+Add-on. It is not an audit replacement, not a Cloud transport client, not a
 remote log shipping system, and not a second proposal, approval, preflight, or
 WordPress write truth.
+
+Channel adapters or companion plugins may also subscribe to this hook to
+implement their own operator notification UX (desktop, IM, email) for waiting
+proposals. Core itself stays polling-only for machine consumers and does not
+own webhook delivery, queues, retries, or dead-lettering; see
+[Next Decisions Briefs — 2026-10 UX Round 2](next-decisions-briefs-2026-10-ux-round2.md).
 
 ## Non-Goals
 
@@ -299,6 +309,9 @@ The next useful Core decisions are:
 3. Whether Adapter's real AI provider log correlation smoke should become a
    productized OpenClaw acceptance gate.
 4. Whether final commit execution deserves a separate ADR.
+5. How waiting proposals should reach an operator outside wp-admin, and
+   whether machine consumers need cheaper polling — see
+   [Next Decisions Briefs — 2026-10 UX Round 2](next-decisions-briefs-2026-10-ux-round2.md).
 
 Until a final commit execution ADR is accepted, Core remains a governance layer:
 ability intake, proposal records, approval/rejection, commit preflight, and
