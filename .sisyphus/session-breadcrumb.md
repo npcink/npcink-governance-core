@@ -305,3 +305,48 @@ Older history: `.sisyphus/archive/`.
 - **Verification**: `composer test:all` exit 0 on every PR; advisory ocr
   review zero findings pre-publish each time; release package hash at
   baseline.
+
+# 2026-10-08 - 0.3.0 closeout: pipeline cleared to the tag, stopped on an ADR-011 conflict
+
+- **Module**: Release closeout only (central matrix, cross-repo acceptance
+  preparation, decision records); no runtime class changed by this session's
+  own PRs.
+- **Completed**:
+  - ai-cloud `codex/runtime-diagnostics-review` disposition: superseded by
+    merged #1086 (from `codex/admin-diagnostics-closeout`; the old branch
+    never had a PR). Central matrix `--run-gates --fail-on-dirty` green for
+    all 7 roots using the ai-cloud path override to the clean master
+    worktree (`npcink-ai-cloud-m4-ops`). Two orphan docs exist only on the
+    stale branch (`troubleshooting-design-brief.json`, the 2026-10-08
+    commercial brainstorm); owner decides salvage or drop.
+  - rc version matrix refreshed to Core 0.3.0 / Adapter 0.4.1 / Toolkit
+    0.5.9 (#126). Toolkit `0.5.9` tag exists at `a5ef13a` while HEAD is two
+    docs commits ahead; bump-or-accept is a Toolkit-owner call and
+    `--require-tag-ready` fails on that row until resolved.
+  - ADR-011 option 2 (adapter-facing verification read-request kind,
+    trigger-gated) accepted (#127); Core #125 and adapter #93 updated.
+  - Repo-scan Plugin Check gate fixed for PHPUnit artifacts (#129):
+    acceptance was failing `hidden_files` + `application_detected` because
+    `.phpunit.result.cache`/`phpunit.xml.dist` postdate the exclude list.
+- **Environment gotchas**: LocalWP smoke needs
+  `WP_CLI_MYSQL_SOCKET=/Users/muze/Library/Application Support/Local/run/s63K4c8XP/mysql/mysqld.sock`
+  passed explicitly (discovery missed it this run); a live parallel session
+  edits npcink-workflow-toolbox, and the site fatals while its refactor
+  branch is mid-break (the require-order fix landed 19:49; expect flapping).
+- **STOPPED BEFORE TAG**: parallel PR #128 (merged 19:49) implemented
+  option 1 — "execution-attached verification reads" minted at commit
+  preflight — with its own
+  `docs/decisions/ADR-011-execution-attached-verification-reads.md`.
+  master now holds two ADR-011 files with opposite verdicts, and the
+  implementation fired with zero ledger entries. Acceptance, the
+  prepare:release evidence rebind, the terminal matrix rerun, and the
+  v0.3.0 tag are paused for owner arbitration:
+  - A. Keep #128: reconcile the records (renumber or supersede one ADR,
+    update README + real-usage-validation + tests), record the trigger
+    waiver explicitly, then resume acceptance -> prepare:release ->
+    matrix -> tag.
+  - B. Revert #128: the single option-2 ADR-011 stands; resume the same
+    pipeline on the clean base.
+- **Main line unchanged**: the real-usage validation ledger still has zero
+  rows; the first weekly row on a real operating site outranks this
+  release plumbing.
