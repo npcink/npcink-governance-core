@@ -1362,6 +1362,7 @@ $adr_005 = npcink_governance_core_read( $root . '/docs/decisions/ADR-005-keep-co
 $adr_006 = npcink_governance_core_read( $root . '/docs/decisions/ADR-006-unattended-batch-automation-runtime-boundary.md' );
 $adr_007 = npcink_governance_core_read( $root . '/docs/decisions/ADR-007-dedicated-local-automation-runtime-owner.md' );
 $adr_010 = npcink_governance_core_read( $root . '/docs/decisions/ADR-010-defer-final-commit-ownership-until-trigger.md' );
+$adr_011 = npcink_governance_core_read( $root . '/docs/decisions/ADR-011-verification-read-request-kind-for-post-execution-readback.md' );
 npcink_governance_core_assert( false !== strpos( $adr_001, 'Create a new standalone `npcink-governance-core` plugin' ), 'ADR-001 records rebuild decision.' );
 npcink_governance_core_assert( false !== strpos( $adr_002, '`npcink-governance-core` must not implement a workflow runtime' ), 'ADR-002 bans workflow runtime ownership.' );
 npcink_governance_core_assert( false !== strpos( $adr_003, 'Core remains governance-only' ), 'ADR-003 keeps Core governance-only for the current stage.' );
@@ -1398,6 +1399,13 @@ npcink_governance_core_assert( false !== strpos( $adr_007, 'they check the ledge
 npcink_governance_core_assert( false !== strpos( $adr_010, 'Trigger Review Checkpoint' ) && false !== strpos( $adr_010, 'the current count of production execution consumers' ), 'ADR-010 defines an observable trigger review checkpoint.' );
 npcink_governance_core_assert( false !== strpos( $adr_010, 'successor ADR is opened before release work continues' ), 'ADR-010 stops the release closeout when a trigger fires.' );
 npcink_governance_core_assert( false !== strpos( $adr_010, 'not a runtime feature' ), 'ADR-010 keeps the checkpoint review-only.' );
+npcink_governance_core_assert( false !== strpos( $adr_011, 'an explicit verification read-request kind' ), 'ADR-011 selects the explicit verification read-request kind.' );
+npcink_governance_core_assert( false !== strpos( $adr_011, 'option 2 of issue #125' ) && false !== strpos( $adr_011, 'not an execution-attached read credential' ), 'ADR-011 records the option choice from issue #125.' );
+npcink_governance_core_assert( false !== strpos( $adr_011, 'no new trusted-adapter privilege is added' ), 'ADR-011 adds no new adapter privilege.' );
+npcink_governance_core_assert( false !== strpos( $adr_011, 'The existing single read-authorization surface stays the only truth' ), 'ADR-011 keeps one read-authorization truth.' );
+npcink_governance_core_assert( false !== strpos( $adr_011, 'Implementation is deferred and fires only on recorded evidence' ), 'ADR-011 implementation is evidence-gated.' );
+npcink_governance_core_assert( false !== strpos( $adr_011, 'grant-mode deployments keep the known degradation' ), 'ADR-011 classifies pre-trigger degradation as known.' );
+npcink_governance_core_assert( false !== strpos( $adr_011, 'npcink-ai-client-adapter issue #93' ), 'ADR-011 hands adapter implementation back to adapter issue #93.' );
 $release_closeout_standard = npcink_governance_core_read( $root . '/docs/release-closeout-standard.md' );
 npcink_governance_core_assert( false !== strpos( $release_closeout_standard, 'ADR-010 trigger review checkpoint' ), 'Release closeout standard runs the ADR-010 checkpoint before candidate freeze.' );
 
