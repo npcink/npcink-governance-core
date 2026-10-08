@@ -34,7 +34,7 @@ This plugin is not a one-click AI writer, SEO assistant, image generator, chatbo
 
 = Requirements and integrations =
 
-Core works best with WordPress 7.0 or later and WordPress Abilities API providers. The reference first-party provider is Npcink Abilities Toolkit, but the base governance lifecycle can also govern third-party WordPress Abilities API providers that expose stable ability ids, schemas, permission callbacks, risk metadata, and dry-run previews.
+Core works best with WordPress 7.0 or later and WordPress Abilities API providers. The reference first-party provider is Npcink Abilities Toolkit, but the base governance lifecycle can also govern third-party WordPress Abilities API providers that expose stable ability ids, schemas, permission callbacks, risk metadata, and dry-run previews. The reference channel adapter is Npcink AI Client Adapter, which executes approved abilities through the WordPress Abilities API after Core commit preflight.
 
 Core exposes governance REST endpoints under `/wp-json/npcink-governance-core/v1/`. Trusted adapters and host plugins can use those endpoints to create proposals, approve or reject proposals, request commit preflight, and record external execution results.
 
@@ -97,6 +97,24 @@ Productized OpenClaw setup should connect through a trusted adapter. Direct Core
 = Can third-party ability providers use Core? =
 
 Yes. The proposal lifecycle is provider-neutral at the base layer. Third-party providers can expose WordPress Abilities API definitions with schemas, permission callbacks, risk metadata, and dry-run previews, then submit write or destructive operations for Core review.
+
+= Why does Core require WordPress 7.0? =
+
+Core ability intake reads the WordPress Abilities API surface and Core governance contracts are built and tested against WordPress 7.0 and later. On older WordPress versions ability intake is not tested and Core fails closed instead of governing proposals it cannot validate against real ability ids.
+
+= Does Core work with multisite? =
+
+Yes. Network activation provisions the Core governance tables for every existing site, and newly created sites are provisioned during initialization. Governance records are stored per site.
+
+= What happens to governance records when the plugin is deactivated or deleted? =
+
+Deactivation keeps all governance records. Deleting the plugin also keeps records: proposals, audit events, app-key metadata, and read authorization records are retained because approval and audit history may be subject to site retention requirements. There is no automatic uninstall deletion in this release.
+
+== Upgrade Notice ==
+
+= 0.3.0 =
+
+Operator experience and REST consumer contract release. No data migration is required; governance tables are unchanged since 0.2.0. Review-queue filters are preserved through decisions, list endpoints return totals, REST timestamps are ISO8601 UTC, and the bundled zh_CN catalog is complete.
 
 == Changelog ==
 

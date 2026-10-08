@@ -1,8 +1,9 @@
 # Next Decisions Briefs — 2026-10
 
-Status: decision preparation. Each brief states the current state, the
-options, and a recommendation. The release owner decides; these briefs exist
-so the three open decisions from
+Status: decided 2026-10-08. Each brief states the current state, the
+options, and a recommendation; the release owner closed all three before the
+0.3.0 release closeout (see the Decision Record at the end). These briefs
+exist so the three open decisions from
 [Core Governance Operability](core-governance-operability.md) can be closed
 in one sitting instead of drifting across sessions.
 
@@ -81,10 +82,33 @@ covered by tests (per-action fingerprints, idempotency keys,
 converting it into named triggers closes the decision without changing any
 behavior.
 
+## Decision Record — 2026-10-08
+
+The release owner closed all three briefs before the 0.3.0 release closeout:
+
+1. **App-key rotation: Option B adopted.** Expiry awareness stays
+   manual-first. The 0.3.0 `expires_soon` / `rotation_recommended` key-list
+   hints and the Adapter's rotate-key relay cover awareness, and the rotation
+   runbook is now recorded in
+   [App Auth Scope Policy](app-auth-scope-policy.md). A dedicated
+   expiring-soon audit event remains an optional small follow-up slice, not a
+   release blocker. Full self-service key exchange (Option C) stays deferred
+   until a second long-lived external consumer exists.
+2. **Provider-log correlation gate: Option B adopted on the recommended
+   schedule.** The correlation assertion is added in the next cross-repo
+   acceptance authoring pass, not as a hotfix to the 0.3.0 script. Until
+   then the documented manual Adapter acceptance check remains the evidence
+   path.
+3. **Final commit execution ownership: Option B adopted.**
+   [ADR-010](decisions/ADR-010-defer-final-commit-ownership-until-trigger.md)
+   is accepted and converts the open question into named re-evaluation
+   triggers. ADR-003 stands until one fires.
+
 ## Also pending (not a brief)
 
 - [Flagged media deletion policy](flagged-media-deletion-policy.md): the five
   pre-implementation checkboxes are a review task for the release owner, not
   a decision brief. Half an hour with the policy document closes it.
-- Editor adoption gate: drafts 286721/286722 keep/discard is a content
-  decision that unblocks the article discovery pilot.
+- Editor adoption gate: moot as of 2026-10-07 — drafts 286721/286722 no
+  longer exist on the local site, so the article discovery pilot can start
+  from current drafts.

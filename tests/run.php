@@ -144,6 +144,11 @@ $translation_po  = npcink_governance_core_read( $root . '/languages/npcink-gover
 npcink_governance_core_assert( '' !== $translation_pot, 'Bundled POT template exists.' );
 npcink_governance_core_assert( '' !== $translation_po, 'Bundled zh_CN PO file exists.' );
 npcink_governance_core_assert( is_readable( $root . '/languages/npcink-governance-core-zh_CN.mo' ), 'Bundled zh_CN MO file exists.' );
+preg_match( '/^\s*\*\s*Version:\s*(\S+)\s*$/m', $main_plugin, $translation_version_match );
+npcink_governance_core_assert( ! empty( $translation_version_match[1] ), 'Main plugin header exposes a version for translation catalogs.' );
+$translation_version = trim( $translation_version_match[1] ?? '' );
+npcink_governance_core_assert( '' !== $translation_version && false !== strpos( $translation_pot, '"Project-Id-Version: Npcink Governance Core ' . $translation_version . '\n"' ), 'Bundled POT Project-Id-Version matches the plugin header version.' );
+npcink_governance_core_assert( '' !== $translation_version && false !== strpos( $translation_po, '"Project-Id-Version: npcink-governance-core ' . $translation_version . '\n"' ), 'Bundled zh_CN PO Project-Id-Version matches the plugin header version.' );
 npcink_governance_core_assert( false !== strpos( $translation_po, '"Language: zh_CN\\n"' ), 'Bundled zh_CN PO declares zh_CN language.' );
 npcink_governance_core_assert( false !== strpos( $translation_po, 'msgid "Review Queue"' ) && false !== strpos( $translation_po, 'msgstr "审核队列"' ), 'Bundled zh_CN PO translates Review Queue.' );
 npcink_governance_core_assert( false !== strpos( $translation_po, 'msgid "Workflow Toolbox"' ) && false !== strpos( $translation_po, 'msgstr "流程工具箱"' ), 'Bundled zh_CN PO translates the Workflow Toolbox menu label.' );
