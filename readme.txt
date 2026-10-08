@@ -4,7 +4,7 @@ Tags: ai, governance, approval, audit, abilities
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 0.2.0
+Stable tag: 0.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -99,6 +99,22 @@ Productized OpenClaw setup should connect through a trusted adapter. Direct Core
 Yes. The proposal lifecycle is provider-neutral at the base layer. Third-party providers can expose WordPress Abilities API definitions with schemas, permission callbacks, risk metadata, and dry-run previews, then submit write or destructive operations for Core review.
 
 == Changelog ==
+
+= 0.3.0 =
+
+Operator experience and REST consumer contract release. The admin review
+queue keeps filter and page context through decisions, can open the next
+pending proposal after each decision, filters by ability and waiting age, and
+renders one-time client tokens inside the normal admin screen with
+copy-to-clipboard controls. Audit read-requests gain offset and search paging
+with total counts on every list endpoint, REST timestamps are ISO8601 UTC,
+repeated commit preflights echo the original handoff identifiers for
+recovery, expired app keys return a dedicated rotate-key error, rate-limited
+responses carry Retry-After guidance, and the runtime contract endpoint
+accepts an opt-in contract:read app scope. The bundled zh_CN catalog is
+complete (810 strings) and now loads on locally distributed plugin zips.
+This release still does not add final write execution, workflow runtime, or
+provider credential ownership.
 
 = 0.2.0 =
 
