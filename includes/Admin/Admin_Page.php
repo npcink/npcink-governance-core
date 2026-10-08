@@ -1558,6 +1558,7 @@ final class Admin_Page {
 		if ( $review_page > 1 ) {
 			$args['review_page'] = (string) $review_page;
 		}
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- the bulk-reject and decision forms carry a wp_nonce_field verified above.
 		foreach ( array( 'review_ability', 'review_age' ) as $filter_key ) {
 			if ( isset( $_POST[ $filter_key ] ) ) {
 				$filter_value = sanitize_text_field( wp_unslash( (string) $_POST[ $filter_key ] ) );
@@ -1566,6 +1567,7 @@ final class Admin_Page {
 				}
 			}
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 		if ( $failed > 0 ) {
 			$args['bulk_failed'] = (string) $failed;
 		}
@@ -2484,6 +2486,7 @@ final class Admin_Page {
 			$args['review_page'] = (string) $review_page;
 		}
 
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- the bulk-reject and decision forms carry a wp_nonce_field verified above.
 		foreach ( array( 'review_ability', 'review_age' ) as $filter_key ) {
 			if ( isset( $_POST[ $filter_key ] ) ) {
 				$filter_value = sanitize_text_field( wp_unslash( (string) $_POST[ $filter_key ] ) );
@@ -2492,6 +2495,7 @@ final class Admin_Page {
 				}
 			}
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		return $args;
 	}

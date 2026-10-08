@@ -227,6 +227,7 @@ final class Plugin {
 	 * @return void
 	 */
 	public function load_textdomain(): void {
+		// phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- intentional for locally distributed zips; wp.org installs still resolve language packs first.
 		load_plugin_textdomain(
 			'npcink-governance-core',
 			false,

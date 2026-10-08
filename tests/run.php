@@ -311,7 +311,7 @@ $wp_readme = npcink_governance_core_read( $root . '/readme.txt' );
 foreach (
 	array(
 		'=== Npcink Governance Core ===',
-		'Stable tag: 0.2.0',
+		'Stable tag: 0.3.0',
 		'Npcink AI governance layer for WordPress operations.',
 		'= What Core does =',
 		'= Who should use this plugin =',
@@ -929,9 +929,9 @@ foreach (
 		'npcink-governance-core',
 		'npcink-ai-client-adapter',
 		'npcink-abilities-toolkit',
-		'0.2.0',
-		'0.3.3',
-		'0.5.5',
+		'0.3.0',
+		'0.4.1',
+		'0.5.8',
 		'must not be moved',
 		'--require-tag-ready',
 		'stack-rc-2026-09-05-core-0.2.0-adapter-0.3.3-toolkit-0.5.5',
