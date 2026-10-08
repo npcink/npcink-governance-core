@@ -5673,3 +5673,29 @@
   obsolete entries preserved.
 - PR body at /tmp/ux-round2-pr-body.md; publish with
   `composer pr:publish -- --title "ux: round-2 consumer and admin experience fixes" --body-file /tmp/ux-round2-pr-body.md`.
+# 2026-10-08 - UX round 2 closeout: merge, master sync, visual smoke
+
+- PR #97 merged (squash 6fdb964, all three CI checks green); local master
+  synced; the LocalWP smoke site runs the merged code via its plugin
+  symlink.
+- Post-merge browser visual smoke passed on the live site (temp admin
+  user 96 created and deleted; temp pending proposal created and deleted
+  with its audit rows; no `.maintenance` residue):
+  - menu badge renders (治理核心 179) with live pending count;
+  - queue summary tiles are clickable cards with consistent targets
+    (待审核→queue, 已批准→audit overview) in zh_CN;
+  - Recent Activity lists five newest non-noise events, each linking its
+    proposal, noise excluded;
+  - proposal detail evidence tab: lifecycle summary chronological,
+    timeline table newest-first with the "最新事件在前" wording;
+  - bulk-reject confirm dialog shows the plural-neutral message with the
+    selected count substituted and blocks on cancel.
+  - Screenshots under /tmp/core-visual-smoke/ (local only).
+- Observation (pre-existing, not changed): `composer smoke:wp` pending-
+  quota fixtures accumulate on the local site (179 pending rows); this
+  matches prior session behavior (40+ rows seen 2026-10-07) and was left
+  as-is.
+- Session open items for the owner: decide the two 2026-10 UX-round-2
+  briefs (notification channel, updated_since polling); Adapter consumers
+  adopt the new contract additions on next sync; zh_CN wp.org language
+  pack submission still waits on the PTE path.
