@@ -47,6 +47,26 @@ compatibility). Until such an ADR is accepted, no Core `/execute`,
 `/proxy-execute`, final commit route, workflow queue, or generic ability
 runtime may be added.
 
+## Trigger Review Checkpoint
+
+Triggers only matter if someone checks them. At every Core release closeout
+(see `docs/release-closeout-standard.md`) and every cross-repo release
+acceptance run, the owner records one checkpoint line in the closeout
+evidence:
+
+- the current count of production execution consumers that execute approved
+  abilities after Core commit preflight (as of this ADR: 1, Npcink AI Client
+  Adapter);
+- whether `npcink-local-automation-runtime` has shipped a real release;
+- whether any consumer has stated a hard audit requirement that Adapter-style
+  execution cannot meet.
+
+If any answer changes the trigger state (consumer count above 1, the runtime
+released, or a hard requirement stated), the closeout stops there: the
+successor ADR is opened before release work continues. The checkpoint is a
+review step recorded by the owner, not a runtime feature: Core adds no code
+for it.
+
 ## Alternatives Considered
 
 ### Reaffirm ADR-003 unchanged
