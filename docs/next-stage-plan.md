@@ -57,11 +57,14 @@ Not implemented:
   deferred until Adapter or another real external client needs long-lived
   credential lifecycle management;
 
-Documented but not implemented:
+Documented, accepted, or readiness-complete (no longer "not implemented"):
 
-- Agent/MCP governance entry contract;
-- ADR-005 current-stage decision to keep Core independent while standardizing
-  channel adapters.
+- Agent/MCP governance entry contract: consumer readiness is complete; see the
+  Agent/MCP Governance Entry section below and
+  [Agent MCP Entry Contract](agent-mcp-entry-contract.md);
+- ADR-005 is accepted: keep Core independent while standardizing channel
+  adapters; adapter contract standardization continues per release through the
+  cross-repo acceptance chain.
 
 ## Current Execution Decision
 

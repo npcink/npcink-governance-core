@@ -51,6 +51,7 @@ MVP routes require `manage_options` or a scoped app key where documented.
 - `GET /wp-json/npcink-governance-core/v1/contract`
 - `GET /wp-json/npcink-governance-core/v1/apps`
 - `POST /wp-json/npcink-governance-core/v1/apps`
+- `POST /wp-json/npcink-governance-core/v1/apps/{key_id}/rotate`
 - `GET /wp-json/npcink-governance-core/v1/proposals`
 - `GET /wp-json/npcink-governance-core/v1/proposals/{proposal_id}`
 - `POST /wp-json/npcink-governance-core/v1/proposals`
@@ -115,7 +116,7 @@ Governance truth:
 - [AI Provider Log Correlation](docs/ai-provider-log-correlation.md)
 - [Core Governance Handoff Validation](docs/core-governance-handoff-validation.md)
 - [Current Stage Governance Reliability](docs/current-stage-governance-reliability.md)
-- [Core 0.4 Consumer Readiness](docs/core-0.4-consumer-readiness.md)
+- [Core Consumer Readiness For The Toolkit 0.4.0 Provider](docs/core-0.4-consumer-readiness.md)
 - [Governed AI Feedback Loop](docs/governed-ai-feedback-loop.md)
 - [Content Metadata Delta Operator Trial - Superseded Historical Protocol](docs/content-metadata-delta-operator-trial.md)
 - [OpenClaw Execution Guidance](docs/openclaw-execution-guidance.md)
@@ -180,6 +181,7 @@ Architecture decisions:
 - [ADR-007: Dedicated Local Automation Runtime Owner](docs/decisions/ADR-007-dedicated-local-automation-runtime-owner.md)
 - [ADR-008: Fail Closed At Ability Intake](docs/decisions/ADR-008-fail-closed-ability-intake.md)
 - [ADR-009: Freeze Domain-Specific Plan Contracts In Core](docs/decisions/ADR-009-freeze-domain-plan-contracts.md)
+- [ADR-010: Keep Final Commit Execution Outside Core Until A Named Trigger Fires](docs/decisions/ADR-010-defer-final-commit-ownership-until-trigger.md)
 
 External agent clients can start from the
 [OpenClaw governance adapter example](examples/openclaw-governance-adapter/README.md).

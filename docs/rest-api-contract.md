@@ -482,7 +482,8 @@ All REST row timestamps (`created_at`, `updated_at`, `expires_at`,
 `consumed_at`, `last_used_at`, `revoked_at`, and 429 `reset_at`) are ISO8601
 UTC strings with a `+00:00` designator. List endpoints also return the matched
 row count in `meta.total` and the `X-WP-Total` header, so clients can page
-without blind iteration. `meta.limit` echoes the clamped `1..200` value., rows use the full proposal shape and may include
+without blind iteration. `meta.limit` echoes the clamped `1..200` value. When
+`include_payload=true`, rows use the full proposal shape and may include
 `input`, `preview`, `caller`, and promoted policy fields. New clients should use
 `GET /proposals/{proposal_id}` for full review payloads.
 

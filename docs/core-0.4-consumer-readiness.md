@@ -2,6 +2,13 @@
 
 Status: complete for the `npcink-abilities-toolkit` 0.4.0 handoff.
 
+Naming note: "0.4" in this title refers to the validated
+`npcink-abilities-toolkit` 0.4.0 provider handoff, not a Core 0.4.0 plugin
+release. The evidence below was recorded against Toolkit 0.4.0; later Core
+release candidates re-validated the same representative scenarios against
+newer Toolkit versions through the cross-repo release acceptance chain (see
+[Release Candidate Version Matrix](release-candidate-version-matrix.md)).
+
 This document summarizes the consumer-side governance readiness now proven in
 Core. It is the roll-up entry point for future humans and AI agents that need
 to understand what the 0.4 representative scenarios validated.

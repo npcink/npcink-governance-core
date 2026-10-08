@@ -229,6 +229,37 @@ key should be separate from generic agent keys where practical, should not
 include `audit:read` by default, and should be revoked if the Adapter UI or host
 policy is no longer trusted.
 
+## App Key Rotation Runbook
+
+Rotation is deliberately manual (see the 2026-10 decision record in
+[Next Decisions Briefs](next-decisions-briefs-2026-10.md)): Core provides
+expiry awareness without unattended rotation, because the current long-lived
+consumer count is one.
+
+Awareness surface (already shipped as of 0.3.0):
+
+- the app-key admin list marks keys `expires_soon` /
+  `rotation_recommended`;
+- expired keys fail with `npcink_governance_core_app_auth_expired`, and the
+  Adapter relays a rotate-key hint naming
+  `NPCINK_OPENCLAW_ADAPTER_CORE_APP_TOKEN`.
+
+Manual rotation steps:
+
+1. In `Npcink AI -> Core -> Advanced Access`, create a replacement app key
+   with the same scopes and a bounded expiry for the consuming client.
+2. Store the one-time token only in the consumer's secret store (for the
+   Adapter: the host environment variable
+   `NPCINK_OPENCLAW_ADAPTER_CORE_APP_TOKEN`).
+3. Confirm the consumer authenticates with the new key (proposal or preflight
+   call succeeds, app list shows fresh `last_used_at`).
+4. Revoke the superseded key from the same admin screen and verify its
+   authentication now fails closed.
+
+A self-service key-exchange endpoint remains deferred until a second
+long-lived external consumer exists (decision record, Next Decisions Briefs
+2026-10, Decision 1).
+
 ## Implementation Gates
 
 Current implementation gates:
