@@ -56,6 +56,14 @@ this page only names the order to read them.
 - Browser visual smoke is a release-gate and admin-surface-change requirement,
   not a per-fix-round requirement; cadence rules are in
   `docs/development-workflow.md`.
+- Branch protection requires conversation resolution: the CI advisory review's
+  inline comments block squash auto-merge until every thread is resolved.
+  Run local `ocr review` to zero findings BEFORE `composer pr:publish` (the
+  AGENTS.md advisory gate) so the CI review round usually lands nothing;
+  resolve stray threads with `gh api graphql` `resolveReviewThread`.
+- Squash-merged topic branches are safe to delete once their PR shows MERGED
+  (`git branch -D` plus `git push origin --delete`); confirm
+  `git worktree list` first because other worktrees may hold branches.
 
 ## What Not To Do When Re-entering
 
