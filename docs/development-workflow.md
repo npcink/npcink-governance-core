@@ -331,6 +331,20 @@ same pass. Keep screenshots under `/tmp`, never inside the repository. If the
 site returns HTTP 503 after a smoke run, check for a stale `.maintenance` file
 in the WordPress root first.
 
+Visual smoke cadence: a full browser pass is required at release gates
+(`composer release:verify`, WordPress.org publication) and after changes that
+alter admin screen layout or wording. Routine fix rounds do not each need a
+full visual pass — `composer smoke:wp` covers runtime behavior, and visual
+spot-checks of the touched screen are enough. The LocalWP smoke run cleans up
+its own governance fixtures (proposals, read requests, and their audit rows)
+at the end of every run, so pending-fixture counts no longer accumulate
+across runs. Rows accumulated by older smoke builds (titled
+`Pending quota proposal ...`) need one manual cleanup:
+
+```bash
+bash scripts/wp-cli-local.sh eval 'global $wpdb; $ids = $wpdb->get_col( "SELECT proposal_id FROM {$wpdb->prefix}npcink_governance_core_proposals WHERE summary = \"Created to verify pending proposal quota.\"" ); foreach ( $ids as $pid ) { $wpdb->delete( $wpdb->prefix . "npcink_governance_core_audit_log", array( "proposal_id" => $pid ) ); $wpdb->delete( $wpdb->prefix . "npcink_governance_core_proposals", array( "proposal_id" => $pid ) ); } echo "deleted " . count( $ids );'
+```
+
 ## Translation Catalog Updates
 
 The bundled zh_CN catalog is regenerated in four steps; a static contract

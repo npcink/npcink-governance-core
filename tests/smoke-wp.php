@@ -320,22 +320,13 @@ function npcink_governance_core_smoke_purge_governance_records(): void {
 	$audit_table     = $wpdb->prefix . 'npcink_governance_core_audit_log';
 	$app_table       = $wpdb->prefix . 'npcink_governance_core_app_keys';
 	$rate_table      = $wpdb->prefix . 'npcink_governance_core_app_rate_limits';
-	$proposal_table  = $wpdb->prefix . 'npcink_governance_core_proposals';
-	$read_request_table = $wpdb->prefix . 'npcink_governance_core_read_requests';
-	$proposal_ids    = array_keys( (array) $npcink_governance_core_smoke_proposal_fixture_ids );
-	$read_request_ids = array_keys( (array) $npcink_governance_core_smoke_read_request_fixture_ids );
 	$app_ids         = array_keys( (array) $npcink_governance_core_smoke_app_fixture_ids );
 	$key_ids         = array_keys( (array) $npcink_governance_core_smoke_app_key_fixture_ids );
 
-	foreach ( $proposal_ids as $proposal_id ) {
-		$wpdb->delete( $audit_table, array( 'proposal_id' => sanitize_text_field( $proposal_id ) ), array( '%s' ) );
-		$wpdb->delete( $proposal_table, array( 'proposal_id' => sanitize_text_field( $proposal_id ) ), array( '%s' ) );
-	}
-
-	foreach ( $read_request_ids as $request_id ) {
-		$wpdb->delete( $audit_table, array( 'proposal_id' => sanitize_text_field( $request_id ) ), array( '%s' ) );
-		$wpdb->delete( $read_request_table, array( 'request_id' => sanitize_text_field( $request_id ) ), array( '%s' ) );
-	}
+	npcink_governance_core_smoke_delete_governance_rows(
+		array_keys( (array) $npcink_governance_core_smoke_proposal_fixture_ids ),
+		array_keys( (array) $npcink_governance_core_smoke_read_request_fixture_ids )
+	);
 
 	foreach ( $app_ids as $app_id ) {
 		$wpdb->delete( $rate_table, array( 'app_id' => sanitize_text_field( $app_id ) ), array( '%s' ) );
@@ -360,6 +351,53 @@ function npcink_governance_core_smoke_purge_governance_records(): void {
 }
 
 /**
+ * Deletes governance rows for the given proposal and read request ids.
+ *
+ * Shared by the per-run cleanup and the explicit purge path so audit and
+ * table conventions stay in one place.
+ *
+ * @param array<int,string> $proposal_ids Proposal ids.
+ * @param array<int,string> $request_ids Sensitive read request ids.
+ * @return void
+ */
+function npcink_governance_core_smoke_delete_governance_rows( array $proposal_ids, array $request_ids ): void {
+	global $wpdb;
+
+	$audit_table        = $wpdb->prefix . 'npcink_governance_core_audit_log';
+	$proposal_table     = $wpdb->prefix . 'npcink_governance_core_proposals';
+	$read_request_table = $wpdb->prefix . 'npcink_governance_core_read_requests';
+
+	foreach ( $proposal_ids as $proposal_id ) {
+		$wpdb->delete( $audit_table, array( 'proposal_id' => sanitize_text_field( (string) $proposal_id ) ), array( '%s' ) );
+		$wpdb->delete( $proposal_table, array( 'proposal_id' => sanitize_text_field( (string) $proposal_id ) ), array( '%s' ) );
+	}
+
+	foreach ( $request_ids as $request_id ) {
+		$wpdb->delete( $audit_table, array( 'proposal_id' => sanitize_text_field( (string) $request_id ) ), array( '%s' ) );
+		$wpdb->delete( $read_request_table, array( 'request_id' => sanitize_text_field( (string) $request_id ) ), array( '%s' ) );
+	}
+}
+
+/**
+ * Deletes tracked governance rows created by this smoke run.
+ *
+ * Every run removes the proposals and sensitive read requests it created,
+ * together with their audit rows, so repeated local smoke runs do not
+ * accumulate pending fixtures on the site. App keys are revoked but kept;
+ * the broader app/rate/audit wipe stays behind the explicit purge env var.
+ *
+ * @return void
+ */
+function npcink_governance_core_smoke_delete_tracked_governance_rows(): void {
+	global $npcink_governance_core_smoke_proposal_fixture_ids, $npcink_governance_core_smoke_read_request_fixture_ids;
+
+	npcink_governance_core_smoke_delete_governance_rows(
+		array_keys( (array) $npcink_governance_core_smoke_proposal_fixture_ids ),
+		array_keys( (array) $npcink_governance_core_smoke_read_request_fixture_ids )
+	);
+}
+
+/**
  * Deletes registered smoke fixtures.
  *
  * @return void
@@ -378,6 +416,8 @@ function npcink_governance_core_smoke_cleanup_fixtures(): void {
 	if ( class_exists( \Npcink\GovernanceCore\Governance\History_Cleanup_Service::class ) ) {
 		update_option( \Npcink\GovernanceCore\Governance\History_Cleanup_Service::OPTION_HISTORY_RETENTION_DAYS, \Npcink\GovernanceCore\Governance\History_Cleanup_Service::sanitize_retention_days( $npcink_governance_core_smoke_initial_history_retention ), false );
 	}
+
+	npcink_governance_core_smoke_delete_tracked_governance_rows();
 
 	foreach ( array_keys( (array) $npcink_governance_core_smoke_app_key_fixture_ids ) as $key_id ) {
 		$app_keys = new \Npcink\GovernanceCore\Security\App_Key_Repository();
@@ -3180,6 +3220,26 @@ npcink_governance_core_smoke_assert( false === get_post_type( (int) $plan_attach
 if ( ! npcink_governance_core_smoke_should_purge_governance_records() ) {
 	$main_app_key_after = ( new \Npcink\GovernanceCore\Security\App_Key_Repository() )->find_by_key_id( $key_id );
 	npcink_governance_core_smoke_assert( is_array( $main_app_key_after ) && 'revoked' === (string) ( $main_app_key_after['status'] ?? '' ), 'smoke app key fixture is revoked after smoke' );
+}
+
+// wp eval-file includes this file inside a method scope, so the fixture
+// tracker (written through `global` in the register helpers) must be pulled
+// in explicitly before the final assertions.
+global $wpdb, $npcink_governance_core_smoke_proposal_fixture_ids, $npcink_governance_core_smoke_read_request_fixture_ids;
+foreach ( array_keys( (array) $npcink_governance_core_smoke_proposal_fixture_ids ) as $smoke_proposal_fixture_id ) {
+	$smoke_proposal_raw  = $wpdb->get_var(
+		$wpdb->prepare( 'SELECT COUNT(*) FROM ' . $wpdb->prefix . 'npcink_governance_core_proposals WHERE proposal_id = %s', (string) $smoke_proposal_fixture_id )
+	);
+	$smoke_proposal_left = (int) $smoke_proposal_raw;
+	npcink_governance_core_smoke_assert( null !== $smoke_proposal_raw && 0 === $smoke_proposal_left, 'smoke proposal fixture is deleted after smoke: ' . (string) $smoke_proposal_fixture_id );
+}
+
+foreach ( array_keys( (array) $npcink_governance_core_smoke_read_request_fixture_ids ) as $smoke_read_request_fixture_id ) {
+	$smoke_read_request_raw  = $wpdb->get_var(
+		$wpdb->prepare( 'SELECT COUNT(*) FROM ' . $wpdb->prefix . 'npcink_governance_core_read_requests WHERE request_id = %s', (string) $smoke_read_request_fixture_id )
+	);
+	$smoke_read_request_left = (int) $smoke_read_request_raw;
+	npcink_governance_core_smoke_assert( null !== $smoke_read_request_raw && 0 === $smoke_read_request_left, 'smoke read request fixture is deleted after smoke: ' . (string) $smoke_read_request_fixture_id );
 }
 
 echo "npcink-governance-core WordPress smoke: ok\n";
