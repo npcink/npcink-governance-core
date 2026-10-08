@@ -102,15 +102,57 @@ final class App_Rate_Limiter {
 		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		if ( false === $upserted ) {
-			return $this->result_from_row( null, $limit, $window_end, false );
+			return $this->result_from_row( null, $limit, $window_start, $window_end, false );
 		}
 
 		return $this->result_from_row(
 			$this->find_window( $app_id, $route_family, $window_start ),
 			$limit,
+			$window_start,
 			$window_end,
 			$upserted > 0
 		);
+	}
+
+	/**
+	 * Refunds one request from a specific fixed-window counter.
+	 *
+	 * Used when a request consumed a slot but the REST layer answered with a
+	 * client validation error (400/404): malformed or missing-id requests must
+	 * not burn governed quota. The caller passes the exact window the consume
+	 * reported, so a window rollover between consume and refund can never
+	 * decrement the wrong counter. The decrement is atomic and floored at
+	 * zero.
+	 *
+	 * @param array<string,mixed> $app App row.
+	 * @param string              $route_family Route family.
+	 * @param string              $window_start Consumed window start (UTC `Y-m-d H:i:s`).
+	 * @return bool Whether a counter row was decremented.
+	 */
+	public function refund( array $app, string $route_family, string $window_start ): bool {
+		global $wpdb;
+
+		$app_id       = sanitize_text_field( (string) ( $app['app_id'] ?? '' ) );
+		$route_family = sanitize_key( $route_family );
+		$window_start = sanitize_text_field( $window_start );
+
+		if ( '' === $app_id || '' === $route_family || '' === $window_start ) {
+			return false;
+		}
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- atomic bounded decrement on Core's custom governance table.
+		$refunded = $wpdb->query(
+			$wpdb->prepare(
+				'UPDATE %i SET request_count = GREATEST(0, request_count - 1) WHERE app_id = %s AND route_family = %s AND window_start = %s AND request_count > 0',
+				$this->table_name(),
+				$app_id,
+				$route_family,
+				$window_start
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return false !== $refunded && $refunded > 0;
 	}
 
 	/**
@@ -173,13 +215,14 @@ final class App_Rate_Limiter {
 	 * @param bool                     $allowed Whether this request consumed a slot.
 	 * @return array<string,mixed>
 	 */
-	private function result_from_row( ?array $row, int $limit, string $window_end, bool $allowed ): array {
+	private function result_from_row( ?array $row, int $limit, string $window_start, string $window_end, bool $allowed ): array {
 		$count = is_array( $row ) ? (int) ( $row['request_count'] ?? 0 ) : 0;
 
 		return array(
 			'allowed'       => $allowed,
 			'limit'         => $limit,
 			'remaining'     => max( 0, $limit - $count ),
+			'window_start'  => $window_start,
 			'reset_at'      => $window_end,
 			'request_count' => $count,
 		);

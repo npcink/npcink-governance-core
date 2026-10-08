@@ -92,6 +92,7 @@ final class Read_Requests_Controller {
 						'status' => array(
 							'type'              => 'string',
 							'default'           => '',
+							'enum'              => array_merge( array( '' ), $this->repository->allowed_statuses() ),
 							'sanitize_callback' => 'sanitize_key',
 						),
 					),
@@ -219,8 +220,9 @@ final class Read_Requests_Controller {
 		}
 
 		$this->service->record_viewed( $row );
-		$row['audit_timeline'] = Rest_Format::rows( $this->service->audit_timeline( $request_id ), array( 'created_at' ) );
-		$row                    = Rest_Format::row( $row, self::REQUEST_TIMESTAMP_FIELDS );
+		$row['audit_timeline']       = Rest_Format::rows( $this->service->audit_timeline( $request_id ), array( 'created_at' ) );
+		$row['audit_timeline_total'] = $this->service->audit_timeline_total( $request_id );
+		$row                         = Rest_Format::row( $row, self::REQUEST_TIMESTAMP_FIELDS );
 
 		return new WP_REST_Response( $row, 200 );
 	}
@@ -272,7 +274,18 @@ final class Read_Requests_Controller {
 		$params['_input_provided']  = $this->request_contains_param( $request, 'input' );
 		$result                     = $this->service->preflight( (string) $request->get_param( 'request_id' ), $params );
 
-		return is_wp_error( $result ) ? $result : new WP_REST_Response( Rest_Format::row( $result, self::REQUEST_TIMESTAMP_FIELDS ), 200 );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		if ( is_array( $result['request'] ?? null ) ) {
+			$result['request'] = Rest_Format::row( $result['request'], self::REQUEST_TIMESTAMP_FIELDS );
+		}
+		if ( is_array( $result['read_authorization_context'] ?? null ) && isset( $result['read_authorization_context']['expires_at'] ) ) {
+			$result['read_authorization_context']['expires_at'] = Rest_Format::iso8601( (string) $result['read_authorization_context']['expires_at'] );
+		}
+
+		return new WP_REST_Response( Rest_Format::row( $result, self::REQUEST_TIMESTAMP_FIELDS ), 200 );
 	}
 
 	/**

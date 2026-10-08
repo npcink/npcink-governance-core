@@ -750,6 +750,33 @@ final class Proposal_Repository {
 	}
 
 	/**
+	 * Counts pending proposals that are still inside the pending TTL window.
+	 *
+	 * Read-only badge helper: mirrors what the review queue would show after
+	 * stale-pending expiry runs, without mutating rows or writing audit events
+	 * on every admin page load.
+	 *
+	 * @param int $ttl_seconds Pending TTL in seconds.
+	 * @return int
+	 */
+	public function count_pending_within_ttl( int $ttl_seconds ): int {
+		global $wpdb;
+
+		$cutoff = gmdate( 'Y-m-d H:i:s', time() - max( 1, $ttl_seconds ) );
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Core owns this custom governance table.
+		return (int) $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %i WHERE status = %s AND created_at > %s',
+				$this->table_name(),
+				self::STATUS_PENDING,
+				$cutoff
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+	}
+
+	/**
 	 * Counts historical proposal records older than a cutoff.
 	 *
 	 * @param string $cutoff_utc UTC cutoff datetime.

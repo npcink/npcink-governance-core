@@ -119,6 +119,7 @@ final class Proposals_Controller {
 						'status' => array(
 							'type'              => 'string',
 							'default'           => '',
+							'enum'              => array_merge( array( '' ), $this->repository->allowed_statuses() ),
 							'sanitize_callback' => 'sanitize_key',
 						),
 						'include_payload' => array(
@@ -395,8 +396,9 @@ final class Proposals_Controller {
 		}
 
 		$this->service->record_viewed( $proposal );
-		$proposal['audit_timeline'] = Rest_Format::rows( $this->service->audit_timeline( $proposal_id ), array( 'created_at' ) );
-		$proposal                   = Rest_Format::row( $proposal, self::PROPOSAL_TIMESTAMP_FIELDS );
+		$proposal['audit_timeline']       = Rest_Format::rows( $this->service->audit_timeline( $proposal_id ), array( 'created_at' ) );
+		$proposal['audit_timeline_total'] = $this->service->audit_timeline_total( $proposal_id );
+		$proposal                         = Rest_Format::row( $proposal, self::PROPOSAL_TIMESTAMP_FIELDS );
 
 		return new WP_REST_Response( $proposal, 200 );
 	}

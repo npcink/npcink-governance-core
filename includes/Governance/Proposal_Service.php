@@ -195,15 +195,21 @@ final class Proposal_Service {
 			return $duplicate;
 		}
 
-		$pending_count = $this->count_pending_for_quota( $pending, (string) $guardrail['pending_quota_key'] );
+		$quota_pending = array();
+		foreach ( $pending as $quota_candidate ) {
+			if ( $this->proposal_matches_quota_key( $quota_candidate, (string) $guardrail['pending_quota_key'] ) ) {
+				$quota_pending[] = $quota_candidate;
+			}
+		}
+		$pending_count = count( $quota_pending );
 		if ( $pending_count >= (int) $guardrail['pending_quota_limit'] ) {
 			$this->audit->record(
 				'proposal.quota_blocked',
 				array(
-					'ability_id'     => $ability_id,
-					'pending_count'  => $pending_count,
-					'quota_limit'    => (int) $guardrail['pending_quota_limit'],
-					'quota_subject'  => (string) $guardrail['pending_quota_subject'],
+					'ability_id'    => $ability_id,
+					'pending_count' => $pending_count,
+					'quota_limit'   => (int) $guardrail['pending_quota_limit'],
+					'quota_subject' => (string) $guardrail['pending_quota_subject'],
 				)
 			);
 
@@ -211,10 +217,11 @@ final class Proposal_Service {
 				'npcink_governance_core_pending_proposal_quota_exceeded',
 				__( 'Too many pending proposals exist for this caller.', 'npcink-governance-core' ),
 				array(
-					'status'        => 429,
-					'pending_count' => $pending_count,
-					'quota_limit'   => (int) $guardrail['pending_quota_limit'],
-					'quota_subject' => (string) $guardrail['pending_quota_subject'],
+					'status'                      => 429,
+					'pending_count'               => $pending_count,
+					'quota_limit'                 => (int) $guardrail['pending_quota_limit'],
+					'quota_subject'               => (string) $guardrail['pending_quota_subject'],
+					'earliest_pending_expires_at' => $this->earliest_pending_expires_at( $quota_pending ),
 				)
 			);
 		}
@@ -942,24 +949,6 @@ final class Proposal_Service {
 	}
 
 	/**
-	 * Counts pending proposals for a caller quota bucket.
-	 *
-	 * @param array<int,array<string,mixed>> $pending Pending proposals.
-	 * @param string                         $quota_key Quota key.
-	 * @return int
-	 */
-	private function count_pending_for_quota( array $pending, string $quota_key ): int {
-		$count = 0;
-		foreach ( $pending as $proposal ) {
-			if ( $this->proposal_matches_quota_key( $proposal, $quota_key ) ) {
-				++$count;
-			}
-		}
-
-		return $count;
-	}
-
-	/**
 	 * Returns whether a proposal belongs to a quota key.
 	 *
 	 * @param array<string,mixed> $proposal Proposal row.
@@ -1231,6 +1220,9 @@ final class Proposal_Service {
 	/**
 	 * Returns proposal audit timeline.
 	 *
+	 * The newest events come first so approval, preflight, and execution
+	 * evidence survives the bounded window on busy proposals.
+	 *
 	 * @param string $proposal_id Proposal id.
 	 * @return array<int,array<string,mixed>>
 	 */
@@ -1239,9 +1231,46 @@ final class Proposal_Service {
 			array(
 				'proposal_id' => sanitize_text_field( $proposal_id ),
 				'limit'       => 50,
-				'order'       => 'asc',
+				'order'       => 'desc',
 			)
 		);
+	}
+
+	/**
+	 * Returns the total audit event count for one proposal.
+	 *
+	 * Lets consumers detect that the bounded timeline is truncated instead of
+	 * silently missing evidence.
+	 *
+	 * @param string $proposal_id Proposal id.
+	 * @return int
+	 */
+	public function audit_timeline_total( string $proposal_id ): int {
+		return $this->audit->count_filtered(
+			array( 'proposal_id' => sanitize_text_field( $proposal_id ) )
+		);
+	}
+
+	/**
+	 * Returns the earliest pending-quota release time from pending summaries.
+	 *
+	 * The pending quota frees when a pending proposal is decided or expires;
+	 * the oldest pending row bounds the worst-case wait, so the 429 can point
+	 * the consumer at a concrete time instead of an opaque quota.
+	 *
+	 * @param array<int,array<string,mixed>> $pending Pending proposal summaries.
+	 * @return string ISO8601 timestamp, or an empty string when unknown.
+	 */
+	private function earliest_pending_expires_at( array $pending ): string {
+		$oldest = 0;
+		foreach ( $pending as $row ) {
+			$created_at = strtotime( (string) ( $row['created_at'] ?? '' ) );
+			if ( false !== $created_at && ( 0 === $oldest || $created_at < $oldest ) ) {
+				$oldest = $created_at;
+			}
+		}
+
+		return 0 === $oldest ? '' : gmdate( 'c', $oldest + self::PENDING_TTL_SECONDS );
 	}
 
 	/**

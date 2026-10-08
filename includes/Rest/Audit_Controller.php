@@ -123,8 +123,13 @@ final class Audit_Controller {
 							'default'           => '',
 							'sanitize_callback' => 'sanitize_text_field',
 						),
+						'include_read_events' => array(
+							'type'              => 'boolean',
+							'default'           => false,
+							'sanitize_callback' => 'rest_sanitize_boolean',
+						),
 					),
-				),
+				)
 			)
 		);
 	}
@@ -137,8 +142,8 @@ final class Audit_Controller {
 	 */
 	public function list_events( WP_REST_Request $request ): WP_REST_Response {
 		$filters = array(
-			'limit'          => (int) $request->get_param( 'limit' ),
-			'offset'         => (int) $request->get_param( 'offset' ),
+			'limit'          => max( 1, min( 200, absint( $request->get_param( 'limit' ) ) ) ),
+			'offset'         => max( 0, absint( $request->get_param( 'offset' ) ) ),
 			'order'          => (string) $request->get_param( 'order' ),
 			'search'         => (string) $request->get_param( 'search' ),
 			'created_after'  => (string) $request->get_param( 'created_after' ),
@@ -150,8 +155,21 @@ final class Audit_Controller {
 			'caller_type'    => (string) $request->get_param( 'caller_type' ),
 			'correlation_id' => (string) $request->get_param( 'correlation_id' ),
 		);
+
+		// Read-noise events stay excluded by default so offset paging is
+		// stable: this call itself records an `audit.listed` row that must
+		// not shift the next page. An explicit event_name filter keeps
+		// precedence over the exclusion inside the repository.
+		if ( ! (bool) $request->get_param( 'include_read_events' ) ) {
+			$filters['exclude_event_names'] = $this->audit->read_noise_event_names();
+		}
+
 		$items = $this->audit->list_filtered( $filters );
 		$items = Rest_Format::rows( $items, array( 'created_at' ) );
+
+		// Counted before the audit.listed event below is written so meta.total
+		// always describes the same snapshot the items were listed from.
+		$total = $this->audit->count_filtered( $filters );
 
 		$this->audit->record(
 			'audit.listed',
@@ -168,8 +186,6 @@ final class Audit_Controller {
 				'correlation_id' => $filters['correlation_id'],
 			)
 		);
-
-		$total = $this->audit->count_filtered( $filters );
 
 		$response = new WP_REST_Response(
 			array(

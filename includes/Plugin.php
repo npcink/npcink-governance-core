@@ -212,7 +212,7 @@ final class Plugin {
 		$this->ensure_history_cleanup_event();
 
 		if ( is_admin() ) {
-			( new Admin_Page( $this->ability_adapter(), $this->proposal_repository(), $this->audit_repository(), $this->proposal_service(), $this->app_key_repository(), $this->history_cleanup_service() ) )->register();
+			( new Admin_Page( $this->ability_adapter(), $this->proposal_repository(), $this->audit_repository(), $this->proposal_service(), $this->app_key_repository(), $this->history_cleanup_service(), $this->read_request_repository() ) )->register();
 		}
 	}
 

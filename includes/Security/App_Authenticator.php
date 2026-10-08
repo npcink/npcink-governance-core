@@ -41,6 +41,13 @@ final class App_Authenticator {
 	private $audit;
 
 	/**
+	 * Rate data for the app-authenticated request currently in flight, or null.
+	 *
+	 * @var array{app:array<string,mixed>,route_family:string,limit:int,remaining:int,window_start:string,reset_at:string}|null
+	 */
+	private $consumed_rate = null;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param App_Key_Repository $apps App key repository.
@@ -51,6 +58,9 @@ final class App_Authenticator {
 		$this->apps         = $apps;
 		$this->rate_limiter = $rate_limiter;
 		$this->audit        = $audit;
+		if ( function_exists( 'add_filter' ) ) {
+			add_filter( 'rest_post_dispatch', array( $this, 'serve_rate_limit_headers' ), 10, 3 );
+		}
 	}
 
 	/**
@@ -280,9 +290,14 @@ final class App_Authenticator {
 			);
 
 			// WP_Error cannot carry response headers, so the standard 429
-			// Retry-After hint is emitted before the REST response is sent.
-			if ( $retry_after > 0 && ! headers_sent() ) {
-				header( 'Retry-After: ' . $retry_after, true );
+			// Retry-After hint and quota headers are emitted before the REST
+			// response is sent; permission errors never reach
+			// rest_post_dispatch.
+			if ( ! headers_sent() ) {
+				if ( $retry_after > 0 ) {
+					header( 'Retry-After: ' . $retry_after, true );
+				}
+				$this->send_rate_limit_headers( (int) ( $rate['limit'] ?? 0 ), 0, $reset_timestamp );
 			}
 
 			return new WP_Error(
@@ -299,9 +314,87 @@ final class App_Authenticator {
 			);
 		}
 
+		$this->consumed_rate = array(
+			'app'          => $app,
+			'route_family' => $route_family,
+			'limit'        => (int) ( $rate['limit'] ?? 0 ),
+			'remaining'    => (int) ( $rate['remaining'] ?? 0 ),
+			'window_start' => (string) ( $rate['window_start'] ?? '' ),
+			'reset_at'     => (string) ( $rate['reset_at'] ?? '' ),
+		);
+
 		$this->apps->touch_last_used( $key_id, $this->request_ip_hash() );
 
 		return true;
+	}
+
+	/**
+	 * Serves rate-limit response headers for the consumed app request.
+	 *
+	 * Runs at rest_post_dispatch so client-validation failures (400/404) can
+	 * refund their consumed slot before the quota headers are emitted; the
+	 * refunded request then reports an accurate remaining value.
+	 *
+	 * @param mixed              $result Dispatched result.
+	 * @param \WP_REST_Server    $server REST server.
+	 * @param \WP_REST_Request   $request Request.
+	 * @return mixed Unchanged result.
+	 */
+	public function serve_rate_limit_headers( $result, $server = null, $request = null ) {
+		if ( null === $this->consumed_rate ) {
+			return $result;
+		}
+
+		$route = $request instanceof \WP_REST_Request ? (string) $request->get_route() : '';
+		if ( '' === $route || false === strpos( $route, '/npcink-governance-core/v1' ) ) {
+			return $result;
+		}
+
+		$remaining = $this->consumed_rate['remaining'];
+		$status    = 0;
+		if ( is_wp_error( $result ) ) {
+			$data   = $result->get_error_data();
+			$status = is_array( $data ) ? (int) ( $data['status'] ?? 0 ) : 0;
+		} elseif ( $result instanceof \WP_REST_Response ) {
+			$status = (int) $result->get_status();
+		}
+
+		// A request that never performed governed work must not burn quota.
+		// The refund targets the exact window the consume reported, so a
+		// window rollover between consume and dispatch cannot mis-refund.
+		if ( in_array( $status, array( 400, 404 ), true ) && $this->rate_limiter->refund( $this->consumed_rate['app'], $this->consumed_rate['route_family'], $this->consumed_rate['window_start'] ) ) {
+			$remaining += 1;
+		}
+
+		$this->send_rate_limit_headers(
+			$this->consumed_rate['limit'],
+			$remaining,
+			strtotime( $this->consumed_rate['reset_at'] )
+		);
+
+		$this->consumed_rate = null;
+
+		return $result;
+	}
+
+	/**
+	 * Emits the standard rate-limit quota headers.
+	 *
+	 * @param int        $limit Window limit.
+	 * @param int        $remaining Remaining slots in the window.
+	 * @param int|false  $reset_timestamp Unix epoch window reset, or false when unknown.
+	 * @return void
+	 */
+	private function send_rate_limit_headers( int $limit, int $remaining, $reset_timestamp ): void {
+		if ( headers_sent() ) {
+			return;
+		}
+
+		header( 'X-RateLimit-Limit: ' . $limit, true );
+		header( 'X-RateLimit-Remaining: ' . max( 0, $remaining ), true );
+		if ( false !== $reset_timestamp ) {
+			header( 'X-RateLimit-Reset: ' . (int) $reset_timestamp, true );
+		}
 	}
 
 	/**

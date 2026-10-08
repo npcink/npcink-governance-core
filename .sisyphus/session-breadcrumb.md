@@ -5606,3 +5606,70 @@
 - **Boundary**: No REST route, data shape, table, lifecycle, approval,
   execution, workflow runtime, queue, provider credential, or product UX
   behavior changed. ADR-010 only names triggers; ADR-003 stands.
+# 2026-10-08 - UX round 2: audit paging, quota visibility, evidence truncation
+
+- **Module**: Admin review flow, REST consumer experience, zh_CN i18n
+  (branch `fix/ux-round2`, 3 commits f2aca1d/9e7557e/253373f).
+- **Trigger**: fresh user-experience audit after PR #91; user approved the
+  prioritized fix list ("按建议依次落实").
+- **Audit recalibrations** (do not re-propose without a new decision):
+  - The admin H1 stays the fixed English product name by contract
+    (admin-surface-standard; tests pin `esc_html( 'Npcink Governance Core' )`).
+  - History is deliberately read-only with no status filters or
+    archive/reopen UI (2026-06-19 decision, commit 0236838); the
+    admin_post archive/reopen handlers are contracted stable surface
+    (tests/run.php:2917-2918), not dead code to delete.
+  - The single-event Recent Activity panel was a pinned contract; replaced
+    with a five-event noise-free list and the contract updated.
+- **Batch 1**: REST GET /audit excludes read-noise events by default
+  (opt-in `include_read_events`) so `audit.listed` no longer shifts offset
+  paging; meta.limit echoes the clamped value; proposal/read-request
+  timelines (admin + REST) newest-first with `audit_timeline_total`
+  truncation disclosure; admin menu pending badge (read-only,
+  TTL-bounded via `count_pending_within_ttl`); bulk-reject JS confirm;
+  read_request.* audit labels/filters; 5-event Recent Activity.
+- **Batch 2**: X-RateLimit-Limit/Remaining/Reset headers served at
+  rest_post_dispatch; 400/404 app-authenticated requests refund their
+  rate slot (atomic, floored decrement in App_Rate_Limiter::refund);
+  pending-quota 429 carries `earliest_pending_expires_at`; status filters
+  enumerated (proposals + read-requests) so typos 400;
+  read-request 409 carries `request_status`; read-preflight nested
+  `expires_at` now ISO8601; queue summary cards deep-link filtered audit
+  views; conditional "Sensitive reads" card when read requests pend
+  (Admin_Page now takes Read_Request_Repository).
+- **Batch 3 (minimal + docs)**: open decision brief
+  `docs/next-decisions-briefs-2026-10-ux-round2.md` recommends
+  Adapter-owned notification via the observability hook over
+  Core-native webhooks/email; operability doc documents the notification
+  seam + polling posture; zh_CN catalog: 53 new translations (incl.
+  previously untranslated enum labels), 861 translated / 0 untranslated,
+  obsolete entries preserved (Toolbox menu label contract).
+- **Gotchas hit**: msgmerge preserves obsolete PO entries — do NOT run
+  `msgattrib --no-obsolete` (drops the contracted Toolbox label entry);
+  App_Authenticator constructor now registers a rest_post_dispatch filter
+  and needs a `function_exists( 'add_filter' )` guard for the fail-closed
+  harness; zh_CN POT regen command:
+  `wp i18n make-pot . languages/npcink-governance-core.pot --domain=npcink-governance-core --exclude=vendor,build,dist,tests,scripts,sj,examples`.
+- **Verification**: `composer test:all` green after every batch;
+  `composer smoke:wp` green; advisory `ocr review` run before publish.
+- **Not done (owner decisions pending)**: notification channel (brief D
+  rejected / C recommended); `updated_since` polling filter (deferred);
+  OpenAPI; browser visual smoke of the new badge/cards/timeline panel.
+# 2026-10-08 - UX round 2 review closeout (fix commits 432d4c4, follow-up)
+
+- Advisory review round 1 (15 findings) and round 2 (11 findings) fully
+  triaged; every real defect fixed, no waivers. Key late catches:
+  audit.listed total-snapshot drift, exact-window rate refunds
+  (consume now returns window_start), 429 responses carrying
+  X-RateLimit headers, admin detail timeline must exclude read-noise or
+  polled proposals evict their own approval/preflight evidence from the
+  bounded window, read-request lazy expiry inflating a naive pending
+  count (count_pending_unexpired added), plural-form portability of the
+  JS confirm (now plural-neutral "proposal(s)"), status enums reusing
+  allowed_statuses() (instance call — static call fatalled smoke).
+- zh_CN terminology realignments: 读预检已检查, Agent 主机.
+- All gates green after each fix batch: test:all, smoke:wp, validate,
+  check:wporg; final catalog 861 translated / 0 untranslated with
+  obsolete entries preserved.
+- PR body at /tmp/ux-round2-pr-body.md; publish with
+  `composer pr:publish -- --title "ux: round-2 consumer and admin experience fixes" --body-file /tmp/ux-round2-pr-body.md`.
