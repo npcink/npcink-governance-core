@@ -323,9 +323,57 @@ The smoke script is self-contained in this repository. It uses WP-CLI against
 the LocalWP site and does not depend on the abandoned legacy Magick AI
 repository.
 
+Browser visual smoke of admin screens follows the 2026-10-07 pattern: create a
+temporary administrator through `scripts/wp-cli-local.sh user create` with a
+random password, verify the screens, then delete the user and any temporary
+governance rows (proposals and their audit rows via WP-CLI `$wpdb`) in the
+same pass. Keep screenshots under `/tmp`, never inside the repository. If the
+site returns HTTP 503 after a smoke run, check for a stale `.maintenance` file
+in the WordPress root first.
+
+## Translation Catalog Updates
+
+The bundled zh_CN catalog is regenerated in four steps; a static contract
+binds the catalog `Project-Id-Version` headers to the plugin header version,
+so every version bump must also refresh the catalogs.
+
+1. Regenerate the template:
+
+   ```bash
+   wp i18n make-pot . languages/npcink-governance-core.pot --domain=npcink-governance-core --exclude=vendor,build,dist,tests,scripts,sj,examples
+   ```
+
+2. Merge the translation, keeping obsolete entries:
+
+   ```bash
+   msgmerge --update --no-fuzzy-matching --backup=none languages/npcink-governance-core-zh_CN.po languages/npcink-governance-core.pot
+   ```
+
+   `msgmerge` preserves `#~` obsolete entries. Do **not** run
+   `msgattrib --no-obsolete` on this file: obsolete entries include the
+   Workflow Toolbox menu label, which a static contract requires to stay
+   translated even though the string no longer appears in Core source.
+
+3. Fill every untranslated `msgstr` (target: 0 untranslated) and keep
+   terminology aligned with `docs/translation-glossary-zh.md`.
+
+4. Compile and verify:
+
+   ```bash
+   msgfmt --check -o languages/npcink-governance-core-zh_CN.mo languages/npcink-governance-core-zh_CN.po
+   msgfmt --statistics -o /dev/null languages/npcink-governance-core-zh_CN.po
+   ```
+
+Strings rendered with a JavaScript-side count should stay plural-neutral
+(for example `proposal(s)`) in a single data attribute: harvesting
+singular/plural `_n()` forms at render time cannot express locales with more
+than two plural forms once the count is substituted client-side.
+
 ## Git Rules
 
 - Check `git status --short --branch` before editing.
+- `master` is protected: every change — including `.sisyphus/session-breadcrumb.md`
+  updates — reaches `master` through `composer pr:publish`, never a direct push.
 - Stage only files changed by the current task.
 - Keep commits small and named with the format:
 
