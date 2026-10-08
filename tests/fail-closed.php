@@ -1306,7 +1306,37 @@ final class Npcink_Governance_Core_Fail_Closed_WPDB {
 }
 
 /**
- * Assertion helper.
+ * Collected fail-closed failures.
+ *
+ * @var array<int,string>
+ */
+$GLOBALS['npcink_governance_core_fail_closed_failures'] = array();
+
+/**
+ * Prints every collected failure and exits non-zero, or confirms ok.
+ *
+ * @return void
+ */
+function npcink_governance_core_fail_closed_report(): void {
+	$failures = $GLOBALS['npcink_governance_core_fail_closed_failures'];
+	if ( 0 === count( $failures ) ) {
+		echo "Fail-closed fault injection: ok\n";
+		return;
+	}
+	foreach ( array_slice( $failures, 0, 50 ) as $failure ) {
+		fwrite( STDERR, '[fail] ' . $failure . "\n" );
+	}
+	$unshown = count( $failures ) - 50;
+	if ( $unshown > 0 ) {
+		fwrite( STDERR, "... and {$unshown} more failure(s) not shown\n" );
+	}
+	fwrite( STDERR, 'Fail-closed fault injection: ' . count( $failures ) . " failure(s)\n" );
+	exit( 1 );
+}
+
+/**
+ * Assertion helper that collects every failure so one run reports the full
+ * failure surface instead of stopping at the first miss.
  *
  * @param bool   $condition Condition.
  * @param string $message Message.
@@ -1314,8 +1344,7 @@ final class Npcink_Governance_Core_Fail_Closed_WPDB {
  */
 function npcink_governance_core_fail_closed_assert( bool $condition, string $message ): void {
 	if ( ! $condition ) {
-		fwrite( STDERR, '[fail] ' . $message . "\n" );
-		exit( 1 );
+		$GLOBALS['npcink_governance_core_fail_closed_failures'][] = $message;
 	}
 }
 
@@ -6304,4 +6333,4 @@ npcink_governance_core_fail_closed_assert( true === $first_rate['allowed'] && 1 
 npcink_governance_core_fail_closed_assert( false === $second_rate['allowed'] && 1 === (int) $second_rate['request_count'], 'Rate limiter atomically rejects an exhausted window without duplicate-key failure.' );
 npcink_governance_core_fail_closed_assert( 1 === count( $wpdb->rows( $wpdb->prefix . 'npcink_governance_core_app_rate_limits' ) ), 'Rate limiter keeps one row for concurrent first-use semantics.' );
 
-echo "Fail-closed fault injection: ok\n";
+npcink_governance_core_fail_closed_report();

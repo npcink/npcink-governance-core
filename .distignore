@@ -23,3 +23,5 @@ phpcs.xml.dist
 phpstan.neon
 phpstan.neon.dist
 stubs
+phpunit.xml
+phpunit.xml.dist
