@@ -937,6 +937,10 @@ npcink_governance_core_assert( false !== strpos( $readme, 'Content Metadata Delt
 npcink_governance_core_assert( false !== strpos( $readme, 'OpenClaw Execution Guidance' ), 'README links OpenClaw Execution Guidance.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Adapter Handoff And Approval Policy Acceptance' ), 'README links Adapter handoff and approval policy acceptance.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'ADR-003: Keep Final Execution Outside Core For The Current Stage' ), 'README links ADR-003.' );
+npcink_governance_core_assert( false !== strpos( $readme, 'Resume After A Break' ), 'README links the resume-after-break guide.' );
+$resume_after_break = npcink_governance_core_read( $root . '/docs/resume-after-break.md' );
+npcink_governance_core_assert( false !== strpos( $resume_after_break, 'Shortest Path' ) && false !== strpos( $resume_after_break, 'Gate Cheat Sheet' ) && false !== strpos( $resume_after_break, 'Known Pitfalls' ), 'Resume-after-break guide keeps its shortest path, gate, and pitfalls sections.' );
+npcink_governance_core_assert( false !== strpos( $resume_after_break, 'session-breadcrumb' ) && false !== strpos( $resume_after_break, 'docs/next-stage-plan.md' ), 'Resume-after-break guide points at the rolling breadcrumb and the next-stage plan instead of duplicating state.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Productized OpenClaw acceptance should be run from Npcink AI Client Adapter' ), 'README points OpenClaw productized acceptance to Adapter.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Create Draft Governance Scenario' ), 'README links Create Draft Governance Scenario.' );
 npcink_governance_core_assert( false !== strpos( $readme, 'Set Post SEO Meta Governance Scenario' ), 'README links Set Post SEO Meta Governance Scenario.' );
@@ -2028,6 +2032,8 @@ npcink_governance_core_assert( false !== strpos( $wp_cli_local_sh, "-path '*/mys
 
 $smoke_wp = npcink_governance_core_read( $root . '/tests/smoke-wp.php' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'NPCINK_ABILITIES_TOOLKIT_PATH' ), 'WordPress smoke can locate the shared npcink-abilities-toolkit repository explicitly.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp, 'npcink_governance_core_smoke_delete_tracked_governance_rows' ), 'WordPress smoke deletes its tracked governance rows every run.' );
+npcink_governance_core_assert( false !== strpos( $smoke_wp, 'smoke proposal fixture is deleted after smoke' ), 'WordPress smoke asserts its proposal fixtures are gone after cleanup.' );
 npcink_governance_core_assert( false === strpos( $smoke_wp, 'get_page_by_title' ), 'WordPress smoke does not use deprecated get_page_by_title.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'agent-workflow-replay.json' ), 'WordPress smoke consumes the shared replay fixture.' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'preferred bundle is discoverable by Core' ), 'WordPress smoke validates preferred bundle discovery.' );
