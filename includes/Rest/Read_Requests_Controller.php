@@ -92,6 +92,14 @@ final class Read_Requests_Controller {
 						'status' => array(
 							'type'              => 'string',
 							'default'           => '',
+							'enum'              => array(
+								'',
+								Read_Request_Repository::STATUS_PENDING,
+								Read_Request_Repository::STATUS_APPROVED,
+								Read_Request_Repository::STATUS_REJECTED,
+								Read_Request_Repository::STATUS_EXPIRED,
+								Read_Request_Repository::STATUS_CONSUMED,
+							),
 							'sanitize_callback' => 'sanitize_key',
 						),
 					),
@@ -273,7 +281,15 @@ final class Read_Requests_Controller {
 		$params['_input_provided']  = $this->request_contains_param( $request, 'input' );
 		$result                     = $this->service->preflight( (string) $request->get_param( 'request_id' ), $params );
 
-		return is_wp_error( $result ) ? $result : new WP_REST_Response( Rest_Format::row( $result, self::REQUEST_TIMESTAMP_FIELDS ), 200 );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		if ( is_array( $result['read_authorization_context'] ?? null ) && isset( $result['read_authorization_context']['expires_at'] ) ) {
+			$result['read_authorization_context']['expires_at'] = Rest_Format::iso8601( (string) $result['read_authorization_context']['expires_at'] );
+		}
+
+		return new WP_REST_Response( Rest_Format::row( $result, self::REQUEST_TIMESTAMP_FIELDS ), 200 );
 	}
 
 	/**

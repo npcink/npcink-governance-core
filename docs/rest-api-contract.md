@@ -51,6 +51,18 @@ Generic MCP adapters should not receive `proposals:approve` or `audit:read` by
 default. Missing or revoked app identity must return `401`; missing scope must
 return `403`; rate-limited requests must return `429`.
 
+Rate limiting is a fixed window per app key per route family. Every
+app-authenticated response also carries quota headers so clients can back off
+before hitting a 429:
+
+- `X-RateLimit-Limit` — the route-family window limit;
+- `X-RateLimit-Remaining` — slots left in the current window;
+- `X-RateLimit-Reset` — Unix epoch timestamp when the window resets.
+
+Requests that fail client validation (`400`) or address a missing record
+(`404`) refund their consumed slot, so malformed retries do not burn governed
+quota. Permission failures (`401`/`403`/`429`) never consume a slot.
+
 App auth error codes:
 
 | Code | HTTP | Meaning |
@@ -61,7 +73,7 @@ App auth error codes:
 | `npcink_governance_core_app_auth_expired` | `401` | App token is valid but past its expiry; ask an administrator to rotate the key. |
 | `npcink_governance_core_app_scope_forbidden` | `403` | App key does not include the route's required scope. |
 | `npcink_governance_core_app_rate_limited` | `429` | App key exceeded its fixed-window route-family limit. Error data carries `limit`, `remaining=0`, `retry_after_seconds`, ISO8601 `reset_at`, and `route_family`; the response also sends a standard `Retry-After` header. |
-| `npcink_governance_core_pending_proposal_quota_exceeded` | `429` | Caller already has too many pending proposals. |
+| `npcink_governance_core_pending_proposal_quota_exceeded` | `429` | Caller already has too many pending proposals. Error data carries `pending_count`, `quota_limit`, `quota_subject`, and ISO8601 `earliest_pending_expires_at` (when the oldest pending proposal expires and frees a slot); quota also frees earlier when a pending proposal is decided. |
 
 App tokens use:
 
@@ -281,6 +293,15 @@ Response `201`: app row plus `secret`, `token`, `token_prefix`, and
 `hash_algorithm_version`, `expires_soon`, and `rotation_recommended`, but
 never raw secrets or secret hashes.
 
+Errors:
+
+| Code | HTTP | Meaning |
+| --- | --- | --- |
+| `npcink_governance_core_app_scopes_empty` | `400` | The provided `scopes` list is missing, not an array, or has no valid scope. |
+| `npcink_governance_core_app_secret_hash_failed` | `500` | The secret could not be hashed; no key is issued. |
+| `npcink_governance_core_app_insert_failed` | `500` | The key row could not be stored; no key is issued. |
+| `npcink_governance_core_app_audit_failed` | `500` | The key could not be audited; Core rolls back the issuance and no key is returned. |
+
 Audit event:
 
 - `app.created`
@@ -447,7 +468,7 @@ Query parameters:
 | --- | --- | --- | --- |
 | `limit` | integer | `50` | Clamped by repository to `1..200`. |
 | `offset` | integer | `0` | Row offset for pagination. |
-| `status` | string | empty | Optional status filter. |
+| `status` | string | empty | Optional status filter. Enumerated: `pending`, `approved`, `rejected`, `expired`, `archived`, `executed`, `execution_failed`; any other value returns `400 rest_invalid_param` instead of an empty list. |
 | `include_payload` | boolean | `false` | Default list rows omit `input`, `preview`, and `caller`. Set `true` only when a compatibility client needs full payloads; proposal detail remains the preferred payload endpoint. |
 
 Response `200`:
@@ -726,6 +747,10 @@ Query parameters:
 | `offset` | integer | `0` |
 | `status` | string | empty |
 
+The `status` filter is enumerated: `pending`, `approved`, `rejected`,
+`expired`, `consumed`; any other value returns `400 rest_invalid_param`
+instead of an empty list.
+
 Response `200`: `items` plus `meta` (`limit`, `offset`, `status`, `total`) and
 the `X-WP-Total` header.
 
@@ -753,6 +778,16 @@ redaction level, or bounds. Approval cannot widen provider-declared bounds.
 
 Permission: `manage_options` or app scope `read_requests:approve`.
 
+Errors:
+
+| Code | HTTP | Meaning |
+| --- | --- | --- |
+| `npcink_governance_core_read_request_not_found` | `404` | Request id does not exist. |
+| `npcink_governance_core_read_request_expired` | `409` | Request expired before the decision; Core records the expiry. |
+| `npcink_governance_core_read_request_already_decided` | `409` | Request is not pending. Error data carries `request_status` so retried decisions can distinguish an idempotent retry from an opposite decision without an extra GET. |
+| `npcink_governance_core_read_request_redaction_required` | `400` | Approver tried to relax redaction below the provider-declared floor. |
+| `npcink_governance_core_read_request_transition_failed` | `500` | Status transition could not be persisted. |
+
 Audit event:
 
 - `read_request.approved`
@@ -762,6 +797,9 @@ Audit event:
 Purpose: reject a pending read request.
 
 Permission: `manage_options` or app scope `read_requests:reject`.
+
+Errors: same table as approve, with `read_request.rejected` semantics for the
+`409 already decided` case (`request_status` echoes the stored status).
 
 Audit event:
 
@@ -795,7 +833,7 @@ Response `200`:
     "sensitivity": "sensitive",
     "data_classes": ["logs", "diagnostics"],
     "redaction_level": "strict",
-    "expires_at": "2026-06-09 12:00:00",
+    "expires_at": "2026-06-09T12:00:00+00:00",
     "bounds": {
       "max_rows": 50,
       "tail_lines": 100,
@@ -812,6 +850,10 @@ Response `200`:
   "write_execution": false
 }
 ```
+
+Timestamps inside `read_authorization_context` — including `expires_at`, the
+field Adapters must check for grant expiry — are ISO8601 UTC strings, matching
+the top-level row format.
 
 Errors:
 

@@ -40,7 +40,7 @@ Core app identity includes:
 | `app_label` | Human-readable admin label. |
 | `key_id` | Public key identifier for rotation and audit. |
 | `secret_hash` | Hash of the app secret. Never store raw app secrets. |
-| `status` | Currently `active`; `revoked` and `expired` are reserved states. |
+| `status` | `active` or `revoked`. Revocation happens through key rotation, the admin revoke action, or rotation-runbook steps; an `active` key past `expires_at` fails authentication as expired without a status change. |
 | `scopes` | Explicit allowed actions. |
 | `rate_limit` | Requests allowed per route-family window. |
 | `rate_window_seconds` | Fixed-window duration. |
@@ -136,13 +136,20 @@ The first app-key implementation supports a simple fixed-window limit:
 Rate events should be auditable without storing secrets or raw request bodies.
 Rate limit denials emit `app.rate_limited`.
 
+Successful app-authenticated responses carry `X-RateLimit-Limit`,
+`X-RateLimit-Remaining`, and `X-RateLimit-Reset` headers so clients can back
+off before a denial. Requests that fail client validation (`400`) or address a
+missing record (`404`) refund their consumed slot; permission failures
+(`401`/`403`/`429`) never consume one.
+
 Proposal creation has an additional pending queue guardrail. App-authenticated
 callers may have at most 20 pending proposals at a time, and administrator
 callers may have at most 1000 pending proposals per user. Repeated creation of
 the same `ability_id` with the same sanitized `input` by the same caller
 returns the existing pending proposal with `deduplicated=true` instead of
 creating another row. Quota denials return
-`npcink_governance_core_pending_proposal_quota_exceeded` with HTTP `429`.
+`npcink_governance_core_pending_proposal_quota_exceeded` with HTTP `429`,
+including `earliest_pending_expires_at` for the oldest pending proposal.
 
 ## Audit Attribution
 

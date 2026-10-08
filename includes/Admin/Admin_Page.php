@@ -14,6 +14,7 @@ use Npcink\GovernanceCore\Governance\History_Cleanup_Service;
 use Npcink\GovernanceCore\Governance\Operation_Classifier;
 use Npcink\GovernanceCore\Governance\Proposal_Repository;
 use Npcink\GovernanceCore\Governance\Proposal_Service;
+use Npcink\GovernanceCore\Governance\Read_Request_Repository;
 use Npcink\GovernanceCore\Security\App_Key_Repository;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -76,6 +77,13 @@ final class Admin_Page {
 	private $history_cleanup;
 
 	/**
+	 * Read request repository.
+	 *
+	 * @var Read_Request_Repository
+	 */
+	private $read_requests;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Ability_Registry_Adapter $abilities Ability adapter.
@@ -84,14 +92,16 @@ final class Admin_Page {
 	 * @param Proposal_Service         $service Proposal service.
 	 * @param App_Key_Repository       $apps App key repository.
 	 * @param History_Cleanup_Service  $history_cleanup History cleanup service.
+	 * @param Read_Request_Repository  $read_requests Read request repository.
 	 */
-	public function __construct( Ability_Registry_Adapter $abilities, Proposal_Repository $proposals, Audit_Log_Repository $audit, Proposal_Service $service, App_Key_Repository $apps, History_Cleanup_Service $history_cleanup ) {
+	public function __construct( Ability_Registry_Adapter $abilities, Proposal_Repository $proposals, Audit_Log_Repository $audit, Proposal_Service $service, App_Key_Repository $apps, History_Cleanup_Service $history_cleanup, Read_Request_Repository $read_requests ) {
 		$this->abilities       = $abilities;
 		$this->proposals       = $proposals;
 		$this->audit           = $audit;
 		$this->service         = $service;
 		$this->apps            = $apps;
 		$this->history_cleanup = $history_cleanup;
+		$this->read_requests   = $read_requests;
 	}
 
 	/**
@@ -439,13 +449,18 @@ final class Admin_Page {
 	private function render_queue_summary( int $pending_count ): void {
 		$approved_count         = $this->proposals->count_by_status( Proposal_Repository::STATUS_APPROVED );
 		$execution_failed_count = $this->proposals->count_by_status( Proposal_Repository::STATUS_EXECUTION_FAILED );
+		$pending_reads_count    = $this->read_requests->count_recent( Read_Request_Repository::STATUS_PENDING );
 		$activity_count         = $this->audit->count();
+		$audit_base             = array( 'view' => 'audit', 'audit_time_range' => 'all' );
 		?>
 		<div class="npcink-governance-core-summary-strip npcink-governance-core-max-wide">
-			<?php $this->render_summary_item( __( 'Needs review', 'npcink-governance-core' ), (string) $pending_count, __( 'Pending proposals waiting for an administrator decision.', 'npcink-governance-core' ), 'warning' ); ?>
-			<?php $this->render_summary_item( __( 'Approved', 'npcink-governance-core' ), (string) $approved_count, __( 'Approved proposals waiting for Adapter preflight or execution record.', 'npcink-governance-core' ), 'ok' ); ?>
-			<?php $this->render_summary_item( __( 'Execution failed', 'npcink-governance-core' ), (string) $execution_failed_count, __( 'Adapter-reported failures that need operator follow-up.', 'npcink-governance-core' ), $execution_failed_count > 0 ? 'error' : 'inactive' ); ?>
-			<?php $this->render_summary_item( __( 'Audit events', 'npcink-governance-core' ), (string) $activity_count, __( 'Recorded Core governance events.', 'npcink-governance-core' ), 'neutral' ); ?>
+			<?php $this->render_summary_item( __( 'Needs review', 'npcink-governance-core' ), (string) $pending_count, __( 'Pending proposals waiting for an administrator decision.', 'npcink-governance-core' ), 'warning', $this->admin_url() ); ?>
+			<?php $this->render_summary_item( __( 'Approved', 'npcink-governance-core' ), (string) $approved_count, __( 'Approved proposals waiting for Adapter preflight or execution record.', 'npcink-governance-core' ), 'ok', $this->admin_url( array_merge( $audit_base, array( 'audit_event_name' => 'proposal.approved' ) ) ) ); ?>
+			<?php $this->render_summary_item( __( 'Execution failed', 'npcink-governance-core' ), (string) $execution_failed_count, __( 'Adapter-reported failures that need operator follow-up.', 'npcink-governance-core' ), $execution_failed_count > 0 ? 'error' : 'inactive', $this->admin_url( array_merge( $audit_base, array( 'audit_event_name' => 'proposal.execution_failed' ) ) ) ); ?>
+			<?php if ( $pending_reads_count > 0 ) : ?>
+				<?php $this->render_summary_item( __( 'Sensitive reads', 'npcink-governance-core' ), (string) $pending_reads_count, __( 'Pending sensitive read requests waiting for approval. Decide them through the read-request API or a trusted Adapter.', 'npcink-governance-core' ), 'warning', $this->admin_url( array_merge( $audit_base, array( 'audit_event_name' => 'read_request.created' ) ) ) ); ?>
+			<?php endif; ?>
+			<?php $this->render_summary_item( __( 'Audit events', 'npcink-governance-core' ), (string) $activity_count, __( 'Recorded Core governance events.', 'npcink-governance-core' ), 'neutral', $this->admin_url( $audit_base ) ); ?>
 		</div>
 		<?php
 	}
@@ -453,19 +468,27 @@ final class Admin_Page {
 	/**
 	 * Renders one queue summary item.
 	 *
-	 * @param string $label Item label.
-	 * @param string $value Item value.
-	 * @param string $detail Item detail.
-	 * @param string $tone Visual tone.
+	 * @param string      $label Item label.
+	 * @param string      $value Item value.
+	 * @param string      $detail Item detail.
+	 * @param string      $tone Visual tone.
+	 * @param string|null $url Optional deep-link target.
 	 * @return void
 	 */
-	private function render_summary_item( string $label, string $value, string $detail, string $tone ): void {
+	private function render_summary_item( string $label, string $value, string $detail, string $tone, ?string $url = null ): void {
+		$classes = 'npcink-governance-core-summary-item npcink-governance-core-summary-' . sanitize_html_class( $tone );
+		if ( null !== $url ) {
+			$classes .= ' npcink-governance-core-summary-link';
+		}
+		$inner = '<div class="npcink-governance-core-summary-label">' . esc_html( $label ) . '</div>'
+			. '<div class="npcink-governance-core-summary-value">' . esc_html( $value ) . '</div>'
+			. '<div class="npcink-governance-core-summary-detail">' . esc_html( $detail ) . '</div>';
 		?>
-		<div class="npcink-governance-core-summary-item npcink-governance-core-summary-<?php echo esc_attr( sanitize_html_class( $tone ) ); ?>">
-			<div class="npcink-governance-core-summary-label"><?php echo esc_html( $label ); ?></div>
-			<div class="npcink-governance-core-summary-value"><?php echo esc_html( $value ); ?></div>
-			<div class="npcink-governance-core-summary-detail"><?php echo esc_html( $detail ); ?></div>
-		</div>
+		<?php if ( null !== $url ) : ?>
+			<a class="<?php echo esc_attr( $classes ); ?>" href="<?php echo esc_url( $url ); ?>"><?php echo wp_kses_post( $inner ); ?></a>
+		<?php else : ?>
+			<div class="<?php echo esc_attr( $classes ); ?>"><?php echo wp_kses_post( $inner ); ?></div>
+		<?php endif; ?>
 		<?php
 	}
 

@@ -195,29 +195,30 @@ final class Proposal_Service {
 			return $duplicate;
 		}
 
-		$pending_count = $this->count_pending_for_quota( $pending, (string) $guardrail['pending_quota_key'] );
-		if ( $pending_count >= (int) $guardrail['pending_quota_limit'] ) {
-			$this->audit->record(
-				'proposal.quota_blocked',
-				array(
-					'ability_id'     => $ability_id,
-					'pending_count'  => $pending_count,
-					'quota_limit'    => (int) $guardrail['pending_quota_limit'],
-					'quota_subject'  => (string) $guardrail['pending_quota_subject'],
-				)
-			);
+			$pending_count = $this->count_pending_for_quota( $pending, (string) $guardrail['pending_quota_key'] );
+			if ( $pending_count >= (int) $guardrail['pending_quota_limit'] ) {
+				$this->audit->record(
+					'proposal.quota_blocked',
+					array(
+						'ability_id'     => $ability_id,
+						'pending_count'  => $pending_count,
+						'quota_limit'    => (int) $guardrail['pending_quota_limit'],
+						'quota_subject'  => (string) $guardrail['pending_quota_subject'],
+					)
+				);
 
-			return new WP_Error(
-				'npcink_governance_core_pending_proposal_quota_exceeded',
-				__( 'Too many pending proposals exist for this caller.', 'npcink-governance-core' ),
-				array(
-					'status'        => 429,
-					'pending_count' => $pending_count,
-					'quota_limit'   => (int) $guardrail['pending_quota_limit'],
-					'quota_subject' => (string) $guardrail['pending_quota_subject'],
-				)
-			);
-		}
+				return new WP_Error(
+					'npcink_governance_core_pending_proposal_quota_exceeded',
+					__( 'Too many pending proposals exist for this caller.', 'npcink-governance-core' ),
+					array(
+						'status'                      => 429,
+						'pending_count'               => $pending_count,
+						'quota_limit'                 => (int) $guardrail['pending_quota_limit'],
+						'quota_subject'               => (string) $guardrail['pending_quota_subject'],
+						'earliest_pending_expires_at' => $this->earliest_pending_expires_at( $pending ),
+					)
+				);
+			}
 
 		$proposal = $this->proposals->create(
 			array(
@@ -1260,6 +1261,28 @@ final class Proposal_Service {
 		return $this->audit->count_filtered(
 			array( 'proposal_id' => sanitize_text_field( $proposal_id ) )
 		);
+	}
+
+	/**
+	 * Returns the earliest pending-quota release time from pending summaries.
+	 *
+	 * The pending quota frees when a pending proposal is decided or expires;
+	 * the oldest pending row bounds the worst-case wait, so the 429 can point
+	 * the consumer at a concrete time instead of an opaque quota.
+	 *
+	 * @param array<int,array<string,mixed>> $pending Pending proposal summaries.
+	 * @return string ISO8601 timestamp, or an empty string when unknown.
+	 */
+	private function earliest_pending_expires_at( array $pending ): string {
+		$oldest = 0;
+		foreach ( $pending as $row ) {
+			$created_at = strtotime( (string) ( $row['created_at'] ?? '' ) );
+			if ( false !== $created_at && ( 0 === $oldest || $created_at < $oldest ) ) {
+				$oldest = $created_at;
+			}
+		}
+
+		return 0 === $oldest ? '' : gmdate( 'c', $oldest + self::PENDING_TTL_SECONDS );
 	}
 
 	/**

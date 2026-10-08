@@ -114,6 +114,45 @@ final class App_Rate_Limiter {
 	}
 
 	/**
+	 * Refunds one request from the current fixed-window counter.
+	 *
+	 * Used when a request consumed a slot but the REST layer answered with a
+	 * client validation error (400/404): malformed or missing-id requests must
+	 * not burn governed quota. The decrement is atomic and floored at zero.
+	 *
+	 * @param array<string,mixed> $app App row.
+	 * @param string              $route_family Route family.
+	 * @return bool Whether a counter row was decremented.
+	 */
+	public function refund( array $app, string $route_family ): bool {
+		global $wpdb;
+
+		$app_id         = sanitize_text_field( (string) ( $app['app_id'] ?? '' ) );
+		$route_family   = sanitize_key( $route_family );
+		$window_seconds = max( 60, (int) ( $app['rate_window_seconds'] ?? App_Key_Repository::DEFAULT_RATE_WINDOW ) );
+		$now_ts         = time();
+		$window_start   = gmdate( 'Y-m-d H:i:s', $now_ts - ( $now_ts % $window_seconds ) );
+
+		if ( '' === $app_id || '' === $route_family ) {
+			return false;
+		}
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- atomic bounded decrement on Core's custom governance table.
+		$refunded = $wpdb->query(
+			$wpdb->prepare(
+				'UPDATE %i SET request_count = GREATEST(0, request_count - 1) WHERE app_id = %s AND route_family = %s AND window_start = %s AND request_count > 0',
+				$this->table_name(),
+				$app_id,
+				$route_family,
+				$window_start
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return false !== $refunded && $refunded > 0;
+	}
+
+	/**
 	 * Deletes expired fixed-window counters in bounded batches.
 	 *
 	 * @param string $cutoff UTC cutoff.

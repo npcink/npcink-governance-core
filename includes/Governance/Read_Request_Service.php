@@ -562,7 +562,10 @@ final class Read_Request_Service {
 			return new WP_Error(
 				'npcink_governance_core_read_request_already_decided',
 				__( 'Only pending sensitive read requests can be approved or rejected.', 'npcink-governance-core' ),
-				array( 'status' => 409 )
+				array(
+					'status'         => 409,
+					'request_status' => (string) ( $request['status'] ?? '' ),
+				)
 			);
 		}
 

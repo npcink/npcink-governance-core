@@ -2039,6 +2039,12 @@ npcink_governance_core_assert( false !== strpos( $audit_controller, 'X-WP-Total'
 $read_requests_controller = npcink_governance_core_read( $root . '/includes/Rest/Read_Requests_Controller.php' );
 npcink_governance_core_assert( false !== strpos( $read_requests_controller, "'offset'" ), 'Read-requests REST route supports offset pagination.' );
 
+npcink_governance_core_assert( false !== strpos( $proposals_controller, "Proposal_Repository::STATUS_EXECUTION_FAILED," ) && false !== strpos( $proposals_controller, "'enum'" ), 'Proposal list status filter is enumerated so typos return 400 instead of an empty list.' );
+npcink_governance_core_assert( false !== strpos( $read_requests_controller, "Read_Request_Repository::STATUS_CONSUMED," ) && false !== strpos( $read_requests_controller, "'enum'" ), 'Read-request list status filter is enumerated.' );
+npcink_governance_core_assert( false !== strpos( $read_request_service_source, "'request_status'" ), 'Read-request already-decided 409 echoes the stored request status.' );
+npcink_governance_core_assert( false !== strpos( $read_requests_controller, "read_authorization_context']['expires_at'] = Rest_Format::iso8601" ), 'Read-preflight nested grant expiry is normalized to ISO8601.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service_source, 'earliest_pending_expires_at' ), 'Pending-quota 429 reports when the oldest pending proposal frees a slot.' );
+
 npcink_governance_core_assert( false !== strpos( $proposals_controller, '0 === $created_count ) ? 200 : 201' ), 'From-plan avoids a false 201 Created when no proposal was created; blocked intake stays a 200 body contract.' );
 
 $commit_preflight_service = npcink_governance_core_read( $root . '/includes/Governance/Commit_Preflight_Service.php' );
@@ -2047,7 +2053,13 @@ npcink_governance_core_assert( false !== strpos( $commit_preflight_service, "pri
 $app_authenticator = npcink_governance_core_read( $root . '/includes/Security/App_Authenticator.php' );
 npcink_governance_core_assert( false !== strpos( $app_authenticator, 'npcink_governance_core_app_auth_expired' ), 'Expired app keys return a distinct rotate-key error code.' );
 npcink_governance_core_assert( false !== strpos( $app_authenticator, 'Retry-After' ) && false !== strpos( $app_authenticator, 'retry_after_seconds' ), 'Rate-limited responses carry Retry-After guidance.' );
+npcink_governance_core_assert( false !== strpos( $app_authenticator, 'X-RateLimit-Limit' ) && false !== strpos( $app_authenticator, 'X-RateLimit-Remaining' ) && false !== strpos( $app_authenticator, 'X-RateLimit-Reset' ), 'App-authenticated responses expose rate-limit quota headers.' );
+npcink_governance_core_assert( false !== strpos( $app_authenticator, 'array( 400, 404 )' ) && false !== strpos( $app_authenticator, '->refund(' ), 'Client-validation failures (400/404) refund their consumed rate slot.' );
+npcink_governance_core_assert( false !== strpos( $app_authenticator, 'rest_post_dispatch' ), 'Quota headers and refunds run after dispatch so the reported remaining value is accurate.' );
 npcink_governance_core_assert( false !== strpos( $app_key_repository, "'contract:read'" ), 'App scope allowlist includes the contract:read compatibility scope.' );
+
+$app_rate_limiter = npcink_governance_core_read( $root . '/includes/Security/App_Rate_Limiter.php' );
+npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'request_count > 0' ) && false !== strpos( $app_rate_limiter, 'GREATEST(0, request_count - 1)' ), 'Rate refunds decrement atomically and are floored at zero.' );
 
 $rest_format = npcink_governance_core_read( $root . '/includes/Rest/Rest_Format.php' );
 npcink_governance_core_assert( false !== strpos( $rest_format, "gmdate( 'c'" ), 'REST timestamps are normalized to ISO8601 with a timezone designator.' );

@@ -41,6 +41,13 @@ final class App_Authenticator {
 	private $audit;
 
 	/**
+	 * Rate data for the app-authenticated request currently in flight, or null.
+	 *
+	 * @var array{app:array<string,mixed>,route_family:string,limit:int,remaining:int,reset_at:string}|null
+	 */
+	private $consumed_rate = null;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param App_Key_Repository $apps App key repository.
@@ -51,6 +58,9 @@ final class App_Authenticator {
 		$this->apps         = $apps;
 		$this->rate_limiter = $rate_limiter;
 		$this->audit        = $audit;
+		if ( function_exists( 'add_filter' ) ) {
+			add_filter( 'rest_post_dispatch', array( $this, 'serve_rate_limit_headers' ), 10, 3 );
+		}
 	}
 
 	/**
@@ -299,9 +309,67 @@ final class App_Authenticator {
 			);
 		}
 
+		$this->consumed_rate = array(
+			'app'         => $app,
+			'route_family' => $route_family,
+			'limit'       => (int) ( $rate['limit'] ?? 0 ),
+			'remaining'   => (int) ( $rate['remaining'] ?? 0 ),
+			'reset_at'    => (string) ( $rate['reset_at'] ?? '' ),
+		);
+
 		$this->apps->touch_last_used( $key_id, $this->request_ip_hash() );
 
 		return true;
+	}
+
+	/**
+	 * Serves rate-limit response headers for the consumed app request.
+	 *
+	 * Runs at rest_post_dispatch so client-validation failures (400/404) can
+	 * refund their consumed slot before the quota headers are emitted; the
+	 * refunded request then reports an accurate remaining value.
+	 *
+	 * @param mixed              $result Dispatched result.
+	 * @param \WP_REST_Server    $server REST server.
+	 * @param \WP_REST_Request   $request Request.
+	 * @return mixed Unchanged result.
+	 */
+	public function serve_rate_limit_headers( $result, $server = null, $request = null ) {
+		if ( null === $this->consumed_rate ) {
+			return $result;
+		}
+
+		$route = $request instanceof \WP_REST_Request ? (string) $request->get_route() : '';
+		if ( '' === $route || false === strpos( $route, '/npcink-governance-core/v1' ) ) {
+			return $result;
+		}
+
+		$remaining = $this->consumed_rate['remaining'];
+		$status    = 0;
+		if ( is_wp_error( $result ) ) {
+			$data    = $result->get_error_data();
+			$status  = is_array( $data ) ? (int) ( $data['status'] ?? 0 ) : 0;
+		} elseif ( $result instanceof \WP_REST_Response ) {
+			$status = (int) $result->get_status();
+		}
+
+		// A request that never performed governed work must not burn quota.
+		if ( in_array( $status, array( 400, 404 ), true ) && $this->rate_limiter->refund( $this->consumed_rate['app'], $this->consumed_rate['route_family'] ) ) {
+			$remaining += 1;
+		}
+
+		$reset_timestamp = strtotime( $this->consumed_rate['reset_at'] );
+		if ( ! headers_sent() ) {
+			header( 'X-RateLimit-Limit: ' . $this->consumed_rate['limit'], true );
+			header( 'X-RateLimit-Remaining: ' . max( 0, $remaining ), true );
+			if ( false !== $reset_timestamp ) {
+				header( 'X-RateLimit-Reset: ' . $reset_timestamp, true );
+			}
+		}
+
+		$this->consumed_rate = null;
+
+		return $result;
 	}
 
 	/**
