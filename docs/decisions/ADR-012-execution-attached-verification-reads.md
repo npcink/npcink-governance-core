@@ -64,8 +64,10 @@ no new scope is granted to any channel.
 ## Hardening (2026-10-08, post-merge review)
 
 - The requested `verification_reads` list is deduplicated per read ability
-  and object and capped at four entries per preflight, so a caller cannot
-  mint an unbounded number of approved rows.
+  and object and capped at four granted entries per preflight, so a caller
+  cannot mint an unbounded number of approved rows. Failed mints or
+  approvals do not consume slots, and unencodable inputs are denied as
+  `invalid_input` instead of colliding into one dedupe key.
 - Granted request ids travel only inside the client-bound execution
   handoff. The top-level preflight response exposes granted ability ids
   and denial reasons, never usable request ids.

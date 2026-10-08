@@ -25,6 +25,14 @@ final class Commit_Preflight_Service {
 	const PREFLIGHT_TTL_SECONDS = 300;
 
 	/**
+	 * Maximum verification reads one commit preflight may grant.
+	 *
+	 * Bounds how many approved read requests a single preflight can mint;
+	 * failed mints do not consume slots.
+	 */
+	const MAX_VERIFICATION_READS = 4;
+
+	/**
 	 * Write ability to permitted post-execution verification read ability.
 	 *
 	 * Narrow by design: only the block readback pairing the Adapter execution
@@ -396,7 +404,18 @@ final class Commit_Preflight_Service {
 				continue;
 			}
 
-			$read_key = $ability_id . '|' . md5( (string) wp_json_encode( $read_input ) );
+			$hash_input = $read_input;
+			ksort( $hash_input );
+			$encoded_input = wp_json_encode( $hash_input );
+			if ( false === $encoded_input ) {
+				$denied[] = array(
+					'ability_id' => $ability_id,
+					'reason'     => 'invalid_input',
+				);
+				continue;
+			}
+
+			$read_key = $ability_id . '|' . md5( $encoded_input );
 			if ( isset( $seen_read_keys[ $read_key ] ) ) {
 				$denied[] = array(
 					'ability_id' => $ability_id,
@@ -404,14 +423,13 @@ final class Commit_Preflight_Service {
 				);
 				continue;
 			}
-			if ( count( $seen_read_keys ) >= 4 ) {
+			if ( count( $seen_read_keys ) >= self::MAX_VERIFICATION_READS ) {
 				$denied[] = array(
 					'ability_id' => $ability_id,
 					'reason'     => 'verification_read_limit_exceeded',
 				);
 				continue;
 			}
-			$seen_read_keys[ $read_key ] = true;
 
 			$request = $this->read_requests->create(
 				array(
@@ -450,7 +468,10 @@ final class Commit_Preflight_Service {
 				continue;
 			}
 
-			$granted[] = array(
+			// Slots and dedupe keys count granted reads only: a failed mint or
+			// approve leaves the slot free for a later distinct read.
+			$seen_read_keys[ $read_key ] = true;
+			$granted[]                   = array(
 				'request_id' => (string) $request['request_id'],
 				'ability_id' => $ability_id,
 			);
