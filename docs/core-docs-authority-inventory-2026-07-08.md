@@ -99,6 +99,30 @@ trials, and prior-stage evidence are retained as history. They should not be
 used as the first current-contract source unless a current Core truth document
 links to them for evidence.
 
+Historical records live physically under `docs/history/`, not in the docs
+root, so a session scanning `docs/` sees only current truth, consumer notes,
+and pointers. The static contract suite pins this split: each file below must
+exist at `docs/history/<name>.md`, must not exist at `docs/<name>.md`, and the
+README must link it at the history path.
+
+- `docs/history/content-metadata-delta-operator-trial.md`
+- `docs/history/ai-write-classification-regression-evidence.md`
+- `docs/history/ai-write-classification-stage-closeout-2026-07-07.md`
+- `docs/history/eval-lab-governance-hardening-closeout-2026-07-01.md`
+- `docs/history/wordpress-org-zh-cn-translation-status-2026-07-03.md`
+- `docs/history/release-closeout-2026-06-21.md`
+- `docs/history/admin-menu-localization-closeout-2026-06-21.md`
+- `docs/history/admin-identity-tab-visual-closeout-2026-07-02.md`
+- `docs/history/reference-plugin-evaluation-development-summary-2026-07-08.md`
+- `docs/history/article-content-production-discussion-summary-2026-09-05.md`
+- `docs/history/current-stage-closeout-and-handoff.md`
+- `docs/history/approval-policy-stage-closeout.md`
+- `docs/history/project-history-summary.md`
+
+New closeout, stage-summary, translation-status, release, or trial records go
+straight into `docs/history/` with their dated filename; do not add them to the
+docs root.
+
 ## README Rule
 
 The root README should keep its startup path grouped by authority:

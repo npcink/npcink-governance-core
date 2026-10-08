@@ -82,7 +82,7 @@ The release candidate is acceptable only when all rows pass.
 | AI write classification regression | Core `composer smoke:wp` plus the Toolbox local-consent and article/media batch smokes when AI-assisted write entrypoints are in scope |
 
 When the AI write classification row is in scope, record the run with
-[AI Write Classification Regression Evidence](ai-write-classification-regression-evidence.md)
+[AI Write Classification Regression Evidence](history/ai-write-classification-regression-evidence.md)
 instead of relying on memory or chat-only notes.
 
 After this gate passes, run

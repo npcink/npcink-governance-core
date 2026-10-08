@@ -208,7 +208,7 @@ evidence and must not become a Core runtime, proposal truth, audit truth,
 CI-required gate, WordPress write executor, or human-review substitute.
 
 The earlier
-[Content Metadata Delta Operator Trial](content-metadata-delta-operator-trial.md)
+[Content Metadata Delta Operator Trial](history/content-metadata-delta-operator-trial.md)
 is retained as a historical protocol and example of a bounded governed loop.
 It is not the current next-stage target and must not be used to start a
 first-party summary/category/tag recommendation product inside Core unless a

@@ -4,7 +4,7 @@ Status: active evidence template.
 
 Use this template before release candidates and after changes that touch
 AI-assisted WordPress write entrypoints. It records the real-site evidence for
-the [Operation Classification Contract](operation-classification-contract.md)
+the [Operation Classification Contract](../operation-classification-contract.md)
 without turning the evidence run into a new Core feature.
 
 ## Scope
