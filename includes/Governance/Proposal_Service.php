@@ -1231,6 +1231,9 @@ final class Proposal_Service {
 	/**
 	 * Returns proposal audit timeline.
 	 *
+	 * The newest events come first so approval, preflight, and execution
+	 * evidence survives the bounded window on busy proposals.
+	 *
 	 * @param string $proposal_id Proposal id.
 	 * @return array<int,array<string,mixed>>
 	 */
@@ -1239,8 +1242,23 @@ final class Proposal_Service {
 			array(
 				'proposal_id' => sanitize_text_field( $proposal_id ),
 				'limit'       => 50,
-				'order'       => 'asc',
+				'order'       => 'desc',
 			)
+		);
+	}
+
+	/**
+	 * Returns the total audit event count for one proposal.
+	 *
+	 * Lets consumers detect that the bounded timeline is truncated instead of
+	 * silently missing evidence.
+	 *
+	 * @param string $proposal_id Proposal id.
+	 * @return int
+	 */
+	public function audit_timeline_total( string $proposal_id ): int {
+		return $this->audit->count_filtered(
+			array( 'proposal_id' => sanitize_text_field( $proposal_id ) )
 		);
 	}
 

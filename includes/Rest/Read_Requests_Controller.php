@@ -219,8 +219,9 @@ final class Read_Requests_Controller {
 		}
 
 		$this->service->record_viewed( $row );
-		$row['audit_timeline'] = Rest_Format::rows( $this->service->audit_timeline( $request_id ), array( 'created_at' ) );
-		$row                    = Rest_Format::row( $row, self::REQUEST_TIMESTAMP_FIELDS );
+		$row['audit_timeline']       = Rest_Format::rows( $this->service->audit_timeline( $request_id ), array( 'created_at' ) );
+		$row['audit_timeline_total'] = $this->service->audit_timeline_total( $request_id );
+		$row                         = Rest_Format::row( $row, self::REQUEST_TIMESTAMP_FIELDS );
 
 		return new WP_REST_Response( $row, 200 );
 	}

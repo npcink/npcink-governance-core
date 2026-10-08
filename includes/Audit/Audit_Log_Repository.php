@@ -426,11 +426,15 @@ final class Audit_Log_Repository {
 	}
 
 	/**
-	 * Returns noisy access/list events eligible for retention cleanup.
+	 * Returns noisy read-access events that list consumers exclude by default.
+	 *
+	 * These are the same events eligible for retention cleanup; hiding them by
+	 * default keeps REST offset pagination stable because listing an audit page
+	 * writes an `audit.listed` row that must never shift the next page.
 	 *
 	 * @return array<int,string>
 	 */
-	private function retention_cleanup_event_names(): array {
+	public function read_noise_event_names(): array {
 		return array(
 			'audit.listed',
 			'app.listed',
@@ -440,6 +444,15 @@ final class Audit_Log_Repository {
 			'read_request.listed',
 			'read_request.viewed',
 		);
+	}
+
+	/**
+	 * Returns noisy access/list events eligible for retention cleanup.
+	 *
+	 * @return array<int,string>
+	 */
+	private function retention_cleanup_event_names(): array {
+		return $this->read_noise_event_names();
 	}
 
 	/**

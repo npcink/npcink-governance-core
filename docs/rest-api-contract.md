@@ -510,8 +510,12 @@ Path parameters:
 | --- | --- | --- |
 | `proposal_id` | string | yes |
 
-Response `200`: proposal row plus `audit_timeline`, ordered oldest to newest
-for that proposal.
+Response `200`: proposal row plus `audit_timeline` and
+`audit_timeline_total`. The timeline lists the newest 50 events for that
+proposal, ordered newest to oldest. `audit_timeline_total` is the recorded
+event count for the proposal, so `audit_timeline_total` greater than the
+timeline length signals truncation; fetch `GET /audit?proposal_id=...` for
+the full history.
 
 Fetching a proposal may also trigger stale pending expiration before the row is
 returned.
@@ -533,9 +537,10 @@ Example shape:
       "metadata": {
         "ability_id": "npcink-abilities-toolkit/create-draft"
       },
-      "created_at": "2026-05-29 00:00:00"
+      "created_at": "2026-05-29T00:00:00+00:00"
     }
-  ]
+  ],
+  "audit_timeline_total": 1
 }
 ```
 
@@ -730,7 +735,10 @@ Audit event:
 
 ### `GET /read-requests/{request_id}`
 
-Purpose: fetch one read request with `audit_timeline`.
+Purpose: fetch one read request with `audit_timeline` and
+`audit_timeline_total`. The timeline lists the newest 50 events, ordered
+newest to oldest; `audit_timeline_total` greater than the timeline length
+signals truncation.
 
 Permission: `manage_options` or app scope `read_requests:read`.
 
@@ -1262,11 +1270,18 @@ Query parameters:
 | `key_id` | string | empty | Optional metadata filter for the app key id. |
 | `caller_type` | string | empty | Optional metadata filter such as `mcp_adapter`. |
 | `correlation_id` | string | empty | Optional metadata filter for commit-preflight correlation. |
+| `include_read_events` | boolean | `false` | Opt in to listing read-noise access events (`audit.listed`, `proposal.listed`, `proposal.viewed`, `app.listed`, `capabilities.listed`, `read_request.listed`, `read_request.viewed`). |
 
 The common metadata filters above are backed by indexed audit columns copied
 from sanitized event metadata at write time. The response still returns the
 sanitized `metadata` object. Free-text `search` is prefix-matched against
 indexed audit columns, not arbitrary metadata JSON.
+
+Read-noise access events are excluded by default. Reading the audit list
+itself records an `audit.listed` event; excluding those rows by default keeps
+`offset` pagination and `meta.total` stable while paging. Pass
+`include_read_events=true`, or an explicit `event_name` filter, to include
+them. `meta.limit` echoes the clamped `1..200` value.
 
 Response `200`:
 

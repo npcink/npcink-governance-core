@@ -119,11 +119,12 @@ final class Admin_Page {
 	 * @return void
 	 */
 	public function add_menu(): void {
+		$badge = $this->pending_badge_html();
 		if ( $this->has_parent_menu() ) {
 			add_submenu_page(
 				self::PARENT_MENU_SLUG,
 				__( 'Npcink Governance Core', 'npcink-governance-core' ),
-				__( 'Core', 'npcink-governance-core' ),
+				__( 'Core', 'npcink-governance-core' ) . $badge,
 				self::MENU_CAPABILITY,
 				self::MENU_SLUG,
 				array( $this, 'render' ),
@@ -134,11 +135,33 @@ final class Admin_Page {
 
 		add_management_page(
 			__( 'Npcink Governance Core', 'npcink-governance-core' ),
-			__( 'Npcink Governance Core', 'npcink-governance-core' ),
+			__( 'Npcink Governance Core', 'npcink-governance-core' ) . $badge,
 			self::MENU_CAPABILITY,
 			self::MENU_SLUG,
 			array( $this, 'render' )
 		);
+	}
+
+	/**
+	 * Returns the pending-count menu badge markup, or an empty string.
+	 *
+	 * The count is read-only and TTL-bounded so it matches what the review
+	 * queue shows after stale-pending expiry, without writing audit events on
+	 * unrelated admin page loads.
+	 *
+	 * @return string
+	 */
+	private function pending_badge_html(): string {
+		if ( ! current_user_can( self::MENU_CAPABILITY ) ) {
+			return '';
+		}
+
+		$count = $this->proposals->count_pending_within_ttl( Proposal_Service::PENDING_TTL_SECONDS );
+		if ( $count < 1 ) {
+			return '';
+		}
+
+		return ' <span class="awaiting-mod count-' . (int) $count . '"><span class="pending-count">' . esc_html( number_format_i18n( $count ) ) . '</span></span>';
 	}
 
 	/**
@@ -744,7 +767,11 @@ final class Admin_Page {
 						<button type="button" class="button" data-npcink-bulk-clear>
 							<?php echo esc_html__( 'Clear selection', 'npcink-governance-core' ); ?>
 						</button>
-						<button type="submit" class="button">
+						<button
+							type="submit"
+							class="button"
+							data-npcink-bulk-confirm="<?php echo esc_attr__( 'Reject %d selected proposals? Rejections cannot be undone.', 'npcink-governance-core' ); ?>"
+						>
 							<?php echo esc_html__( 'Reject selected', 'npcink-governance-core' ); ?>
 						</button>
 					</div>
@@ -1426,11 +1453,19 @@ final class Admin_Page {
 	/**
 	 * Renders a short activity list for the default workbench.
 	 *
+	 * Read-noise events are excluded so the panel surfaces decisions and
+	 * lifecycle evidence rather than the access log produced by polling.
+	 *
 	 * @return void
 	 */
 	private function render_recent_activity(): void {
-		$events = $this->audit->list_recent( 1 );
-		$event  = $events[0] ?? null;
+		$events = $this->audit->list_filtered(
+			array(
+				'limit'                => 5,
+				'order'                => 'desc',
+				'exclude_event_names'  => $this->low_value_audit_events(),
+			)
+		);
 		?>
 		<div class="npcink-governance-core-utility-panel npcink-governance-core-utility-panel-stretch">
 			<div>
@@ -1438,17 +1473,23 @@ final class Admin_Page {
 				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Latest Core governance events. Full audit is in its own tab.', 'npcink-governance-core' ); ?></span>
 			</div>
 			<div class="npcink-governance-core-secondary-row-main">
-				<?php if ( null === $event ) : ?>
+				<?php if ( empty( $events ) ) : ?>
 					<?php echo esc_html__( 'No recent governance activity.', 'npcink-governance-core' ); ?>
 				<?php else : ?>
-					<?php $proposal_id = (string) ( $event['proposal_id'] ?? '' ); ?>
-					<?php echo esc_html( $this->display_datetime( (string) $event['created_at'] ) ); ?>
-					<code><?php echo esc_html( (string) $event['event_name'] ); ?></code>
-					<?php if ( '' !== $proposal_id ) : ?>
-						<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
-					<?php else : ?>
-						<?php echo esc_html__( 'System', 'npcink-governance-core' ); ?>
-					<?php endif; ?>
+					<ul class="npcink-governance-core-recent-activity-list">
+						<?php foreach ( $events as $event ) : ?>
+							<?php $proposal_id = (string) ( $event['proposal_id'] ?? '' ); ?>
+							<li>
+								<span class="npcink-governance-core-muted"><?php echo esc_html( $this->display_datetime( (string) $event['created_at'] ) ); ?></span>
+								<span><?php echo esc_html( $this->audit_event_label( (string) $event['event_name'] ) ); ?></span>
+								<?php if ( '' !== $proposal_id ) : ?>
+									<a href="<?php echo esc_url( $this->detail_url( $proposal_id ) ); ?>"><code><?php echo esc_html( $proposal_id ); ?></code></a>
+								<?php else : ?>
+									<span class="npcink-governance-core-muted"><?php echo esc_html__( 'System', 'npcink-governance-core' ); ?></span>
+								<?php endif; ?>
+							</li>
+						<?php endforeach; ?>
+					</ul>
 				<?php endif; ?>
 			</div>
 			<a href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Open full audit', 'npcink-governance-core' ); ?></a>
@@ -2561,9 +2602,10 @@ final class Admin_Page {
 			array(
 				'proposal_id' => $proposal_id,
 				'limit'       => 50,
-				'order'       => 'asc',
+				'order'       => 'desc',
 			)
 		);
+		$timeline_total = $this->audit->count_filtered( array( 'proposal_id' => $proposal_id ) );
 		?>
 		<p><a href="<?php echo esc_url( $this->queue_url( max( 1, $this->page_from_request( 'review_page' ) ) ) ); ?>">&larr; <?php echo esc_html__( 'Back to review queue', 'npcink-governance-core' ); ?></a></p>
 		<h2><?php echo esc_html__( 'Proposal Detail', 'npcink-governance-core' ); ?></h2>
@@ -2571,7 +2613,7 @@ final class Admin_Page {
 		<?php $this->render_proposal_summary_panel( $proposal ); ?>
 		<?php $this->render_proposal_detail_tabs( $proposal, $active_tab ); ?>
 		<div class="npcink-governance-core-tab-panel npcink-governance-core-max-wide">
-			<?php $this->render_proposal_detail_tab_panel( $active_tab, $proposal, $capability, $timeline ); ?>
+			<?php $this->render_proposal_detail_tab_panel( $active_tab, $proposal, $capability, $timeline, $timeline_total ); ?>
 		</div>
 		<?php
 	}
@@ -2630,16 +2672,17 @@ final class Admin_Page {
 	 * @param array<string,mixed>            $proposal Proposal.
 	 * @param array<string,mixed>|null       $capability Capability row.
 	 * @param array<int,array<string,mixed>> $timeline Proposal audit timeline.
+	 * @param int                            $timeline_total Total audit events for the proposal.
 	 * @return void
 	 */
-	private function render_proposal_detail_tab_panel( string $active_tab, array $proposal, ?array $capability, array $timeline ): void {
+	private function render_proposal_detail_tab_panel( string $active_tab, array $proposal, ?array $capability, array $timeline, int $timeline_total = 0 ): void {
 		if ( 'actions' === $active_tab ) {
 			$this->render_proposal_actions_tab( $proposal );
 			return;
 		}
 
 		if ( 'evidence' === $active_tab ) {
-			$this->render_audit_timeline( $proposal, $timeline );
+			$this->render_audit_timeline( $proposal, $timeline, false, $timeline_total );
 			return;
 		}
 
@@ -3822,18 +3865,37 @@ final class Admin_Page {
 	 * Renders proposal audit timeline.
 	 *
 	 * @param array<string,mixed>            $proposal Proposal row.
-	 * @param array<int,array<string,mixed>> $events Audit events.
+	 * @param array<int,array<string,mixed>> $events Audit events, newest first.
+	 * @param bool                           $open Deprecated open flag.
+	 * @param int                            $total Total audit events for the proposal.
 	 * @return void
 	 */
-	private function render_audit_timeline( array $proposal, array $events, bool $open = false ): void {
+	private function render_audit_timeline( array $proposal, array $events, bool $open = false, int $total = 0 ): void {
 		unset( $open );
 		$this->render_audit_outcome_summary( $proposal, $events );
 		$this->render_audit_lifecycle_summary( $events );
+		$shown  = count( $events );
+		$is_truncated = $total > $shown;
 		?>
 		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide npcink-governance-core-disclosure-top">
 			<summary>
-				<strong><?php echo esc_html__( 'Full audit timeline', 'npcink-governance-core' ); ?></strong>
-				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Complete event table with actor and technical attribution.', 'npcink-governance-core' ); ?></span>
+				<strong><?php echo esc_html__( 'Audit timeline', 'npcink-governance-core' ); ?></strong>
+				<span class="npcink-governance-core-muted">
+					<?php
+					if ( $is_truncated ) {
+						echo esc_html(
+							sprintf(
+								/* translators: 1: shown event count, 2: total event count. */
+								__( 'Newest first. Showing the latest %1$d of %2$d recorded events.', 'npcink-governance-core' ),
+								$shown,
+								$total
+							)
+						);
+					} else {
+						echo esc_html__( 'Newest first. Complete event table with actor and technical attribution.', 'npcink-governance-core' );
+					}
+					?>
+				</span>
 			</summary>
 			<table class="widefat striped npcink-governance-core-table-spaced">
 				<thead>
@@ -4490,6 +4552,15 @@ final class Admin_Page {
 			'proposal.executed'       => __( 'Request executed', 'npcink-governance-core' ),
 			'proposal.execution_failed' => __( 'Execution failed', 'npcink-governance-core' ),
 			'commit.preflighted'      => __( 'Commit preflight checked', 'npcink-governance-core' ),
+			'read_request.created'    => __( 'Sensitive read requested', 'npcink-governance-core' ),
+			'read_request.approved'   => __( 'Sensitive read approved', 'npcink-governance-core' ),
+			'read_request.rejected'   => __( 'Sensitive read rejected', 'npcink-governance-core' ),
+			'read_request.expired'    => __( 'Sensitive read expired', 'npcink-governance-core' ),
+			'read_request.consumed'   => __( 'Sensitive read consumed', 'npcink-governance-core' ),
+			'read_request.preflighted' => __( 'Read preflight checked', 'npcink-governance-core' ),
+			'read_request.preflight_failed' => __( 'Read preflight failed', 'npcink-governance-core' ),
+			'read_request.listed'     => __( 'Read request listed', 'npcink-governance-core' ),
+			'read_request.viewed'     => __( 'Read request viewed', 'npcink-governance-core' ),
 			'app.created'             => __( 'Client access created', 'npcink-governance-core' ),
 			'app.revoked'             => __( 'Client access revoked', 'npcink-governance-core' ),
 			'app.scope_denied'        => __( 'Client access denied', 'npcink-governance-core' ),
@@ -4515,6 +4586,15 @@ final class Admin_Page {
 			'proposal.execution_failed'   => __( 'Execution failed', 'npcink-governance-core' ),
 			'proposal.viewed'             => __( 'Proposal viewed', 'npcink-governance-core' ),
 			'proposal.listed'             => __( 'Proposal listed', 'npcink-governance-core' ),
+			'read_request.created'        => __( 'Sensitive read requested', 'npcink-governance-core' ),
+			'read_request.approved'       => __( 'Sensitive read approved', 'npcink-governance-core' ),
+			'read_request.rejected'       => __( 'Sensitive read rejected', 'npcink-governance-core' ),
+			'read_request.preflighted'    => __( 'Read preflight checked', 'npcink-governance-core' ),
+			'read_request.preflight_failed' => __( 'Read preflight failed', 'npcink-governance-core' ),
+			'read_request.consumed'       => __( 'Sensitive read consumed', 'npcink-governance-core' ),
+			'read_request.expired'        => __( 'Sensitive read expired', 'npcink-governance-core' ),
+			'read_request.listed'         => __( 'Read request listed', 'npcink-governance-core' ),
+			'read_request.viewed'         => __( 'Read request viewed', 'npcink-governance-core' ),
 			'app.created'                 => __( 'Client access created', 'npcink-governance-core' ),
 			'app.revoked'                 => __( 'Client access revoked', 'npcink-governance-core' ),
 			'app.scope_denied'            => __( 'Client access denied', 'npcink-governance-core' ),
@@ -4767,6 +4847,8 @@ final class Admin_Page {
 			'capabilities.listed',
 			'audit.listed',
 			'app.listed',
+			'read_request.listed',
+			'read_request.viewed',
 		);
 	}
 

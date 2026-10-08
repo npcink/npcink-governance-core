@@ -199,6 +199,22 @@
 	height: 100%;
 }
 
+.npcink-governance-core-recent-activity-list {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	list-style: none;
+}
+
+.npcink-governance-core-recent-activity-list li {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: baseline;
+	margin: 0;
+}
+
 .npcink-governance-core-system-settings {
 	margin-top: 12px;
 }

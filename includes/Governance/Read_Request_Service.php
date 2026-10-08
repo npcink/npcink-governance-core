@@ -492,6 +492,8 @@ final class Read_Request_Service {
 	/**
 	 * Returns audit timeline.
 	 *
+	 * Newest events first, matching the proposal timeline contract.
+	 *
 	 * @param string $request_id Request id.
 	 * @return array<int,array<string,mixed>>
 	 */
@@ -500,8 +502,20 @@ final class Read_Request_Service {
 			array(
 				'proposal_id' => sanitize_text_field( $request_id ),
 				'limit'       => 50,
-				'order'       => 'asc',
+				'order'       => 'desc',
 			)
+		);
+	}
+
+	/**
+	 * Returns the total audit event count for one read request.
+	 *
+	 * @param string $request_id Request id.
+	 * @return int
+	 */
+	public function audit_timeline_total( string $request_id ): int {
+		return $this->audit->count_filtered(
+			array( 'proposal_id' => sanitize_text_field( $request_id ) )
 		);
 	}
 
