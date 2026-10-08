@@ -21,13 +21,16 @@ jobs:
   pr-body-contract:
     name: PR body contract
     runs-on: ubuntu-latest
-    # Dependabot PR bodies are machine-generated and can never carry the
-    # change-envelope sections; the exemption must key on the PR author
-    # (not github.actor) so human edits or branch updates on a Dependabot
-    # PR still skip the check instead of failing it.
-    if: github.event.pull_request.user.login != 'dependabot[bot]'
     steps:
+      # Dependabot PR bodies are machine-generated and can never carry the
+      # change-envelope sections; the exemption must key on the PR author
+      # (not github.actor) so human edits or branch updates on a Dependabot
+      # PR still skip it. The guard is step-level on purpose: this check is
+      # a required status context, and a skipped JOB does not satisfy a
+      # required context, while a job whose steps are skipped concludes
+      # success and unblocks the merge.
       - name: Require AI change envelope sections
+        if: github.event.pull_request.user.login != 'dependabot[bot]'
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
         run: |
