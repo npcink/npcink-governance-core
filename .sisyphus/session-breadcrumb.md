@@ -5,25 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-## 2026-09-06 — LocalWP socket discovery hardening
-
-- **Module**: Core-local WordPress release-smoke tooling.
-- **Completed**: Updated `scripts/wp-cli-local.sh` and `tests/smoke-wp.sh` to
-  preserve explicit socket overrides and legacy-path preference while
-  discovering the active LocalWP `mysql/mysqld.sock` when the run identifier
-  changes. Added static contract coverage for the fallback.
-- **Verified**: With the active LocalWP socket `s63K4c8XP`, the wrapper reached
-  WordPress 7.1, Plugin Check returned `Success: Checks complete. No errors
-  found.`, and `composer release:verify:m4` passed including the exact
-  post-merge evidence check.
-- **Next gate**: Run final local gates, publish this focused tooling fix by the
-  standard protected PR publisher, and keep the broader release blocked on the
-  Toolbox owner closeout.
-- **Boundary**: No REST route, data shape, table, lifecycle, approval,
-  execution, workflow runtime, queue, provider credential, or product UX
-  behavior changed.
-
-
 # 2026-10-07 - UX audit P0-P2 fixes
 
 - **Module**: Admin review flow, REST consumer experience, and zh_CN i18n.
@@ -350,3 +331,40 @@ Older history: `.sisyphus/archive/`.
 - **Main line unchanged**: the real-usage validation ledger still has zero
   rows; the first weekly row on a real operating site outranks this
   release plumbing.
+
+# 2026-10-08 - 0.3.0 tagged: arbitration executed, pipeline completed
+
+- **Arbitration executed (owner: option A)**: the ADR conflict recorded one
+  session ago is resolved. #132 renumbered the option-1 decision to
+  `ADR-012-execution-attached-verification-reads.md` (supersedes the option-2
+  ADR-011, kept for the record), README/validation-doc/tests updated, and the
+  ledger-trigger waiver is recorded as one-item, non-precedential.
+- **#131 unblocked and hardened**: the parallel session's PR was stuck on the
+  ADR rename conflict plus unresolved review threads. This session merged
+  master in (rename detection carried the Hardening section automatically),
+  fixed the remaining review findings (granted-only cap/dedupe counting,
+  normalize_payload_for_hash reuse for key-order-insensitive dedupe keys,
+  invalid_input denial for unencodable inputs, MAX_VERIFICATION_READS
+  constant, comment reword), recorded the test-coverage disposition (final
+  Read_Request_Service blocks unit stubbing; grant-mode adapter smoke is the
+  ADR-012 acceptance signal), and resolved all 10 threads; auto-merge landed
+  it as 3357f91.
+- **Release evidence at 3357f91**: cross-repo acceptance green on the fourth
+  attempt after clearing three environment blockers in order (explicit
+  `WP_CLI_MYSQL_SOCKET`, stale `.maintenance` file 503, Docker daemon down);
+  signed fixture proved proposal -> approval -> execute -> duplicate-reject
+  -> readback -> cleanup. `composer prepare:release -- --version 0.3.0`
+  green; package `build/npcink-governance-core.zip` SHA-256
+  `ed907c891dba944ecbd366358de2db2a9d2b641dc0b69a087907ca92cdee65d9`
+  (matches the reproducible-package hash from the branch gates).
+- **Tagged**: annotated `v0.3.0` pushed at 3357f91, remote peeled commit
+  verified equal to the verified HEAD. WordPress.org SVN is NOT published
+  (separately authorized). GitHub Release record waits for wp.org
+  publication per issue #2.
+- **Classified follow-ups**: `rc:version-matrix --require-tag-ready` fails
+  only on the Toolkit row (tag `0.5.9` at `a5ef13a`, HEAD two docs commits
+  ahead) — bump-or-accept is the Toolkit owner's call; ai-cloud stale branch
+  holds two orphan docs; adapter #94 must adopt the handoff-only granted-ids
+  shape; zh_CN wp.org/PTE unchanged.
+- **Main line unchanged**: the real-usage validation ledger still has zero
+  rows.
