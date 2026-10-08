@@ -326,8 +326,9 @@ final class Commit_Preflight_Service {
 
 		$verification_reads = $this->mint_execution_verification_reads( $proposal, $request_params, $correlation_id );
 		if ( ! empty( $verification_reads['granted'] ) ) {
-			// Granted ids travel only inside the client-bound execution handoff; the
-			// top-level response exposes counts and denials, never usable request ids.
+			// Granted request ids live only under execution_handoff in the
+			// preflight response; the top-level granted list carries ability
+			// ids only.
 			$execution_handoff['execution_verification_reads'] = $verification_reads['granted'];
 			$verification_reads['granted']                      = array_map(
 				static function ( array $grant ): array {
@@ -404,8 +405,7 @@ final class Commit_Preflight_Service {
 				continue;
 			}
 
-			$hash_input = $read_input;
-			ksort( $hash_input );
+			$hash_input    = $this->normalize_payload_for_hash( $read_input );
 			$encoded_input = wp_json_encode( $hash_input );
 			if ( false === $encoded_input ) {
 				$denied[] = array(
