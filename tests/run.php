@@ -1363,6 +1363,7 @@ $adr_006 = npcink_governance_core_read( $root . '/docs/decisions/ADR-006-unatten
 $adr_007 = npcink_governance_core_read( $root . '/docs/decisions/ADR-007-dedicated-local-automation-runtime-owner.md' );
 $adr_010 = npcink_governance_core_read( $root . '/docs/decisions/ADR-010-defer-final-commit-ownership-until-trigger.md' );
 $adr_011 = npcink_governance_core_read( $root . '/docs/decisions/ADR-011-verification-read-request-kind-for-post-execution-readback.md' );
+$adr_012 = npcink_governance_core_read( $root . '/docs/decisions/ADR-012-execution-attached-verification-reads.md' );
 npcink_governance_core_assert( false !== strpos( $adr_001, 'Create a new standalone `npcink-governance-core` plugin' ), 'ADR-001 records rebuild decision.' );
 npcink_governance_core_assert( false !== strpos( $adr_002, '`npcink-governance-core` must not implement a workflow runtime' ), 'ADR-002 bans workflow runtime ownership.' );
 npcink_governance_core_assert( false !== strpos( $adr_003, 'Core remains governance-only' ), 'ADR-003 keeps Core governance-only for the current stage.' );
@@ -1406,6 +1407,10 @@ npcink_governance_core_assert( false !== strpos( $adr_011, 'The existing single 
 npcink_governance_core_assert( false !== strpos( $adr_011, 'Implementation is deferred and fires only on recorded evidence' ), 'ADR-011 implementation is evidence-gated.' );
 npcink_governance_core_assert( false !== strpos( $adr_011, 'grant-mode deployments keep the known degradation' ), 'ADR-011 classifies pre-trigger degradation as known.' );
 npcink_governance_core_assert( false !== strpos( $adr_011, 'npcink-ai-client-adapter issue #93' ), 'ADR-011 hands adapter implementation back to adapter issue #93.' );
+npcink_governance_core_assert( false !== strpos( $adr_011, 'Superseded by ADR-012 (2026-10-08)' ), 'ADR-011 is marked superseded by ADR-012.' );
+npcink_governance_core_assert( false !== strpos( $adr_012, 'Accepted — supersedes ADR-011' ), 'ADR-012 stands as the accepted decision superseding ADR-011.' );
+npcink_governance_core_assert( false !== strpos( $adr_012, 'it mints authorization, never runs reads' ), 'ADR-012 keeps Core authorization-only, never running reads.' );
+npcink_governance_core_assert( false !== strpos( $adr_012, 'ahead of any recorded ledger entry' ) && false !== strpos( $adr_012, 'a waiver, not a precedent' ), 'ADR-012 records the ledger-trigger waiver explicitly and non-precedentially.' );
 $release_closeout_standard = npcink_governance_core_read( $root . '/docs/release-closeout-standard.md' );
 npcink_governance_core_assert( false !== strpos( $release_closeout_standard, 'ADR-010 trigger review checkpoint' ), 'Release closeout standard runs the ADR-010 checkpoint before candidate freeze.' );
 

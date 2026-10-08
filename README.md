@@ -187,7 +187,8 @@ Architecture decisions:
 - [ADR-008: Fail Closed At Ability Intake](docs/decisions/ADR-008-fail-closed-ability-intake.md)
 - [ADR-009: Freeze Domain-Specific Plan Contracts In Core](docs/decisions/ADR-009-freeze-domain-plan-contracts.md)
 - [ADR-010: Keep Final Commit Execution Outside Core Until A Named Trigger Fires](docs/decisions/ADR-010-defer-final-commit-ownership-until-trigger.md)
-- [ADR-011: Post-Execution Verification Reads Use An Explicit Verification Read-Request Kind](docs/decisions/ADR-011-verification-read-request-kind-for-post-execution-readback.md)
+- [ADR-011: Post-Execution Verification Reads Use An Explicit Verification Read-Request Kind](docs/decisions/ADR-011-verification-read-request-kind-for-post-execution-readback.md) (superseded by ADR-012)
+- [ADR-012: Execution-Attached Verification Reads](docs/decisions/ADR-012-execution-attached-verification-reads.md)
 
 External agent clients can start from the
 [OpenClaw governance adapter example](examples/openclaw-governance-adapter/README.md).
