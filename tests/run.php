@@ -850,6 +850,10 @@ foreach (
 }
 
 $core_operability = npcink_governance_core_read( $root . '/docs/core-governance-operability.md' );
+$decision_briefs = npcink_governance_core_read( $root . '/docs/next-decisions-briefs-2026-10-ux-round2.md' );
+npcink_governance_core_assert( false !== strpos( $decision_briefs, 'Decision 1 verdict: accepted' ) && false !== strpos( $decision_briefs, 'option C, adapter-owned notification' ), 'Notification decision is closed as adapter-owned through the observability seam.' );
+npcink_governance_core_assert( false !== strpos( $decision_briefs, 'Decision 2 verdict: open' ) && false !== strpos( $decision_briefs, 'implement B only on a recorded trigger' ), 'Polling-filter decision stays open with its recorded trigger condition.' );
+npcink_governance_core_assert( false !== strpos( $core_operability, 'accepted Decision 1 outcome (option C)' ), 'Operability doc names the observability hook as the decided notification seam.' );
 foreach (
 	array(
 		'minimal implementation active',
