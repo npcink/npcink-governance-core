@@ -542,7 +542,7 @@ final class Plugin {
 	 */
 	public function commit_preflight_service(): Commit_Preflight_Service {
 		if ( null === $this->commit_preflight_service ) {
-			$this->commit_preflight_service = new Commit_Preflight_Service( $this->proposal_repository(), $this->ability_adapter(), $this->audit_repository() );
+			$this->commit_preflight_service = new Commit_Preflight_Service( $this->proposal_repository(), $this->ability_adapter(), $this->audit_repository(), $this->read_request_service() );
 		}
 
 		return $this->commit_preflight_service;
