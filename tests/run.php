@@ -12,7 +12,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Assertion helper.
+ * Collected static contract failures.
+ *
+ * @var array<int,string>
+ */
+$GLOBALS['npcink_governance_core_contract_failures'] = array();
+
+/**
+ * Prints every collected contract failure and exits non-zero, or confirms ok.
+ *
+ * @return void
+ */
+function npcink_governance_core_report_contract_failures(): void {
+	$failures = $GLOBALS['npcink_governance_core_contract_failures'];
+	if ( 0 === count( $failures ) ) {
+		echo "Static contracts: ok\n";
+		return;
+	}
+	foreach ( array_slice( $failures, 0, 50 ) as $failure ) {
+		fwrite( STDERR, '[fail] ' . $failure . "\n" );
+	}
+	$unshown = count( $failures ) - 50;
+	if ( $unshown > 0 ) {
+		fwrite( STDERR, "... and {$unshown} more failure(s) not shown\n" );
+	}
+	fwrite( STDERR, 'Static contracts: ' . count( $failures ) . " failure(s)\n" );
+	exit( 1 );
+}
+
+/**
+ * Assertion helper that collects every failure so one run reports the full
+ * failure surface instead of stopping at the first miss.
  *
  * @param bool   $condition Condition.
  * @param string $message Failure message.
@@ -20,8 +50,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function npcink_governance_core_assert( bool $condition, string $message ): void {
 	if ( ! $condition ) {
-		fwrite( STDERR, '[fail] ' . $message . "\n" );
-		exit( 1 );
+		$GLOBALS['npcink_governance_core_contract_failures'][] = $message;
 	}
 }
 
@@ -3375,4 +3404,4 @@ foreach ( npcink_governance_core_project_files( $root ) as $file ) {
 	}
 }
 
-echo "Static contracts: ok\n";
+npcink_governance_core_report_contract_failures();

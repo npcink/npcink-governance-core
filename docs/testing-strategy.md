@@ -11,6 +11,7 @@ Npcink Governance Core starts with a small but strict test pyramid.
 | PHP syntax lint | `composer lint:php` | Prevent parse errors in plugin PHP files. |
 | PHPStan static analysis | `composer analyse:phpstan` | Catch unknown symbols and first-pass static regressions in first-party Core code. |
 | Static contracts | `composer test:contracts` | Freeze product boundary, REST routes, public lifecycle, and forbidden legacy terms. |
+| Behavioral unit tests | `composer test:unit` | Exercise pure governance logic (policy evaluation, plan validation, rate windows) with stubbed WordPress functions; runs inside `composer test:all`. |
 | Fail-closed fault injection | `composer test:fail-closed` | Inject database and audit persistence failures against Core classes and assert rollback or cleanup. |
 | Full local suite | `composer test:all` | Run lint, static contracts, and fault injection together. |
 | Real WordPress smoke | `composer smoke:wp` | Prove activation, schema creation, REST behavior, and `npcink-abilities-toolkit` integration. |
@@ -25,6 +26,15 @@ Npcink Governance Core starts with a small but strict test pyramid.
 ## Static Contract Rules
 
 Static contracts live in `tests/run.php`.
+
+Static contracts and behavioral unit tests have different jobs. Use static
+contracts for boundary, drift, routing, and documentation pins — things that
+can be checked by reading shipped text or code. Put decision-table and
+state-machine behavior (approval policy modes, quota windows, plan contract
+rejections, rate-limit window math) into PHPUnit tests under `tests/unit/`
+instead of growing string-matching contracts for behavior. The static contract
+runner collects every failure and prints the full list before exiting, so one
+run shows the complete failure surface.
 
 Use them to assert:
 
