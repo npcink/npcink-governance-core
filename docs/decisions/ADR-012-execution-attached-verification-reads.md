@@ -1,7 +1,11 @@
-# ADR-011: Execution-Attached Verification Reads
+# ADR-012: Execution-Attached Verification Reads
 
 ## Status
-Accepted
+Accepted — supersedes ADR-011
+
+First filed as a second `ADR-011` in PR #128; renumbered to ADR-012 to
+resolve the same-day number collision with the option-2 ADR-011, whose
+direction this ADR reverses.
 
 ## Date
 2026-10-08
@@ -67,3 +71,9 @@ no new scope is granted to any channel.
 - Core gains no execution role: it mints authorization, never runs reads.
 - The Adapter implements the request/response plumbing in
   npcink-ai-client-adapter issue #93.
+- Trigger-waiver record: the real-usage validation program gates pending
+  contract items on recorded ledger entries, and this implementation merged
+  (PR #128, 2026-10-08) ahead of any recorded ledger entry. The release
+  owner ratified keeping it the same day as an explicit owner waiver of the
+  ledger trigger for this one item; it is a waiver, not a precedent, and
+  every other gated item still fires only on a ledger row.
