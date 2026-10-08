@@ -2,8 +2,13 @@
 
 ## Status
 
-Accepted (direction and boundary decided; implementation gated on a named
-trigger)
+Superseded by ADR-012 (2026-10-08)
+
+Accepted 2026-10-08 (PR #127) and reversed the same day by ADR-012, which
+keeps the implementation inside Core's commit-preflight moment instead of an
+adapter-created verification read-request kind. Kept unchanged for the
+record; the read-authorization boundary reasoning in both documents still
+applies to any future verification-read change.
 
 ## Date
 
