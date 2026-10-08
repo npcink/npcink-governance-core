@@ -41,9 +41,14 @@ because a candidate or tag exists.
 
 1. Confirm the Core, Adapter, and Toolkit responsibilities still match their
    product and architecture contracts.
-2. Record exact candidate commits and plugin versions.
-3. Require clean participating checkouts before generating evidence.
-4. Run `composer rc:version-matrix` and reject a conventional tag that already
+2. Record the ADR-010 trigger review checkpoint: the current production
+   execution-consumer count, whether `npcink-local-automation-runtime` has
+   released, and whether any consumer stated a hard Core-execution audit
+   requirement. A changed trigger state stops the closeout until the ADR-010
+   successor ADR is opened.
+3. Record exact candidate commits and plugin versions.
+4. Require clean participating checkouts before generating evidence.
+5. Run `composer rc:version-matrix` and reject a conventional tag that already
    points to different history. Never move or reuse a released tag.
 
 ### 2. Prove Each Repository Locally
