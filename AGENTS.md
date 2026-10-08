@@ -148,6 +148,10 @@ Before final response:
 
 - run the relevant verification gate;
 - commit if the task produced a complete change;
+- batch docs-only closeout records: historical records and breadcrumb
+  updates that are not part of a code change accumulate locally and are
+  published as one weekly docs PR through `composer pr:publish` instead of
+  one PR per session (master protection still requires the PR flow);
 - update `.sisyphus/session-breadcrumb.md` when the session changes project
   direction or leaves important next steps;
 - keep `.sisyphus/session-breadcrumb.md` bounded: it must hold at most 10
