@@ -368,22 +368,9 @@ final class Commit_Preflight_Service {
 			return array( 'granted' => $granted, 'denied' => $denied );
 		}
 
-		// Cap and dedupe: one mint per distinct read ability and object, bounded batch size.
-		$deduped = array();
-		foreach ( $requested as $read ) {
-			$read       = is_array( $read ) ? $read : array();
-			$ability_id = sanitize_text_field( (string) ( $read['ability_id'] ?? '' ) );
-			$read_input = is_array( $read['input'] ?? null ) ? $read['input'] : array();
-			$object_key = (string) ( $read_input['post_id'] ?? ( $read_input['slug'] ?? '' ) );
-			$deduped[ $ability_id . '|' . $object_key ] = array(
-				'ability_id' => $ability_id,
-				'input'      => $read_input,
-			);
-			if ( count( $deduped ) >= 4 ) {
-				break;
-			}
-		}
-		$requested = array_values( $deduped );
+		// Validation runs first so invalid entries cannot crowd out valid ones;
+		// duplicates and overflow are recorded as denials, never silent.
+		$seen_read_keys = array();
 
 		$write_ability_id = (string) ( $proposal['ability_id'] ?? '' );
 		$write_input      = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
@@ -408,6 +395,23 @@ final class Commit_Preflight_Service {
 				);
 				continue;
 			}
+
+			$read_key = $ability_id . '|' . md5( (string) wp_json_encode( $read_input ) );
+			if ( isset( $seen_read_keys[ $read_key ] ) ) {
+				$denied[] = array(
+					'ability_id' => $ability_id,
+					'reason'     => 'duplicate_verification_read',
+				);
+				continue;
+			}
+			if ( count( $seen_read_keys ) >= 4 ) {
+				$denied[] = array(
+					'ability_id' => $ability_id,
+					'reason'     => 'verification_read_limit_exceeded',
+				);
+				continue;
+			}
+			$seen_read_keys[ $read_key ] = true;
 
 			$request = $this->read_requests->create(
 				array(
