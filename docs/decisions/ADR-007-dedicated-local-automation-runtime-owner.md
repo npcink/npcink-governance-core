@@ -57,6 +57,26 @@ Toolbox packaging, and does not implement runtime code. It records the owner
 and packaging decision only. Phase 1 schema and dry-run replay artifacts must
 be created in the future runtime owner repo or isolated runtime module.
 
+## Start Trigger And Parked Status
+
+Added 2026-10-08. The ownership decision stands, but runtime development is
+formally parked until a named trigger fires:
+
+- **Trigger**: the [Real Usage Validation](../../real-usage-validation.md)
+  ledger records a concrete unattended-automation requirement that reviewed
+  governance cannot cover (an operator need for scheduled or unattended
+  runs, not a convenience wish).
+- **Parked means**: no repository creation, no schema drafting, no replay
+  fixtures, no Toolbox module scaffolding. Planning sessions do not
+  re-confirm this ADR each cycle; they check the ledger.
+- **Observability**: the release-closeout ADR-010 trigger checkpoint line
+  also records the unattended-requirement state (`none recorded` until the
+  ledger says otherwise), so this plan cannot silently linger or silently
+  start.
+
+If the validation program ends with no recorded requirement, the honest next
+step is a superseding note that retires the plan, not an indefinite park.
+
 ## Phase 1 Scope
 Phase 1 is contract and replay only.
 

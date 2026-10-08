@@ -1392,6 +1392,9 @@ npcink_governance_core_assert( false !== strpos( $adr_007, 'module path: `module
 npcink_governance_core_assert( false !== strpos( $adr_007, 'Toolbox fixed-flow' ) && false !== strpos( $adr_007, 'runtime state machine' ), 'ADR-007 keeps Toolbox fixed buttons out of runtime ownership.' );
 npcink_governance_core_assert( false !== strpos( $adr_007, 'Phase 1 is contract and replay only' ), 'ADR-007 keeps Phase 1 contract and replay only.' );
 npcink_governance_core_assert( false !== strpos( $adr_007, 'This Core pass does not create the development repository' ), 'ADR-007 keeps this Core pass implementation-free.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'Start Trigger And Parked Status' ) && false !== strpos( $adr_007, 'formally parked until a named trigger fires' ), 'ADR-007 runtime development is parked behind a named trigger.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'records a concrete unattended-automation requirement' ), 'ADR-007 start trigger is a recorded ledger requirement, not opinion.' );
+npcink_governance_core_assert( false !== strpos( $adr_007, 'they check the ledger' ), 'ADR-007 parked state is checked through the validation ledger.' );
 npcink_governance_core_assert( false !== strpos( $adr_010, 'Trigger Review Checkpoint' ) && false !== strpos( $adr_010, 'the current count of production execution consumers' ), 'ADR-010 defines an observable trigger review checkpoint.' );
 npcink_governance_core_assert( false !== strpos( $adr_010, 'successor ADR is opened before release work continues' ), 'ADR-010 stops the release closeout when a trigger fires.' );
 npcink_governance_core_assert( false !== strpos( $adr_010, 'not a runtime feature' ), 'ADR-010 keeps the checkpoint review-only.' );
