@@ -282,7 +282,8 @@ WordPress write truth.
 Channel adapters or companion plugins may also subscribe to this hook to
 implement their own operator notification UX (desktop, IM, email) for waiting
 proposals. Core itself stays polling-only for machine consumers and does not
-own webhook delivery, queues, retries, or dead-lettering; see
+own webhook delivery, queues, retries, or dead-lettering; this seam is the
+accepted Decision 1 outcome (option C) in
 [Next Decisions Briefs — 2026-10 UX Round 2](next-decisions-briefs-2026-10-ux-round2.md).
 
 ## Non-Goals

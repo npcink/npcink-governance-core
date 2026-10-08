@@ -1,9 +1,24 @@
 # Next Decisions Briefs — 2026-10 UX Round 2
 
-Status: open. Raised by the 2026-10-08 user-experience round-2 audit after the
-batch 1 and batch 2 fixes landed (`fix/ux-round2`). Each brief states the
-current state, the options, and a recommendation so the release owner can
-close them in one sitting.
+Status: Decision 1 accepted (2026-10-08, option C); Decision 2 remains open
+with a named trigger. Raised by the 2026-10-08 user-experience round-2 audit
+after the batch 1 and batch 2 fixes landed (`fix/ux-round2`). Each brief
+states the current state, the options, and a recommendation so the release
+owner can close them in one sitting.
+
+## Decision 1 verdict: accepted — option C, adapter-owned notification
+
+Accepted 2026-10-08 by the release owner on the brief's recommendation. The
+`npcink_governance_core_observability_event` hook, documented under Local
+Observability Hook in [Core Governance Operability](core-governance-operability.md),
+is the contracted notification seam: channel adapters or companion plugins
+subscribe and own their operator notification UX, retry policy, and delivery
+concerns. Core stays polling-only for machine consumers and never gains
+webhook delivery, queues, retries, or dead-lettering. Option B (Core-sent
+email via `wp_mail`) stays a possible later opt-in add-on only if real
+operators report the gap; the re-open condition is proposals expiring unseen
+recorded in the real-usage validation ledger. This decision is closed unless
+that condition fires.
 
 ## Decision 1: How should waiting proposals reach the operator?
 
@@ -42,6 +57,14 @@ already fires for `core.proposal.create` with `status=ok` and carries
 small companion plugin own the operator-facing push without a new Core
 decision each time. While polling remains the machine path, batch 2's
 `X-RateLimit-*` headers let adapters back off cheaply.
+
+## Decision 2 verdict: open — implement B only on a recorded trigger
+
+Decision 2 stays open on purpose. Option B (`updated_since` on
+`GET /proposals`) is implemented only when the real-usage validation ledger
+records a real adapter polling loop complaining about `proposals_read`
+quota or `proposal.listed` audit noise. Until that entry exists, option A
+(status quo plus documented quota awareness) holds.
 
 ## Decision 2: Cheaper status polling for machine consumers?
 
