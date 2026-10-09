@@ -1,7 +1,7 @@
 # ADR-013: Post-Execution Verification Read Minting
 
 ## Status
-Proposed
+Accepted
 
 First filed as a second `ADR-012` in PR #135; renumbered to ADR-013 to
 resolve the number collision with the standing execution-attached decision,

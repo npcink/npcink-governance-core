@@ -313,6 +313,18 @@ final class Proposals_Controller {
 							'required'          => true,
 							'sanitize_callback' => 'sanitize_key',
 						),
+						'record_phase' => array(
+							'type'              => 'string',
+							'required'          => false,
+							'default'           => 'final',
+							'enum'              => array( 'final', 'provisional' ),
+							'sanitize_callback' => 'sanitize_key',
+						),
+						'actions' => array(
+							'type'     => 'array',
+							'required' => false,
+							'items'    => array( 'type' => 'object' ),
+						),
 						'correlation_id' => array(
 							'type'              => 'string',
 							'required'          => true,
@@ -611,6 +623,35 @@ final class Proposals_Controller {
 	 */
 	public function record_execution( WP_REST_Request $request ) {
 		$started = microtime( true );
+		if ( 'provisional' === sanitize_key( (string) $request->get_param( 'record_phase' ) ) ) {
+			$actions = $request->get_param( 'actions' );
+			$result  = $this->service->record_provisional_execution(
+				(string) $request->get_param( 'proposal_id' ),
+				array(
+					'correlation_id'      => $request->get_param( 'correlation_id' ),
+					'approved_input_hash' => $request->get_param( 'approved_input_hash' ),
+					'actions'             => is_array( $actions ) ? $actions : array(),
+				),
+				$this->preflight
+			);
+
+			if ( is_wp_error( $result ) ) {
+				$this->emit_operation_event( 'core.proposal.record_execution_provisional', $started, $result, array( 'proposal_id' => (string) $request->get_param( 'proposal_id' ) ) );
+				return $result;
+			}
+
+			$this->emit_operation_event(
+				'core.proposal.record_execution_provisional',
+				$started,
+				null,
+				array(
+					'proposal_id' => (string) $request->get_param( 'proposal_id' ),
+					'record_phase' => 'provisional',
+				)
+			);
+
+			return new WP_REST_Response( $result, 200 );
+		}
 		$result  = $this->service->record_execution_result(
 			(string) $request->get_param( 'proposal_id' ),
 			array(
