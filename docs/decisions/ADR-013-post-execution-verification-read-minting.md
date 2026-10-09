@@ -51,6 +51,20 @@ read-preflight's contract untouched. The pairing map and same-object rules
 from ADR-012 apply unchanged to post-execution mints; grants stay
 single-use, verification-sourced, and TTL-bounded by the record window.
 
+## Hardening (2026-10-09, post-merge review)
+
+- Result-bound minting requires the write ability to belong to the approved
+  proposal (top-level ability or a write_actions target); outside abilities
+  are denied (`ability_not_in_proposal`).
+- Statically addressed actions (numeric post id or slug in the action input)
+  are denied result-bound mints (`static_object_use_preflight_mint`): Core
+  can prove those bindings and ADR-012 preflight minting already serves
+  them. The recorded-result trust surface is therefore exactly the
+  reference-addressed in-transaction case the ADR exists for.
+- Duplicate reads are denied explicitly, matching preflight minting parity.
+- The provisional record itself stays audit-informational; repeat
+  provisional records are visible in the audit timeline.
+
 ## Consequences
 - In-transaction batch objects gain verified readbacks; the grant-mode
   acceptance assertion in npcink-ai-client-adapter#93 becomes satisfiable.
