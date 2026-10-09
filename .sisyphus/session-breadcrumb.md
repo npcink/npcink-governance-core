@@ -361,3 +361,21 @@ Older history: `.sisyphus/archive/`.
   the rc version matrix doc.
 - **Main line unchanged**: the real-usage validation ledger still has zero
   rows; everything above is plumbing around it.
+
+# 2026-10-09 - Session closeout audit: issues, branches, worktrees, norms
+
+- **Issues**: #125 was auto-closed by #128; adapter #93 closed with the
+  full record (#94 merged; the in-transaction remainder lives in proposed
+  Core ADR-013). Remaining open Core issues (#3/#4/#6/#105/#123) are
+  deliberate trackers.
+- **Cleanup**: all session-created branches deleted local+remote across
+  Core (9), adapter (#94 head), ai-cloud (salvage); the ocr scratch
+  worktree in /private/tmp removed. Parallel-session branches and worktrees
+  were left untouched (their in-flight Core branch
+  `codex/execution-verification-reads` has no PR yet).
+- **Norms recorded**: AGENTS.md gains the parallel-session worktree rule
+  and the ADR next-free-number rule (two same-day duplicate-number
+  incidents); the wp.org release gate documents the openrsync silent
+  --dry-run caveat with the diff-based review replacement.
+- **Session is closable**; the main line remains the validation ledger
+  (zero rows).

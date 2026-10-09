@@ -143,7 +143,16 @@ existing SVN checkout with a dry run first:
 composer sync:wporg -- --version 0.3.0 --svn-dir /path/to/wporg-npcink-governance-core
 ```
 
-Apply the sync only after reviewing the dry-run output:
+Apply the sync only after reviewing the dry-run output. Caveat: macOS ships
+`openrsync`, whose `--dry-run` prints no file list — a silent dry run is NOT
+an empty delta. Review the real delta with a direct comparison instead:
+
+```sh
+diff -rq build/npcink-governance-core <svn-dir>/trunk
+```
+
+Check that changed and added files match the release scope and that no
+`Only in <svn-dir>/trunk` deletions appear before applying:
 
 ```sh
 composer sync:wporg -- --version 0.3.0 --svn-dir /path/to/wporg-npcink-governance-core --apply
