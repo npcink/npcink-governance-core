@@ -343,3 +343,27 @@ Older history: `.sisyphus/archive/`.
   checklist, and land the first weekly ledger row. Adapter ADR-013 supplement
   PR (#95) remains in active parallel development; run cross-repo acceptance
   after it merges.
+# 2026-10-09 - Session closeout audit
+
+- **Issues**: every issue raised in this session's threads is done or has a
+  recorded disposition — UX audit P0-P2 shipped (#91) and adopted by Adapter
+  (#89); visual smoke passed with the two historical debts closed; 0.3.0
+  stack released and closed out (Toolkit 0.5.10 tagged; Adapter v0.4.1
+  intentionally untagged pending its next release); remaining open items are
+  owner-facing (first real-usage ledger row, wp.org zh_CN PTE) or in active
+  parallel development (Adapter #95), none dangling silently.
+- **Code**: all PRs merged (#91 #92 #94 #144-#147 Core; #89 Adapter; #219
+  Toolkit); local masters synced and clean.
+- **Branches/worktrees**: deleted merged session branches local+remote
+  (Core 4+2 superseded codex residuals, Adapter adapt/core-ux-contract,
+  Toolkit release/0.5.10); no worktrees created by this session. Kept
+  deliberately: Core codex/execution-verification-reads (1 unapplied) and
+  codex/verification-reads-hardening (2 unapplied) — in-flight parallel work,
+  keep/discard belongs to the owner; Adapter shared checkout sits on the
+  active codex/adr-013-verification-supplement branch (PR #95); Toolkit
+  codex/phpstan-ratchet-local-note (parallel residual, 0 unapplied).
+- **Norms/docs**: durable lessons already recorded — browser visual-smoke
+  pattern + stale `.maintenance` 503 note in development-workflow.md,
+  parallel-session rules in AGENTS.md, ledger-trigger mechanism in
+  real-usage-validation.md, first-week runway in
+  real-usage-first-week-kickoff.md.
