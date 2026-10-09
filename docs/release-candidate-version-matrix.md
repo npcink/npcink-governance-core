@@ -13,7 +13,7 @@ The current stack-level RC candidate is:
 | --- | --- | --- | --- | --- |
 | `npcink-governance-core` | Governance layer | `0.3.0` | `v0.3.0` | Available if the current Core commit is the release candidate. |
 | `npcink-ai-client-adapter` | Thin channel layer | `0.4.1` | `v0.4.1` | Available if the current Adapter commit is the release candidate. |
-| `npcink-abilities-toolkit` | Ability implementation layer | `0.5.9` | `0.5.9` | The `0.5.9` tag exists at `a5ef13a` while the current Toolkit HEAD is two docs commits ahead; the Toolkit owner chooses bump-or-accept before the next Toolkit release. |
+| `npcink-abilities-toolkit` | Ability implementation layer | `0.5.9` | `0.5.9` | Accepted 2026-10-09: the two commits after the `0.5.9` tag (`a5ef13a`) are docs-only, so the tag still represents the released code; the next Toolkit release bumps normally. |
 
 Run the machine check from Core:
 
