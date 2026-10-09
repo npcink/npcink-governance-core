@@ -325,3 +325,21 @@ Older history: `.sisyphus/archive/`.
 - **Remaining owner items**: the three decision briefs
   (docs/next-decisions-briefs-2026-10.md) and the deferred wp.org translation
   owner actions (#142) still await the owner's read-through.
+# 2026-10-09 - Real-usage first-week kickoff runway
+
+- **Recalibration**: the validation program itself, the ADR-007 park note,
+  and the decision-briefs-to-ledger trigger wiring were all landed by
+  parallel sessions (real-usage-validation.md, ADR-007 Start Trigger, #141/#142).
+  What remained missing was the executable path to the first ledger row.
+- **Completed** (PR #146, merged): `docs/real-usage-first-week-kickoff.md` —
+  real-site selection step, one-time environment prep (0.3.0 stack versions,
+  ai plugin 1.4.0+, per-site adapter token), week-one operating loop,
+  per-column ledger data sources, and the post-week wiring that fires on its
+  own.
+- **Smoke-site environment check**: full Npcink stack active and current on
+  magick-ai.local; `ai` plugin at 1.3.0 with 1.4.0 available (upgrade noted
+  in the kickoff checklist for the real site).
+- **Next recommended step (owner)**: pick the real site, run the kickoff
+  checklist, and land the first weekly ledger row. Adapter ADR-013 supplement
+  PR (#95) remains in active parallel development; run cross-repo acceptance
+  after it merges.
