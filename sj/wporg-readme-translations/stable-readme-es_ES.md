@@ -28,7 +28,7 @@ Este plugin no es un redactor de IA de un clic, asistente SEO, generador de imá
 
 ### Requisitos e integraciones
 
-Core funciona mejor con WordPress 7.0 o superior y proveedores de WordPress Abilities API. El proveedor de referencia de primera parte es Npcink Abilities Toolkit, pero el ciclo de gobernanza base también puede gobernar proveedores externos de WordPress Abilities API que expongan ability ids, schemas, permission callbacks, risk metadata y dry-run previews estables.
+Core funciona mejor con WordPress 7.0 o superior y proveedores de WordPress Abilities API. El proveedor de referencia de primera parte es Npcink Abilities Toolkit, pero el ciclo de gobernanza base también puede gobernar proveedores externos de WordPress Abilities API que expongan ability ids, schemas, permission callbacks, risk metadata y dry-run previews estables. El adapter de canal de referencia es Npcink AI Client Adapter, que ejecuta las abilities aprobadas a través de WordPress Abilities API después del commit preflight de Core.
 
 Core expone endpoints REST de gobernanza bajo `/wp-json/npcink-governance-core/v1/`. Los adapters y plugins host de confianza pueden usar esos endpoints para crear propuestas, aprobar o rechazar propuestas, solicitar commit preflight y registrar resultados de ejecución externa.
 
@@ -92,7 +92,37 @@ Una configuración productiva de OpenClaw debe conectarse mediante un adapter de
 
 Sí. El proposal lifecycle base es provider-neutral. Los proveedores externos pueden exponer WordPress Abilities API definitions con schemas, permission callbacks, risk metadata y dry-run previews, y luego enviar operaciones de escritura o destructivas para revisión de Core.
 
+### ¿Por qué Core requiere WordPress 7.0?
+
+El ability intake de Core lee la interfaz de WordPress Abilities API y los contratos de gobernanza de Core están construidos y probados para WordPress 7.0 y posteriores. En versiones anteriores de WordPress, el ability intake no está probado y Core falla cerrado en lugar de gobernar propuestas que no puede validar contra ability ids reales.
+
+### ¿Funciona Core con multisitio (multisite)?
+
+Sí. La activación en red (network activation) crea las tablas de gobernanza de Core para cada sitio existente, y los sitios nuevos se provisionan durante la inicialización. Los registros de gobernanza se almacenan por sitio.
+
+### ¿Qué ocurre con los registros de gobernanza al desactivar o eliminar el plugin?
+
+La desactivación conserva todos los registros de gobernanza. Eliminar el plugin también los conserva: proposals, audit events, app-key metadata y read authorization records se retienen porque el historial de aprobaciones y auditoría puede estar sujeto a requisitos de retención del sitio. Esta versión no incluye eliminación automática al desinstalar.
+
+## Upgrade Notice
+
+### 0.3.0
+
+Versión de experiencia de operador y contrato para consumidores REST. No se requiere migración de datos; las tablas de gobernanza no cambian desde 0.2.0. Los filtros de la cola de revisión se conservan entre decisiones, los endpoints de lista devuelven totales, las marcas de tiempo REST son ISO8601 UTC y se incluye el catálogo zh_CN completo.
+
 ## Changelog
+
+### 0.3.0
+
+Versión de experiencia de operador y contrato para consumidores REST. La cola de revisión del admin conserva filtros y contexto de paginación entre decisiones, puede abrir la siguiente propuesta pending tras cada decisión, filtra por ability y tiempo de espera, y muestra los client tokens de un solo uso dentro de la pantalla de administración normal con controles de copia. Audit read-requests gana paginación offset y search, todos los endpoints de lista devuelven totales, las marcas de tiempo REST son ISO8601 UTC, los commit preflight repetidos devuelven los identificadores de handoff originales para recuperación, las app keys caducadas devuelven un error dedicado de rotate-key, las respuestas con límite de tasa incluyen guía Retry-After, y el endpoint de contrato en tiempo de ejecución acepta un app scope opt-in contract:read. El catálogo zh_CN incluido está completo (810 cadenas) y ahora se carga en zips distribuidos localmente. Esta versión sigue sin añadir ejecución de escritura final, workflow runtime ni propiedad de provider credentials.
+
+### 0.2.0
+
+Candidato de versión con endurecimiento de intake de gobernanza, approval, preflight, audit y empaquetado de versión completado tras 0.1.1. Esta versión no añade ejecución de escritura final ni propiedad de workflow runtime.
+
+### 0.1.1
+
+Parche de herramientas de versión para la ruta de tag RC convencional. La matriz de versiones ahora reconoce annotated release tags que apuntan al commit actual sin volver a etiquetar versiones históricas.
 
 ### 0.1.0
 

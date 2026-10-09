@@ -28,7 +28,7 @@ Npcink Governance Core는 AI 지원 WordPress 작업에 대해 로컬 승인 및
 
 ### 요구 사항 및 통합
 
-Core는 WordPress 7.0 이상 및 WordPress Abilities API providers와 함께 사용할 때 가장 적합합니다. 1차 참조 provider는 Npcink Abilities Toolkit이지만, 안정적인 ability ids, schemas, permission callbacks, risk metadata, dry-run previews를 제공하는 타사 WordPress Abilities API providers도 기본 거버넌스 라이프사이클에서 다룰 수 있습니다.
+Core는 WordPress 7.0 이상 및 WordPress Abilities API providers와 함께 사용할 때 가장 적합합니다. 1차 참조 provider는 Npcink Abilities Toolkit이지만, 안정적인 ability ids, schemas, permission callbacks, risk metadata, dry-run previews를 제공하는 타사 WordPress Abilities API providers도 기본 거버넌스 라이프사이클에서 다룰 수 있습니다. 참조 채널 adapter는 Npcink AI Client Adapter이며, Core commit preflight 이후 WordPress Abilities API를 통해 승인된 abilities를 실행합니다.
 
 Core는 `/wp-json/npcink-governance-core/v1/` 아래에 거버넌스 REST endpoints를 제공합니다. 신뢰할 수 있는 adapters와 host 플러그인은 이 endpoints를 사용해 proposals를 만들고, 승인 또는 거부하고, commit preflight를 요청하고, 외부 실행 결과를 기록할 수 있습니다.
 
@@ -92,7 +92,37 @@ scoped app keys는 신뢰할 수 있는 거버넌스 클라이언트가 광범�
 
 예. 기본 proposal lifecycle은 provider-neutral입니다. 타사 providers는 schemas, permission callbacks, risk metadata, dry-run previews가 포함된 WordPress Abilities API definitions를 노출한 뒤 쓰기 또는 파괴적 작업을 Core 검토에 제출할 수 있습니다.
 
+### Core가 WordPress 7.0을 요구하는 이유는 무엇인가요?
+
+Core의 ability intake는 WordPress Abilities API 인터페이스를 읽으며, Core의 거버넌스 계약은 WordPress 7.0 이상을 기준으로 구축되고 테스트되었습니다. 더 오래된 WordPress에서는 ability intake가 테스트되지 않았으며, Core는 실제 ability ids와 대조할 수 없는 proposals를 거버넌스하지 않고 fail closed(거부)합니다.
+
+### Core는 멀티사이트(multisite)를 지원하나요?
+
+지원합니다. 네트워크 활성화(network activation) 시 모든 기존 사이트에 Core 거버넌스 테이블을 생성하며, 새 사이트는 초기화 시 생성됩니다. 거버넌스 기록은 사이트별로 저장됩니다.
+
+### 플러그인을 비활성화하거나 삭제하면 거버넌스 기록은 어떻게 되나요?
+
+비활성화해도 모든 거버넌스 기록은 유지됩니다. 플러그인을 삭제해도 기록은 유지됩니다. 승인 및 감사 이력이 사이트 보존 요건의 대상이 될 수 있기 때문에 proposals, audit events, app-key metadata, read authorization records는 보존됩니다. 이 릴리스에는 자동 언인스톨 삭제가 없습니다.
+
+## Upgrade Notice
+
+### 0.3.0
+
+운영자 경험 및 REST 소비자 계약 릴리스입니다. 데이터 마이그레이션은 필요 없으며, 거버넌스 테이블은 0.2.0 이후 변경되지 않았습니다. 검토 대기열 필터는 판정 후에도 유지되고, 목록 endpoints는 총 개수를 반환하며, REST 타임스탬프는 ISO8601 UTC이고, 완전한 zh_CN 카탈로그가 포함되어 있습니다.
+
 ## Changelog
+
+### 0.3.0
+
+운영자 경험 및 REST 소비자 계약 릴리스. 관리 화면 검토 대기열은 판정 사이에 필터와 페이지 컨텍스트를 유지하고, 각 판정 후 다음 pending proposal을 열 수 있으며, ability와 대기 시간으로 필터링할 수 있고, 일회용 client token은 일반 관리 화면 안에 복사 버튼과 함께 표시됩니다. Audit read-requests에 offset과 search 페이징이 추가되었고, 모든 목록 endpoints는 총 개수를 반환하며, REST 타임스탬프는 ISO8601 UTC이고, 반복된 commit preflight는 복구를 위해 원래 handoff 식별자를 반환하며, 만료된 app keys는 전용 rotate-key 오류를 반환하고, 속도 제한 응답은 Retry-After 안내를 담으며, 런타임 contract endpoint는 옵트인 contract:read app scope를 허용합니다. 번들 zh_CN 카탈로그가 완성되었고(810 문자열) 로컬로 배포되는 플러그인 zip에서도 로드됩니다. 이 릴리스도 최종 쓰기 실행, workflow runtime, provider credentials 소유는 추가하지 않습니다.
+
+### 0.2.0
+
+0.1.1 이후 완료된 거버넌스 intake, approval, preflight, audit, 릴리스 패키징 강화 릴리스 후보. 이 릴리스는 최종 쓰기 실행이나 workflow runtime 소유를 추가하지 않습니다.
+
+### 0.1.1
+
+일반 RC tag 경로를 위한 릴리스 도구 패치. 버전 매트릭스는 이제 역사적 릴리스에 다시 태그하지 않고도 현재 커밋을 가리키는 annotated release tags를 인식합니다.
 
 ### 0.1.0
 
