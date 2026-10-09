@@ -8,6 +8,7 @@
 namespace Npcink\GovernanceCore\Governance;
 
 use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
+use Npcink\GovernanceCore\Governance\Commit_Preflight_Service;
 use Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter;
 use Npcink\GovernanceCore\Security\Request_Context;
 use WP_Error;
@@ -519,6 +520,91 @@ final class Proposal_Service {
 		}
 
 		return $proposal;
+	}
+
+	/**
+	 * Records the provisional execution phase and mints result-bound verification reads.
+	 *
+	 * ADR-012 option 2: the executing channel records what actually ran (per-action
+	 * resolved objects) before running post-execution readbacks; Core binds every
+	 * minted verification read to this recorded evidence, never to caller assertions.
+	 * The proposal stays approved - the final record transitions it as usual.
+	 *
+	 * @param string              $proposal_id Proposal id.
+	 * @param array<string,mixed> $metadata Record metadata (binding + action results).
+	 * @param Commit_Preflight_Service|null $preflight Preflight service carrying the verification mint.
+	 * @return array<string,mixed>|WP_Error Provisional record response with minted reads.
+	 */
+	public function record_provisional_execution( string $proposal_id, array $metadata = array(), ?Commit_Preflight_Service $preflight = null ) {
+		$proposal_id = sanitize_text_field( $proposal_id );
+		$existing    = $this->proposals->find( $proposal_id );
+
+		if ( null === $existing ) {
+			return $this->not_found_error();
+		}
+
+		if ( Proposal_Repository::STATUS_APPROVED !== (string) ( $existing['status'] ?? '' ) ) {
+			return new WP_Error(
+				'npcink_governance_core_provisional_record_not_allowed',
+				__( 'Only approved proposals can record a provisional execution.', 'npcink-governance-core' ),
+				array(
+					'status'          => 409,
+					'proposal_status' => (string) ( $existing['status'] ?? '' ),
+				)
+			);
+		}
+
+		$approved_input_hash = sanitize_text_field( (string) ( $metadata['approved_input_hash'] ?? '' ) );
+		$correlation_id      = sanitize_text_field( (string) ( $metadata['correlation_id'] ?? '' ) );
+		if ( '' === $approved_input_hash || '' === $correlation_id ) {
+			return new WP_Error(
+				'npcink_governance_core_execution_record_binding_required',
+				__( 'Execution records must include the approved input hash and preflight correlation id.', 'npcink-governance-core' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		$handoff_status = $this->preflight_handoff_status( $proposal_id, $approved_input_hash, $correlation_id );
+		if ( 'matched' !== $handoff_status ) {
+			return new WP_Error(
+				'npcink_governance_core_execution_record_preflight_missing',
+				__( 'Provisional execution record does not match a Core commit-preflight handoff.', 'npcink-governance-core' ),
+				array(
+					'status'              => 409,
+					'approved_input_hash' => $approved_input_hash,
+					'correlation_id'      => $correlation_id,
+				)
+			);
+		}
+
+		$verification_reads = array( 'granted' => array(), 'denied' => array() );
+		if ( null !== $preflight ) {
+			$actions = is_array( $metadata['actions'] ?? null ) ? array_values( (array) $metadata['actions'] ) : array();
+			$verification_reads = $preflight->mint_result_bound_verification_reads( $proposal_id, $correlation_id, $actions );
+		}
+
+		$event_id = $this->audit->record(
+			'proposal.execution_provisional',
+			array(
+				'proposal_id'          => $proposal_id,
+				'correlation_id'       => $correlation_id,
+				'approved_input_hash'  => $approved_input_hash,
+				'verification_granted' => count( (array) $verification_reads['granted'] ),
+				'verification_denied'  => count( (array) $verification_reads['denied'] ),
+			),
+			$proposal_id
+		);
+
+		if ( '' === $event_id ) {
+			return $this->audit_failed_error( 'npcink_governance_core_provisional_record_audit_failed' );
+		}
+
+		return array(
+			'record_phase'                 => 'provisional',
+			'proposal_id'                  => $proposal_id,
+			'correlation_id'               => $correlation_id,
+			'execution_verification_reads' => $verification_reads,
+		);
 	}
 
 	/**

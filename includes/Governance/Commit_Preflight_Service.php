@@ -481,6 +481,133 @@ final class Commit_Preflight_Service {
 	}
 
 	/**
+	 * Mints single-use verification reads bound to recorded execution results.
+	 *
+	 * ADR-012: for in-transaction batch objects the read input is derived from
+	 * the RECORDED action result (resolved post id or slug), not from the
+	 * pre-execution write input. Pairing, dedupe, cap, and lifecycle rules are
+	 * identical to preflight minting (ADR-011); denials are returned, never silent.
+	 *
+	 * @param string              $proposal_id Proposal id.
+	 * @param string              $correlation_id Execution correlation id.
+	 * @param array<int,array<string,mixed>> $actions Recorded actions: ability_id plus result object refs.
+	 * @return array<string,mixed> Granted and denied verification reads.
+	 */
+	public function mint_result_bound_verification_reads( string $proposal_id, string $correlation_id, array $actions ): array {
+		$granted = array();
+		$denied  = array();
+
+		$seen_read_keys = array();
+
+		foreach ( $actions as $action ) {
+			$action           = is_array( $action ) ? $action : array();
+			$write_ability_id = sanitize_text_field( (string) ( $action['ability_id'] ?? '' ) );
+			$result           = is_array( $action['result'] ?? null ) ? $action['result'] : array();
+			$paired_read      = (string) ( self::VERIFICATION_READ_ABILITIES[ $write_ability_id ] ?? '' );
+
+			if ( '' === $paired_read ) {
+				continue;
+			}
+
+			$post_id = isset( $result['post_id'] ) && is_numeric( $result['post_id'] ) ? absint( $result['post_id'] ) : 0;
+			$slug    = isset( $result['slug'] ) && is_string( $result['slug'] ) ? sanitize_key( (string) $result['slug'] ) : '';
+
+			if ( 'npcink-abilities-toolkit/update-post-blocks' === $write_ability_id ) {
+				$read_input = $post_id > 0 ? array(
+					'post_id'              => $post_id,
+					'include_inner_blocks' => true,
+				) : array();
+			} else {
+				$read_input = $post_id > 0 ? array( 'post_id' => $post_id ) : array( 'slug' => $slug );
+			}
+
+			if ( empty( $read_input ) ) {
+				$denied[] = array(
+					'ability_id' => $paired_read,
+					'reason'     => 'result_object_missing',
+				);
+				continue;
+			}
+
+			if ( null === $this->read_requests ) {
+				$denied[] = array(
+					'ability_id' => $paired_read,
+					'reason'     => 'mint_unavailable',
+				);
+				continue;
+			}
+
+			$hash_input    = $this->normalize_payload_for_hash( $read_input );
+			$encoded_input = wp_json_encode( $hash_input );
+			if ( false === $encoded_input ) {
+				$denied[] = array(
+					'ability_id' => $paired_read,
+					'reason'     => 'invalid_input',
+				);
+				continue;
+			}
+
+			$read_key = $paired_read . '|' . md5( $encoded_input );
+			if ( isset( $seen_read_keys[ $read_key ] ) ) {
+				continue;
+			}
+			if ( count( $seen_read_keys ) >= self::MAX_VERIFICATION_READS ) {
+				$denied[] = array(
+					'ability_id' => $paired_read,
+					'reason'     => 'verification_read_limit_exceeded',
+				);
+				continue;
+			}
+			$seen_read_keys[ $read_key ] = true;
+
+			$request = $this->read_requests->create(
+				array(
+					'ability_id'              => $paired_read,
+					'input'                   => $read_input,
+					'requested_input_summary' => 'Result-bound verification read for proposal ' . $proposal_id,
+					'data_classes'            => array( 'content_blocks' ),
+					'purpose'                 => 'Post-execution verification read minted at the provisional execution record (proposal ' . $proposal_id . ', correlation ' . $correlation_id . ').',
+					'caller'                  => array( 'correlation_id' => $correlation_id ),
+					'expires_at'              => gmdate( 'Y-m-d H:i:s', time() + self::PREFLIGHT_TTL_SECONDS ),
+				)
+			);
+
+			if ( is_wp_error( $request ) ) {
+				$denied[] = array(
+					'ability_id' => $paired_read,
+					'reason'     => 'mint_rejected:' . sanitize_key( $request->get_error_code() ),
+				);
+				continue;
+			}
+
+			$approved = $this->read_requests->approve(
+				(string) $request['request_id'],
+				array(
+					'note'        => 'Result-bound verification read attached to the provisional execution record.',
+					'proposal_id' => $proposal_id,
+					'source'      => 'execution_verification_provisional',
+				)
+			);
+
+			if ( is_wp_error( $approved ) ) {
+				$denied[] = array(
+					'ability_id' => $paired_read,
+					'reason'     => 'approve_rejected:' . sanitize_key( $approved->get_error_code() ),
+				);
+				continue;
+			}
+
+			$granted[] = array(
+				'request_id' => (string) $request['request_id'],
+				'ability_id' => $paired_read,
+				'input'      => $read_input,
+			);
+		}
+
+		return array( 'granted' => $granted, 'denied' => $denied );
+	}
+
+	/**
 	 * Returns whether one verification read targets the same object as the write.
 	 *
 	 * @param string              $write_ability_id Write ability id.
