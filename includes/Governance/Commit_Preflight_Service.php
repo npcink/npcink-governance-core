@@ -493,9 +493,12 @@ final class Commit_Preflight_Service {
 	 * @param array<int,array<string,mixed>> $actions Recorded actions: ability_id plus result object refs.
 	 * @return array<string,mixed> Granted and denied verification reads.
 	 */
-	public function mint_result_bound_verification_reads( string $proposal_id, string $correlation_id, array $actions ): array {
+	public function mint_result_bound_verification_reads( string $proposal_id, string $correlation_id, array $actions, array $proposal = array() ): array {
 		$granted = array();
 		$denied  = array();
+
+		// Only abilities the approved proposal actually carries may mint verification reads.
+		$proposal_ability_ids = $this->proposal_write_ability_ids( $proposal );
 
 		$seen_read_keys = array();
 
@@ -506,6 +509,28 @@ final class Commit_Preflight_Service {
 			$paired_read      = (string) ( self::VERIFICATION_READ_ABILITIES[ $write_ability_id ] ?? '' );
 
 			if ( '' === $paired_read ) {
+				continue;
+			}
+
+			if ( ! empty( $proposal_ability_ids ) && ! in_array( $write_ability_id, $proposal_ability_ids, true ) ) {
+				$denied[] = array(
+					'ability_id' => $paired_read,
+					'reason'     => 'ability_not_in_proposal',
+				);
+				continue;
+			}
+
+			// Statically addressed writes must match the approved object; Core can prove those
+			// and they already have a preflight minting path. Only reference-addressed actions
+			// (objects born in this execution) may mint from the recorded result.
+			$action_input   = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+			$static_post_id = isset( $action_input['post_id'] ) && is_numeric( $action_input['post_id'] ) ? absint( $action_input['post_id'] ) : 0;
+			$static_slug    = isset( $action_input['slug'] ) && is_string( $action_input['slug'] ) ? sanitize_key( (string) $action_input['slug'] ) : '';
+			if ( $static_post_id > 0 || '' !== $static_slug ) {
+				$denied[] = array(
+					'ability_id' => $paired_read,
+					'reason'     => 'static_object_use_preflight_mint',
+				);
 				continue;
 			}
 
@@ -549,6 +574,10 @@ final class Commit_Preflight_Service {
 
 			$read_key = $paired_read . '|' . md5( $encoded_input );
 			if ( isset( $seen_read_keys[ $read_key ] ) ) {
+				$denied[] = array(
+					'ability_id' => $paired_read,
+					'reason'     => 'duplicate_verification_read',
+				);
 				continue;
 			}
 			if ( count( $seen_read_keys ) >= self::MAX_VERIFICATION_READS ) {
@@ -605,6 +634,32 @@ final class Commit_Preflight_Service {
 		}
 
 		return array( 'granted' => $granted, 'denied' => $denied );
+	}
+
+	/**
+	 * Returns the write ability ids one approved proposal carries.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return array<int,string> Ability ids (top level plus write_actions targets).
+	 */
+	private function proposal_write_ability_ids( array $proposal ): array {
+		$ids     = array();
+		$top     = sanitize_text_field( (string) ( $proposal['ability_id'] ?? '' ) );
+		if ( '' !== $top ) {
+			$ids[] = $top;
+		}
+		$input   = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
+		$actions = is_array( $input['write_actions'] ?? null ) ? (array) $input['write_actions'] : array();
+		foreach ( $actions as $raw ) {
+			if ( is_array( $raw ) ) {
+				$target = sanitize_text_field( (string) ( $raw['target_ability_id'] ?? '' ) );
+				if ( '' !== $target ) {
+					$ids[] = $target;
+				}
+			}
+		}
+
+		return array_values( array_unique( $ids ) );
 	}
 
 	/**

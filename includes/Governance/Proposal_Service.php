@@ -580,7 +580,7 @@ final class Proposal_Service {
 		$verification_reads = array( 'granted' => array(), 'denied' => array() );
 		if ( null !== $preflight ) {
 			$actions = is_array( $metadata['actions'] ?? null ) ? array_values( (array) $metadata['actions'] ) : array();
-			$verification_reads = $preflight->mint_result_bound_verification_reads( $proposal_id, $correlation_id, $actions );
+			$verification_reads = $preflight->mint_result_bound_verification_reads( $proposal_id, $correlation_id, $actions, is_array( $existing ) ? $existing : array() );
 		}
 
 		$event_id = $this->audit->record(

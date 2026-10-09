@@ -12,7 +12,6 @@ use Npcink\GovernanceCore\Capabilities\Ability_Registry_Adapter;
 use Npcink\GovernanceCore\Governance\Commit_Preflight_Service;
 use Npcink\GovernanceCore\Governance\Proposal_Repository;
 use PHPUnit\Framework\TestCase;
-use ReflectionMethod;
 
 /**
  * Covers the pure derivation rules of result-bound minting (ADR-012).
@@ -28,16 +27,13 @@ final class PostExecutionVerificationMintTest extends TestCase {
 	}
 
 	/**
-	 * Invokes the result-bound mint.
+	 * Invokes the result-bound mint directly (the method is public).
 	 *
 	 * @param array<int,array<string,mixed>> $actions Recorded actions.
 	 * @return array<string,mixed>
 	 */
 	private function mint( array $actions ): array {
-		$method = new ReflectionMethod( Commit_Preflight_Service::class, 'mint_result_bound_verification_reads' );
-		$method->setAccessible( true );
-
-		return $method->invokeArgs( $this->service(), array( 'p1', 'corr-1', $actions ) );
+		return $this->service()->mint_result_bound_verification_reads( 'p1', 'corr-1', $actions );
 	}
 
 	/**
@@ -69,6 +65,26 @@ final class PostExecutionVerificationMintTest extends TestCase {
 
 		$this->assertSame( array(), $granted['granted'] );
 		$this->assertSame( 'result_object_missing', $granted['denied'][0]['reason'] );
+	}
+
+	/**
+	 * Statically addressed writes are denied: they have a provable preflight minting path.
+	 */
+	public function test_static_object_is_denied_and_directed_to_preflight_mint(): void {
+		$granted = $this->mint( array( array( 'ability_id' => 'npcink-abilities-toolkit/update-post-blocks', 'input' => array( 'post_id' => 9 ), 'result' => array( 'post_id' => 9 ) ) ) );
+
+		$this->assertSame( array(), $granted['granted'] );
+		$this->assertSame( 'static_object_use_preflight_mint', $granted['denied'][0]['reason'] );
+	}
+
+	/**
+	 * Abilities the proposal does not carry are denied membership.
+	 */
+	public function test_ability_outside_proposal_is_denied(): void {
+		$service = new Commit_Preflight_Service( new Proposal_Repository(), new Ability_Registry_Adapter(), new Audit_Log_Repository(), null );
+		$result  = $service->mint_result_bound_verification_reads( 'p1', 'corr-1', array( array( 'ability_id' => 'npcink-abilities-toolkit/update-post-blocks', 'result' => array( 'post_id' => 5 ) ) ), array( 'ability_id' => 'npcink-abilities-toolkit/publish-post', 'input' => array( 'write_actions' => array( array( 'target_ability_id' => 'npcink-abilities-toolkit/publish-post' ) ) ) ) );
+
+		$this->assertSame( 'ability_not_in_proposal', $result['denied'][0]['reason'] );
 	}
 
 	/**
