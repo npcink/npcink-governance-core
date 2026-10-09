@@ -1002,7 +1002,7 @@ foreach (
 		'npcink-abilities-toolkit',
 		'0.3.0',
 		'0.4.1',
-		'0.5.9',
+		'0.5.10',
 		'must not be moved',
 		'--require-tag-ready',
 		'stack-rc-2026-09-05-core-0.2.0-adapter-0.3.3-toolkit-0.5.5',
