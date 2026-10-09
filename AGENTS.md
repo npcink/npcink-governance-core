@@ -84,6 +84,17 @@ implementing it inside Core.
 - Run `composer smoke:wp` when behavior depends on WordPress activation, tables,
   REST routing, or `npcink-abilities-toolkit`.
 - Stage only files changed for the current task. Do not use `git add -A`.
+- Multiple AI sessions may run in parallel across the repo family. Work on a
+  sibling repository only through a dedicated worktree (for example under
+  `/Users/muze/gitee/.worktrees/`); never switch a sibling repo's shared main
+  checkout to your branch, and restore it to master if you already did. Before
+  publishing or tagging, `git fetch` and re-verify `origin/master`; before
+  blaming Core for a LocalWP site fatal, check sibling checkout mtimes first.
+- Before filing an ADR, list `docs/decisions/` and take the next free number:
+  parallel sessions file ADRs the same day, and duplicate numbers have
+  happened twice (2026-10-08 ADR-011, 2026-10-09 ADR-012). When statuses
+  differ (accepted versus proposed), renumber-with-note is the mechanical
+  fix; contradictory accepted verdicts need owner arbitration.
 - Do not run `git reset --hard`, `git checkout -- .`, or equivalent destructive
   cleanup unless the user explicitly asks for that exact operation.
 - For cross-repo milestones, use the central matrix from
