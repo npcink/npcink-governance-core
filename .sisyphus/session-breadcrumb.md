@@ -5,43 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-07 - UX audit P0-P2 fixes
-
-- **Module**: Admin review flow, REST consumer experience, and zh_CN i18n.
-- **Completed** (branch `fix/ux-audit-p0-p2`, 7 commits):
-  - P0: bulk-reject failure counts rendered (was silently dropped), app
-    audit-failure message mapping plus code-suffix fallback for unknown
-    errors, from-plan 200 on zero created (initially 422; smoke proved all-blocked intake is a successful body contract, not a transport error), audit/read-requests offset +
-    audit search + total counts, commit-preflight 409 echoes the original
-    correlation_id/expires_at for lost-response recovery.
-  - P1: decisions keep review page + filters and open the next pending
-    proposal; approve gained an optional decision note; one-time client
-    token now renders inside the Client Access Tokens screen via a
-    per-user transient with copy buttons (standalone admin-post document
-    removed); review queue gained ability/waiting-age filters;
-    `Plugin::load_textdomain` now loads bundled zh_CN on local zips.
-  - i18n: POT regenerated, 194 untranslated filled, 80 stale/fuzzy
-    corrected (810 translated, 0 fuzzy/untranslated).
-  - P2: all list endpoints return meta.total + X-WP-Total; REST row
-    timestamps normalized to ISO8601 via Rest_Format; expired app keys
-    get `npcink_governance_core_app_auth_expired`; 429 carries
-    retry_after_seconds + Retry-After header; `GET /contract` accepts the
-    new opt-in `contract:read` app scope; already_decided carries
-    proposal_status; already_recorded message corrected; admin enums
-    (caller type, policy decision/profile, review basis) render through
-    translated label maps.
-  - Docs: rest-api-contract.md and app-auth-scope-policy.md updated;
-    static contracts updated/extended accordingly.
-- **Verification**: `composer test:all` passed after each batch.
-- **Next recommended steps**:
-  - Browser visual smoke of the changed admin screens (queue filters,
-    decision flow, one-time token panel) — still pending from before.
-  - Cross-repo note: Adapter consumers should adopt the 422/409/total/ISO
-    contract changes when they next sync; run the central quality matrix
-    before any multi-repo closeout.
-  - zh_CN strings added here are local-first; submit them to wp.org when
-    the PTE path reopens so language packs stay in sync.
-
 # 2026-10-07 - Post-merge visual smoke and Adapter follow-through
 
 - **Evidence** (PR #91 merged as 36e8090; local master synced):
@@ -368,3 +331,33 @@ Older history: `.sisyphus/archive/`.
   shape; zh_CN wp.org/PTE unchanged.
 - **Main line unchanged**: the real-usage validation ledger still has zero
   rows.
+
+# 2026-10-09 - 0.3.0 published to WordPress.org; adapter #94 completed; follow-ups closed
+
+- **WordPress.org publication**: owner authorized SVN sync. Dry-run reviewed
+  via direct diff (openrsync's --dry-run prints nothing on this macOS —
+  28 changed + 3 new files, zero deletions vs 0.1.1 trunk), applied, and
+  committed as r3735752 (trunk + tags/0.3.0, 58M/7A reconciled against the
+  reviewed delta; checkout at ~/wporg-svn). GitHub Release v0.3.0 created
+  from the tag with the package asset (zip sha256 ed907c89…); issue #2
+  closed with the full record. This is the first SVN release since 0.1.1 —
+  0.2.0 was git-tag only.
+- **Adapter #94 (verification reads) completed** with the parallel session:
+  it had restructured onto instance-scoped grant queues; this session stacked
+  the remaining deltas — positional per-ability binding of handoff grant ids
+  to action-derived inputs (their map produced empty queues against hardened
+  Core #131 because handoff entries carry no input), reference-addressed
+  skip telemetry, expected-vs-granted coverage events, relay double-fetch
+  reuse, slug-grant usability validation, and full grant-material redaction
+  from the execute response/records. All 20 review threads replied and
+  resolved; auto-merge armed. NOTE: the adapter main checkout is shared
+  with the parallel session — use a worktree (npcink-adapter-94-final) and
+  restore the checkout to master when done.
+- **ai-cloud orphan docs salvaged**: PR #1089 carries the 2026-10-08
+  commercial brainstorm and the diagnostics design brief from the superseded
+  branch into master (byte-identical extraction); auto-merge armed. The
+  stale branch itself is left for the owner's cleanup.
+- **Toolkit 0.5.9 tag drift accepted** (docs-only commits after the tag) in
+  the rc version matrix doc.
+- **Main line unchanged**: the real-usage validation ledger still has zero
+  rows; everything above is plumbing around it.
