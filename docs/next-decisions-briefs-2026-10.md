@@ -106,9 +106,10 @@ The release owner closed all three briefs before the 0.3.0 release closeout:
 
 ## Also pending (not a brief)
 
-- [Flagged media deletion policy](flagged-media-deletion-policy.md): the five
-  pre-implementation checkboxes are a review task for the release owner, not
-  a decision brief. Half an hour with the policy document closes it.
+- [Flagged media deletion policy](flagged-media-deletion-policy.md): the
+  2026-10-09 review closed the policy question — the contract is accepted
+  as the target, implementation has not started, and the pre-implementation
+  checklist stays open until that slice ships.
 - Editor adoption gate: moot as of 2026-10-07 — drafts 286721/286722 no
   longer exist on the local site, so the article discovery pilot can start
   from current drafts.

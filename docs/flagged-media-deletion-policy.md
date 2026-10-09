@@ -1,6 +1,8 @@
 # Flagged Media Deletion Policy
 
-Status: proposed policy contract awaiting acceptance review.
+Status: policy contract reviewed and accepted 2026-10-09 as the target
+contract. Implementation has not started; the acceptance checklist below
+remains open until the implementing slice ships.
 
 ## Context
 
@@ -85,3 +87,32 @@ Before implementation:
 - [ ] audit events record deletion descriptions without content retention;
 - [ ] the cross-repo boundary matrix and the Toolkit governance catalog
       record the new plan artifact.
+
+## Review Record — 2026-10-09
+
+Reviewed against the Core implementation at the published 0.3.0 line:
+
+- Checklist items 1-4 are not implemented: `includes/` has no
+  flagged-media handling, `flagged_media_removal_plan.v1` is not in the
+  from-plan contract allowlist, and the branch-evidence preflight rules
+  and deletion-description audit rules do not exist yet.
+- Checklist item 5 is partially recorded: the cross-repo boundary matrix
+  (`npcink-workflow-toolbox` `docs/boundary.md`) documents the
+  suggestion-only `flagged_media_review_set.v1` and names the dual-branch
+  deletion policy as the specification input for the future Toolkit/Core
+  path, but neither that matrix nor the Toolkit governance catalog
+  records `flagged_media_removal_plan.v1` itself.
+- Because the artifact cannot be created today, no approval-policy lane
+  can admit it; the explicit auto-approval exclusion still needs its own
+  guard when intake lands.
+
+Verdict: the contract is sound and matches the existing from-plan,
+approval-policy, preflight, and audit shapes. Nothing in it violates the
+Core boundary: the deletion callback, backup, lineage, and restore
+machinery stay in `npcink-abilities-toolkit`, classification stays in the
+Cloud runtime, and Toolbox only prepares suggestion-only review sets.
+
+Accepted as the target contract. Implementation is a future dedicated
+slice and still requires the Adapter execution profile for
+`npcink-abilities-toolkit/delete-attachment` before any client may
+execute an approved plan.
