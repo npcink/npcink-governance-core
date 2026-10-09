@@ -90,6 +90,20 @@ implementing it inside Core.
   checkout to your branch, and restore it to master if you already did. Before
   publishing or tagging, `git fetch` and re-verify `origin/master`; before
   blaming Core for a LocalWP site fatal, check sibling checkout mtimes first.
+- Breadcrumb "pending" claims go stale within hours under parallel sessions.
+  Re-verify each one against live repository state (git status, tags, remote
+  log, matrix) before acting on it, and record the recalibration instead of
+  trusting the note (stale-toolkit, stale-tag, and stale-unpushed-commit
+  reads all happened on 2026-10-08/09).
+- Before touching a sibling shared root, confirm no session is actively
+  working it: take two `git status --short` snapshots a few minutes apart and
+  check tracked-file mtimes. If anything moved between snapshots, hands off.
+- If a sibling root must return to master but a dedicated worktree holds the
+  master branch name, detach that worktree at its current commit
+  (content-identical, evidence binds SHAs not branch names) and check master
+  out in the shared root. Preserve superseded branches that hold unpushed
+  commits instead of deleting them; the keep/discard call belongs to the
+  owner.
 - Before filing an ADR, list `docs/decisions/` and take the next free number:
   parallel sessions file ADRs the same day, and duplicate numbers have
   happened twice (2026-10-08 ADR-011, 2026-10-09 ADR-012). When statuses
@@ -98,9 +112,10 @@ implementing it inside Core.
 - Do not run `git reset --hard`, `git checkout -- .`, or equivalent destructive
   cleanup unless the user explicitly asks for that exact operation.
 - For cross-repo milestones, use the central matrix from
-  `/Users/muze/gitee/npcink-toolbox` instead of copying the script into Core:
-  `composer quality:matrix` for status and `composer quality:matrix:run` before
-  multi-repo closeout.
+  `/Users/muze/gitee/npcink-workflow-toolbox` (run `composer quality:matrix`
+  for status and `composer quality:matrix:run` with `--fail-on-dirty` before
+  multi-repo closeout in that repository) instead of copying the script into
+  Core.
 - Publish a completed clean topic branch with
   `composer pr:publish -- --title "<title>" --body-file <path>`. Start the body
   from `.github/pull_request_template.md`; do not replace it with ad hoc
