@@ -5,135 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-08 - UX round 2: audit paging, quota visibility, evidence truncation
-
-- **Module**: Admin review flow, REST consumer experience, zh_CN i18n
-  (branch `fix/ux-round2`, 3 commits f2aca1d/9e7557e/253373f).
-- **Trigger**: fresh user-experience audit after PR #91; user approved the
-  prioritized fix list ("按建议依次落实").
-- **Audit recalibrations** (do not re-propose without a new decision):
-  - The admin H1 stays the fixed English product name by contract
-    (admin-surface-standard; tests pin `esc_html( 'Npcink Governance Core' )`).
-  - History is deliberately read-only with no status filters or
-    archive/reopen UI (2026-06-19 decision, commit 0236838); the
-    admin_post archive/reopen handlers are contracted stable surface
-    (tests/run.php:2917-2918), not dead code to delete.
-  - The single-event Recent Activity panel was a pinned contract; replaced
-    with a five-event noise-free list and the contract updated.
-- **Batch 1**: REST GET /audit excludes read-noise events by default
-  (opt-in `include_read_events`) so `audit.listed` no longer shifts offset
-  paging; meta.limit echoes the clamped value; proposal/read-request
-  timelines (admin + REST) newest-first with `audit_timeline_total`
-  truncation disclosure; admin menu pending badge (read-only,
-  TTL-bounded via `count_pending_within_ttl`); bulk-reject JS confirm;
-  read_request.* audit labels/filters; 5-event Recent Activity.
-- **Batch 2**: X-RateLimit-Limit/Remaining/Reset headers served at
-  rest_post_dispatch; 400/404 app-authenticated requests refund their
-  rate slot (atomic, floored decrement in App_Rate_Limiter::refund);
-  pending-quota 429 carries `earliest_pending_expires_at`; status filters
-  enumerated (proposals + read-requests) so typos 400;
-  read-request 409 carries `request_status`; read-preflight nested
-  `expires_at` now ISO8601; queue summary cards deep-link filtered audit
-  views; conditional "Sensitive reads" card when read requests pend
-  (Admin_Page now takes Read_Request_Repository).
-- **Batch 3 (minimal + docs)**: open decision brief
-  `docs/next-decisions-briefs-2026-10-ux-round2.md` recommends
-  Adapter-owned notification via the observability hook over
-  Core-native webhooks/email; operability doc documents the notification
-  seam + polling posture; zh_CN catalog: 53 new translations (incl.
-  previously untranslated enum labels), 861 translated / 0 untranslated,
-  obsolete entries preserved (Toolbox menu label contract).
-- **Gotchas hit**: msgmerge preserves obsolete PO entries — do NOT run
-  `msgattrib --no-obsolete` (drops the contracted Toolbox label entry);
-  App_Authenticator constructor now registers a rest_post_dispatch filter
-  and needs a `function_exists( 'add_filter' )` guard for the fail-closed
-  harness; zh_CN POT regen command:
-  `wp i18n make-pot . languages/npcink-governance-core.pot --domain=npcink-governance-core --exclude=vendor,build,dist,tests,scripts,sj,examples`.
-- **Verification**: `composer test:all` green after every batch;
-  `composer smoke:wp` green; advisory `ocr review` run before publish.
-- **Not done (owner decisions pending)**: notification channel (brief D
-  rejected / C recommended); `updated_since` polling filter (deferred);
-  OpenAPI; browser visual smoke of the new badge/cards/timeline panel.
-
-# 2026-10-08 - UX round 2 review closeout (fix commits 432d4c4, follow-up)
-
-- Advisory review round 1 (15 findings) and round 2 (11 findings) fully
-  triaged; every real defect fixed, no waivers. Key late catches:
-  audit.listed total-snapshot drift, exact-window rate refunds
-  (consume now returns window_start), 429 responses carrying
-  X-RateLimit headers, admin detail timeline must exclude read-noise or
-  polled proposals evict their own approval/preflight evidence from the
-  bounded window, read-request lazy expiry inflating a naive pending
-  count (count_pending_unexpired added), plural-form portability of the
-  JS confirm (now plural-neutral "proposal(s)"), status enums reusing
-  allowed_statuses() (instance call — static call fatalled smoke).
-- zh_CN terminology realignments: 读预检已检查, Agent 主机.
-- All gates green after each fix batch: test:all, smoke:wp, validate,
-  check:wporg; final catalog 861 translated / 0 untranslated with
-  obsolete entries preserved.
-- PR body at /tmp/ux-round2-pr-body.md; publish with
-  `composer pr:publish -- --title "ux: round-2 consumer and admin experience fixes" --body-file /tmp/ux-round2-pr-body.md`.
-
-# 2026-10-08 - UX round 2 closeout: merge, master sync, visual smoke
-
-- PR #97 merged (squash 6fdb964, all three CI checks green); local master
-  synced; the LocalWP smoke site runs the merged code via its plugin
-  symlink.
-- Post-merge browser visual smoke passed on the live site (temp admin
-  user 96 created and deleted; temp pending proposal created and deleted
-  with its audit rows; no `.maintenance` residue):
-  - menu badge renders (治理核心 179) with live pending count;
-  - queue summary tiles are clickable cards with consistent targets
-    (待审核→queue, 已批准→audit overview) in zh_CN;
-  - Recent Activity lists five newest non-noise events, each linking its
-    proposal, noise excluded;
-  - proposal detail evidence tab: lifecycle summary chronological,
-    timeline table newest-first with the "最新事件在前" wording;
-  - bulk-reject confirm dialog shows the plural-neutral message with the
-    selected count substituted and blocks on cancel.
-  - Screenshots under /tmp/core-visual-smoke/ (local only).
-- Observation (pre-existing, not changed): `composer smoke:wp` pending-
-  quota fixtures accumulate on the local site (179 pending rows); this
-  matches prior session behavior (40+ rows seen 2026-10-07) and was left
-  as-is.
-- Session open items for the owner: decide the two 2026-10 UX-round-2
-  briefs (notification channel, updated_since polling); Adapter consumers
-  adopt the new contract additions on next sync; zh_CN wp.org language
-  pack submission still waits on the PTE path.
-
-# 2026-10-08 - Solo+AI process hardening: breadcrumb rotation, docs history, behavioral tests, ADR-010 checkpoint, smoke self-cleanup, resume guide
-
-- **Module**: Cross-cutting solo-developer process (no runtime class changed).
-- **Completed**: Six merged PRs implementing the accepted assessment:
-  #101 breadcrumb split (295KB -> 17KB rolling + monthly archives, 10-entry
-  rotation rule in AGENTS.md); #103 docs authority inventory made physical
-  (13 historical docs -> docs/history/, layout pinned both directions);
-  #104/#106 PHPUnit 9.6 behavioral suite (31 tests / 95 assertions over
-  Approval_Policy_Evaluator, Plan_Contract_Validator, App_Rate_Limiter;
-  runners now report the full failure list, capped printing at 50); #109
-  ADR-010 Trigger Review Checkpoint wired into release closeout step 1;
-  #111 process de-load (visual smoke cadence, weekly docs batching, smoke
-  deletes its own fixtures with 54 cleanup assertions; 220 stale pending
-  rows wiped locally, 17 remaining belong to cross-repo smokes); #113
-  docs/resume-after-break.md solo-gap insurance page. Issue #5 closed by
-  coverage audit; #105 tracks the deferred runner-monolith split.
-- **Gotchas hit**: composer require on local PHP 8.4 locked a PHP ^8.4
-  transitive dep that CI's 8.0 floor rejected - config.platform.php=8.0.30
-  pins resolution; phpunit.xml.dist leaked into the release package until
-  .distignore caught it; wp eval-file includes files in method scope, so
-  helpers must declare `global` explicitly; pinned phrases must survive on
-  one unwrapped line; GitHub required_conversation_resolution blocks
-  auto-merge until advisory-review threads are resolved - run local
-  `ocr review` BEFORE pr:publish so CI review lands zero threads.
-- **Verification**: `composer test:all` green on every PR; `composer
-  smoke:wp` green twice on #111 (54 cleanup assertions executing); advisory
-  ocr review pre-publish each time; release package hash unchanged
-  throughout.
-- **Not done (owner decisions pending, unchanged from earlier 2026-10-08
-  sessions)**: notification channel brief (D rejected / C recommended);
-  `updated_since` polling filter; zh_CN wp.org language pack still waits on
-  the PTE path.
-
 # 2026-10-08 - Next-stage kickoff: validation program opened, decisions closed, ADR-007 parked
 
 - **Module**: Next-stage planning docs only (no runtime class changed).
@@ -367,3 +238,25 @@ Older history: `.sisyphus/archive/`.
   parallel-session rules in AGENTS.md, ledger-trigger mechanism in
   real-usage-validation.md, first-week runway in
   real-usage-first-week-kickoff.md.
+# 2026-10-09 - ADR-013 verification-integrity arc closed end to end
+
+- **Core side merged**: ADR-013 accepted (#135/#136); provisional-record
+  result-bound minting implemented and hardened (#138/#139). The
+  provisional record is lifecycle-safe by construction: audit event plus
+  read mints only, allowed while the proposal is still approved, and the
+  definitive record path owns transitions (Proposal_Service.php:538-607).
+- **Adapter side merged**: adapter #95 (squash 9b30954) after 13
+  OpenCodeReview rounds, every finding triaged on the PR body; the
+  drained-key grant seeding is pinned by a behavior probe. Grant-mode
+  smoke: both post-block-readback assertions green, 1235 ok - the
+  furthest this run has ever reached. Issues #125 and adapter #93 closed
+  on acceptance evidence; adapter closeout record in its
+  docs/archive/2026-10-09-adr-013-verification-supplement-closeout.md.
+- **Standing verdicts for future rounds**: the supplement deliberately
+  sends the ORIGINAL (unresolved) action input - output references are
+  the reference-addressing evidence for the result-bound mint, and
+  resolved ids would be denied as statically addressed; the provisional
+  record never transitions lifecycle state.
+- **Main line unchanged**: the real-usage validation ledger still has
+  zero rows.
+

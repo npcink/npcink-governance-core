@@ -189,7 +189,7 @@ Architecture decisions:
 - [ADR-010: Keep Final Commit Execution Outside Core Until A Named Trigger Fires](docs/decisions/ADR-010-defer-final-commit-ownership-until-trigger.md)
 - [ADR-011: Post-Execution Verification Reads Use An Explicit Verification Read-Request Kind](docs/decisions/ADR-011-verification-read-request-kind-for-post-execution-readback.md) (superseded by ADR-012)
 - [ADR-012: Execution-Attached Verification Reads](docs/decisions/ADR-012-execution-attached-verification-reads.md)
-- [ADR-013: Post-Execution Verification Read Minting](docs/decisions/ADR-013-post-execution-verification-read-minting.md) (proposed)
+- [ADR-013: Post-Execution Verification Read Minting](docs/decisions/ADR-013-post-execution-verification-read-minting.md)
 
 External agent clients can start from the
 [OpenClaw governance adapter example](examples/openclaw-governance-adapter/README.md).
