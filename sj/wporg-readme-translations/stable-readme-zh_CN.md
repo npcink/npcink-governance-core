@@ -28,7 +28,7 @@ Npcink Governance Core 适合需要为 AI 辅助 WordPress 操作建立本地审
 
 ### 要求和集成
 
-Core 最适合与 WordPress 7.0 或更高版本以及 WordPress Abilities API provider 一起使用。第一方参考 provider 是 Npcink Abilities Toolkit，但基础治理生命周期也可以治理第三方 WordPress Abilities API provider，只要它们提供稳定的 ability ids、schemas、permission callbacks、risk metadata 和 dry-run previews。
+Core 最适合与 WordPress 7.0 或更高版本以及 WordPress Abilities API provider 一起使用。第一方参考 provider 是 Npcink Abilities Toolkit，但基础治理生命周期也可以治理第三方 WordPress Abilities API provider，只要它们提供稳定的 ability ids、schemas、permission callbacks、risk metadata 和 dry-run previews。参考通道 adapter 是 Npcink AI Client Adapter，它会在 Core commit preflight 之后，通过 WordPress Abilities API 执行已批准的 abilities。
 
 Core 在 `/wp-json/npcink-governance-core/v1/` 下暴露治理 REST endpoints。可信 adapter 和 host 插件可以使用这些 endpoints 创建 proposals、批准或拒绝 proposals、请求 commit preflight，并记录外部执行结果。
 
@@ -92,7 +92,37 @@ Scoped app keys 允许可信治理客户端调用特定 Core REST endpoints，�
 
 可以。基础 proposal lifecycle 是 provider-neutral 的。第三方 providers 可以暴露带有 schemas、permission callbacks、risk metadata 和 dry-run previews 的 WordPress Abilities API definitions，然后把写入或破坏性操作提交给 Core 审查。
 
+### 为什么 Core 要求 WordPress 7.0？
+
+Core 的 ability intake 读取 WordPress Abilities API 接口，Core 的治理契约面向 WordPress 7.0 及更高版本构建和测试。在更旧的 WordPress 版本上，ability intake 未经过测试，Core 会 fail closed（拒绝处理），而不是治理无法对照真实 ability ids 验证的 proposals。
+
+### Core 支持多站点（multisite）吗？
+
+支持。网络启用（network activation）会为每个现有站点创建 Core 治理表，新建站点会在初始化时自动创建。治理记录按站点分别存储。
+
+### 停用或删除插件后，治理记录会怎样？
+
+停用会保留全部治理记录。删除插件同样保留记录：proposals、audit events、app-key metadata 和 read authorization records 都会保留，因为审批与审计历史可能受站点留存要求约束。本版本不提供自动卸载删除。
+
+## Upgrade Notice
+
+### 0.3.0
+
+操作员体验与 REST 消费者契约版本。无需数据迁移；治理表自 0.2.0 起未变更。审查队列筛选在决策间保留，列表端点返回总数，REST 时间戳为 ISO8601 UTC，并内置完整的 zh_CN 翻译目录。
+
 ## Changelog
+
+### 0.3.0
+
+操作员体验与 REST 消费者契约版本。管理端审查队列在决策间保留筛选和分页上下文，每次决策后可打开下一条 pending proposal，支持按 ability 和等待时长筛选，一次性 client token 在正常管理界面内呈现并带复制按钮。Audit read-requests 增加 offset 和 search 分页，所有列表端点返回总数，REST 时间戳为 ISO8601 UTC，重复 commit preflight 会回显原始 handoff 标识以便恢复，过期的 app keys 返回专用的 rotate-key 错误，限流响应带 Retry-After 指引，运行时 contract 端点接受可选的 contract:read app scope。内置 zh_CN 目录已完整（810 条字符串），并会在本地分发的插件 zip 上加载。本版本仍未加入最终写入执行、workflow runtime 或 provider credential 归属。
+
+### 0.2.0
+
+0.1.1 之后完成的治理 intake、approval、preflight、audit 与发布打包强化候选版本。本版本不加入最终写入执行或 workflow runtime 归属。
+
+### 0.1.1
+
+发布工具补丁，用于常规 RC tag 路径。版本矩阵现在可以识别指向当前提交的 annotated release tags，无需重新为历史版本打 tag。
 
 ### 0.1.0
 

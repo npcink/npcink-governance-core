@@ -28,7 +28,7 @@ Ce plugin n'est pas un rédacteur IA en un clic, un assistant SEO, un générate
 
 ### Prérequis et intégrations
 
-Core fonctionne le mieux avec WordPress 7.0 ou supérieur et des fournisseurs WordPress Abilities API. Le fournisseur de référence de première partie est Npcink Abilities Toolkit, mais le cycle de gouvernance de base peut aussi gouverner des fournisseurs tiers WordPress Abilities API qui exposent des ability ids, schemas, permission callbacks, risk metadata et dry-run previews stables.
+Core fonctionne le mieux avec WordPress 7.0 ou supérieur et des fournisseurs WordPress Abilities API. Le fournisseur de référence de première partie est Npcink Abilities Toolkit, mais le cycle de gouvernance de base peut aussi gouverner des fournisseurs tiers WordPress Abilities API qui exposent des ability ids, schemas, permission callbacks, risk metadata et dry-run previews stables. L'adapter de canal de référence est Npcink AI Client Adapter, qui exécute les abilities approuvées via WordPress Abilities API après le commit preflight de Core.
 
 Core expose des endpoints REST de gouvernance sous `/wp-json/npcink-governance-core/v1/`. Les adapters et plugins hôtes de confiance peuvent utiliser ces endpoints pour créer des proposals, les approuver ou les rejeter, demander un commit preflight et enregistrer des résultats d'exécution externes.
 
@@ -92,7 +92,37 @@ Une configuration OpenClaw productisée doit se connecter via un adapter de conf
 
 Oui. Le proposal lifecycle de base est provider-neutral. Les fournisseurs tiers peuvent exposer des WordPress Abilities API definitions avec schemas, permission callbacks, risk metadata et dry-run previews, puis soumettre des opérations d'écriture ou destructives à l'examen de Core.
 
+### Pourquoi Core exige WordPress 7.0 ?
+
+L'ability intake de Core lit l'interface WordPress Abilities API et les contrats de gouvernance de Core sont construits et testés pour WordPress 7.0 et ultérieur. Sur des versions antérieures de WordPress, l'ability intake n'est pas testée et Core échoue de manière fermée plutôt que de gouverner des proposals qu'il ne peut pas valider contre des ability ids réels.
+
+### Core fonctionne-t-il en multisite ?
+
+Oui. L'activation réseau (network activation) crée les tables de gouvernance de Core pour chaque site existant, et les nouveaux sites sont provisionnés lors de l'initialisation. Les enregistrements de gouvernance sont stockés par site.
+
+### Que deviennent les enregistrements de gouvernance si le plugin est désactivé ou supprimé ?
+
+La désactivation conserve tous les enregistrements de gouvernance. La suppression du plugin les conserve aussi : proposals, audit events, app-key metadata et read authorization records sont conservés car l'historique d'approbation et d'audit peut être soumis aux exigences de conservation du site. Cette version n'inclut aucune suppression automatique à la désinstallation.
+
+## Upgrade Notice
+
+### 0.3.0
+
+Version consacrée à l'expérience opérateur et au contrat pour consommateurs REST. Aucune migration de données n'est requise ; les tables de gouvernance sont inchangées depuis 0.2.0. Les filtres de la file de révision sont conservés entre les décisions, les endpoints de liste renvoient les totaux, les horodatages REST sont en ISO8601 UTC, et le catalogue zh_CN complet est inclus.
+
 ## Changelog
+
+### 0.3.0
+
+Version consacrée à l'expérience opérateur et au contrat pour consommateurs REST. La file de révision admin conserve les filtres et le contexte de pagination entre les décisions, peut ouvrir la proposal pending suivante après chaque décision, filtre par ability et par durée d'attente, et affiche les client tokens à usage unique dans l'écran d'administration normal avec des contrôles de copie. Audit read-requests gagne la pagination offset et search, tous les endpoints de liste renvoient les totaux, les horodatages REST sont en ISO8601 UTC, les commit preflight répétés renvoient les identifiants de handoff d'origine pour la récupération, les app keys expirées renvoient une erreur dédiée de rotate-key, les réponses limitées en débit embarquent des indications Retry-After, et l'endpoint de contrat d'exécution accepte un app scope opt-in contract:read. Le catalogue zh_CN embarqué est complet (810 chaînes) et se charge désormais sur les zips distribués localement. Cette version n'ajoute toujours pas l'exécution finale des écritures, de workflow runtime ni la propriété des provider credentials.
+
+### 0.2.0
+
+Candidat de version pour le durcissement de l'intake de gouvernance, l'approval, le preflight, l'audit et l'empaquetage, terminé après 0.1.1. Cette version n'ajoute ni l'exécution finale des écritures ni la propriété d'un workflow runtime.
+
+### 0.1.1
+
+Correctif d'outillage de version pour le chemin de tag RC conventionnel. La matrice de versions reconnaît désormais les annotated release tags pointant vers le commit courant sans réétiqueter les versions historiques.
 
 ### 0.1.0
 

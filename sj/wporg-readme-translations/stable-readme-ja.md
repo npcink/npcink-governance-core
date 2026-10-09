@@ -28,7 +28,7 @@ Npcink Governance Core は、AI 支援の WordPress 操作に対してローカ�
 
 ### 要件と連携
 
-Core は WordPress 7.0 以降、および WordPress Abilities API providers と組み合わせると最も効果的です。ファーストパーティの参照 provider は Npcink Abilities Toolkit ですが、安定した ability ids、schemas、permission callbacks、risk metadata、dry-run previews を公開するサードパーティの WordPress Abilities API providers も基本的なガバナンスライフサイクルで扱えます。
+Core は WordPress 7.0 以降、および WordPress Abilities API providers と組み合わせると最も効果的です。ファーストパーティの参照 provider は Npcink Abilities Toolkit ですが、安定した ability ids、schemas、permission callbacks、risk metadata、dry-run previews を公開するサードパーティの WordPress Abilities API providers も基本的なガバナンスライフサイクルで扱えます。参照チャネル adapter は Npcink AI Client Adapter で、Core commit preflight の後に WordPress Abilities API を通じて承認済み abilities を実行します。
 
 Core は `/wp-json/npcink-governance-core/v1/` 配下にガバナンス REST endpoints を公開します。信頼された adapters と host プラグインは、これらの endpoints を使って proposals の作成、承認または却下、commit preflight の要求、外部実行結果の記録を行えます。
 
@@ -92,7 +92,37 @@ scoped app keys は、信頼されたガバナンスクライアントが広範�
 
 はい。基本 proposal lifecycle は provider-neutral です。サードパーティ providers は schemas、permission callbacks、risk metadata、dry-run previews を持つ WordPress Abilities API definitions を公開し、書き込みまたは破壊的操作を Core のレビューへ送信できます。
 
+### なぜ Core には WordPress 7.0 が必要ですか ?
+
+Core の ability intake は WordPress Abilities API のインターフェースを読み取り、Core のガバナンス契約は WordPress 7.0 以降に対して構築・テストされています。それより古い WordPress では ability intake はテストされておらず、Core は実際の ability ids と照合できない proposals をガバナンスせず、fail closed（拒否）します。
+
+### Core はマルチサイト（multisite）に対応していますか ?
+
+はい。ネットワーク有効化（network activation）時に既存の全サイトへ Core ガバナンステーブルを作成し、新規サイトは初期化時に作成されます。ガバナンス記録はサイトごとに保存されます。
+
+### プラグインを無効化または削除すると、ガバナンス記録はどうなりますか ?
+
+無効化してもガバナンス記録はすべて保持されます。プラグインを削除した場合も記録は保持されます。proposals、audit events、app-key metadata、read authorization records は、承認と監査の履歴がサイトの保存要件の対象になり得るため保持されます。このリリースには自動的なアンインストール削除はありません。
+
+## Upgrade Notice
+
+### 0.3.0
+
+オペレーター体験と REST コンシューマー契約のリリースです。データ移行は不要で、ガバナンステーブルは 0.2.0 から変更されていません。レビュー待ち行列のフィルターは判断後も保持され、リスト endpoints は合計数を返し、REST タイムスタンプは ISO8601 UTC、完全な zh_CN カタログが同梱されています。
+
 ## Changelog
+
+### 0.3.0
+
+オペレーター体験と REST コンシューマー契約のリリース。管理画面のレビュー待ち行列は判断をまたいでフィルターとページコンテキストを保持し、各判断後に次の pending proposal を開け、ability と待機時間でフィルターでき、一度限りの client token は通常の管理画面内にコピー付きで表示されます。Audit read-requests に offset と search のページングが加わり、すべてのリスト endpoints が合計数を返し、REST タイムスタンプは ISO8601 UTC、重複する commit preflight は復旧のため元の handoff 識別子を返し、期限切れの app keys は専用の rotate-key エラーを返し、レート制限レスポンスは Retry-After ガイダンスを持ち、ランタイム contract endpoint はオプトインの contract:read app scope を受け付けます。同梱の zh_CN カタログは完全（810 文字列）で、ローカル配布のプラグイン zip でも読み込まれます。このリリースも最終書き込み実行、workflow runtime、provider credentials の所有は追加しません。
+
+### 0.2.0
+
+0.1.1 以降に完了した、ガバナンス intake、approval、preflight、audit、リリースパッケージング強化のリリース候補。このリリースは最終書き込み実行や workflow runtime の所有を追加しません。
+
+### 0.1.1
+
+通常の RC tag パス向けのリリースツール修正。バージョン行列は、履歴リリースに再タグせずとも、現在のコミットを指す annotated release tags を認識するようになりました。
 
 ### 0.1.0
 
