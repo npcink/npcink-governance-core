@@ -1,13 +1,18 @@
-# ADR-012: Post-Execution Verification Read Minting
+# ADR-013: Post-Execution Verification Read Minting
 
 ## Status
 Proposed
+
+First filed as a second `ADR-012` in PR #135; renumbered to ADR-013 to
+resolve the number collision with the standing execution-attached decision,
+and its internal references updated to the canonical numbering (ADR-012 is
+the execution-attached decision; ADR-011 is its superseded predecessor).
 
 ## Date
 2026-10-09
 
 ## Context
-ADR-011 mints execution-attached verification reads at commit preflight. Its
+ADR-012 mints execution-attached verification reads at commit preflight. Its
 recorded limitation is confirmed by acceptance evidence (2026-10-09): with
 npcink-ai-client-adapter#94 merged (positional action binding included), the
 grant-mode smoke assertion `adapter pattern page execution verifies post-block
@@ -17,7 +22,7 @@ at preflight time, so no preflight mint can address it, and the readback
 degrades to `readback_failed`.
 
 The minting moment must move to after the write for in-transaction objects.
-The binding rule from ADR-011 stands unchanged: Core binds the grant to
+The binding rule from ADR-012 stands unchanged: Core binds the grant to
 Core-verified evidence only, never to an Adapter-asserted object id.
 
 ## Options
@@ -43,7 +48,7 @@ Core-verified evidence only, never to an Adapter-asserted object id.
 Proposed: option 2 (provisional record, final record). It keeps the audit
 object complete-at-rest, binds every grant to recorded evidence, and leaves
 read-preflight's contract untouched. The pairing map and same-object rules
-from ADR-011 apply unchanged to post-execution mints; grants stay
+from ADR-012 apply unchanged to post-execution mints; grants stay
 single-use, verification-sourced, and TTL-bounded by the record window.
 
 ## Consequences
@@ -53,5 +58,5 @@ single-use, verification-sourced, and TTL-bounded by the record window.
   execution role and no new channel scope.
 - The Adapter changes its execution order: execute -> provisional record ->
   readback -> final record.
-- Supersedes the Limitations section of ADR-011 for the in-transaction case;
+- Supersedes the Limitations section of ADR-012 for the in-transaction case;
   preflight minting remains for statically-addressed objects.

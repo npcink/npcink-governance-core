@@ -1411,6 +1411,10 @@ npcink_governance_core_assert( false !== strpos( $adr_011, 'Superseded by ADR-01
 npcink_governance_core_assert( false !== strpos( $adr_012, 'Accepted — supersedes ADR-011' ), 'ADR-012 stands as the accepted decision superseding ADR-011.' );
 npcink_governance_core_assert( false !== strpos( $adr_012, 'it mints authorization, never runs reads' ), 'ADR-012 keeps Core authorization-only, never running reads.' );
 npcink_governance_core_assert( false !== strpos( $adr_012, 'ahead of any recorded ledger entry' ) && false !== strpos( $adr_012, 'a waiver, not a precedent' ), 'ADR-012 records the ledger-trigger waiver explicitly and non-precedentially.' );
+$adr_013 = npcink_governance_core_read( $root . '/docs/decisions/ADR-013-post-execution-verification-read-minting.md' );
+npcink_governance_core_assert( false !== strpos( $adr_013, '# ADR-013: Post-Execution Verification Read Minting' ) && false !== strpos( $adr_013, 'Proposed' ), 'ADR-013 is the proposed post-execution minting record, uniquely numbered.' );
+npcink_governance_core_assert( false !== strpos( $adr_013, 'renumbered to ADR-013 to' ), 'ADR-013 records its renumbering from the duplicate ADR-012 filing.' );
+npcink_governance_core_assert( false !== strpos( $adr_013, 'ADR-012 mints execution-attached verification reads' ) && false !== strpos( $adr_013, 'Limitations section of ADR-012' ), 'ADR-013 references the canonical ADR numbering.' );
 $release_closeout_standard = npcink_governance_core_read( $root . '/docs/release-closeout-standard.md' );
 npcink_governance_core_assert( false !== strpos( $release_closeout_standard, 'ADR-010 trigger review checkpoint' ), 'Release closeout standard runs the ADR-010 checkpoint before candidate freeze.' );
 
