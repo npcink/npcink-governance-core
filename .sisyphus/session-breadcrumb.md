@@ -306,3 +306,22 @@ Older history: `.sisyphus/archive/`.
   path (npcink-workflow-toolbox, not the non-existent npcink-toolbox).
 - **Boundary**: Documentation and repository hygiene only; no runtime
   behavior changed this session.
+# 2026-10-09 - 0.3.0 stack closeout completed (this session's part)
+
+- **Recalibration**: the 0.3.0 release chain (v0.3.0 tag at 3357f91,
+  cross-repo acceptance, wp.org SVN publication, 8-locale readme) was
+  completed by parallel sessions; this session contributed the 0.3.0 version
+  bump + full local release gate (#94), the next-decisions briefs, and the
+  matrix follow-up (#144).
+- **Toolkit 0.5.10**: the docs-only bump PR #219 merged (note: its auto-merge
+  fired before the parallel session's docs-only-drift adjudication was seen;
+  accepting the merged 0.5.10 as the normal next release per that ruling).
+  Annotated tag `0.5.10` pushed at dd4b42f; matrix reports points_at_head.
+- **Adapter v0.4.1 intentionally untagged**: master already carries six
+  post-0.4.1 commits including the execution-attached verification-reads
+  feature (pairs with Core ADR-012); tagging 0.4.1 now would fold unreleased
+  feature work into a patch tag. The next Adapter release (0.4.2/0.5.0)
+  should tag its own candidate head.
+- **Remaining owner items**: the three decision briefs
+  (docs/next-decisions-briefs-2026-10.md) and the deferred wp.org translation
+  owner actions (#142) still await the owner's read-through.
