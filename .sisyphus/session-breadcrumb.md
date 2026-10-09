@@ -5,102 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-07 - Post-merge visual smoke and Adapter follow-through
-
-- **Evidence** (PR #91 merged as 36e8090; local master synced):
-  - Browser visual smoke passed on the live LocalWP site against the merged
-    master: review-queue ability/age filters (40 filtered rows, clear-filters
-    link), decision flow (approve with note auto-opened the next pending
-    proposal with a success notice, filters preserved), one-time client token
-    panel rendered inside the normal admin screen with working copy buttons
-    and single-display semantics, and the AI activity overview strip. The
-    entire admin surface rendered in zh_CN, confirming the bundled-catalog
-    load fix end to end. This closes the 2026-06-19 token-screen visual smoke
-    debt and the #84 overview-strip browser verification debt. Screenshots in
-    /tmp/core-visual-smoke/ (local only).
-  - A stale `.maintenance` file from the smoke run was causing HTTP 503 on
-    the local site; removed it. If the site shows 503 after smoke runs, check
-    that file first.
-  - Temp visual-smoke admin user and test token were created and cleaned up.
-- **Cross-repo**: npcink-ai-client-adapter PR #89 adopts the new contract
-  (409 recoverable_handoff, app_auth_expired hint, 429 retry relay,
-  contract:read fallback, offset passthrough, zh_CN backlog). Three advisory
-  review rounds triaged; final review raised no findings. Run the central
-  quality matrix before the next multi-repo closeout.
-
-# 2026-10-07 - Core 0.3.0 release preparation
-
-- **Fact recalibration**: the rate-limiter duplicate-key race was already
-  fixed by 4aaf338 (atomic upsert + fail-closed regression) and M4 rerun
-  proved clean logs; v0.2.0 was published as git tag v0.2.0 with full
-  six-repo evidence. Both earlier "pending" readings came from stale
-  breadcrumb entries.
-- **Completed** (branch `release/0.3.0`): bumped Core to 0.3.0 (12 commits
-  since v0.2.0, including the operator-experience and REST contract work),
-  refreshed the candidate matrix to Core 0.3.0 / Adapter 0.4.1 / Toolkit
-  0.5.8, wrote the next-decisions briefs (app-key rotation, provider-log
-  correlation gating, final-commit ownership triggers), and covered the new
-  query/form/textdomain paths in the strict Plugin Check gate.
-- **Verified**: full `composer prepare:release -- --version 0.3.0` passed —
-  static gates, real WordPress smoke, strict packaged Plugin Check with zero
-  findings, reproducible packaging. Artifact
-  `build/npcink-governance-core.zip` SHA-256
-  `df89c613c18d501dcfd37c871649890ec7908c92f565cebb4a0dcdc7c43660f0`.
-- **Remaining release steps (owner-dependent)**: Toolkit has an uncommitted
-  OCR-retry workflow edit on codex/ocr-review-retry-sync (same template sync
-  as Core #90) and npcink-ai-cloud has an in-flight 69-modified/24-untracked
-  runtime-diagnostics branch — both must be landed before the central matrix
-  `--fail-on-dirty` closeout. Then cross-repo acceptance, tag v0.3.0, and the
-  separately authorized wp.org SVN submission. Editor drafts 286721/286722 no
-  longer exist on the local site; the adoption gate is moot and the article
-  pilot can start from current drafts.
-
-# 2026-10-08 - Pre-release boundary audit and 0.3.0 hygiene closeout
-
-- **Module**: Release hygiene only — translation catalogs, wp.org readme,
-  decision records, docs corrections, static contracts.
-- **Audit**: Positioning/boundary-vs-implementation audit found the codebase
-  boundary-clean (no workflow runtime, no credential storage, no write
-  execution; tokens hashed; packaging correct). Real gaps were process and
-  public-facing: stale catalog version headers, missing wp.org readme
-  statements (WP 7.0 floor reason, multisite, record retention, executor
-  story), unclosed decision briefs, and doc drift.
-- **Fact recalibration (again)**: the Toolkit OCR-retry edit already landed
-  as #212 (`b05a45f`); the central matrix now shows 6/7 roots clean. The only
-  dirty participating root left is npcink-ai-cloud
-  `codex/runtime-diagnostics-review` (93 entries, behind origin/master by 1).
-- **Completed** (branch `fix/release-hygiene-0.3.0`, PR #95):
-  - Catalogs: POT/zh_CN PO/MO Project-Id-Version 0.2.0/0.1.0 -> 0.3.0
-    (msgfmt --check + MO magic verified); new static contract binds catalog
-    version headers to the plugin header version.
-  - readme.txt: Upgrade Notice; FAQs for WP 7.0 floor (fail-closed intake),
-    multisite provisioning, deactivate/delete retention; named Npcink AI
-    Client Adapter as the reference executor in Requirements.
-  - README: documented `POST /apps/{key_id}/rotate`; linked ADR-010.
-  - Decisions: 2026-10 briefs marked decided 2026-10-08 (1: B awareness +
-    runbook; 2: B at next acceptance authoring pass; 3: B via new ADR);
-    accepted
-    `docs/decisions/ADR-010-defer-final-commit-ownership-until-trigger.md`;
-    added the manual app-key rotation runbook to app-auth-scope-policy.md.
-  - Docs: fixed rest-api-contract include_payload sentence, next-stage-plan
-    stale baseline, Core 0.4 naming note (Toolkit 0.4.0 handoff, not Core
-    0.4.0).
-- **Verified**: `composer test:all`, `composer validate --no-check-publish`,
-  `composer check:wporg`, and advisory `ocr review` (0 findings) all passed
-  on f796585. Package SHA changed to
-  `944afccf02524b832d79407fd106b785b46d2928818ef2d0a708dc64ed4d5f9f`
-  (catalog headers) — release evidence must be re-bound at exact HEAD.
-- **Remaining release steps (owner-dependent)**: land npcink-ai-cloud
-  runtime-diagnostics; central matrix `--fail-on-dirty`; cross-repo
-  acceptance; rerun `prepare:release` to re-bind package evidence; tag
-  v0.3.0; separately authorized SVN submission. readme.txt added new Stable
-  Readme strings — refresh `sj/` 8-locale drafts and submit zh_CN (PTE
-  follow-up). New contract means every future version bump must also bump
-  the catalog headers.
-- **Boundary**: No REST route, data shape, table, lifecycle, approval,
-  execution, workflow runtime, queue, provider credential, or product UX
-  behavior changed. ADR-010 only names triggers; ADR-003 stands.
-
 # 2026-10-08 - UX round 2: audit paging, quota visibility, evidence truncation
 
 - **Module**: Admin review flow, REST consumer experience, zh_CN i18n
@@ -379,3 +283,26 @@ Older history: `.sisyphus/archive/`.
   --dry-run caveat with the diff-based review replacement.
 - **Session is closable**; the main line remains the validation ledger
   (zero rows).
+# 2026-10-09 - Post-release cleanup: branches, sibling roots, norms
+
+- **Closeout audit**: all historically-raised items are closed — 0.3.0
+  published (tag 3357f91, SVN r3735752), release hygiene #95, decision
+  briefs + ADR-010, sj/ 8-locale drafts #140, flagged-media policy review
+  #141, translation owner actions #142 (wp.org submission + PTE deferred,
+  documented in the release gate).
+- **Sibling roots**: ai-cloud shared root restored to clean master; the
+  m4-ops worktree was detached at its own commit to free the master branch
+  name (content-identical). The superseded codex/runtime-diagnostics-review
+  branch is preserved with unpushed dc58be21 (not contained in master) —
+  keep/discard belongs to the owner. workflow-toolbox's unpushed commits
+  were pushed by their owning session; eval-lab sits clean on a pushed
+  feature branch.
+- **Cleanup**: all five session branches deleted local+remote (squash
+  merges need `git branch -D`); parallel codex/* branches untouched.
+  Central matrix: 7/7 repositories clean on master, 0 dirty/ahead/behind.
+- **Norms**: AGENTS.md gains the stale-breadcrumb re-verification rule,
+  the sibling-session liveness check (two status snapshots + mtimes), the
+  worktree-vs-master branch-name rule, and the corrected central-matrix
+  path (npcink-workflow-toolbox, not the non-existent npcink-toolbox).
+- **Boundary**: Documentation and repository hygiene only; no runtime
+  behavior changed this session.
