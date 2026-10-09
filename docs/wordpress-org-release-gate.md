@@ -250,6 +250,26 @@ new `Stable Readme` strings for review. Keep `Npcink Governance Core`,
 `Npcink AI`, `npcink-governance-core`, `/wp-json/npcink-governance-core/v1/`,
 and `WordPress Abilities API` stable across locales.
 
+### Pending owner actions (deferred 2026-10-09)
+
+1. Submit the `Stable Readme` and `Development` strings for the eight
+   locales above through translate.wordpress.org using the current
+   `sj/wporg-readme-translations/` drafts, which are refreshed for the
+   published 0.3.0 `readme.txt`. This requires the release owner's
+   WordPress.org account and is deferred by decision on 2026-10-09. Until
+   the `Stable Readme` strings are approved, the public plugin directory
+   page keeps behaving as untranslated; the bundled zh_CN `.mo` keeps the
+   runtime and admin surface translated on locally distributed zips.
+2. Request Project Translation Editor (PTE) status for the plugin's
+   translation contributors so future string submissions can be approved
+   without waiting for locale team editors. Also deferred to the owner;
+   the July 2026 snapshot recorded zero editors and all submitted strings
+   waiting (see
+   `docs/history/wordpress-org-zh-cn-translation-status-2026-07-03.md`).
+
+Both items are owner-account actions; no repository change is required
+before them.
+
 ## Handoff Checklist For Agents
 
 When resuming release work:
