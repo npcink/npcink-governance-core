@@ -84,6 +84,14 @@ final class Admin_Page {
 	private $read_requests;
 
 	/**
+	 * Per-request cache of registry ability labels, or null before the first
+	 * lookup.
+	 *
+	 * @var array<string,string>|null
+	 */
+	private $registry_label_cache;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Ability_Registry_Adapter $abilities Ability adapter.
@@ -1145,12 +1153,52 @@ final class Admin_Page {
 			return (string) $labels[ $ability_id ];
 		}
 
+		$registry_label = $this->registry_ability_label( $ability_id );
+		if ( '' !== $registry_label ) {
+			return $registry_label;
+		}
+
 		$title = trim( (string) ( $proposal['title'] ?? '' ) );
 		if ( '' !== $title && false === strpos( strtolower( $title ), 'pending quota proposal' ) ) {
 			return $title;
 		}
 
 		return __( 'Review WordPress change', 'npcink-governance-core' );
+	}
+
+	/**
+	 * Returns the intake registry label for an ability id, or an empty string.
+	 *
+	 * The registry is consulted once per request for any ability id outside
+	 * the translated first-party label map, so third-party provider labels
+	 * surface without Core hardcoding provider-specific knowledge. Registry
+	 * rows whose label equals the raw ability id add no operator context and
+	 * are skipped.
+	 *
+	 * @param string $ability_id Ability id.
+	 * @return string
+	 */
+	private function registry_ability_label( string $ability_id ): string {
+		if ( '' === $ability_id ) {
+			return '';
+		}
+
+		if ( null === $this->registry_label_cache ) {
+			$this->registry_label_cache = array();
+			$capabilities               = $this->abilities->list_capabilities();
+			foreach ( (array) ( $capabilities['items'] ?? array() ) as $item ) {
+				if ( ! is_array( $item ) ) {
+					continue;
+				}
+				$id    = (string) ( $item['ability_id'] ?? '' );
+				$label = trim( (string) ( $item['label'] ?? '' ) );
+				if ( '' !== $id && '' !== $label && $label !== $id ) {
+					$this->registry_label_cache[ $id ] = $label;
+				}
+			}
+		}
+
+		return (string) ( $this->registry_label_cache[ $ability_id ] ?? '' );
 	}
 
 	/**
@@ -2752,14 +2800,67 @@ final class Admin_Page {
 		$has_details       = $this->proposal_has_proposed_change_details( $proposal );
 
 		if ( ! $has_batch_actions && ! $has_details ) {
-			?>
-			<p class="npcink-governance-core-subtle"><?php echo esc_html__( 'No structured action plan or proposed change detail was recorded for this proposal.', 'npcink-governance-core' ); ?></p>
-			<?php
+			$this->render_single_action_input_summary( $proposal );
 			return;
 		}
 
 		$this->render_proposal_batch_actions( $proposal );
 		$this->render_proposed_change_details( $proposal );
+	}
+
+	/**
+	 * Renders a human-readable summary of a single-action proposal's
+	 * submitted input when no structured action plan or preview detail was
+	 * recorded, so the reviewer can see what the ability would receive
+	 * without opening the raw payload JSON.
+	 *
+	 * @param array<string,mixed> $proposal Proposal.
+	 * @return void
+	 */
+	private function render_single_action_input_summary( array $proposal ): void {
+		$input = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
+		if ( empty( $input ) ) {
+			?>
+			<p class="npcink-governance-core-subtle"><?php echo esc_html__( 'No structured action plan or proposed change detail was recorded for this proposal.', 'npcink-governance-core' ); ?></p>
+			<?php
+			return;
+		}
+		?>
+		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide npcink-governance-core-disclosure-top" open>
+			<summary>
+				<strong><?php echo esc_html__( 'Submitted action input', 'npcink-governance-core' ); ?></strong>
+				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'The input this proposal would pass to the target ability. Review it before approving.', 'npcink-governance-core' ); ?></span>
+			</summary>
+			<table class="widefat striped npcink-governance-core-table-spaced">
+				<tbody>
+					<?php foreach ( $input as $key => $value ) : ?>
+						<tr>
+							<th scope="row"><code><?php echo esc_html( (string) $key ); ?></code></th>
+							<td><?php $this->render_review_input_value( $value ); ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</details>
+		<?php
+	}
+
+	/**
+	 * Renders one submitted-input value with a bounded block for large
+	 * payloads so long article content cannot flood the review table.
+	 *
+	 * @param mixed $value Input value.
+	 * @return void
+	 */
+	private function render_review_input_value( $value ): void {
+		if ( is_array( $value ) || ( is_string( $value ) && strlen( $value ) > 4000 ) ) {
+			echo '<pre style="max-height: 220px; overflow: auto; margin: 0;">';
+			echo esc_html( is_array( $value ) ? (string) wp_json_encode( $value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) : $value );
+			echo '</pre>';
+			return;
+		}
+
+		$this->render_review_inline_value( $value );
 	}
 
 	/**
