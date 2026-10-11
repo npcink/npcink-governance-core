@@ -2842,6 +2842,21 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Requests created'
 npcink_governance_core_assert( false !== strpos( $admin_page, 'audit_event_name' ) && false !== strpos( $admin_page, 'audit_time_range' ) && false !== strpos( $admin_page, 'npcink-governance-core-summary-link' ), 'Admin activity overview counters link into the filtered activity list.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_single_action_input_summary' ) && false !== strpos( $admin_page, 'Submitted action input' ) && false !== strpos( $admin_page, 'render_review_input_value' ), 'Admin proposal actions tab renders submitted single-action input instead of an empty plan.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'registry_ability_label' ) && false !== strpos( $admin_page, 'registry_label_cache' ), 'Admin request labels fall back to cached intake registry labels for third-party abilities.' );
+$governance_event_sources = '';
+$governance_event_paths   = array( $root . '/includes/*.php' );
+foreach ( array( 'Governance', 'Security', 'Rest', 'Admin', 'Capabilities', 'Audit' ) as $governance_event_dir ) {
+	$governance_event_paths[] = $root . '/includes/' . $governance_event_dir . '/*.php';
+}
+foreach ( $governance_event_paths as $governance_event_path ) {
+	foreach ( (array) glob( $governance_event_path ) as $governance_event_file ) {
+		$governance_event_sources .= npcink_governance_core_read( $governance_event_file );
+	}
+}
+preg_match_all( "/'(?:proposal|commit|read_request|app|local_admin_consent|audit|capabilities|core)\.[a-z_]+'/", $governance_event_sources, $governance_event_literal_matches );
+foreach ( array_unique( $governance_event_literal_matches[0] ) as $governance_event_literal ) {
+	$governance_event_name = trim( $governance_event_literal, "'" );
+	npcink_governance_core_assert( 2 <= preg_match_all( "/'" . preg_quote( $governance_event_name, '/' ) . "'\s*=> __\(/", $admin_page ), 'Admin audit surfaces label and filter every emitted governance event: ' . $governance_event_name );
+}
 
 $audit_repository = npcink_governance_core_read( $root . '/includes/Audit/Audit_Log_Repository.php' );
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'sanitize_text_field( $event_name )' ), 'Audit repository preserves dotted event names.' );
