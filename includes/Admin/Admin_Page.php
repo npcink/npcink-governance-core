@@ -558,12 +558,12 @@ final class Admin_Page {
 		$retention_days    = History_Cleanup_Service::stored_retention_days();
 		$labels            = array(
 			Approval_Policy_Evaluator::MODE_MANUAL          => __( 'Require approval for all', 'npcink-governance-core' ),
-			Approval_Policy_Evaluator::MODE_SMART_GUARDED   => __( 'Smart approval', 'npcink-governance-core' ),
+			Approval_Policy_Evaluator::MODE_SMART_GUARDED   => __( 'Smart guarded approval', 'npcink-governance-core' ),
 			Approval_Policy_Evaluator::MODE_DEV_ALLOW_ALL   => __( 'Allow all (development only)', 'npcink-governance-core' ),
 		);
 		?>
 		<section class="npcink-governance-core-settings-section npcink-governance-core-max-wide" aria-labelledby="npcink-governance-core-approval-policy-heading">
-			<h3 id="npcink-governance-core-approval-policy-heading"><?php echo esc_html__( 'Development Approval Policy', 'npcink-governance-core' ); ?></h3>
+			<h3 id="npcink-governance-core-approval-policy-heading"><?php echo esc_html__( 'Approval Policy', 'npcink-governance-core' ); ?></h3>
 			<p class="npcink-governance-core-muted">
 				<?php
 				printf(
@@ -640,7 +640,7 @@ final class Admin_Page {
 	private function render_system_settings_page(): void {
 		?>
 		<h2><?php echo esc_html__( 'Settings', 'npcink-governance-core' ); ?></h2>
-		<p class="npcink-governance-core-subtle"><?php echo esc_html__( 'Development approval policy, history retention, and trusted governance client access.', 'npcink-governance-core' ); ?></p>
+		<p class="npcink-governance-core-subtle"><?php echo esc_html__( 'Approval policy, history retention, and trusted governance client access.', 'npcink-governance-core' ); ?></p>
 		<div class="npcink-governance-core-system-settings">
 			<?php $this->render_approval_policy_entry(); ?>
 			<?php $this->render_client_access_token_entry(); ?>
@@ -1819,9 +1819,10 @@ final class Admin_Page {
 			}
 		}
 
+		$raw_label  = isset( $_POST['app_label'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['app_label'] ) ) : '';
 		$app        = $this->apps->create(
 			array(
-				'app_label'           => isset( $_POST['app_label'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['app_label'] ) ) : 'External app',
+				'app_label'           => '' !== $raw_label ? $raw_label : 'External app',
 				'caller_type'         => $this->sanitize_caller_type( isset( $_POST['caller_type'] ) ? sanitize_key( wp_unslash( (string) $_POST['caller_type'] ) ) : 'product_adapter' ),
 				'scopes'              => $raw_scopes,
 				'rate_limit'          => isset( $_POST['rate_limit'] ) ? absint( wp_unslash( (string) $_POST['rate_limit'] ) ) : App_Key_Repository::DEFAULT_RATE_LIMIT,
@@ -1968,7 +1969,7 @@ final class Admin_Page {
 				<div class="npcink-governance-core-token-form-grid">
 					<div class="npcink-governance-core-token-form-field">
 						<label for="npcink-governance-core-app-label"><?php echo esc_html__( 'Client label', 'npcink-governance-core' ); ?></label>
-						<input id="npcink-governance-core-app-label" class="regular-text" type="text" name="app_label" value="Adapter Client" />
+						<input id="npcink-governance-core-app-label" class="regular-text" type="text" name="app_label" placeholder="<?php echo esc_attr__( 'For example: OpenClaw adapter on titan', 'npcink-governance-core' ); ?>" />
 					</div>
 					<div class="npcink-governance-core-token-form-field">
 						<label for="npcink-governance-core-caller-type"><?php echo esc_html__( 'Caller type', 'npcink-governance-core' ); ?></label>
@@ -2015,6 +2016,15 @@ final class Admin_Page {
 		<?php if ( 'revoked' === $token_tab ) : ?>
 			<h3><?php echo esc_html__( 'Revoked tokens', 'npcink-governance-core' ); ?></h3>
 			<p class="npcink-governance-core-muted"><?php echo esc_html__( 'Revoked tokens are shown for audit attribution only. They cannot authenticate scoped REST requests.', 'npcink-governance-core' ); ?></p>
+			<p class="npcink-governance-core-muted">
+				<?php
+				printf(
+					/* translators: %s: URL of the settings view. */
+					esc_html__( 'Revoked tokens are removed automatically once they pass the history retention window configured in %s.', 'npcink-governance-core' ),
+					'<a href="' . esc_url( $this->view_url( 'settings' ) ) . '">' . esc_html__( 'Settings', 'npcink-governance-core' ) . '</a>'
+				);
+				?>
+			</p>
 		<?php else : ?>
 			<h3><?php echo esc_html__( 'Access tokens', 'npcink-governance-core' ); ?></h3>
 			<p class="npcink-governance-core-muted"><?php echo esc_html__( 'Only active tokens are shown here. Revoked tokens are available from the revoked-token subtab for audit attribution.', 'npcink-governance-core' ); ?></p>
@@ -2461,15 +2471,9 @@ final class Admin_Page {
 				<span>
 					<strong><?php echo esc_html( (string) $preset['label'] ); ?></strong>
 					<span class="npcink-governance-core-token-preset-description"><?php echo esc_html( (string) $preset['description'] ); ?></span>
-					<span class="npcink-governance-core-token-preset-scopes">
-						<?php
-						echo esc_html(
-							empty( $scopes )
-								? __( 'Uses advanced permission checkboxes.', 'npcink-governance-core' )
-								: $this->token_scope_summary( $scopes )
-						);
-						?>
-					</span>
+					<?php if ( ! empty( $scopes ) ) : ?>
+						<span class="npcink-governance-core-token-preset-scopes"><?php echo esc_html( $this->token_scope_summary( $scopes ) ); ?></span>
+					<?php endif; ?>
 				</span>
 			</label>
 			<?php
@@ -2787,6 +2791,7 @@ final class Admin_Page {
 		}
 
 		if ( 'technical' === $active_tab ) {
+			$this->render_proposal_implementation_posture( $capability );
 			$this->render_proposal_identity_panel( $proposal );
 			$this->render_raw_proposal_payload( $proposal );
 			return;
@@ -3098,6 +3103,32 @@ final class Admin_Page {
 		}
 
 		return __( 'No pending Core decision is available for this lifecycle state.', 'npcink-governance-core' );
+	}
+
+	/**
+	 * Renders the implementation-posture table on the technical tab.
+	 *
+	 * The posture rows are raw provider contract identifiers, so they support
+	 * debugging rather than the approve/reject decision and belong next to the
+	 * technical identifiers instead of the overview.
+	 *
+	 * @param array<string,mixed>|null $capability Capability row.
+	 * @return void
+	 */
+	private function render_proposal_implementation_posture( ?array $capability ): void {
+		$group = $this->implementation_posture_review_group( $capability );
+		if ( empty( $group ) ) {
+			return;
+		}
+		?>
+		<details class="npcink-governance-core-disclosure npcink-governance-core-max-wide npcink-governance-core-disclosure-top">
+			<summary>
+				<strong><?php echo esc_html__( 'Provider posture', 'npcink-governance-core' ); ?></strong>
+				<span class="npcink-governance-core-muted"><?php echo esc_html__( 'Raw provider posture identifiers for troubleshooting.', 'npcink-governance-core' ); ?></span>
+			</summary>
+			<?php $this->render_proposal_detail_groups( array( $group ) ); ?>
+		</details>
+		<?php
 	}
 
 	/**
@@ -3652,10 +3683,6 @@ final class Admin_Page {
 				),
 			),
 		);
-		$implementation_posture_group = $this->implementation_posture_review_group( $capability );
-		if ( ! empty( $implementation_posture_group ) ) {
-			$review_groups[] = $implementation_posture_group;
-		}
 		if ( ! empty( $signal_rows ) ) {
 			$review_groups[] = array(
 				'label' => __( 'Preview signals', 'npcink-governance-core' ),

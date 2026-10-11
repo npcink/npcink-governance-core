@@ -2946,7 +2946,7 @@ foreach (
 		'read-only',
 		'row selection, bulk actions, archive actions, or reopen actions',
 		'Settings',
-		'Development Approval Policy',
+		'Approval Policy',
 		'Do not wrap this primary setting in a disclosure',
 		'History retention',
 		'90 days, 180 days',
@@ -3118,7 +3118,7 @@ npcink_governance_core_assert( false !== strpos( $admin_page, "'settings' => arr
 npcink_governance_core_assert( false !== strpos( $admin_page, "'settings' === \$view" ), 'Admin page routes the Settings tab independently from the review queue.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, "\$this->render_admin_tabs( 'settings' );" ), 'Admin page highlights Settings for settings and advanced access views.' );
 npcink_governance_core_assert( false === strpos( $admin_page, '$this->render_system_settings_entry();' ), 'Admin review queue no longer renders system settings at the bottom.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Development approval policy, history retention, and trusted governance client access.' ), 'Admin Settings tab explains its narrow configuration scope.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Approval policy, history retention, and trusted governance client access.' ), 'Admin Settings tab explains its narrow configuration scope.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, '<section class="npcink-governance-core-settings-section npcink-governance-core-max-wide"' ), 'Admin Settings tab renders primary settings directly instead of behind a disclosure.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'render_approval_policy_entry( true )' ), 'Admin Settings tab does not use a disclosure-open flag for the primary approval policy setting.' );
 npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'OPTION_HISTORY_RETENTION_DAYS' ), 'History cleanup service defines a bounded history retention option.' );
@@ -3147,9 +3147,12 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'render_client_acc
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Manage access tokens for trusted Adapter or internal governance clients.' ), 'Admin Settings tab explains client access token scope directly.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Manage access tokens' ), 'Admin Settings tab labels token management as an action.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'Advanced Access' ), 'Admin Settings tab no longer hides token management behind Advanced Access copy.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Development Approval Policy' ), 'Admin page exposes lightweight development approval policy mode.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, "__( 'Approval Policy', 'npcink-governance-core' )" ), 'Admin page exposes the approval policy section without the misleading development-only label.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'MODE_SMART_GUARDED' ), 'Admin page exposes smart approval mode.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'MODE_DEV_ALLOW_ALL' ), 'Admin page exposes development allow-all approval mode.' );
+npcink_governance_core_assert( 1 === preg_match_all( '/\$this->implementation_posture_review_group\( \$capability \);/', $admin_page ) && false !== strpos( $admin_page, 'render_proposal_implementation_posture( $capability );' ) && false !== strpos( $admin_page, 'Provider posture' ) && false !== strpos( $admin_page, 'Raw provider posture identifiers for troubleshooting.' ), 'Admin implementation posture renders once, on the technical tab, behind a distinct disclosure summary.' );
+npcink_governance_core_assert( false === strpos( $admin_page, 'Uses advanced permission checkboxes.' ) && false !== strpos( $admin_page, 'if ( ! empty( $scopes ) ) :' ), 'Admin custom token preset renders one description sentence, not a duplicated fallback line.' );
+npcink_governance_core_assert( false !== strpos( $app_authenticator, 'Administrator authentication or a scoped app key is required.' ), 'REST 401 wording names both accepted authentication paths.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'stored_policy_mode' ), 'Admin page checks the stored approval policy mode before fallback.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'is_allowed_policy_mode' ), 'Admin page detects stale or invalid stored approval policy modes.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Stored approval policy mode "%1$s" is no longer supported.' ), 'Admin page warns when stored approval policy mode falls back to manual.' );
@@ -3254,7 +3257,7 @@ npcink_governance_core_assert( false !== strpos( $admin_page, 'Back to settings'
 npcink_governance_core_assert( false === strpos( $admin_page, 'Create Core App Key' ), 'Admin UI no longer exposes Core App Key creation copy.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'Reopen for review' ), 'Admin page does not expose reopen actions for historical proposals.' );
 npcink_governance_core_assert( false === strpos( $admin_page, "__( 'Archive', 'npcink-governance-core' )" ), 'Admin page does not expose archive actions for historical proposals.' );
-npcink_governance_core_assert( false !== strpos( $admin_page, 'Adapter Client' ), 'Admin page defaults app label to a generic adapter client.' );
+npcink_governance_core_assert( false !== strpos( $admin_page, 'name="app_label" placeholder=' ) && false !== strpos( $admin_page, 'For example: OpenClaw adapter on titan' ), 'Admin token form prompts a specific client label instead of defaulting every token to a generic name.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'product_adapter' ), 'Admin page defaults caller type to product_adapter.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'core_env_text' ), 'Admin page centralizes minimal Core env generation.' );
 npcink_governance_core_assert( false === strpos( $admin_page, 'Direct Core Handoff' ), 'Admin page no longer exposes Core handoff guidance.' );

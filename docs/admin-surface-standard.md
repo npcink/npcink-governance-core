@@ -67,10 +67,10 @@ queue:
 - stale proposals available from the history tab;
 - useful empty state that points to proposal lookup, activity log, and expired
   history instead of only saying that the queue is empty;
-- `Settings` tab for low-frequency development policy and trusted client
+- `Settings` tab for low-frequency approval policy and trusted client
   access, keeping these controls out of the default review queue;
-- `Development Approval Policy` as a directly visible Settings section for the
-  lightweight require approval for all, smart approval, and local-development
+- `Approval Policy` as a directly visible Settings section for the lightweight
+  require approval for all, smart guarded approval, and local-development
   allow-all modes. Do not wrap this primary setting in a disclosure;
 - stale or invalid stored approval policy option values must show an inline
   warning that Core is treating the value as require approval for all until a
