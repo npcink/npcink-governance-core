@@ -258,7 +258,7 @@ dry-run write proposal to Core for approval and commit preflight.
 
 The plan-to-proposal bridge extends that pattern to allowlisted read-only planning
 abilities such as `npcink-abilities-toolkit/build-content-inventory-fix-plan`,
-`npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan`, and
+`npcink-abilities-toolkit/build-nonproduction-content-cleanup-plan`,
 `npcink-abilities-toolkit/build-media-inventory-fix-plan`,
 `npcink-abilities-toolkit/build-media-reference-repair-plan`, and
 `npcink-abilities-toolkit/build-media-settings-reference-repair-plan`. It also accepts
@@ -266,11 +266,20 @@ abilities such as `npcink-abilities-toolkit/build-content-inventory-fix-plan`,
 optimization batch where every attachment has paired metadata and derivative actions,
 `npcink-abilities-toolkit/build-media-adoption-enhancement-plan` only as one reviewed
 batch that uploads a selected remote image, optimizes the new attachment, and
-optionally repairs one reviewed post-content reference, `npcink-abilities-toolkit/build-media-rename-plan` only as one reviewed
-attachment rename proposal, `npcink-abilities-toolkit/build-pattern-page-plan` only as one
+optionally repairs one reviewed post-content reference,
+`npcink-abilities-toolkit/build-media-rename-plan` only as one reviewed
+attachment rename proposal, `npcink-abilities-toolkit/build-image-candidate-adoption-plan`
+only for adopting one reviewed image candidate,
+`npcink-abilities-toolkit/build-article-audio-adoption-plan` only for one
+reviewed article-audio adoption, `npcink-abilities-toolkit/build-media-alt-apply-plan`
+only as one single-attachment missing-ALT update,
+`npcink-abilities-toolkit/build-pattern-page-plan` only as one
 reviewed Gutenberg pattern page batch, `npcink-abilities-toolkit/build-block-theme-site-plan`
 only as a reviewed Site Editor template override proposal for the active block theme,
-and accepts the P0 Toolbox article handoff
+`npcink-abilities-toolkit/build-article-optimization-apply-plan` only as a
+small reviewed set of allowlisted post-update actions for the same target post,
+`npcink-abilities-toolkit/build-article-block-plan` only as one reviewed
+create-draft plus update-post-blocks batch, and accepts the P0 Toolbox article handoff
 `npcink-toolbox/build-article-write-plan` only as a single reviewed
 `npcink-abilities-toolkit/create-draft` proposal. The bounded local article batch handoff
 `npcink-toolbox/build-article-batch-write-plan` may create one reviewed
@@ -279,13 +288,20 @@ media-enabled local article batch handoff
 `npcink-toolbox/build-article-media-batch-write-plan` only as one
 reviewed `article_media_batch_write_plan` with draft creation, media upload,
 media metadata, and featured-image actions grouped in a Core batch proposal.
-plan output, validates each target ability, stores either one pending proposal
-per `write_action` or one `plan_to_proposal_batch` proposal when the plan
-explicitly requests batch approval, preserves `preview.before`,
-`preview.after_suggestion`, `dry_run=true`, `commit=false`, and article
-workflow artifacts where applicable, and keeps final mutation execution outside
-Core. See
-[Plan To Proposal Governance](docs/plan-to-proposal-governance.md).
+The reviewed metadata choice handoff
+`npcink-abilities-toolkit/build-content-metadata-apply-plan` packages accepted
+excerpt, category, and tag choices as dry-run write actions without creating
+terms or mutating SEO fields. The Cloud Site Knowledge agent handoff
+`npcink-toolbox/build-site-knowledge-review-plan` and the Morning Brief bridge
+`npcink-toolbox/build-nightly-inspection-review-plan` each create only one
+blocked create-draft review proposal that still requires human `title` and
+`content` input. Core validates each plan's contract and target ability, stores
+either one pending proposal per `write_action` or one `plan_to_proposal_batch`
+proposal when the plan explicitly requests batch approval, preserves
+`preview.before`, `preview.after_suggestion`, `dry_run=true`, `commit=false`,
+and article workflow artifacts where applicable, and keeps final mutation
+execution outside Core. The exhaustive allowlist and the per-plan bounds live
+in [Plan To Proposal Governance](docs/plan-to-proposal-governance.md).
 
 Core documentation may use Review Queue, pending proposal queue, bounded bulk
 rejection, and `plan_to_proposal_batch` for governance review records. Those terms do not permit workflow/task queue ownership, batch execution, retries,
@@ -344,10 +360,15 @@ shown as `content_reference_repairs` evidence in the derivative preview.
 The approval policy evaluator defaults to `manual`, records
 `proposal.policy_evaluated` for every created proposal, and supports three
 bounded strategy modes. `manual` requires approval for every proposal.
-`smart_guarded` can auto-approve only trusted
-`build-nonproduction-content-cleanup-plan` trash-post batches and single
-draft-only `npcink-abilities-toolkit/create-draft` proposals when explicit
-authorization, evidence, quotas, and audit all pass. `dev_allow_all` is
+`smart_guarded` can auto-approve only five narrow candidate classes when
+explicit authorization, evidence, quotas, and audit all pass: trusted
+`build-nonproduction-content-cleanup-plan` trash-post batches, single
+draft-only `npcink-abilities-toolkit/create-draft` proposals, guarded
+article-audio adoptions from a reviewed
+`npcink-abilities-toolkit/build-article-audio-adoption-plan` handoff, single
+reviewed media derivative adoption proposals, and single-attachment
+missing-ALT `npcink-abilities-toolkit/build-media-alt-apply-plan` updates.
+`dev_allow_all` is
 local-development only, requires the
 `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL` constant, and still requires
 commit preflight before Adapter-owned execution. See
