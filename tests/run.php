@@ -2857,6 +2857,7 @@ foreach ( array_unique( $governance_event_literal_matches[0] ) as $governance_ev
 	$governance_event_name = trim( $governance_event_literal, "'" );
 	npcink_governance_core_assert( 2 <= preg_match_all( "/'" . preg_quote( $governance_event_name, '/' ) . "'\s*=> __\(/", $admin_page ), 'Admin audit surfaces label and filter every emitted governance event: ' . $governance_event_name );
 }
+npcink_governance_core_assert( false !== strpos( $admin_page, 'Expired unreviewed' ) && false !== strpos( $admin_page, "'audit_event_name' => 'proposal.expired'" ) && false !== strpos( $admin_page, 'Review expired requests' ) && false !== strpos( $admin_page, 'PENDING_TTL_SECONDS / HOUR_IN_SECONDS' ), 'Admin review queue surfaces expired-unreviewed proposals with a filtered activity link.' );
 
 $audit_repository = npcink_governance_core_read( $root . '/includes/Audit/Audit_Log_Repository.php' );
 npcink_governance_core_assert( false !== strpos( $audit_repository, 'sanitize_text_field( $event_name )' ), 'Audit repository preserves dotted event names.' );
