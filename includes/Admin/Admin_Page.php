@@ -457,6 +457,7 @@ final class Admin_Page {
 	private function render_queue_summary( int $pending_count ): void {
 		$approved_count         = $this->proposals->count_by_status( Proposal_Repository::STATUS_APPROVED );
 		$execution_failed_count = $this->proposals->count_by_status( Proposal_Repository::STATUS_EXECUTION_FAILED );
+		$expired_count          = $this->proposals->count_by_status( Proposal_Repository::STATUS_EXPIRED );
 		$pending_reads_count    = $this->read_requests->count_pending_unexpired();
 		$activity_filters       = array(
 			'exclude_event_names' => $this->low_value_audit_events(),
@@ -467,6 +468,9 @@ final class Admin_Page {
 		?>
 		<div class="npcink-governance-core-summary-strip npcink-governance-core-max-wide">
 			<?php $this->render_summary_item( __( 'Needs review', 'npcink-governance-core' ), (string) $pending_count, __( 'Pending proposals waiting for an administrator decision.', 'npcink-governance-core' ), 'warning', $this->admin_url() ); ?>
+			<?php if ( $expired_count > 0 ) : ?>
+				<?php $this->render_summary_item( __( 'Expired unreviewed', 'npcink-governance-core' ), (string) $expired_count, __( 'Proposals that expired while waiting for a decision. The filtered activity view lists each expiry.', 'npcink-governance-core' ), 'neutral', $this->admin_url( array( 'view' => 'audit', 'audit_time_range' => 'all', 'audit_event_name' => 'proposal.expired' ) ) ); ?>
+			<?php endif; ?>
 			<?php $this->render_summary_item( __( 'Approved', 'npcink-governance-core' ), (string) $approved_count, __( 'Approved proposals waiting for Adapter preflight or execution record. The activity log shows recent decision events.', 'npcink-governance-core' ), 'ok', $audit_overview_url ); ?>
 			<?php $this->render_summary_item( __( 'Execution failed', 'npcink-governance-core' ), (string) $execution_failed_count, __( 'Adapter-reported failures that need operator follow-up. The activity log shows recent failure events.', 'npcink-governance-core' ), $execution_failed_count > 0 ? 'error' : 'inactive', $audit_overview_url ); ?>
 			<?php if ( $pending_reads_count > 0 ) : ?>
@@ -696,6 +700,20 @@ final class Admin_Page {
 									<div class="npcink-governance-core-empty-state">
 										<strong><?php echo esc_html__( 'No requests need review.', 'npcink-governance-core' ); ?></strong>
 										<span><?php echo esc_html__( 'Find a proposal by ID, inspect recent activity, or open historical records when you need audit context.', 'npcink-governance-core' ); ?></span>
+										<?php $expired_count = (int) $this->proposals->count_by_status( Proposal_Repository::STATUS_EXPIRED ); ?>
+										<?php if ( $expired_count > 0 ) : ?>
+											<span>
+												<?php
+												echo esc_html( sprintf(
+													/* translators: 1: expired proposal count, 2: pending TTL hours. */
+													_n( '%1$d proposal expired without a review decision. Pending proposals expire after %2$d hours of waiting.', '%1$d proposals expired without a review decision. Pending proposals expire after %2$d hours of waiting.', $expired_count, 'npcink-governance-core' ),
+													$expired_count,
+													(int) ( Proposal_Service::PENDING_TTL_SECONDS / HOUR_IN_SECONDS )
+												) );
+												?>
+												<a href="<?php echo esc_url( $this->admin_url( array( 'view' => 'audit', 'audit_time_range' => 'all', 'audit_event_name' => 'proposal.expired' ) ) ); ?>"><?php echo esc_html__( 'Review expired requests', 'npcink-governance-core' ); ?></a>
+											</span>
+										<?php endif; ?>
 										<span class="npcink-governance-core-empty-actions">
 											<a href="#npcink-governance-core-proposal-lookup"><?php echo esc_html__( 'Find proposal', 'npcink-governance-core' ); ?></a>
 											<a href="<?php echo esc_url( $this->view_url( 'audit' ) ); ?>"><?php echo esc_html__( 'Open activity log', 'npcink-governance-core' ); ?></a>

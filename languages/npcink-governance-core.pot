@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-11T04:18:40+00:00\n"
+"POT-Creation-Date: 2026-10-11T04:29:33+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: npcink-governance-core\n"
@@ -53,17 +53,17 @@ msgid "Review Queue"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:318
-#: includes/Admin/Admin_Page.php:4367
+#: includes/Admin/Admin_Page.php:4385
 msgid "Activity Log"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:322
-#: includes/Admin/Admin_Page.php:2101
+#: includes/Admin/Admin_Page.php:2119
 msgid "History"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:326
-#: includes/Admin/Admin_Page.php:638
+#: includes/Admin/Admin_Page.php:642
 #: includes/Plugin.php:311
 msgid "Settings"
 msgstr ""
@@ -105,2491 +105,2511 @@ msgid "Filter"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:445
-#: includes/Admin/Admin_Page.php:688
+#: includes/Admin/Admin_Page.php:692
 msgid "Clear filters"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:469
-#: includes/Admin/Admin_Page.php:5176
+#: includes/Admin/Admin_Page.php:470
+#: includes/Admin/Admin_Page.php:5194
 msgid "Needs review"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:469
+#: includes/Admin/Admin_Page.php:470
 msgid "Pending proposals waiting for an administrator decision."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:470
-#: includes/Admin/Admin_Page.php:4305
-#: includes/Admin/Admin_Page.php:5177
+#: includes/Admin/Admin_Page.php:472
+msgid "Expired unreviewed"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:472
+msgid "Proposals that expired while waiting for a decision. The filtered activity view lists each expiry."
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:474
+#: includes/Admin/Admin_Page.php:4323
+#: includes/Admin/Admin_Page.php:5195
 msgid "Approved"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:470
+#: includes/Admin/Admin_Page.php:474
 msgid "Approved proposals waiting for Adapter preflight or execution record. The activity log shows recent decision events."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:471
-#: includes/Admin/Admin_Page.php:4329
-#: includes/Admin/Admin_Page.php:4691
-#: includes/Admin/Admin_Page.php:4748
-#: includes/Admin/Admin_Page.php:5182
+#: includes/Admin/Admin_Page.php:475
+#: includes/Admin/Admin_Page.php:4347
+#: includes/Admin/Admin_Page.php:4709
+#: includes/Admin/Admin_Page.php:4766
+#: includes/Admin/Admin_Page.php:5200
 msgid "Execution failed"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:471
+#: includes/Admin/Admin_Page.php:475
 msgid "Adapter-reported failures that need operator follow-up. The activity log shows recent failure events."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:473
+#: includes/Admin/Admin_Page.php:477
 msgid "Sensitive reads"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:473
+#: includes/Admin/Admin_Page.php:477
 msgid "Pending sensitive read requests waiting for approval. The linked activity view lists every created request."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:475
+#: includes/Admin/Admin_Page.php:479
 msgid "Audit events"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:475
+#: includes/Admin/Admin_Page.php:479
 msgid "Governance events in the last 30 days, excluding list and view noise."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:532
+#: includes/Admin/Admin_Page.php:536
 msgid "Proposal lookup"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:533
+#: includes/Admin/Admin_Page.php:537
 msgid "Open a Core proposal by display ID or full proposal ID."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:537
-#: includes/Admin/Admin_Page.php:1026
-#: includes/Admin/Admin_Page.php:3319
-#: includes/Admin/Admin_Page.php:4417
-#: includes/Admin/Admin_Page.php:4608
-#: includes/Admin/Admin_Page.php:4946
+#: includes/Admin/Admin_Page.php:541
+#: includes/Admin/Admin_Page.php:1044
+#: includes/Admin/Admin_Page.php:3337
+#: includes/Admin/Admin_Page.php:4435
+#: includes/Admin/Admin_Page.php:4626
+#: includes/Admin/Admin_Page.php:4964
 msgid "Proposal ID"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:539
-#: includes/Admin/Admin_Page.php:700
+#: includes/Admin/Admin_Page.php:543
+#: includes/Admin/Admin_Page.php:718
 msgid "Find proposal"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:556
+#: includes/Admin/Admin_Page.php:560
 msgid "Require approval for all"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:557
+#: includes/Admin/Admin_Page.php:561
 msgid "Smart approval"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:558
+#: includes/Admin/Admin_Page.php:562
 msgid "Allow all (development only)"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:562
+#: includes/Admin/Admin_Page.php:566
 msgid "Development Approval Policy"
 msgstr ""
 
 #. translators: %s: current policy mode.
-#: includes/Admin/Admin_Page.php:567
+#: includes/Admin/Admin_Page.php:571
 #, php-format
 msgid "Current mode: %s"
 msgstr ""
 
 #. translators: 1: stored policy mode, 2: effective manual policy label.
-#: includes/Admin/Admin_Page.php:578
+#: includes/Admin/Admin_Page.php:582
 #, php-format
 msgid "Stored approval policy mode \"%1$s\" is no longer supported. Core is treating it as \"%2$s\" until you save one of the supported modes."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:579
+#: includes/Admin/Admin_Page.php:583
 msgid "empty"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:592
+#: includes/Admin/Admin_Page.php:596
 msgid "Policy mode"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:601
+#: includes/Admin/Admin_Page.php:605
 msgid "Smart approval only auto-approves trusted cleanup, draft creation, article audio, reviewed single-image replacement, and reviewed ALT-only media detail proposals. Allow all is local-development only and requires NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL; commit preflight is still required and Core still does not execute writes."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:605
+#: includes/Admin/Admin_Page.php:609
 msgid "History retention"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:614
+#: includes/Admin/Admin_Page.php:618
 msgid "Deletes expired or archived proposal history and revoked client access tokens older than the selected retention window. Each cleanup pass is bounded and audited."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:619
+#: includes/Admin/Admin_Page.php:623
 msgid "Save settings"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:624
+#: includes/Admin/Admin_Page.php:628
 msgid "Run cleanup now"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:625
+#: includes/Admin/Admin_Page.php:629
 msgid "Runs one bounded cleanup pass using the saved retention policy."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:639
+#: includes/Admin/Admin_Page.php:643
 msgid "Development approval policy, history retention, and trusted governance client access."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:657
+#: includes/Admin/Admin_Page.php:661
 msgid "Pending requests"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:670
+#: includes/Admin/Admin_Page.php:674
 msgid "Select all proposals on this page"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:672
-#: includes/Admin/Admin_Page.php:4450
+#: includes/Admin/Admin_Page.php:676
+#: includes/Admin/Admin_Page.php:4468
 msgid "Request"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:673
-#: includes/Admin/Admin_Page.php:1039
+#: includes/Admin/Admin_Page.php:677
+#: includes/Admin/Admin_Page.php:1057
 msgid "Source"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:674
-#: includes/Admin/Admin_Page.php:2018
-#: includes/Admin/Admin_Page.php:2121
-#: includes/Admin/Admin_Page.php:2913
+#: includes/Admin/Admin_Page.php:678
+#: includes/Admin/Admin_Page.php:2036
+#: includes/Admin/Admin_Page.php:2139
+#: includes/Admin/Admin_Page.php:2931
 msgid "Status"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:675
-#: includes/Admin/Admin_Page.php:1057
-#: includes/Admin/Admin_Page.php:2300
-#: includes/Admin/Admin_Page.php:3329
+#: includes/Admin/Admin_Page.php:679
+#: includes/Admin/Admin_Page.php:1075
+#: includes/Admin/Admin_Page.php:2318
+#: includes/Admin/Admin_Page.php:3347
 msgid "Created"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:676
-#: includes/Admin/Admin_Page.php:754
-#: includes/Admin/Admin_Page.php:757
-#: includes/Admin/Admin_Page.php:2041
-#: includes/Admin/Admin_Page.php:2123
-#: includes/Admin/Admin_Page.php:2163
-#: includes/Admin/Admin_Page.php:2166
-#: includes/Admin/Admin_Page.php:4452
-#: includes/Admin/Admin_Page.php:4481
+#: includes/Admin/Admin_Page.php:680
+#: includes/Admin/Admin_Page.php:772
+#: includes/Admin/Admin_Page.php:775
+#: includes/Admin/Admin_Page.php:2059
+#: includes/Admin/Admin_Page.php:2141
+#: includes/Admin/Admin_Page.php:2181
+#: includes/Admin/Admin_Page.php:2184
+#: includes/Admin/Admin_Page.php:4470
+#: includes/Admin/Admin_Page.php:4499
 msgid "Details"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:677
-#: includes/Admin/Admin_Page.php:1599
-#: includes/Admin/Admin_Page.php:2021
-#: includes/Admin/Admin_Page.php:3421
+#: includes/Admin/Admin_Page.php:681
+#: includes/Admin/Admin_Page.php:1617
+#: includes/Admin/Admin_Page.php:2039
+#: includes/Admin/Admin_Page.php:3439
 msgid "Action"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:686
+#: includes/Admin/Admin_Page.php:690
 msgid "No pending requests match the current filters."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:697
+#: includes/Admin/Admin_Page.php:701
 msgid "No requests need review."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:698
+#: includes/Admin/Admin_Page.php:702
 msgid "Find a proposal by ID, inspect recent activity, or open historical records when you need audit context."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:701
+#. translators: 1: expired proposal count, 2: pending TTL hours.
+#: includes/Admin/Admin_Page.php:709
+#, php-format
+msgid "%1$d proposal expired without a review decision. Pending proposals expire after %2$d hours of waiting."
+msgid_plural "%1$d proposals expired without a review decision. Pending proposals expire after %2$d hours of waiting."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/Admin_Page.php:714
+msgid "Review expired requests"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:719
 msgid "Open activity log"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:702
+#: includes/Admin/Admin_Page.php:720
 msgid "Open history"
 msgstr ""
 
 #. translators: %s: full proposal id.
-#: includes/Admin/Admin_Page.php:718
-#: includes/Admin/Admin_Page.php:2137
+#: includes/Admin/Admin_Page.php:736
+#: includes/Admin/Admin_Page.php:2155
 #, php-format
 msgid "Full proposal ID: %s"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:724
+#: includes/Admin/Admin_Page.php:742
 msgid "Select proposal"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:755
-#: includes/Admin/Admin_Page.php:2164
+#: includes/Admin/Admin_Page.php:773
+#: includes/Admin/Admin_Page.php:2182
 msgid "Hide details"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:762
+#: includes/Admin/Admin_Page.php:780
 msgid "Review"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:779
-#: includes/Admin/Admin_Page.php:782
-#: includes/Admin/Admin_Page.php:895
+#: includes/Admin/Admin_Page.php:797
+#: includes/Admin/Admin_Page.php:800
+#: includes/Admin/Admin_Page.php:913
 msgid "Bulk actions"
 msgstr ""
 
 #. translators: %d: number of selected proposal requests.
-#: includes/Admin/Admin_Page.php:781
+#: includes/Admin/Admin_Page.php:799
 #, php-format
 msgid "Selected requests: %d"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:786
-#: includes/Admin/Admin_Page.php:788
+#: includes/Admin/Admin_Page.php:804
+#: includes/Admin/Admin_Page.php:806
 msgid "Reject selected requests when they are no longer needed."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:787
+#: includes/Admin/Admin_Page.php:805
 msgid "Bulk rejection closes selected Core proposals without executing writes."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:792
+#: includes/Admin/Admin_Page.php:810
 msgid "Bulk rejection ready."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:793
+#: includes/Admin/Admin_Page.php:811
 msgid "Review the selection before rejecting. Core records the rejection and does not execute writes."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:796
+#: includes/Admin/Admin_Page.php:814
 msgid "Add rejection note"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:798
+#: includes/Admin/Admin_Page.php:816
 msgid "Rejection note"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:799
+#: includes/Admin/Admin_Page.php:817
 msgid "Describe why these requests should be rejected."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:803
+#: includes/Admin/Admin_Page.php:821
 msgid "Clear selection"
 msgstr ""
 
 #. translators: %d: number of selected proposals.
-#: includes/Admin/Admin_Page.php:809
+#: includes/Admin/Admin_Page.php:827
 #, php-format
 msgid "Reject the %d selected proposal(s)? Rejections cannot be undone."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:811
-#: includes/Admin/Admin_Page.php:896
+#: includes/Admin/Admin_Page.php:829
+#: includes/Admin/Admin_Page.php:914
 msgid "Reject selected"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:893
+#: includes/Admin/Admin_Page.php:911
 msgid "Bulk action"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:898
+#: includes/Admin/Admin_Page.php:916
 msgid "Apply"
 msgstr ""
 
 #. translators: %s: total item count.
-#: includes/Admin/Admin_Page.php:909
+#: includes/Admin/Admin_Page.php:927
 #, php-format
 msgid "%s items"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:916
+#: includes/Admin/Admin_Page.php:934
 msgid "First page"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:917
+#: includes/Admin/Admin_Page.php:935
 msgid "Previous page"
 msgstr ""
 
 #. translators: 1: current page, 2: total pages.
-#: includes/Admin/Admin_Page.php:923
+#: includes/Admin/Admin_Page.php:941
 #, php-format
 msgid "Page %1$d of %2$d"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:930
+#: includes/Admin/Admin_Page.php:948
 msgid "Next page"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:931
+#: includes/Admin/Admin_Page.php:949
 msgid "Last page"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1021
-#: includes/Admin/Admin_Page.php:3314
+#: includes/Admin/Admin_Page.php:1039
+#: includes/Admin/Admin_Page.php:3332
 msgid "Display ID"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1031
-#: includes/Admin/Admin_Page.php:3324
-#: includes/Admin/Admin_Page.php:3422
-#: includes/Admin/Admin_Page.php:3561
+#: includes/Admin/Admin_Page.php:1049
+#: includes/Admin/Admin_Page.php:3342
+#: includes/Admin/Admin_Page.php:3440
+#: includes/Admin/Admin_Page.php:3579
 msgid "Target ability"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1044
-#: includes/Admin/Admin_Page.php:1956
-#: includes/Admin/Admin_Page.php:2277
-#: includes/Admin/Admin_Page.php:3366
-#: includes/Admin/Admin_Page.php:4429
-#: includes/Admin/Admin_Page.php:4612
-#: includes/Admin/Admin_Page.php:4949
+#: includes/Admin/Admin_Page.php:1062
+#: includes/Admin/Admin_Page.php:1974
+#: includes/Admin/Admin_Page.php:2295
+#: includes/Admin/Admin_Page.php:3384
+#: includes/Admin/Admin_Page.php:4447
+#: includes/Admin/Admin_Page.php:4630
+#: includes/Admin/Admin_Page.php:4967
 msgid "Caller type"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1049
-#: includes/Admin/Admin_Page.php:2269
-#: includes/Admin/Admin_Page.php:2504
-#: includes/Admin/Admin_Page.php:3371
-#: includes/Admin/Admin_Page.php:4425
-#: includes/Admin/Admin_Page.php:4611
-#: includes/Admin/Admin_Page.php:4948
+#: includes/Admin/Admin_Page.php:1067
+#: includes/Admin/Admin_Page.php:2287
+#: includes/Admin/Admin_Page.php:2522
+#: includes/Admin/Admin_Page.php:3389
+#: includes/Admin/Admin_Page.php:4443
+#: includes/Admin/Admin_Page.php:4629
+#: includes/Admin/Admin_Page.php:4966
 msgid "App ID"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1062
-#: includes/Admin/Admin_Page.php:2122
-#: includes/Admin/Admin_Page.php:3333
+#: includes/Admin/Admin_Page.php:1080
+#: includes/Admin/Admin_Page.php:2140
+#: includes/Admin/Admin_Page.php:3351
 msgid "Updated"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1067
-#: includes/Admin/Admin_Page.php:3376
-#: includes/Admin/Admin_Page.php:3579
+#: includes/Admin/Admin_Page.php:1085
+#: includes/Admin/Admin_Page.php:3394
+#: includes/Admin/Admin_Page.php:3597
 msgid "Policy decision"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1072
-#: includes/Admin/Admin_Page.php:3381
+#: includes/Admin/Admin_Page.php:1090
+#: includes/Admin/Admin_Page.php:3399
 msgid "Policy profile"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1077
-#: includes/Admin/Admin_Page.php:3386
+#: includes/Admin/Admin_Page.php:1095
+#: includes/Admin/Admin_Page.php:3404
 msgid "Policy reasons"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1100
+#: includes/Admin/Admin_Page.php:1118
 msgid "Identity and source"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1104
+#: includes/Admin/Admin_Page.php:1122
 msgid "Time and policy"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1139
-#: includes/Admin/Admin_Page.php:1490
+#: includes/Admin/Admin_Page.php:1157
+#: includes/Admin/Admin_Page.php:1508
 msgid "Create draft"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1140
+#: includes/Admin/Admin_Page.php:1158
 msgid "Update SEO fields"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1141
+#: includes/Admin/Admin_Page.php:1159
 msgid "Approve comment"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1142
+#: includes/Admin/Admin_Page.php:1160
 msgid "Update taxonomy terms"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1143
+#: includes/Admin/Admin_Page.php:1161
 msgid "Update post"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1144
+#: includes/Admin/Admin_Page.php:1162
 msgid "Update media details"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1145
+#: includes/Admin/Admin_Page.php:1163
 msgid "Rename media file"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1146
+#: includes/Admin/Admin_Page.php:1164
 msgid "Delete media permanently"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1147
+#: includes/Admin/Admin_Page.php:1165
 msgid "Import media"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1148
-#: includes/Admin/Admin_Page.php:1493
+#: includes/Admin/Admin_Page.php:1166
+#: includes/Admin/Admin_Page.php:1511
 msgid "Set featured image"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1149
+#: includes/Admin/Admin_Page.php:1167
 msgid "Update post content"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1166
+#: includes/Admin/Admin_Page.php:1184
 msgid "Review WordPress change"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1213
+#: includes/Admin/Admin_Page.php:1231
 msgid "Batch proposal"
 msgstr ""
 
 #. translators: %d: number of proposal actions.
-#: includes/Admin/Admin_Page.php:1230
+#: includes/Admin/Admin_Page.php:1248
 #, php-format
 msgid "%d governed action"
 msgid_plural "%d governed actions"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Admin/Admin_Page.php:1235
+#: includes/Admin/Admin_Page.php:1253
 msgid "Single governed action"
 msgstr ""
 
 #. translators: %s: plan ability id.
-#: includes/Admin/Admin_Page.php:1258
+#: includes/Admin/Admin_Page.php:1276
 #, php-format
 msgid "plan %s"
 msgstr ""
 
 #. translators: %s: batch id.
-#: includes/Admin/Admin_Page.php:1267
+#: includes/Admin/Admin_Page.php:1285
 #, php-format
 msgid "batch %s"
 msgstr ""
 
 #. translators: %s: action id.
-#: includes/Admin/Admin_Page.php:1276
+#: includes/Admin/Admin_Page.php:1294
 #, php-format
 msgid "action %s"
 msgstr ""
 
 #. translators: %s: caller type.
-#: includes/Admin/Admin_Page.php:1285
+#: includes/Admin/Admin_Page.php:1303
 #, php-format
 msgid "caller %s"
 msgstr ""
 
 #. translators: %s: app id.
-#: includes/Admin/Admin_Page.php:1294
+#: includes/Admin/Admin_Page.php:1312
 #, php-format
 msgid "app %s"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1348
+#: includes/Admin/Admin_Page.php:1366
 msgid "Nightly Inspection"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1349
+#: includes/Admin/Admin_Page.php:1367
 msgid "Morning Brief"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1360
-#: includes/Admin/Admin_Page.php:5296
+#: includes/Admin/Admin_Page.php:1378
+#: includes/Admin/Admin_Page.php:5314
 msgid "Direct request"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1392
-#: includes/Admin/Admin_Page.php:1409
-#: includes/Admin/Admin_Page.php:4787
+#: includes/Admin/Admin_Page.php:1410
+#: includes/Admin/Admin_Page.php:1427
+#: includes/Admin/Admin_Page.php:4805
 msgid "External app"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1393
-#: includes/Admin/Admin_Page.php:1410
-#: includes/Admin/Admin_Page.php:4788
+#: includes/Admin/Admin_Page.php:1411
+#: includes/Admin/Admin_Page.php:1428
+#: includes/Admin/Admin_Page.php:4806
 msgid "Product adapter"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1394
-#: includes/Admin/Admin_Page.php:1395
-#: includes/Admin/Admin_Page.php:1414
-#: includes/Admin/Admin_Page.php:1415
+#: includes/Admin/Admin_Page.php:1412
+#: includes/Admin/Admin_Page.php:1413
+#: includes/Admin/Admin_Page.php:1432
+#: includes/Admin/Admin_Page.php:1433
 msgid "WordPress admin"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1411
-#: includes/Admin/Admin_Page.php:4790
+#: includes/Admin/Admin_Page.php:1429
+#: includes/Admin/Admin_Page.php:4808
 msgid "MCP adapter"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1412
+#: includes/Admin/Admin_Page.php:1430
 msgid "Agent host"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1413
-#: includes/Admin/Admin_Page.php:2352
+#: includes/Admin/Admin_Page.php:1431
+#: includes/Admin/Admin_Page.php:2370
 msgid "Internal governance client"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1429
+#: includes/Admin/Admin_Page.php:1447
 msgid "Manual approval required"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1430
+#: includes/Admin/Admin_Page.php:1448
 msgid "Auto-approved by policy"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1431
+#: includes/Admin/Admin_Page.php:1449
 msgid "Blocked by policy"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1445
+#: includes/Admin/Admin_Page.php:1463
 msgid "Manual review"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1446
+#: includes/Admin/Admin_Page.php:1464
 msgid "Guarded automation"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1447
+#: includes/Admin/Admin_Page.php:1465
 msgid "Trusted local consent"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1448
+#: includes/Admin/Admin_Page.php:1466
 msgid "Break-glass"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1464
+#: includes/Admin/Admin_Page.php:1482
 msgid "WordPress admin UI"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1465
+#: includes/Admin/Admin_Page.php:1483
 msgid "External adapter"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1466
+#: includes/Admin/Admin_Page.php:1484
 msgid "Scheduled task"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1467
+#: includes/Admin/Admin_Page.php:1485
 msgid "CLI"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1468
+#: includes/Admin/Admin_Page.php:1486
 msgid "Cloud callback"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1471
+#: includes/Admin/Admin_Page.php:1489
 msgid "Operator present at click"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1472
+#: includes/Admin/Admin_Page.php:1490
 msgid "Background automation"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1473
+#: includes/Admin/Admin_Page.php:1491
 msgid "Delegated agent"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1476
+#: includes/Admin/Admin_Page.php:1494
 msgid "Exact final preview"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1477
+#: includes/Admin/Admin_Page.php:1495
 msgid "Sufficient preview"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1478
+#: includes/Admin/Admin_Page.php:1496
 msgid "Partial preview"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1479
+#: includes/Admin/Admin_Page.php:1497
 msgid "No preview"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1482
+#: includes/Admin/Admin_Page.php:1500
 msgid "One field"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1483
+#: includes/Admin/Admin_Page.php:1501
 msgid "One object"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1484
+#: includes/Admin/Admin_Page.php:1502
 msgid "Multiple objects"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1485
+#: includes/Admin/Admin_Page.php:1503
 msgid "Site-wide"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1486
+#: includes/Admin/Admin_Page.php:1504
 msgid "External account"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1489
-#: includes/Admin/Admin_Page.php:3002
+#: includes/Admin/Admin_Page.php:1507
+#: includes/Admin/Admin_Page.php:3020
 msgid "Suggestion only"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1491
+#: includes/Admin/Admin_Page.php:1509
 msgid "Update metadata"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1492
+#: includes/Admin/Admin_Page.php:1510
 msgid "Update existing terms"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1494
+#: includes/Admin/Admin_Page.php:1512
 msgid "Publish"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1495
+#: includes/Admin/Admin_Page.php:1513
 msgid "Unpublish"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1496
+#: includes/Admin/Admin_Page.php:1514
 msgid "Delete"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1497
+#: includes/Admin/Admin_Page.php:1515
 msgid "Replace file"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1498
+#: includes/Admin/Admin_Page.php:1516
 msgid "Overwrite content"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1499
+#: includes/Admin/Admin_Page.php:1517
 msgid "Settings change"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1500
+#: includes/Admin/Admin_Page.php:1518
 msgid "Permission change"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1501
+#: includes/Admin/Admin_Page.php:1519
 msgid "External account change"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1502
+#: includes/Admin/Admin_Page.php:1520
 msgid "Batch plan"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1519
+#: includes/Admin/Admin_Page.php:1537
 msgid "Smoke quota"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1523
+#: includes/Admin/Admin_Page.php:1541
 msgid "Plan batch"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1548
+#: includes/Admin/Admin_Page.php:1566
 msgid "Recent Activity"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1549
+#: includes/Admin/Admin_Page.php:1567
 msgid "Latest Core governance events. Full audit is in its own tab."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1553
+#: includes/Admin/Admin_Page.php:1571
 msgid "No recent governance activity."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1564
-#: includes/Admin/Admin_Page.php:4475
-#: includes/Admin/Admin_Page.php:4791
+#: includes/Admin/Admin_Page.php:1582
+#: includes/Admin/Admin_Page.php:4493
+#: includes/Admin/Admin_Page.php:4809
 msgid "System"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1571
+#: includes/Admin/Admin_Page.php:1589
 msgid "Open full audit"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1586
+#: includes/Admin/Admin_Page.php:1604
 msgid "Client access tokens"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1587
+#: includes/Admin/Admin_Page.php:1605
 msgid "Manage access tokens for trusted Adapter or internal governance clients."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1591
-#: includes/Admin/Admin_Page.php:1913
+#: includes/Admin/Admin_Page.php:1609
+#: includes/Admin/Admin_Page.php:1931
 msgid "Active tokens"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1595
-#: includes/Admin/Admin_Page.php:1923
-#: includes/Admin/Admin_Page.php:2020
+#: includes/Admin/Admin_Page.php:1613
+#: includes/Admin/Admin_Page.php:1941
+#: includes/Admin/Admin_Page.php:2038
 msgid "Last used"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1596
-#: includes/Admin/Admin_Page.php:1924
-#: includes/Admin/Admin_Page.php:2049
+#: includes/Admin/Admin_Page.php:1614
+#: includes/Admin/Admin_Page.php:1942
+#: includes/Admin/Admin_Page.php:2067
 msgid "Never"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1600
+#: includes/Admin/Admin_Page.php:1618
 msgid "Manage access tokens"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1633
-#: includes/Admin/Admin_Page.php:2547
-#: includes/Admin/Admin_Page.php:2641
+#: includes/Admin/Admin_Page.php:1651
+#: includes/Admin/Admin_Page.php:2565
+#: includes/Admin/Admin_Page.php:2659
 msgid "You do not have permission to update proposals."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1644
+#: includes/Admin/Admin_Page.php:1662
 msgid "Rejected from bulk review."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1721
+#: includes/Admin/Admin_Page.php:1739
 msgid "You do not have permission to update approval policy."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1754
+#: includes/Admin/Admin_Page.php:1772
 msgid "You do not have permission to run history cleanup."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1785
+#: includes/Admin/Admin_Page.php:1803
 msgid "You do not have permission to create app keys."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1859
+#: includes/Admin/Admin_Page.php:1877
 msgid "You do not have permission to revoke app keys."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1906
+#: includes/Admin/Admin_Page.php:1924
 msgid "Back to settings"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1907
+#: includes/Admin/Admin_Page.php:1925
 msgid "Client Access Tokens"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1908
+#: includes/Admin/Admin_Page.php:1926
 msgid "Manage limited REST access tokens for trusted Adapter or internal governance clients. These are not model API keys or productized OpenClaw connection settings."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1915
+#: includes/Admin/Admin_Page.php:1933
 msgid "Can authenticate scoped REST requests."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1918
+#: includes/Admin/Admin_Page.php:1936
 msgid "Total tokens"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1920
+#: includes/Admin/Admin_Page.php:1938
 msgid "Kept for audit attribution."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1925
+#: includes/Admin/Admin_Page.php:1943
 msgid "Latest successful token authentication."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1929
+#: includes/Admin/Admin_Page.php:1947
 msgid "Client access token sections"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1931
-#: includes/Admin/Admin_Page.php:2001
+#: includes/Admin/Admin_Page.php:1949
+#: includes/Admin/Admin_Page.php:2019
 msgid "Access tokens"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1934
-#: includes/Admin/Admin_Page.php:1998
+#: includes/Admin/Admin_Page.php:1952
+#: includes/Admin/Admin_Page.php:2016
 msgid "Revoked tokens"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1937
+#: includes/Admin/Admin_Page.php:1955
 msgid "Issue token"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1944
-#: includes/Admin/Admin_Page.php:1992
+#: includes/Admin/Admin_Page.php:1962
+#: includes/Admin/Admin_Page.php:2010
 msgid "Issue client access token"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1945
+#: includes/Admin/Admin_Page.php:1963
 msgid "Issue a scoped token for a trusted governance client. Choose a purpose first; use advanced permissions only for custom clients."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1952
+#: includes/Admin/Admin_Page.php:1970
 msgid "Client label"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1965
+#: includes/Admin/Admin_Page.php:1983
 msgid "Token purpose"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1966
+#: includes/Admin/Admin_Page.php:1984
 msgid "Token purpose controls the default permission set. Custom clients can override permissions below."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1970
+#: includes/Admin/Admin_Page.php:1988
 msgid "Advanced permissions and rate limit"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1973
-#: includes/Admin/Admin_Page.php:2402
+#: includes/Admin/Admin_Page.php:1991
+#: includes/Admin/Admin_Page.php:2420
 msgid "Custom permissions"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1974
+#: includes/Admin/Admin_Page.php:1992
 msgid "Choose Custom permissions above to use the checkboxes below."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1978
-#: includes/Admin/Admin_Page.php:2285
+#: includes/Admin/Admin_Page.php:1996
+#: includes/Admin/Admin_Page.php:2303
 msgid "Rate limit"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1981
+#: includes/Admin/Admin_Page.php:1999
 msgid "Requests"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1985
+#: includes/Admin/Admin_Page.php:2003
 msgid "Window seconds"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:1999
+#: includes/Admin/Admin_Page.php:2017
 msgid "Revoked tokens are shown for audit attribution only. They cannot authenticate scoped REST requests."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2002
+#: includes/Admin/Admin_Page.php:2020
 msgid "Only active tokens are shown here. Revoked tokens are available from the revoked-token subtab for audit attribution."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2017
+#: includes/Admin/Admin_Page.php:2035
 msgid "Client"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2019
-#: includes/Admin/Admin_Page.php:2281
+#: includes/Admin/Admin_Page.php:2037
+#: includes/Admin/Admin_Page.php:2299
 msgid "Permissions"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2026
+#: includes/Admin/Admin_Page.php:2044
 msgid "No revoked access tokens."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2026
+#: includes/Admin/Admin_Page.php:2044
 msgid "No active access tokens."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2034
+#: includes/Admin/Admin_Page.php:2052
 msgid "App"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2058
+#: includes/Admin/Admin_Page.php:2076
 msgid "Revoke this access token immediately? Clients using this token will no longer be able to access Core."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2058
+#: includes/Admin/Admin_Page.php:2076
 msgid "Revoke token"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2061
+#: includes/Admin/Admin_Page.php:2079
 msgid "No action"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2102
+#: includes/Admin/Admin_Page.php:2120
 msgid "Expired requests are kept as historical records after they leave the active review queue."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2120
+#: includes/Admin/Admin_Page.php:2138
 msgid "Proposal"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2129
+#: includes/Admin/Admin_Page.php:2147
 msgid "No historical proposals."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2206
+#: includes/Admin/Admin_Page.php:2224
 msgid "Active"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2207
-#: includes/Admin/Admin_Page.php:5179
-#: includes/Admin/Admin_Page.php:5667
-#: includes/Admin/Admin_Page.php:5677
-#: includes/Admin/Admin_Page.php:5706
+#: includes/Admin/Admin_Page.php:2225
+#: includes/Admin/Admin_Page.php:5197
+#: includes/Admin/Admin_Page.php:5685
+#: includes/Admin/Admin_Page.php:5695
+#: includes/Admin/Admin_Page.php:5724
 msgid "Expired"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2208
-#: includes/Admin/Admin_Page.php:2308
+#: includes/Admin/Admin_Page.php:2226
+#: includes/Admin/Admin_Page.php:2326
 msgid "Revoked"
 msgstr ""
 
 #. translators: %d: permission scope count.
-#: includes/Admin/Admin_Page.php:2228
+#: includes/Admin/Admin_Page.php:2246
 #, php-format
 msgid "%d permission"
 msgid_plural "%d permissions"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Admin/Admin_Page.php:2235
-#: includes/Admin/Admin_Page.php:4201
+#: includes/Admin/Admin_Page.php:2253
+#: includes/Admin/Admin_Page.php:4219
 msgid "approval"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2236
+#: includes/Admin/Admin_Page.php:2254
 msgid "execution record"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2237
+#: includes/Admin/Admin_Page.php:2255
 msgid "audit read"
 msgstr ""
 
 #. translators: %s: comma-separated sensitive scope labels.
-#: includes/Admin/Admin_Page.php:2245
+#: includes/Admin/Admin_Page.php:2263
 #, php-format
 msgid "Includes %s"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2273
-#: includes/Admin/Admin_Page.php:2508
+#: includes/Admin/Admin_Page.php:2291
+#: includes/Admin/Admin_Page.php:2526
 msgid "Key ID"
 msgstr ""
 
 #. translators: 1: request count, 2: window in seconds.
-#: includes/Admin/Admin_Page.php:2291
+#: includes/Admin/Admin_Page.php:2309
 #, php-format
 msgid "%1$d requests per %2$d seconds"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2301
-#: includes/Admin/Admin_Page.php:5645
-#: includes/Admin/Admin_Page.php:5662
-#: includes/Admin/Admin_Page.php:5697
+#: includes/Admin/Admin_Page.php:2319
+#: includes/Admin/Admin_Page.php:5663
+#: includes/Admin/Admin_Page.php:5680
+#: includes/Admin/Admin_Page.php:5715
 msgid "Unknown"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2304
+#: includes/Admin/Admin_Page.php:2322
 msgid "Expires"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2305
+#: includes/Admin/Admin_Page.php:2323
 msgid "No expiry"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2309
+#: includes/Admin/Admin_Page.php:2327
 msgid "No"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2324
+#: includes/Admin/Admin_Page.php:2342
 msgid "Read capabilities"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2325
+#: includes/Admin/Admin_Page.php:2343
 msgid "Create proposals"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2326
+#: includes/Admin/Admin_Page.php:2344
 msgid "Read proposals"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2327
+#: includes/Admin/Admin_Page.php:2345
 msgid "Commit preflight"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2328
+#: includes/Admin/Admin_Page.php:2346
 msgid "Approve proposals"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2329
+#: includes/Admin/Admin_Page.php:2347
 msgid "Reject proposals"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2330
+#: includes/Admin/Admin_Page.php:2348
 msgid "Record execution results"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2331
+#: includes/Admin/Admin_Page.php:2349
 msgid "Create read requests"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2332
+#: includes/Admin/Admin_Page.php:2350
 msgid "Read read requests"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2333
+#: includes/Admin/Admin_Page.php:2351
 msgid "Approve read requests"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2334
+#: includes/Admin/Admin_Page.php:2352
 msgid "Reject read requests"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2335
+#: includes/Admin/Admin_Page.php:2353
 msgid "Read preflight"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2336
+#: includes/Admin/Admin_Page.php:2354
 msgid "Read audit log"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2349
+#: includes/Admin/Admin_Page.php:2367
 msgid "Product Adapter"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2350
+#: includes/Admin/Admin_Page.php:2368
 msgid "MCP Adapter"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2351
+#: includes/Admin/Admin_Page.php:2369
 msgid "Agent Host"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2375
+#: includes/Admin/Admin_Page.php:2393
 msgid "Adapter default access"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2376
+#: includes/Admin/Admin_Page.php:2394
 msgid "Recommended for trusted Adapter clients that create proposals and request preflight."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2380
+#: includes/Admin/Admin_Page.php:2398
 msgid "Read-only discovery"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2381
+#: includes/Admin/Admin_Page.php:2399
 msgid "Only reads the capability contract. Use for diagnostics or setup checks."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2385
+#: includes/Admin/Admin_Page.php:2403
 msgid "Trusted approval and execution record"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2386
+#: includes/Admin/Admin_Page.php:2404
 msgid "Use only when a trusted host policy presents approval context to an administrator."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2403
+#: includes/Admin/Admin_Page.php:2421
 msgid "Use the advanced permission checkboxes for a narrowly scoped custom client."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2450
+#: includes/Admin/Admin_Page.php:2468
 msgid "Uses advanced permission checkboxes."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2496
+#: includes/Admin/Admin_Page.php:2514
 msgid "Client access token created"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2498
+#: includes/Admin/Admin_Page.php:2516
 msgid "Copy this token now. It is shown only once and is not stored in raw form."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2499
+#: includes/Admin/Admin_Page.php:2517
 msgid "Use this token only in a trusted adapter or internal governance client secret store."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2513
+#: includes/Admin/Admin_Page.php:2531
 msgid "Access token"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2517
-#: includes/Admin/Admin_Page.php:2528
+#: includes/Admin/Admin_Page.php:2535
+#: includes/Admin/Admin_Page.php:2546
 msgid "Copied"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2518
+#: includes/Admin/Admin_Page.php:2536
 msgid "Copy token"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2524
+#: includes/Admin/Admin_Page.php:2542
 msgid "Core env"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2529
+#: includes/Admin/Admin_Page.php:2547
 msgid "Copy env snippet"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2692
+#: includes/Admin/Admin_Page.php:2710
 msgid "Back to review queue"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2693
+#: includes/Admin/Admin_Page.php:2711
 msgid "Proposal Detail"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2694
+#: includes/Admin/Admin_Page.php:2712
 msgid "Review the governance record, action plan, and audit evidence for this proposal."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2722
+#: includes/Admin/Admin_Page.php:2740
 msgid "Overview"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2723
+#: includes/Admin/Admin_Page.php:2741
 msgid "Action plan"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2724
+#: includes/Admin/Admin_Page.php:2742
 msgid "Audit evidence"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2725
+#: includes/Admin/Admin_Page.php:2743
 msgid "Technical info"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2738
+#: includes/Admin/Admin_Page.php:2756
 msgid "Proposal detail sections"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2824
+#: includes/Admin/Admin_Page.php:2842
 msgid "No structured action plan or proposed change detail was recorded for this proposal."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2831
+#: includes/Admin/Admin_Page.php:2849
 msgid "Submitted action input"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2832
+#: includes/Admin/Admin_Page.php:2850
 msgid "The input this proposal would pass to the target ability. Review it before approving."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2904
+#: includes/Admin/Admin_Page.php:2922
 msgid "Review ID"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2919
+#: includes/Admin/Admin_Page.php:2937
 msgid "Governance path"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2924
+#: includes/Admin/Admin_Page.php:2942
 msgid "Evidence"
 msgstr ""
 
 #. translators: 1: warning count, 2: blocked item count.
-#: includes/Admin/Admin_Page.php:2931
+#: includes/Admin/Admin_Page.php:2949
 #, php-format
 msgid "%1$d warnings / %2$d blocked"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2938
+#: includes/Admin/Admin_Page.php:2956
 msgid "No risk signals"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:2943
+#: includes/Admin/Admin_Page.php:2961
 msgid "Decision"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3003
+#: includes/Admin/Admin_Page.php:3021
 msgid "Local admin consent"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3004
+#: includes/Admin/Admin_Page.php:3022
 msgid "Strong local confirmation"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3005
+#: includes/Admin/Admin_Page.php:3023
 msgid "Core proposal required"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3021
+#: includes/Admin/Admin_Page.php:3039
 msgid "No WordPress state write is declared."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3025
+#: includes/Admin/Admin_Page.php:3043
 msgid "Core records proposal, approval, preflight, and audit only; final WordPress writes stay outside Core."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3029
+#: includes/Admin/Admin_Page.php:3047
 msgid "A present administrator may apply one bounded local write only with audit evidence."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3032
+#: includes/Admin/Admin_Page.php:3050
 msgid "A present administrator needs stronger confirmation or Core proposal review before the write."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3043
+#: includes/Admin/Admin_Page.php:3061
 msgid "Adapter or host after Core commit preflight"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3047
+#: includes/Admin/Admin_Page.php:3065
 msgid "No execution owner because no WordPress write is declared"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3050
+#: includes/Admin/Admin_Page.php:3068
 msgid "Local product module with Core-owned audit evidence"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3062
+#: includes/Admin/Admin_Page.php:3080
 msgid "Target ability is not discoverable; commit preflight will fail closed until the provider exposes it again."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3066
+#: includes/Admin/Admin_Page.php:3084
 msgid "Resolve blocked items, required input, or preflight blockers before approval can become executable."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3071
+#: includes/Admin/Admin_Page.php:3089
 msgid "Approve or reject this proposal; approved items still require commit preflight before external execution."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3075
+#: includes/Admin/Admin_Page.php:3093
 msgid "Run commit preflight to issue a bounded handoff; Core still will not execute the write."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3079
+#: includes/Admin/Admin_Page.php:3097
 msgid "Review the Adapter execution result and submit a new proposal if another write attempt is needed."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3082
+#: includes/Admin/Admin_Page.php:3100
 msgid "No pending Core decision is available for this lifecycle state."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3098
+#: includes/Admin/Admin_Page.php:3116
 msgid "Implementation posture"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3101
+#: includes/Admin/Admin_Page.php:3119
 msgid "Schema"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3106
-#: includes/Admin/Admin_Page.php:3623
+#: includes/Admin/Admin_Page.php:3124
+#: includes/Admin/Admin_Page.php:3641
 msgid "Write posture"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3111
+#: includes/Admin/Admin_Page.php:3129
 msgid "Commit authority"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3116
+#: includes/Admin/Admin_Page.php:3134
 msgid "Execution surface"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3121
+#: includes/Admin/Admin_Page.php:3139
 msgid "Final authorization owner"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3126
+#: includes/Admin/Admin_Page.php:3144
 msgid "Approval truth owner"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3131
+#: includes/Admin/Admin_Page.php:3149
 msgid "Audit truth owner"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3136
+#: includes/Admin/Admin_Page.php:3154
 msgid "Dry-run default"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3140
+#: includes/Admin/Admin_Page.php:3158
 msgid "Commit default"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3144
+#: includes/Admin/Admin_Page.php:3162
 msgid "Required host evidence"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3148
+#: includes/Admin/Admin_Page.php:3166
 msgid "Verification contract"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3152
+#: includes/Admin/Admin_Page.php:3170
 msgid "Reference patterns"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3156
+#: includes/Admin/Admin_Page.php:3174
 msgid "Boundary flags"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3175
-#: includes/Admin/Admin_Page.php:3504
-#: includes/Admin/Admin_Page.php:3572
-#: includes/Admin/Admin_Page.php:3800
-#: includes/Admin/Admin_Page.php:3805
-#: includes/Admin/Admin_Page.php:3867
-#: includes/Admin/Admin_Page.php:3870
-#: includes/Admin/Admin_Page.php:3908
-#: includes/Admin/Admin_Page.php:3909
-#: includes/Admin/Admin_Page.php:3911
-#: includes/Admin/Admin_Page.php:3912
-#: includes/Admin/Admin_Page.php:3954
+#: includes/Admin/Admin_Page.php:3193
+#: includes/Admin/Admin_Page.php:3522
+#: includes/Admin/Admin_Page.php:3590
+#: includes/Admin/Admin_Page.php:3818
+#: includes/Admin/Admin_Page.php:3823
+#: includes/Admin/Admin_Page.php:3885
+#: includes/Admin/Admin_Page.php:3888
+#: includes/Admin/Admin_Page.php:3926
+#: includes/Admin/Admin_Page.php:3927
+#: includes/Admin/Admin_Page.php:3929
+#: includes/Admin/Admin_Page.php:3930
+#: includes/Admin/Admin_Page.php:3972
 msgid "yes"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3175
-#: includes/Admin/Admin_Page.php:3504
-#: includes/Admin/Admin_Page.php:3572
-#: includes/Admin/Admin_Page.php:3800
-#: includes/Admin/Admin_Page.php:3805
-#: includes/Admin/Admin_Page.php:3867
-#: includes/Admin/Admin_Page.php:3870
-#: includes/Admin/Admin_Page.php:3908
-#: includes/Admin/Admin_Page.php:3909
-#: includes/Admin/Admin_Page.php:3911
-#: includes/Admin/Admin_Page.php:3912
-#: includes/Admin/Admin_Page.php:3954
+#: includes/Admin/Admin_Page.php:3193
+#: includes/Admin/Admin_Page.php:3522
+#: includes/Admin/Admin_Page.php:3590
+#: includes/Admin/Admin_Page.php:3818
+#: includes/Admin/Admin_Page.php:3823
+#: includes/Admin/Admin_Page.php:3885
+#: includes/Admin/Admin_Page.php:3888
+#: includes/Admin/Admin_Page.php:3926
+#: includes/Admin/Admin_Page.php:3927
+#: includes/Admin/Admin_Page.php:3929
+#: includes/Admin/Admin_Page.php:3930
+#: includes/Admin/Admin_Page.php:3972
 msgid "no"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3188
+#: includes/Admin/Admin_Page.php:3206
 msgid "workflow runtime"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3189
+#: includes/Admin/Admin_Page.php:3207
 msgid "queue or scheduler"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3190
+#: includes/Admin/Admin_Page.php:3208
 msgid "model routing"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3191
+#: includes/Admin/Admin_Page.php:3209
 msgid "provider credentials"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3192
+#: includes/Admin/Admin_Page.php:3210
 msgid "approval storage"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3193
+#: includes/Admin/Admin_Page.php:3211
 msgid "audit storage"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3202
+#: includes/Admin/Admin_Page.php:3220
 msgid "No runtime, queue, model routing, credential, approval-store, or audit-store ownership declared."
 msgstr ""
 
 #. translators: %s: comma-separated provider-declared ownership flags.
-#: includes/Admin/Admin_Page.php:3207
+#: includes/Admin/Admin_Page.php:3225
 #, php-format
 msgid "Provider declares Core-forbidden ownership: %s"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3222
+#: includes/Admin/Admin_Page.php:3240
 msgid "Technical identity"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3223
+#: includes/Admin/Admin_Page.php:3241
 msgid "Full proposal id, ability id, source trace, caller, app, and policy fields."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3244
+#: includes/Admin/Admin_Page.php:3262
 msgid "No pending decision."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3311
+#: includes/Admin/Admin_Page.php:3329
 msgid "Governance identity"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3337
+#: includes/Admin/Admin_Page.php:3355
 msgid "Expiry"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3343
+#: includes/Admin/Admin_Page.php:3361
 msgid "Source and policy"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3346
+#: includes/Admin/Admin_Page.php:3364
 msgid "Source type"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3351
+#: includes/Admin/Admin_Page.php:3369
 msgid "Plan ability"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3356
+#: includes/Admin/Admin_Page.php:3374
 msgid "Batch ID"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3361
+#: includes/Admin/Admin_Page.php:3379
 msgid "Proposal mode"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3390
-#: includes/Admin/Admin_Page.php:3589
+#: includes/Admin/Admin_Page.php:3408
+#: includes/Admin/Admin_Page.php:3607
 msgid "Classification"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3395
-#: includes/Admin/Admin_Page.php:3593
+#: includes/Admin/Admin_Page.php:3413
+#: includes/Admin/Admin_Page.php:3611
 msgid "Intake path"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3416
+#: includes/Admin/Admin_Page.php:3434
 msgid "Batch actions"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3417
+#: includes/Admin/Admin_Page.php:3435
 msgid "Ordered actions in this Core proposal. Final execution remains outside Core after approval and preflight."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3423
+#: includes/Admin/Admin_Page.php:3441
 msgid "Readiness"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3424
+#: includes/Admin/Admin_Page.php:3442
 msgid "Dependency"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3468
+#: includes/Admin/Admin_Page.php:3486
 msgid "Decision note (optional)"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3472
+#: includes/Admin/Admin_Page.php:3490
 msgid "After this decision, open the next pending proposal"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3475
+#: includes/Admin/Admin_Page.php:3493
 msgid "Approve"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3478
+#: includes/Admin/Admin_Page.php:3496
 msgid "Reject"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3481
+#: includes/Admin/Admin_Page.php:3499
 msgid "Confirm rejection"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3499
-#: includes/Admin/Admin_Page.php:5208
-#: includes/Admin/Admin_Page.php:5222
-#: includes/Admin/Admin_Page.php:5274
+#: includes/Admin/Admin_Page.php:3517
+#: includes/Admin/Admin_Page.php:5226
+#: includes/Admin/Admin_Page.php:5240
+#: includes/Admin/Admin_Page.php:5292
 msgid "Not declared"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3505
+#: includes/Admin/Admin_Page.php:3523
 msgid "not declared"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3517
+#: includes/Admin/Admin_Page.php:3535
 msgid "Reason"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3524
+#: includes/Admin/Admin_Page.php:3542
 msgid "Warnings"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3528
-#: includes/Admin/Admin_Page.php:3710
+#: includes/Admin/Admin_Page.php:3546
+#: includes/Admin/Admin_Page.php:3728
 msgid "Blocked items"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3532
-#: includes/Admin/Admin_Page.php:3707
-#: includes/Admin/Admin_Page.php:5564
+#: includes/Admin/Admin_Page.php:3550
+#: includes/Admin/Admin_Page.php:3725
+#: includes/Admin/Admin_Page.php:5582
 msgid "Needs input"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3536
+#: includes/Admin/Admin_Page.php:3554
 msgid "Preflight blockers"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3549
+#: includes/Admin/Admin_Page.php:3567
 msgid "Review basis"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3552
+#: includes/Admin/Admin_Page.php:3570
 msgid "The target ability is not currently discoverable. Commit preflight will fail closed until the provider exposes it again."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3558
+#: includes/Admin/Admin_Page.php:3576
 msgid "Ability and policy"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3566
+#: includes/Admin/Admin_Page.php:3584
 msgid "Risk"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3571
+#: includes/Admin/Admin_Page.php:3589
 msgid "Requires approval"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3575
+#: includes/Admin/Admin_Page.php:3593
 msgid "Proposal ready"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3586
+#: includes/Admin/Admin_Page.php:3604
 msgid "Classification and handoff"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3598
+#: includes/Admin/Admin_Page.php:3616
 msgid "Request source"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3603
+#: includes/Admin/Admin_Page.php:3621
 msgid "Actor presence"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3608
+#: includes/Admin/Admin_Page.php:3626
 msgid "Preview completeness"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3613
-#: includes/Admin/Admin_Page.php:4613
+#: includes/Admin/Admin_Page.php:3631
+#: includes/Admin/Admin_Page.php:4631
 msgid "Scope"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3618
+#: includes/Admin/Admin_Page.php:3636
 msgid "Operation kind"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3627
+#: includes/Admin/Admin_Page.php:3645
 msgid "Execution owner"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3631
+#: includes/Admin/Admin_Page.php:3649
 msgid "Blocked guidance"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3643
+#: includes/Admin/Admin_Page.php:3661
 msgid "Preview signals"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3650
+#: includes/Admin/Admin_Page.php:3668
 msgid "Preview signals: no warnings, no blocked items, no required input, and no preflight blockers."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3694
+#: includes/Admin/Admin_Page.php:3712
 msgid "Proposed change details"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3695
+#: includes/Admin/Admin_Page.php:3713
 msgid "Structured preview fields that need reviewer attention."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3701
+#: includes/Admin/Admin_Page.php:3719
 msgid "Before"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3704
+#: includes/Admin/Admin_Page.php:3722
 msgid "After suggestion"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3755
+#: includes/Admin/Admin_Page.php:3773
 msgid "Field changes"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3760
+#: includes/Admin/Admin_Page.php:3778
 msgid "Field"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3761
+#: includes/Admin/Admin_Page.php:3779
 msgid "Proposed value"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3794
+#: includes/Admin/Admin_Page.php:3812
 msgid "Article workflow"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3820
+#: includes/Admin/Admin_Page.php:3838
 msgid "included"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3820
+#: includes/Admin/Admin_Page.php:3838
 msgid "missing"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3823
+#: includes/Admin/Admin_Page.php:3841
 msgid "Article artifacts"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3826
+#: includes/Admin/Admin_Page.php:3844
 msgid "Blocked claims"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3846
+#: includes/Admin/Admin_Page.php:3864
 msgid "Nightly review item"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3874
+#: includes/Admin/Admin_Page.php:3892
 msgid "Morning Brief source"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3880
+#: includes/Admin/Admin_Page.php:3898
 msgid "Selected review items"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3887
+#: includes/Admin/Admin_Page.php:3905
 msgid "Evidence refs"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3894
+#: includes/Admin/Admin_Page.php:3912
 msgid "Completed draft input"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3900
+#: includes/Admin/Admin_Page.php:3918
 msgid "Morning Brief handoff"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3917
+#: includes/Admin/Admin_Page.php:3935
 msgid "Required next step"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3919
+#: includes/Admin/Admin_Page.php:3937
 msgid "Review the completed Morning Brief draft in Core, approve only if the selected evidence and draft are acceptable, then run commit preflight before Adapter execution. Core still does not generate or edit draft fields."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3920
+#: includes/Admin/Admin_Page.php:3938
 msgid "Return to Toolbox Morning Brief, draft the title and content for the selected review item, then resubmit a complete Core proposal. Core does not generate or edit missing draft fields."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3976
+#: includes/Admin/Admin_Page.php:3994
 msgid "Raw proposal payload"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3977
+#: includes/Admin/Admin_Page.php:3995
 msgid "Caller, input, and preview JSON for troubleshooting."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3982
+#: includes/Admin/Admin_Page.php:4000
 msgid "Caller"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3986
+#: includes/Admin/Admin_Page.php:4004
 msgid "Input"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:3990
+#: includes/Admin/Admin_Page.php:4008
 msgid "Preview"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4017
+#: includes/Admin/Admin_Page.php:4035
 msgid "Audit timeline"
 msgstr ""
 
 #. translators: 1: shown event count, 2: total event count.
-#: includes/Admin/Admin_Page.php:4024
+#: includes/Admin/Admin_Page.php:4042
 #, php-format
 msgid "Newest first. Showing the latest %1$d of %2$d recorded events."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4030
+#: includes/Admin/Admin_Page.php:4048
 msgid "Newest first. Complete event table with actor and technical attribution."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4038
-#: includes/Admin/Admin_Page.php:4448
+#: includes/Admin/Admin_Page.php:4056
+#: includes/Admin/Admin_Page.php:4466
 msgid "Time"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4039
+#: includes/Admin/Admin_Page.php:4057
 msgid "Event"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4040
-#: includes/Admin/Admin_Page.php:4609
+#: includes/Admin/Admin_Page.php:4058
+#: includes/Admin/Admin_Page.php:4627
 msgid "Actor"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4041
+#: includes/Admin/Admin_Page.php:4059
 msgid "Detail"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4047
-#: includes/Admin/Admin_Page.php:4242
+#: includes/Admin/Admin_Page.php:4065
+#: includes/Admin/Admin_Page.php:4260
 msgid "No audit events recorded for this proposal yet."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4074
-#: includes/Admin/Admin_Page.php:4075
+#: includes/Admin/Admin_Page.php:4092
+#: includes/Admin/Admin_Page.php:4093
 msgid "Current governance outcome"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4078
+#: includes/Admin/Admin_Page.php:4096
 msgid "Outcome"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4082
+#: includes/Admin/Admin_Page.php:4100
 msgid "Next step"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4086
+#: includes/Admin/Admin_Page.php:4104
 msgid "Evidence trail"
 msgstr ""
 
 #. translators: %d: audit lifecycle evidence count.
-#: includes/Admin/Admin_Page.php:4111
+#: includes/Admin/Admin_Page.php:4129
 #, php-format
 msgid "%d lifecycle event recorded."
 msgid_plural "%d lifecycle events recorded."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/Admin/Admin_Page.php:4117
+#: includes/Admin/Admin_Page.php:4135
 msgid "Awaiting Core review."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4118
+#: includes/Admin/Admin_Page.php:4136
 msgid "Review the basis, then approve or reject. Approval still requires commit preflight before Adapter or host execution."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4125
+#: includes/Admin/Admin_Page.php:4143
 msgid "Approved and preflight handoff issued."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4125
+#: includes/Admin/Admin_Page.php:4143
 msgid "Approved; preflight handoff not yet issued."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4126
+#: includes/Admin/Admin_Page.php:4144
 msgid "Adapter or host can use the bounded preflight context; Core still does not execute the write."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4126
+#: includes/Admin/Admin_Page.php:4144
 msgid "Run commit preflight before any external execution attempt."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4133
+#: includes/Admin/Admin_Page.php:4151
 msgid "Execution result recorded outside Core."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4134
+#: includes/Admin/Admin_Page.php:4152
 msgid "Verify the execution record and related Adapter evidence; no Core decision is pending."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4141
+#: includes/Admin/Admin_Page.php:4159
 msgid "External execution failed after handoff."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4142
+#: includes/Admin/Admin_Page.php:4160
 msgid "Inspect Adapter execution evidence and submit a new proposal if another write attempt is needed."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4149
+#: includes/Admin/Admin_Page.php:4167
 msgid "Rejected by Core review."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4150
+#: includes/Admin/Admin_Page.php:4168
 msgid "Do not continue to commit preflight or external execution for this proposal."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4157
+#: includes/Admin/Admin_Page.php:4175
 msgid "Historical governance record."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4158
+#: includes/Admin/Admin_Page.php:4176
 msgid "Use this record for audit lookup only; no approval action is available here."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4164
+#: includes/Admin/Admin_Page.php:4182
 msgid "Lifecycle state needs audit review."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4165
+#: includes/Admin/Admin_Page.php:4183
 msgid "Read the lifecycle summary and full audit timeline before taking follow-up action."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4204
+#: includes/Admin/Admin_Page.php:4222
 msgid "preflight"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4207
+#: includes/Admin/Admin_Page.php:4225
 msgid "execution result"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4210
+#: includes/Admin/Admin_Page.php:4228
 msgid "execution failure"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4213
+#: includes/Admin/Admin_Page.php:4231
 msgid "rejection"
 msgstr ""
 
 #. translators: 1: base evidence count label, 2: comma-separated evidence labels.
-#: includes/Admin/Admin_Page.php:4222
+#: includes/Admin/Admin_Page.php:4240
 #, php-format
 msgid "%1$s Includes %2$s evidence."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4239
-#: includes/Admin/Admin_Page.php:4240
+#: includes/Admin/Admin_Page.php:4257
+#: includes/Admin/Admin_Page.php:4258
 msgid "Lifecycle summary"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4299
+#: includes/Admin/Admin_Page.php:4317
 msgid "Requests created"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4300
+#: includes/Admin/Admin_Page.php:4318
 msgid "AI-initiated proposals submitted for governance."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4306
+#: includes/Admin/Admin_Page.php:4324
 msgid "Administrator-approved proposals."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4311
-#: includes/Admin/Admin_Page.php:5178
+#: includes/Admin/Admin_Page.php:4329
+#: includes/Admin/Admin_Page.php:5196
 msgid "Rejected"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4312
+#: includes/Admin/Admin_Page.php:4330
 msgid "Proposals rejected before any write happened."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4317
+#: includes/Admin/Admin_Page.php:4335
 msgid "Preflight checks"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4318
+#: includes/Admin/Admin_Page.php:4336
 msgid "Commit preflights run before final execution."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4323
-#: includes/Admin/Admin_Page.php:5181
+#: includes/Admin/Admin_Page.php:4341
+#: includes/Admin/Admin_Page.php:5199
 msgid "Executed"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4324
+#: includes/Admin/Admin_Page.php:4342
 msgid "Approved writes completed through Adapter execution profiles."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4330
+#: includes/Admin/Admin_Page.php:4348
 msgid "Failures that need operator follow-up."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4368
+#: includes/Admin/Admin_Page.php:4386
 msgid "Recent approval and access activity. Use the search bar for common lookups; open advanced filters only when tracing a specific technical request."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4374
+#: includes/Admin/Admin_Page.php:4392
 msgid "Search activity"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4375
+#: includes/Admin/Admin_Page.php:4393
 msgid "Proposal, event, ability, client, or correlation ID"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4378
-#: includes/Admin/Admin_Page.php:4944
+#: includes/Admin/Admin_Page.php:4396
+#: includes/Admin/Admin_Page.php:4962
 msgid "Event type"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4386
-#: includes/Admin/Admin_Page.php:4945
+#: includes/Admin/Admin_Page.php:4404
+#: includes/Admin/Admin_Page.php:4963
 msgid "Time range"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4394
+#: includes/Admin/Admin_Page.php:4412
 msgid "Per page"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4403
+#: includes/Admin/Admin_Page.php:4421
 msgid "Include list/view noise events"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4406
+#: includes/Admin/Admin_Page.php:4424
 msgid "Apply filters"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4407
+#: includes/Admin/Admin_Page.php:4425
 msgid "Reset"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4412
+#: includes/Admin/Admin_Page.php:4430
 msgid "Advanced filters"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4413
+#: includes/Admin/Admin_Page.php:4431
 msgid "Narrow by exact proposal, ability, client, caller, or correlation values."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4421
-#: includes/Admin/Admin_Page.php:4610
-#: includes/Admin/Admin_Page.php:4947
+#: includes/Admin/Admin_Page.php:4439
+#: includes/Admin/Admin_Page.php:4628
+#: includes/Admin/Admin_Page.php:4965
 msgid "Ability ID"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4437
-#: includes/Admin/Admin_Page.php:4615
-#: includes/Admin/Admin_Page.php:4950
+#: includes/Admin/Admin_Page.php:4455
+#: includes/Admin/Admin_Page.php:4633
+#: includes/Admin/Admin_Page.php:4968
 msgid "Correlation ID"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4449
+#: includes/Admin/Admin_Page.php:4467
 msgid "Activity"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4451
-#: includes/Admin/Admin_Page.php:4631
+#: includes/Admin/Admin_Page.php:4469
+#: includes/Admin/Admin_Page.php:4649
 msgid "Context"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4458
+#: includes/Admin/Admin_Page.php:4476
 msgid "No activity matches the current filters."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4511
+#: includes/Admin/Admin_Page.php:4529
 msgid "System event"
 msgstr ""
 
 #. translators: %s: actor id.
-#: includes/Admin/Admin_Page.php:4519
+#: includes/Admin/Admin_Page.php:4537
 #, php-format
 msgid "Actor: %s"
 msgstr ""
 
 #. translators: %s: ability id.
-#: includes/Admin/Admin_Page.php:4530
+#: includes/Admin/Admin_Page.php:4548
 #, php-format
 msgid "Ability: %s"
 msgstr ""
 
 #. translators: 1: app id, 2: caller type.
-#: includes/Admin/Admin_Page.php:4541
+#: includes/Admin/Admin_Page.php:4559
 #, php-format
 msgid "App: %1$s / %2$s"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4542
-#: includes/Admin/Admin_Page.php:4543
+#: includes/Admin/Admin_Page.php:4560
+#: includes/Admin/Admin_Page.php:4561
 msgid "unknown"
 msgstr ""
 
 #. translators: %s: correlation id.
-#: includes/Admin/Admin_Page.php:4553
+#: includes/Admin/Admin_Page.php:4571
 #, php-format
 msgid "Correlation: %s"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4561
-#: includes/Admin/Admin_Page.php:4632
+#: includes/Admin/Admin_Page.php:4579
+#: includes/Admin/Admin_Page.php:4650
 msgid "No extra context"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4607
+#: includes/Admin/Admin_Page.php:4625
 msgid "Event name"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4614
+#: includes/Admin/Admin_Page.php:4632
 msgid "Scope decision"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4679
-#: includes/Admin/Admin_Page.php:4734
-msgid "Request created"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4680
-#: includes/Admin/Admin_Page.php:4735
-msgid "Policy checked"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4681
-#: includes/Admin/Admin_Page.php:4736
-msgid "Request auto-approved"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4682
-#: includes/Admin/Admin_Page.php:4737
-msgid "Request approved"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4683
-#: includes/Admin/Admin_Page.php:4738
-msgid "Request rejected"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4684
-#: includes/Admin/Admin_Page.php:4739
-msgid "Request expired"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4685
-#: includes/Admin/Admin_Page.php:4740
-msgid "Request archived"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4686
-#: includes/Admin/Admin_Page.php:4741
-msgid "Request reopened"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4687
-#: includes/Admin/Admin_Page.php:4742
-msgid "Duplicate request reused"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4688
-#: includes/Admin/Admin_Page.php:4743
-msgid "Request quota blocked"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4689
-#: includes/Admin/Admin_Page.php:4744
-msgid "Plan ingested"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4690
-#: includes/Admin/Admin_Page.php:4747
-msgid "Request executed"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4692
-#: includes/Admin/Admin_Page.php:4749
-msgid "Provisional execution recorded"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4693
-#: includes/Admin/Admin_Page.php:4751
-msgid "Proposal listed"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4694
-#: includes/Admin/Admin_Page.php:4750
-msgid "Proposal viewed"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4695
-#: includes/Admin/Admin_Page.php:4745
-msgid "Commit preflight checked"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4696
-#: includes/Admin/Admin_Page.php:4746
-msgid "Commit preflight failed"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4697
 #: includes/Admin/Admin_Page.php:4752
-msgid "Sensitive read requested"
+msgid "Request created"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4698
 #: includes/Admin/Admin_Page.php:4753
-msgid "Sensitive read approved"
+msgid "Policy checked"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4699
 #: includes/Admin/Admin_Page.php:4754
-msgid "Sensitive read rejected"
+msgid "Request auto-approved"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4700
-#: includes/Admin/Admin_Page.php:4758
-msgid "Sensitive read expired"
+#: includes/Admin/Admin_Page.php:4755
+msgid "Request approved"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4701
-#: includes/Admin/Admin_Page.php:4757
-msgid "Sensitive read consumed"
+#: includes/Admin/Admin_Page.php:4756
+msgid "Request rejected"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4702
-#: includes/Admin/Admin_Page.php:4755
-msgid "Read preflight checked"
+#: includes/Admin/Admin_Page.php:4757
+msgid "Request expired"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4703
-#: includes/Admin/Admin_Page.php:4756
-msgid "Read preflight failed"
+#: includes/Admin/Admin_Page.php:4758
+msgid "Request archived"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4704
 #: includes/Admin/Admin_Page.php:4759
-msgid "Read request listed"
+msgid "Request reopened"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4705
 #: includes/Admin/Admin_Page.php:4760
-msgid "Read request viewed"
+msgid "Duplicate request reused"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4706
 #: includes/Admin/Admin_Page.php:4761
-msgid "Client access created"
+msgid "Request quota blocked"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4707
 #: includes/Admin/Admin_Page.php:4762
-msgid "Client access revoked"
+msgid "Plan ingested"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4708
-#: includes/Admin/Admin_Page.php:4763
-msgid "Client access rotated"
-msgstr ""
-
-#: includes/Admin/Admin_Page.php:4709
-#: includes/Admin/Admin_Page.php:4764
-msgid "Client access listed"
+#: includes/Admin/Admin_Page.php:4765
+msgid "Request executed"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4710
-#: includes/Admin/Admin_Page.php:4765
-msgid "Client access denied"
+#: includes/Admin/Admin_Page.php:4767
+msgid "Provisional execution recorded"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4711
-#: includes/Admin/Admin_Page.php:4766
-msgid "Client rate limited"
+#: includes/Admin/Admin_Page.php:4769
+msgid "Proposal listed"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4712
-#: includes/Admin/Admin_Page.php:4767
-msgid "Local admin consent requested"
+#: includes/Admin/Admin_Page.php:4768
+msgid "Proposal viewed"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4713
-#: includes/Admin/Admin_Page.php:4768
-msgid "Local admin consent completed"
+#: includes/Admin/Admin_Page.php:4763
+msgid "Commit preflight checked"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4714
-#: includes/Admin/Admin_Page.php:4769
-msgid "Local admin consent failed"
+#: includes/Admin/Admin_Page.php:4764
+msgid "Commit preflight failed"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4715
 #: includes/Admin/Admin_Page.php:4770
-msgid "Audit log listed"
+msgid "Sensitive read requested"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4716
 #: includes/Admin/Admin_Page.php:4771
-msgid "Capabilities listed"
+msgid "Sensitive read approved"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4717
 #: includes/Admin/Admin_Page.php:4772
-msgid "Approval policy updated"
+msgid "Sensitive read rejected"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4718
-#: includes/Admin/Admin_Page.php:4773
-msgid "History cleanup requested"
+#: includes/Admin/Admin_Page.php:4776
+msgid "Sensitive read expired"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4719
-#: includes/Admin/Admin_Page.php:4774
-msgid "History cleanup completed"
+#: includes/Admin/Admin_Page.php:4775
+msgid "Sensitive read consumed"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4720
-#: includes/Admin/Admin_Page.php:4775
-msgid "History cleanup failed"
+#: includes/Admin/Admin_Page.php:4773
+msgid "Read preflight checked"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4721
+#: includes/Admin/Admin_Page.php:4774
+msgid "Read preflight failed"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4722
+#: includes/Admin/Admin_Page.php:4777
+msgid "Read request listed"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4723
+#: includes/Admin/Admin_Page.php:4778
+msgid "Read request viewed"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4724
+#: includes/Admin/Admin_Page.php:4779
+msgid "Client access created"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4725
+#: includes/Admin/Admin_Page.php:4780
+msgid "Client access revoked"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4726
+#: includes/Admin/Admin_Page.php:4781
+msgid "Client access rotated"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4727
+#: includes/Admin/Admin_Page.php:4782
+msgid "Client access listed"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4728
+#: includes/Admin/Admin_Page.php:4783
+msgid "Client access denied"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4729
+#: includes/Admin/Admin_Page.php:4784
+msgid "Client rate limited"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4730
+#: includes/Admin/Admin_Page.php:4785
+msgid "Local admin consent requested"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4731
+#: includes/Admin/Admin_Page.php:4786
+msgid "Local admin consent completed"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4732
+#: includes/Admin/Admin_Page.php:4787
+msgid "Local admin consent failed"
 msgstr ""
 
 #: includes/Admin/Admin_Page.php:4733
+#: includes/Admin/Admin_Page.php:4788
+msgid "Audit log listed"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4734
+#: includes/Admin/Admin_Page.php:4789
+msgid "Capabilities listed"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4735
+#: includes/Admin/Admin_Page.php:4790
+msgid "Approval policy updated"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4736
+#: includes/Admin/Admin_Page.php:4791
+msgid "History cleanup requested"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4737
+#: includes/Admin/Admin_Page.php:4792
+msgid "History cleanup completed"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4738
+#: includes/Admin/Admin_Page.php:4793
+msgid "History cleanup failed"
+msgstr ""
+
+#: includes/Admin/Admin_Page.php:4751
 msgid "All events"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4786
+#: includes/Admin/Admin_Page.php:4804
 msgid "All callers"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4789
+#: includes/Admin/Admin_Page.php:4807
 msgid "OpenClaw Adapter"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4802
+#: includes/Admin/Admin_Page.php:4820
 msgid "Last 24 hours"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4803
+#: includes/Admin/Admin_Page.php:4821
 msgid "Last 7 days"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4804
+#: includes/Admin/Admin_Page.php:4822
 msgid "Last 30 days"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4805
+#: includes/Admin/Admin_Page.php:4823
 msgid "All time"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4916
+#: includes/Admin/Admin_Page.php:4934
 msgid "Active activity filters"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4943
+#: includes/Admin/Admin_Page.php:4961
 msgid "Search"
 msgstr ""
 
 #. translators: %s: filter label.
-#: includes/Admin/Admin_Page.php:4965
+#: includes/Admin/Admin_Page.php:4983
 #, php-format
 msgid "Clear %s filter"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4973
+#: includes/Admin/Admin_Page.php:4991
 msgid "Read events"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4974
+#: includes/Admin/Admin_Page.php:4992
 msgid "Included"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:4976
+#: includes/Admin/Admin_Page.php:4994
 msgid "Clear read events filter"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5153
+#: includes/Admin/Admin_Page.php:5171
 msgid "No matching records."
 msgstr ""
 
 #. translators: 1: first row number, 2: last row number, 3: total row count.
-#: includes/Admin/Admin_Page.php:5161
+#: includes/Admin/Admin_Page.php:5179
 #, php-format
 msgid "Showing %1$d-%2$d of %3$d."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5180
+#: includes/Admin/Admin_Page.php:5198
 msgid "Archived"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5308
+#: includes/Admin/Admin_Page.php:5326
 msgid "Review context is ready before approval or rejection."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5310
+#: includes/Admin/Admin_Page.php:5328
 msgid "Approved; Adapter can continue after commit preflight."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5312
+#: includes/Admin/Admin_Page.php:5330
 msgid "Executed outside Core after approval and preflight."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5314
+#: includes/Admin/Admin_Page.php:5332
 msgid "Execution failed after handoff; inspect audit evidence."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5316
+#: includes/Admin/Admin_Page.php:5334
 msgid "Rejected; no execution handoff should continue."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5319
+#: includes/Admin/Admin_Page.php:5337
 msgid "Historical record; no approval action is available."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5322
+#: includes/Admin/Admin_Page.php:5340
 msgid "Review the audit timeline for current state."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5334
+#: includes/Admin/Admin_Page.php:5352
 msgid "This proposal has already been executed outside Core. Use the audit timeline to verify approval, preflight, and execution evidence."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5336
+#: includes/Admin/Admin_Page.php:5354
 msgid "This proposal is approved. Use the audit timeline to verify the approval and preflight handoff."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5338
+#: includes/Admin/Admin_Page.php:5356
 msgid "This proposal reported an execution failure after handoff. Use the audit timeline and Adapter logs for follow-up."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5340
+#: includes/Admin/Admin_Page.php:5358
 msgid "This proposal was rejected and should not continue to execution."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5343
+#: includes/Admin/Admin_Page.php:5361
 msgid "This proposal is kept as a historical record and is not available for approval."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5346
+#: includes/Admin/Admin_Page.php:5364
 msgid "This proposal is no longer pending. Review the audit timeline for lifecycle evidence."
 msgstr ""
 
 #. translators: %s: dependency action ids.
-#: includes/Admin/Admin_Page.php:5540
+#: includes/Admin/Admin_Page.php:5558
 #, php-format
 msgid "Depends on: %s"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5543
+#: includes/Admin/Admin_Page.php:5561
 msgid "No dependency"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5561
-#: includes/Admin/Admin_Page.php:5567
+#: includes/Admin/Admin_Page.php:5579
+#: includes/Admin/Admin_Page.php:5585
 msgid "Blocked"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5567
-#: includes/Admin/Admin_Page.php:5570
+#: includes/Admin/Admin_Page.php:5585
+#: includes/Admin/Admin_Page.php:5588
 msgid "Ready"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5582
+#: includes/Admin/Admin_Page.php:5600
 msgid "Commit requested"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5586
+#: includes/Admin/Admin_Page.php:5604
 msgid "Dry run; Core execution disabled"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5589
+#: includes/Admin/Admin_Page.php:5607
 msgid "Core execution disabled"
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5670
+#: includes/Admin/Admin_Page.php:5688
 msgid "Not applicable"
 msgstr ""
 
 #. translators: %s: remaining duration.
-#: includes/Admin/Admin_Page.php:5682
+#: includes/Admin/Admin_Page.php:5700
 #, php-format
 msgid "Expires in %s"
 msgstr ""
 
 #. translators: %s: remaining duration.
-#: includes/Admin/Admin_Page.php:5711
+#: includes/Admin/Admin_Page.php:5729
 #, php-format
 msgid "%s left"
 msgstr ""
 
 #. translators: %d: minutes.
-#: includes/Admin/Admin_Page.php:5751
+#: includes/Admin/Admin_Page.php:5769
 #, php-format
 msgid "%d min"
 msgstr ""
 
 #. translators: %d: hours.
-#: includes/Admin/Admin_Page.php:5759
+#: includes/Admin/Admin_Page.php:5777
 #, php-format
 msgid "%d hr"
 msgstr ""
 
 #. translators: %d: days.
-#: includes/Admin/Admin_Page.php:5766
+#: includes/Admin/Admin_Page.php:5784
 #, php-format
 msgid "%d days"
 msgstr ""
 
 #. translators: 1: rejected proposal count, 2: failed proposal count.
-#: includes/Admin/Admin_Page.php:5914
+#: includes/Admin/Admin_Page.php:5932
 #, php-format
 msgid "Rejected %1$d proposals, but %2$d could not be rejected; they may have expired or already been decided. Review the queue and retry the remaining items."
 msgstr ""
 
 #. translators: %d: rejected proposal count.
-#: includes/Admin/Admin_Page.php:5925
+#: includes/Admin/Admin_Page.php:5943
 #, php-format
 msgid "Rejected %d proposals."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5939
+#: includes/Admin/Admin_Page.php:5957
 msgid "Proposal approved."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5940
+#: includes/Admin/Admin_Page.php:5958
 msgid "Proposal rejected."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5941
+#: includes/Admin/Admin_Page.php:5959
 msgid "Selected proposals rejected."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5942
+#: includes/Admin/Admin_Page.php:5960
 msgid "Proposal archived."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5943
+#: includes/Admin/Admin_Page.php:5961
 msgid "Proposal reopened for review."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5944
+#: includes/Admin/Admin_Page.php:5962
 msgid "App key disabled."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5945
+#: includes/Admin/Admin_Page.php:5963
 msgid "Client access token created. Copy it below now; it is shown only once."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5946
+#: includes/Admin/Admin_Page.php:5964
 msgid "Approval policy mode updated."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5947
+#: includes/Admin/Admin_Page.php:5965
 msgid "Settings updated."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5948
+#: includes/Admin/Admin_Page.php:5966
 msgid "History cleanup completed."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5949
+#: includes/Admin/Admin_Page.php:5967
 msgid "History cleanup is disabled by the current retention policy."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5950
+#: includes/Admin/Admin_Page.php:5968
 #: includes/Governance/History_Cleanup_Service.php:155
 msgid "History cleanup could not be audited."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5951
+#: includes/Admin/Admin_Page.php:5969
 #: includes/Governance/History_Cleanup_Service.php:185
 msgid "History cleanup could not delete all selected records."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5952
+#: includes/Admin/Admin_Page.php:5970
 msgid "History cleanup completed, but the completion audit could not be stored."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5953
+#: includes/Admin/Admin_Page.php:5971
 msgid "App key is missing or already disabled."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5954
+#: includes/Admin/Admin_Page.php:5972
 msgid "App key could not be disabled."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5955
+#: includes/Admin/Admin_Page.php:5973
 #: includes/Governance/Commit_Preflight_Service.php:123
 #: includes/Governance/Proposal_Service.php:1370
 msgid "Proposal was not found."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5956
+#: includes/Admin/Admin_Page.php:5974
 #: includes/Governance/Proposal_Service.php:1396
 msgid "Proposal expired before a decision was made."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5957
+#: includes/Admin/Admin_Page.php:5975
 #: includes/Governance/Proposal_Service.php:628
 msgid "Only expired proposals can be archived."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5958
+#: includes/Admin/Admin_Page.php:5976
 #: includes/Governance/Proposal_Service.php:679
 msgid "Only expired or archived proposals can be reopened."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5959
+#: includes/Admin/Admin_Page.php:5977
 #: includes/Governance/Proposal_Service.php:1404
 msgid "Only pending proposals can be approved or rejected."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5960
+#: includes/Admin/Admin_Page.php:5978
 #: includes/Governance/Proposal_Service.php:1483
 msgid "Proposal status could not be updated."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5961
+#: includes/Admin/Admin_Page.php:5979
 msgid "Select at least one pending proposal to reject."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5962
+#: includes/Admin/Admin_Page.php:5980
 msgid "The client access token could not be created because its audit record could not be stored. No token was issued; please retry."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5963
+#: includes/Admin/Admin_Page.php:5981
 msgid "Client access tokens must include at least one valid scope."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5964
+#: includes/Admin/Admin_Page.php:5982
 msgid "The client access token secret could not be protected. Please retry."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5965
+#: includes/Admin/Admin_Page.php:5983
 msgid "The client access token could not be stored. Please retry."
 msgstr ""
 
-#: includes/Admin/Admin_Page.php:5968
+#: includes/Admin/Admin_Page.php:5986
 msgid "Proposal action could not be completed."
 msgstr ""
 
 #. translators: 1: failure message, 2: machine-readable error code.
-#: includes/Admin/Admin_Page.php:5972
+#: includes/Admin/Admin_Page.php:5990
 #, php-format
 msgid "%1$s Error code: %2$s"
 msgstr ""
