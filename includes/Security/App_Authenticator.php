@@ -231,7 +231,7 @@ final class App_Authenticator {
 
 		$token = $this->token_from_request( $request );
 		if ( '' === $token ) {
-			return $this->error( 'npcink_governance_core_app_auth_missing', __( 'App authentication is required.', 'npcink-governance-core' ), 401 );
+			return $this->error( 'npcink_governance_core_app_auth_missing', __( 'Administrator authentication or a scoped app key is required.', 'npcink-governance-core' ), 401 );
 		}
 
 		$parts = explode( '.', $token, 3 );
