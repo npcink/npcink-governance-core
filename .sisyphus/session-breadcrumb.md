@@ -5,26 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-08 - Next-stage kickoff: validation program opened, decisions closed, ADR-007 parked
-
-- **Module**: Next-stage planning docs only (no runtime class changed).
-- **Completed**: Three merged PRs executing the accepted next-stage advice:
-  #117 closed briefs Decision 1 as option C (observability hook is the
-  contracted notification seam; Decision 2 stays open on its recorded
-  trigger); #119 opened docs/real-usage-validation.md (4+ week program,
-  weekly ledger with low-usage why-lines, recorded-evidence exit criteria,
-  0.4.0 scope gated on the first feedback batch) plus the smart_guarded
-  widening standard (four clean ledger weeks, any misapproval reverts to
-  manual same day, no end date); #121 parked the ADR-007 runtime behind a
-  ledger-recorded start trigger with the state carried on the ADR-010
-  closeout checkpoint line.
-- **Owner next actions (the real main line)**: run the governed chain on one
-  real operating site weekly and append ledger rows; nothing else fires
-  until the ledger has entries.
-- **Verification**: `composer test:all` exit 0 on every PR; advisory ocr
-  review zero findings pre-publish each time; release package hash at
-  baseline.
-
 # 2026-10-08 - 0.3.0 closeout: pipeline cleared to the tag, stopped on an ADR-011 conflict
 
 - **Module**: Release closeout only (central matrix, cross-repo acceptance
@@ -257,6 +237,33 @@ Older history: `.sisyphus/archive/`.
   the reference-addressing evidence for the result-bound mint, and
   resolved ids would be denied as statically addressed; the provisional
   record never transitions lifecycle state.
+- **Main line unchanged**: the real-usage validation ledger still has
+  zero rows.
+
+# 2026-10-11 - Positioning audit clean; README synced to implementation truth
+
+- **Module**: README docs sync only (no runtime class, no contract change).
+- **Audit**: systematic positioning-vs-implementation check: all 20 REST
+  routes, 5 tables, multisite provisioning, uninstall no-op, ADR-012/013
+  verification-read minting, and the local-admin-consent hook verified
+  against code; boundary scan (final writes, workflow/queue, MCP, gateway
+  catalogs, credentials, product UX, prompts, billing) clean 10/10 with
+  zero wp_remote_* and zero content-write API calls in runtime code.
+  Only staleness found: the README smart_guarded paragraph named 2 of 5
+  candidate classes and the plan-bridge prose listed 13 of 21 allowlisted
+  abilities (approval-policy-evaluator-standard.md and
+  plan-to-proposal-governance.md were already current).
+- **Fix**: README now names all five smart_guarded candidate classes and
+  all 21 allowlisted plan abilities with one-line bounds, repairs the
+  dangling "plan output" sentence in the bridge paragraph, and defers the
+  exhaustive list to plan-to-proposal-governance.md.
+- **Observations recorded (no action taken)**: Admin_Page.php at 5857 lines
+  strains the "minimal admin surfaces" wording though its content is
+  governance-only; Plan_Contract_Validator's per-plan domain knowledge is
+  the ADR-009-accepted stretch point of the governance-layer positioning.
+- **Verification**: `composer test:all` green (PHP lint, static contracts,
+  fail-closed fault injection, PHPUnit 41 tests, reproducible package
+  hash, revision-bound smoke evidence).
 - **Main line unchanged**: the real-usage validation ledger still has
   zero rows.
 
