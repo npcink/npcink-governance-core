@@ -79,6 +79,7 @@ final class Smart_Guarded_Approval_Policy_Strategy implements Approval_Policy_St
 		$article_audio    = $evaluator->article_audio_adoption_evaluation( $ability_id, $input, $preview, $caller );
 		$media_alt        = $evaluator->media_alt_text_evaluation( $ability_id, $input, $preview );
 		$media_derivative = $evaluator->media_derivative_adoption_evaluation( $ability_id, $input, $preview );
+		$flagged_media    = $evaluator->flagged_media_removal_manual_evaluation( $proposal );
 
 		$reasons  = array( 'default_manual_required', 'mode_' . $mode );
 		$decision = Approval_Policy_Evaluator::DECISION_MANUAL_REQUIRED;
@@ -90,7 +91,13 @@ final class Smart_Guarded_Approval_Policy_Strategy implements Approval_Policy_St
 		$reasons = array_merge( $reasons, (array) ( $article_audio['reasons'] ?? array() ) );
 		$reasons = array_merge( $reasons, (array) ( $media_alt['reasons'] ?? array() ) );
 		$reasons = array_merge( $reasons, (array) ( $media_derivative['reasons'] ?? array() ) );
+		$reasons = array_merge( $reasons, (array) ( $flagged_media['reasons'] ?? array() ) );
 
+		if ( ! empty( $flagged_media['matched'] ) ) {
+			// Destructive flagged media removal never enters an auto-approval
+			// lane; the decision stays manual in every mode.
+			return $evaluator->policy_result( $proposal, $mode, $decision, $profile, $reasons, $quota );
+		}
 		if ( ! empty( $cleanup['allowed'] ) ) {
 			$reasons[] = 'guarded_cleanup_candidate';
 			if ( ! $evaluator->caller_can_auto_approve() ) {
@@ -185,7 +192,12 @@ final class Dev_Allow_All_Approval_Policy_Strategy implements Approval_Policy_St
 		$profile  = Approval_Policy_Evaluator::PROFILE_GUARDED;
 		$quota    = array();
 
-		if ( ! $evaluator->dev_allow_all_enabled() ) {
+		$flagged_media = $evaluator->flagged_media_removal_manual_evaluation( $proposal );
+		$reasons       = array_merge( $reasons, (array) ( $flagged_media['reasons'] ?? array() ) );
+
+		if ( ! empty( $flagged_media['matched'] ) ) {
+			$reasons[] = 'dev_allow_all_flagged_media_removal_manual_required';
+		} elseif ( ! $evaluator->dev_allow_all_enabled() ) {
 			$reasons[] = 'dev_allow_all_rejected_disabled';
 		} elseif ( ! $evaluator->caller_can_auto_approve() ) {
 			$reasons[] = 'dev_allow_all_rejected_missing_approval_scope';
@@ -835,6 +847,33 @@ final class Approval_Policy_Evaluator {
 		}
 
 		return $evidence;
+	}
+
+	/**
+	 * Evaluates the flagged media removal manual-approval exclusion.
+	 *
+	 * Flagged media removal is destructive, so it is never eligible for
+	 * conservative auto-approval in any policy mode. Every lane consults this
+	 * helper before auto-approving.
+	 *
+	 * @param array<string,mixed> $proposal Proposal-like payload.
+	 * @return array<string,mixed> Match state plus manual-required reasons.
+	 */
+	public function flagged_media_removal_manual_evaluation( array $proposal ): array {
+		if ( ! Plan_Contract_Validator::is_flagged_media_removal_proposal( $proposal ) ) {
+			return array(
+				'matched' => false,
+				'reasons' => array(),
+			);
+		}
+
+		return array(
+			'matched' => true,
+			'reasons' => array(
+				'flagged_media_removal_manual_required',
+				'flagged_media_removal_destructive_never_auto_approved',
+			),
+		);
 	}
 
 	/**

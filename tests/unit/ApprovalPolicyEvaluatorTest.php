@@ -40,6 +40,95 @@ final class ApprovalPolicyEvaluatorTest extends TestCase {
 		$this->assertSame( 'smart_guarded', Approval_Policy_Evaluator::sanitize_policy_mode( 'Smart_Guarded' ) );
 	}
 
+	public function testFlaggedMediaRemovalStaysManualInSmartGuarded(): void {
+		$GLOBALS['npcink_unit_options']['npcink_governance_core_approval_policy_mode'] = 'smart_guarded';
+
+		$result = $this->evaluator->evaluate( $this->flagged_media_removal_proposal() );
+
+		$this->assertSame( 'manual_required', $result['policy_decision'] );
+		$this->assertContains( 'flagged_media_removal_manual_required', $result['policy_reasons'] );
+		$this->assertContains( 'flagged_media_removal_destructive_never_auto_approved', $result['policy_reasons'] );
+	}
+
+	public function testFlaggedMediaRemovalStaysManualInDevAllowAll(): void {
+		$GLOBALS['npcink_unit_options']['npcink_governance_core_approval_policy_mode'] = 'dev_allow_all';
+
+		$result = $this->evaluator->evaluate( $this->flagged_media_removal_proposal() );
+
+		$this->assertSame( 'manual_required', $result['policy_decision'], 'the flagged media exclusion fires even before the dev allow-all switch is consulted' );
+		$this->assertContains( 'dev_allow_all_flagged_media_removal_manual_required', $result['policy_reasons'] );
+		$this->assertNotContains( 'dev_allow_all_rejected_disabled', $result['policy_reasons'] );
+	}
+
+	public function testFlaggedMediaRemovalStaysManualWhenOnlyThePreviewContextMatches(): void {
+		$GLOBALS['npcink_unit_options']['npcink_governance_core_approval_policy_mode'] = 'smart_guarded';
+
+		$proposal = $this->flagged_media_removal_proposal();
+		unset( $proposal['caller'] );
+		// Avoid the direct delete-attachment ability match so only the
+		// preview-context detection branch can trigger the manual gate.
+		$proposal['ability_id'] = 'npcink-abilities-toolkit/trash-post';
+
+		$result = $this->evaluator->evaluate( $proposal );
+
+		$this->assertSame( 'manual_required', $result['policy_decision'], 'the preview branch context alone keeps the destructive deletion manual' );
+		$this->assertContains( 'flagged_media_removal_manual_required', $result['policy_reasons'] );
+	}
+
+	public function testDirectDeleteAttachmentProposalStaysManualInDevAllowAll(): void {
+		$GLOBALS['npcink_unit_options']['npcink_governance_core_approval_policy_mode'] = 'dev_allow_all';
+
+		$proposal = array(
+			'ability_id' => 'npcink-abilities-toolkit/delete-attachment',
+			'input'      => array(
+				'attachment_id'          => 42,
+				'deletion_policy_branch' => 'illegal_content_no_backup',
+				'reason'                 => 'operator review',
+				'idempotency_key'        => 'direct-delete-42',
+			),
+			'preview'    => array(),
+			'caller'     => array( 'source' => 'openclaw_adapter' ),
+		);
+
+		$result = $this->evaluator->evaluate( $proposal );
+
+		$this->assertSame( 'manual_required', $result['policy_decision'], 'a direct delete-attachment proposal never enters the dev allow-all lane' );
+		$this->assertContains( 'dev_allow_all_flagged_media_removal_manual_required', $result['policy_reasons'] );
+		$this->assertNotContains( 'dev_allow_all_auto_approved', $result['policy_reasons'] );
+	}
+
+	/**
+	 * Returns a flagged media removal proposal-like payload.
+	 *
+	 * @return array<string,mixed>
+	 */
+	private function flagged_media_removal_proposal(): array {
+		return array(
+			'ability_id' => 'npcink-abilities-toolkit/delete-attachment',
+			'input'      => array(
+				'write_actions' => array(
+					array(
+						'target_ability_id' => 'npcink-abilities-toolkit/delete-attachment',
+						'input'             => array(
+							'attachment_id'          => 42,
+							'deletion_policy_branch' => 'illegal_content_no_backup',
+						),
+					),
+				),
+			),
+			'preview'    => array(
+				'flagged_media_removal' => array(
+					'attachment_id'          => 42,
+					'deletion_policy_branch' => 'illegal_content_no_backup',
+				),
+			),
+			'caller'     => array(
+				'source'          => 'plan_to_proposal_batch',
+				'plan_ability_id' => 'npcink-abilities-toolkit/build-flagged-media-removal-plan',
+			),
+		);
+	}
+
 	public function testCurrentPolicyModeReadsStoredOptionWithFallback(): void {
 		$this->assertSame( 'manual', Approval_Policy_Evaluator::current_policy_mode(), 'missing option defaults to manual' );
 

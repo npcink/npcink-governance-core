@@ -428,6 +428,70 @@ Optional expected current path, MIME type, MD5, SHA256, conflict mode, and
 backup suffix guards may be preserved in action input for Adapter/host
 execution after Core approval and commit preflight.
 
+## Flagged Media Removal Handoff
+
+`npcink-abilities-toolkit/build-flagged-media-removal-plan` is the bounded plan
+for deleting one operator-confirmed flagged attachment. It is not a content
+classifier, not a bulk deletion loop, and not a backup or restore engine. The
+deletion callback, backup, lineage, and restore machinery stay in
+`npcink-abilities-toolkit`; flagged-media review sets stay suggestion-only in
+`npcink-workflow-toolbox`; content classification stays in the Cloud runtime.
+
+Core accepts it only when it declares `artifact_type=flagged_media_removal_plan`,
+`proposal_mode=batch`, and `batch_approval=true`, so one reviewed intent becomes
+one Core batch proposal. The plan must carry a `flagged_media_removal` review
+context for exactly one attachment:
+
+- `attachment_id` (one existing attachment);
+- `deletion_policy_branch`: `governed_with_backup` or `illegal_content_no_backup`;
+- `reason`: the operator review reason, bounded length;
+- `idempotency_key`: unique per requested deletion;
+- branch evidence, exclusive to the declared branch:
+  - `governed_with_backup` requires `backup_evidence` with `location`,
+    `retention_window`, and `restore_token_contract` copied from the Toolkit
+    dry-run preview, and must not carry a no-backup attestation;
+  - `illegal_content_no_backup` requires a confirmed `no_backup_attestation`
+    (`confirmed=true` plus the operator-confirmed statement) copied from the
+    ability dry-run preview, and must not declare any backup evidence.
+
+The action set must contain exactly one dry-run
+`npcink-abilities-toolkit/delete-attachment` action whose `attachment_id`,
+`deletion_policy_branch`, `reason`, and `idempotency_key` match the review
+context, plus at most 10 reference removal patches:
+`npcink-abilities-toolkit/patch-post-content` actions with a static `post_id`
+and `npcink-abilities-toolkit/patch-setting-value` actions with a reviewed
+`target_type`/`target_name`. Every patch operation must be `op=replace` on one
+reviewed absolute media URL with `replace=""` — empty or fuzzy reference
+patches are rejected, not widened. Reference patches may be absent when the
+attachment has an empty bounded reference set.
+
+Governance rules:
+
+- flagged media removal is destructive and stays `manual_required` in every
+  approval policy mode, including `smart_guarded` and `dev_allow_all`;
+- the same exclusion covers direct proposals whose `ability_id` is
+  `npcink-abilities-toolkit/delete-attachment`: they stay manual in every
+  mode and must carry the branch evidence as flat proposal input
+  (`deletion_policy_branch` plus `backup_evidence` or
+  `no_backup_attestation`), because commit preflight applies the same
+  branch-consistency check to both shapes;
+- approving an `illegal_content_no_backup` plan requires the recorded no-backup
+  attestation; missing or unconfirmed attestations block the approval
+  transition;
+- commit preflight revalidates the branch-consistent evidence (backup evidence
+  fields for `governed_with_backup`, confirmed attestation plus no declared
+  backup artifacts for `illegal_content_no_backup`) before any Adapter
+  handoff;
+- audit events record the deletion description (attachment id, branch, reason,
+  operator, correlation id) without retaining the deleted content or reference
+  URL lists.
+
+Core stores proposal truth and `preview.flagged_media_removal` only. It never
+classifies content, creates backups, deletes attachments, restores media, or
+executes WordPress writes. The Adapter still needs an explicit execution
+profile for `npcink-abilities-toolkit/delete-attachment` before any client may
+execute an approved plan.
+
 ## Proposal Preview Contract
 
 Generated proposal previews preserve:
@@ -488,8 +552,9 @@ Plan intake fails closed when:
 
 Some batch review shapes have narrower caps than the global plan limit. Media
 optimization plans and block theme site plans currently accept at most 10
-actions each so a single approval remains reviewable and the intake path stays
-bounded.
+actions each, and flagged media removal plans accept at most 10 reference
+removal patches beyond the single delete action, so a single approval remains
+reviewable and the intake path stays bounded.
 
 `manual_review` and `skipped_destructive_candidates` are never dropped. They
 are copied into generated proposal warnings and blocked item context.

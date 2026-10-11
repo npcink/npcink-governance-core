@@ -1163,6 +1163,45 @@ final class Proposal_Service {
 	}
 
 	/**
+	 * Gates approval of illegal_content_no_backup flagged media removal on the
+	 * recorded no-backup attestation.
+	 *
+	 * Intake already rejects plans without the attestation, so this is
+	 * defense in depth for records that reached the pending queue another
+	 * way.
+	 *
+	 * @param array<string,mixed> $proposal Existing proposal row.
+	 * @return WP_Error|null Error when approval must stay blocked.
+	 */
+	private function flagged_media_attestation_gate( array $proposal ) {
+		if ( ! Plan_Contract_Validator::is_flagged_media_removal_proposal( $proposal ) ) {
+			return null;
+		}
+
+		$branch     = Plan_Contract_Validator::flagged_media_removal_branch( $proposal );
+		if ( Plan_Contract_Validator::DELETION_POLICY_BRANCH_ILLEGAL_NO_BACKUP !== $branch ) {
+			return null;
+		}
+
+		$context     = Plan_Contract_Validator::flagged_media_removal_context( $proposal );
+		$attestation = is_array( $context['no_backup_attestation'] ?? null ) ? $context['no_backup_attestation'] : array();
+		$confirmed   = true === ( $attestation['confirmed'] ?? null );
+		$statement   = is_string( $attestation['statement'] ?? null ) ? trim( $attestation['statement'] ) : '';
+		if ( $confirmed && '' !== $statement ) {
+			return null;
+		}
+
+		return new WP_Error(
+			'npcink_governance_core_flagged_media_attestation_required',
+			__( 'illegal_content_no_backup flagged media removal needs the recorded no-backup attestation before approval.', 'npcink-governance-core' ),
+			array(
+				'status'                => 409,
+				'deletion_policy_branch' => $branch,
+			)
+		);
+	}
+
+	/**
 	 * Builds public-safe audit metadata for execution result records.
 	 *
 	 * @param array<string,mixed> $proposal Proposal row after status update.
@@ -1172,7 +1211,7 @@ final class Proposal_Service {
 	 * @return array<string,mixed>
 	 */
 	private function execution_result_audit_metadata( array $proposal, array $metadata, string $previous_status, string $target_status ): array {
-		return array(
+		$audit_metadata = array(
 			'ability_id'            => sanitize_text_field( (string) ( $proposal['ability_id'] ?? '' ) ),
 			'status'                => $target_status,
 			'previous_status'       => sanitize_key( $previous_status ),
@@ -1189,6 +1228,37 @@ final class Proposal_Service {
 			'core_proxy_execute'    => false,
 			'write_execution_owner' => 'adapter_after_core_preflight',
 		);
+
+		if ( Plan_Contract_Validator::is_flagged_media_removal_proposal( $proposal ) ) {
+			$audit_metadata['flagged_media_removal'] = $this->flagged_media_execution_audit_description( $proposal );
+		}
+
+		return $audit_metadata;
+	}
+
+	/**
+	 * Builds the deletion-description audit block for executed flagged media removal.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return array<string,mixed>
+	 */
+	private function flagged_media_execution_audit_description( array $proposal ): array {
+		$context = Plan_Contract_Validator::flagged_media_removal_context( $proposal );
+		$branch  = Plan_Contract_Validator::flagged_media_removal_branch( $proposal );
+
+		$description = array(
+			'attachment_id'          => absint( $context['attachment_id'] ?? 0 ),
+			'deletion_policy_branch' => $branch,
+			'reason'                 => sanitize_textarea_field( (string) ( $context['reason'] ?? '' ) ),
+		);
+
+		if ( Plan_Contract_Validator::DELETION_POLICY_BRANCH_GOVERNED_WITH_BACKUP === $branch ) {
+			$description['backup_evidence_present'] = isset( $context['backup_evidence'] );
+		} elseif ( Plan_Contract_Validator::DELETION_POLICY_BRANCH_ILLEGAL_NO_BACKUP === $branch ) {
+			$description['no_backup_artifacts_created'] = true;
+		}
+
+		return $description;
 	}
 
 	/**
@@ -1407,6 +1477,13 @@ final class Proposal_Service {
 					'proposal_status' => (string) ( $existing['status'] ?? '' ),
 				)
 			);
+		}
+
+		if ( 'approved' === $status ) {
+			$attestation_error = $this->flagged_media_attestation_gate( $existing );
+			if ( null !== $attestation_error ) {
+				return $attestation_error;
+			}
 		}
 
 		$proposal = $this->proposals->update_status_when( $proposal_id, Proposal_Repository::STATUS_PENDING, $status );

@@ -222,17 +222,21 @@ final class Plan_Proposal_Service {
 			}
 		}
 
+		$plan_ingest_metadata = array(
+			'plan_ability_id'  => $plan_ability_id,
+			'batch_id'         => $batch_id,
+			'action_count'     => count( $write_actions ),
+			'proposal_count'   => count( $created ),
+			'blocked_count'    => count( $blocked_items ),
+			'needs_input_count' => count( $needs_input ),
+			'commit_execution' => false,
+		);
+		if ( Plan_Contract_Validator::FLAGGED_MEDIA_REMOVAL_PLAN_ABILITY === $plan_ability_id ) {
+			$plan_ingest_metadata['flagged_media_removal'] = $this->flagged_media_removal_audit_description( $plan );
+		}
 		$plan_ingested_event_id = $this->audit->record(
 			'proposal.plan_ingested',
-			array(
-				'plan_ability_id'  => $plan_ability_id,
-				'batch_id'         => $batch_id,
-				'action_count'     => count( $write_actions ),
-				'proposal_count'   => count( $created ),
-				'blocked_count'    => count( $blocked_items ),
-				'needs_input_count' => count( $needs_input ),
-				'commit_execution' => false,
-			)
+			$plan_ingest_metadata
 		);
 		if ( '' === $plan_ingested_event_id ) {
 			$this->delete_created_proposals( $created );
@@ -851,6 +855,9 @@ final class Plan_Proposal_Service {
 		if ( 'npcink-abilities-toolkit/build-article-audio-adoption-plan' === $plan_ability_id ) {
 			$preview['article_audio_adoption'] = $this->article_audio_adoption_preview( $plan );
 		}
+		if ( Plan_Contract_Validator::FLAGGED_MEDIA_REMOVAL_PLAN_ABILITY === $plan_ability_id ) {
+			$preview['flagged_media_removal'] = $this->flagged_media_removal_preview( $plan );
+		}
 		$preview = array_merge( $preview, $this->block_editor_quality_preview( $plan ) );
 
 		$title = sprintf(
@@ -1078,6 +1085,9 @@ final class Plan_Proposal_Service {
 		if ( 'npcink-abilities-toolkit/build-article-audio-adoption-plan' === $plan_ability_id ) {
 			$preview['article_audio_adoption'] = $this->article_audio_adoption_preview( $plan );
 		}
+		if ( Plan_Contract_Validator::FLAGGED_MEDIA_REMOVAL_PLAN_ABILITY === $plan_ability_id ) {
+			$preview['flagged_media_removal'] = $this->flagged_media_removal_preview( $plan );
+		}
 		$preview = array_merge( $preview, $this->block_editor_quality_preview( $plan ) );
 		$summary = sprintf(
 			/* translators: 1: plan ability id, 2: action count. */
@@ -1087,6 +1097,9 @@ final class Plan_Proposal_Service {
 		);
 		if ( 'npcink-abilities-toolkit/build-media-optimization-plan' === $plan_ability_id ) {
 			$summary = $this->media_optimization_proposal_summary( $plan, count( $batch_actions ), $summary );
+		}
+		if ( Plan_Contract_Validator::FLAGGED_MEDIA_REMOVAL_PLAN_ABILITY === $plan_ability_id ) {
+			$summary = $this->flagged_media_removal_proposal_summary( $plan, count( $batch_actions ), $summary );
 		}
 
 		return array(
@@ -1257,6 +1270,150 @@ final class Plan_Proposal_Service {
 		$lines[] = __( 'Preserve the original file as a local backup for rollback.', 'npcink-governance-core' );
 
 		return implode( "\n", array_values( array_filter( $lines ) ) );
+	}
+
+	/**
+	 * Builds the bounded flagged media removal review context.
+	 *
+	 * The context carries the deletion description and branch evidence only;
+	 * deleted media content and reference URL lists stay out of the proposal
+	 * record.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function flagged_media_removal_preview( array $plan ): array {
+		$deletion = is_array( $plan['flagged_media_removal'] ?? null ) ? $plan['flagged_media_removal'] : array();
+		$branch   = sanitize_key( (string) ( $deletion['deletion_policy_branch'] ?? '' ) );
+
+		$post_reference_count    = 0;
+		$setting_reference_count = 0;
+		foreach ( (array) ( $plan['write_actions'] ?? array() ) as $action ) {
+			if ( ! is_array( $action ) ) {
+				continue;
+			}
+			$target = (string) ( $action['target_ability_id'] ?? '' );
+			if ( 'npcink-abilities-toolkit/patch-post-content' === $target ) {
+				++$post_reference_count;
+			} elseif ( 'npcink-abilities-toolkit/patch-setting-value' === $target ) {
+				++$setting_reference_count;
+			}
+		}
+
+		$context = array(
+			'deletion_scope'            => 'single_attachment',
+			'attachment_id'             => absint( $deletion['attachment_id'] ?? 0 ),
+			'deletion_policy_branch'    => $branch,
+			'reason'                    => sanitize_textarea_field( (string) ( $deletion['reason'] ?? '' ) ),
+			'bulk_removal'              => false,
+			'post_reference_patches'    => $post_reference_count,
+			'setting_reference_patches' => $setting_reference_count,
+		);
+
+		if ( Plan_Contract_Validator::DELETION_POLICY_BRANCH_GOVERNED_WITH_BACKUP === $branch ) {
+			$evidence = is_array( $deletion['backup_evidence'] ?? null ) ? $deletion['backup_evidence'] : array();
+			$context['backup_evidence'] = array(
+				'location'                => sanitize_text_field( (string) ( $evidence['location'] ?? '' ) ),
+				'retention_window'        => sanitize_text_field( (string) ( $evidence['retention_window'] ?? '' ) ),
+				'restore_token_contract'  => sanitize_text_field( (string) ( $evidence['restore_token_contract'] ?? '' ) ),
+			);
+		} elseif ( Plan_Contract_Validator::DELETION_POLICY_BRANCH_ILLEGAL_NO_BACKUP === $branch ) {
+			$attestation = is_array( $deletion['no_backup_attestation'] ?? null ) ? $deletion['no_backup_attestation'] : array();
+			$context['no_backup_attestation'] = array(
+				'confirmed' => true === (bool) ( $attestation['confirmed'] ?? false ),
+				'statement' => sanitize_textarea_field( (string) ( $attestation['statement'] ?? '' ) ),
+			);
+		}
+
+		return $context;
+	}
+
+	/**
+	 * Builds a human-readable approval summary for flagged media removal batches.
+	 *
+	 * @param array<string,mixed> $plan Plan payload.
+	 * @param int                 $action_count Batch action count.
+	 * @param string              $fallback Fallback summary.
+	 * @return string
+	 */
+	private function flagged_media_removal_proposal_summary( array $plan, int $action_count, string $fallback ): string {
+		$context = $this->flagged_media_removal_preview( $plan );
+		$attachment_id = absint( $context['attachment_id'] ?? 0 );
+		$branch        = sanitize_key( (string) ( $context['deletion_policy_branch'] ?? '' ) );
+		if ( $attachment_id <= 0 || '' === $branch ) {
+			return $fallback;
+		}
+
+		$lines   = array();
+		$lines[] = sprintf(
+			/* translators: 1: attachment id, 2: deletion policy branch. */
+			__( 'Delete attachment %1$d under the %2$s deletion policy branch.', 'npcink-governance-core' ),
+			$attachment_id,
+			$branch
+		);
+
+		$reason = (string) ( $context['reason'] ?? '' );
+		if ( '' !== $reason ) {
+			$lines[] = sprintf(
+				/* translators: %s: operator review reason. */
+				__( 'Operator review reason: %s.', 'npcink-governance-core' ),
+				$reason
+			);
+		}
+
+		$post_reference_count    = absint( $context['post_reference_patches'] ?? 0 );
+		$setting_reference_count = absint( $context['setting_reference_patches'] ?? 0 );
+		if ( $post_reference_count > 0 || $setting_reference_count > 0 ) {
+			$lines[] = sprintf(
+				/* translators: 1: post content patch count, 2: setting patch count. */
+				__( 'Remove deleted media references through %1$d post-content patch(es) and %2$d setting patch(es).', 'npcink-governance-core' ),
+				$post_reference_count,
+				$setting_reference_count
+			);
+		}
+
+		if ( Plan_Contract_Validator::DELETION_POLICY_BRANCH_GOVERNED_WITH_BACKUP === $branch ) {
+			$evidence = is_array( $context['backup_evidence'] ?? null ) ? $context['backup_evidence'] : array();
+			$lines[] = sprintf(
+				/* translators: 1: backup location, 2: retention window. */
+				__( 'Backup evidence: %1$s, retained for %2$s; restore stays with the Toolkit restore ability.', 'npcink-governance-core' ),
+				(string) ( $evidence['location'] ?? __( 'reviewed location', 'npcink-governance-core' ) ),
+				(string) ( $evidence['retention_window'] ?? __( 'the reviewed window', 'npcink-governance-core' ) )
+			);
+		} elseif ( Plan_Contract_Validator::DELETION_POLICY_BRANCH_ILLEGAL_NO_BACKUP === $branch ) {
+			$lines[] = __( 'No-backup attestation recorded: the execution path creates no backup, local copy, or Cloud artifact.', 'npcink-governance-core' );
+		}
+
+		$lines[] = sprintf(
+			/* translators: %d: action count. */
+			__( 'Create one Core approval for %d ordered action(s); final execution remains outside Core.', 'npcink-governance-core' ),
+			$action_count
+		);
+
+		return implode( "\n", array_values( array_filter( $lines ) ) );
+	}
+
+	/**
+	 * Builds the deletion-description audit block for flagged media intake.
+	 *
+	 * The audit rule is description-only: attachment id, branch, reason, and
+	 * evidence presence. Deleted content and reference URLs are never
+	 * recorded.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return array<string,mixed>
+	 */
+	private function flagged_media_removal_audit_description( array $plan ): array {
+		$context = $this->flagged_media_removal_preview( $plan );
+
+		return array(
+			'attachment_id'                    => absint( $context['attachment_id'] ?? 0 ),
+			'deletion_policy_branch'           => sanitize_key( (string) ( $context['deletion_policy_branch'] ?? '' ) ),
+			'reason'                           => (string) ( $context['reason'] ?? '' ),
+			'reference_patch_count'            => absint( $context['post_reference_patches'] ?? 0 ) + absint( $context['setting_reference_patches'] ?? 0 ),
+			'backup_evidence_present'          => isset( $context['backup_evidence'] ),
+			'no_backup_attestation_confirmed'  => true === (bool) ( $context['no_backup_attestation']['confirmed'] ?? false ),
+		);
 	}
 
 	/**

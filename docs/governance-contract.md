@@ -107,6 +107,8 @@ Core may consume these read-only planning ability outputs:
 - `npcink-toolbox/build-site-knowledge-review-plan`
 - `npcink-toolbox/build-nightly-inspection-review-plan`
 - `npcink-abilities-toolkit/build-content-metadata-apply-plan`
+- `npcink-abilities-toolkit/build-media-alt-apply-plan`
+- `npcink-abilities-toolkit/build-flagged-media-removal-plan`
 
 Plan intake does not execute the plan ability and does not execute target write
 abilities. It accepts a successful plan payload, validates that the planning
@@ -224,6 +226,23 @@ single `media_rename_plan` for exactly one attachment and one
 `npcink-abilities-toolkit/rename-media-file` action with a reviewed `target_file_name`.
 Filename generation rules stay in OpenClaw/local product policy; Core stores
 proposal truth and approval context only.
+
+The flagged media removal handoff is the governed shape for the operator intent
+"delete this flagged attachment." Core accepts
+`npcink-abilities-toolkit/build-flagged-media-removal-plan` only as one
+`flagged_media_removal_plan` batch proposal for exactly one attachment: one
+`npcink-abilities-toolkit/delete-attachment` action carrying the operator-chosen
+`deletion_policy_branch`, plus bounded exact-match reference removal patches
+through `npcink-abilities-toolkit/patch-post-content` and
+`npcink-abilities-toolkit/patch-setting-value`. Flagged media removal is
+destructive and never eligible for auto-approval in any policy mode; every
+proposal is `manual_required`. `governed_with_backup` plans must carry the
+Toolkit dry-run backup evidence (location, retention window, restore token
+contract) and `illegal_content_no_backup` plans must carry the operator
+no-backup attestation before approval and commit preflight. Core validates the
+presence and shape of the branch evidence and stores `preview.flagged_media_removal`
+only; it never classifies content, creates backups, deletes attachments, or
+executes WordPress writes.
 
 The article optimization apply handoff is the governed shape for the user
 intent "optimize this existing article" after the local Toolkit has produced a
