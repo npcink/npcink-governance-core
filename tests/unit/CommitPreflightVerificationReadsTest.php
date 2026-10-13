@@ -97,4 +97,23 @@ final class CommitPreflightVerificationReadsTest extends TestCase {
 
 		$this->assertSame( array( 'granted' => array(), 'denied' => array() ), $result );
 	}
+	/** One-action batches keep the first ability id but store input under write_actions. */
+	public function test_flagged_batch_uses_action_input_and_retains_direct_evidence_checks(): void {
+		$input = array( 'attachment_id' => 42, 'deletion_policy_branch' => 'governed_with_backup' );
+		$context = $input + array( 'backup_evidence' => array( 'location' => 'local/backup', 'retention_window' => '30 days', 'restore_contract' => 'npcink-abilities-toolkit/restore-media-backup' ) );
+		$batch = array(
+			'ability_id' => 'npcink-abilities-toolkit/delete-attachment',
+			'input' => array( 'write_actions' => array( array( 'target_ability_id' => 'npcink-abilities-toolkit/delete-attachment', 'input' => $input ) ) ),
+			'preview' => array( 'flagged_media_removal' => $context ),
+		);
+		$result = $this->invoke( 'flagged_media_branch_evidence_preflight', array( $batch ) );
+		$this->assertTrue( $result['verified'], 'a delete-first batch must compare the nested action branch' );
+		$batch['input']['write_actions'][0]['input']['deletion_policy_branch'] = 'illegal_content_no_backup';
+		$this->assertFalse( $this->invoke( 'flagged_media_branch_evidence_preflight', array( $batch ) )['verified'] );
+		$direct = array( 'ability_id' => 'npcink-abilities-toolkit/delete-attachment', 'input' => $context );
+		$this->assertTrue( $this->invoke( 'flagged_media_branch_evidence_preflight', array( $direct ) )['verified'] );
+		unset( $direct['input']['backup_evidence'] );
+		$this->assertFalse( $this->invoke( 'flagged_media_branch_evidence_preflight', array( $direct ) )['verified'] );
+	}
+
 }
