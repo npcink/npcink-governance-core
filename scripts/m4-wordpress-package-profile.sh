@@ -63,6 +63,8 @@ fi
 mkdir -p "$CACHE_DIR"
 cp "$CORE_ZIP" "$CORE_CACHE_ZIP"
 cp "$ROOT_DIR/tests/smoke-wp.php" "$CORE_SMOKE_FILE"
+mkdir -p "$CACHE_DIR/smoke-wp"
+cp "$ROOT_DIR/tests/smoke-wp/"*.php "$CACHE_DIR/smoke-wp/"
 
 OFFICIAL_STACK_PROJECT_NAME="$PROJECT_NAME" \
 OFFICIAL_STACK_HTTP_PORT="$HTTP_PORT" \

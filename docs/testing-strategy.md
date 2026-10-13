@@ -25,7 +25,9 @@ Npcink Governance Core starts with a small but strict test pyramid.
 
 ## Static Contract Rules
 
-Static contracts live in `tests/run.php`.
+Static contracts enter through `tests/run.php`; ordered modules under
+`tests/contracts/` separate project/docs, governance, security, REST, plans,
+audit/admin, and runtime boundaries.
 
 Static contracts and behavioral unit tests have different jobs. Use static
 contracts for boundary, drift, routing, and documentation pins — things that
@@ -81,7 +83,9 @@ contract.
 
 ## Fail-Closed Fault Injection Rules
 
-Fail-closed fault injection lives in `tests/fail-closed.php`.
+Fail-closed fault injection enters through `tests/fail-closed.php`; modules
+under `tests/fail-closed/` separate WordPress/database stubs, fixtures, and
+REST, plan, sensitive-read, lifecycle, app-key, and rate-limit cases.
 
 Use it for governance persistence paths where returning success without durable
 evidence would be unsafe:
@@ -125,7 +129,12 @@ fault injection.
 
 ## WordPress Smoke Rules
 
-WordPress smoke lives in `tests/smoke-wp.php`.
+WordPress smoke enters through `tests/smoke-wp.php`; modules under
+`tests/smoke-wp/` separate helpers, activation, capabilities, proposals,
+plans, approval policy, execution handoff, audit, and cleanup assertions.
+Explicit requires preserve statement order and the WP-CLI calling scope.
+Packaged smoke transport copies both the entrypoint and its modules; all
+Composer commands and aggregate failure exits remain unchanged.
 The wrapper `tests/smoke-wp.sh` owns LocalWP environment preflight diagnostics
 for WP-CLI, Local PHP, database socket, plugin symlink, and
 `npcink-abilities-toolkit` path assumptions.
