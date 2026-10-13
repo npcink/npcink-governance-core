@@ -74,30 +74,43 @@ chain passed signed HTTPS acceptance; Core admin view extraction (#123) and
 ordered test-runner extraction (#105) are merged. The Adapter signed draft
 fixture now has a strict provider-log assertion merged in Adapter #115. M4
 Ollama (`qwen2.5:1.5b`) passed the strict positive signed fixture after a focused
-Adapter write-dispatch context fix (source `31a7ec0`). Real persisted success
+Adapter write-dispatch context fix (#116, merged `7b8431c`). Real persisted success
 logs match proposal, preflight correlation, Adapter request, and nested Core
 identifiers. The temporary SDK loader, draft, cache, and SSH tunnel were cleaned.
 The existing Cloud scene can return text without entering the AI plugin SDK
 logging transporter; a missing log remains a failure. This fixture is local
 engineering evidence, not an actual user or human browser approval session.
 
+The remaining local acceptance gates have also advanced:
+
+- Adapter owner confirmed actual administrator UI approval, signed flagged
+  attachment deletion, backup/readback, duplicate refusal, and fixture cleanup.
+- Merged Adapter `7b8431c` passed complete `accept:local-dev`: WordPress smoke
+  without grant skips, bounded limit 400, package install/restore, real persisted
+  Ollama log correlation, and both HTTPS media deletion branches with restore.
+  Release verification reported Plugin Check zero errors; six CLI tests passed.
+- Core #161 merged `391c291`: the M4 profile derives its expected installed
+  version from candidate metadata. Both WordPress 7.0/PHP 8.0 and 8.5 packaged
+  profiles passed 1,614 assertions on that exact merge revision; temporary
+  Docker projects were removed. Source gates passed 55 tests/207 assertions.
+- OCR did not deliver valid verdicts: Adapter local review timed out after
+  inspecting code and CI failed both rounds with Provider errors; Core's focused
+  local review also timed out. Exceptions are recorded in the PRs; required CI
+  passed. No clean AI review is claimed.
+
 Next local gates, in order:
 
-1. Complete protected publication of the verified Adapter log-context fix;
-   keep provider transport and configuration outside Core.
-2. Reconcile the M4 package profile's hardcoded Core `0.2.0` expectation with
-   the current `0.3.0` plugin/candidate metadata (#4 reliability follow-up),
-   before running packaged compatibility acceptance.
-3. Run the separately chosen human admin approval UI acceptance against the
-   already-passing signed media lifecycle.
-4. Run the central matrix against clean intended source revisions before a
-   release candidate closeout. The 2026-10-13 09:05:54 UTC matrix passed six
-   repositories; AI Cloud's parallel dirty workspace is `needs_validation`.
-   Cloud Addon's reported Scope output was a negative-test fixture, not a
-   failing gate; its gate passed. The later 09:09:38 status-only snapshot
-   found two AI Cloud dirty files and did not rerun gates.
-5. Keep the real-usage program below ready until an operating site and actual
-   users exist. Automated fixture runs do not count as ledger usage.
+1. Let the Cloud Addon owner fix its settings-page complexity ratchet failure,
+   and the AI Cloud owner fix its exact-revision backend CI failure. The central
+   matrix at 10:20:34 UTC passed Toolkit/Core/Adapter/Toolbox/Eval Lab, but failed
+   these two repositories. This supersedes the earlier six-pass matrix; the
+   earlier Cloud Addon Scope message was expected negative-test output.
+2. Re-run the central matrix with `--fail-on-dirty` on the clean intended source
+   revisions after both owners finish, then decide a release candidate. No
+   release tag/SVN publication is implied by local development acceptance.
+3. Keep the real-usage program below ready until an operating site and actual
+   users exist. Automated fixture runs and administrator acceptance do not
+   count as real-user ledger usage. Weekly docs-only closeout stays batched.
 
 The current stage's product validation program is
 [Real Usage Validation](real-usage-validation.md): at least four weeks of

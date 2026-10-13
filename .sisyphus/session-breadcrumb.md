@@ -243,7 +243,7 @@ Older history: `.sisyphus/archive/`.
   remainder. Live tests correctly refused unregistered Ollama, a Cloud scene
   with no SDK log, and a later provider failure. M4 Ollama 0.32.5 /
   `qwen2.5:1.5b` then passed the strict signed fixture after the Adapter write
-  dispatch fix (source 31a7ec0, publication in progress): actual success log
+  dispatch fix (#116 merged 7b8431c, source 31a7ec0): actual success log
   03cbd3a3-8d40-4322-bb7d-5e49356b615b matches all three IDs and nested Core
   fields. The regression probe fails before the fix and passes success/error/
   exception cleanup afterward; private runtime authority stays out of logs.
@@ -252,10 +252,23 @@ Older history: `.sisyphus/archive/`.
   SSH tunnel removed. Original registry restored to npcink-cloud only.
 - **OCR**: Core focused session f2761387 failed all three selected files with
   repeated LLM network errors; no clean verdict claimed. Required CI passed.
-- **Next**: finish protected publication of the verified Adapter fix, correct
-  the M4 packaged Core version expectation, run separately chosen manual admin
-  UI acceptance, and finish clean cross-repo closeout. No tag/SVN release
-  authorized.
+- **Completed follow-up**: Core #161 merged 391c291 (source e57d913) replaces
+  M4's stale 0.2.0 pin with the candidate plugin Version header; missing or
+  ambiguous headers fail before setup. On exact merged SHA, WP7.0/PHP8.0 and
+  WP7.0/PHP8.5 ZIP-installed profiles pass 1614 assertions each, with revision/
+  archive/package/Toolkit bindings validated. Docker projects cleaned; source
+  gates 55/207 passed. LocalWP worktree gate correctly refused the shared mount;
+  the real M4 package profiles supplied the WordPress behavior gate instead.
+- **Adapter owner acceptance**: actual user admin UI approval of proposal
+  a51c3c2b-0a43-4661-96fc-63cd664f33a2 (actor 1), signed attachment 282139
+  deletion, backup/readback/duplicate refusal and cleanup passed. On merged
+  7b8431c, full local aggregate passed with no WordPress grant skips, limit400,
+  package install/restore, real Ollama logs, both HTTPS deletion branches and
+  backup restore. Release gate/Plugin Check 0 errors and six CLI tests passed;
+  owner confirmed MU/cache/tunnel/fixtures cleaned and live mount restored.
+- **Next**: external owners fix Cloud Addon complexity and AI Cloud backend CI;
+  re-run clean central matrix before release closeout. No tag/SVN release
+  authorized; real-user ledger remains parked.
 - **Ownership/hygiene**: no sibling shared roots were switched/reset. Toolkit
   owner removed its completed worktree; this made our private WP smoke mount
   stale, and the isolated mount was corrected to clean Toolkit master before
@@ -263,11 +276,19 @@ Older history: `.sisyphus/archive/`.
   stayed unchanged. The owner's central run at 09:05:54 UTC passed six repos;
   AI Cloud's parallel dirty workspace was needs_validation. The reported Cloud
   Addon Scope message was expected negative-test output, and its gate passed.
-  Our 09:09:38 UTC status-only snapshot found two AI Cloud dirty files; gates
-  were not rerun. No full-family green claim is made.
-- **New verified follow-up**: M4 packaged smoke still asserts Core 0.2.0
-  while the plugin is 0.3.0; fix the version expectation under #4 before a
-  release candidate gate. This was not changed in the behavior-preserving split.
+  Our 09:09:38 UTC status-only snapshot found two AI Cloud dirty files.
+  Newer actual 10:20:34 UTC matrix passed five repos and failed Cloud Addon
+  (settings-page 2282 lines > 2281 ratchet, 13 dirty files) and clean AI Cloud
+  (exact-SHA backend CI). Owners notified. No full-family green claim is made.
+- **OCR follow-up**: Adapter local session e32d3de5 timed out after source
+  inspection; CI run 38375605314 failed original/retry with Provider errors;
+  standard publisher recorded exception before merge. Core focused shell
+  session a9ba8b90 also timed out before tool calls; recorded in #161 body.
+  Required CI passed; owner independently reviewed the Adapter fix.
+- **Worktree cleanup**: our Adapter write-context topic was saved as verified
+  complete bundle before removal; Core M4 evidence copied to primary ignored
+  dist before removing its dedicated worktree. Official Ollama SDK and reusable
+  /tmp prepare/cleanup scripts retained for the Adapter owner's acceptance.
 - **Docs**: current stage/Decision 2/flagged-media pending prose recalibrated.
   Adapter #115 CI review failed its original and repeated runs; the standard
   publisher recorded an explicit review exception before protected merge.

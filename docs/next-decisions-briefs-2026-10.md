@@ -43,7 +43,7 @@ acceptance fixture now contains the strict assertion
 (Adapter #115 merged as 35afff4, 2026-10-13); the existing cross-repo release wrapper invokes
 that fixture. Positive local evidence passed using M4 Ollama `qwen2.5:1.5b`
 through the existing SDK provider after fixing Adapter write-dispatch context
-(source `31a7ec0`). The persisted success log matched all three execution IDs
+(Adapter #116 merged `7b8431c`). The persisted success log matched all three execution IDs
 and nested Core identifiers. The temporary loader, draft, cache, and tunnel
 were cleaned. The Cloud scene still bypasses SDK logging, and the gate correctly
 refuses a successful call without a log.
@@ -103,9 +103,10 @@ The release owner closed all three briefs before the 0.3.0 release closeout:
    schedule.** The correlation assertion is added in the next cross-repo
    acceptance authoring pass, not as a hotfix to the 0.3.0 script. The
    signed fixture assertion is merged in Adapter #115. The M4 positive
-   provider-log run passed with the focused Adapter write-context fix;
-   protected publication of that fix is the remaining code closeout. This
-   development fixture does not imply human UI approval or real-user usage.
+   provider-log run passed with the focused Adapter write-context fix (#116,
+   merged `7b8431c`), and the owner passed the full local aggregate on that
+   revision. Human UI approval was separately verified by the owner. These
+   local acceptance runs do not imply real-user usage.
 3. **Final commit execution ownership: Option B adopted.**
    [ADR-010](decisions/ADR-010-defer-final-commit-ownership-until-trigger.md)
    is accepted and converts the open question into named re-evaluation
