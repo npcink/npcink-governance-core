@@ -72,24 +72,30 @@ Engineering checkpoint (2026-10-13): the owner confirmed this is still local
 development with no real users. The flagged-media governed deletion/restore
 chain passed signed HTTPS acceptance; Core admin view extraction (#123) and
 ordered test-runner extraction (#105) are merged. The Adapter signed draft
-fixture now has a strict provider-log assertion merged in Adapter #115. Its positive live
-result is pending a configured SDK provider: the current Cloud scene can
-return text without entering the AI plugin SDK logging transporter. A missing
-log must remain a failure, not an accepted substitute for correlation.
+fixture now has a strict provider-log assertion merged in Adapter #115. M4
+Ollama (`qwen2.5:1.5b`) passed the strict positive signed fixture after a focused
+Adapter write-dispatch context fix (source `31a7ec0`). Real persisted success
+logs match proposal, preflight correlation, Adapter request, and nested Core
+identifiers. The temporary SDK loader, draft, cache, and SSH tunnel were cleaned.
+The existing Cloud scene can return text without entering the AI plugin SDK
+logging transporter; a missing log remains a failure. This fixture is local
+engineering evidence, not an actual user or human browser approval session.
 
 Next local gates, in order:
 
-1. Configure/recover an existing SDK provider and pass the signed draft
-   provider-log assertion; keep provider credentials and transport outside Core.
-2. Run the separately chosen human admin approval UI acceptance against the
+1. Complete protected publication of the verified Adapter log-context fix;
+   keep provider transport and configuration outside Core.
+2. Reconcile the M4 package profile's hardcoded Core `0.2.0` expectation with
+   the current `0.3.0` plugin/candidate metadata (#4 reliability follow-up),
+   before running packaged compatibility acceptance.
+3. Run the separately chosen human admin approval UI acceptance against the
    already-passing signed media lifecycle.
-3. Recheck the Cloud Addon owner's reported release-manifest failure and
-   in-progress changes, then run the central cross-repo matrix against clean intended source revisions before
-   any release candidate closeout.
-4. Before packaged release acceptance, reconcile the M4 profile script's
-   hardcoded Core `0.2.0` expectation with the current `0.3.0` plugin/candidate
-   metadata. This existing version pin was observed during #105 transport
-   inspection and is a separate #4 reliability follow-up.
+4. Run the central matrix against clean intended source revisions before a
+   release candidate closeout. The 2026-10-13 09:05:54 UTC matrix passed six
+   repositories; AI Cloud's parallel dirty workspace is `needs_validation`.
+   Cloud Addon's reported Scope output was a negative-test fixture, not a
+   failing gate; its gate passed. The later 09:09:38 status-only snapshot
+   found two AI Cloud dirty files and did not rerun gates.
 5. Keep the real-usage program below ready until an operating site and actual
    users exist. Automated fixture runs do not count as ledger usage.
 

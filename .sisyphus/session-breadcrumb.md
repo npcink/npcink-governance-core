@@ -215,7 +215,7 @@ Older history: `.sisyphus/archive/`.
   registration (policy checklist item 5 open).
 
 
-# 2026-10-13 - Engineering queue implemented; provider positive evidence remains gated
+# 2026-10-13 - Engineering queue implemented; M4 provider positive evidence passed
 
 - **Recalibration**: the 2026-10-12 pending Core/OCR/Toolkit/Adapter claims are
   superseded by live merged PRs. OCR is advisory; it does not require a clean
@@ -241,20 +241,30 @@ Older history: `.sisyphus/archive/`.
   active-ai missing-log failure; 10 behavior checks/source gates pass.
   Default WP smoke passed its fail-closed segment and skipped grant-dependent
   remainder. Live tests correctly refused unregistered Ollama, a Cloud scene
-  with no SDK log, and a later provider failure. Positive SDK provider/log
-  evidence is still pending. Temporary marker loaders/drafts: zero remaining.
+  with no SDK log, and a later provider failure. M4 Ollama 0.32.5 /
+  `qwen2.5:1.5b` then passed the strict signed fixture after the Adapter write
+  dispatch fix (source 31a7ec0, publication in progress): actual success log
+  03cbd3a3-8d40-4322-bb7d-5e49356b615b matches all three IDs and nested Core
+  fields. The regression probe fails before the fix and passes success/error/
+  exception cleanup afterward; private runtime authority stays out of logs.
+  WordPress.org Ollama Provider 1.3.0 classes were loaded only for acceptance;
+  temporary SDK/controller and marker loaders, draft 282138, host cache, and
+  SSH tunnel removed. Original registry restored to npcink-cloud only.
 - **OCR**: Core focused session f2761387 failed all three selected files with
   repeated LLM network errors; no clean verdict claimed. Required CI passed.
-- **Next**: configure/recover an existing SDK
-  provider for positive correlation, run separately chosen manual admin UI
-  acceptance, and recheck the Cloud Addon owner's release-manifest failure
-  before clean cross-repo release closeout. No tag/SVN release authorized.
+- **Next**: finish protected publication of the verified Adapter fix, correct
+  the M4 packaged Core version expectation, run separately chosen manual admin
+  UI acceptance, and finish clean cross-repo closeout. No tag/SVN release
+  authorized.
 - **Ownership/hygiene**: no sibling shared roots were switched/reset. Toolkit
   owner removed its completed worktree; this made our private WP smoke mount
   stale, and the isolated mount was corrected to clean Toolkit master before
   rerunning the unchanged original and split smoke. Shared live symlinks
-  stayed unchanged. Parallel Cloud Addon has seven dirty files; current
-  central status has gates not_run, so no full-family green claim is made.
+  stayed unchanged. The owner's central run at 09:05:54 UTC passed six repos;
+  AI Cloud's parallel dirty workspace was needs_validation. The reported Cloud
+  Addon Scope message was expected negative-test output, and its gate passed.
+  Our 09:09:38 UTC status-only snapshot found two AI Cloud dirty files; gates
+  were not rerun. No full-family green claim is made.
 - **New verified follow-up**: M4 packaged smoke still asserts Core 0.2.0
   while the plugin is 0.3.0; fix the version expectation under #4 before a
   release candidate gate. This was not changed in the behavior-preserving split.
