@@ -65,6 +65,15 @@ function npcink_governance_core_read( string $path ): string {
 	return is_string( $contents ) ? $contents : '';
 }
 
+/** Reads the admin facade and its private view traits for portable contracts. */
+function npcink_governance_core_admin_sources( string $root ): string {
+	$source = npcink_governance_core_read( $root . '/includes/Admin/Admin_Page.php' );
+	foreach ( glob( $root . '/includes/Admin/*_View.php' ) as $path ) {
+		$source .= "\n" . npcink_governance_core_read( $path );
+	}
+	return $source;
+}
+
 /**
  * Returns project text files used for drift checks.
  *
@@ -475,7 +484,7 @@ foreach ( array( '`Npcink AI`', '`npcink-ai`', '`Core`', '`Adapter`', '`Abilitie
 	npcink_governance_core_assert( false !== strpos( $admin_menu_standard, $required ), 'Admin menu standard documents required entry: ' . $required );
 }
 
-$admin_page = npcink_governance_core_read( $root . '/includes/Admin/Admin_Page.php' );
+$admin_page = npcink_governance_core_admin_sources( $root );
 foreach ( array( 'PARENT_MENU_SLUG', 'has_parent_menu', 'add_submenu_page', 'add_management_page', 'Core' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $admin_page, $required ), 'Admin page implements shared menu contract: ' . $required );
 }
@@ -2879,7 +2888,7 @@ $ability_intake_contract = npcink_governance_core_read( $root . '/docs/ability-i
 npcink_governance_core_assert( false !== strpos( $ability_intake_contract, 'npcink-toolbox/build-nightly-inspection-review-plan' ) && false !== strpos( $ability_intake_contract, 'selected Morning Brief review item' ) && false !== strpos( $ability_intake_contract, 'Cloud scheduling, retry state' ), 'Ability intake contract documents Nightly Inspection as selected-item review handoff only.' );
 npcink_governance_core_assert( false !== strpos( $ability_intake_contract, 'Toolbox Morning Brief operator' ) && false !== strpos( $ability_intake_contract, 'complete proposal resubmission' ) && false !== strpos( $ability_intake_contract, 'Core does not generate or edit missing draft fields' ), 'Ability intake contract documents Nightly missing-input owner and Core non-amendment boundary.' );
 
-$admin_page = npcink_governance_core_read( $root . '/includes/Admin/Admin_Page.php' );
+$admin_page = npcink_governance_core_admin_sources( $root );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'render_nightly_inspection_review_context' ) && false !== strpos( $admin_page, 'Nightly review item' ) && false !== strpos( $admin_page, 'Morning Brief handoff' ), 'Admin proposal detail renders Nightly Morning Brief selected review item context.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Required next step' ) && false !== strpos( $admin_page, 'Return to Toolbox Morning Brief' ) && false !== strpos( $admin_page, 'resubmit a complete Core proposal' ) && false !== strpos( $admin_page, 'Core does not generate or edit missing draft fields' ), 'Admin proposal detail gives explicit Nightly needs-input recovery guidance.' );
 npcink_governance_core_assert( false !== strpos( $admin_page, 'Morning Brief source' ) && false !== strpos( $admin_page, 'Selected review items' ) && false !== strpos( $admin_page, 'Evidence refs' ) && false !== strpos( $admin_page, 'Completed draft input' ), 'Admin proposal detail exposes Nightly source, selected review items, evidence refs, and completed draft input.' );
@@ -2960,7 +2969,7 @@ foreach ( array( 'core.proposal.create', 'core.proposal.plan_ingest', 'core.prop
 	npcink_governance_core_assert( false !== strpos( $core_operability, $required ), 'Core operability documents observability contract: ' . $required );
 }
 
-$admin_page = npcink_governance_core_read( $root . '/includes/Admin/Admin_Page.php' );
+$admin_page = npcink_governance_core_admin_sources( $root );
 $history_cleanup_service = npcink_governance_core_read( $root . '/includes/Governance/History_Cleanup_Service.php' );
 $plugin_bootstrap = npcink_governance_core_read( $root . '/includes/Plugin.php' );
 $admin_css = npcink_governance_core_read( $root . '/assets/admin.css' );

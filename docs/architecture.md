@@ -22,7 +22,7 @@ Status: MVP architecture.
 | `Request_Context` | Request-scoped app attribution for proposals and audit events. |
 | `Observability` | Local metadata-only action bridge for bounded operational collection by other local plugins. |
 | REST controllers | Minimal admin-facing REST API. |
-| `Admin_Page` | Minimal WordPress admin screen for governance status, pending proposal review, focused proposal detail, recent activity, full audit inspection, and Core app-key management. |
+| `Admin_Page` and private view traits | Minimal WordPress admin screen for governance status, pending proposal review, focused proposal detail, recent activity, full audit inspection, and Core app-key management. |
 
 ## Data Tables
 
@@ -83,3 +83,11 @@ Disallowed:
 - Core requiring provider plugin internal files.
 - Provider plugins writing directly into Core tables.
 - Core owning product workflow definitions.
+
+Admin presentation is split into `Admin_Review_View`,
+`Admin_Settings_And_Archive_View`, `Admin_Proposal_Detail_View` and
+`Admin_Audit_View` traits. They retain the facade's private methods and state;
+`Admin_Page` owns registration, permissions, admin action handlers and shared
+request/formatting helpers. This is source organization only, with unchanged
+markup, callbacks and governance contracts. Static contracts aggregate the
+facade and view sources so extraction cannot silently drop assertions.
