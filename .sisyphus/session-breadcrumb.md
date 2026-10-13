@@ -5,43 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-08 - 0.3.0 tagged: arbitration executed, pipeline completed
-
-- **Arbitration executed (owner: option A)**: the ADR conflict recorded one
-  session ago is resolved. #132 renumbered the option-1 decision to
-  `ADR-012-execution-attached-verification-reads.md` (supersedes the option-2
-  ADR-011, kept for the record), README/validation-doc/tests updated, and the
-  ledger-trigger waiver is recorded as one-item, non-precedential.
-- **#131 unblocked and hardened**: the parallel session's PR was stuck on the
-  ADR rename conflict plus unresolved review threads. This session merged
-  master in (rename detection carried the Hardening section automatically),
-  fixed the remaining review findings (granted-only cap/dedupe counting,
-  normalize_payload_for_hash reuse for key-order-insensitive dedupe keys,
-  invalid_input denial for unencodable inputs, MAX_VERIFICATION_READS
-  constant, comment reword), recorded the test-coverage disposition (final
-  Read_Request_Service blocks unit stubbing; grant-mode adapter smoke is the
-  ADR-012 acceptance signal), and resolved all 10 threads; auto-merge landed
-  it as 3357f91.
-- **Release evidence at 3357f91**: cross-repo acceptance green on the fourth
-  attempt after clearing three environment blockers in order (explicit
-  `WP_CLI_MYSQL_SOCKET`, stale `.maintenance` file 503, Docker daemon down);
-  signed fixture proved proposal -> approval -> execute -> duplicate-reject
-  -> readback -> cleanup. `composer prepare:release -- --version 0.3.0`
-  green; package `build/npcink-governance-core.zip` SHA-256
-  `ed907c891dba944ecbd366358de2db2a9d2b641dc0b69a087907ca92cdee65d9`
-  (matches the reproducible-package hash from the branch gates).
-- **Tagged**: annotated `v0.3.0` pushed at 3357f91, remote peeled commit
-  verified equal to the verified HEAD. WordPress.org SVN is NOT published
-  (separately authorized). GitHub Release record waits for wp.org
-  publication per issue #2.
-- **Classified follow-ups**: `rc:version-matrix --require-tag-ready` fails
-  only on the Toolkit row (tag `0.5.9` at `a5ef13a`, HEAD two docs commits
-  ahead) — bump-or-accept is the Toolkit owner's call; ai-cloud stale branch
-  holds two orphan docs; adapter #94 must adopt the handoff-only granted-ids
-  shape; zh_CN wp.org/PTE unchanged.
-- **Main line unchanged**: the real-usage validation ledger still has zero
-  rows.
-
 # 2026-10-09 - 0.3.0 published to WordPress.org; adapter #94 completed; follow-ups closed
 
 - **WordPress.org publication**: owner authorized SVN sync. Dry-run reviewed
@@ -251,3 +214,57 @@ Older history: `.sisyphus/archive/`.
   Adapter execution profile, boundary matrix + governance catalog
   registration (policy checklist item 5 open).
 
+
+# 2026-10-13 - Engineering queue implemented; provider positive evidence remains gated
+
+- **Recalibration**: the 2026-10-12 pending Core/OCR/Toolkit/Adapter claims are
+  superseded by live merged PRs. OCR is advisory; it does not require a clean
+  verdict when its service cannot deliver a review. This remains local
+  development, with no real users or ledger rows implied by fixtures.
+- **Flagged media**: Core #157/#158 (preflight fix 98ffa00), Toolkit #251
+  (7d6313f: durable manifests, deletion drift guards, deleted attachment
+  restoration), Adapter #109/#113 (f510270), and Toolbox #266 (7ec1aaf)
+  merged. The approved restoration extension is implemented. Adapter #112
+  (55654d3) passed real signed HTTPS deletion in both branches, restore to a
+  new attachment, rejection/idempotency guards, cleanup, and local aggregate
+  acceptance. Earlier dedicated four-source matrix passed 4/4; this was not
+  a full seven-repository release gate.
+- **Core #123**: #159 merged e3098a1; Admin_Page facade 6040 -> 1689 lines,
+  181 method bodies/signatures byte-identical, five WP-rendered screens equal.
+- **Core #105**: #160 merged 6ac6400 (source f856ad6); test entrypoints now
+  21/32/39 lines with ordered responsibility modules. All original statement
+  tokens preserved, early/late failure aggregation returns exit 1, normal and
+  relocated WordPress smoke pass. Composer test:all: 55 tests/207 assertions;
+  package reproducibility, metadata, and wp.org source guard pass.
+- **Provider gate**: Adapter #115 merged 35afff4 (source 1386563 plus current-master merge)
+  adds strict signed draft/log correlation, absent-ai warning skip, and
+  active-ai missing-log failure; 10 behavior checks/source gates pass.
+  Default WP smoke passed its fail-closed segment and skipped grant-dependent
+  remainder. Live tests correctly refused unregistered Ollama, a Cloud scene
+  with no SDK log, and a later provider failure. Positive SDK provider/log
+  evidence is still pending. Temporary marker loaders/drafts: zero remaining.
+- **OCR**: Core focused session f2761387 failed all three selected files with
+  repeated LLM network errors; no clean verdict claimed. Required CI passed.
+- **Next**: configure/recover an existing SDK
+  provider for positive correlation, run separately chosen manual admin UI
+  acceptance, and recheck the Cloud Addon owner's release-manifest failure
+  before clean cross-repo release closeout. No tag/SVN release authorized.
+- **Ownership/hygiene**: no sibling shared roots were switched/reset. Toolkit
+  owner removed its completed worktree; this made our private WP smoke mount
+  stale, and the isolated mount was corrected to clean Toolkit master before
+  rerunning the unchanged original and split smoke. Shared live symlinks
+  stayed unchanged. Parallel Cloud Addon has seven dirty files; current
+  central status has gates not_run, so no full-family green claim is made.
+- **New verified follow-up**: M4 packaged smoke still asserts Core 0.2.0
+  while the plugin is 0.3.0; fix the version expectation under #4 before a
+  release candidate gate. This was not changed in the behavior-preserving split.
+- **Docs**: current stage/Decision 2/flagged-media pending prose recalibrated.
+  Adapter #115 CI review failed its original and repeated runs; the standard
+  publisher recorded an explicit review exception before protected merge.
+  Historical closeout and this bounded breadcrumb accumulate on the weekly
+  docs branch, per the batched docs-only publication rule.
+
+- **Dependency cleanup**: Adapter owner saved/verified its #113 topic Git
+  bundle and removed adapter-flagged-media after this session released all
+  dependencies. Provider topic history was also saved as a complete verified Git bundle
+  before its worktree was removed; topic refs are preserved.

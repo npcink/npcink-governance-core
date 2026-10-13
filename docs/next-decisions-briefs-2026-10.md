@@ -38,10 +38,12 @@ nothing the runbook does not.
 
 **Current state.** The Adapter carries `proposal_id` and commit-preflight
 `correlation_id` into AI Request Log context, per
-[AI Provider Log Correlation](ai-provider-log-correlation.md). Verification
-today is a documented manual check on the Adapter side
-(`docs/openclaw-consumer-acceptance.md`), not an assertion inside
-`composer acceptance:cross-repo-release`.
+[AI Provider Log Correlation](ai-provider-log-correlation.md). The signed draft
+acceptance fixture now contains the strict assertion
+(Adapter #115 merged as 35afff4, 2026-10-13); the existing cross-repo release wrapper invokes
+that fixture. Positive local provider-log evidence is still pending a configured
+SDK provider: the current Cloud scene bypasses the AI plugin SDK logging
+transporter, and the gate correctly refuses a successful call without a log.
 
 **Options.**
 
@@ -96,9 +98,10 @@ The release owner closed all three briefs before the 0.3.0 release closeout:
    until a second long-lived external consumer exists.
 2. **Provider-log correlation gate: Option B adopted on the recommended
    schedule.** The correlation assertion is added in the next cross-repo
-   acceptance authoring pass, not as a hotfix to the 0.3.0 script. Until
-   then the documented manual Adapter acceptance check remains the evidence
-   path.
+   acceptance authoring pass, not as a hotfix to the 0.3.0 script. The
+   signed fixture assertion is merged in Adapter #115. Its positive
+   provider-log run remains an environment acceptance gate; implementation
+   completion must not be confused with passing live evidence.
 3. **Final commit execution ownership: Option B adopted.**
    [ADR-010](decisions/ADR-010-defer-final-commit-ownership-until-trigger.md)
    is accepted and converts the open question into named re-evaluation
@@ -107,10 +110,13 @@ The release owner closed all three briefs before the 0.3.0 release closeout:
 ## Also pending (not a brief)
 
 - [Flagged media deletion policy](flagged-media-deletion-policy.md): the
-  2026-10-09 review closed the policy question. The Core governance slice
-  shipped on 2026-10-11; Toolkit ability registration, the Adapter execution
-  profile, and cross-repo matrix/catalog records remain open before the plan
-  can execute.
+  2026-10-09 review closed the policy question. The Core governance slice and
+  preflight hardening (#157/#158), Toolkit
+  durable backup/deleted attachment restore (#251), Adapter execution/plan
+  handoff (#109/#113), and Toolbox matrix/catalog records (#266) are merged.
+  Signed HTTPS acceptance (#112) passed both deletion branches and restore
+  with cleanup. Manual admin UI acceptance remains separate; no production
+  release was performed.
 - Editor adoption gate: moot as of 2026-10-07 — drafts 286721/286722 no
   longer exist on the local site, so the article discovery pilot can start
   from current drafts.
