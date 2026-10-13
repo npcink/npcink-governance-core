@@ -448,7 +448,7 @@ context for exactly one attachment:
 - `idempotency_key`: unique per requested deletion;
 - branch evidence, exclusive to the declared branch:
   - `governed_with_backup` requires `backup_evidence` with `location`,
-    `retention_window`, and `restore_token_contract` copied from the Toolkit
+    `retention_window`, and `restore_ability_contract` copied from the Toolkit
     dry-run preview, and must not carry a no-backup attestation;
   - `illegal_content_no_backup` requires a confirmed `no_backup_attestation`
     (`confirmed=true` plus the operator-confirmed statement) copied from the

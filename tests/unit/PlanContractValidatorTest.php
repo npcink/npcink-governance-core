@@ -173,7 +173,7 @@ final class PlanContractValidatorTest extends TestCase {
 			$deletion['backup_evidence'] = array(
 				'location'                => 'toolkit-backups/2026/10/attachment-42',
 				'retention_window'        => '30 days',
-				'restore_token_contract'  => 'npcink-abilities-toolkit/restore-media-backup',
+				'restore_ability_contract'  => 'npcink-abilities-toolkit/restore-media-backup',
 			);
 		} else {
 			$deletion['no_backup_attestation'] = array(
@@ -303,8 +303,20 @@ final class PlanContractValidatorTest extends TestCase {
 				$plan['write_actions'][0]['input']['deletion_policy_branch'] = 'illegal_content_no_backup';
 				return $plan;
 			},
+			'npcink_governance_core_flagged_media_delete_attachment_mismatch' => function ( array $plan ): array {
+				$plan['write_actions'][0]['input']['attachment_id'] = 43;
+				return $plan;
+			},
 			'npcink_governance_core_flagged_media_delete_reason_mismatch' => function ( array $plan ): array {
 				$plan['write_actions'][0]['input']['reason'] = 'different reason';
+				return $plan;
+			},
+			'npcink_governance_core_flagged_media_delete_idempotency_mismatch' => function ( array $plan ): array {
+				$plan['write_actions'][0]['input']['idempotency_key'] = 'different-key';
+				return $plan;
+			},
+			'npcink_governance_core_flagged_media_removal_action_invalid' => function ( array $plan ): array {
+				$plan['write_actions'][0] = 'invalid-action';
 				return $plan;
 			},
 			'npcink_governance_core_flagged_media_target_rejected' => function ( array $plan ): array {
@@ -341,15 +353,17 @@ final class PlanContractValidatorTest extends TestCase {
 		$unconfirmed_attestation = $this->flagged_media_plan( Plan_Contract_Validator::DELETION_POLICY_BRANCH_ILLEGAL_NO_BACKUP );
 		$unconfirmed_attestation['flagged_media_removal']['no_backup_attestation']['confirmed'] = false;
 		$result = $this->validator->validate( $ability, $unconfirmed_attestation );
+		$this->assertInstanceOf( \WP_Error::class, $result );
 		$this->assertSame( 'npcink_governance_core_flagged_media_attestation_missing', $result->get_error_code() );
 
 		$conflicting_backup = $this->flagged_media_plan( Plan_Contract_Validator::DELETION_POLICY_BRANCH_ILLEGAL_NO_BACKUP );
 		$conflicting_backup['flagged_media_removal']['backup_evidence'] = array(
 			'location'                => 'toolkit-backups/2026/10/attachment-42',
 			'retention_window'        => '30 days',
-			'restore_token_contract'  => 'npcink-abilities-toolkit/restore-media-backup',
+			'restore_ability_contract'  => 'npcink-abilities-toolkit/restore-media-backup',
 		);
 		$result = $this->validator->validate( $ability, $conflicting_backup );
+		$this->assertInstanceOf( \WP_Error::class, $result );
 		$this->assertSame( 'npcink_governance_core_flagged_media_backup_evidence_conflict', $result->get_error_code() );
 	}
 
@@ -359,21 +373,25 @@ final class PlanContractValidatorTest extends TestCase {
 		$patch_with_replacement = $this->flagged_media_plan();
 		$patch_with_replacement['write_actions'][1]['input']['operations'][0]['replace'] = 'https://example.test/replacement.png';
 		$result = $this->validator->validate( $ability, $patch_with_replacement );
+		$this->assertInstanceOf( \WP_Error::class, $result );
 		$this->assertSame( 'npcink_governance_core_flagged_media_patch_invalid', $result->get_error_code(), 'reference patches remove the deleted URL, they do not substitute another one' );
 
 		$empty_operations = $this->flagged_media_plan();
 		$empty_operations['write_actions'][1]['input']['operations'] = array();
 		$result = $this->validator->validate( $ability, $empty_operations );
+		$this->assertInstanceOf( \WP_Error::class, $result );
 		$this->assertSame( 'npcink_governance_core_flagged_media_patch_invalid', $result->get_error_code(), 'empty reference patches are rejected, not widened' );
 
 		$missing_post_id = $this->flagged_media_plan();
 		unset( $missing_post_id['write_actions'][1]['input']['post_id'] );
 		$result = $this->validator->validate( $ability, $missing_post_id );
+		$this->assertInstanceOf( \WP_Error::class, $result );
 		$this->assertSame( 'npcink_governance_core_flagged_media_patch_invalid', $result->get_error_code() );
 
 		$bad_setting_target = $this->flagged_media_plan();
 		$bad_setting_target['write_actions'][2]['input']['target_type'] = 'transient';
 		$result = $this->validator->validate( $ability, $bad_setting_target );
+		$this->assertInstanceOf( \WP_Error::class, $result );
 		$this->assertSame( 'npcink_governance_core_flagged_media_patch_invalid', $result->get_error_code() );
 	}
 

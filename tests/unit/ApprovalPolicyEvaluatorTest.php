@@ -65,6 +65,7 @@ final class ApprovalPolicyEvaluatorTest extends TestCase {
 
 		$proposal = $this->flagged_media_removal_proposal();
 		unset( $proposal['caller'] );
+		$proposal['input'] = array();
 		// Avoid the direct delete-attachment ability match so only the
 		// preview-context detection branch can trigger the manual gate.
 		$proposal['ability_id'] = 'npcink-abilities-toolkit/trash-post';
@@ -73,6 +74,24 @@ final class ApprovalPolicyEvaluatorTest extends TestCase {
 
 		$this->assertSame( 'manual_required', $result['policy_decision'], 'the preview branch context alone keeps the destructive deletion manual' );
 		$this->assertContains( 'flagged_media_removal_manual_required', $result['policy_reasons'] );
+	}
+
+	public function testNestedDeleteWithoutBranchStaysManualInDevAllowAll(): void {
+		$GLOBALS['npcink_unit_options']['npcink_governance_core_approval_policy_mode'] = 'dev_allow_all';
+
+		$proposal = array(
+			'ability_id' => 'npcink-abilities-toolkit/patch-post-content',
+			'input'      => array(
+				'write_actions' => array(
+					array( 'target_ability_id' => 'npcink-abilities-toolkit/delete-attachment', 'input' => array( 'attachment_id' => 42 ) ),
+				),
+			),
+		);
+
+		$result = $this->evaluator->evaluate( $proposal );
+
+		$this->assertSame( 'manual_required', $result['policy_decision'] );
+		$this->assertContains( 'dev_allow_all_flagged_media_removal_manual_required', $result['policy_reasons'] );
 	}
 
 	public function testDirectDeleteAttachmentProposalStaysManualInDevAllowAll(): void {
@@ -94,6 +113,8 @@ final class ApprovalPolicyEvaluatorTest extends TestCase {
 
 		$this->assertSame( 'manual_required', $result['policy_decision'], 'a direct delete-attachment proposal never enters the dev allow-all lane' );
 		$this->assertContains( 'dev_allow_all_flagged_media_removal_manual_required', $result['policy_reasons'] );
+		$this->assertNotContains( 'dev_allow_all_rejected_disabled', $result['policy_reasons'] );
+		$this->assertNotContains( 'dev_allow_all_rejected_missing_approval_scope', $result['policy_reasons'] );
 		$this->assertNotContains( 'dev_allow_all_auto_approved', $result['policy_reasons'] );
 	}
 

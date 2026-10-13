@@ -1315,7 +1315,7 @@ final class Plan_Proposal_Service {
 			$context['backup_evidence'] = array(
 				'location'                => sanitize_text_field( (string) ( $evidence['location'] ?? '' ) ),
 				'retention_window'        => sanitize_text_field( (string) ( $evidence['retention_window'] ?? '' ) ),
-				'restore_token_contract'  => sanitize_text_field( (string) ( $evidence['restore_token_contract'] ?? '' ) ),
+				'restore_contract'          => sanitize_text_field( (string) ( $evidence['restore_ability_contract'] ?? '' ) ),
 			);
 		} elseif ( Plan_Contract_Validator::DELETION_POLICY_BRANCH_ILLEGAL_NO_BACKUP === $branch ) {
 			$attestation = is_array( $deletion['no_backup_attestation'] ?? null ) ? $deletion['no_backup_attestation'] : array();

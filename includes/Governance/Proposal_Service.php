@@ -1230,7 +1230,7 @@ final class Proposal_Service {
 		);
 
 		if ( Plan_Contract_Validator::is_flagged_media_removal_proposal( $proposal ) ) {
-			$audit_metadata['flagged_media_removal'] = $this->flagged_media_execution_audit_description( $proposal );
+			$audit_metadata['flagged_media_removal'] = $this->flagged_media_execution_audit_description( $proposal, $metadata );
 		}
 
 		return $audit_metadata;
@@ -1240,9 +1240,10 @@ final class Proposal_Service {
 	 * Builds the deletion-description audit block for executed flagged media removal.
 	 *
 	 * @param array<string,mixed> $proposal Proposal row.
+	 * @param array<string,mixed> $metadata Execution result metadata.
 	 * @return array<string,mixed>
 	 */
-	private function flagged_media_execution_audit_description( array $proposal ): array {
+	private function flagged_media_execution_audit_description( array $proposal, array $metadata ): array {
 		$context = Plan_Contract_Validator::flagged_media_removal_context( $proposal );
 		$branch  = Plan_Contract_Validator::flagged_media_removal_branch( $proposal );
 
@@ -1255,7 +1256,10 @@ final class Proposal_Service {
 		if ( Plan_Contract_Validator::DELETION_POLICY_BRANCH_GOVERNED_WITH_BACKUP === $branch ) {
 			$description['backup_evidence_present'] = isset( $context['backup_evidence'] );
 		} elseif ( Plan_Contract_Validator::DELETION_POLICY_BRANCH_ILLEGAL_NO_BACKUP === $branch ) {
-			$description['no_backup_artifacts_created'] = true;
+			$reported = $metadata['no_backup_artifacts_created'] ?? null;
+			if ( is_bool( $reported ) ) {
+				$description['no_backup_artifacts_created'] = $reported;
+			}
 		}
 
 		return $description;

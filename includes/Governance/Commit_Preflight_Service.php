@@ -778,7 +778,8 @@ final class Commit_Preflight_Service {
 		$checks['context_branch_present'] = '' !== sanitize_key( (string) ( $context['deletion_policy_branch'] ?? '' ) );
 		$checks['branch_consistent']  = $checks['branch_valid'] && $branch === sanitize_key( (string) ( $context['deletion_policy_branch'] ?? '' ) );
 
-		$is_direct_delete = 'npcink-abilities-toolkit/delete-attachment' === (string) ( $proposal['ability_id'] ?? '' );
+		$is_direct_delete = 'npcink-abilities-toolkit/delete-attachment' === (string) ( $proposal['ability_id'] ?? '' )
+			&& empty( $input['write_actions'] );
 		$delete_input = array();
 		$input        = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
 		foreach ( is_array( $input['write_actions'] ?? null ) ? $input['write_actions'] : array() as $action ) {
@@ -787,16 +788,20 @@ final class Commit_Preflight_Service {
 				break;
 			}
 		}
+		if ( $is_direct_delete ) {
+			$delete_input = $input;
+		}
 		$checks['delete_action_present'] = $is_direct_delete || ! empty( $delete_input );
-		$delete_action_branch = $is_direct_delete
-			? sanitize_key( (string) ( $input['deletion_policy_branch'] ?? '' ) )
-			: sanitize_key( (string) ( $delete_input['deletion_policy_branch'] ?? '' ) );
+		$delete_action_branch = ! empty( $delete_input )
+			? sanitize_key( (string) ( $delete_input['deletion_policy_branch'] ?? '' ) )
+			: sanitize_key( (string) ( $input['deletion_policy_branch'] ?? '' ) );
 		$checks['delete_action_branch_consistent'] = $checks['branch_valid'] && $branch === $delete_action_branch;
 
 		if ( Plan_Contract_Validator::DELETION_POLICY_BRANCH_GOVERNED_WITH_BACKUP === $branch ) {
 			$evidence = is_array( $context['backup_evidence'] ?? null ) ? $context['backup_evidence'] : array();
-			foreach ( array( 'location', 'retention_window', 'restore_token_contract' ) as $evidence_field ) {
-				if ( '' === trim( (string) ( $evidence[ $evidence_field ] ?? '' ) ) ) {
+			foreach ( array( 'location', 'retention_window', 'restore_contract' ) as $evidence_field ) {
+				$evidence_value = $evidence[ $evidence_field ] ?? null;
+				if ( ! is_string( $evidence_value ) || '' === trim( $evidence_value ) ) {
 					$checks['backup_evidence_present'] = false;
 					$checks['missing_evidence_field']  = $evidence_field;
 					break;
@@ -814,7 +819,7 @@ final class Commit_Preflight_Service {
 
 		$verified = true;
 		foreach ( $checks as $check ) {
-			if ( true !== $check ) {
+			if ( is_bool( $check ) && true !== $check ) {
 				$verified = false;
 				break;
 			}

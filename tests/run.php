@@ -1810,8 +1810,10 @@ npcink_governance_core_assert( false !== strpos( $read_request_service_source, '
 npcink_governance_core_assert( false !== strpos( $commit_preflight_source, 'npcink_governance_core_ability_intake_blocked' ), 'Commit preflight rejects blocked ability intake.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_source, 'npcink_governance_core_ability_not_proposal_eligible' ), 'Commit preflight rechecks governed write eligibility.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service_source, 'flagged_media_attestation_gate' ), 'Proposal approval gates illegal_content_no_backup flagged media removal on the recorded attestation.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service_source, '$this->flagged_media_attestation_gate( $existing )' ), 'Proposal approval invokes the flagged media attestation gate before approving.' );
 npcink_governance_core_assert( false !== strpos( $proposal_service_source, 'npcink_governance_core_flagged_media_attestation_required' ), 'Proposal approval returns the stable flagged media attestation error.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_source, 'flagged_media_branch_evidence_preflight' ), 'Commit preflight revalidates flagged media branch evidence before handoff.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_source, '$this->flagged_media_branch_evidence_preflight( $proposal )' ), 'Commit preflight invokes the flagged media branch evidence revalidation before handoff.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_source, 'npcink_governance_core_flagged_media_branch_evidence_missing' ), 'Commit preflight fails closed when flagged media branch evidence is inconsistent.' );
 npcink_governance_core_assert( false !== strpos( $plan_service_source, 'flagged_media_removal_audit_description' ), 'Flagged media plan intake audits a deletion description without content retention.' );
 
@@ -2497,6 +2499,8 @@ foreach (
 		'validate_article_artifacts',
 		'validate_article_draft_action',
 		'validate_article_media_batch_action',
+		'validate_flagged_media_removal_plan_contract',
+		'validate_flagged_media_reference_patch_action',
 	) as $validator_method
 ) {
 	npcink_governance_core_assert( false !== strpos( $plan_contract_validator, 'function ' . $validator_method . '(' ), 'Plan contract validator owns method: ' . $validator_method );
@@ -2555,15 +2559,15 @@ foreach (
 		'flagged_media_removal_proposal_summary',
 		'flagged_media_removal_audit_description',
 		'is_flagged_media_removal_proposal',
-		'flagged_media_removal_context',
-		'flagged_media_removal_branch',
+		'function flagged_media_removal_context(',
+		'function flagged_media_removal_branch(',
 		'is_valid_deletion_policy_branch',
 		'FLAGGED_MEDIA_REMOVAL_PLAN_ABILITY',
 		'governed_with_backup',
 		'illegal_content_no_backup',
 		'no_backup_attestation',
-		'backup_evidence',
-		'restore_token_contract',
+		"'backup_evidence'",
+		'restore_ability_contract',
 		'flagged_media_removal_plan',
 		'validate_article_write_plan_contract',
 		'validate_article_batch_write_plan_contract',
@@ -2661,6 +2665,8 @@ foreach (
 		'npcink_governance_core_flagged_media_backup_evidence_conflict',
 		'npcink_governance_core_flagged_media_attestation_conflict',
 		'npcink_governance_core_flagged_media_delete_branch_mismatch',
+		'npcink_governance_core_flagged_media_delete_attachment_mismatch',
+		'npcink_governance_core_flagged_media_delete_idempotency_mismatch',
 		'npcink_governance_core_flagged_media_target_rejected',
 		'npcink_governance_core_flagged_media_delete_action_missing',
 		'npcink_governance_core_flagged_media_patch_invalid',

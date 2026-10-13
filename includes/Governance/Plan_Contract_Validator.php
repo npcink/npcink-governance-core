@@ -96,8 +96,16 @@ final class Plan_Contract_Validator {
 			return true;
 		}
 
-		if ( 'npcink-abilities-toolkit/delete-attachment' === (string) ( $proposal['ability_id'] ?? '' ) ) {
+		$ability_id = (string) ( $proposal['ability_id'] ?? '' );
+		if ( in_array( $ability_id, array( 'npcink-abilities-toolkit/delete-attachment', 'npcink-abilities-toolkit/delete-media-permanently' ), true ) ) {
 			return true;
+		}
+
+		$input = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
+		foreach ( is_array( $input['write_actions'] ?? null ) ? $input['write_actions'] : array() as $action ) {
+			if ( is_array( $action ) && in_array( (string) ( $action['target_ability_id'] ?? '' ), array( 'npcink-abilities-toolkit/delete-attachment', 'npcink-abilities-toolkit/delete-media-permanently' ), true ) ) {
+				return true;
+			}
 		}
 
 		return self::is_valid_deletion_policy_branch( self::flagged_media_removal_branch( $proposal ) );
@@ -118,6 +126,9 @@ final class Plan_Contract_Validator {
 		$preview = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
 		$context = is_array( $preview['flagged_media_removal'] ?? null ) ? $preview['flagged_media_removal'] : array();
 		if ( ! empty( $context ) ) {
+			if ( is_array( $context['backup_evidence'] ?? null ) && ! isset( $context['backup_evidence']['restore_contract'] ) && isset( $context['backup_evidence']['restore_ability_contract'] ) ) {
+				$context['backup_evidence']['restore_contract'] = $context['backup_evidence']['restore_ability_contract'];
+			}
 			return $context;
 		}
 
@@ -127,6 +138,9 @@ final class Plan_Contract_Validator {
 			if ( array_key_exists( $field, $input ) ) {
 				$flat[ $field ] = $input[ $field ];
 			}
+		}
+		if ( is_array( $flat['backup_evidence'] ?? null ) && ! isset( $flat['backup_evidence']['restore_contract'] ) && isset( $flat['backup_evidence']['restore_ability_contract'] ) ) {
+			$flat['backup_evidence']['restore_contract'] = $flat['backup_evidence']['restore_ability_contract'];
 		}
 
 		return $flat;
@@ -1417,7 +1431,8 @@ final class Plan_Contract_Validator {
 			);
 		}
 
-		$reason = trim( (string) ( $deletion['reason'] ?? '' ) );
+		$reason_value = $deletion['reason'] ?? null;
+		$reason = is_string( $reason_value ) ? trim( $reason_value ) : '';
 		if ( '' === $reason || strlen( $reason ) > self::FLAGGED_MEDIA_REASON_MAX_BYTES ) {
 			return new WP_Error(
 				'npcink_governance_core_flagged_media_removal_reason_invalid',
@@ -1429,7 +1444,8 @@ final class Plan_Contract_Validator {
 			);
 		}
 
-		$idempotency_key = trim( (string) ( $deletion['idempotency_key'] ?? '' ) );
+		$idempotency_value = $deletion['idempotency_key'] ?? null;
+		$idempotency_key = is_string( $idempotency_value ) ? trim( $idempotency_value ) : '';
 		if ( '' === $idempotency_key ) {
 			return new WP_Error(
 				'npcink_governance_core_flagged_media_removal_idempotency_key_missing',
@@ -1440,8 +1456,9 @@ final class Plan_Contract_Validator {
 
 		if ( self::DELETION_POLICY_BRANCH_GOVERNED_WITH_BACKUP === $branch ) {
 			$evidence = is_array( $deletion['backup_evidence'] ?? null ) ? $deletion['backup_evidence'] : array();
-			foreach ( array( 'location', 'retention_window', 'restore_token_contract' ) as $evidence_field ) {
-				if ( '' === trim( (string) ( $evidence[ $evidence_field ] ?? '' ) ) ) {
+			foreach ( array( 'location', 'retention_window', 'restore_ability_contract' ) as $evidence_field ) {
+				$evidence_value = $evidence[ $evidence_field ] ?? null;
+				if ( ! is_string( $evidence_value ) || '' === trim( $evidence_value ) ) {
 					return new WP_Error(
 						'npcink_governance_core_flagged_media_backup_evidence_missing',
 						__( 'governed_with_backup flagged media removal plans must carry the Toolkit dry-run backup evidence fields.', 'npcink-governance-core' ),
@@ -1524,6 +1541,20 @@ final class Plan_Contract_Validator {
 					return new WP_Error(
 						'npcink_governance_core_flagged_media_delete_idempotency_mismatch',
 						__( 'The delete-attachment action must carry the same idempotency key as the flagged media removal plan.', 'npcink-governance-core' ),
+						array( 'status' => 422 )
+					);
+				}
+				if ( self::DELETION_POLICY_BRANCH_GOVERNED_WITH_BACKUP === $branch && isset( $input['no_backup_attestation'] ) ) {
+					return new WP_Error(
+						'npcink_governance_core_flagged_media_attestation_conflict',
+						__( 'governed_with_backup delete actions must not carry a no-backup attestation.', 'npcink-governance-core' ),
+						array( 'status' => 422 )
+					);
+				}
+				if ( self::DELETION_POLICY_BRANCH_ILLEGAL_NO_BACKUP === $branch && isset( $input['backup_evidence'] ) ) {
+					return new WP_Error(
+						'npcink_governance_core_flagged_media_backup_evidence_conflict',
+						__( 'illegal_content_no_backup delete actions must not declare backup artifacts.', 'npcink-governance-core' ),
 						array( 'status' => 422 )
 					);
 				}
@@ -1620,7 +1651,8 @@ final class Plan_Contract_Validator {
 				|| 'replace' !== sanitize_key( (string) ( $operation['op'] ?? '' ) )
 				|| ! $this->is_valid_absolute_url( $operation['find'] ?? null )
 				|| ! array_key_exists( 'replace', $operation )
-				|| '' !== (string) $operation['replace']
+				|| ! is_string( $operation['replace'] )
+				|| '' !== $operation['replace']
 			) {
 				return new WP_Error(
 					'npcink_governance_core_flagged_media_patch_invalid',
