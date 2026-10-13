@@ -122,4 +122,9 @@ if ( false === strpos( $profile_runner, "sed -n '1,8000p'" ) ) {
 	exit( 1 );
 }
 
+if ( false === strpos( $profile_runner, '$ROOT_DIR/npcink-governance-core.php' ) || false === strpos( $profile_runner, '$installed_version" != "$expected_version' ) || false !== strpos( $profile_runner, 'Expected packaged Core 0.2.0' ) ) {
+	fwrite( STDERR, "FAIL: Core M4 profile must compare installed ZIP version to candidate metadata.\n" );
+	exit( 1 );
+}
+
 echo "Revision-bound Core M4 WordPress smoke evidence behavior: ok\n";

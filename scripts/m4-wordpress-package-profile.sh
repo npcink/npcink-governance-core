@@ -10,6 +10,13 @@ WORDPRESS_VERSION="${NPCINK_CORE_M4_WORDPRESS_VERSION:-7.0}"
 PHP_VERSION="${NPCINK_CORE_M4_PHP_VERSION:-8.0}"
 SMOKE_LABEL="${NPCINK_CORE_M4_SMOKE_LABEL:-Minimum}"
 
+# Compare the installed ZIP to this candidate, without a release-specific pin.
+expected_version="$(sed -nE 's/^[[:space:]]*\*[[:space:]]+Version:[[:space:]]*([^[:space:]]+)[[:space:]]*$/\1/p' "$ROOT_DIR/npcink-governance-core.php")"
+if [[ -z "$expected_version" || "$expected_version" == *$'\n'* ]]; then
+	echo "Core candidate must contain exactly one nonempty plugin Version header." >&2
+	exit 2
+fi
+
 if [[ -z "$TOOLKIT_ROOT" || ! -f "$TOOLKIT_ROOT/scripts/official-stack-e2e.sh" ]]; then
 	echo "NPCINK_CORE_M4_TOOLKIT_ROOT must point to a complete Toolkit checkout." >&2
 	exit 2
@@ -89,8 +96,8 @@ if [[ "$runtime_wordpress" != "$WORDPRESS_VERSION" || "$runtime_php" != "$PHP_VE
 fi
 
 installed_version="$(compose run --rm cli --allow-root plugin get npcink-governance-core --field=version | tr -d '\r')"
-if [[ "$installed_version" != "0.2.0" ]]; then
-	echo "Expected packaged Core 0.2.0, found ${installed_version:-unknown}." >&2
+if [[ "$installed_version" != "$expected_version" ]]; then
+	echo "Expected packaged Core $expected_version, found ${installed_version:-unknown}." >&2
 	exit 1
 fi
 
