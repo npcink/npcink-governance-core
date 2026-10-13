@@ -778,10 +778,10 @@ final class Commit_Preflight_Service {
 		$checks['context_branch_present'] = '' !== sanitize_key( (string) ( $context['deletion_policy_branch'] ?? '' ) );
 		$checks['branch_consistent']  = $checks['branch_valid'] && $branch === sanitize_key( (string) ( $context['deletion_policy_branch'] ?? '' ) );
 
+		$input = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
 		$is_direct_delete = 'npcink-abilities-toolkit/delete-attachment' === (string) ( $proposal['ability_id'] ?? '' )
 			&& empty( $input['write_actions'] );
 		$delete_input = array();
-		$input        = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
 		foreach ( is_array( $input['write_actions'] ?? null ) ? $input['write_actions'] : array() as $action ) {
 			if ( is_array( $action ) && 'npcink-abilities-toolkit/delete-attachment' === (string) ( $action['target_ability_id'] ?? '' ) ) {
 				$delete_input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
