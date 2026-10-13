@@ -902,6 +902,7 @@ abilities:
 - `npcink-toolbox/build-nightly-inspection-review-plan`
 - `npcink-abilities-toolkit/build-content-metadata-apply-plan`
 - `npcink-abilities-toolkit/build-media-alt-apply-plan`
+- `npcink-abilities-toolkit/build-flagged-media-removal-plan`
 
 Permission: `manage_options` or app scope `proposals:create`.
 
@@ -1043,6 +1044,33 @@ contain exactly one dry-run `npcink-abilities-toolkit/rename-media-file` action 
 reviewed `target_file_name`. The action may preserve expected current path,
 MIME type, MD5, SHA256, conflict mode, and backup suffix guards for the host
 executor.
+
+For `npcink-abilities-toolkit/build-flagged-media-removal-plan`, the plan must
+declare `artifact_type=flagged_media_removal_plan`, `proposal_mode=batch`, and
+`batch_approval=true`, carry a `flagged_media_removal` review context for
+exactly one `attachment_id` with the operator `deletion_policy_branch`
+(`governed_with_backup` or `illegal_content_no_backup`), a bounded review
+`reason`, and an `idempotency_key`. The action set must contain exactly one
+dry-run `npcink-abilities-toolkit/delete-attachment` action whose
+`attachment_id`, `deletion_policy_branch`, `reason`, and `idempotency_key`
+match the review context, plus at most 10 exact-match reference removal
+patches through `npcink-abilities-toolkit/patch-post-content` (with a static
+`post_id`) and `npcink-abilities-toolkit/patch-setting-value` (with a reviewed
+`target_type`/`target_name`); patch operations must be
+`op=replace` on one reviewed absolute media URL with `replace=""`. Reference
+patches may be absent when the attachment has no bounded reference set.
+`governed_with_backup` plans must carry `backup_evidence` (location, retention
+window, restore token contract) and must not carry a no-backup attestation;
+`illegal_content_no_backup` plans must carry a confirmed `no_backup_attestation`
+and must not declare backup artifacts. The route creates one pending Core
+batch proposal with `preview.flagged_media_removal` that is always
+`manual_required` in every approval policy mode, and approval of an
+`illegal_content_no_backup` plan requires the recorded attestation. Direct
+proposals to `npcink-abilities-toolkit/delete-attachment` follow the same
+rules: they stay manual in every policy mode and must carry the branch
+evidence as flat proposal input so commit preflight can revalidate it. The
+route does not classify content, create backups, delete attachments, approve
+the proposal, execute the write, or mutate WordPress content.
 
 For `npcink-abilities-toolkit/build-article-optimization-apply-plan`, the plan
 must declare `artifact_type=article_optimization_apply_plan`, target exactly one

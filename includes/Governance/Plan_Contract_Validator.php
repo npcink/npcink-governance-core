@@ -20,6 +20,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  * definition registry and does not execute, schedule, or persist plans.
  */
 final class Plan_Contract_Validator {
+	const FLAGGED_MEDIA_REMOVAL_PLAN_ABILITY = 'npcink-abilities-toolkit/build-flagged-media-removal-plan';
+	const DELETION_POLICY_BRANCH_GOVERNED_WITH_BACKUP = 'governed_with_backup';
+	const DELETION_POLICY_BRANCH_ILLEGAL_NO_BACKUP = 'illegal_content_no_backup';
+
 	/**
 	 * Supported read-only planning abilities.
 	 *
@@ -47,6 +51,7 @@ final class Plan_Contract_Validator {
 		'npcink-toolbox/build-nightly-inspection-review-plan'                => true,
 		'npcink-abilities-toolkit/build-content-metadata-apply-plan'         => true,
 		'npcink-abilities-toolkit/build-media-alt-apply-plan'               => true,
+		'npcink-abilities-toolkit/build-flagged-media-removal-plan'         => true,
 	);
 
 	private const ARTICLE_BATCH_MAX_ACTIONS = 5;
@@ -55,6 +60,8 @@ final class Plan_Contract_Validator {
 	private const PLAN_MAX_WRITE_ACTIONS = 25;
 	private const PLAN_MAX_PAYLOAD_BYTES = 262144;
 	private const MEDIA_OPTIMIZATION_MAX_ACTIONS = 10;
+	private const FLAGGED_MEDIA_MAX_REFERENCE_ACTIONS = 10;
+	private const FLAGGED_MEDIA_REASON_MAX_BYTES = 500;
 	private const BLOCK_THEME_SITE_MAX_ACTIONS = 10;
 	private const BLOCK_THEME_SITE_MAX_BLOCKS = 80;
 	private const BLOCK_THEME_SITE_MAX_BLOCK_DEPTH = 8;
@@ -68,6 +75,111 @@ final class Plan_Contract_Validator {
 	 */
 	public function supports( string $plan_ability_id ): bool {
 		return isset( $this->allowed_plan_abilities[ $plan_ability_id ] );
+	}
+
+	/**
+	 * Reports whether a proposal-like payload is a flagged media removal proposal.
+	 *
+	 * Detection binds to the Core-written plan source attribution, the
+	 * flagged media preview context, a recorded deletion policy branch, or a
+	 * direct proposal to the governed delete-attachment ability. A client
+	 * cannot use these markers to loosen governance: matching only ever adds
+	 * the destructive-deletion manual-approval and branch-evidence rules.
+	 *
+	 * @param array<string,mixed> $proposal Proposal-like payload.
+	 * @return bool
+	 */
+	public static function is_flagged_media_removal_proposal( array $proposal ): bool {
+		$caller = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
+		$source = sanitize_key( (string) ( $caller['source'] ?? '' ) );
+		if ( in_array( $source, array( 'plan_to_proposal', 'plan_to_proposal_batch' ), true ) && self::FLAGGED_MEDIA_REMOVAL_PLAN_ABILITY === sanitize_text_field( (string) ( $caller['plan_ability_id'] ?? '' ) ) ) {
+			return true;
+		}
+
+		$ability_id = (string) ( $proposal['ability_id'] ?? '' );
+		if ( in_array( $ability_id, array( 'npcink-abilities-toolkit/delete-attachment', 'npcink-abilities-toolkit/delete-media-permanently' ), true ) ) {
+			return true;
+		}
+
+		$input = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
+		foreach ( is_array( $input['write_actions'] ?? null ) ? $input['write_actions'] : array() as $action ) {
+			if ( is_array( $action ) && in_array( (string) ( $action['target_ability_id'] ?? '' ), array( 'npcink-abilities-toolkit/delete-attachment', 'npcink-abilities-toolkit/delete-media-permanently' ), true ) ) {
+				return true;
+			}
+		}
+
+		return self::is_valid_deletion_policy_branch( self::flagged_media_removal_branch( $proposal ) );
+	}
+
+	/**
+	 * Returns the flagged media removal review context recorded on a proposal.
+	 *
+	 * The plan path stores the context under
+	 * `preview.flagged_media_removal`; a direct delete-attachment proposal
+	 * may carry the same fields as flat proposal input instead. Both shapes
+	 * feed the same approval and preflight evidence rules.
+	 *
+	 * @param array<string,mixed> $proposal Proposal-like payload.
+	 * @return array<string,mixed> Context fields that are present.
+	 */
+	public static function flagged_media_removal_context( array $proposal ): array {
+		$preview = is_array( $proposal['preview'] ?? null ) ? $proposal['preview'] : array();
+		$context = is_array( $preview['flagged_media_removal'] ?? null ) ? $preview['flagged_media_removal'] : array();
+		if ( ! empty( $context ) ) {
+			if ( is_array( $context['backup_evidence'] ?? null ) && ! isset( $context['backup_evidence']['restore_contract'] ) && isset( $context['backup_evidence']['restore_ability_contract'] ) ) {
+				$context['backup_evidence']['restore_contract'] = $context['backup_evidence']['restore_ability_contract'];
+			}
+			return $context;
+		}
+
+		$input = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
+		$flat  = array();
+		foreach ( array( 'attachment_id', 'deletion_policy_branch', 'reason', 'backup_evidence', 'no_backup_attestation' ) as $field ) {
+			if ( array_key_exists( $field, $input ) ) {
+				$flat[ $field ] = $input[ $field ];
+			}
+		}
+		if ( is_array( $flat['backup_evidence'] ?? null ) && ! isset( $flat['backup_evidence']['restore_contract'] ) && isset( $flat['backup_evidence']['restore_ability_contract'] ) ) {
+			$flat['backup_evidence']['restore_contract'] = $flat['backup_evidence']['restore_ability_contract'];
+		}
+
+		return $flat;
+	}
+
+	/**
+	 * Returns the sanitized deletion policy branch recorded on a proposal.
+	 *
+	 * @param array<string,mixed> $proposal Proposal-like payload.
+	 * @return string Branch key, or '' when none is recorded.
+	 */
+	public static function flagged_media_removal_branch( array $proposal ): string {
+		$context = self::flagged_media_removal_context( $proposal );
+		$branch  = sanitize_key( (string) ( $context['deletion_policy_branch'] ?? '' ) );
+		if ( '' !== $branch ) {
+			return $branch;
+		}
+
+		$input = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
+		$write_actions = is_array( $input['write_actions'] ?? null ) ? array_values( $input['write_actions'] ) : array();
+		foreach ( $write_actions as $action ) {
+			if ( ! is_array( $action ) || 'npcink-abilities-toolkit/delete-attachment' !== (string) ( $action['target_ability_id'] ?? '' ) ) {
+				continue;
+			}
+			$action_input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+			return sanitize_key( (string) ( $action_input['deletion_policy_branch'] ?? '' ) );
+		}
+
+		return '';
+	}
+
+	/**
+	 * Reports whether a branch value is one of the two contract branches.
+	 *
+	 * @param string $branch Branch key.
+	 * @return bool
+	 */
+	public static function is_valid_deletion_policy_branch( string $branch ): bool {
+		return in_array( $branch, array( self::DELETION_POLICY_BRANCH_GOVERNED_WITH_BACKUP, self::DELETION_POLICY_BRANCH_ILLEGAL_NO_BACKUP ), true );
 	}
 
 	/**
@@ -135,6 +247,8 @@ final class Plan_Contract_Validator {
 				return $this->validate_media_adoption_enhancement_plan_contract( $plan );
 			case 'npcink-abilities-toolkit/build-media-rename-plan':
 				return $this->validate_media_rename_plan_contract( $plan );
+			case 'npcink-abilities-toolkit/build-flagged-media-removal-plan':
+				return $this->validate_flagged_media_removal_plan_contract( $plan );
 			case 'npcink-abilities-toolkit/build-article-optimization-apply-plan':
 				return $this->validate_article_optimization_apply_plan_contract( $plan );
 			case 'npcink-abilities-toolkit/build-article-block-plan':
@@ -1256,6 +1370,297 @@ final class Plan_Contract_Validator {
 					'npcink_governance_core_media_optimization_attachment_mismatch',
 					__( 'Media optimization plans must pair metadata and derivative actions for each attachment.', 'npcink-governance-core' ),
 					array( 'status' => 422 )
+				);
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validates a flagged media removal plan for exactly one attachment.
+	 *
+	 * The dual-branch deletion policy evidence is a review input: Core
+	 * validates presence and shape, never the content itself.
+	 *
+	 * @param array<string,mixed> $plan Plan data.
+	 * @return true|WP_Error
+	 */
+	private function validate_flagged_media_removal_plan_contract( array $plan ) {
+		$artifact_type = sanitize_key( (string) ( $plan['artifact_type'] ?? ( $plan['plan_type'] ?? '' ) ) );
+		if ( 'flagged_media_removal_plan' !== $artifact_type ) {
+			return new WP_Error(
+				'npcink_governance_core_flagged_media_removal_plan_invalid',
+				__( 'Flagged media removal plans must declare artifact_type=flagged_media_removal_plan.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( true !== (bool) ( $plan['batch_approval'] ?? false ) || 'batch' !== sanitize_key( (string) ( $plan['proposal_mode'] ?? '' ) ) ) {
+			return new WP_Error(
+				'npcink_governance_core_flagged_media_removal_batch_required',
+				__( 'Flagged media removal plans must explicitly request one batch proposal approval.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$deletion = is_array( $plan['flagged_media_removal'] ?? null ) ? $plan['flagged_media_removal'] : null;
+		if ( null === $deletion ) {
+			return new WP_Error(
+				'npcink_governance_core_flagged_media_removal_context_missing',
+				__( 'Flagged media removal plans must include the flagged_media_removal review context.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$attachment_id = absint( $deletion['attachment_id'] ?? 0 );
+		if ( $attachment_id <= 0 ) {
+			return new WP_Error(
+				'npcink_governance_core_flagged_media_removal_attachment_missing',
+				__( 'Flagged media removal plans must target one existing attachment id.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$branch = sanitize_key( (string) ( $deletion['deletion_policy_branch'] ?? '' ) );
+		if ( ! self::is_valid_deletion_policy_branch( $branch ) ) {
+			return new WP_Error(
+				'npcink_governance_core_flagged_media_removal_branch_invalid',
+				__( 'Flagged media removal plans must declare deletion_policy_branch as governed_with_backup or illegal_content_no_backup.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$reason_value = $deletion['reason'] ?? null;
+		$reason = is_string( $reason_value ) ? trim( $reason_value ) : '';
+		if ( '' === $reason || strlen( $reason ) > self::FLAGGED_MEDIA_REASON_MAX_BYTES ) {
+			return new WP_Error(
+				'npcink_governance_core_flagged_media_removal_reason_invalid',
+				__( 'Flagged media removal plans must carry the operator review reason within the bounded length.', 'npcink-governance-core' ),
+				array(
+					'status'     => 422,
+					'max_bytes'  => self::FLAGGED_MEDIA_REASON_MAX_BYTES,
+				)
+			);
+		}
+
+		$idempotency_value = $deletion['idempotency_key'] ?? null;
+		$idempotency_key = is_string( $idempotency_value ) ? trim( $idempotency_value ) : '';
+		if ( '' === $idempotency_key ) {
+			return new WP_Error(
+				'npcink_governance_core_flagged_media_removal_idempotency_key_missing',
+				__( 'Flagged media removal plans must carry the deletion idempotency key.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( self::DELETION_POLICY_BRANCH_GOVERNED_WITH_BACKUP === $branch ) {
+			$evidence = is_array( $deletion['backup_evidence'] ?? null ) ? $deletion['backup_evidence'] : array();
+			foreach ( array( 'location', 'retention_window', 'restore_ability_contract' ) as $evidence_field ) {
+				$evidence_value = $evidence[ $evidence_field ] ?? null;
+				if ( ! is_string( $evidence_value ) || '' === trim( $evidence_value ) ) {
+					return new WP_Error(
+						'npcink_governance_core_flagged_media_backup_evidence_missing',
+						__( 'governed_with_backup flagged media removal plans must carry the Toolkit dry-run backup evidence fields.', 'npcink-governance-core' ),
+						array(
+							'status'         => 422,
+							'evidence_field' => $evidence_field,
+						)
+					);
+				}
+			}
+			if ( isset( $deletion['no_backup_attestation'] ) ) {
+				return new WP_Error(
+					'npcink_governance_core_flagged_media_attestation_conflict',
+					__( 'governed_with_backup flagged media removal plans must not also carry a no-backup attestation.', 'npcink-governance-core' ),
+					array( 'status' => 422 )
+				);
+			}
+		} else {
+			$attestation = is_array( $deletion['no_backup_attestation'] ?? null ) ? $deletion['no_backup_attestation'] : array();
+			$confirmed   = true === ( $attestation['confirmed'] ?? null );
+			$statement   = is_string( $attestation['statement'] ?? null ) ? trim( $attestation['statement'] ) : '';
+			if ( ! $confirmed || '' === $statement ) {
+				return new WP_Error(
+					'npcink_governance_core_flagged_media_attestation_missing',
+					__( 'illegal_content_no_backup flagged media removal plans must carry the operator no-backup attestation from the ability dry-run preview.', 'npcink-governance-core' ),
+					array( 'status' => 422 )
+				);
+			}
+			if ( isset( $deletion['backup_evidence'] ) ) {
+				return new WP_Error(
+					'npcink_governance_core_flagged_media_backup_evidence_conflict',
+					__( 'illegal_content_no_backup flagged media removal plans must not declare backup artifacts.', 'npcink-governance-core' ),
+					array( 'status' => 422 )
+				);
+			}
+		}
+
+		$write_actions = is_array( $plan['write_actions'] ?? null ) ? array_values( $plan['write_actions'] ) : array();
+		$delete_actions = 0;
+		$reference_actions = 0;
+		foreach ( $write_actions as $action_index => $action ) {
+			if ( ! is_array( $action ) ) {
+				return new WP_Error(
+					'npcink_governance_core_flagged_media_removal_action_invalid',
+					__( 'Flagged media removal actions must be objects.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+
+			$target_ability_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
+			$input             = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+
+			if ( 'npcink-abilities-toolkit/delete-attachment' === $target_ability_id ) {
+				++$delete_actions;
+				if ( $attachment_id !== absint( $input['attachment_id'] ?? 0 ) ) {
+					return new WP_Error(
+						'npcink_governance_core_flagged_media_delete_attachment_mismatch',
+						__( 'The delete-attachment action must target the same attachment as the flagged media removal plan.', 'npcink-governance-core' ),
+						array( 'status' => 422 )
+					);
+				}
+				if ( $branch !== sanitize_key( (string) ( $input['deletion_policy_branch'] ?? '' ) ) ) {
+					return new WP_Error(
+						'npcink_governance_core_flagged_media_delete_branch_mismatch',
+						__( 'The delete-attachment action must carry the same deletion_policy_branch as the flagged media removal plan.', 'npcink-governance-core' ),
+						array( 'status' => 422 )
+					);
+				}
+				if ( $reason !== trim( (string) ( $input['reason'] ?? '' ) ) ) {
+					return new WP_Error(
+						'npcink_governance_core_flagged_media_delete_reason_mismatch',
+						__( 'The delete-attachment action must carry the same operator reason as the flagged media removal plan.', 'npcink-governance-core' ),
+						array( 'status' => 422 )
+					);
+				}
+				if ( $idempotency_key !== trim( (string) ( $input['idempotency_key'] ?? '' ) ) ) {
+					return new WP_Error(
+						'npcink_governance_core_flagged_media_delete_idempotency_mismatch',
+						__( 'The delete-attachment action must carry the same idempotency key as the flagged media removal plan.', 'npcink-governance-core' ),
+						array( 'status' => 422 )
+					);
+				}
+				if ( self::DELETION_POLICY_BRANCH_GOVERNED_WITH_BACKUP === $branch && isset( $input['no_backup_attestation'] ) ) {
+					return new WP_Error(
+						'npcink_governance_core_flagged_media_attestation_conflict',
+						__( 'governed_with_backup delete actions must not carry a no-backup attestation.', 'npcink-governance-core' ),
+						array( 'status' => 422 )
+					);
+				}
+				if ( self::DELETION_POLICY_BRANCH_ILLEGAL_NO_BACKUP === $branch && isset( $input['backup_evidence'] ) ) {
+					return new WP_Error(
+						'npcink_governance_core_flagged_media_backup_evidence_conflict',
+						__( 'illegal_content_no_backup delete actions must not declare backup artifacts.', 'npcink-governance-core' ),
+						array( 'status' => 422 )
+					);
+				}
+				continue;
+			}
+
+			$patch_error = $this->validate_flagged_media_reference_patch_action( $target_ability_id, $input, $action_index );
+			if ( is_wp_error( $patch_error ) ) {
+				return $patch_error;
+			}
+			++$reference_actions;
+		}
+
+		if ( 1 !== $delete_actions ) {
+			return new WP_Error(
+				'npcink_governance_core_flagged_media_delete_action_missing',
+				__( 'Flagged media removal plans must include exactly one delete-attachment action.', 'npcink-governance-core' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		if ( $reference_actions > self::FLAGGED_MEDIA_MAX_REFERENCE_ACTIONS ) {
+			return new WP_Error(
+				'npcink_governance_core_flagged_media_reference_actions_rejected',
+				__( 'Flagged media removal plans must keep reference cleanup actions bounded.', 'npcink-governance-core' ),
+				array(
+					'status'                => 422,
+					'max_reference_actions' => self::FLAGGED_MEDIA_MAX_REFERENCE_ACTIONS,
+				)
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validates one exact-match reference removal patch action.
+	 *
+	 * @param string              $target_ability_id Target ability id.
+	 * @param array<string,mixed> $input Action input.
+	 * @param int                 $action_index Action index.
+	 * @return true|WP_Error
+	 */
+	private function validate_flagged_media_reference_patch_action( string $target_ability_id, array $input, int $action_index ) {
+		if ( 'npcink-abilities-toolkit/patch-post-content' === $target_ability_id ) {
+			if ( absint( $input['post_id'] ?? 0 ) <= 0 ) {
+				return new WP_Error(
+					'npcink_governance_core_flagged_media_patch_invalid',
+					__( 'Flagged media reference patches must target one existing post id.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+		} elseif ( 'npcink-abilities-toolkit/patch-setting-value' === $target_ability_id ) {
+			if ( ! in_array( sanitize_key( (string) ( $input['target_type'] ?? '' ) ), array( 'option', 'theme_mod' ), true ) || '' === trim( (string) ( $input['target_name'] ?? '' ) ) ) {
+				return new WP_Error(
+					'npcink_governance_core_flagged_media_patch_invalid',
+					__( 'Flagged media setting patches must name one reviewed option or theme mod target.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
+				);
+			}
+		} else {
+			return new WP_Error(
+				'npcink_governance_core_flagged_media_target_rejected',
+				__( 'Flagged media removal plans may group only delete-attachment and exact-match reference patch actions.', 'npcink-governance-core' ),
+				array(
+					'status'            => 422,
+					'action_index'      => $action_index,
+					'target_ability_id' => $target_ability_id,
+				)
+			);
+		}
+
+		$operations = is_array( $input['operations'] ?? null ) ? array_values( $input['operations'] ) : array();
+		if ( empty( $operations ) ) {
+			return new WP_Error(
+				'npcink_governance_core_flagged_media_patch_invalid',
+				__( 'Flagged media reference patches must include non-empty exact-match operations.', 'npcink-governance-core' ),
+				array(
+					'status'       => 422,
+					'action_index' => $action_index,
+				)
+			);
+		}
+
+		foreach ( $operations as $operation ) {
+			if (
+				! is_array( $operation )
+				|| 'replace' !== sanitize_key( (string) ( $operation['op'] ?? '' ) )
+				|| ! $this->is_valid_absolute_url( $operation['find'] ?? null )
+				|| ! array_key_exists( 'replace', $operation )
+				|| ! is_string( $operation['replace'] )
+				|| '' !== $operation['replace']
+			) {
+				return new WP_Error(
+					'npcink_governance_core_flagged_media_patch_invalid',
+					__( 'Flagged media reference patch operations must exactly remove one reviewed media URL.', 'npcink-governance-core' ),
+					array(
+						'status'       => 422,
+						'action_index' => $action_index,
+					)
 				);
 			}
 		}

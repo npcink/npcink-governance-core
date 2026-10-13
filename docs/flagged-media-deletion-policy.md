@@ -1,8 +1,13 @@
 # Flagged Media Deletion Policy
 
-Status: policy contract reviewed and accepted 2026-10-09 as the target
-contract. Implementation has not started; the acceptance checklist below
-remains open until the implementing slice ships.
+Status: Core-side governance slice implemented 2026-10-11 (from-plan intake,
+manual-only approval lanes, attestation approval gate, branch-evidence
+preflight, deletion-description audit). The Toolkit
+`npcink-abilities-toolkit/delete-attachment` ability and the Adapter execution
+profile are still pending; until they land, intake of this plan fails closed
+with `npcink_governance_core_plan_ability_unavailable` and no approved plan
+can execute. Checklist item 5 stays open until the sibling repositories
+record the artifact.
 
 ## Context
 
@@ -79,14 +84,44 @@ media removal is not part of this contract and needs its own future decision.
 
 Before implementation:
 
-- [ ] from-plan intake accepts `flagged_media_removal_plan.v1` with the
-      grouped action shape;
-- [ ] the approval policy excludes flagged media removal from every
-      auto-approval lane;
-- [ ] preflight enforces the branch-specific evidence rules;
-- [ ] audit events record deletion descriptions without content retention;
+- [x] from-plan intake accepts `flagged_media_removal_plan.v1` with the
+      grouped action shape (implemented 2026-10-11: allowlisted
+      `npcink-abilities-toolkit/build-flagged-media-removal-plan` with the
+      contract validator and one batch proposal per plan);
+- [x] the approval policy excludes flagged media removal from every
+      auto-approval lane (implemented 2026-10-11:
+      `flagged_media_removal_manual_evaluation` guards `smart_guarded` and
+      `dev_allow_all`; approving `illegal_content_no_backup` plans requires
+      the recorded no-backup attestation);
+- [x] preflight enforces the branch-specific evidence rules (implemented
+      2026-10-11: `flagged_media_branch_evidence_preflight` fails closed with
+      `npcink_governance_core_flagged_media_branch_evidence_missing`);
+- [x] audit events record deletion descriptions without content retention
+      (implemented 2026-10-11: `flagged_media_removal` description blocks on
+      `proposal.plan_ingested`, `commit.preflighted`, and execution-result
+      events carry attachment id, branch, reason, and evidence presence
+      only);
 - [ ] the cross-repo boundary matrix and the Toolkit governance catalog
-      record the new plan artifact.
+      record the new plan artifact (sibling-repository docs, still open).
+
+## Implementation Record — 2026-10-11
+
+Core-side slice shipped on the plan bridge allowlist
+(`npcink-abilities-toolkit/build-flagged-media-removal-plan`), the contract
+validator (`validate_flagged_media_removal_plan_contract`), the proposal
+preview context (`preview.flagged_media_removal`), the manual-only approval
+exclusion, the illegal-branch attestation approval gate, the commit-preflight
+branch-evidence revalidation, and the deletion-description audit blocks.
+Direct proposals whose `ability_id` is
+`npcink-abilities-toolkit/delete-attachment` are held to the same contract
+(manual in every mode, branch evidence carried as flat input and revalidated
+at preflight), so the destructive deletion cannot escape the plan rules
+through the generic proposal route. The remaining cross-repo work is
+unchanged: Toolkit must register
+`npcink-abilities-toolkit/delete-attachment` (candidate accepted, not yet
+implemented), the build-flagged-media-removal-plan read ability, and the
+Adapter execution profile; the boundary matrix and governance catalog
+registrations follow those slices.
 
 ## Review Record — 2026-10-09
 

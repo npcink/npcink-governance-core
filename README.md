@@ -281,7 +281,12 @@ small reviewed set of allowlisted post-update actions for the same target post,
 `npcink-abilities-toolkit/build-article-block-plan` only as one reviewed
 create-draft plus update-post-blocks batch, and accepts the P0 Toolbox article handoff
 `npcink-toolbox/build-article-write-plan` only as a single reviewed
-`npcink-abilities-toolkit/create-draft` proposal. The bounded local article batch handoff
+`npcink-abilities-toolkit/create-draft` proposal. The flagged media removal handoff
+`npcink-abilities-toolkit/build-flagged-media-removal-plan` may enter only as one
+manual-only batch for one attachment: a dual-branch
+`npcink-abilities-toolkit/delete-attachment` action plus bounded exact-match
+reference removal patches, with backup evidence or a recorded no-backup
+attestation and no auto-approval lane in any policy mode. The bounded local article batch handoff
 `npcink-toolbox/build-article-batch-write-plan` may create one reviewed
 batch of 2 to 5 draft-only `npcink-abilities-toolkit/create-draft` actions. Core accepts the
 media-enabled local article batch handoff
@@ -368,6 +373,8 @@ article-audio adoptions from a reviewed
 `npcink-abilities-toolkit/build-article-audio-adoption-plan` handoff, single
 reviewed media derivative adoption proposals, and single-attachment
 missing-ALT `npcink-abilities-toolkit/build-media-alt-apply-plan` updates.
+Flagged media removal is destructive and is excluded from every auto-approval
+lane, including `dev_allow_all`; it stays `manual_required` in all modes.
 `dev_allow_all` is
 local-development only, requires the
 `NPCINK_GOVERNANCE_CORE_ENABLE_DEV_ALLOW_ALL` constant, and still requires

@@ -256,6 +256,22 @@ final class Commit_Preflight_Service {
 			);
 		}
 
+		$branch_evidence_preflight = $this->flagged_media_branch_evidence_preflight( $proposal );
+		if ( false === (bool) ( $branch_evidence_preflight['verified'] ?? false ) ) {
+			return $this->preflight_error(
+				'npcink_governance_core_flagged_media_branch_evidence_missing',
+				__( 'Flagged media removal proposals must carry branch-consistent deletion evidence before execution handoff.', 'npcink-governance-core' ),
+				409,
+				$proposal_id,
+				array(
+					'ability_id'                     => (string) ( $proposal['ability_id'] ?? '' ),
+					'status'                         => (string) ( $proposal['status'] ?? '' ),
+					'flagged_media_branch_evidence'  => $branch_evidence_preflight,
+					'idempotency_required'           => true,
+				)
+			);
+		}
+
 		$approved_input_hash = $this->payload_hash( $proposal['input'] ?? array() );
 		$prior_handoff       = $this->prior_preflight_handoff( $proposal_id, $approved_input_hash );
 		if ( null !== $prior_handoff ) {
@@ -293,21 +309,28 @@ final class Commit_Preflight_Service {
 			'commit_execution'  => false,
 		) + $client_binding + $site_binding;
 
+		$preflight_event_metadata = array(
+			'ability_id'            => (string) ( $proposal['ability_id'] ),
+			'status'                => (string) ( $proposal['status'] ),
+			'commit_execution'      => false,
+			'idempotency_required' => true,
+			'correlation_id'        => $correlation_id,
+			'approved_input_hash'   => $approved_input_hash,
+			'policy_version'        => $policy_version,
+			'expires_at'            => $expires_at,
+			'ability_contract_hash' => (string) ( $contract_preflight['current_contract_hash'] ?? '' ),
+			'capability'            => (string) ( $permission_preflight['capability'] ?? '' ),
+		);
+		if ( true === (bool) ( $branch_evidence_preflight['applies'] ?? false ) ) {
+			$preflight_event_metadata['flagged_media_removal'] = array(
+				'attachment_id'          => absint( $branch_evidence_preflight['attachment_id'] ?? 0 ),
+				'deletion_policy_branch' => sanitize_key( (string) ( $branch_evidence_preflight['deletion_policy_branch'] ?? '' ) ),
+			);
+		}
 		$event_id = $this->audit->record_with_event_id(
 			$this->preflight_event_id( $proposal_id, $approved_input_hash ),
 			'commit.preflighted',
-			array(
-				'ability_id'            => (string) $proposal['ability_id'],
-				'status'                => (string) $proposal['status'],
-				'commit_execution'      => false,
-				'idempotency_required' => true,
-				'correlation_id'        => $correlation_id,
-				'approved_input_hash'   => $approved_input_hash,
-				'policy_version'        => $policy_version,
-				'expires_at'            => $expires_at,
-				'ability_contract_hash' => (string) ( $contract_preflight['current_contract_hash'] ?? '' ),
-				'capability'            => (string) ( $permission_preflight['capability'] ?? '' ),
-			) + $client_binding,
+			$preflight_event_metadata + $client_binding,
 			$proposal_id
 		);
 
@@ -344,6 +367,7 @@ final class Commit_Preflight_Service {
 			'contract_preflight'   => $contract_preflight,
 			'permission_preflight' => $permission_preflight,
 			'proposal_item_preflight' => $item_preflight,
+			'flagged_media_branch_evidence' => $branch_evidence_preflight,
 			'approval_context'     => $approval_context,
 			'execution_handoff'    => $execution_handoff,
 			'correlation_id'       => $correlation_id,
@@ -727,6 +751,86 @@ final class Commit_Preflight_Service {
 			'batch_review_summary' => $batch_review_summary,
 			'media_alt_guard' => $media_alt_guard,
 			'commit_execution' => false,
+		);
+	}
+
+	/**
+	 * Revalidates branch-consistent deletion evidence before Adapter handoff.
+	 *
+	 * governed_with_backup proposals must still carry the Toolkit dry-run
+	 * backup evidence fields; illegal_content_no_backup proposals must still
+	 * carry the confirmed no-backup attestation and must declare no backup
+	 * artifacts anywhere in the deletion context.
+	 *
+	 * @param array<string,mixed> $proposal Approved proposal row.
+	 * @return array<string,mixed>
+	 */
+	private function flagged_media_branch_evidence_preflight( array $proposal ): array {
+		if ( ! Plan_Contract_Validator::is_flagged_media_removal_proposal( $proposal ) ) {
+			return array( 'applies' => false, 'verified' => true );
+		}
+
+		$context = Plan_Contract_Validator::flagged_media_removal_context( $proposal );
+		$branch  = Plan_Contract_Validator::flagged_media_removal_branch( $proposal );
+
+		$checks                       = array();
+		$checks['branch_valid']       = Plan_Contract_Validator::is_valid_deletion_policy_branch( $branch );
+		$checks['context_branch_present'] = '' !== sanitize_key( (string) ( $context['deletion_policy_branch'] ?? '' ) );
+		$checks['branch_consistent']  = $checks['branch_valid'] && $branch === sanitize_key( (string) ( $context['deletion_policy_branch'] ?? '' ) );
+
+		$is_direct_delete = 'npcink-abilities-toolkit/delete-attachment' === (string) ( $proposal['ability_id'] ?? '' )
+			&& empty( $input['write_actions'] );
+		$delete_input = array();
+		$input        = is_array( $proposal['input'] ?? null ) ? $proposal['input'] : array();
+		foreach ( is_array( $input['write_actions'] ?? null ) ? $input['write_actions'] : array() as $action ) {
+			if ( is_array( $action ) && 'npcink-abilities-toolkit/delete-attachment' === (string) ( $action['target_ability_id'] ?? '' ) ) {
+				$delete_input = is_array( $action['input'] ?? null ) ? $action['input'] : array();
+				break;
+			}
+		}
+		if ( $is_direct_delete ) {
+			$delete_input = $input;
+		}
+		$checks['delete_action_present'] = $is_direct_delete || ! empty( $delete_input );
+		$delete_action_branch = ! empty( $delete_input )
+			? sanitize_key( (string) ( $delete_input['deletion_policy_branch'] ?? '' ) )
+			: sanitize_key( (string) ( $input['deletion_policy_branch'] ?? '' ) );
+		$checks['delete_action_branch_consistent'] = $checks['branch_valid'] && $branch === $delete_action_branch;
+
+		if ( Plan_Contract_Validator::DELETION_POLICY_BRANCH_GOVERNED_WITH_BACKUP === $branch ) {
+			$evidence = is_array( $context['backup_evidence'] ?? null ) ? $context['backup_evidence'] : array();
+			foreach ( array( 'location', 'retention_window', 'restore_contract' ) as $evidence_field ) {
+				$evidence_value = $evidence[ $evidence_field ] ?? null;
+				if ( ! is_string( $evidence_value ) || '' === trim( $evidence_value ) ) {
+					$checks['backup_evidence_present'] = false;
+					$checks['missing_evidence_field']  = $evidence_field;
+					break;
+				}
+			}
+			$checks['backup_evidence_present'] = $checks['backup_evidence_present'] ?? true;
+			$checks['no_backup_attestation_absent'] = ! isset( $context['no_backup_attestation'] );
+		} elseif ( Plan_Contract_Validator::DELETION_POLICY_BRANCH_ILLEGAL_NO_BACKUP === $branch ) {
+			$attestation = is_array( $context['no_backup_attestation'] ?? null ) ? $context['no_backup_attestation'] : array();
+			$confirmed   = true === ( $attestation['confirmed'] ?? null );
+			$statement   = is_string( $attestation['statement'] ?? null ) ? trim( $attestation['statement'] ) : '';
+			$checks['no_backup_attestation_confirmed'] = $confirmed && '' !== $statement;
+			$checks['no_backup_evidence_declared']     = ! isset( $context['backup_evidence'] ) && ! isset( $delete_input['backup_evidence'] );
+		}
+
+		$verified = true;
+		foreach ( $checks as $check ) {
+			if ( is_bool( $check ) && true !== $check ) {
+				$verified = false;
+				break;
+			}
+		}
+
+		return array(
+			'applies'                => true,
+			'attachment_id'          => absint( $context['attachment_id'] ?? 0 ),
+			'deletion_policy_branch' => $branch,
+			'verified'               => $verified,
+			'checks'                 => $checks,
 		);
 	}
 

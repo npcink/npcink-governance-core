@@ -142,6 +142,7 @@ abilities:
 - `npcink-toolbox/build-site-knowledge-review-plan`
 - `npcink-toolbox/build-nightly-inspection-review-plan`
 - `npcink-abilities-toolkit/build-content-metadata-apply-plan`
+- `npcink-abilities-toolkit/build-flagged-media-removal-plan`
 
 They must remain discoverable as read-risk abilities with
 `execution_surface=wp_abilities_rest`. Their `governance_mode` may be
@@ -231,6 +232,17 @@ owned by `npcink-abilities-toolkit` or a local product plugin. Core accepts it o
 as one reviewed `media_rename_plan` for one attachment and one
 `npcink-abilities-toolkit/rename-media-file` action. Filename policy stays outside Core; Core
 only governs the reviewed target filename before Adapter/host execution.
+
+`npcink-abilities-toolkit/build-flagged-media-removal-plan` is the bounded flagged
+media removal handoff owned by `npcink-abilities-toolkit`. Core accepts it only
+as one reviewed `flagged_media_removal_plan` batch for exactly one attachment:
+one `npcink-abilities-toolkit/delete-attachment` action with the operator-chosen
+`deletion_policy_branch`, plus bounded exact-match reference removal patches.
+The dual-branch deletion callback, backup, lineage, and restore machinery stay
+in `npcink-abilities-toolkit`; content classification stays in the Cloud
+runtime; flagged-media review sets stay suggestion-only in
+`npcink-workflow-toolbox`. Core only governs proposal truth, the manual-only
+approval lane, branch evidence validation, and deletion-description audit.
 
 `npcink-abilities-toolkit/build-pattern-page-plan` is the bounded local
 Gutenberg pattern page handoff. Core accepts it only as a

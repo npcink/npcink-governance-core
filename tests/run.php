@@ -1809,6 +1809,13 @@ npcink_governance_core_assert( false !== strpos( $plan_service_source, 'target_a
 npcink_governance_core_assert( false !== strpos( $read_request_service_source, 'intake_blocked_error' ), 'Sensitive read lifecycle rejects blocked ability intake.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_source, 'npcink_governance_core_ability_intake_blocked' ), 'Commit preflight rejects blocked ability intake.' );
 npcink_governance_core_assert( false !== strpos( $commit_preflight_source, 'npcink_governance_core_ability_not_proposal_eligible' ), 'Commit preflight rechecks governed write eligibility.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service_source, 'flagged_media_attestation_gate' ), 'Proposal approval gates illegal_content_no_backup flagged media removal on the recorded attestation.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service_source, '$this->flagged_media_attestation_gate( $existing )' ), 'Proposal approval invokes the flagged media attestation gate before approving.' );
+npcink_governance_core_assert( false !== strpos( $proposal_service_source, 'npcink_governance_core_flagged_media_attestation_required' ), 'Proposal approval returns the stable flagged media attestation error.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_source, 'flagged_media_branch_evidence_preflight' ), 'Commit preflight revalidates flagged media branch evidence before handoff.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_source, '$this->flagged_media_branch_evidence_preflight( $proposal )' ), 'Commit preflight invokes the flagged media branch evidence revalidation before handoff.' );
+npcink_governance_core_assert( false !== strpos( $commit_preflight_source, 'npcink_governance_core_flagged_media_branch_evidence_missing' ), 'Commit preflight fails closed when flagged media branch evidence is inconsistent.' );
+npcink_governance_core_assert( false !== strpos( $plan_service_source, 'flagged_media_removal_audit_description' ), 'Flagged media plan intake audits a deletion description without content retention.' );
 
 $shared_replay_path = npcink_governance_core_shared_replay_fixture_path( $root );
 npcink_governance_core_assert( '' !== $shared_replay_path, 'Shared npcink-abilities-toolkit replay fixture is available for Core static proof.' );
@@ -2306,6 +2313,10 @@ foreach (
 		'guarded_media_derivative_preview_plan',
 		'consume_auto_approval_quota',
 		'AUTO_APPROVAL_TRANSIENT_PREFIX . $key_suffix',
+		'flagged_media_removal_manual_evaluation',
+		'flagged_media_removal_manual_required',
+		'flagged_media_removal_destructive_never_auto_approved',
+		'dev_allow_all_flagged_media_removal_manual_required',
 	) as $required
 ) {
 	npcink_governance_core_assert( false !== strpos( $approval_policy_evaluator, $required ), 'Approval policy evaluator contains required text: ' . $required );
@@ -2488,6 +2499,8 @@ foreach (
 		'validate_article_artifacts',
 		'validate_article_draft_action',
 		'validate_article_media_batch_action',
+		'validate_flagged_media_removal_plan_contract',
+		'validate_flagged_media_reference_patch_action',
 	) as $validator_method
 ) {
 	npcink_governance_core_assert( false !== strpos( $plan_contract_validator, 'function ' . $validator_method . '(' ), 'Plan contract validator owns method: ' . $validator_method );
@@ -2535,9 +2548,27 @@ foreach (
 		'npcink-toolbox/build-nightly-inspection-review-plan',
 		'npcink-abilities-toolkit/build-content-metadata-apply-plan',
 		'npcink-abilities-toolkit/build-media-alt-apply-plan',
+		'npcink-abilities-toolkit/build-flagged-media-removal-plan',
 		'proposal.plan_ingested',
 		'npcink-abilities-toolkit/delete-media-permanently',
+		'npcink-abilities-toolkit/delete-attachment',
 		'destructive_media_delete_not_explicitly_included',
+		'validate_flagged_media_removal_plan_contract',
+		'validate_flagged_media_reference_patch_action',
+		'flagged_media_removal_preview',
+		'flagged_media_removal_proposal_summary',
+		'flagged_media_removal_audit_description',
+		'is_flagged_media_removal_proposal',
+		'function flagged_media_removal_context(',
+		'function flagged_media_removal_branch(',
+		'is_valid_deletion_policy_branch',
+		'FLAGGED_MEDIA_REMOVAL_PLAN_ABILITY',
+		'governed_with_backup',
+		'illegal_content_no_backup',
+		'no_backup_attestation',
+		"'backup_evidence'",
+		'restore_ability_contract',
+		'flagged_media_removal_plan',
 		'validate_article_write_plan_contract',
 		'validate_article_batch_write_plan_contract',
 		'validate_article_block_plan_contract',
@@ -2625,6 +2656,22 @@ foreach (
 		'npcink_governance_core_media_optimization_batch_required',
 		'npcink_governance_core_media_optimization_actions_rejected',
 		'npcink_governance_core_media_optimization_attachment_mismatch',
+		'npcink_governance_core_flagged_media_removal_plan_invalid',
+		'npcink_governance_core_flagged_media_removal_batch_required',
+		'npcink_governance_core_flagged_media_removal_context_missing',
+		'npcink_governance_core_flagged_media_removal_branch_invalid',
+		'npcink_governance_core_flagged_media_backup_evidence_missing',
+		'npcink_governance_core_flagged_media_attestation_missing',
+		'npcink_governance_core_flagged_media_backup_evidence_conflict',
+		'npcink_governance_core_flagged_media_attestation_conflict',
+		'npcink_governance_core_flagged_media_delete_branch_mismatch',
+		'npcink_governance_core_flagged_media_delete_attachment_mismatch',
+		'npcink_governance_core_flagged_media_delete_idempotency_mismatch',
+		'npcink_governance_core_flagged_media_target_rejected',
+		'npcink_governance_core_flagged_media_delete_action_missing',
+		'npcink_governance_core_flagged_media_patch_invalid',
+		'npcink_governance_core_flagged_media_reference_actions_rejected',
+		'FLAGGED_MEDIA_MAX_REFERENCE_ACTIONS',
 		'npcink_governance_core_media_adoption_enhancement_actions_missing',
 		'npcink_governance_core_media_adoption_enhancement_patch_invalid',
 		'npcink_governance_core_media_rename_target_file_missing',
@@ -2740,6 +2787,7 @@ $canonical_plan_ability_ids = array(
 	'npcink-toolbox/build-site-knowledge-review-plan',
 	'npcink-toolbox/build-nightly-inspection-review-plan',
 	'npcink-abilities-toolkit/build-content-metadata-apply-plan',
+	'npcink-abilities-toolkit/build-flagged-media-removal-plan',
 );
 foreach ( $canonical_plan_ability_ids as $ability_id ) {
 	npcink_governance_core_assert( false !== strpos( $plan_contract_validator, $ability_id ), 'Plan validator allowlist contains canonical plan ability: ' . $ability_id );
