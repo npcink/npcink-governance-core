@@ -244,6 +244,12 @@ identity unless the same source can reproduce it.
 
 ## M4 Packaged WordPress Smoke
 
+The profile derives the expected Core version from the candidate's plugin
+`Version` header and compares it exactly with the installed release ZIP version.
+A missing or ambiguous header fails before Docker setup; a mismatched ZIP fails
+before WordPress smoke. This prevents the gate from retaining an older release
+version when the plugin advances.
+
 Run `composer smoke:wp-m4` only from clean Core and Toolkit checkouts. The
 runner sends Git archives plus the reproducible Core ZIP to the M4 host,
 installs that ZIP into disposable WordPress 7.0/PHP 8.0 and WordPress
