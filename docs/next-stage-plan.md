@@ -113,6 +113,11 @@ The cross-repository repair sequence is now complete:
    without path overrides at `02:29:37 UTC`. This is a development acceptance
    checkpoint, not a release tag, SVN publication, production deployment, or
    real-user validation row.
+5. The RC version matrix now passes with the live stack versions Core `0.3.0`,
+   Adapter `0.4.3`, and Toolkit `0.7.0`. `--require-tag-ready` remains a
+   deliberate release blocker because Core `v0.3.0` and Toolkit `0.7.0` already
+   point at historical commits; do not retag them. Use a new version or a
+   clearly named stack RC tag after explicit release authorization.
 
 Next stage: keep the real-usage program ready until an operating site and actual
 users exist. Automated fixtures, M4 Ollama evidence, and administrator

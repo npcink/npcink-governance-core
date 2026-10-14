@@ -290,4 +290,6 @@ Older history: `.sisyphus/archive/`.
 - **Release posture**: no tag, SVN publication, production deployment, or
   real-user ledger row is authorized. OCR remains advisory; Addon and Toolbox
   local provider reviews hit bounded provider/context deadlines and are recorded
-  as exceptions.
+  as exceptions. The RC version matrix now passes for Core `0.3.0`, Adapter
+  `0.4.3`, and Toolkit `0.7.0`; final tag readiness still fails safely on the
+  historical Core/Toolkit tags, so no tag is moved.
