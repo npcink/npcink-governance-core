@@ -5,24 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-09 - Real-usage first-week kickoff runway
-
-- **Recalibration**: the validation program itself, the ADR-007 park note,
-  and the decision-briefs-to-ledger trigger wiring were all landed by
-  parallel sessions (real-usage-validation.md, ADR-007 Start Trigger, #141/#142).
-  What remained missing was the executable path to the first ledger row.
-- **Completed** (PR #146, merged): `docs/real-usage-first-week-kickoff.md` —
-  real-site selection step, one-time environment prep (0.3.0 stack versions,
-  ai plugin 1.4.0+, per-site adapter token), week-one operating loop,
-  per-column ledger data sources, and the post-week wiring that fires on its
-  own.
-- **Smoke-site environment check**: full Npcink stack active and current on
-  magick-ai.local; `ai` plugin at 1.3.0 with 1.4.0 available (upgrade noted
-  in the kickoff checklist for the real site).
-- **Next recommended step (owner)**: pick the real site, run the kickoff
-  checklist, and land the first weekly ledger row. Adapter ADR-013 supplement
-  PR (#95) remains in active parallel development; run cross-repo acceptance
-  after it merges.
 # 2026-10-09 - Session closeout audit
 
 - **Issues**: every issue raised in this session's threads is done or has a
@@ -47,6 +29,7 @@ Older history: `.sisyphus/archive/`.
   parallel-session rules in AGENTS.md, ledger-trigger mechanism in
   real-usage-validation.md, first-week runway in
   real-usage-first-week-kickoff.md.
+
 # 2026-10-09 - ADR-013 verification-integrity arc closed end to end
 
 - **Core side merged**: ADR-013 accepted (#135/#136); provisional-record
@@ -124,7 +107,6 @@ Older history: `.sisyphus/archive/`.
   `delete-attachment` + `build-flagged-media-removal-plan` abilities,
   Adapter execution profile, boundary matrix + governance catalog
   registration (policy checklist item 5 open).
-
 
 # 2026-10-13 - Engineering queue implemented; M4 provider positive evidence passed
 
@@ -302,3 +284,12 @@ Older history: `.sisyphus/archive/`.
   `0.4.3`, and Toolkit `0.7.0`; `--require-tag-ready` safely rejects the
   historical Core tag. Classification lane 1 still awaits a real
   administrator editor action, and the real-usage ledger remains empty.
+
+# 2026-10-14 - Session closeout audit: local fixes complete, global closeout still open
+
+- **Core**: branch `codex/docs-week-2026-10-13` is clean at `075cd46`; `composer test:all` passes 55 tests / 207 assertions, `composer validate --no-check-publish` passes, and `git diff --check` passes. The branch remains local-only and is not merged to Core `master`.
+- **Toolbox classification repair**: isolated topic commit `d4bc150` passed `composer test:all`, local OCR session `bd48b658-64fa-485d-b3ee-3aebdf910117` returned 0 findings, and PR #268 merged as `444128a` after the protected publisher recorded the missing OpenCodeReview delivery as an explicit advisory exception.
+- **Cross-repo state**: the override matrix using clean AI Cloud `origin/master` and Toolbox `d4bc150` passed 7/7 at `2026-10-14T06:25:15Z`; the default matrix remains `needs_validation` because AI Cloud shared root has five owner-modified deploy/CI files.
+- **Cleanup boundary**: Cloud Addon shared `master`, Toolkit `master`, Adapter `master`, and AI Cloud related roots were inspected. Historical and locked worktrees remain intentionally preserved; no owner files, tags, deployments, or real-user data were altered.
+- **Open closeout items**: Core docs branch publication, AI Cloud owner reconciliation, historical worktree ownership decisions, classification lane 1 real-admin action, first real-usage ledger row, and a new RC tag/version decision.
+- **Process lesson**: audit claims must separate local verification, protected PR merge, default-matrix cleanliness, and real-user evidence. A clean isolated worktree cannot be reported as a clean shared checkout.
