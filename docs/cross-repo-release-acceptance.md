@@ -69,11 +69,12 @@ classification lanes 2 and 3 and full `composer test:all` pass. A matrix run
 using that Toolbox worktree plus a clean AI Cloud `origin/master` worktree
 passed all 7/7 repositories at `2026-10-14T06:25:15Z`.
 
-The default matrix remains blocked when the AI Cloud shared root contains its
-owner's uncommitted `deploy/remote-refresh-providers.sh`; the clean detached
-worktree proves the exact remote head instead. Lane 1 of the classification
-regression still requires a real present administrator to perform the editor
-action and cannot be replaced by a fixture.
+The default matrix remains blocked while the AI Cloud shared root contains its
+owner's uncommitted `deploy/deploy-to-ssh-host.sh` and
+`deploy/remote-refresh-providers.sh`; the clean detached worktree proves the
+exact remote head instead. Lane 1 of the classification regression still
+requires a real present administrator to perform the editor action and cannot
+be replaced by a fixture.
 
 Default sibling repository paths:
 

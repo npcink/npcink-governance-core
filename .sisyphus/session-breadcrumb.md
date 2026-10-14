@@ -296,7 +296,9 @@ Older history: `.sisyphus/archive/`.
 - **Matrix**: the override run using Toolbox `da02356` and a clean AI Cloud
   `origin/master` worktree passed 7/7 at `2026-10-14T06:25:15Z`.
 - **Open owner state**: default matrix is currently `needs_validation` because
-  the AI Cloud shared root has an uncommitted owner file
-  `deploy/remote-refresh-providers.sh`; it was left untouched. Classification
-  lane 1 still awaits a real administrator editor action, and the real-usage
-  ledger remains empty.
+  the AI Cloud shared root has uncommitted owner files
+  `deploy/deploy-to-ssh-host.sh` and `deploy/remote-refresh-providers.sh`;
+  they were left untouched. The RC matrix reports Core `0.3.0`, Adapter
+  `0.4.3`, and Toolkit `0.7.0`; `--require-tag-ready` safely rejects the
+  historical Core tag. Classification lane 1 still awaits a real
+  administrator editor action, and the real-usage ledger remains empty.

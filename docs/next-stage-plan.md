@@ -138,9 +138,10 @@ The cross-repository repair sequence is now complete:
    through the WordPress Abilities API. Lanes 2 and 3 pass with fixture cleanup;
    lane 1 still requires a real administrator editor action.
 8. The clean exact AI Cloud `origin/master` worktree passes its required GitHub
-   checks. The shared AI Cloud root currently has an owner change in
-   `deploy/remote-refresh-providers.sh`, so default matrix runs must remain
-   `needs_validation` until that owner reconciles the worktree.
+   checks. The shared AI Cloud root currently has owner changes in
+   `deploy/deploy-to-ssh-host.sh` and `deploy/remote-refresh-providers.sh`, so
+   default matrix runs must remain `needs_validation` until that owner
+   reconciles the worktree.
 
 Next stage: keep the real-usage program ready until an operating site and actual
 users exist. Automated fixtures, M4 Ollama evidence, and administrator
