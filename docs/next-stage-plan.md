@@ -109,10 +109,14 @@ The cross-repository repair sequence is now complete:
 3. The Toolbox local OCR configuration lane merged as PR #267; its clean
    master worktree passed the deterministic gate. The prior shared-root
    parallel branch was left intact until its owner finished.
-4. The 2026-10-14 central matrix with `--fail-on-dirty` passed all 7/7 repos
-   without path overrides at `02:29:37 UTC`. This is a development acceptance
-   checkpoint, not a release tag, SVN publication, production deployment, or
-   real-user validation row.
+4. After two liveness snapshots confirmed that the Cloud Addon shared root was
+   clean and unchanged, the remote `origin/master` commit `122ac79` was
+   validated in a dedicated detached worktree. The central matrix command
+   `composer quality:matrix:run -- --fail-on-dirty --repo-path=npcink-cloud-addon:<absolute-worktree-path>`
+   passed all 7/7 repositories at `2026-10-14T04:48:31Z`; the shared Addon
+   root remains untouched and one commit behind `origin/master`. This is a
+   development acceptance checkpoint, not a release tag, SVN publication,
+   production deployment, or real-user validation row.
 5. The RC version matrix now passes with the live stack versions Core `0.3.0`,
    Adapter `0.4.3`, and Toolkit `0.7.0`. `--require-tag-ready` remains a
    deliberate release blocker because Core `v0.3.0` and Toolkit `0.7.0` already

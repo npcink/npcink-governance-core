@@ -48,6 +48,17 @@ The wrapper runs:
 scripts/cross-repo-release-acceptance.sh
 ```
 
+## Latest Matrix Refresh
+
+On 2026-10-14, the Cloud Addon shared root was checked twice over a three
+minute interval and remained clean and unchanged while it was one commit behind
+`origin/master`. The remote release-record commit `122ac79` was therefore
+checked out in a dedicated detached worktree. Running
+`composer quality:matrix:run -- --fail-on-dirty` with that worktree supplied via
+`--repo-path=npcink-cloud-addon:<absolute-worktree-path>` passed all 7/7
+repositories at `2026-10-14T04:48:31Z`. The shared Addon root was not switched,
+pulled, or edited.
+
 Default sibling repository paths:
 
 ```text

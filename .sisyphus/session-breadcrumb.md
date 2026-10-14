@@ -5,29 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-09 - Post-release cleanup: branches, sibling roots, norms
-
-- **Closeout audit**: all historically-raised items are closed — 0.3.0
-  published (tag 3357f91, SVN r3735752), release hygiene #95, decision
-  briefs + ADR-010, sj/ 8-locale drafts #140, flagged-media policy review
-  #141, translation owner actions #142 (wp.org submission + PTE deferred,
-  documented in the release gate).
-- **Sibling roots**: ai-cloud shared root restored to clean master; the
-  m4-ops worktree was detached at its own commit to free the master branch
-  name (content-identical). The superseded codex/runtime-diagnostics-review
-  branch is preserved with unpushed dc58be21 (not contained in master) —
-  keep/discard belongs to the owner. workflow-toolbox's unpushed commits
-  were pushed by their owning session; eval-lab sits clean on a pushed
-  feature branch.
-- **Cleanup**: all five session branches deleted local+remote (squash
-  merges need `git branch -D`); parallel codex/* branches untouched.
-  Central matrix: 7/7 repositories clean on master, 0 dirty/ahead/behind.
-- **Norms**: AGENTS.md gains the stale-breadcrumb re-verification rule,
-  the sibling-session liveness check (two status snapshots + mtimes), the
-  worktree-vs-master branch-name rule, and the corrected central-matrix
-  path (npcink-workflow-toolbox, not the non-existent npcink-toolbox).
-- **Boundary**: Documentation and repository hygiene only; no runtime
-  behavior changed this session.
 # 2026-10-09 - 0.3.0 stack closeout completed (this session's part)
 
 - **Recalibration**: the 0.3.0 release chain (v0.3.0 tag at 3357f91,
@@ -311,3 +288,17 @@ Older history: `.sisyphus/archive/`.
   keep the real-usage kickoff ready until an operating site produces the first
   ledger row. Release-candidate tagging requires a new version/tag decision and
   explicit operator authorization.
+
+# 2026-10-14 - Remote Addon head verified without touching shared root
+
+- **Liveness**: Cloud Addon shared `master` was clean and unchanged across two
+  snapshots three minutes apart; it remains one commit behind `origin/master`.
+- **Isolated verification**: remote commit `122ac79` was checked out in a
+  dedicated detached worktree. Its `composer run test:all` gate passed.
+- **Central matrix**: `composer quality:matrix:run -- --fail-on-dirty`
+  with the detached Addon worktree supplied through `--repo-path` passed 7/7
+  repositories at `2026-10-14T04:48:31Z`. A final default-path run after the
+  Core docs commit also passed 7/7 at `2026-10-14T04:56:57Z`; the shared Addon
+  gate remains green while its branch is one commit behind.
+- **Boundary**: no sibling shared checkout was switched, pulled, or edited;
+  no tag, SVN publication, deployment, or real-user ledger row was created.
