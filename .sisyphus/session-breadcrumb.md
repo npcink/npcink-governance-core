@@ -273,8 +273,9 @@ Older history: `.sisyphus/archive/`.
 - **Toolbox**: classification lane 2 initially hit a real 403 because the
   fixture omitted the present-admin nonce, cookie, and same-origin headers;
   lane 3 also checked a Toolbox ability in the Toolkit-only registry. Isolated
-  commit `da02356` fixes both assumptions, and lanes 2/3 plus Toolbox
-  `composer test:all` pass.
+  commit `d4bc150` fixes both assumptions and the OCR follow-up isolation issue;
+  PR #268 merged as `444128a`, and lanes 2/3 plus Toolbox `composer test:all`
+  pass.
 - **Matrix**: the override run using Toolbox `da02356` and a clean AI Cloud
   `origin/master` worktree passed 7/7 at `2026-10-14T06:25:15Z`.
 - **Open owner state**: default matrix is currently `needs_validation` because
@@ -291,5 +292,6 @@ Older history: `.sisyphus/archive/`.
 - **Toolbox classification repair**: isolated topic commit `d4bc150` passed `composer test:all`, local OCR session `bd48b658-64fa-485d-b3ee-3aebdf910117` returned 0 findings, and PR #268 merged as `444128a` after the protected publisher recorded the missing OpenCodeReview delivery as an explicit advisory exception.
 - **Cross-repo state**: the override matrix using clean AI Cloud `origin/master` and Toolbox `d4bc150` passed 7/7 at `2026-10-14T06:25:15Z`; the default matrix remains `needs_validation` because AI Cloud shared root has five owner-modified deploy/CI files.
 - **Cleanup boundary**: Cloud Addon shared `master`, Toolkit `master`, Adapter `master`, and AI Cloud related roots were inspected. Historical and locked worktrees remain intentionally preserved; no owner files, tags, deployments, or real-user data were altered.
-- **Open closeout items**: Core docs branch publication, AI Cloud owner reconciliation, historical worktree ownership decisions, classification lane 1 real-admin action, first real-usage ledger row, and a new RC tag/version decision.
+- **Core publication**: PR #162 merged as `e81aef9` after Core CI and PR body checks passed; its GitHub OpenCodeReview job failed twice at provider HTTP 400 with zero review comments, while local OCR session `7b6c2e43-b820-4e3a-b989-dad90a02b618` returned 0 findings.
+- **Open closeout items**: AI Cloud owner reconciliation, historical worktree ownership decisions, classification lane 1 real-admin action, first real-usage ledger row, and a new RC tag/version decision.
 - **Process lesson**: audit claims must separate local verification, protected PR merge, default-matrix cleanliness, and real-user evidence. A clean isolated worktree cannot be reported as a clean shared checkout.
