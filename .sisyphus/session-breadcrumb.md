@@ -276,7 +276,7 @@ Older history: `.sisyphus/archive/`.
   diagnostics, cleanup and scheduler guards passed the full local gate and
   required CI. The settings-page complexity ceiling is now 2283 lines, matching
   the implementation.
-- **AI Cloud**: exact clean HEAD `33ba84ec` passed the required GitHub checks
+- **AI Cloud**: exact clean master HEAD `d97dfd4f` passed the required GitHub checks
   (`backend`, `frontend`, Secret scan, and both CodeQL analyses). The prior
   exact-SHA backend failure is superseded by this verified head.
 - **Toolbox**: PR #267 (`codex/local-ocr-config`) merged after its dedicated
@@ -284,8 +284,9 @@ Older history: `.sisyphus/archive/`.
   while its unrelated parallel branch completed.
 - **Central matrix**: the no-override command
   `composer quality:matrix:run -- --fail-on-dirty` passed 7/7 repositories at
-  `2026-10-14T02:29:37Z`; all default worktrees were clean. Core, Toolbox and
-  AI Cloud retain clean topic branches, with exact gate evidence recorded.
+  `2026-10-14T02:32:23Z`; all default worktrees were clean and Toolbox/AI
+  Cloud resolved to their merged master commits. Core retains its clean weekly
+  docs branch, with exact gate evidence recorded.
 - **Release posture**: no tag, SVN publication, production deployment, or
   real-user ledger row is authorized. OCR remains advisory; Addon and Toolbox
   local provider reviews hit bounded provider/context deadlines and are recorded

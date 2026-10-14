@@ -104,7 +104,7 @@ The cross-repository repair sequence is now complete:
 1. Cloud Addon recovery/status hardening merged as PR #271; its complexity
    ceiling and implementation are aligned at 2283 lines, and its required CI
    lanes passed.
-2. AI Cloud exact clean HEAD `33ba84ec` now has successful required GitHub checks
+2. AI Cloud exact clean HEAD `d97dfd4f` now has successful required GitHub checks
    (`backend`, `frontend`, Secret scan, and both CodeQL analyses).
 3. The Toolbox local OCR configuration lane merged as PR #267; its clean
    master worktree passed the deterministic gate. The prior shared-root
