@@ -27,6 +27,21 @@ From `npcink-governance-core`:
 composer acceptance:cross-repo-release
 ```
 
+When the release-test site uses the temporary M4 Ollama acceptance path,
+export the provider values in the gate process so the signed fixture does not
+fall back to its default model:
+
+```bash
+MAA_ADAPTER_PROVIDER_LOG_PROVIDER=ollama \
+MAA_ADAPTER_PROVIDER_LOG_MODEL=qwen2.5:1.5b \
+composer acceptance:cross-repo-release
+```
+
+The one-time SDK loader and loopback tunnel are acceptance fixtures owned by
+the Adapter operator. Remove them, the marker loader, and the draft after the
+run; the normal LocalWP provider registry must return to its configured state.
+This setup does not add a provider or credentials to Core.
+
 The wrapper runs:
 
 ```bash
