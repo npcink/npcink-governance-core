@@ -131,6 +131,16 @@ The cross-repository repair sequence is now complete:
    registry remains `npcink-cloud` only. Do not loosen the persisted
    provider-log assertion or add a provider to Core. The RC tag-readiness
    blocker and the absence of real-user ledger rows remain.
+7. Cloud Addon shared `master` was fast-forwarded to remote commit `122ac79`
+   after two stable liveness snapshots. The classification regression found and
+   corrected two stale Toolbox smoke assumptions in isolated commit `da02356`:
+   present-admin request headers are now modeled, and all abilities are checked
+   through the WordPress Abilities API. Lanes 2 and 3 pass with fixture cleanup;
+   lane 1 still requires a real administrator editor action.
+8. The clean exact AI Cloud `origin/master` worktree passes its required GitHub
+   checks. The shared AI Cloud root currently has an owner change in
+   `deploy/remote-refresh-providers.sh`, so default matrix runs must remain
+   `needs_validation` until that owner reconciles the worktree.
 
 Next stage: keep the real-usage program ready until an operating site and actual
 users exist. Automated fixtures, M4 Ollama evidence, and administrator

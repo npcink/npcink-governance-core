@@ -59,6 +59,22 @@ checked out in a dedicated detached worktree. Running
 repositories at `2026-10-14T04:48:31Z`. The shared Addon root was not switched,
 pulled, or edited.
 
+The Addon root was subsequently fast-forwarded to `122ac79` with
+`git merge --ff-only origin/master` and remains clean. The classification
+regression then exposed two stale Toolbox smoke assumptions: the Local Admin
+Consent fixture lacked the present-admin nonce/cookie/origin envelope, and the
+batch fixture looked for Toolbox abilities in the Toolkit-only registry. Those
+fixtures are corrected in the isolated Toolbox commit `da02356`; its local
+classification lanes 2 and 3 and full `composer test:all` pass. A matrix run
+using that Toolbox worktree plus a clean AI Cloud `origin/master` worktree
+passed all 7/7 repositories at `2026-10-14T06:25:15Z`.
+
+The default matrix remains blocked when the AI Cloud shared root contains its
+owner's uncommitted `deploy/remote-refresh-providers.sh`; the clean detached
+worktree proves the exact remote head instead. Lane 1 of the classification
+regression still requires a real present administrator to perform the editor
+action and cannot be replaced by a fixture.
+
 Default sibling repository paths:
 
 ```text
