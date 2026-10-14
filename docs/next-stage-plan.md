@@ -66,6 +66,33 @@ Documented, accepted, or readiness-complete (no longer "not implemented"):
   adapters; adapter contract standardization continues per release through the
   cross-repo acceptance chain.
 
+## Current Execution Checkpoint — 2026-10-14
+
+The first closeout pass is complete: Core documentation PRs #162 and #163 and
+Toolbox classification PR #268 are merged. Toolbox shared `codex/internal-link-recommendation-followup`
+now has a clean worktree and its local gate passes. The default central matrix
+was rerun at `2026-10-14T09:52:18Z`: six repositories passed, while AI Cloud
+was `needs_validation` because its shared root contains eight owner changes.
+Using a clean detached AI Cloud `origin/master` worktree, the same matrix passed
+7/7 at `2026-10-14T10:17:37Z`; this is a valid exact-SHA acceptance result but
+does not close the shared-root owner handoff.
+
+The next execution order is fixed:
+
+1. AI Cloud owner reconciles the eight modified/untracked files in
+   `codex/provider-refresh-advisory`, or records an explicit keep/hand-off state.
+2. Re-run the default matrix with no `--repo-path` override and require 7/7.
+3. Audit every registered worktree and branch; retain locked or owner-held work
+   until ownership is explicitly resolved.
+4. Re-run full cross-repository release acceptance against the resulting exact
+   master revisions.
+5. Only then decide a new RC version/tag; do not move historical tags.
+6. Start the real-usage first-week kickoff and record the first ledger row.
+
+Current worktree audit found one dirty auxiliary AI Cloud worktree
+(`m4-resource-baseline`, three untracked files); it remains preserved for its
+owner. All other inspected auxiliary worktrees were clean.
+
 ## Current Execution Decision
 
 Engineering checkpoint (2026-10-13): the owner confirmed this is still local

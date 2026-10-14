@@ -5,31 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-09 - Session closeout audit
-
-- **Issues**: every issue raised in this session's threads is done or has a
-  recorded disposition — UX audit P0-P2 shipped (#91) and adopted by Adapter
-  (#89); visual smoke passed with the two historical debts closed; 0.3.0
-  stack released and closed out (Toolkit 0.5.10 tagged; Adapter v0.4.1
-  intentionally untagged pending its next release); remaining open items are
-  owner-facing (first real-usage ledger row, wp.org zh_CN PTE) or in active
-  parallel development (Adapter #95), none dangling silently.
-- **Code**: all PRs merged (#91 #92 #94 #144-#147 Core; #89 Adapter; #219
-  Toolkit); local masters synced and clean.
-- **Branches/worktrees**: deleted merged session branches local+remote
-  (Core 4+2 superseded codex residuals, Adapter adapt/core-ux-contract,
-  Toolkit release/0.5.10); no worktrees created by this session. Kept
-  deliberately: Core codex/execution-verification-reads (1 unapplied) and
-  codex/verification-reads-hardening (2 unapplied) — in-flight parallel work,
-  keep/discard belongs to the owner; Adapter shared checkout sits on the
-  active codex/adr-013-verification-supplement branch (PR #95); Toolkit
-  codex/phpstan-ratchet-local-note (parallel residual, 0 unapplied).
-- **Norms/docs**: durable lessons already recorded — browser visual-smoke
-  pattern + stale `.maintenance` 503 note in development-workflow.md,
-  parallel-session rules in AGENTS.md, ledger-trigger mechanism in
-  real-usage-validation.md, first-week runway in
-  real-usage-first-week-kickoff.md.
-
 # 2026-10-09 - ADR-013 verification-integrity arc closed end to end
 
 - **Core side merged**: ADR-013 accepted (#135/#136); provisional-record
@@ -51,6 +26,7 @@ Older history: `.sisyphus/archive/`.
   record never transitions lifecycle state.
 - **Main line unchanged**: the real-usage validation ledger still has
   zero rows.
+
 
 # 2026-10-11 - Positioning audit clean; README synced to implementation truth
 
@@ -78,6 +54,7 @@ Older history: `.sisyphus/archive/`.
   hash, revision-bound smoke evidence).
 - **Main line unchanged**: the real-usage validation ledger still has
   zero rows.
+
 
 # 2026-10-12 - Flagged media removal Core slice staged; PR publish waits on a clean ocr round
 
@@ -107,6 +84,7 @@ Older history: `.sisyphus/archive/`.
   `delete-attachment` + `build-flagged-media-removal-plan` abilities,
   Adapter execution profile, boundary matrix + governance catalog
   registration (policy checklist item 5 open).
+
 
 # 2026-10-13 - Engineering queue implemented; M4 provider positive evidence passed
 
@@ -193,6 +171,7 @@ Older history: `.sisyphus/archive/`.
   dependencies. Provider topic history was also saved as a complete verified Git bundle
   before its worktree was removed; topic refs are preserved.
 
+
 # 2026-10-14 - Cross-repository acceptance restored
 
 - **Addon**: PR #271 merged (`edbacb8`); status/recovery hardening, localized
@@ -221,6 +200,7 @@ Older history: `.sisyphus/archive/`.
   only, while the default fixture expects Ollama. The M4 temporary loader,
   tunnel and `qwen2.5:1.5b` setup must be recreated for a future positive run;
   no provider configuration was changed.
+
 
 # 2026-10-14 - Cross-repository release acceptance passed
 
@@ -252,6 +232,7 @@ Older history: `.sisyphus/archive/`.
   ledger row. Release-candidate tagging requires a new version/tag decision and
   explicit operator authorization.
 
+
 # 2026-10-14 - Remote Addon head verified without touching shared root
 
 - **Liveness**: Cloud Addon shared `master` was clean and unchanged across two
@@ -265,6 +246,7 @@ Older history: `.sisyphus/archive/`.
   gate remains green while its branch is one commit behind.
 - **Boundary**: no sibling shared checkout was switched, pulled, or edited;
   no tag, SVN publication, deployment, or real-user ledger row was created.
+
 
 # 2026-10-14 - Classification regression fixtures repaired in isolation
 
@@ -286,6 +268,7 @@ Older history: `.sisyphus/archive/`.
   historical Core tag. Classification lane 1 still awaits a real
   administrator editor action, and the real-usage ledger remains empty.
 
+
 # 2026-10-14 - Session closeout audit: local fixes complete, global closeout still open
 
 - **Core**: branch `codex/docs-week-2026-10-13` is clean at `075cd46`; `composer test:all` passes 55 tests / 207 assertions, `composer validate --no-check-publish` passes, and `git diff --check` passes. The branch remains local-only and is not merged to Core `master`.
@@ -295,3 +278,11 @@ Older history: `.sisyphus/archive/`.
 - **Core publication**: PR #162 merged as `e81aef9` after Core CI and PR body checks passed; its GitHub OpenCodeReview job failed twice at provider HTTP 400 with zero review comments, while local OCR session `7b6c2e43-b820-4e3a-b989-dad90a02b618` returned 0 findings.
 - **Open closeout items**: AI Cloud owner reconciliation, historical worktree ownership decisions, classification lane 1 real-admin action, first real-usage ledger row, and a new RC tag/version decision.
 - **Process lesson**: audit claims must separate local verification, protected PR merge, default-matrix cleanliness, and real-user evidence. A clean isolated worktree cannot be reported as a clean shared checkout.
+
+
+# 2026-10-14 - Next-stage owner handoff checkpoint
+
+- **Toolbox**: shared root is now clean on `codex/internal-link-recommendation-followup`; its local gate passed in the default matrix.
+- **AI Cloud**: shared root remains dirty with eight owner files on `codex/provider-refresh-advisory`; one auxiliary `m4-resource-baseline` worktree also has three untracked files. No cleanup or reset was performed.
+- **Matrix**: default `composer quality:matrix:run -- --fail-on-dirty` reached 6 passed plus AI Cloud `needs_validation` at `2026-10-14T09:52:18Z`. A clean detached AI Cloud `origin/master` override passed 7/7 at `2026-10-14T10:17:37Z`.
+- **Locked sequence**: AI Cloud owner reconciliation -> default 7/7 matrix -> complete worktree audit -> full release acceptance -> new RC version decision -> real-usage first ledger row.
