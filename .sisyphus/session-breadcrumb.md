@@ -5,36 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-09 - 0.3.0 published to WordPress.org; adapter #94 completed; follow-ups closed
-
-- **WordPress.org publication**: owner authorized SVN sync. Dry-run reviewed
-  via direct diff (openrsync's --dry-run prints nothing on this macOS —
-  28 changed + 3 new files, zero deletions vs 0.1.1 trunk), applied, and
-  committed as r3735752 (trunk + tags/0.3.0, 58M/7A reconciled against the
-  reviewed delta; checkout at ~/wporg-svn). GitHub Release v0.3.0 created
-  from the tag with the package asset (zip sha256 ed907c89…); issue #2
-  closed with the full record. This is the first SVN release since 0.1.1 —
-  0.2.0 was git-tag only.
-- **Adapter #94 (verification reads) completed** with the parallel session:
-  it had restructured onto instance-scoped grant queues; this session stacked
-  the remaining deltas — positional per-ability binding of handoff grant ids
-  to action-derived inputs (their map produced empty queues against hardened
-  Core #131 because handoff entries carry no input), reference-addressed
-  skip telemetry, expected-vs-granted coverage events, relay double-fetch
-  reuse, slug-grant usability validation, and full grant-material redaction
-  from the execute response/records. All 20 review threads replied and
-  resolved; auto-merge armed. NOTE: the adapter main checkout is shared
-  with the parallel session — use a worktree (npcink-adapter-94-final) and
-  restore the checkout to master when done.
-- **ai-cloud orphan docs salvaged**: PR #1089 carries the 2026-10-08
-  commercial brainstorm and the diagnostics design brief from the superseded
-  branch into master (byte-identical extraction); auto-merge armed. The
-  stale branch itself is left for the owner's cleanup.
-- **Toolkit 0.5.9 tag drift accepted** (docs-only commits after the tag) in
-  the rc version matrix doc.
-- **Main line unchanged**: the real-usage validation ledger still has zero
-  rows; everything above is plumbing around it.
-
 # 2026-10-09 - Session closeout audit: issues, branches, worktrees, norms
 
 - **Issues**: #125 was auto-closed by #128; adapter #93 closed with the
@@ -299,3 +269,26 @@ Older history: `.sisyphus/archive/`.
   bundle and removed adapter-flagged-media after this session released all
   dependencies. Provider topic history was also saved as a complete verified Git bundle
   before its worktree was removed; topic refs are preserved.
+
+# 2026-10-14 - Cross-repository acceptance restored
+
+- **Addon**: PR #271 merged (`edbacb8`); status/recovery hardening, localized
+  diagnostics, cleanup and scheduler guards passed the full local gate and
+  required CI. The settings-page complexity ceiling is now 2283 lines, matching
+  the implementation.
+- **AI Cloud**: exact clean HEAD `33ba84ec` passed the required GitHub checks
+  (`backend`, `frontend`, Secret scan, and both CodeQL analyses). The prior
+  exact-SHA backend failure is superseded by this verified head.
+- **Toolbox**: PR #267 (`codex/local-ocr-config`) was created for the bounded
+  local OCR configuration lane; its dedicated clean worktree passed
+  `composer test:all`. The shared root retains unrelated parallel work and was
+  not reset or modified.
+- **Central matrix**: `composer quality:matrix:run -- --fail-on-dirty
+  --repo-path=npcink-workflow-toolbox:/private/tmp/npcink-toolbox-local-ocr`
+  passed 7/7 repositories at `2026-10-14T02:00:34Z`. This uses a clean
+  dedicated Toolbox worktree; a no-override rerun is required after PR #267
+  merges.
+- **Release posture**: no tag, SVN publication, production deployment, or
+  real-user ledger row is authorized. OCR remains advisory; Addon and Toolbox
+  local provider reviews hit bounded provider/context deadlines and are recorded
+  as exceptions.

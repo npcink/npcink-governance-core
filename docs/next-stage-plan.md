@@ -95,22 +95,30 @@ The remaining local acceptance gates have also advanced:
   Docker projects were removed. Source gates passed 55 tests/207 assertions.
 - OCR did not deliver valid verdicts: Adapter local review timed out after
   inspecting code and CI failed both rounds with Provider errors; Core's focused
-  local review also timed out. Exceptions are recorded in the PRs; required CI
-  passed. No clean AI review is claimed.
+  local review also timed out. The later Addon and Toolbox local reviews also
+  hit bounded provider/context deadlines. Exceptions are recorded in the PRs;
+  required deterministic CI passed. No clean AI review is claimed.
 
-Next local gates, in order:
+The cross-repository repair sequence is now complete:
 
-1. Let the Cloud Addon owner fix its settings-page complexity ratchet failure,
-   and the AI Cloud owner fix its exact-revision backend CI failure. The central
-   matrix at 10:20:34 UTC passed Toolkit/Core/Adapter/Toolbox/Eval Lab, but failed
-   these two repositories. This supersedes the earlier six-pass matrix; the
-   earlier Cloud Addon Scope message was expected negative-test output.
-2. Re-run the central matrix with `--fail-on-dirty` on the clean intended source
-   revisions after both owners finish, then decide a release candidate. No
-   release tag/SVN publication is implied by local development acceptance.
-3. Keep the real-usage program below ready until an operating site and actual
-   users exist. Automated fixture runs and administrator acceptance do not
-   count as real-user ledger usage. Weekly docs-only closeout stays batched.
+1. Cloud Addon recovery/status hardening merged as PR #271; its complexity
+   ceiling and implementation are aligned at 2283 lines, and its required CI
+   lanes passed.
+2. AI Cloud exact clean HEAD `33ba84ec` now has successful required GitHub checks
+   (`backend`, `frontend`, Secret scan, and both CodeQL analyses).
+3. The Toolbox local OCR configuration lane is isolated in PR #267; its clean
+   worktree passed the deterministic gate. The shared Toolbox root still carries
+   an unrelated parallel branch, so the final matrix used the clean dedicated
+   worktree rather than touching that checkout.
+4. The 2026-10-14 central matrix with `--fail-on-dirty` passed all 7/7 repos.
+   This is a development acceptance checkpoint, not a release tag, SVN
+   publication, production deployment, or real-user validation row.
+
+Next stage: keep the real-usage program ready until an operating site and actual
+users exist. Automated fixtures, M4 Ollama evidence, and administrator
+acceptance do not count as real-user ledger usage. Before any release candidate,
+merge PR #267, refresh the intended master revisions, rerun the same matrix
+without path overrides, then obtain explicit release authorization.
 
 The current stage's product validation program is
 [Real Usage Validation](real-usage-validation.md): at least four weeks of
