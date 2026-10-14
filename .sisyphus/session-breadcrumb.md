@@ -5,23 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-09 - Session closeout audit: issues, branches, worktrees, norms
-
-- **Issues**: #125 was auto-closed by #128; adapter #93 closed with the
-  full record (#94 merged; the in-transaction remainder lives in proposed
-  Core ADR-013). Remaining open Core issues (#3/#4/#6/#105/#123) are
-  deliberate trackers.
-- **Cleanup**: all session-created branches deleted local+remote across
-  Core (9), adapter (#94 head), ai-cloud (salvage); the ocr scratch
-  worktree in /private/tmp removed. Parallel-session branches and worktrees
-  were left untouched (their in-flight Core branch
-  `codex/execution-verification-reads` has no PR yet).
-- **Norms recorded**: AGENTS.md gains the parallel-session worktree rule
-  and the ADR next-free-number rule (two same-day duplicate-number
-  incidents); the wp.org release gate documents the openrsync silent
-  --dry-run caveat with the diff-based review replacement.
-- **Session is closable**; the main line remains the validation ledger
-  (zero rows).
 # 2026-10-09 - Post-release cleanup: branches, sibling roots, norms
 
 - **Closeout audit**: all historically-raised items are closed — 0.3.0
@@ -298,3 +281,33 @@ Older history: `.sisyphus/archive/`.
   only, while the default fixture expects Ollama. The M4 temporary loader,
   tunnel and `qwen2.5:1.5b` setup must be recreated for a future positive run;
   no provider configuration was changed.
+
+# 2026-10-14 - Cross-repository release acceptance passed
+
+- **Provider fixture**: recreated the one-time M4 Ollama 0.32.5 path with the
+  verified WordPress.org AI Provider for Ollama 1.3.0 SHA
+  `8c483f337b07c5dcb537444c09485208e3fa745430807a8f2905513fd5109e2c`, a
+  loopback SSH tunnel on `127.0.0.1:11439`, and `qwen2.5:1.5b`. The signed
+  Adapter fixture passed persisted Provider Log correlation for proposal,
+  preflight correlation, and Adapter request identifiers, then cleaned its
+  draft and marker loader.
+- **Cross-repo gate**: `composer acceptance:cross-repo-release` passed Core
+  validation/tests/smoke/release/package, Adapter tests/smoke/release/package
+  and real Provider fixture, and Toolkit tests/PHPStan/release/Docker smoke.
+  Docker Desktop 29.7.2 was started after the first retry reported an
+  unavailable daemon; the final run completed all rows.
+- **Central matrix**: `composer quality:matrix:run -- --fail-on-dirty` passed
+  all 7/7 repositories at `2026-10-14T03:46:45Z`; every default worktree was
+  clean. Cloud Addon is one commit behind `origin/master` but its deterministic
+  gate passed.
+- **Cleanup**: temporary SDK, MU loader, marker fixture, SSH tunnel/socket,
+  and provider registration were removed. LocalWP's registered providers are
+  back to `npcink-cloud` only. Core, Adapter, and Toolkit worktrees are clean.
+- **Release posture**: RC `--require-tag-ready` still fails safely on the
+  historical Core/Toolkit tags; no tag, SVN publication, production deploy,
+  or real-user ledger row is authorized. OCR remains advisory with recorded
+  delivery exceptions.
+- **Next**: refresh the central matrix after this acceptance evidence, then
+  keep the real-usage kickoff ready until an operating site produces the first
+  ledger row. Release-candidate tagging requires a new version/tag decision and
+  explicit operator authorization.
