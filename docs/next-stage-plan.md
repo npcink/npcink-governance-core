@@ -68,6 +68,87 @@ Documented, accepted, or readiness-complete (no longer "not implemented"):
 
 ## Current Execution Decision
 
+Engineering checkpoint (2026-10-13): the owner confirmed this is still local
+development with no real users. The flagged-media governed deletion/restore
+chain passed signed HTTPS acceptance; Core admin view extraction (#123) and
+ordered test-runner extraction (#105) are merged. The Adapter signed draft
+fixture now has a strict provider-log assertion merged in Adapter #115. M4
+Ollama (`qwen2.5:1.5b`) passed the strict positive signed fixture after a focused
+Adapter write-dispatch context fix (#116, merged `7b8431c`). Real persisted success
+logs match proposal, preflight correlation, Adapter request, and nested Core
+identifiers. The temporary SDK loader, draft, cache, and SSH tunnel were cleaned.
+The existing Cloud scene can return text without entering the AI plugin SDK
+logging transporter; a missing log remains a failure. This fixture is local
+engineering evidence, not an actual user or human browser approval session.
+
+The remaining local acceptance gates have also advanced:
+
+- Adapter owner confirmed actual administrator UI approval, signed flagged
+  attachment deletion, backup/readback, duplicate refusal, and fixture cleanup.
+- Merged Adapter `7b8431c` passed complete `accept:local-dev`: WordPress smoke
+  without grant skips, bounded limit 400, package install/restore, real persisted
+  Ollama log correlation, and both HTTPS media deletion branches with restore.
+  Release verification reported Plugin Check zero errors; six CLI tests passed.
+- Core #161 merged `391c291`: the M4 profile derives its expected installed
+  version from candidate metadata. Both WordPress 7.0/PHP 8.0 and 8.5 packaged
+  profiles passed 1,614 assertions on that exact merge revision; temporary
+  Docker projects were removed. Source gates passed 55 tests/207 assertions.
+- OCR did not deliver valid verdicts: Adapter local review timed out after
+  inspecting code and CI failed both rounds with Provider errors; Core's focused
+  local review also timed out. The later Addon and Toolbox local reviews also
+  hit bounded provider/context deadlines. Exceptions are recorded in the PRs;
+  required deterministic CI passed. No clean AI review is claimed.
+
+The cross-repository repair sequence is now complete:
+
+1. Cloud Addon recovery/status hardening merged as PR #271; its complexity
+   ceiling and implementation are aligned at 2283 lines, and its required CI
+   lanes passed.
+2. AI Cloud exact clean HEAD `d97dfd4f` now has successful required GitHub checks
+   (`backend`, `frontend`, Secret scan, and both CodeQL analyses).
+3. The Toolbox local OCR configuration lane merged as PR #267; its clean
+   master worktree passed the deterministic gate. The prior shared-root
+   parallel branch was left intact until its owner finished.
+4. After two liveness snapshots confirmed that the Cloud Addon shared root was
+   clean and unchanged, the remote `origin/master` commit `122ac79` was
+   validated in a dedicated detached worktree. The central matrix command
+   `composer quality:matrix:run -- --fail-on-dirty --repo-path=npcink-cloud-addon:<absolute-worktree-path>`
+   passed all 7/7 repositories at `2026-10-14T04:48:31Z`; the shared Addon
+   root remains untouched and one commit behind `origin/master`. This is a
+   development acceptance checkpoint, not a release tag, SVN publication,
+   production deployment, or real-user validation row.
+5. The RC version matrix now passes with the live stack versions Core `0.3.0`,
+   Adapter `0.4.3`, and Toolkit `0.7.0`. `--require-tag-ready` remains a
+   deliberate release blocker because Core `v0.3.0` and Toolkit `0.7.0` already
+   point at historical commits; do not retag them. Use a new version or a
+   clearly named stack RC tag after explicit release authorization.
+6. `composer acceptance:cross-repo-release` now passes with the real Adapter
+   provider fixture when the gate process explicitly supplies Ollama
+   `qwen2.5:1.5b` and the one-time M4 SDK loader/tunnel. The run passed Core,
+   Adapter, and Toolkit source, package, WordPress, PHPStan, Docker smoke, and
+   persisted provider-log correlation checks. The loader, SDK, tunnel, marker
+   fixture, and draft were removed afterward; LocalWP's normal provider
+   registry remains `npcink-cloud` only. Do not loosen the persisted
+   provider-log assertion or add a provider to Core. The RC tag-readiness
+   blocker and the absence of real-user ledger rows remain.
+7. Cloud Addon shared `master` was fast-forwarded to remote commit `122ac79`
+   after two stable liveness snapshots. The classification regression found and
+   corrected two stale Toolbox smoke assumptions in isolated commit `da02356`:
+   present-admin request headers are now modeled, and all abilities are checked
+   through the WordPress Abilities API. Lanes 2 and 3 pass with fixture cleanup;
+   lane 1 still requires a real administrator editor action.
+8. The clean exact AI Cloud `origin/master` worktree passes its required GitHub
+   checks. The shared AI Cloud root currently has owner changes in
+   `deploy/deploy-to-ssh-host.sh` and `deploy/remote-refresh-providers.sh`, so
+   default matrix runs must remain `needs_validation` until that owner
+   reconciles the worktree.
+
+Next stage: keep the real-usage program ready until an operating site and actual
+users exist. Automated fixtures, M4 Ollama evidence, and administrator
+acceptance do not count as real-user ledger usage. Before any release candidate,
+refresh the intended master revisions, rerun the same matrix before any release
+candidate, then obtain explicit release authorization.
+
 The current stage's product validation program is
 [Real Usage Validation](real-usage-validation.md): at least four weeks of
 real chain usage on one operating site, recorded weekly. The 0.4.0 scope is

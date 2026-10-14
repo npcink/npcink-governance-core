@@ -27,11 +27,54 @@ From `npcink-governance-core`:
 composer acceptance:cross-repo-release
 ```
 
+When the release-test site uses the temporary M4 Ollama acceptance path,
+export the provider values in the gate process so the signed fixture does not
+fall back to its default model:
+
+```bash
+MAA_ADAPTER_PROVIDER_LOG_PROVIDER=ollama \
+MAA_ADAPTER_PROVIDER_LOG_MODEL=qwen2.5:1.5b \
+composer acceptance:cross-repo-release
+```
+
+The one-time SDK loader and loopback tunnel are acceptance fixtures owned by
+the Adapter operator. Remove them, the marker loader, and the draft after the
+run; the normal LocalWP provider registry must return to its configured state.
+This setup does not add a provider or credentials to Core.
+
 The wrapper runs:
 
 ```bash
 scripts/cross-repo-release-acceptance.sh
 ```
+
+## Latest Matrix Refresh
+
+On 2026-10-14, the Cloud Addon shared root was checked twice over a three
+minute interval and remained clean and unchanged while it was one commit behind
+`origin/master`. The remote release-record commit `122ac79` was therefore
+checked out in a dedicated detached worktree. Running
+`composer quality:matrix:run -- --fail-on-dirty` with that worktree supplied via
+`--repo-path=npcink-cloud-addon:<absolute-worktree-path>` passed all 7/7
+repositories at `2026-10-14T04:48:31Z`. The shared Addon root was not switched,
+pulled, or edited.
+
+The Addon root was subsequently fast-forwarded to `122ac79` with
+`git merge --ff-only origin/master` and remains clean. The classification
+regression then exposed two stale Toolbox smoke assumptions: the Local Admin
+Consent fixture lacked the present-admin nonce/cookie/origin envelope, and the
+batch fixture looked for Toolbox abilities in the Toolkit-only registry. Those
+fixtures are corrected in the isolated Toolbox commit `da02356`; its local
+classification lanes 2 and 3 and full `composer test:all` pass. A matrix run
+using that Toolbox worktree plus a clean AI Cloud `origin/master` worktree
+passed all 7/7 repositories at `2026-10-14T06:25:15Z`.
+
+The default matrix remains blocked while the AI Cloud shared root contains its
+owner's uncommitted `deploy/deploy-to-ssh-host.sh` and
+`deploy/remote-refresh-providers.sh`; the clean detached worktree proves the
+exact remote head instead. Lane 1 of the classification regression still
+requires a real present administrator to perform the editor action and cannot
+be replaced by a fixture.
 
 Default sibling repository paths:
 

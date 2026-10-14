@@ -18,8 +18,8 @@ context line.
 Checked once; re-check only after a plugin update.
 
 - [ ] Npcink stack active on the real site at the 0.3.0 stack versions or
-      newer: Governance Core 0.3.0, Abilities Toolkit 0.5.10, Client Adapter
-      0.4.1, plus the Toolbox / Cloud Addon versions that site runs.
+      newer: Governance Core 0.3.0, Abilities Toolkit 0.7.0, Client Adapter
+      0.4.3, plus the Toolbox / Cloud Addon versions that site runs.
 - [ ] WordPress `ai` provider plugin updated to 1.4.0+ (the 1.3.0 → 1.4.0
       update exists; provider-log correlation should run current code).
 - [ ] One Core app token issued on the real site (`Npcink AI → Core →

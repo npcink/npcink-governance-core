@@ -5,150 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-08 - 0.3.0 tagged: arbitration executed, pipeline completed
-
-- **Arbitration executed (owner: option A)**: the ADR conflict recorded one
-  session ago is resolved. #132 renumbered the option-1 decision to
-  `ADR-012-execution-attached-verification-reads.md` (supersedes the option-2
-  ADR-011, kept for the record), README/validation-doc/tests updated, and the
-  ledger-trigger waiver is recorded as one-item, non-precedential.
-- **#131 unblocked and hardened**: the parallel session's PR was stuck on the
-  ADR rename conflict plus unresolved review threads. This session merged
-  master in (rename detection carried the Hardening section automatically),
-  fixed the remaining review findings (granted-only cap/dedupe counting,
-  normalize_payload_for_hash reuse for key-order-insensitive dedupe keys,
-  invalid_input denial for unencodable inputs, MAX_VERIFICATION_READS
-  constant, comment reword), recorded the test-coverage disposition (final
-  Read_Request_Service blocks unit stubbing; grant-mode adapter smoke is the
-  ADR-012 acceptance signal), and resolved all 10 threads; auto-merge landed
-  it as 3357f91.
-- **Release evidence at 3357f91**: cross-repo acceptance green on the fourth
-  attempt after clearing three environment blockers in order (explicit
-  `WP_CLI_MYSQL_SOCKET`, stale `.maintenance` file 503, Docker daemon down);
-  signed fixture proved proposal -> approval -> execute -> duplicate-reject
-  -> readback -> cleanup. `composer prepare:release -- --version 0.3.0`
-  green; package `build/npcink-governance-core.zip` SHA-256
-  `ed907c891dba944ecbd366358de2db2a9d2b641dc0b69a087907ca92cdee65d9`
-  (matches the reproducible-package hash from the branch gates).
-- **Tagged**: annotated `v0.3.0` pushed at 3357f91, remote peeled commit
-  verified equal to the verified HEAD. WordPress.org SVN is NOT published
-  (separately authorized). GitHub Release record waits for wp.org
-  publication per issue #2.
-- **Classified follow-ups**: `rc:version-matrix --require-tag-ready` fails
-  only on the Toolkit row (tag `0.5.9` at `a5ef13a`, HEAD two docs commits
-  ahead) — bump-or-accept is the Toolkit owner's call; ai-cloud stale branch
-  holds two orphan docs; adapter #94 must adopt the handoff-only granted-ids
-  shape; zh_CN wp.org/PTE unchanged.
-- **Main line unchanged**: the real-usage validation ledger still has zero
-  rows.
-
-# 2026-10-09 - 0.3.0 published to WordPress.org; adapter #94 completed; follow-ups closed
-
-- **WordPress.org publication**: owner authorized SVN sync. Dry-run reviewed
-  via direct diff (openrsync's --dry-run prints nothing on this macOS —
-  28 changed + 3 new files, zero deletions vs 0.1.1 trunk), applied, and
-  committed as r3735752 (trunk + tags/0.3.0, 58M/7A reconciled against the
-  reviewed delta; checkout at ~/wporg-svn). GitHub Release v0.3.0 created
-  from the tag with the package asset (zip sha256 ed907c89…); issue #2
-  closed with the full record. This is the first SVN release since 0.1.1 —
-  0.2.0 was git-tag only.
-- **Adapter #94 (verification reads) completed** with the parallel session:
-  it had restructured onto instance-scoped grant queues; this session stacked
-  the remaining deltas — positional per-ability binding of handoff grant ids
-  to action-derived inputs (their map produced empty queues against hardened
-  Core #131 because handoff entries carry no input), reference-addressed
-  skip telemetry, expected-vs-granted coverage events, relay double-fetch
-  reuse, slug-grant usability validation, and full grant-material redaction
-  from the execute response/records. All 20 review threads replied and
-  resolved; auto-merge armed. NOTE: the adapter main checkout is shared
-  with the parallel session — use a worktree (npcink-adapter-94-final) and
-  restore the checkout to master when done.
-- **ai-cloud orphan docs salvaged**: PR #1089 carries the 2026-10-08
-  commercial brainstorm and the diagnostics design brief from the superseded
-  branch into master (byte-identical extraction); auto-merge armed. The
-  stale branch itself is left for the owner's cleanup.
-- **Toolkit 0.5.9 tag drift accepted** (docs-only commits after the tag) in
-  the rc version matrix doc.
-- **Main line unchanged**: the real-usage validation ledger still has zero
-  rows; everything above is plumbing around it.
-
-# 2026-10-09 - Session closeout audit: issues, branches, worktrees, norms
-
-- **Issues**: #125 was auto-closed by #128; adapter #93 closed with the
-  full record (#94 merged; the in-transaction remainder lives in proposed
-  Core ADR-013). Remaining open Core issues (#3/#4/#6/#105/#123) are
-  deliberate trackers.
-- **Cleanup**: all session-created branches deleted local+remote across
-  Core (9), adapter (#94 head), ai-cloud (salvage); the ocr scratch
-  worktree in /private/tmp removed. Parallel-session branches and worktrees
-  were left untouched (their in-flight Core branch
-  `codex/execution-verification-reads` has no PR yet).
-- **Norms recorded**: AGENTS.md gains the parallel-session worktree rule
-  and the ADR next-free-number rule (two same-day duplicate-number
-  incidents); the wp.org release gate documents the openrsync silent
-  --dry-run caveat with the diff-based review replacement.
-- **Session is closable**; the main line remains the validation ledger
-  (zero rows).
-# 2026-10-09 - Post-release cleanup: branches, sibling roots, norms
-
-- **Closeout audit**: all historically-raised items are closed — 0.3.0
-  published (tag 3357f91, SVN r3735752), release hygiene #95, decision
-  briefs + ADR-010, sj/ 8-locale drafts #140, flagged-media policy review
-  #141, translation owner actions #142 (wp.org submission + PTE deferred,
-  documented in the release gate).
-- **Sibling roots**: ai-cloud shared root restored to clean master; the
-  m4-ops worktree was detached at its own commit to free the master branch
-  name (content-identical). The superseded codex/runtime-diagnostics-review
-  branch is preserved with unpushed dc58be21 (not contained in master) —
-  keep/discard belongs to the owner. workflow-toolbox's unpushed commits
-  were pushed by their owning session; eval-lab sits clean on a pushed
-  feature branch.
-- **Cleanup**: all five session branches deleted local+remote (squash
-  merges need `git branch -D`); parallel codex/* branches untouched.
-  Central matrix: 7/7 repositories clean on master, 0 dirty/ahead/behind.
-- **Norms**: AGENTS.md gains the stale-breadcrumb re-verification rule,
-  the sibling-session liveness check (two status snapshots + mtimes), the
-  worktree-vs-master branch-name rule, and the corrected central-matrix
-  path (npcink-workflow-toolbox, not the non-existent npcink-toolbox).
-- **Boundary**: Documentation and repository hygiene only; no runtime
-  behavior changed this session.
-# 2026-10-09 - 0.3.0 stack closeout completed (this session's part)
-
-- **Recalibration**: the 0.3.0 release chain (v0.3.0 tag at 3357f91,
-  cross-repo acceptance, wp.org SVN publication, 8-locale readme) was
-  completed by parallel sessions; this session contributed the 0.3.0 version
-  bump + full local release gate (#94), the next-decisions briefs, and the
-  matrix follow-up (#144).
-- **Toolkit 0.5.10**: the docs-only bump PR #219 merged (note: its auto-merge
-  fired before the parallel session's docs-only-drift adjudication was seen;
-  accepting the merged 0.5.10 as the normal next release per that ruling).
-  Annotated tag `0.5.10` pushed at dd4b42f; matrix reports points_at_head.
-- **Adapter v0.4.1 intentionally untagged**: master already carries six
-  post-0.4.1 commits including the execution-attached verification-reads
-  feature (pairs with Core ADR-012); tagging 0.4.1 now would fold unreleased
-  feature work into a patch tag. The next Adapter release (0.4.2/0.5.0)
-  should tag its own candidate head.
-- **Remaining owner items**: the three decision briefs
-  (docs/next-decisions-briefs-2026-10.md) and the deferred wp.org translation
-  owner actions (#142) still await the owner's read-through.
-# 2026-10-09 - Real-usage first-week kickoff runway
-
-- **Recalibration**: the validation program itself, the ADR-007 park note,
-  and the decision-briefs-to-ledger trigger wiring were all landed by
-  parallel sessions (real-usage-validation.md, ADR-007 Start Trigger, #141/#142).
-  What remained missing was the executable path to the first ledger row.
-- **Completed** (PR #146, merged): `docs/real-usage-first-week-kickoff.md` —
-  real-site selection step, one-time environment prep (0.3.0 stack versions,
-  ai plugin 1.4.0+, per-site adapter token), week-one operating loop,
-  per-column ledger data sources, and the post-week wiring that fires on its
-  own.
-- **Smoke-site environment check**: full Npcink stack active and current on
-  magick-ai.local; `ai` plugin at 1.3.0 with 1.4.0 available (upgrade noted
-  in the kickoff checklist for the real site).
-- **Next recommended step (owner)**: pick the real site, run the kickoff
-  checklist, and land the first weekly ledger row. Adapter ADR-013 supplement
-  PR (#95) remains in active parallel development; run cross-repo acceptance
-  after it merges.
 # 2026-10-09 - Session closeout audit
 
 - **Issues**: every issue raised in this session's threads is done or has a
@@ -173,6 +29,7 @@ Older history: `.sisyphus/archive/`.
   parallel-session rules in AGENTS.md, ledger-trigger mechanism in
   real-usage-validation.md, first-week runway in
   real-usage-first-week-kickoff.md.
+
 # 2026-10-09 - ADR-013 verification-integrity arc closed end to end
 
 - **Core side merged**: ADR-013 accepted (#135/#136); provisional-record
@@ -251,3 +108,188 @@ Older history: `.sisyphus/archive/`.
   Adapter execution profile, boundary matrix + governance catalog
   registration (policy checklist item 5 open).
 
+# 2026-10-13 - Engineering queue implemented; M4 provider positive evidence passed
+
+- **Recalibration**: the 2026-10-12 pending Core/OCR/Toolkit/Adapter claims are
+  superseded by live merged PRs. OCR is advisory; it does not require a clean
+  verdict when its service cannot deliver a review. This remains local
+  development, with no real users or ledger rows implied by fixtures.
+- **Flagged media**: Core #157/#158 (preflight fix 98ffa00), Toolkit #251
+  (7d6313f: durable manifests, deletion drift guards, deleted attachment
+  restoration), Adapter #109/#113 (f510270), and Toolbox #266 (7ec1aaf)
+  merged. The approved restoration extension is implemented. Adapter #112
+  (55654d3) passed real signed HTTPS deletion in both branches, restore to a
+  new attachment, rejection/idempotency guards, cleanup, and local aggregate
+  acceptance. Earlier dedicated four-source matrix passed 4/4; this was not
+  a full seven-repository release gate.
+- **Core #123**: #159 merged e3098a1; Admin_Page facade 6040 -> 1689 lines,
+  181 method bodies/signatures byte-identical, five WP-rendered screens equal.
+- **Core #105**: #160 merged 6ac6400 (source f856ad6); test entrypoints now
+  21/32/39 lines with ordered responsibility modules. All original statement
+  tokens preserved, early/late failure aggregation returns exit 1, normal and
+  relocated WordPress smoke pass. Composer test:all: 55 tests/207 assertions;
+  package reproducibility, metadata, and wp.org source guard pass.
+- **Provider gate**: Adapter #115 merged 35afff4 (source 1386563 plus current-master merge)
+  adds strict signed draft/log correlation, absent-ai warning skip, and
+  active-ai missing-log failure; 10 behavior checks/source gates pass.
+  Default WP smoke passed its fail-closed segment and skipped grant-dependent
+  remainder. Live tests correctly refused unregistered Ollama, a Cloud scene
+  with no SDK log, and a later provider failure. M4 Ollama 0.32.5 /
+  `qwen2.5:1.5b` then passed the strict signed fixture after the Adapter write
+  dispatch fix (#116 merged 7b8431c, source 31a7ec0): actual success log
+  03cbd3a3-8d40-4322-bb7d-5e49356b615b matches all three IDs and nested Core
+  fields. The regression probe fails before the fix and passes success/error/
+  exception cleanup afterward; private runtime authority stays out of logs.
+  WordPress.org Ollama Provider 1.3.0 classes were loaded only for acceptance;
+  temporary SDK/controller and marker loaders, draft 282138, host cache, and
+  SSH tunnel removed. Original registry restored to npcink-cloud only.
+- **OCR**: Core focused session f2761387 failed all three selected files with
+  repeated LLM network errors; no clean verdict claimed. Required CI passed.
+- **Completed follow-up**: Core #161 merged 391c291 (source e57d913) replaces
+  M4's stale 0.2.0 pin with the candidate plugin Version header; missing or
+  ambiguous headers fail before setup. On exact merged SHA, WP7.0/PHP8.0 and
+  WP7.0/PHP8.5 ZIP-installed profiles pass 1614 assertions each, with revision/
+  archive/package/Toolkit bindings validated. Docker projects cleaned; source
+  gates 55/207 passed. LocalWP worktree gate correctly refused the shared mount;
+  the real M4 package profiles supplied the WordPress behavior gate instead.
+- **Adapter owner acceptance**: actual user admin UI approval of proposal
+  a51c3c2b-0a43-4661-96fc-63cd664f33a2 (actor 1), signed attachment 282139
+  deletion, backup/readback/duplicate refusal and cleanup passed. On merged
+  7b8431c, full local aggregate passed with no WordPress grant skips, limit400,
+  package install/restore, real Ollama logs, both HTTPS deletion branches and
+  backup restore. Release gate/Plugin Check 0 errors and six CLI tests passed;
+  owner confirmed MU/cache/tunnel/fixtures cleaned and live mount restored.
+- **Next**: external owners fix Cloud Addon complexity and AI Cloud backend CI;
+  re-run clean central matrix before release closeout. No tag/SVN release
+  authorized; real-user ledger remains parked.
+- **Ownership/hygiene**: no sibling shared roots were switched/reset. Toolkit
+  owner removed its completed worktree; this made our private WP smoke mount
+  stale, and the isolated mount was corrected to clean Toolkit master before
+  rerunning the unchanged original and split smoke. Shared live symlinks
+  stayed unchanged. The owner's central run at 09:05:54 UTC passed six repos;
+  AI Cloud's parallel dirty workspace was needs_validation. The reported Cloud
+  Addon Scope message was expected negative-test output, and its gate passed.
+  Our 09:09:38 UTC status-only snapshot found two AI Cloud dirty files.
+  Newer actual 10:20:34 UTC matrix passed five repos and failed Cloud Addon
+  (settings-page 2282 lines > 2281 ratchet, 13 dirty files) and clean AI Cloud
+  (exact-SHA backend CI). Owners notified. No full-family green claim is made.
+- **OCR follow-up**: Adapter local session e32d3de5 timed out after source
+  inspection; CI run 38375605314 failed original/retry with Provider errors;
+  standard publisher recorded exception before merge. Core focused shell
+  session a9ba8b90 also timed out before tool calls; recorded in #161 body.
+  Required CI passed; owner independently reviewed the Adapter fix.
+- **Worktree cleanup**: our Adapter write-context topic was saved as verified
+  complete bundle before removal; Core M4 evidence copied to primary ignored
+  dist before removing its dedicated worktree. Official Ollama SDK and reusable
+  /tmp prepare/cleanup scripts retained for the Adapter owner's acceptance.
+- **Docs**: current stage/Decision 2/flagged-media pending prose recalibrated.
+  Adapter #115 CI review failed its original and repeated runs; the standard
+  publisher recorded an explicit review exception before protected merge.
+  Historical closeout and this bounded breadcrumb accumulate on the weekly
+  docs branch, per the batched docs-only publication rule.
+
+- **Dependency cleanup**: Adapter owner saved/verified its #113 topic Git
+  bundle and removed adapter-flagged-media after this session released all
+  dependencies. Provider topic history was also saved as a complete verified Git bundle
+  before its worktree was removed; topic refs are preserved.
+
+# 2026-10-14 - Cross-repository acceptance restored
+
+- **Addon**: PR #271 merged (`edbacb8`); status/recovery hardening, localized
+  diagnostics, cleanup and scheduler guards passed the full local gate and
+  required CI. The settings-page complexity ceiling is now 2283 lines, matching
+  the implementation.
+- **AI Cloud**: exact clean master HEAD `d97dfd4f` passed the required GitHub checks
+  (`backend`, `frontend`, Secret scan, and both CodeQL analyses). The prior
+  exact-SHA backend failure is superseded by this verified head.
+- **Toolbox**: PR #267 (`codex/local-ocr-config`) merged after its dedicated
+  clean worktree passed `composer test:all`. The shared root was left intact
+  while its unrelated parallel branch completed.
+- **Central matrix**: the no-override command
+  `composer quality:matrix:run -- --fail-on-dirty` passed 7/7 repositories at
+  `2026-10-14T02:32:23Z`; all default worktrees were clean and Toolbox/AI
+  Cloud resolved to their merged master commits. Core retains its clean weekly
+  docs branch, with exact gate evidence recorded.
+- **Release posture**: no tag, SVN publication, production deployment, or
+  real-user ledger row is authorized. OCR remains advisory; Addon and Toolbox
+  local provider reviews hit bounded provider/context deadlines and are recorded
+  as exceptions. The RC version matrix now passes for Core `0.3.0`, Adapter
+  `0.4.3`, and Toolkit `0.7.0`; final tag readiness still fails safely on the
+  historical Core/Toolkit tags, so no tag is moved. The subsequent
+  `acceptance:cross-repo-release` run reached the real Adapter fixture but
+  failed with `prompt_invalid_argument`: LocalWP is currently `npcink-cloud`
+  only, while the default fixture expects Ollama. The M4 temporary loader,
+  tunnel and `qwen2.5:1.5b` setup must be recreated for a future positive run;
+  no provider configuration was changed.
+
+# 2026-10-14 - Cross-repository release acceptance passed
+
+- **Provider fixture**: recreated the one-time M4 Ollama 0.32.5 path with the
+  verified WordPress.org AI Provider for Ollama 1.3.0 SHA
+  `8c483f337b07c5dcb537444c09485208e3fa745430807a8f2905513fd5109e2c`, a
+  loopback SSH tunnel on `127.0.0.1:11439`, and `qwen2.5:1.5b`. The signed
+  Adapter fixture passed persisted Provider Log correlation for proposal,
+  preflight correlation, and Adapter request identifiers, then cleaned its
+  draft and marker loader.
+- **Cross-repo gate**: `composer acceptance:cross-repo-release` passed Core
+  validation/tests/smoke/release/package, Adapter tests/smoke/release/package
+  and real Provider fixture, and Toolkit tests/PHPStan/release/Docker smoke.
+  Docker Desktop 29.7.2 was started after the first retry reported an
+  unavailable daemon; the final run completed all rows.
+- **Central matrix**: `composer quality:matrix:run -- --fail-on-dirty` passed
+  all 7/7 repositories at `2026-10-14T03:46:45Z`; every default worktree was
+  clean. Cloud Addon is one commit behind `origin/master` but its deterministic
+  gate passed.
+- **Cleanup**: temporary SDK, MU loader, marker fixture, SSH tunnel/socket,
+  and provider registration were removed. LocalWP's registered providers are
+  back to `npcink-cloud` only. Core, Adapter, and Toolkit worktrees are clean.
+- **Release posture**: RC `--require-tag-ready` still fails safely on the
+  historical Core/Toolkit tags; no tag, SVN publication, production deploy,
+  or real-user ledger row is authorized. OCR remains advisory with recorded
+  delivery exceptions.
+- **Next**: refresh the central matrix after this acceptance evidence, then
+  keep the real-usage kickoff ready until an operating site produces the first
+  ledger row. Release-candidate tagging requires a new version/tag decision and
+  explicit operator authorization.
+
+# 2026-10-14 - Remote Addon head verified without touching shared root
+
+- **Liveness**: Cloud Addon shared `master` was clean and unchanged across two
+  snapshots three minutes apart; it remains one commit behind `origin/master`.
+- **Isolated verification**: remote commit `122ac79` was checked out in a
+  dedicated detached worktree. Its `composer run test:all` gate passed.
+- **Central matrix**: `composer quality:matrix:run -- --fail-on-dirty`
+  with the detached Addon worktree supplied through `--repo-path` passed 7/7
+  repositories at `2026-10-14T04:48:31Z`. A final default-path run after the
+  Core docs commit also passed 7/7 at `2026-10-14T04:56:57Z`; the shared Addon
+  gate remains green while its branch is one commit behind.
+- **Boundary**: no sibling shared checkout was switched, pulled, or edited;
+  no tag, SVN publication, deployment, or real-user ledger row was created.
+
+# 2026-10-14 - Classification regression fixtures repaired in isolation
+
+- **Cloud Addon**: after two stable liveness snapshots, shared `master` was
+  fast-forwarded to `origin/master` `122ac79`; the root is clean and aligned.
+- **Toolbox**: classification lane 2 initially hit a real 403 because the
+  fixture omitted the present-admin nonce, cookie, and same-origin headers;
+  lane 3 also checked a Toolbox ability in the Toolkit-only registry. Isolated
+  commit `da02356` fixes both assumptions, and lanes 2/3 plus Toolbox
+  `composer test:all` pass.
+- **Matrix**: the override run using Toolbox `da02356` and a clean AI Cloud
+  `origin/master` worktree passed 7/7 at `2026-10-14T06:25:15Z`.
+- **Open owner state**: default matrix is currently `needs_validation` because
+  the AI Cloud shared root has uncommitted owner files
+  `deploy/deploy-to-ssh-host.sh` and `deploy/remote-refresh-providers.sh`;
+  they were left untouched. The RC matrix reports Core `0.3.0`, Adapter
+  `0.4.3`, and Toolkit `0.7.0`; `--require-tag-ready` safely rejects the
+  historical Core tag. Classification lane 1 still awaits a real
+  administrator editor action, and the real-usage ledger remains empty.
+
+# 2026-10-14 - Session closeout audit: local fixes complete, global closeout still open
+
+- **Core**: branch `codex/docs-week-2026-10-13` is clean at `075cd46`; `composer test:all` passes 55 tests / 207 assertions, `composer validate --no-check-publish` passes, and `git diff --check` passes. The branch remains local-only and is not merged to Core `master`.
+- **Toolbox classification repair**: isolated topic commit `d4bc150` passed `composer test:all`, local OCR session `bd48b658-64fa-485d-b3ee-3aebdf910117` returned 0 findings, and PR #268 merged as `444128a` after the protected publisher recorded the missing OpenCodeReview delivery as an explicit advisory exception.
+- **Cross-repo state**: the override matrix using clean AI Cloud `origin/master` and Toolbox `d4bc150` passed 7/7 at `2026-10-14T06:25:15Z`; the default matrix remains `needs_validation` because AI Cloud shared root has five owner-modified deploy/CI files.
+- **Cleanup boundary**: Cloud Addon shared `master`, Toolkit `master`, Adapter `master`, and AI Cloud related roots were inspected. Historical and locked worktrees remain intentionally preserved; no owner files, tags, deployments, or real-user data were altered.
+- **Open closeout items**: Core docs branch publication, AI Cloud owner reconciliation, historical worktree ownership decisions, classification lane 1 real-admin action, first real-usage ledger row, and a new RC tag/version decision.
+- **Process lesson**: audit claims must separate local verification, protected PR merge, default-matrix cleanliness, and real-user evidence. A clean isolated worktree cannot be reported as a clean shared checkout.
