@@ -279,15 +279,13 @@ Older history: `.sisyphus/archive/`.
 - **AI Cloud**: exact clean HEAD `33ba84ec` passed the required GitHub checks
   (`backend`, `frontend`, Secret scan, and both CodeQL analyses). The prior
   exact-SHA backend failure is superseded by this verified head.
-- **Toolbox**: PR #267 (`codex/local-ocr-config`) was created for the bounded
-  local OCR configuration lane; its dedicated clean worktree passed
-  `composer test:all`. The shared root retains unrelated parallel work and was
-  not reset or modified.
-- **Central matrix**: `composer quality:matrix:run -- --fail-on-dirty
-  --repo-path=npcink-workflow-toolbox:/private/tmp/npcink-toolbox-local-ocr`
-  passed 7/7 repositories at `2026-10-14T02:00:34Z`. This uses a clean
-  dedicated Toolbox worktree; a no-override rerun is required after PR #267
-  merges.
+- **Toolbox**: PR #267 (`codex/local-ocr-config`) merged after its dedicated
+  clean worktree passed `composer test:all`. The shared root was left intact
+  while its unrelated parallel branch completed.
+- **Central matrix**: the no-override command
+  `composer quality:matrix:run -- --fail-on-dirty` passed 7/7 repositories at
+  `2026-10-14T02:29:37Z`; all default worktrees were clean. Core, Toolbox and
+  AI Cloud retain clean topic branches, with exact gate evidence recorded.
 - **Release posture**: no tag, SVN publication, production deployment, or
   real-user ledger row is authorized. OCR remains advisory; Addon and Toolbox
   local provider reviews hit bounded provider/context deadlines and are recorded

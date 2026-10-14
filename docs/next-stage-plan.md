@@ -106,19 +106,19 @@ The cross-repository repair sequence is now complete:
    lanes passed.
 2. AI Cloud exact clean HEAD `33ba84ec` now has successful required GitHub checks
    (`backend`, `frontend`, Secret scan, and both CodeQL analyses).
-3. The Toolbox local OCR configuration lane is isolated in PR #267; its clean
-   worktree passed the deterministic gate. The shared Toolbox root still carries
-   an unrelated parallel branch, so the final matrix used the clean dedicated
-   worktree rather than touching that checkout.
-4. The 2026-10-14 central matrix with `--fail-on-dirty` passed all 7/7 repos.
-   This is a development acceptance checkpoint, not a release tag, SVN
-   publication, production deployment, or real-user validation row.
+3. The Toolbox local OCR configuration lane merged as PR #267; its clean
+   master worktree passed the deterministic gate. The prior shared-root
+   parallel branch was left intact until its owner finished.
+4. The 2026-10-14 central matrix with `--fail-on-dirty` passed all 7/7 repos
+   without path overrides at `02:29:37 UTC`. This is a development acceptance
+   checkpoint, not a release tag, SVN publication, production deployment, or
+   real-user validation row.
 
 Next stage: keep the real-usage program ready until an operating site and actual
 users exist. Automated fixtures, M4 Ollama evidence, and administrator
 acceptance do not count as real-user ledger usage. Before any release candidate,
-merge PR #267, refresh the intended master revisions, rerun the same matrix
-without path overrides, then obtain explicit release authorization.
+refresh the intended master revisions, rerun the same matrix before any release
+candidate, then obtain explicit release authorization.
 
 The current stage's product validation program is
 [Real Usage Validation](real-usage-validation.md): at least four weeks of
