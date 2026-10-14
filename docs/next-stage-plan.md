@@ -118,6 +118,14 @@ The cross-repository repair sequence is now complete:
    deliberate release blocker because Core `v0.3.0` and Toolkit `0.7.0` already
    point at historical commits; do not retag them. Use a new version or a
    clearly named stack RC tag after explicit release authorization.
+6. `composer acceptance:cross-repo-release` reached the Adapter real-provider
+   fixture but failed with `prompt_invalid_argument`: the current LocalWP site
+   has only `npcink-cloud`, while the fixture defaults to Ollama
+   `qwen3.5:0.8b`. The prior M4 positive evidence used a temporary Ollama
+   provider loader/tunnel and `qwen2.5:1.5b`; those resources were deliberately
+   cleaned. Recreate that temporary acceptance environment before retrying the
+   cross-repo gate. Do not loosen the persisted provider-log assertion or add a
+   provider to Core.
 
 Next stage: keep the real-usage program ready until an operating site and actual
 users exist. Automated fixtures, M4 Ollama evidence, and administrator

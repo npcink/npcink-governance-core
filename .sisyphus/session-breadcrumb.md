@@ -292,4 +292,9 @@ Older history: `.sisyphus/archive/`.
   local provider reviews hit bounded provider/context deadlines and are recorded
   as exceptions. The RC version matrix now passes for Core `0.3.0`, Adapter
   `0.4.3`, and Toolkit `0.7.0`; final tag readiness still fails safely on the
-  historical Core/Toolkit tags, so no tag is moved.
+  historical Core/Toolkit tags, so no tag is moved. The subsequent
+  `acceptance:cross-repo-release` run reached the real Adapter fixture but
+  failed with `prompt_invalid_argument`: LocalWP is currently `npcink-cloud`
+  only, while the default fixture expects Ollama. The M4 temporary loader,
+  tunnel and `qwen2.5:1.5b` setup must be recreated for a future positive run;
+  no provider configuration was changed.
