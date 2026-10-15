@@ -5,29 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-09 - ADR-013 verification-integrity arc closed end to end
-
-- **Core side merged**: ADR-013 accepted (#135/#136); provisional-record
-  result-bound minting implemented and hardened (#138/#139). The
-  provisional record is lifecycle-safe by construction: audit event plus
-  read mints only, allowed while the proposal is still approved, and the
-  definitive record path owns transitions (Proposal_Service.php:538-607).
-- **Adapter side merged**: adapter #95 (squash 9b30954) after 13
-  OpenCodeReview rounds, every finding triaged on the PR body; the
-  drained-key grant seeding is pinned by a behavior probe. Grant-mode
-  smoke: both post-block-readback assertions green, 1235 ok - the
-  furthest this run has ever reached. Issues #125 and adapter #93 closed
-  on acceptance evidence; adapter closeout record in its
-  docs/archive/2026-10-09-adr-013-verification-supplement-closeout.md.
-- **Standing verdicts for future rounds**: the supplement deliberately
-  sends the ORIGINAL (unresolved) action input - output references are
-  the reference-addressing evidence for the result-bound mint, and
-  resolved ids would be denied as statically addressed; the provisional
-  record never transitions lifecycle state.
-- **Main line unchanged**: the real-usage validation ledger still has
-  zero rows.
-
-
 # 2026-10-11 - Positioning audit clean; README synced to implementation truth
 
 - **Module**: README docs sync only (no runtime class, no contract change).
@@ -54,6 +31,7 @@ Older history: `.sisyphus/archive/`.
   hash, revision-bound smoke evidence).
 - **Main line unchanged**: the real-usage validation ledger still has
   zero rows.
+
 
 
 # 2026-10-12 - Flagged media removal Core slice staged; PR publish waits on a clean ocr round
@@ -84,6 +62,7 @@ Older history: `.sisyphus/archive/`.
   `delete-attachment` + `build-flagged-media-removal-plan` abilities,
   Adapter execution profile, boundary matrix + governance catalog
   registration (policy checklist item 5 open).
+
 
 
 # 2026-10-13 - Engineering queue implemented; M4 provider positive evidence passed
@@ -172,6 +151,7 @@ Older history: `.sisyphus/archive/`.
   before its worktree was removed; topic refs are preserved.
 
 
+
 # 2026-10-14 - Cross-repository acceptance restored
 
 - **Addon**: PR #271 merged (`edbacb8`); status/recovery hardening, localized
@@ -200,6 +180,7 @@ Older history: `.sisyphus/archive/`.
   only, while the default fixture expects Ollama. The M4 temporary loader,
   tunnel and `qwen2.5:1.5b` setup must be recreated for a future positive run;
   no provider configuration was changed.
+
 
 
 # 2026-10-14 - Cross-repository release acceptance passed
@@ -233,6 +214,7 @@ Older history: `.sisyphus/archive/`.
   explicit operator authorization.
 
 
+
 # 2026-10-14 - Remote Addon head verified without touching shared root
 
 - **Liveness**: Cloud Addon shared `master` was clean and unchanged across two
@@ -246,6 +228,7 @@ Older history: `.sisyphus/archive/`.
   gate remains green while its branch is one commit behind.
 - **Boundary**: no sibling shared checkout was switched, pulled, or edited;
   no tag, SVN publication, deployment, or real-user ledger row was created.
+
 
 
 # 2026-10-14 - Classification regression fixtures repaired in isolation
@@ -269,6 +252,7 @@ Older history: `.sisyphus/archive/`.
   administrator editor action, and the real-usage ledger remains empty.
 
 
+
 # 2026-10-14 - Session closeout audit: local fixes complete, global closeout still open
 
 - **Core**: branch `codex/docs-week-2026-10-13` is clean at `075cd46`; `composer test:all` passes 55 tests / 207 assertions, `composer validate --no-check-publish` passes, and `git diff --check` passes. The branch remains local-only and is not merged to Core `master`.
@@ -280,9 +264,19 @@ Older history: `.sisyphus/archive/`.
 - **Process lesson**: audit claims must separate local verification, protected PR merge, default-matrix cleanliness, and real-user evidence. A clean isolated worktree cannot be reported as a clean shared checkout.
 
 
+
 # 2026-10-14 - Next-stage owner handoff checkpoint
 
 - **Toolbox**: shared root is now clean on `codex/internal-link-recommendation-followup`; its local gate passed in the default matrix.
 - **AI Cloud**: shared root remains dirty with eight owner files on `codex/provider-refresh-advisory`; one auxiliary `m4-resource-baseline` worktree also has three untracked files. No cleanup or reset was performed.
 - **Matrix**: default `composer quality:matrix:run -- --fail-on-dirty` reached 6 passed plus AI Cloud `needs_validation` at `2026-10-14T09:52:18Z`. A clean detached AI Cloud `origin/master` override passed 7/7 at `2026-10-14T10:17:37Z`.
 - **Locked sequence**: AI Cloud owner reconciliation -> default 7/7 matrix -> complete worktree audit -> full release acceptance -> new RC version decision -> real-usage first ledger row.
+
+
+# 2026-10-15 - Owner-state audit continued
+
+- **Core planning record**: PR #164 merged as `d317f73`; Core topic branch remains clean and the latest docs update is staged for the next docs-only closeout PR.
+- **Toolbox**: shared `codex/internal-link-recommendation-followup` is clean and its gate passed in the default matrix.
+- **AI Cloud**: shared `codex/provider-refresh-advisory` remains dirty with eight owner changes. Auxiliary `m4-resource-baseline` retains three untracked files; locked or owner-held worktrees were preserved.
+- **Matrix**: default status snapshot at `2026-10-15T01:30:53Z` remains `needs_validation`; clean detached AI Cloud `origin/master` override passed 7/7 at `2026-10-14T10:17:37Z`.
+- **Next gate**: AI Cloud owner reconciliation is still the only blocker before a no-override 7/7 matrix; then run worktree audit, full release acceptance, and only afterward decide RC/tag and real-usage kickoff.
