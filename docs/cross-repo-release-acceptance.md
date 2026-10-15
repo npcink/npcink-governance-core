@@ -50,31 +50,38 @@ scripts/cross-repo-release-acceptance.sh
 
 ## Latest Matrix Refresh
 
-On 2026-10-14, the Cloud Addon shared root was checked twice over a three
-minute interval and remained clean and unchanged while it was one commit behind
-`origin/master`. The remote release-record commit `122ac79` was therefore
-checked out in a dedicated detached worktree. Running
-`composer quality:matrix:run -- --fail-on-dirty` with that worktree supplied via
-`--repo-path=npcink-cloud-addon:<absolute-worktree-path>` passed all 7/7
-repositories at `2026-10-14T04:48:31Z`. The shared Addon root was not switched,
-pulled, or edited.
+The no-override command `composer quality:matrix:run -- --fail-on-dirty`
+passed 7/7 at `2026-10-15T07:45:04Z`. AI Cloud PR #1115 is merged; its shared
+root is clean and its exact topic head has passed required CI. The earlier
+owner-dirty blocker and detached-override workaround are superseded.
 
-The Addon root was subsequently fast-forwarded to `122ac79` with
-`git merge --ff-only origin/master` and remains clean. The classification
-regression then exposed two stale Toolbox smoke assumptions: the Local Admin
-Consent fixture lacked the present-admin nonce/cookie/origin envelope, and the
-batch fixture looked for Toolbox abilities in the Toolkit-only registry. Those
-fixtures are corrected in the isolated Toolbox commit `da02356`; its local
-classification lanes 2 and 3 and full `composer test:all` pass. A matrix run
-using that Toolbox worktree plus a clean AI Cloud `origin/master` worktree
-passed all 7/7 repositories at `2026-10-14T06:25:15Z`.
+Full release acceptance then passed on clean master checkouts Core `9716cf5e`,
+Adapter `ab32e503`, and Toolkit `921d1dc7`, including real persisted Ollama log
+correlation, duplicate refusal, package installation, PHPStan, and Toolkit
+Docker smoke. This proves the three-repository engineering chain; it does not
+close the separate worktree, manual classification, tag, or real-user gates.
+See [the engineering checkpoint](history/cross-repo-engineering-checkpoint-2026-10-15.md).
 
-The default matrix remains blocked while the AI Cloud shared root contains its
-owner's uncommitted `deploy/deploy-to-ssh-host.sh` and
-`deploy/remote-refresh-providers.sh`; the clean detached worktree proves the
-exact remote head instead. Lane 1 of the classification regression still
-requires a real present administrator to perform the editor action and cannot
-be replaced by a fixture.
+Reproduction notes from this run:
+
+- Use the live LocalWP MySQL socket, confirmed against the target site, through
+  `WP_CLI_MYSQL_SOCKET` and `WP_DB_SOCKET`. The historical default socket may
+  disappear after a LocalWP environment change; diagnose environment drift
+  before modifying product code.
+- If M4's alternate network path times out, the documented LAN SSH path may
+  still work. Check the existing service and model before preparing the
+  loopback-only acceptance tunnel; no model pull or service restart was needed.
+- The AI plugin's `wpai_request_log_providers` filter matches a parsed hostname.
+  The temporary loader must match `127.0.0.1`, without the tunnel port. A
+  host-plus-port pattern allows a successful SDK request while failing the
+  strict persisted-provider-log assertion. Keep that assertion intact.
+- Remove temporary loaders, marker fixtures, drafts, the host-specific model
+  cache, and the SSH tunnel after success or failure. Confirm the normal
+  provider registry afterward.
+
+Classification lane 1 still needs a real present-administrator editor action.
+The owner reconfirmed local development only on 2026-10-15, so the real-usage
+ledger remains empty.
 
 Default sibling repository paths:
 

@@ -1,6 +1,8 @@
 # Real Usage Validation
 
-Status: active observation program (opened 2026-10-08).
+Status: observation program prepared (opened 2026-10-08); real-site observation
+has not started. Owner reconfirmed local development only on 2026-10-15.
+The ledger remains empty until an operating site and real work exist.
 
 Core's engineering and process debt was paid down through 2026-10. The one
 unvalidated assumption left is the product one: that the governed chain

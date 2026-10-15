@@ -5,35 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-11 - Positioning audit clean; README synced to implementation truth
-
-- **Module**: README docs sync only (no runtime class, no contract change).
-- **Audit**: systematic positioning-vs-implementation check: all 20 REST
-  routes, 5 tables, multisite provisioning, uninstall no-op, ADR-012/013
-  verification-read minting, and the local-admin-consent hook verified
-  against code; boundary scan (final writes, workflow/queue, MCP, gateway
-  catalogs, credentials, product UX, prompts, billing) clean 10/10 with
-  zero wp_remote_* and zero content-write API calls in runtime code.
-  Only staleness found: the README smart_guarded paragraph named 2 of 5
-  candidate classes and the plan-bridge prose listed 13 of 21 allowlisted
-  abilities (approval-policy-evaluator-standard.md and
-  plan-to-proposal-governance.md were already current).
-- **Fix**: README now names all five smart_guarded candidate classes and
-  all 21 allowlisted plan abilities with one-line bounds, repairs the
-  dangling "plan output" sentence in the bridge paragraph, and defers the
-  exhaustive list to plan-to-proposal-governance.md.
-- **Observations recorded (no action taken)**: Admin_Page.php at 5857 lines
-  strains the "minimal admin surfaces" wording though its content is
-  governance-only; Plan_Contract_Validator's per-plan domain knowledge is
-  the ADR-009-accepted stretch point of the governance-layer positioning.
-- **Verification**: `composer test:all` green (PHP lint, static contracts,
-  fail-closed fault injection, PHPUnit 41 tests, reproducible package
-  hash, revision-bound smoke evidence).
-- **Main line unchanged**: the real-usage validation ledger still has
-  zero rows.
-
-
-
 # 2026-10-12 - Flagged media removal Core slice staged; PR publish waits on a clean ocr round
 
 - **Stage recalibration (owner)**: project is local-development only, no
@@ -280,3 +251,31 @@ Older history: `.sisyphus/archive/`.
 - **AI Cloud**: shared `codex/provider-refresh-advisory` remains dirty with eight owner changes. Auxiliary `m4-resource-baseline` retains three untracked files; locked or owner-held worktrees were preserved.
 - **Matrix**: default status snapshot at `2026-10-15T01:30:53Z` remains `needs_validation`; clean detached AI Cloud `origin/master` override passed 7/7 at `2026-10-14T10:17:37Z`.
 - **Next gate**: AI Cloud owner reconciliation is still the only blocker before a no-override 7/7 matrix; then run worktree audit, full release acceptance, and only afterward decide RC/tag and real-usage kickoff.
+
+
+# 2026-10-15 - Default matrix and full engineering acceptance restored
+
+- **Recalibration**: AI Cloud PR #1115 merged as `0bb4d1fc`; its shared topic
+  `fca129f8` is clean, pushed, tree-identical to master, and exact-SHA CI passed.
+  The previous dirty shared-root owner blocker is resolved.
+- **Matrix**: no-override `quality:matrix:run -- --fail-on-dirty` passed 7/7
+  at `2026-10-15T07:45:04Z`. Full `acceptance:cross-repo-release` then passed
+  on clean masters Core `9716cf5e`, Adapter `ab32e503`, Toolkit `921d1dc7`,
+  with real Ollama persisted-log correlation, duplicate refusal, package
+  installation, PHPStan, and Toolkit Docker smoke. Core PHPStan also passed.
+- **Recovery**: supplied the live LocalWP socket, started Docker, used M4 LAN
+  SSH after alternate-path timeout, and corrected the temporary log-provider
+  pattern to hostname-only. The strict assertion remained intact. Temporary
+  loaders, drafts, discovery cache, tunnel, and smoke containers were cleaned;
+  provider registry is back to `npcink-cloud` only.
+- **Audit**: 28 registered worktrees / 98 local branches inspected. Five
+  worktrees are locked; AI Cloud resource-baseline still has three untracked
+  owner files. Open PRs and unpublished local work remain preserved. No global
+  cleanup or all-branches-merged claim is made.
+- **Posture**: ordinary RC matrix passes; historical Core/Toolkit tag mismatch
+  remains. No tags, SVN, or production deployment. Owner reconfirmed local-only
+  development: real-usage ledger stays empty and kickoff is parked.
+- **Docs**: current planning, acceptance, tag-readiness, and usage instructions
+  recalibrated; full audit and lessons recorded in
+  `docs/history/cross-repo-engineering-checkpoint-2026-10-15.md`. Batch these
+  docs with the next weekly docs publication instead of a per-session PR.

@@ -11,9 +11,9 @@ The current stack-level RC candidate is:
 
 | Repository | Role | Expected plugin version | Conventional release tag | Tag readiness |
 | --- | --- | --- | --- | --- |
-| `npcink-governance-core` | Governance layer | `0.3.0` | `v0.3.0` | Available if the current Core commit is the release candidate. |
+| `npcink-governance-core` | Governance layer | `0.3.0` | `v0.3.0` | Blocked: `v0.3.0` already points to historical commit `3357f916`; do not move it. |
 | `npcink-ai-client-adapter` | Thin channel layer | `0.4.3` | `v0.4.3` | Available if the current Adapter commit is the release candidate; the current master exposes 0.4.3 and the conventional tag is not yet created. |
-| `npcink-abilities-toolkit` | Ability implementation layer | `0.7.0` | `0.7.0` | Accepted 2026-10-14: docs-only commits after the 0.7.0 tag do not constitute drift; current master exposes 0.7.0. |
+| `npcink-abilities-toolkit` | Ability implementation layer | `0.7.0` | `0.7.0` | Historical `0.7.0` points to `46c14054`; current master still exposes 0.7.0, but the exact-HEAD tag guard rejects the mismatch even for docs-only drift. |
 
 Run the machine check from Core:
 
@@ -39,8 +39,15 @@ paths before final publication:
 
 The previous Core `v0.1.0`, Adapter `v0.4.2`, and Toolkit `0.5.1` tags are
 historical and must not be moved. The current matrix uses versions
-`0.3.0`, `0.4.3`, and `0.7.0` so final conventional release tags can be
-created after the full release gate passes.
+`0.3.0`, `0.4.3`, and `0.7.0` to audit candidate metadata; passing the ordinary
+matrix does not mean all three conventional tags are available.
+
+At the 2026-10-15 local engineering checkpoint, full cross-repo acceptance
+passed and the ordinary matrix passed, while `--require-tag-ready` stopped at
+the existing Core tag. The preferred preparation path is a separate stack
+snapshot RC, preserving plugin versions and historical tags. No snapshot or
+release tag was created. Final publication requires a named release objective,
+fresh exact-revision evidence, and the remaining manual release checks.
 
 ## Required Gate Before Any Tag
 
