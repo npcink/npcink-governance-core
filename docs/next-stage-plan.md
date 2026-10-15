@@ -66,13 +66,15 @@ Documented, accepted, or readiness-complete (no longer "not implemented"):
   adapters; adapter contract standardization continues per release through the
   cross-repo acceptance chain.
 
-## Current Execution Checkpoint — 2026-10-14
+## Current Execution Checkpoint — 2026-10-15
 
-The first closeout pass is complete: Core documentation PRs #162 and #163 and
-Toolbox classification PR #268 are merged. Toolbox shared `codex/internal-link-recommendation-followup`
-now has a clean worktree and its local gate passes. The default central matrix
-was rerun at `2026-10-14T09:52:18Z`: six repositories passed, while AI Cloud
-was `needs_validation` because its shared root contains eight owner changes.
+The first closeout pass is complete: Core documentation PRs #162, #163, and
+#164, and Toolbox classification PR #268 are merged. Toolbox shared
+`codex/internal-link-recommendation-followup` now has a clean worktree and its
+local gate passes. The latest default matrix status snapshot at
+`2026-10-15T01:30:53Z` still shows AI Cloud dirty; the most recent gate run at
+`2026-10-14T09:52:18Z` had six repositories passed, while AI Cloud was
+`needs_validation` because its shared root contains eight owner changes.
 Using a clean detached AI Cloud `origin/master` worktree, the same matrix passed
 7/7 at `2026-10-14T10:17:37Z`; this is a valid exact-SHA acceptance result but
 does not close the shared-root owner handoff.
@@ -80,7 +82,7 @@ does not close the shared-root owner handoff.
 The next execution order is fixed:
 
 1. AI Cloud owner reconciles the eight modified/untracked files in
-   `codex/provider-refresh-advisory`, or records an explicit keep/hand-off state.
+`codex/provider-refresh-advisory`, or records an explicit keep/hand-off state.
 2. Re-run the default matrix with no `--repo-path` override and require 7/7.
 3. Audit every registered worktree and branch; retain locked or owner-held work
    until ownership is explicitly resolved.
@@ -91,7 +93,9 @@ The next execution order is fixed:
 
 Current worktree audit found one dirty auxiliary AI Cloud worktree
 (`m4-resource-baseline`, three untracked files); it remains preserved for its
-owner. All other inspected auxiliary worktrees were clean.
+owner. The AI Cloud shared root has eight owner changes. The other inspected
+auxiliary worktrees were clean, locked, or clean with an upstream branch gone;
+none was deleted without owner confirmation.
 
 ## Current Execution Decision
 
