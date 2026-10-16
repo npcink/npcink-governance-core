@@ -11,14 +11,17 @@ smoke baseline.
 `f0e2a58` and Toolbox `569da58`, with Core `7904f5b` and the other four pinned
 revisions. The exact seven-repository matrix passed 7/7 with exit 0 using
 three clean worktree overrides; the full three-layer release acceptance passed
-with zero skips. The no-override default-root refresh at
-`2026-10-16T12:43:50Z` returned exit 1: 6/7 gates passed, AI Cloud `frontend` CI is pending, and Toolbox has
-three owner-held modified files. Addon PR #282 is merged and its shared root
-is clean at `0ae75fe`. AI Cloud runtime source and Addon documentation have
-drifted from RC2; the pinned manifest remains unchanged.
+with zero skips. PR #1119 subsequently merged as `2fd7282f`; its M4 accepted
+handoff completed at `13:04:13Z`. Toolbox finished development verification,
+but formal owner closeout is pending: default roots have 21 Toolbox, five
+Addon and seven AI Cloud files uncommitted. The requested full no-override
+rerun awaits that closeout; the last full default result remains exit 1 / 6/7
+at `12:43:50Z`. Committed and working-tree drift is recorded separately;
+RC2's pinned manifest remains unchanged.
 
 See [the RC2 manifest and acceptance record](history/stack-rc2-acceptance-2026-10-16.md)
-and [machine-readable manifest](history/stack-rc2-manifest-2026-10-16.json).
+and [machine-readable manifest](history/stack-rc2-manifest-2026-10-16.json),
+with [latest owner handoff evidence](history/stack-rc2-owner-handoff-2026-10-16.json).
 The existing published snapshot is unchanged. No new tag or retag was performed;
 subsequent documentation commits are outside this candidate manifest.
 

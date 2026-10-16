@@ -1,9 +1,10 @@
 # Stack RC2 candidate and acceptance — 2026-10-16
 
-Status: exact candidate validated; not tagged or published. The default-root
-refresh at `2026-10-16T12:43:50Z` returned exit 1 (6/7 gates passed;
-Cloud CI pending and Toolbox owner files dirty). This record does not supersede
-the published snapshot manifest.
+Status: fixed RC2 candidate remains validated and untagged. PR #1119 and
+its M4 handoff are complete; subsequent owner development is uncommitted.
+The requested full default matrix rerun is deferred until formal owner
+closeout. Latest completed full default run remains 6/7 with exit 1 at
+`2026-10-16T12:43:50Z`. This record does not supersede the published snapshot.
 
 ## Change envelope and candidate decision
 
@@ -195,3 +196,102 @@ Core documentation verification passed: `composer validate --no-check-publish`,
 `default` rows and the unchanged manifest hash, and `git diff --check`.
 The breadcrumb remains bounded to ten entries. These checks validate this
 coordination record; the failed default-root matrix remains unresolved.
+
+
+## PR #1119 handoff verified; owner publication still pending
+
+This follow-up remains release coordination in Core: this record, the new
+handoff audit JSON, the two stage pointers and the bounded breadcrumb/archive.
+No public contract, candidate SHA, sibling file, M4 runtime or tag is changed
+by this audit. The full no-override matrix is conditional on owner closeout;
+documentation gates are Core tests, JSON integrity and diff checks. Rollback
+is a documentation revert. These records remain local for the weekly docs PR.
+
+### Completed AI Cloud task and M4 handoff
+
+[PR #1119](https://github.com/npcink/npcink-ai-cloud/pull/1119) merged at
+`2026-10-16T13:00:36Z` as
+`2fd7282fe28bd4e73697587ebe961afd2cee2c3d`. The initial frontend run failed
+on ten obsolete English-error assertions; ten focused fixes and four matching
+regressions passed before the final head `3e3c17ab` completed required CI.
+The final run reported 294 unit tests and browser groups 48/48, 91/91 and 4/4.
+This was a real CI failure and fix, not merely a long pending check.
+
+The owner's completion receipt was read from
+`/Users/muze/gitee/npcink-ai-cloud/.runtime/localize-errors-closeout.md` and
+retained in the separate audit JSON. It records:
+
+- `M4_RELEASED=true` at `2026-10-16T13:04:13.175448+00:00`;
+- accepted source and frontend revision `2fd7282f`, clean `master` source;
+- post-merge M4 smoke 3/3 passed in 9.97s, promotion completed in 88.74s;
+- no production deployment; existing operator tunnel retained.
+
+Toolbox explicitly acknowledged the release and rebased its independent Cloud
+performance worktree onto `2fd7282f`. M4 was then used for the Toolbox candidate;
+the #1119 accepted receipt is the handoff baseline, not proof that subsequent
+uncommitted metadata changes have been formally accepted.
+
+### Toolbox development verification versus formal closeout
+
+The Toolbox owner completed three rounds of two real recommendation intents:
+each returned eight candidates in stable order; internal links took about
+3.7–3.8 seconds. Candidate display, copy and feedback passed on a real article.
+A positive disposable draft separately passed two-link Apply, Undo and native
+save. Metadata was then verified through WordPress, Addon and Cloud, including
+version, candidate positions, score buckets and retrieval/rerank state. Local
+Toolbox/Addon full tests and static analysis, plus focused Cloud tests, passed.
+
+There is a recorded limitation: Toolkit does not consume Cloud's
+`anchor_or_context`; two real samples had no safe applicable anchor and Apply
+stayed disabled. The positive draft test does not erase that limitation.
+See the owner's baseline at
+`/Users/muze/gitee/npcink-workflow-toolbox/docs/recommendation-ranking-baseline-v1.md`.
+
+The owner ended the task with **21 Toolbox, five Addon and five Cloud files
+uncommitted**. Cloud work is in the dedicated
+`/Users/muze/gitee/.worktrees/cloud-site-anchor-performance` worktree.
+Formal PRs, exact-SHA CI and new M4 accepted closeout were not performed.
+Development verification is complete; shared-root/release closeout is not.
+
+A subsequent, separate AI Cloud connection-routing task also ended with seven
+uncommitted documentation files on `codex/m4-lan-first-routing`. It performed
+read-only LAN SSH checks and no M4 sync, promotion or deployment. Two snapshots
+339 seconds apart showed the same status and mtimes. Those owner files were
+preserved, not staged, committed, moved or stashed by this audit.
+
+### Default-root readiness and unchanged RC2 decision
+
+The latest **status-only** central matrix has seven default rows. The shared
+roots now contain 33 owner files: AI Cloud seven, Addon five and Toolbox 21.
+It is not a new full matrix or a passing gate result. Its complete report,
+SHA observations, file identities and handoff receipt are retained in
+[the handoff audit JSON](stack-rc2-owner-handoff-2026-10-16.json).
+
+The requested full `composer quality:matrix:run -- --fail-on-dirty` is deferred
+because its owner-closeout prerequisite has not been met. The last completed
+full default run remains `12:43:50Z`, exit 1 / 6/7; the older exact pinned
+7/7 with overrides remains separate historical evidence. No override was used
+to turn this observation into a pass, and no new acceptance run was performed.
+
+Relative to fixed RC2, Core is local coordination head `a249fcb`; AI Cloud is
+now `2fd7282f` with frontend source drift plus its seven routing docs; Addon
+is `0ae75fe` with committed docs drift plus five new metadata files; Toolbox
+HEAD remains `569da58` but its 21 owner files are outside RC2. Adapter, Toolkit
+and Eval Lab default HEADs still match exactly. Adapter remote `ab32e50` is
+an ancestor of pinned `eb73e50`; the pin adds one documentation commit, so
+that remote SHA difference is not new source drift.
+
+The machine manifest remains byte-for-byte unchanged. Next, finish owner
+commits/PRs and required checks, restore clean default roots, then run the full
+no-override dirty gate and recheck all exact revisions. New owner revisions
+are not silently adopted into RC2; candidate selection and fresh exact
+acceptance remain separate decisions. Cross-thread closeout requests require
+the user's explicit authorization, which was requested; none was sent in this
+follow-up. No tag was created, pushed or moved; the published object and
+peeled commit were remotely reverified unchanged.
+
+Follow-up documentation gates passed: Composer metadata validation,
+`composer test:all` (55 tests / 207 assertions), JSON checks for seven default
+status-only rows / 33 owner files and the unchanged manifest hash,
+`git diff --check`, and the ten-entry breadcrumb bound. These documentation
+gates do not substitute for the deferred full matrix.

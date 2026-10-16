@@ -1,0 +1,772 @@
+{
+  "candidate_id": "stack-rc2-2026-10-16",
+  "observed_at": "2026-10-16T13:37:42.690736+00:00",
+  "status": "pr1119_handoff_complete_owner_publication_pending",
+  "candidate_manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+  "candidate_manifest_changed": false,
+  "pr1119_handoff": {
+    "observed_at": "2026-10-16T13:10:27.913869+00:00",
+    "pr": {
+      "headRefOid": "3e3c17abc0c13e5f29b563727b2e3267d3f84bef",
+      "mergeCommit": {
+        "oid": "2fd7282fe28bd4e73697587ebe961afd2cee2c3d"
+      },
+      "mergedAt": "2026-10-16T13:00:36Z",
+      "state": "MERGED"
+    },
+    "owner_receipt_path": "/Users/muze/gitee/npcink-ai-cloud/.runtime/localize-errors-closeout.md",
+    "owner_receipt_sha256": "a8be9d410d7a740015f12e02cc1072e8b66f054b826bd414b14792780b5b4841",
+    "owner_receipt": "# PR 1119 closeout\n\nPR: https://github.com/npcink/npcink-ai-cloud/pull/1119\nMerged master: `2fd7282fe28bd4e73697587ebe961afd2cee2c3d`; source worktree clean and synchronized.\n\nProvider catalog and connection feedback now use stable bilingual error-code mappings for authentication, supplier connectivity, timeouts, rate limiting, quota, missing configuration, catalog and response failures. Client-to-Cloud connectivity and timeouts have separate copy. Inline stage feedback and toast agree. Unknown API prose falls back to localized action context. External-service, SMTP/Alipay, generic UI/error-boundary and Portal fallback omissions are covered; original error metadata remains intact.\n\n## Verification\n\n- Final required CI succeeded: https://github.com/npcink/npcink-ai-cloud/actions/runs/38903522274\n- 294 unit tests; browser groups 48/48, 91/91 and 4/4; lint, types, contracts, i18n, admin rules, CodeQL and secret checks passed.\n- CI 38901276997 initially failed on ten old browser assertions expecting raw English. Updated those and four equivalent assertions; 14 focused regression tests passed, preserving retries, stale-data behavior, drafts and fail-closed behavior.\n- M4 post-merge smoke: 3/3 passed in 9.97s; provider test includes seven error scenarios. Browser APIs mocked; paid provider calls: 0.\n- Advisory AI evidence incomplete: Codex quota exhausted; OpenCodeReview 38900108980 timed out at 15 minutes, with no delivered findings. Recorded without an automatic retry or claiming approval. Five-axis source self-review completed with no blocking finding.\n\n## M4 handoff\n\nM4_RELEASED=true at 2026-10-16T13:04:13.175448+00:00\n\n- acceptance_state=accepted\n- promotion_pr=1119\n- source_revision=2fd7282fe28bd4e73697587ebe961afd2cee2c3d\n- source_branch=master\n- source_dirty=false\n- frontend_source_revision=2fd7282fe28bd4e73697587ebe961afd2cee2c3d\n- root and /health/live return HTTP 200.\n- Promotion succeeded in 88.74s without an image deployment.\n- This task has released M4. No further sync/deploy/promote is planned or pending; the Site Knowledge task may take ownership.\n- Existing operator tunnel was retained.\n\nProduction branch remains `2af00741a2ce06ea56a78e62864d4a35d86c66ab`; no production deployment, secret change or production host operation occurred.\nRollback: revert the merged frontend change through a master PR.\n\nM4_OBSERVATION_RECEIPT date=2026-10-16; route=Pgy direct; sync=not measured; focused=9.97s accepted smoke,56.84s regression; promotion=88.74s; operations=candidate_sync:4,promotion:1,deploy:0; stable_502=not measured; m4_only=not occurred; coordination=not occurred\n",
+    "receipt_scope": "PR1119 completed owner work; M4 was subsequently handed to Toolbox candidate verification, not reserved by this audit."
+  },
+  "toolbox_owner": {
+    "thread_id": "01a14348-1a6b-70a0-84d4-915d3cfcf03d",
+    "state": "completed_development_verification_not_formal_integration",
+    "toolbox_uncommitted_files": 21,
+    "addon_uncommitted_files": 5,
+    "cloud_auxiliary_uncommitted_files": 5,
+    "cloud_worktree": "/Users/muze/gitee/.worktrees/cloud-site-anchor-performance",
+    "verification": [
+      "three rounds x two recommendation intents, 8 candidates each, stable order",
+      "positive disposable draft Apply/Undo/native save",
+      "metadata WordPress to Addon to Cloud receipts",
+      "Toolbox and Addon complete local gates, static analysis, Cloud focused tests"
+    ],
+    "known_limit": "Toolkit does not consume Cloud anchor_or_context; two real samples had no applicable anchor and Apply remained disabled. Positive draft evidence is separate.",
+    "publication": "no commits, PRs or exact-SHA CI for the new three-repository changes; no new formal M4 acceptance",
+    "baseline_document": "/Users/muze/gitee/npcink-workflow-toolbox/docs/recommendation-ranking-baseline-v1.md",
+    "completed_at": "2026-10-16T13:35:34+00:00"
+  },
+  "default_shared_root_state": {
+    "time": 1792157862.6907258,
+    "observed_at": "2026-10-16T13:37:42.690736+00:00",
+    "rows": [
+      {
+        "repo": "npcink-governance-core",
+        "pinned_sha": "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0",
+        "head": "a249fcbd6beb8281868fc522af88e6635ba1da16",
+        "branch": "codex/rc2-validation-2026-10-16",
+        "status": "",
+        "files": {},
+        "committed_changed_paths": [
+          ".sisyphus/archive/2026-10.md",
+          ".sisyphus/session-breadcrumb.md",
+          "docs/history/stack-rc2-acceptance-2026-10-16.md",
+          "docs/history/stack-rc2-default-owner-audit-2026-10-16.json",
+          "docs/history/stack-rc2-manifest-2026-10-16.json",
+          "docs/next-stage-plan.md",
+          "docs/release-candidate-version-matrix.md"
+        ]
+      },
+      {
+        "repo": "npcink-ai-cloud",
+        "pinned_sha": "fe9207965f4a5049f80736019114f360186ec96b",
+        "head": "2fd7282fe28bd4e73697587ebe961afd2cee2c3d",
+        "branch": "codex/m4-lan-first-routing",
+        "status": " M README.md\n M docs/README.md\n M docs/decisions/052-pgy-primary-m4-access.md\n M docs/m4-preview-ai-development-standard-v1.md\n M docs/m4-preview-development-v1.md\n M docs/m4-remote-development-and-overlay-network-standard-v1.md\n?? docs/decisions/060-lan-first-m4-operation-routing.md",
+        "files": {
+          "README.md": {
+            "mtime_ns": 1792156159139474043,
+            "size": 16343,
+            "sha256": "be575bfcfdaad5581a4a2fbde42ed31d648c3322dd59bc07e1b848db2306621e"
+          },
+          "docs/README.md": {
+            "mtime_ns": 1792156159140057211,
+            "size": 52746,
+            "sha256": "856b9911b5296b97d0aab99c223878f66326d6377306907dc3a6ea2f2f76fca8"
+          },
+          "docs/decisions/052-pgy-primary-m4-access.md": {
+            "mtime_ns": 1792156176824940340,
+            "size": 2743,
+            "sha256": "117d0c168fb8d6c05959f70d9967ff9543f4f77b45d7be810108b9dbf2b38a66"
+          },
+          "docs/m4-preview-ai-development-standard-v1.md": {
+            "mtime_ns": 1792156159138728083,
+            "size": 27321,
+            "sha256": "28303ed4f8392f2823e99d8aba19ffaa2d4de2122e6cefdb8a463ed710eee55a"
+          },
+          "docs/m4-preview-development-v1.md": {
+            "mtime_ns": 1792156210964799460,
+            "size": 50283,
+            "sha256": "b344b31afa24abd0ea00af26818db84c3d7890097c6ee19b7d658fc757b1140a"
+          },
+          "docs/m4-remote-development-and-overlay-network-standard-v1.md": {
+            "mtime_ns": 1792156210965151919,
+            "size": 8838,
+            "sha256": "72aeddaab8e7e3b930ae4dbda3ffd509e8139366a58f96a048bc15e925d020f2"
+          },
+          "docs/decisions/060-lan-first-m4-operation-routing.md": {
+            "mtime_ns": 1792156159137699373,
+            "size": 2649,
+            "sha256": "08d13ba9ff409efacb93b89b84b2e4dcbb84893506c01abaf4c1b12bcb34ba8b"
+          }
+        },
+        "committed_changed_paths": [
+          "frontend/src/app/admin/ai-resources/page.tsx",
+          "frontend/src/app/admin/external-services/page.tsx",
+          "frontend/src/app/admin/service-settings/page.tsx",
+          "frontend/src/components/ErrorBoundary.tsx",
+          "frontend/src/components/ui/Alert.tsx",
+          "frontend/src/lib/errors.ts",
+          "frontend/src/lib/i18n.ts",
+          "frontend/src/lib/portal-error.ts",
+          "frontend/tests/e2e/admin-audit-workspace.spec.ts",
+          "frontend/tests/e2e/admin-customer-detail-v2.spec.ts",
+          "frontend/tests/e2e/admin-external-services.spec.ts",
+          "frontend/tests/e2e/admin-overview-navigation-v2.spec.ts",
+          "frontend/tests/e2e/admin-plugin-observability-v2.spec.ts",
+          "frontend/tests/e2e/admin-provider-directory-v2.spec.ts",
+          "frontend/tests/e2e/admin-runtime-diagnostics-v2.spec.ts",
+          "frontend/tests/e2e/admin-runtime-profiles-workspace.spec.ts",
+          "frontend/tests/e2e/admin-service-queue-v2.spec.ts",
+          "frontend/tests/e2e/admin-service-settings-v2.spec.ts",
+          "frontend/tests/e2e/admin-site-detail-pc-v2.spec.ts",
+          "frontend/tests/e2e/admin-subscription-detail-pc-v2.spec.ts",
+          "frontend/tests/e2e/admin-support-request-operator-closure.spec.ts",
+          "frontend/tests/vitest/error-boundary.test.ts",
+          "frontend/tests/vitest/errors.test.ts",
+          "frontend/tests/vitest/portal-error.test.ts"
+        ]
+      },
+      {
+        "repo": "npcink-cloud-addon",
+        "pinned_sha": "f0e2a5854bbe373e45240b23b5fce30b00df57fa",
+        "head": "0ae75febbfb391a7b405ddddad62d70fd4a7d578",
+        "branch": "codex/recommendation-feedback-metadata",
+        "status": " M docs/cloud-addon-complexity-budget.md\n M includes/class-cloud-runtime-request-guards.php\n M release-manifest.txt\n M tests/behavior-agent-feedback.php\n?? includes/class-cloud-agent-feedback-metadata.php",
+        "files": {
+          "docs/cloud-addon-complexity-budget.md": {
+            "mtime_ns": 1792157084356471158,
+            "size": 26803,
+            "sha256": "9e719c423cd051c121a8c1d4c04d42bf8c17b520848d6b475ed89243c0037ff9"
+          },
+          "includes/class-cloud-runtime-request-guards.php": {
+            "mtime_ns": 1792156570303085507,
+            "size": 85191,
+            "sha256": "cb374450d39d866bf189818d92c90caa52f4d926ee018bf54bdf7571c6d12a86"
+          },
+          "release-manifest.txt": {
+            "mtime_ns": 1792156570303582758,
+            "size": 2194,
+            "sha256": "4f06ab5bb80778f02211579e0a0891317feff5c3ad0202cdc9cf178dab23b3d2"
+          },
+          "tests/behavior-agent-feedback.php": {
+            "mtime_ns": 1792156723030042968,
+            "size": 4901,
+            "sha256": "b03b8ba51b7c636b91ad66f864094690a8295b083f360d23fb85acf15779a1de"
+          },
+          "includes/class-cloud-agent-feedback-metadata.php": {
+            "mtime_ns": 1792156570301610670,
+            "size": 1899,
+            "sha256": "4446bfc07b1fb9c5657e4b017e924c7ab49bd4d87fbb39b8e476a89b19c1c95d"
+          }
+        },
+        "committed_changed_paths": [
+          "docs/README.md",
+          "docs/cloud-owner-decision-package-draft-2026-10-16.md",
+          "docs/current-state-truth-draft-2026-10-16.md",
+          "docs/next-session-handoff-2026-10-16.md"
+        ]
+      },
+      {
+        "repo": "npcink-ai-client-adapter",
+        "pinned_sha": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+        "head": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+        "branch": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+        "status": "",
+        "files": {},
+        "committed_changed_paths": []
+      },
+      {
+        "repo": "npcink-abilities-toolkit",
+        "pinned_sha": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+        "head": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+        "branch": "master",
+        "status": "",
+        "files": {},
+        "committed_changed_paths": []
+      },
+      {
+        "repo": "npcink-workflow-toolbox",
+        "pinned_sha": "569da58106c877fadb65316e4375a8bd3d1f6b1e",
+        "head": "569da58106c877fadb65316e4375a8bd3d1f6b1e",
+        "branch": "codex/recommendation-baseline-metadata",
+        "status": " M assets/editor-content-support.js\n M composer.json\n M docs/README.md\n M docs/recommendation-candidate-contract.md\n M docs/recommendation-eval.md\n M docs/related-article-and-internal-link-recommendation-standard-v1.md\n M docs/session-handoff-2026-10-16-internal-link-related-content-history.md\n M includes/Provider_Agent_Feedback_Service.php\n M includes/Provider_Site_Knowledge_Service.php\n M includes/Rest_Editor_Content_Support.php\n M npcink-workflow-toolbox.php\n M tests/editor-content-support-behavior.php\n M tests/internal-link-editor-behavior.mjs\n M tests/load-provider-client.php\n M tests/media-derivative-local-review-behavior.php\n M tests/progressive-recommendations-behavior.php\n M tests/run.php\n M tests/smoke-editor-progressive-browser.mjs\n?? docs/recommendation-ranking-baseline-v1.md\n?? includes/Recommendation_Metadata.php\n?? tests/recommendation-metadata-behavior.php",
+        "files": {
+          "assets/editor-content-support.js": {
+            "mtime_ns": 1792157484188754522,
+            "size": 489967,
+            "sha256": "b91f20786c2ad367dc3554cf5af3797918fa6482759b0ecccdf01e6ae4e1f62a"
+          },
+          "composer.json": {
+            "mtime_ns": 1792156754707418911,
+            "size": 33430,
+            "sha256": "92367d13ba8a1068fd4249bdb1ba7a006a17c2890867d795c48e0c2f95dc2255"
+          },
+          "docs/README.md": {
+            "mtime_ns": 1792157225855019917,
+            "size": 17144,
+            "sha256": "a75b8a6fea948fc79cfd8f9c530c5cdc06da6d543e2d445d602db8d54d19ded0"
+          },
+          "docs/recommendation-candidate-contract.md": {
+            "mtime_ns": 1792157084347768554,
+            "size": 6235,
+            "sha256": "54d22148aa43f649d8b244068400e922046107e97eb3f1146aa6e462cf0f8d56"
+          },
+          "docs/recommendation-eval.md": {
+            "mtime_ns": 1792157084350909103,
+            "size": 3745,
+            "sha256": "c2220bb256e6bc1fbe5f7adf30031bc3ce0ee83ab2a067ccb1173ca91e083b8a"
+          },
+          "docs/related-article-and-internal-link-recommendation-standard-v1.md": {
+            "mtime_ns": 1792157084353915360,
+            "size": 25715,
+            "sha256": "05f61d074558838fc7836277d6a0fd84b5d09ec80b2b4c9a372af781da5e2780"
+          },
+          "docs/session-handoff-2026-10-16-internal-link-related-content-history.md": {
+            "mtime_ns": 1792157712272875394,
+            "size": 21604,
+            "sha256": "fe611366fe5dd17546809a9db202bb9cc9d9d642c6304f8da6dc7bb3eee61404"
+          },
+          "includes/Provider_Agent_Feedback_Service.php": {
+            "mtime_ns": 1792156876697019492,
+            "size": 12186,
+            "sha256": "242d5857c45c09ad5e8f34fadfdc5b05e46f2fe16167292042de01ab3470985c"
+          },
+          "includes/Provider_Site_Knowledge_Service.php": {
+            "mtime_ns": 1792156544321643151,
+            "size": 18371,
+            "sha256": "40cea16d9647aad0b688ba723afab90c4e01328e6c8a0e71b2c4845c0951a4e8"
+          },
+          "includes/Rest_Editor_Content_Support.php": {
+            "mtime_ns": 1792156770553789379,
+            "size": 130100,
+            "sha256": "b4e611fa29e2baa9113fe219413ba4aa43cda7cb7f82e57b11562d2e99f176d7"
+          },
+          "npcink-workflow-toolbox.php": {
+            "mtime_ns": 1792156544319328646,
+            "size": 6954,
+            "sha256": "c7403101888794c9c926397957c21529f9fe2ea1c2e727c0e66268d2eee68aa8"
+          },
+          "tests/editor-content-support-behavior.php": {
+            "mtime_ns": 1792156682042532242,
+            "size": 36024,
+            "sha256": "7ea1ed48006cfb7ce99f1f2af584c34a15d1c73bd74537628501a89ce02dc9b0"
+          },
+          "tests/internal-link-editor-behavior.mjs": {
+            "mtime_ns": 1792157484213799957,
+            "size": 21194,
+            "sha256": "2f7a5d39a2cd2c5c91e69833dd978d3a3ca7f2c9b464bc593a872d3b75ff4f82"
+          },
+          "tests/load-provider-client.php": {
+            "mtime_ns": 1792156682042207325,
+            "size": 2005,
+            "sha256": "a9cc6ecce5b2dde94b39e4bceb3622d90ef907fd86b94e53913f1bd8a0361de2"
+          },
+          "tests/media-derivative-local-review-behavior.php": {
+            "mtime_ns": 1792156682043146494,
+            "size": 18124,
+            "sha256": "9870df8da07a813b04ed496846eeaadc6ec56088a0605effbfd583159f298891"
+          },
+          "tests/progressive-recommendations-behavior.php": {
+            "mtime_ns": 1792156682042890660,
+            "size": 57328,
+            "sha256": "f77bef3cd2b1f77703826471da8ec498239defc1c6b24b5520ab431e4663a7bf"
+          },
+          "tests/run.php": {
+            "mtime_ns": 1792157213983337841,
+            "size": 843825,
+            "sha256": "2e2c832ec1beba7255967ca7944af30bcef058dfdf4e8ee9611d423c3142cf21"
+          },
+          "tests/smoke-editor-progressive-browser.mjs": {
+            "mtime_ns": 1792157484273340351,
+            "size": 29390,
+            "sha256": "12f6d273c3a1f117336ef421ca4f6494d0da0745705f2cab9e63b0eaf30618da"
+          },
+          "docs/recommendation-ranking-baseline-v1.md": {
+            "mtime_ns": 1792157712272433476,
+            "size": 5882,
+            "sha256": "55b4985f46714d410b0f581573d77959dd0c6fb691090132be28afa48e63dbe6"
+          },
+          "includes/Recommendation_Metadata.php": {
+            "mtime_ns": 1792157350447066570,
+            "size": 4233,
+            "sha256": "ce8e381dc832d770cebd1f1c3a7182199818d6b37eaa92968101daae90269d8f"
+          },
+          "tests/recommendation-metadata-behavior.php": {
+            "mtime_ns": 1792157350491451178,
+            "size": 3115,
+            "sha256": "7d2f7dedd17233e7a3a1598444db2b3c60fa80c49722e5fb3e836ac14c2224b0"
+          }
+        },
+        "committed_changed_paths": []
+      },
+      {
+        "repo": "npcink-eval-lab",
+        "pinned_sha": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+        "head": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+        "branch": "main",
+        "status": "",
+        "files": {},
+        "committed_changed_paths": []
+      }
+    ]
+  },
+  "status_matrix": {
+    "generated_at": "2026-10-16T13:37:42+00:00",
+    "family_root": "/Users/muze/gitee",
+    "run_gates": false,
+    "cloud_m4": false,
+    "results": [
+      {
+        "name": "npcink-abilities-toolkit",
+        "path": "/Users/muze/gitee/npcink-abilities-toolkit",
+        "path_source": "default",
+        "exists": true,
+        "is_git": true,
+        "branch": "master...origin/master",
+        "ahead": 0,
+        "behind": 0,
+        "dirty_count": 0,
+        "dirty_files": [],
+        "stash_count": 0,
+        "worktrees": 1,
+        "gate": "composer test:all",
+        "gate_authority": "local",
+        "gate_notes": "Reusable WordPress ability contracts and callbacks.",
+        "gate_ran": false,
+        "gate_status": "not_run",
+        "gate_exit": null,
+        "gate_duration": null,
+        "gate_tail": "",
+        "runtime_gate_ran": false,
+        "runtime_gate_status": "not_run",
+        "runtime_gate_exit": null,
+        "runtime_gate_duration": null,
+        "runtime_gate_tail": ""
+      },
+      {
+        "name": "npcink-governance-core",
+        "path": "/Users/muze/gitee/npcink-governance-core",
+        "path_source": "default",
+        "exists": true,
+        "is_git": true,
+        "branch": "codex/rc2-validation-2026-10-16...origin/master [ahead 2]",
+        "ahead": 2,
+        "behind": 0,
+        "dirty_count": 0,
+        "dirty_files": [],
+        "stash_count": 0,
+        "worktrees": 1,
+        "gate": "composer test:all",
+        "gate_authority": "local",
+        "gate_notes": "Proposal, approval, preflight, audit, and fail-closed contracts.",
+        "gate_ran": false,
+        "gate_status": "not_run",
+        "gate_exit": null,
+        "gate_duration": null,
+        "gate_tail": "",
+        "runtime_gate_ran": false,
+        "runtime_gate_status": "not_run",
+        "runtime_gate_exit": null,
+        "runtime_gate_duration": null,
+        "runtime_gate_tail": ""
+      },
+      {
+        "name": "npcink-ai-client-adapter",
+        "path": "/Users/muze/gitee/npcink-ai-client-adapter",
+        "path_source": "default",
+        "exists": true,
+        "is_git": true,
+        "branch": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+        "ahead": 0,
+        "behind": 0,
+        "dirty_count": 0,
+        "dirty_files": [],
+        "stash_count": 0,
+        "worktrees": 1,
+        "gate": "composer test:all",
+        "gate_authority": "local",
+        "gate_notes": "Adapter route, recipe, and execution-profile contracts.",
+        "gate_ran": false,
+        "gate_status": "not_run",
+        "gate_exit": null,
+        "gate_duration": null,
+        "gate_tail": "",
+        "runtime_gate_ran": false,
+        "runtime_gate_status": "not_run",
+        "runtime_gate_exit": null,
+        "runtime_gate_duration": null,
+        "runtime_gate_tail": ""
+      },
+      {
+        "name": "npcink-workflow-toolbox",
+        "path": "/Users/muze/gitee/npcink-workflow-toolbox",
+        "path_source": "default",
+        "exists": true,
+        "is_git": true,
+        "branch": "codex/recommendation-baseline-metadata",
+        "ahead": 0,
+        "behind": 0,
+        "dirty_count": 21,
+        "dirty_files": [
+          " M assets/editor-content-support.js",
+          " M composer.json",
+          " M docs/README.md",
+          " M docs/recommendation-candidate-contract.md",
+          " M docs/recommendation-eval.md",
+          " M docs/related-article-and-internal-link-recommendation-standard-v1.md",
+          " M docs/session-handoff-2026-10-16-internal-link-related-content-history.md",
+          " M includes/Provider_Agent_Feedback_Service.php",
+          " M includes/Provider_Site_Knowledge_Service.php",
+          " M includes/Rest_Editor_Content_Support.php",
+          " M npcink-workflow-toolbox.php",
+          " M tests/editor-content-support-behavior.php",
+          " M tests/internal-link-editor-behavior.mjs",
+          " M tests/load-provider-client.php",
+          " M tests/media-derivative-local-review-behavior.php",
+          " M tests/progressive-recommendations-behavior.php",
+          " M tests/run.php",
+          " M tests/smoke-editor-progressive-browser.mjs",
+          "?? docs/recommendation-ranking-baseline-v1.md",
+          "?? includes/Recommendation_Metadata.php",
+          "?? tests/recommendation-metadata-behavior.php"
+        ],
+        "stash_count": 1,
+        "worktrees": 1,
+        "gate": "composer test:all",
+        "gate_authority": "local",
+        "gate_notes": "Toolbox product-surface static contracts and local smoke gates.",
+        "gate_ran": false,
+        "gate_status": "not_run",
+        "gate_exit": null,
+        "gate_duration": null,
+        "gate_tail": "",
+        "runtime_gate_ran": false,
+        "runtime_gate_status": "not_run",
+        "runtime_gate_exit": null,
+        "runtime_gate_duration": null,
+        "runtime_gate_tail": ""
+      },
+      {
+        "name": "npcink-cloud-addon",
+        "path": "/Users/muze/gitee/npcink-cloud-addon",
+        "path_source": "default",
+        "exists": true,
+        "is_git": true,
+        "branch": "codex/recommendation-feedback-metadata",
+        "ahead": 0,
+        "behind": 0,
+        "dirty_count": 5,
+        "dirty_files": [
+          " M docs/cloud-addon-complexity-budget.md",
+          " M includes/class-cloud-runtime-request-guards.php",
+          " M release-manifest.txt",
+          " M tests/behavior-agent-feedback.php",
+          "?? includes/class-cloud-agent-feedback-metadata.php"
+        ],
+        "stash_count": 0,
+        "worktrees": 1,
+        "gate": "composer test:all",
+        "gate_authority": "local",
+        "gate_notes": "Cloud Addon transport, settings, and WordPress plugin contracts.",
+        "gate_ran": false,
+        "gate_status": "not_run",
+        "gate_exit": null,
+        "gate_duration": null,
+        "gate_tail": "",
+        "runtime_gate_ran": false,
+        "runtime_gate_status": "not_run",
+        "runtime_gate_exit": null,
+        "runtime_gate_duration": null,
+        "runtime_gate_tail": ""
+      },
+      {
+        "name": "npcink-eval-lab",
+        "path": "/Users/muze/gitee/npcink-eval-lab",
+        "path_source": "default",
+        "exists": true,
+        "is_git": true,
+        "branch": "main...origin/main",
+        "ahead": 0,
+        "behind": 0,
+        "dirty_count": 0,
+        "dirty_files": [],
+        "stash_count": 0,
+        "worktrees": 1,
+        "gate": "composer test:wordpress-ai-provider && composer check",
+        "gate_authority": "local",
+        "gate_notes": "Development-only WordPress AI Provider acceptance and quality evidence.",
+        "gate_ran": false,
+        "gate_status": "not_run",
+        "gate_exit": null,
+        "gate_duration": null,
+        "gate_tail": "",
+        "runtime_gate_ran": false,
+        "runtime_gate_status": "not_run",
+        "runtime_gate_exit": null,
+        "runtime_gate_duration": null,
+        "runtime_gate_tail": ""
+      },
+      {
+        "name": "npcink-ai-cloud",
+        "path": "/Users/muze/gitee/npcink-ai-cloud",
+        "path_source": "default",
+        "exists": true,
+        "is_git": true,
+        "branch": "codex/m4-lan-first-routing",
+        "ahead": 0,
+        "behind": 0,
+        "dirty_count": 7,
+        "dirty_files": [
+          " M README.md",
+          " M docs/README.md",
+          " M docs/decisions/052-pgy-primary-m4-access.md",
+          " M docs/m4-preview-ai-development-standard-v1.md",
+          " M docs/m4-preview-development-v1.md",
+          " M docs/m4-remote-development-and-overlay-network-standard-v1.md",
+          "?? docs/decisions/060-lan-first-m4-operation-routing.md"
+        ],
+        "stash_count": 1,
+        "worktrees": 2,
+        "gate": "GitHub CI checks for the exact clean Cloud HEAD",
+        "gate_authority": "local",
+        "gate_notes": "Cloud source authority is exact-SHA GitHub CI; optional M4 acceptance is revision-bound and explicit.",
+        "gate_ran": false,
+        "gate_status": "not_run",
+        "gate_exit": null,
+        "gate_duration": null,
+        "gate_tail": "",
+        "runtime_gate_ran": false,
+        "runtime_gate_status": "not_run",
+        "runtime_gate_exit": null,
+        "runtime_gate_duration": null,
+        "runtime_gate_tail": ""
+      }
+    ],
+    "failures": 0
+  },
+  "status_matrix_sha256": "301c025a687525212700d5a7a0bb03e40b73e732978e9123a5323b4cd998c74c",
+  "full_matrix_rerun": {
+    "executed": false,
+    "reason": "The requested owner-closeout precondition is unmet: Toolbox development finished with uncommitted files; Addon and AI Cloud default roots also have owner files. Cross-thread authorization to request formal closeout is pending.",
+    "latest_full_default_result": {
+      "generated_at": "2026-10-16T12:43:50+00:00",
+      "exit_code": 1,
+      "passed_gates": 6,
+      "total_gates": 7,
+      "record": "stack-rc2-default-owner-audit-2026-10-16.json"
+    }
+  },
+  "remote_reference_observation": {
+    "observed_at": "2026-10-16T12:48:09.598468+00:00",
+    "rows": [
+      {
+        "repo": "npcink-governance-core",
+        "pinned_sha": "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0",
+        "head": "a249fcbd6beb8281868fc522af88e6635ba1da16",
+        "branch": "codex/rc2-validation-2026-10-16",
+        "status": "",
+        "remote_heads": [
+          "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0\trefs/heads/master"
+        ],
+        "changed_paths": [
+          ".sisyphus/archive/2026-10.md",
+          ".sisyphus/session-breadcrumb.md",
+          "docs/history/stack-rc2-acceptance-2026-10-16.md",
+          "docs/history/stack-rc2-default-owner-audit-2026-10-16.json",
+          "docs/history/stack-rc2-manifest-2026-10-16.json",
+          "docs/next-stage-plan.md",
+          "docs/release-candidate-version-matrix.md"
+        ]
+      },
+      {
+        "repo": "npcink-ai-cloud",
+        "pinned_sha": "fe9207965f4a5049f80736019114f360186ec96b",
+        "head": "3ad10d70429d631df617e8519253d26ce369b1c8",
+        "branch": "codex/localize-provider-errors",
+        "status": "",
+        "remote_heads": [
+          "fe9207965f4a5049f80736019114f360186ec96b\trefs/heads/master"
+        ],
+        "changed_paths": [
+          "frontend/src/app/admin/ai-resources/page.tsx",
+          "frontend/src/app/admin/external-services/page.tsx",
+          "frontend/src/app/admin/service-settings/page.tsx",
+          "frontend/src/components/ErrorBoundary.tsx",
+          "frontend/src/components/ui/Alert.tsx",
+          "frontend/src/lib/errors.ts",
+          "frontend/src/lib/i18n.ts",
+          "frontend/src/lib/portal-error.ts",
+          "frontend/tests/e2e/admin-external-services.spec.ts",
+          "frontend/tests/e2e/admin-provider-directory-v2.spec.ts",
+          "frontend/tests/e2e/admin-service-settings-v2.spec.ts",
+          "frontend/tests/vitest/error-boundary.test.ts",
+          "frontend/tests/vitest/errors.test.ts",
+          "frontend/tests/vitest/portal-error.test.ts"
+        ]
+      },
+      {
+        "repo": "npcink-cloud-addon",
+        "pinned_sha": "f0e2a5854bbe373e45240b23b5fce30b00df57fa",
+        "head": "0ae75febbfb391a7b405ddddad62d70fd4a7d578",
+        "branch": "master",
+        "status": "",
+        "remote_heads": [
+          "0ae75febbfb391a7b405ddddad62d70fd4a7d578\trefs/heads/master"
+        ],
+        "changed_paths": [
+          "docs/README.md",
+          "docs/cloud-owner-decision-package-draft-2026-10-16.md",
+          "docs/current-state-truth-draft-2026-10-16.md",
+          "docs/next-session-handoff-2026-10-16.md"
+        ]
+      },
+      {
+        "repo": "npcink-ai-client-adapter",
+        "pinned_sha": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+        "head": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+        "branch": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+        "status": "",
+        "remote_heads": [
+          "ab32e5031765bce0d72e2340510ff34d47b26706\trefs/heads/master"
+        ],
+        "changed_paths": []
+      },
+      {
+        "repo": "npcink-abilities-toolkit",
+        "pinned_sha": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+        "head": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+        "branch": "master",
+        "status": "",
+        "remote_heads": [
+          "921d1dc7cb5661fef10ca8f83b781690c98034cb\trefs/heads/master"
+        ],
+        "changed_paths": []
+      },
+      {
+        "repo": "npcink-workflow-toolbox",
+        "pinned_sha": "569da58106c877fadb65316e4375a8bd3d1f6b1e",
+        "head": "569da58106c877fadb65316e4375a8bd3d1f6b1e",
+        "branch": "master",
+        "status": "M docs/session-handoff-2026-10-16-internal-link-related-content-history.md\n M tests/run.php\n M tests/smoke-editor-progressive-browser.mjs",
+        "remote_heads": [
+          "569da58106c877fadb65316e4375a8bd3d1f6b1e\trefs/heads/master"
+        ],
+        "changed_paths": []
+      },
+      {
+        "repo": "npcink-eval-lab",
+        "pinned_sha": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+        "head": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+        "branch": "main",
+        "status": "",
+        "remote_heads": [
+          "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f\trefs/heads/main"
+        ],
+        "changed_paths": []
+      }
+    ],
+    "adapter_remote_relationship": {
+      "remote_master": "ab32e5031765bce0d72e2340510ff34d47b26706",
+      "pinned": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+      "remote_is_ancestor_of_pinned": true,
+      "pinned_additional_commit": "docs: record M4 PgyVPN acceptance and stack RC readiness",
+      "additional_paths": [
+        "docs/acceptance/local-ai-client-smoke.md",
+        "docs/decisions/2026-10-15-m4-pgy-stack-rc-readiness.md"
+      ]
+    }
+  },
+  "coordination_authorization": "requested from user; no cross-thread messages sent",
+  "sibling_files_changed_by_this_audit": false,
+  "tag_mutations": false,
+  "published_snapshot_unchanged": {
+    "tag": "stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0",
+    "object": "ffb5e5d6d7b68fa952288524a181ff688a7698ee",
+    "peeled_commit": "ed28f984153200a8362fcd0928bbb32b83636159"
+  },
+  "ai_cloud_routing_stability": {
+    "first": {
+      "time": 1792156751.629699,
+      "head": "2fd7282fe28bd4e73697587ebe961afd2cee2c3d",
+      "branch": "codex/m4-lan-first-routing",
+      "status": " M README.md\n M docs/README.md\n M docs/decisions/052-pgy-primary-m4-access.md\n M docs/m4-preview-ai-development-standard-v1.md\n M docs/m4-preview-development-v1.md\n M docs/m4-remote-development-and-overlay-network-standard-v1.md\n?? docs/decisions/060-lan-first-m4-operation-routing.md\n",
+      "files": {
+        "README.md": {
+          "mtime_ns": 1792156159139474043,
+          "size": 16343
+        },
+        "docs/README.md": {
+          "mtime_ns": 1792156159140057211,
+          "size": 52746
+        },
+        "docs/decisions/052-pgy-primary-m4-access.md": {
+          "mtime_ns": 1792156176824940340,
+          "size": 2743
+        },
+        "docs/m4-preview-ai-development-standard-v1.md": {
+          "mtime_ns": 1792156159138728083,
+          "size": 27321
+        },
+        "docs/m4-preview-development-v1.md": {
+          "mtime_ns": 1792156210964799460,
+          "size": 50283
+        },
+        "docs/m4-remote-development-and-overlay-network-standard-v1.md": {
+          "mtime_ns": 1792156210965151919,
+          "size": 8838
+        },
+        "docs/decisions/060-lan-first-m4-operation-routing.md": {
+          "mtime_ns": 1792156159137699373,
+          "size": 2649
+        }
+      }
+    },
+    "second": {
+      "time": 1792157090.59333,
+      "head": "2fd7282fe28bd4e73697587ebe961afd2cee2c3d",
+      "branch": "codex/m4-lan-first-routing",
+      "status": " M README.md\n M docs/README.md\n M docs/decisions/052-pgy-primary-m4-access.md\n M docs/m4-preview-ai-development-standard-v1.md\n M docs/m4-preview-development-v1.md\n M docs/m4-remote-development-and-overlay-network-standard-v1.md\n?? docs/decisions/060-lan-first-m4-operation-routing.md\n",
+      "files": {
+        "README.md": {
+          "mtime_ns": 1792156159139474043,
+          "size": 16343
+        },
+        "docs/README.md": {
+          "mtime_ns": 1792156159140057211,
+          "size": 52746
+        },
+        "docs/decisions/052-pgy-primary-m4-access.md": {
+          "mtime_ns": 1792156176824940340,
+          "size": 2743
+        },
+        "docs/m4-preview-ai-development-standard-v1.md": {
+          "mtime_ns": 1792156159138728083,
+          "size": 27321
+        },
+        "docs/m4-preview-development-v1.md": {
+          "mtime_ns": 1792156210964799460,
+          "size": 50283
+        },
+        "docs/m4-remote-development-and-overlay-network-standard-v1.md": {
+          "mtime_ns": 1792156210965151919,
+          "size": 8838
+        },
+        "docs/decisions/060-lan-first-m4-operation-routing.md": {
+          "mtime_ns": 1792156159137699373,
+          "size": 2649
+        }
+      }
+    },
+    "elapsed_seconds": 339,
+    "head_branch_status_mtimes_stable": true
+  },
+  "documentation_verification": [
+    "composer validate --no-check-publish",
+    "composer test:all: 55 tests, 207 assertions",
+    "JSON validation: seven default status-only rows, 33 owner files, unchanged RC2 hash",
+    "git diff --check",
+    "breadcrumb entries: 10"
+  ]
+}

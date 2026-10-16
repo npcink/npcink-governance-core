@@ -5,12 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - Exact RC manifest acceptance passed
-
-- **Manifest**: exact acceptance bound Core `8d9626b`, Adapter `eb73e503`, and Toolkit `921d1dc7`, with the previously recorded AI Cloud, Cloud Addon, Toolbox, and Eval Lab revisions.
-- **Acceptance**: `composer acceptance:cross-repo-release` passed exit 0; completion observed at `2026-10-16T05:44:19Z`. Core 55/207, WordPress smoke, package/release, Adapter signed M4 Ollama correlation and duplicate refusal, Toolkit PHPStan, Docker and WordPress smoke all passed.
-- **Cleanup/posture**: temporary clone, symlink, loader, tunnel, and dependency link were removed; shared Core symlink was restored. Snapshot tag remains uncreated and unpushed; historical tags were not moved.
-
 # 2026-10-16 - PR #169 merged; final RC publication remains gated
 
 - **Merge**: PR #169 merged through the protected publisher at
@@ -121,3 +115,21 @@ Older history: `.sisyphus/archive/`.
   matrix; see `docs/history/stack-rc2-acceptance-2026-10-16.md` and the separate
   owner audit JSON. Existing snapshot remotely reverified unchanged; no new
   tag, push or retag. Batch these local docs commits for the weekly docs PR.
+
+# 2026-10-16 - PR1119 handoff complete; formal owner closeout pending
+
+- **AI Cloud**: PR #1119 merged `13:00:36Z` as `2fd7282f`; final CI passed
+  294 unit / 143 browser tests. Receipt records accepted clean master and
+  M4 release at `13:04:13Z`; Toolbox acknowledged and took M4 candidate work.
+- **Toolbox**: development verification/baselines/metadata completed, but
+  21 Toolbox + five Addon + five auxiliary Cloud files remain uncommitted.
+  PRs, exact-SHA CI and new accepted closeout are not yet performed. Toolkit
+  anchor-hint limitation remains documented separately from positive draft tests.
+- **Default roots**: status-only audit sees 33 owner files (Toolbox 21, Addon
+  five, AI Cloud seven routing docs from a later task). Full no-override rerun
+  awaits formal closeout; last completed full run is `12:43:50Z`, exit 1 / 6/7.
+- **Next**: owner commit/PR/required-check closeout, clean default roots, then
+  full dirty gate and manifest comparison. Cross-thread request authorization
+  was asked; no message sent yet. RC2 bytes and published tag unchanged.
+  See `docs/history/stack-rc2-owner-handoff-2026-10-16.json`; batch local docs
+  for the weekly PR. No tag creation, push, retag or production deployment.
