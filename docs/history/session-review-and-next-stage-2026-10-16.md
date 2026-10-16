@@ -381,3 +381,11 @@ and pushed without force. Remote verification returned tag object
 `ed28f984153200a8362fcd0928bbb32b83636159`. No historical plugin tag moved;
 SVN publication, production deployment, and real-usage recording remain out
 of scope for this tag action.
+
+## Post-publication checkout drift — 2026-10-16
+
+The final read-only check after tag publication found Cloud Addon `master` at
+`6c9d3c4` after dependency update PR #279 and one new owner-held Toolbox
+modification in the shared root. Both changes occurred after the tag preflight
+and are outside the published manifest. The snapshot tag remains immutable;
+future revisions require a new candidate decision and fresh acceptance.

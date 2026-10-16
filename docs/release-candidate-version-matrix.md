@@ -209,3 +209,11 @@ Core candidate `ed28f984153200a8362fcd0928bbb32b83636159`.
 This stack tag is coordination metadata for the exact seven-repository
 manifest. It does not move Core `v0.3.0` or Toolkit `0.7.0`, and it does not
 publish to WordPress.org SVN or deploy production.
+
+## Post-publication checkout drift — 2026-10-16
+
+After publication, Cloud Addon `master` advanced to `6c9d3c4` via dependency
+update PR #279, and Toolbox acquired one owner-held uncommitted documentation
+change. These are post-tag live checkout states and are excluded from the
+published manifest. Do not force-move or recreate the snapshot tag; any future
+candidate must receive its own matrix and acceptance evidence.

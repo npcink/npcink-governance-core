@@ -67,3 +67,11 @@ The annotated tag was created locally and pushed without force at
 `2026-10-16 19:09:11 +0800`. Remote verification returned both the tag object
 and peeled commit shown above. Historical Core `v0.3.0` and Toolkit `0.7.0`
 tags were not moved.
+
+## Post-publication live checkout note
+
+After the tag was verified, the live Cloud Addon `master` advanced to
+`6c9d3c4` through dependency update PR #279, and the Toolbox owner left a
+modified `docs/session-handoff-2026-10-16-internal-link-related-content-history.md`
+in its shared root. Neither change is part of the published tag manifest; the
+tag remains fixed at the verified Core commit and is not retagged.
