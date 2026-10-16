@@ -156,9 +156,15 @@ remain historical tags at different commits, while Adapter `v0.4.3` is
 available. The conventional `--require-tag-ready` check fails by design; no
 tag moved, no snapshot tag was created, and the proposed snapshot name is
 currently absent remotely. Core later received docs-only coordination commit
-`4a23d35`; it is not silently folded into the candidate. Before publishing the
-snapshot, rerun full acceptance against the exact manifest and obtain explicit
-authorization for the tag push.
+`4a23d35`; it is not silently folded into the candidate.
+
+The exact-manifest `composer acceptance:cross-repo-release` rerun passed with
+exit 0 at `2026-10-16T05:44:19Z` using Core `8d9626b`, Adapter `eb73e503`, and
+Toolkit `921d1dc7`. Core, Adapter, and Toolkit source, WordPress, package,
+release, signed-provider, PHPStan, Docker, and duplicate-refusal checks passed;
+all temporary acceptance resources were cleaned. The snapshot tag remains
+uncreated and unpushed. The next tag action still requires explicit
+authorization.
 
 ## Worktree Audit and Full Release Acceptance — 2026-10-16
 
