@@ -367,6 +367,17 @@ duplicate refusal, package/release gates, PHPStan, official Docker smoke, and
 cleanup. Core, Adapter, and Toolkit reproducible package evidence is recorded
 in the release notes; the Toolkit deterministic archive matched on two builds.
 
-This closes the engineering evidence and checksum stage. The candidate remains
-untagged: historical Core and Toolkit tags were not moved, and snapshot tag,
-SVN, deployment, and real-usage actions remain separately authorized.
+This closes the engineering evidence and checksum stage. The authorized
+annotated stack snapshot tag was then created and pushed without force at the
+verified Core commit `ed28f98`; historical Core and Toolkit tags were not
+moved. SVN, deployment, and real-usage actions remain separately authorized.
+
+## Snapshot tag publication — 2026-10-16
+
+The final matrix and checksum recheck showed no candidate drift. The annotated
+tag `stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0` was created
+and pushed without force. Remote verification returned tag object
+`ffb5e5d6d7b68fa952288524a181ff688a7698ee` peeling to
+`ed28f984153200a8362fcd0928bbb32b83636159`. No historical plugin tag moved;
+SVN publication, production deployment, and real-usage recording remain out
+of scope for this tag action.

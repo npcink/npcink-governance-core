@@ -5,33 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-15 - Default matrix and full engineering acceptance restored
-
-- **Recalibration**: AI Cloud PR #1115 merged as `0bb4d1fc`; its shared topic
-  `fca129f8` is clean, pushed, tree-identical to master, and exact-SHA CI passed.
-  The previous dirty shared-root owner blocker is resolved.
-- **Matrix**: no-override `quality:matrix:run -- --fail-on-dirty` passed 7/7
-  at `2026-10-15T07:45:04Z`. Full `acceptance:cross-repo-release` then passed
-  on clean masters Core `9716cf5e`, Adapter `ab32e503`, Toolkit `921d1dc7`,
-  with real Ollama persisted-log correlation, duplicate refusal, package
-  installation, PHPStan, and Toolkit Docker smoke. Core PHPStan also passed.
-- **Recovery**: supplied the live LocalWP socket, started Docker, used M4 LAN
-  SSH after alternate-path timeout, and corrected the temporary log-provider
-  pattern to hostname-only. The strict assertion remained intact. Temporary
-  loaders, drafts, discovery cache, tunnel, and smoke containers were cleaned;
-  provider registry is back to `npcink-cloud` only.
-- **Audit**: 28 registered worktrees / 98 local branches inspected. Five
-  worktrees are locked; AI Cloud resource-baseline still has three untracked
-  owner files. Open PRs and unpublished local work remain preserved. No global
-  cleanup or all-branches-merged claim is made.
-- **Posture**: ordinary RC matrix passes; historical Core/Toolkit tag mismatch
-  remains. No tags, SVN, or production deployment. Owner reconfirmed local-only
-  development: real-usage ledger stays empty and kickoff is parked.
-- **Docs**: current planning, acceptance, tag-readiness, and usage instructions
-  recalibrated; full audit and lessons recorded in
-  `docs/history/cross-repo-engineering-checkpoint-2026-10-15.md`. Batch these
-  docs with the next weekly docs publication instead of a per-session PR.
-
 # 2026-10-16 - AI Cloud owner reconciled; strict matrix now waits on Addon owner
 
 - **Historical close point**: the referenced review session reached a 7/7
@@ -128,3 +101,14 @@ Older history: `.sisyphus/archive/`.
 - **Release evidence**: Core, Adapter, and two-build Toolkit checksums are in
   `docs/release-candidate-notes-2026-10-16.md`; no snapshot tag was created or
   pushed.
+
+# 2026-10-16 - Authorized stack snapshot tag pushed
+
+- **Preflight**: final 7/7 matrix passed exit 0; Core/Adapter checksums matched;
+  Toolkit deterministic checksum matched twice.
+- **Tag**: annotated
+  `stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0` was pushed
+  without force. Remote object `ffb5e5d6` peels to verified Core commit
+  `ed28f984`.
+- **Boundary**: historical plugin tags were not moved; SVN, deployment, and
+  real-usage actions remain separate.

@@ -1,7 +1,8 @@
 # Stack RC Release Notes — 2026-10-16
 
-Status: engineering acceptance complete; publication remains separately
-authorized. No snapshot tag was created or pushed.
+Status: engineering acceptance and the authorized stack snapshot tag are
+complete. WordPress.org SVN publication and production deployment remain
+separate actions.
 
 ## Candidate identity
 
@@ -51,8 +52,18 @@ this evidence because conventional `0.7.0` points to historical commit
   `3357f916899ac4b013a753da6d99e712274f2221`.
 - Toolkit `0.7.0` remains at historical commit
   `46c1405422ae0ac1f8ea6820b391b48d09326a14`.
-- Adapter `v0.4.3` is available, but no conventional or snapshot tag was
-  created.
-- Snapshot tag creation/push, WordPress.org SVN publication, production
-  deployment, and real-usage kickoff remain separate actions requiring explicit
-  authorization.
+- Adapter `v0.4.3` remains available as a conventional release tag decision;
+  no conventional plugin tag was moved or created.
+- The authorized annotated stack snapshot tag is
+  `stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0`. Its tag object
+  is `ffb5e5d6d7b68fa952288524a181ff688a7698ee`, and its remote peeled commit
+  is the verified Core commit `ed28f984153200a8362fcd0928bbb32b83636159`.
+- WordPress.org SVN publication, production deployment, and real-usage kickoff
+  remain separate actions requiring explicit authorization.
+
+## Snapshot tag publication
+
+The annotated tag was created locally and pushed without force at
+`2026-10-16 19:09:11 +0800`. Remote verification returned both the tag object
+and peeled commit shown above. Historical Core `v0.3.0` and Toolkit `0.7.0`
+tags were not moved.

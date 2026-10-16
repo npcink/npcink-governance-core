@@ -848,6 +848,17 @@ package/release checks, PHPStan, Docker smoke, and cleanup. Release notes and
 SHA-256 evidence are recorded in
 [Stack RC Release Notes — 2026-10-16](release-candidate-notes-2026-10-16.md).
 
-The candidate is ready for a separately authorized publication decision. Do not
-move historical tags, and do not create or push the snapshot tag, SVN
-publication, production deployment, or real-usage entry as part of this stage.
+The candidate was ready for a separately authorized publication decision. The
+authorized snapshot tag is now published; do not move historical tags. SVN
+publication, production deployment, and real-usage entry remain separate
+actions.
+
+## Snapshot tag publication — 2026-10-16
+
+The tag
+`stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0` was created as an
+annotated tag at verified Core commit `ed28f984153200a8362fcd0928bbb32b83636159`
+and pushed without force. Remote tag object verification returned
+`ffb5e5d6d7b68fa952288524a181ff688a7698ee`. Historical Core `v0.3.0` and
+Toolkit `0.7.0` remain unchanged. SVN publication, production deployment, and
+real-usage kickoff still require their own authorization.
