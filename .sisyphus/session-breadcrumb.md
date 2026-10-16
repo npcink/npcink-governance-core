@@ -5,35 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-14 - Cross-repository acceptance restored
-
-- **Addon**: PR #271 merged (`edbacb8`); status/recovery hardening, localized
-  diagnostics, cleanup and scheduler guards passed the full local gate and
-  required CI. The settings-page complexity ceiling is now 2283 lines, matching
-  the implementation.
-- **AI Cloud**: exact clean master HEAD `d97dfd4f` passed the required GitHub checks
-  (`backend`, `frontend`, Secret scan, and both CodeQL analyses). The prior
-  exact-SHA backend failure is superseded by this verified head.
-- **Toolbox**: PR #267 (`codex/local-ocr-config`) merged after its dedicated
-  clean worktree passed `composer test:all`. The shared root was left intact
-  while its unrelated parallel branch completed.
-- **Central matrix**: the no-override command
-  `composer quality:matrix:run -- --fail-on-dirty` passed 7/7 repositories at
-  `2026-10-14T02:32:23Z`; all default worktrees were clean and Toolbox/AI
-  Cloud resolved to their merged master commits. Core retains its clean weekly
-  docs branch, with exact gate evidence recorded.
-- **Release posture**: no tag, SVN publication, production deployment, or
-  real-user ledger row is authorized. OCR remains advisory; Addon and Toolbox
-  local provider reviews hit bounded provider/context deadlines and are recorded
-  as exceptions. The RC version matrix now passes for Core `0.3.0`, Adapter
-  `0.4.3`, and Toolkit `0.7.0`; final tag readiness still fails safely on the
-  historical Core/Toolkit tags, so no tag is moved. The subsequent
-  `acceptance:cross-repo-release` run reached the real Adapter fixture but
-  failed with `prompt_invalid_argument`: LocalWP is currently `npcink-cloud`
-  only, while the default fixture expects Ollama. The M4 temporary loader,
-  tunnel and `qwen2.5:1.5b` setup must be recreated for a future positive run;
-  no provider configuration was changed.
-
 # 2026-10-14 - Cross-repository release acceptance passed
 
 - **Provider fixture**: recreated the one-time M4 Ollama 0.32.5 path with the
@@ -178,3 +149,9 @@ Older history: `.sisyphus/archive/`.
 - **Audit**: read-only ownership audit generated at `2026-10-16T04:05:03+00:00`; 30 registered worktrees and 100 local branches inspected. All seven default roots were clean. Six AI Cloud worktrees are locked; `m4-resource-baseline` retains three untracked owner files. Toolbox classification-registry auxiliary worktree retains one owner modification. No cleanup or reset was performed.
 - **Acceptance**: `composer acceptance:cross-repo-release` passed with exit 0; completion observed at `2026-10-16T04:14:31Z`. Core, Adapter, and Toolkit source/package/WordPress/release gates passed, including M4 Ollama `qwen2.5:1.5b` provider-log correlation and duplicate refusal. Temporary loader and tunnel were removed; LocalWP provider registry is back to `npcink-cloud`.
 - **Next**: choose a new RC identity without moving historical tags, close classification Lane 1 with exact present-admin evidence, and wait for an operating site before the first real-usage ledger row. No tag, SVN publication, or production deployment is authorized.
+
+# 2026-10-16 - Classification Lane 1 passed with native editor evidence
+
+- **Lane 1**: on `https://magick-ai.local`, administrator `1` opened disposable draft `282453`, triggered the generic WordPress AI plugin's visible `生成文章摘要`, reviewed and edited the result, then clicked native `保存草稿`. AI ability and normal WordPress save both returned HTTP 200.
+- **Core boundary**: proposal count stayed `317 -> 317`; audit rows stayed `3366 -> 3366`; no Core proposal or audit event was created. The draft and one-time login helper were deleted.
+- **Stage**: native editor classification is complete. Keep the exact evidence with the RC record; remaining gates are RC identity and real-site usage. No tag, SVN publication, or production deployment was authorized.
