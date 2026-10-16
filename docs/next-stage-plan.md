@@ -862,3 +862,11 @@ and pushed without force. Remote tag object verification returned
 `ffb5e5d6d7b68fa952288524a181ff688a7698ee`. Historical Core `v0.3.0` and
 Toolkit `0.7.0` remain unchanged. SVN publication, production deployment, and
 real-usage kickoff still require their own authorization.
+
+## Post-publication checkout drift — 2026-10-16
+
+Cloud Addon subsequently advanced to `6c9d3c4` through dependency update PR
+#279, and Toolbox has one new owner-held uncommitted documentation change.
+These changes occurred after the snapshot tag preflight and are excluded from
+the published manifest. Keep the tag immutable; a future candidate must rerun
+the matrix and exact acceptance.

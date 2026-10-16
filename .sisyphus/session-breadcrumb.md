@@ -5,29 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - AI Cloud owner reconciled; strict matrix now waits on Addon owner
-
-- **Historical close point**: the referenced review session reached a 7/7
-  default matrix and full cross-repository acceptance on 2026-10-15 for the
-  exact tested revisions, including real Ollama persisted-log correlation,
-  duplicate refusal, package checks, PHPStan, and Docker smoke. No tag, SVN
-  publication, deployment, or real-user ledger row was created.
-- **AI Cloud owner closeout**: the six-file Admin async-state follow-up was
-  committed as `e5aa6143`, merged by PR #1117, and is now clean on shared
-  `master` at `fe920796`. Required exact-SHA checks passed; the separate
-  `code-review` advisory failed and is not merge authority.
-- **Matrix rerun**: final no-override `quality:matrix:run -- --fail-on-dirty`
-  at `2026-10-16T04:01:39Z` passed all 7/7 gate rows with exit 0. Cloud Addon
-  is clean `master@d8bcac9`; AI Cloud is clean `master@fe920796`.
-- **Open gates**: worktree ownership audit -> full release acceptance ->
-  explicit RC/tag decision -> real-user kickoff when an operating site exists.
-- **Classification**: Toolbox lanes 2 and 3 pass; native editor lane 1 still
-  needs exact visible-AI-output/present-author evidence and must not be
-  relabeled complete from a fixture or partial draft save.
-- **Docs**: detailed summary and live checkout table are recorded in
-  `docs/history/session-review-and-next-stage-2026-10-16.md`;
-  `docs/next-stage-plan.md` now carries the same live recalibration.
-
 # 2026-10-16 - Worktree audit and full release acceptance passed
 
 - **Audit**: read-only ownership audit generated at `2026-10-16T04:05:03+00:00`; 30 registered worktrees and 100 local branches inspected. All seven default roots were clean. Six AI Cloud worktrees are locked; `m4-resource-baseline` retains three untracked owner files. Toolbox classification-registry auxiliary worktree retains one owner modification. No cleanup or reset was performed.
@@ -112,3 +89,12 @@ Older history: `.sisyphus/archive/`.
   `ed28f984`.
 - **Boundary**: historical plugin tags were not moved; SVN, deployment, and
   real-usage actions remain separate.
+
+# 2026-10-16 - Post-tag live checkout drift recorded
+
+- **Post-tag state**: Cloud Addon `master` advanced to `6c9d3c4` via dependency
+  update PR #279; Toolbox has one new owner-held uncommitted documentation
+  change.
+- **Boundary**: both changes occurred after tag preflight and are excluded
+  from the immutable snapshot tag. Any future candidate needs fresh matrix and
+  acceptance evidence.
