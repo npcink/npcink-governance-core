@@ -193,4 +193,19 @@ The exact three-repository acceptance passed against Core `ed28f98`, Adapter
 `eb73e503`, and Toolkit `921d1dc7`. Reproducible Core and Adapter package
 digests and the two-build Toolkit deterministic archive digest are recorded in
 the release notes. This evidence does not create or imply a tag: historical
-Core/Toolkit tags remain fixed, and the named snapshot tag is still absent.
+Core/Toolkit tags remain fixed. The named snapshot tag was later published at
+the explicitly authorized verified Core commit; the publication record is in
+the release notes.
+
+## Snapshot tag published — 2026-10-16
+
+After the final 7/7 matrix, checksum recheck, and exact acceptance evidence
+were confirmed unchanged, the authorized annotated tag
+`stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0` was created and
+pushed without force. The remote tag object is
+`ffb5e5d6d7b68fa952288524a181ff688a7698ee`; the peeled commit is the verified
+Core candidate `ed28f984153200a8362fcd0928bbb32b83636159`.
+
+This stack tag is coordination metadata for the exact seven-repository
+manifest. It does not move Core `v0.3.0` or Toolkit `0.7.0`, and it does not
+publish to WordPress.org SVN or deploy production.
