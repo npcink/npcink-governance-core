@@ -5,14 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-15 - Owner-state audit continued
-
-- **Core planning record**: PR #164 merged as `d317f73`; Core topic branch remains clean and the latest docs update is staged for the next docs-only closeout PR.
-- **Toolbox**: shared `codex/internal-link-recommendation-followup` is clean and its gate passed in the default matrix.
-- **AI Cloud**: shared `codex/provider-refresh-advisory` remains dirty with eight owner changes. Auxiliary `m4-resource-baseline` retains three untracked files; locked or owner-held worktrees were preserved.
-- **Matrix**: default status snapshot at `2026-10-15T01:30:53Z` remains `needs_validation`; clean detached AI Cloud `origin/master` override passed 7/7 at `2026-10-14T10:17:37Z`.
-- **Next gate**: AI Cloud owner reconciliation is still the only blocker before a no-override 7/7 matrix; then run worktree audit, full release acceptance, and only afterward decide RC/tag and real-usage kickoff.
-
 # 2026-10-15 - Default matrix and full engineering acceptance restored
 
 - **Recalibration**: AI Cloud PR #1115 merged as `0bb4d1fc`; its shared topic
@@ -124,3 +116,15 @@ Older history: `.sisyphus/archive/`.
 - **Cloud Addon**: owner work advanced from `ac82a3b` to `5f223af` during its
   stability check. Manifest freeze, release notes, and final checksums remain
   deferred; no snapshot tag was created or pushed.
+
+# 2026-10-16 - Final 7/7 owner closeout and acceptance passed
+
+- **Owner state**: Toolbox is clean at `ee814e04`; Cloud Addon is clean at
+  `4978338f`. The default `--fail-on-dirty` matrix passed 7/7 with exit 0 at
+  `2026-10-16T10:26:15+00:00`.
+- **Acceptance**: Core `ed28f98`, Adapter `eb73e503`, and Toolkit `921d1dc7`
+  passed exact acceptance, including M4 provider-log correlation, duplicate
+  refusal, Docker smoke, package/release gates, and cleanup.
+- **Release evidence**: Core, Adapter, and two-build Toolkit checksums are in
+  `docs/release-candidate-notes-2026-10-16.md`; no snapshot tag was created or
+  pushed.
