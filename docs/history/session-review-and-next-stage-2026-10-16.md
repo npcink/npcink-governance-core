@@ -150,29 +150,64 @@ Cloud Addon is clean `master@d8bcac9`; AI Cloud is clean
 `master@fe920796`. This closes the owner/worktree cleanliness gate for the
 current engineering checkpoint.
 
+## Worktree ownership audit and release acceptance — 2026-10-16
+
+The read-only ownership audit was generated at
+`2026-10-16T04:05:03+00:00` across the seven configured repositories. It
+found 30 registered worktrees and 100 local branches. The seven default roots
+were clean at the audit point. Six locked worktrees remain in AI Cloud; the
+locked `m4-resource-baseline` worktree is still owner-held and contains three
+untracked files (`docs/runtime-resource-baseline-v1.md`,
+`scripts/runtime_resource_baseline.py`, and
+`tests/dev/test_runtime_resource_baseline.py`).
+
+One additional owner-held Toolbox worktree,
+`/Users/muze/gitee/.worktrees/toolbox-classification-registry-20261015`, is
+dirty on `codex/fix-classification-registry-owner` with a modification to
+`tests/smoke-article-media-batch-core-proof.php`. No worktree, branch, owner
+file, or open PR was deleted or reset. The audit therefore closes the
+ownership inventory, not a claim that every auxiliary worktree is disposable.
+
+The full command `composer acceptance:cross-repo-release` then passed with
+exit 0; completion was observed at `2026-10-16T04:14:31Z`. The run covered
+Core validation, tests, WordPress smoke, release verification and packaging;
+Adapter source, release, package, WordPress smoke, signed fixture and
+provider-log correlation; and Toolkit source, PHPStan, release, package and
+Docker/WordPress smoke. The signed fixture used the verified M4 Ollama path
+(`172.16.3.35`, model `qwen2.5:1.5b`) through a temporary loopback tunnel on
+port `11439` and the cached official Ollama SDK. The first attempt exposed a
+stale LocalWP socket; the rerun supplied the live socket explicitly and
+passed. The temporary loader and tunnel were removed afterward, and the
+normal LocalWP provider registry remains `npcink-cloud` only.
+
+This is release acceptance evidence for the exact revisions checked during
+the run: Core `a7ade2b`, AI Cloud `fe920796`, Cloud Addon `d8bcac9`, Adapter
+`eb73e503`, Toolkit `921d1dc7`, with Toolbox and Eval Lab at the clean default
+roots recorded by the matrix. It does not authorize a tag, SVN publication,
+production deployment, or real-user ledger entry.
+
 ## Recommended next sequence
 
-1. **Audit worktree ownership before cleanup claims.** Recheck locked
-   worktrees, untracked owner files, open PRs, and unpublished branches. Keep
-   valuable or locked work intact and record ownership; do not equate a clean
-   default path with global cleanup.
-2. **Close classification Lane 1 with exact evidence.** Use a present
+The ownership audit and full release acceptance are complete. The remaining
+sequence is:
+
+1. **Close classification Lane 1 with exact evidence.** Use a present
    administrator, visible generic AI output, normal editor save or publish,
    unchanged Core proposal/audit counts, and fixture cleanup. Keep this
    evidence separate from Core proposal and local-consent lanes.
-3. **Decide the RC identity before any publication.** Refresh exact revisions,
-   run the full acceptance gate, then choose either a new plugin version or a
-   clearly named stack snapshot RC. Never move the historical Core or Toolkit
-   tags. Tagging, SVN, and deployment require explicit authorization.
-4. **Keep real usage parked until the product state changes.** The owner has
+2. **Decide the RC identity before any publication.** Use the accepted exact
+   revisions as the evidence baseline, then choose either a new plugin version
+   or a clearly named stack snapshot RC. Never move the historical Core or
+   Toolkit tags. Tagging, SVN, and deployment require explicit authorization.
+3. **Keep real usage parked until the product state changes.** The owner has
    confirmed local-only development. Leave the ledger empty until an operating
    site produces the first real-user record; fixtures, M4 provider evidence,
    and an administrator acceptance run do not count as real usage.
-5. **Publish the accumulated docs through the weekly docs flow.** Before
+4. **Publish the accumulated docs through the weekly docs flow.** Before
    publication, run the Core metadata validation, `composer test:all`, and
    `git diff --check`; use the repository's protected `composer pr:publish`
    flow rather than a direct push.
 
-The principal owner and cleanliness gate is complete. The next engineering gate
-is worktree audit followed by full release acceptance; release and real-usage
-work remain downstream of that evidence.
+The principal owner, cleanliness, worktree audit, and full release acceptance
+gates are complete for this checkpoint. Release identity and real-usage work
+remain downstream of that evidence.

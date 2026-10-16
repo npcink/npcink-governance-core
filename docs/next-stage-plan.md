@@ -124,9 +124,35 @@ gate rows with exit 0. Cloud Addon is clean `master@d8bcac9`, and AI Cloud is
 clean `master@fe920796`. The owner/worktree cleanliness gate is complete; do
 not replace this result with a detached override when recording later release
 evidence.
-The next gate is the worktree ownership audit, followed by full release
-acceptance. The detailed session history and live checkout table are in
+The worktree ownership audit and full release acceptance are now complete; the
+details and exact evidence are recorded below and in
 [Session Review And Next Stage — 2026-10-16](history/session-review-and-next-stage-2026-10-16.md).
+
+## Worktree Audit and Full Release Acceptance — 2026-10-16
+
+The read-only audit at `2026-10-16T04:05:03+00:00` covered 30 registered
+worktrees and 100 local branches. All seven default roots were clean. Six
+locked AI Cloud worktrees remain owner-held; `m4-resource-baseline` retains
+three untracked owner files. One Toolbox auxiliary worktree remains dirty on
+`codex/fix-classification-registry-owner` with the classification smoke test
+modified. These worktrees and their branches were preserved for their owners;
+the audit does not imply global cleanup or that every local branch is merged.
+
+The subsequent `composer acceptance:cross-repo-release` passed with exit 0
+(completion observed at `2026-10-16T04:14:31Z`). It passed the Core, Adapter,
+and Toolkit source, package, WordPress, signed-provider, PHPStan, Docker, and
+release gates, including persisted provider-log correlation and duplicate
+refusal. The M4 fixture used Ollama `qwen2.5:1.5b` at `172.16.3.35` through a
+temporary `11439` tunnel and official SDK loader; the loader and tunnel were
+cleaned up and LocalWP returned to the normal `npcink-cloud` provider
+registry. The exact accepted revisions are Core `a7ade2b`, AI Cloud
+`fe920796`, Cloud Addon `d8bcac9`, Adapter `eb73e503`, and Toolkit `921d1dc7`.
+
+The remaining release decisions are explicit: close classification Lane 1
+with visible generic AI output plus a normal present-administrator editor
+save, choose a new RC identity without moving historical Core or Toolkit tags,
+and wait for an operating site before creating the first real-usage ledger row.
+Tags, SVN publication, and production deployment remain unauthorized.
 
 ## Current Execution Decision
 
