@@ -62,6 +62,18 @@ commit `4a23d35` is coordination-only; it is deliberately not substituted into
 this candidate manifest. The snapshot tag remains uncreated and unpushed, and
 explicit authorization is still required for any tag action.
 
+## Final documentation closeout — 2026-10-16
+
+PR #169, which recorded the exact-manifest acceptance, merged as
+`34d75e2dc00804320a82086f175d69e7e5f14a76` at `2026-10-16T05:51:39Z`.
+The selected stack identity remains an untagged candidate. Before publication,
+refresh the seven-root matrix, confirm the exact manifest has not drifted, and
+rerun exact-manifest acceptance if it has. Prepare reproducible artifact
+checksums and release notes, then obtain explicit authorization before creating
+or pushing the snapshot tag. Historical Core and Toolkit tags remain fixed;
+SVN publication, production deployment, and real-usage recording are separate
+authorized actions.
+
 ## Tag Preparation Rule
 
 Do not retag historical releases.

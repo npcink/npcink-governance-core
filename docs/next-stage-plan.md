@@ -166,6 +166,34 @@ all temporary acceptance resources were cleaned. The snapshot tag remains
 uncreated and unpushed. The next tag action still requires explicit
 authorization.
 
+## Final RC pre-publication checklist — 2026-10-16
+
+PR #169 merged as `34d75e2dc00804320a82086f175d69e7e5f14a76` at
+`2026-10-16T05:51:39Z`. This closes the documentation and exact-manifest
+acceptance stage for the selected identity
+`stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0`.
+
+Before any snapshot tag or release publication:
+
+- refresh `composer quality:matrix` and verify all seven default roots are
+  clean at the recorded manifest revisions;
+- rerun `composer acceptance:cross-repo-release` if the matrix or any owner
+  checkout has changed;
+- keep Core `v0.3.0` and Toolkit `0.7.0` bound to their historical commits,
+  and do not treat the failing `--require-tag-ready` result as permission to
+  move them;
+- prepare release notes and reproducible artifact checksums for the exact
+  manifest, then obtain explicit authorization before creating or pushing the
+  named snapshot tag;
+- handle WordPress.org SVN, production deployment, and real-usage kickoff as
+  separate authorized actions. Local development remains the current state,
+  so the real-usage ledger stays empty;
+- preserve owner-held worktrees and unpublished branches during the release
+  decision.
+
+No snapshot tag, SVN publication, production deployment, or real-usage ledger
+row was created by this stage.
+
 ## Worktree Audit and Full Release Acceptance — 2026-10-16
 
 The read-only audit at `2026-10-16T04:05:03+00:00` covered 30 registered

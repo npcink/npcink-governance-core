@@ -5,26 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-14 - Classification regression fixtures repaired in isolation
-
-- **Cloud Addon**: after two stable liveness snapshots, shared `master` was
-  fast-forwarded to `origin/master` `122ac79`; the root is clean and aligned.
-- **Toolbox**: classification lane 2 initially hit a real 403 because the
-  fixture omitted the present-admin nonce, cookie, and same-origin headers;
-  lane 3 also checked a Toolbox ability in the Toolkit-only registry. Isolated
-  commit `d4bc150` fixes both assumptions and the OCR follow-up isolation issue;
-  PR #268 merged as `444128a`, and lanes 2/3 plus Toolbox `composer test:all`
-  pass.
-- **Matrix**: the override run using Toolbox `da02356` and a clean AI Cloud
-  `origin/master` worktree passed 7/7 at `2026-10-14T06:25:15Z`.
-- **Open owner state**: default matrix is currently `needs_validation` because
-  the AI Cloud shared root has uncommitted owner files
-  `deploy/deploy-to-ssh-host.sh` and `deploy/remote-refresh-providers.sh`;
-  they were left untouched. The RC matrix reports Core `0.3.0`, Adapter
-  `0.4.3`, and Toolkit `0.7.0`; `--require-tag-ready` safely rejects the
-  historical Core tag. Classification lane 1 still awaits a real
-  administrator editor action, and the real-usage ledger remains empty.
-
 # 2026-10-14 - Session closeout audit: local fixes complete, global closeout still open
 
 - **Core**: branch `codex/docs-week-2026-10-13` is clean at `075cd46`; `composer test:all` passes 55 tests / 207 assertions, `composer validate --no-check-publish` passes, and `git diff --check` passes. The branch remains local-only and is not merged to Core `master`.
@@ -123,3 +103,16 @@ Older history: `.sisyphus/archive/`.
 - **Manifest**: exact acceptance bound Core `8d9626b`, Adapter `eb73e503`, and Toolkit `921d1dc7`, with the previously recorded AI Cloud, Cloud Addon, Toolbox, and Eval Lab revisions.
 - **Acceptance**: `composer acceptance:cross-repo-release` passed exit 0; completion observed at `2026-10-16T05:44:19Z`. Core 55/207, WordPress smoke, package/release, Adapter signed M4 Ollama correlation and duplicate refusal, Toolkit PHPStan, Docker and WordPress smoke all passed.
 - **Cleanup/posture**: temporary clone, symlink, loader, tunnel, and dependency link were removed; shared Core symlink was restored. Snapshot tag remains uncreated and unpushed; historical tags were not moved.
+
+# 2026-10-16 - PR #169 merged; final RC publication remains gated
+
+- **Merge**: PR #169 merged through the protected publisher at
+  `2026-10-16T05:51:39Z` as `34d75e2d`; the exact RC acceptance record is now
+  on Core `master`.
+- **RC posture**: selected identity remains
+  `stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0`; no snapshot tag
+  was created or pushed, and historical Core/Toolkit tags were not moved.
+- **Remaining**: refresh the seven-root matrix immediately before publication,
+  rerun acceptance if the manifest drifts, prepare checksums/release notes,
+  then obtain explicit authorization for tag, SVN, or deployment actions.
+  Local-only development means the real-usage ledger stays empty.
