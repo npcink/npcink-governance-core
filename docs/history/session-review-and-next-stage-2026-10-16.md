@@ -389,3 +389,12 @@ The final read-only check after tag publication found Cloud Addon `master` at
 modification in the shared root. Both changes occurred after the tag preflight
 and are outside the published manifest. The snapshot tag remains immutable;
 future revisions require a new candidate decision and fresh acceptance.
+
+## Post-tag audit refresh — 2026-10-16
+
+The live default matrix passed 7/7 with exit 0 at
+`2026-10-16T11:29:44+00:00`. Cloud Addon `f0e2a58` and Toolbox `569da58` are
+clean and advance beyond the published manifest. The changes are therefore
+post-tag work, not evidence that the existing tag moved or became mutable. No
+new candidate identity or acceptance was selected in this audit; future
+inclusion requires a separate manifest, acceptance, and tag.

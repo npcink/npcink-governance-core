@@ -5,12 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - Worktree audit and full release acceptance passed
-
-- **Audit**: read-only ownership audit generated at `2026-10-16T04:05:03+00:00`; 30 registered worktrees and 100 local branches inspected. All seven default roots were clean. Six AI Cloud worktrees are locked; `m4-resource-baseline` retains three untracked owner files. Toolbox classification-registry auxiliary worktree retains one owner modification. No cleanup or reset was performed.
-- **Acceptance**: `composer acceptance:cross-repo-release` passed with exit 0; completion observed at `2026-10-16T04:14:31Z`. Core, Adapter, and Toolkit source/package/WordPress/release gates passed, including M4 Ollama `qwen2.5:1.5b` provider-log correlation and duplicate refusal. Temporary loader and tunnel were removed; LocalWP provider registry is back to `npcink-cloud`.
-- **Next**: choose a new RC identity without moving historical tags, close classification Lane 1 with exact present-admin evidence, and wait for an operating site before the first real-usage ledger row. No tag, SVN publication, or production deployment is authorized.
-
 # 2026-10-16 - Classification Lane 1 passed with native editor evidence
 
 - **Lane 1**: on `https://magick-ai.local`, administrator `1` opened disposable draft `282453`, triggered the generic WordPress AI plugin's visible `生成文章摘要`, reviewed and edited the result, then clicked native `保存草稿`. AI ability and normal WordPress save both returned HTTP 200.
@@ -98,3 +92,12 @@ Older history: `.sisyphus/archive/`.
 - **Boundary**: both changes occurred after tag preflight and are excluded
   from the immutable snapshot tag. Any future candidate needs fresh matrix and
   acceptance evidence.
+
+# 2026-10-16 - Post-tag audit refresh; no new candidate selected
+
+- **Matrix**: live default `--fail-on-dirty` passed 7/7 with exit 0 at
+  `2026-10-16T11:29:44+00:00`.
+- **Drift**: Cloud Addon is `f0e2a58`; Toolbox is `569da58`; both are clean but
+  newer than the published manifest. The existing tag remains unchanged.
+- **Decision**: no new candidate or acceptance was selected; future inclusion
+  requires a separate manifest and tag, never a retag.

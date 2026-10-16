@@ -217,3 +217,13 @@ update PR #279, and Toolbox acquired one owner-held uncommitted documentation
 change. These are post-tag live checkout states and are excluded from the
 published manifest. Do not force-move or recreate the snapshot tag; any future
 candidate must receive its own matrix and acceptance evidence.
+
+## Post-tag audit refresh — 2026-10-16
+
+The live default matrix passed 7/7 with exit 0 at
+`2026-10-16T11:29:44+00:00`. Cloud Addon `f0e2a58` and Toolbox `569da58` are
+clean but are newer than the published manifest (`4978338` and `ee814e0`).
+The existing snapshot tag remains unchanged and valid for its recorded exact
+manifest. No new candidate was selected; any decision to include these newer
+revisions must create a separate manifest and acceptance run, followed by a
+new tag name rather than retagging the published one.
