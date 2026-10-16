@@ -5,36 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-14 - Cross-repository release acceptance passed
-
-- **Provider fixture**: recreated the one-time M4 Ollama 0.32.5 path with the
-  verified WordPress.org AI Provider for Ollama 1.3.0 SHA
-  `8c483f337b07c5dcb537444c09485208e3fa745430807a8f2905513fd5109e2c`, a
-  loopback SSH tunnel on `127.0.0.1:11439`, and `qwen2.5:1.5b`. The signed
-  Adapter fixture passed persisted Provider Log correlation for proposal,
-  preflight correlation, and Adapter request identifiers, then cleaned its
-  draft and marker loader.
-- **Cross-repo gate**: `composer acceptance:cross-repo-release` passed Core
-  validation/tests/smoke/release/package, Adapter tests/smoke/release/package
-  and real Provider fixture, and Toolkit tests/PHPStan/release/Docker smoke.
-  Docker Desktop 29.7.2 was started after the first retry reported an
-  unavailable daemon; the final run completed all rows.
-- **Central matrix**: `composer quality:matrix:run -- --fail-on-dirty` passed
-  all 7/7 repositories at `2026-10-14T03:46:45Z`; every default worktree was
-  clean. Cloud Addon is one commit behind `origin/master` but its deterministic
-  gate passed.
-- **Cleanup**: temporary SDK, MU loader, marker fixture, SSH tunnel/socket,
-  and provider registration were removed. LocalWP's registered providers are
-  back to `npcink-cloud` only. Core, Adapter, and Toolkit worktrees are clean.
-- **Release posture**: RC `--require-tag-ready` still fails safely on the
-  historical Core/Toolkit tags; no tag, SVN publication, production deploy,
-  or real-user ledger row is authorized. OCR remains advisory with recorded
-  delivery exceptions.
-- **Next**: refresh the central matrix after this acceptance evidence, then
-  keep the real-usage kickoff ready until an operating site produces the first
-  ledger row. Release-candidate tagging requires a new version/tag decision and
-  explicit operator authorization.
-
 # 2026-10-14 - Remote Addon head verified without touching shared root
 
 - **Liveness**: Cloud Addon shared `master` was clean and unchanged across two
@@ -155,3 +125,9 @@ Older history: `.sisyphus/archive/`.
 - **Lane 1**: on `https://magick-ai.local`, administrator `1` opened disposable draft `282453`, triggered the generic WordPress AI plugin's visible `生成文章摘要`, reviewed and edited the result, then clicked native `保存草稿`. AI ability and normal WordPress save both returned HTTP 200.
 - **Core boundary**: proposal count stayed `317 -> 317`; audit rows stayed `3366 -> 3366`; no Core proposal or audit event was created. The draft and one-time login helper were deleted.
 - **Stage**: native editor classification is complete. Keep the exact evidence with the RC record; remaining gates are RC identity and real-site usage. No tag, SVN publication, or production deployment was authorized.
+
+# 2026-10-16 - RC snapshot identity decided; historical tags preserved
+
+- **Exact matrix**: status-only central matrix at `2026-10-16T04:58:45+00:00` found all seven default roots clean. Candidate manifest is Core `8d9626b`, AI Cloud `fe920796`, Cloud Addon `d8bcac9`, Adapter `eb73e503`, Toolkit `921d1dc7`, Toolbox `216e102`, Eval Lab `5362655`.
+- **Decision**: reserve `stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0` as the RC identity. Core `v0.3.0` remains at historical `3357f916`; Toolkit `0.7.0` remains at historical `46c14054`; Adapter `v0.4.3` is available. `--require-tag-ready` fails by design and no tag was moved or created.
+- **Next**: rerun full acceptance against this exact manifest before any snapshot tag push, with explicit authorization. Real-site usage remains separate and the ledger is still empty.

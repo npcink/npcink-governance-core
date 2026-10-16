@@ -25,6 +25,39 @@ That command verifies each plugin header version, version constant, and
 `readme.txt` `Stable tag`, then reports whether the conventional tag can point
 at the current repository HEAD.
 
+## RC identity decision — 2026-10-16
+
+The refreshed status-only central matrix was generated at
+`2026-10-16T04:58:45+00:00`; all seven default roots were clean. The exact
+revision manifest is:
+
+| Repository | Exact revision | Branch / state | Declared version |
+| --- | --- | --- | --- |
+| Core | `8d9626b7a07ffca7126b400a404a6db05145d1e9` | `codex/docs-classification-lane1-2026-10-16` | `0.3.0` |
+| AI Cloud | `fe9207965f4a5049f80736019114f360186ec96b` | detached clean acceptance head | service revision |
+| Cloud Addon | `d8bcac9a192b04ad4aa2cc899cef32cdd6afe404` | `master` | `0.4.1` |
+| Adapter | `eb73e503a8c102acd6f87b69f406ee4b94aac85f` | `codex/m4-pgy-stack-rc-docs-2026-10-15` | `0.4.3` |
+| Toolkit | `921d1dc7cb5661fef10ca8f83b781690c98034cb` | `master` | `0.7.0` |
+| Toolbox | `216e10230f8e120903c6bb476268ff9d263d556e` | `codex/internal-link-recommendation-followup` | `0.6.0` |
+| Eval Lab | `5362655d9f27f9db9a3bcc8a7717e75ac1d9659f` | `main` | development-only |
+
+The exact RC identity decision is the stack snapshot name
+`stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0`. This name is
+reserved as the candidate identity; no tag has been created or pushed.
+Cloud Addon, Toolbox, AI Cloud, and Eval Lab remain bound by the exact
+revision manifest rather than by a conventional plugin tag.
+
+The refreshed `composer rc:version-matrix` reports Core `v0.3.0` at historical
+commit `3357f916899ac4b013a753da6d99e712274f2221`, Adapter `v0.4.3` available,
+and Toolkit `0.7.0` at historical commit
+`46c1405422ae0ac1f8ea6820b391b48d09326a14`. The `--require-tag-ready` check
+therefore fails as designed; it is not permission to move either historical
+tag. A remote lookup confirms the proposed stack snapshot tag name is absent.
+The next tag action requires fresh full acceptance against this exact manifest
+and separate authorization to push the snapshot tag. The subsequent Core docs
+commit `4a23d35` is coordination-only; it is deliberately not substituted into
+this candidate manifest without a new exact-revision acceptance decision.
+
 ## Tag Preparation Rule
 
 Do not retag historical releases.

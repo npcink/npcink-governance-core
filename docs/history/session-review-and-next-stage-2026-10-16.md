@@ -172,6 +172,30 @@ save stays outside Core proposal and audit ownership. The screenshot and raw
 provider text remain local-only; the committed record stores counts, route
 shapes, status, and cleanup outcome only.
 
+## RC identity decision — 2026-10-16
+
+The central status-only matrix was refreshed at `2026-10-16T04:58:45+00:00`;
+all seven default roots were clean. The exact manifest is Core
+`8d9626b7a07ffca7126b400a404a6db05145d1e9`, AI Cloud
+`fe9207965f4a5049f80736019114f360186ec96b`, Cloud Addon
+`d8bcac9a192b04ad4aa2cc899cef32cdd6afe404`, Adapter
+`eb73e503a8c102acd6f87b69f406ee4b94aac85f`, Toolkit
+`921d1dc7cb5661fef10ca8f83b781690c98034cb`, Toolbox
+`216e10230f8e120903c6bb476268ff9d263d556e`, and Eval Lab
+`5362655d9f27f9db9a3bcc8a7717e75ac1d9659f`.
+
+The chosen candidate identity is
+`stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0`. This is a named
+stack snapshot decision, not a tag publication. Core `v0.3.0` remains bound to
+historical `3357f916899ac4b013a753da6d99e712274f2221`; Toolkit `0.7.0` remains
+bound to historical `46c1405422ae0ac1f8ea6820b391b48d09326a14`; Adapter
+`v0.4.3` is still available. The `--require-tag-ready` check fails on the
+existing Core tag as designed, and the proposed stack snapshot tag is absent.
+No historical tag was moved or reused. A fresh acceptance run against this
+exact manifest and explicit tag authorization are still required before any
+snapshot tag is created. Core later received docs-only coordination commit
+`4a23d35`; that commit is not silently folded into the candidate manifest.
+
 ## Worktree ownership audit and release acceptance — 2026-10-16
 
 The read-only ownership audit was generated at
