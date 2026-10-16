@@ -21,6 +21,21 @@ provider payloads, or personal content in this file or in committed evidence.
 Record only counts, command names, pass/fail results, proposal ids when useful,
 audit event names, and whether fixtures were cleaned up.
 
+## Completed Lane 1 Evidence — 2026-10-16
+
+- Local target: `https://magick-ai.local/`; administrator user `1`.
+- Disposable draft: post `282453`; removed after the run.
+- Core counts before/after: proposals `317` -> `317`; audit rows `3366` -> `3366`.
+- Action: the administrator triggered `生成文章摘要`, reviewed the visible
+  AI excerpt, edited the excerpt in the WordPress editor, and clicked native
+  `保存草稿`.
+- Browser evidence: the AI ability request and normal post save both returned
+  HTTP 200; the save was `POST /wp-json/wp/v2/posts/282453`.
+- Expected and actual result: no Core proposal, no Core audit row, and fixture
+  cleanup completed.
+- Result: **pass**. Lane 1 is complete; raw provider text and local screenshots
+  remain outside committed documentation.
+
 ## Evidence Record Template
 
 Copy this section into the release pull request, release notes, or local
