@@ -249,20 +249,24 @@ Older history: `.sisyphus/archive/`.
   `docs/history/cross-repo-engineering-checkpoint-2026-10-15.md`. Batch these
   docs with the next weekly docs publication instead of a per-session PR.
 
-# 2026-10-16 - Session history summarized; AI Cloud owner work reopened validation
+# 2026-10-16 - AI Cloud owner reconciled; strict matrix now waits on Addon owner
 
 - **Historical close point**: the referenced review session reached a 7/7
   default matrix and full cross-repository acceptance on 2026-10-15 for the
   exact tested revisions, including real Ollama persisted-log correlation,
   duplicate refusal, package checks, PHPStan, and Docker smoke. No tag, SVN
   publication, deployment, or real-user ledger row was created.
-- **Live recalibration**: the status-only matrix at
-  `2026-10-16T02:55:44Z` found six dirty owner files in AI Cloud, so the
-  current default status is `needs_validation`; the historical green result is
-  not current release evidence.
-- **Open gates**: AI Cloud owner reconciliation -> fresh no-override 7/7
-  matrix -> worktree ownership audit -> full release acceptance -> explicit
-  RC/tag decision -> real-user kickoff when an operating site exists.
+- **AI Cloud owner closeout**: the six-file Admin async-state follow-up is
+  committed as `e5aa6143` on `codex/provider-async-state-followup`, pushed in
+  PR #1117, and the shared checkout is clean. Required exact-SHA checks passed;
+  the separate `code-review` advisory failed and is not merge authority.
+- **Matrix rerun**: no-override `quality:matrix:run -- --fail-on-dirty` at
+  `2026-10-16T03:45:30Z` passed all 7/7 gate rows, including AI Cloud. The
+  command still returned non-zero because Cloud Addon has two unrelated owner
+  docs files; those remain untouched.
+- **Open gates**: Cloud Addon owner reconciliation -> fresh strict matrix ->
+  worktree ownership audit -> full release acceptance -> explicit RC/tag
+  decision -> real-user kickoff when an operating site exists.
 - **Classification**: Toolbox lanes 2 and 3 pass; native editor lane 1 still
   needs exact visible-AI-output/present-author evidence and must not be
   relabeled complete from a fixture or partial draft save.

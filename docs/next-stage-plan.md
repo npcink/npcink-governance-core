@@ -113,23 +113,21 @@ AI Cloud shared-root blocker. The audit, environment recovery, and limits are re
 ## Live Recalibration — 2026-10-16
 
 The 2026-10-15 7/7 matrix and full cross-repository acceptance remain valid
-for the exact revisions tested then. A fresh status-only matrix on
-`2026-10-16T02:55:44Z` found six owner files dirty in the AI Cloud shared
-checkout (`fca129f8`), so the current default status is `needs_validation` and
-the gates were not run. The files are:
+for the exact revisions tested then. The AI Cloud owner follow-up is now
+reconciled as PR #1117, commit `e5aa6143`, on clean branch
+`codex/provider-async-state-followup`; its required exact-SHA GitHub checks
+passed. The advisory `code-review` job failed separately and does not control
+merge authority.
 
-- `frontend/src/app/admin/ai-resources/page.tsx`;
-- `frontend/src/components/admin/SupplierConnectionTables.tsx`;
-- `frontend/tests/e2e/admin-provider-directory-v2.spec.ts`;
-- `frontend/tests/unit/admin-ai-resources-contract.mjs`;
-- `frontend/tests/unit/admin-provider-config-pc-v2-contract.mjs`; and
-- `frontend/src/features/admin/ai-resources/async-operation-state.ts`.
-
-The next gate is owner reconciliation, followed by a fresh no-override
-`composer quality:matrix:run -- --fail-on-dirty`. Do not use a detached clean
-override as a substitute for the default matrix, and do not reset or commit
-the owner files from Core. The detailed session history and live checkout
-table are in [Session Review And Next Stage — 2026-10-16](history/session-review-and-next-stage-2026-10-16.md).
+The no-override matrix rerun at `2026-10-16T03:45:30Z` passed all seven gate
+rows, but returned non-zero under `--fail-on-dirty` because Cloud Addon has
+owner files in `docs/README.md` and
+`docs/next-session-handoff-2026-10-16.md`. Those files were not touched. The
+next gate is Cloud Addon owner reconciliation followed by another strict
+`composer quality:matrix:run -- --fail-on-dirty`; do not replace it with a
+detached override or claim global cleanliness from the 7/7 row result alone.
+The detailed session history and live checkout table are in
+[Session Review And Next Stage — 2026-10-16](history/session-review-and-next-stage-2026-10-16.md).
 
 ## Current Execution Decision
 

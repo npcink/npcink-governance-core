@@ -134,16 +134,34 @@ Toolkit `0.7.0`. It correctly reports Core `v0.3.0` and Toolkit `0.7.0` as
 existing at historical commits; neither tag may be moved. Adapter `0.4.3` is
 available for a future, explicitly authorized release decision.
 
+## Owner reconciliation and matrix rerun — 2026-10-16
+
+The AI Cloud owner work was reconciled without touching another task's files.
+The async Provider Admin state model was committed as `e5aa6143` on
+`codex/provider-async-state-followup`, pushed, and published as PR #1117. Its
+required exact-SHA checks passed, including frontend after one controlled retry;
+the separate `code-review` job failed as an advisory result and is not merge
+authority. AI Cloud is now clean.
+
+The subsequent no-override command
+`composer quality:matrix:run -- --fail-on-dirty` generated
+`2026-10-16T03:45:30Z` and passed all seven repository gate rows, including the
+AI Cloud exact-SHA check. The command still returned exit 1 because Cloud Addon
+has two unrelated owner files (`docs/README.md` and
+`docs/next-session-handoff-2026-10-16.md`). Those files remain untouched. The
+current state is therefore **7/7 gates passed, strict clean-matrix closeout
+blocked by Cloud Addon owner work**.
+
 ## Recommended next sequence
 
-1. **Reconcile the AI Cloud owner checkout.** The owner should commit valid
+1. **Reconcile the Cloud Addon owner checkout.** The owner should commit valid
    work to its topic branch, discard it through the owner's own process, or
    document an explicit handoff. Do not reset, delete, or commit those files
    from Core.
-2. **Run the default matrix after reconciliation.** Use
+2. **Run the strict default matrix after Addon reconciliation.** Use
    `composer quality:matrix:run -- --fail-on-dirty` from
-   `npcink-workflow-toolbox`. Only a fresh 7/7 result on the intended default
-   revisions can reopen release-acceptance work.
+   `npcink-workflow-toolbox`. The gate rows already pass 7/7; this rerun is
+   needed to prove that all configured shared roots are clean as well.
 3. **Audit worktree ownership before cleanup claims.** Recheck locked
    worktrees, untracked owner files, open PRs, and unpublished branches. Keep
    valuable or locked work intact and record ownership; do not equate a clean
@@ -165,6 +183,6 @@ available for a future, explicitly authorized release decision.
    `git diff --check`; use the repository's protected `composer pr:publish`
    flow rather than a direct push.
 
-The principal next gate is therefore owner reconciliation followed by a fresh
-default 7/7 matrix. Release and real-usage work should remain downstream of
-that gate.
+The principal next gate is therefore Cloud Addon owner reconciliation followed
+by a fresh strict default matrix. Release and real-usage work should remain
+downstream of that gate.
