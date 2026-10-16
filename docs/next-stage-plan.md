@@ -210,6 +210,26 @@ Core and Cloud Addon changes are documentation-only, but their SHA drift still
 requires a new manifest decision and exact acceptance. Do not prepare release
 notes or reproducible checksums until that decision and acceptance are complete.
 
+## Owner closeout and revised acceptance — 2026-10-16
+
+Toolbox owner state was audited with two stable snapshots over approximately
+two minutes. The shared root still contains the owner-held `docs/README.md`
+modification and the untracked internal-link handoff document; neither was
+changed. Use a clean revision-bound copy for any diagnostic gate until the
+owner publishes or preserves those files.
+
+The exact Core/Adapter/Toolkit acceptance rerun passed at approximately
+`2026-10-16T14:39:02+08:00` using Core `ec01042`, Adapter `eb73e503`, and
+Toolkit `921d1dc7`. It included Core and Adapter WordPress/package/release
+gates, the signed M4 Ollama fixture with persisted provider-log correlation and
+duplicate refusal, Toolkit PHPStan, official Docker smoke, and cleanup. The
+package digests are provisional evidence for this run, not a final RC record.
+
+Cloud Addon owner work remained active: the shared clean root advanced from
+`ac82a3b` to `5f223af` during its two-snapshot check. Do not freeze a manifest,
+prepare release notes, or calculate final reproducible checksums until that
+owner state stops moving and the revised manifest is accepted deliberately.
+
 ## Worktree Audit and Full Release Acceptance — 2026-10-16
 
 The read-only audit at `2026-10-16T04:05:03+00:00` covered 30 registered

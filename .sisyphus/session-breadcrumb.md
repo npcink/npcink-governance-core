@@ -5,13 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-14 - Next-stage owner handoff checkpoint
-
-- **Toolbox**: shared root is now clean on `codex/internal-link-recommendation-followup`; its local gate passed in the default matrix.
-- **AI Cloud**: shared root remains dirty with eight owner files on `codex/provider-refresh-advisory`; one auxiliary `m4-resource-baseline` worktree also has three untracked files. No cleanup or reset was performed.
-- **Matrix**: default `composer quality:matrix:run -- --fail-on-dirty` reached 6 passed plus AI Cloud `needs_validation` at `2026-10-14T09:52:18Z`. A clean detached AI Cloud `origin/master` override passed 7/7 at `2026-10-14T10:17:37Z`.
-- **Locked sequence**: AI Cloud owner reconciliation -> default 7/7 matrix -> complete worktree audit -> full release acceptance -> new RC version decision -> real-usage first ledger row.
-
 # 2026-10-15 - Owner-state audit continued
 
 - **Core planning record**: PR #164 merged as `d317f73`; Core topic branch remains clean and the latest docs update is staged for the next docs-only closeout PR.
@@ -119,3 +112,15 @@ Older history: `.sisyphus/archive/`.
   deliberate manifest decision and fresh exact acceptance.
 - **Posture**: release notes and reproducible checksums are deferred; no
   snapshot tag was created or pushed.
+
+# 2026-10-16 - Toolbox stable audit; Cloud Addon owner still moving
+
+- **Toolbox**: two snapshots over approximately two minutes showed stable
+  owner-held changes in `docs/README.md` and the untracked internal-link handoff
+  document. Nothing was deleted, reset, staged, or committed.
+- **Acceptance**: Core `ec01042`, Adapter `eb73e503`, and Toolkit `921d1dc7`
+  passed exact three-repository acceptance, including M4 provider-log
+  correlation, duplicate refusal, Docker smoke, and cleanup.
+- **Cloud Addon**: owner work advanced from `ac82a3b` to `5f223af` during its
+  stability check. Manifest freeze, release notes, and final checksums remain
+  deferred; no snapshot tag was created or pushed.
