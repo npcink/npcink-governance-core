@@ -1,0 +1,447 @@
+{
+  "candidate_id": "stack-rc2-2026-10-16",
+  "status": "default_shared_root_closeout_blocked",
+  "candidate_manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+  "candidate_revisions_changed": false,
+  "command": "composer quality:matrix:run -- --fail-on-dirty --json --output=/tmp/npcink-rc2-default-owner-matrix.json",
+  "exit_code": 1,
+  "fail_on_dirty": true,
+  "repository_overrides": [],
+  "matrix_report_sha256": "e783eaa7e60c4ff1627dbef40009b0e876ad1501ea511a93d329a5a758ad0e2f",
+  "matrix_report": {
+    "generated_at": "2026-10-16T12:43:50+00:00",
+    "family_root": "/Users/muze/gitee",
+    "run_gates": true,
+    "cloud_m4": false,
+    "results": [
+      {
+        "name": "npcink-abilities-toolkit",
+        "path": "/Users/muze/gitee/npcink-abilities-toolkit",
+        "path_source": "default",
+        "exists": true,
+        "is_git": true,
+        "branch": "master...origin/master",
+        "ahead": 0,
+        "behind": 0,
+        "dirty_count": 0,
+        "dirty_files": [],
+        "stash_count": 0,
+        "worktrees": 1,
+        "gate": "composer test:all",
+        "gate_authority": "local",
+        "gate_notes": "Reusable WordPress ability contracts and callbacks.",
+        "gate_ran": true,
+        "gate_status": "passed",
+        "gate_exit": 0,
+        "gate_duration": 13983.9,
+        "gate_tail": "No syntax errors detected in /Users/muze/gitee/npcink-abilities-toolkit/tests/run/95-content-intent-routing.php\nNo syntax errors detected in /Users/muze/gitee/npcink-abilities-toolkit/tests/run/99-page-patterns-closeout.php\nNo syntax errors detected in /Users/muze/gitee/npcink-abilities-toolkit/tests/smoke-wp.php\nNo syntax errors detected in /Users/muze/gitee/npcink-abilities-toolkit/tests/uninstall-cleanup.php\nNo syntax errors detected in /Users/muze/gitee/npcink-abilities-toolkit/tests/wordpress-smoke-evidence.php\nNo syntax errors detected in /Users/muze/gitee/npcink-abilities-toolkit/uninstall.php\nLinted 118 PHP files\nNo security vulnerability advisories found.",
+        "runtime_gate_ran": false,
+        "runtime_gate_status": "not_run",
+        "runtime_gate_exit": null,
+        "runtime_gate_duration": null,
+        "runtime_gate_tail": ""
+      },
+      {
+        "name": "npcink-governance-core",
+        "path": "/Users/muze/gitee/npcink-governance-core",
+        "path_source": "default",
+        "exists": true,
+        "is_git": true,
+        "branch": "codex/rc2-validation-2026-10-16...origin/master [ahead 1]",
+        "ahead": 1,
+        "behind": 0,
+        "dirty_count": 0,
+        "dirty_files": [],
+        "stash_count": 0,
+        "worktrees": 1,
+        "gate": "composer test:all",
+        "gate_authority": "local",
+        "gate_notes": "Proposal, approval, preflight, audit, and fail-closed contracts.",
+        "gate_ran": true,
+        "gate_status": "passed",
+        "gate_exit": 0,
+        "gate_duration": 9121.2,
+        "gate_tail": "Static contracts: ok\nFail-closed fault injection: ok\nPHPUnit 9.6.38 by Sebastian Bergmann and contributors.\n.......................................................           55 / 55 (100%)\nTime: 00:00.007, Memory: 8.00 MB\nOK (55 tests, 207 assertions)\nReproducible release package: ok (71c752a7c100f58a4628646c071b72b1b862011fdaae776a8217d3ba6ad78fc4)\nRevision-bound Core M4 WordPress smoke evidence behavior: ok",
+        "runtime_gate_ran": false,
+        "runtime_gate_status": "not_run",
+        "runtime_gate_exit": null,
+        "runtime_gate_duration": null,
+        "runtime_gate_tail": ""
+      },
+      {
+        "name": "npcink-ai-client-adapter",
+        "path": "/Users/muze/gitee/npcink-ai-client-adapter",
+        "path_source": "default",
+        "exists": true,
+        "is_git": true,
+        "branch": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+        "ahead": 0,
+        "behind": 0,
+        "dirty_count": 0,
+        "dirty_files": [],
+        "stash_count": 0,
+        "worktrees": 1,
+        "gate": "composer test:all",
+        "gate_authority": "local",
+        "gate_notes": "Adapter route, recipe, and execution-profile contracts.",
+        "gate_ran": true,
+        "gate_status": "passed",
+        "gate_exit": 0,
+        "gate_duration": 4938.4,
+        "gate_tail": "  ok: exception idempotent re-run\n  ok: exception inserted under header\n  ok: exception appends new section\nAI review gate self-test: ok\nLocal acceptance failure handling and plugin restoration: ok\nFlagged-media HTTPS opt-in, site identity, evidence refusal and safe cleanup recovery: ok\nDoc route drift: ok\nStatic contracts: ok",
+        "runtime_gate_ran": false,
+        "runtime_gate_status": "not_run",
+        "runtime_gate_exit": null,
+        "runtime_gate_duration": null,
+        "runtime_gate_tail": ""
+      },
+      {
+        "name": "npcink-workflow-toolbox",
+        "path": "/Users/muze/gitee/npcink-workflow-toolbox",
+        "path_source": "default",
+        "exists": true,
+        "is_git": true,
+        "branch": "master...origin/master",
+        "ahead": 0,
+        "behind": 0,
+        "dirty_count": 3,
+        "dirty_files": [
+          " M docs/session-handoff-2026-10-16-internal-link-related-content-history.md",
+          " M tests/run.php",
+          " M tests/smoke-editor-progressive-browser.mjs"
+        ],
+        "stash_count": 1,
+        "worktrees": 1,
+        "gate": "composer test:all",
+        "gate_authority": "local",
+        "gate_notes": "Toolbox product-surface static contracts and local smoke gates.",
+        "gate_ran": true,
+        "gate_status": "passed",
+        "gate_exit": 0,
+        "gate_duration": 35302.4,
+        "gate_tail": "PHP Deprecated:  Creation of dynamic property Npcink_Toolbox\\Provider_Client::$article_audio_service is deprecated in /Users/muze/gitee/npcink-workflow-toolbox/includes/Provider_Client.php on line 126\nPHP Deprecated:  Creation of dynamic property Npcink_Toolbox\\Provider_Client::$site_ops_cloud_service is deprecated in /Users/muze/gitee/npcink-workflow-toolbox/includes/Provider_Client.php on line 128\nPHP Deprecated:  Creation of dynamic property Npcink_Toolbox\\Provider_Client::$agent_feedback_service is deprecated in /Users/muze/gitee/npcink-workflow-toolbox/includes/Provider_Client.php on line 130\nPHP Deprecated:  Creation of dynamic property Npcink_Toolbox\\Provider_Client::$media_recognition_service is deprecated in /Users/muze/gitee/npcink-workflow-toolbox/includes/Provider_Client.php on line 122\nPHP Deprecated:  Creation of dynamic property Npcink_Toolbox\\Provider_Client::$image_source_service is deprecated in /Users/muze/gitee/npcink-workflow-toolbox/includes/Provider_Client.php on line 124\nPHP Deprecated:  Creation of dynamic property Npcink_Toolbox\\Provider_Client::$article_audio_service is deprecated in /Users/muze/gitee/npcink-workflow-toolbox/includes/Provider_Client.php on line 126\nPHP Deprecated:  Creation of dynamic property Npcink_Toolbox\\Provider_Client::$site_ops_cloud_service is deprecated in /Users/muze/gitee/npcink-workflow-toolbox/includes/Provider_Client.php on line 128\nPHP Deprecated:  Creation of dynamic property Npcink_Toolbox\\Provider_Client::$agent_feedback_service is deprecated in /Users/muze/gitee/npcink-workflow-toolbox/includes/Provider_Client.php on line 130",
+        "runtime_gate_ran": false,
+        "runtime_gate_status": "not_run",
+        "runtime_gate_exit": null,
+        "runtime_gate_duration": null,
+        "runtime_gate_tail": ""
+      },
+      {
+        "name": "npcink-cloud-addon",
+        "path": "/Users/muze/gitee/npcink-cloud-addon",
+        "path_source": "default",
+        "exists": true,
+        "is_git": true,
+        "branch": "master...origin/master",
+        "ahead": 0,
+        "behind": 0,
+        "dirty_count": 0,
+        "dirty_files": [],
+        "stash_count": 0,
+        "worktrees": 1,
+        "gate": "composer test:all",
+        "gate_authority": "local",
+        "gate_notes": "Cloud Addon transport, settings, and WordPress plugin contracts.",
+        "gate_ran": true,
+        "gate_status": "passed",
+        "gate_exit": 0,
+        "gate_duration": 4200.7,
+        "gate_tail": "[ok] Acceptance fails the batch when one ability fails.\n[ok] Acceptance preserves a passing ability when a different ability fails.\n[ok] Acceptance does not verify a result without write evidence.\n[ok] Acceptance preserves known failure even when write evidence is missing.\n[ok] Acceptance rejects writes even when output quality passes.\n[ok] Acceptance cannot pass an empty capability list.\n[ok] Acceptance verifies the batch only when every case has passing evidence.\nPR body section requires meaningful content: Scope",
+        "runtime_gate_ran": false,
+        "runtime_gate_status": "not_run",
+        "runtime_gate_exit": null,
+        "runtime_gate_duration": null,
+        "runtime_gate_tail": ""
+      },
+      {
+        "name": "npcink-eval-lab",
+        "path": "/Users/muze/gitee/npcink-eval-lab",
+        "path_source": "default",
+        "exists": true,
+        "is_git": true,
+        "branch": "main...origin/main",
+        "ahead": 0,
+        "behind": 0,
+        "dirty_count": 0,
+        "dirty_files": [],
+        "stash_count": 0,
+        "worktrees": 1,
+        "gate": "composer test:wordpress-ai-provider && composer check",
+        "gate_authority": "local",
+        "gate_notes": "Development-only WordPress AI Provider acceptance and quality evidence.",
+        "gate_ran": true,
+        "gate_status": "passed",
+        "gate_exit": 0,
+        "gate_duration": 1041.1,
+        "gate_tail": "WordPress AI Provider offline gate: ok\nEval-lab self-check passed: 955 checks, 43 task(s).",
+        "runtime_gate_ran": false,
+        "runtime_gate_status": "not_run",
+        "runtime_gate_exit": null,
+        "runtime_gate_duration": null,
+        "runtime_gate_tail": ""
+      },
+      {
+        "name": "npcink-ai-cloud",
+        "path": "/Users/muze/gitee/npcink-ai-cloud",
+        "path_source": "default",
+        "exists": true,
+        "is_git": true,
+        "branch": "codex/localize-provider-errors...origin/codex/localize-provider-errors",
+        "ahead": 0,
+        "behind": 0,
+        "dirty_count": 0,
+        "dirty_files": [],
+        "stash_count": 1,
+        "worktrees": 2,
+        "gate": "GitHub CI checks for the exact clean Cloud HEAD",
+        "gate_authority": "github_ci",
+        "gate_notes": "Cloud source authority is exact-SHA GitHub CI; optional M4 acceptance is revision-bound and explicit.",
+        "gate_ran": true,
+        "gate_status": "needs_validation",
+        "gate_exit": 78,
+        "gate_duration": 1328.1,
+        "gate_tail": "Cloud exact-SHA GitHub checks need validation: frontend (pending)",
+        "runtime_gate_ran": false,
+        "runtime_gate_status": "not_run",
+        "runtime_gate_exit": null,
+        "runtime_gate_duration": null,
+        "runtime_gate_tail": ""
+      }
+    ],
+    "failures": 2
+  },
+  "revision_observation": {
+    "observed_at": "2026-10-16T12:43:21.611059+00:00",
+    "rows": [
+      {
+        "repo": "npcink-governance-core",
+        "pinned": "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0",
+        "head": "cac1689493c57aa525535142d5b98a2221ce9b8d",
+        "branch": "codex/rc2-validation-2026-10-16",
+        "status": "",
+        "changed_paths": [
+          ".sisyphus/archive/2026-10.md",
+          ".sisyphus/session-breadcrumb.md",
+          "docs/history/stack-rc2-acceptance-2026-10-16.md",
+          "docs/history/stack-rc2-manifest-2026-10-16.json",
+          "docs/next-stage-plan.md",
+          "docs/release-candidate-version-matrix.md"
+        ]
+      },
+      {
+        "repo": "npcink-ai-cloud",
+        "pinned": "fe9207965f4a5049f80736019114f360186ec96b",
+        "head": "3ad10d70429d631df617e8519253d26ce369b1c8",
+        "branch": "codex/localize-provider-errors",
+        "status": "",
+        "changed_paths": [
+          "frontend/src/app/admin/ai-resources/page.tsx",
+          "frontend/src/app/admin/external-services/page.tsx",
+          "frontend/src/app/admin/service-settings/page.tsx",
+          "frontend/src/components/ErrorBoundary.tsx",
+          "frontend/src/components/ui/Alert.tsx",
+          "frontend/src/lib/errors.ts",
+          "frontend/src/lib/i18n.ts",
+          "frontend/src/lib/portal-error.ts",
+          "frontend/tests/e2e/admin-external-services.spec.ts",
+          "frontend/tests/e2e/admin-provider-directory-v2.spec.ts",
+          "frontend/tests/e2e/admin-service-settings-v2.spec.ts",
+          "frontend/tests/vitest/error-boundary.test.ts",
+          "frontend/tests/vitest/errors.test.ts",
+          "frontend/tests/vitest/portal-error.test.ts"
+        ]
+      },
+      {
+        "repo": "npcink-cloud-addon",
+        "pinned": "f0e2a5854bbe373e45240b23b5fce30b00df57fa",
+        "head": "0ae75febbfb391a7b405ddddad62d70fd4a7d578",
+        "branch": "master",
+        "status": "",
+        "changed_paths": [
+          "docs/README.md",
+          "docs/cloud-owner-decision-package-draft-2026-10-16.md",
+          "docs/current-state-truth-draft-2026-10-16.md",
+          "docs/next-session-handoff-2026-10-16.md"
+        ]
+      },
+      {
+        "repo": "npcink-ai-client-adapter",
+        "pinned": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+        "head": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+        "branch": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+        "status": "",
+        "changed_paths": []
+      },
+      {
+        "repo": "npcink-abilities-toolkit",
+        "pinned": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+        "head": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+        "branch": "master",
+        "status": "",
+        "changed_paths": []
+      },
+      {
+        "repo": "npcink-workflow-toolbox",
+        "pinned": "569da58106c877fadb65316e4375a8bd3d1f6b1e",
+        "head": "569da58106c877fadb65316e4375a8bd3d1f6b1e",
+        "branch": "master",
+        "status": "M docs/session-handoff-2026-10-16-internal-link-related-content-history.md\n M tests/run.php\n M tests/smoke-editor-progressive-browser.mjs",
+        "changed_paths": []
+      },
+      {
+        "repo": "npcink-eval-lab",
+        "pinned": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+        "head": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+        "branch": "main",
+        "status": "",
+        "changed_paths": []
+      }
+    ]
+  },
+  "owner_audit": {
+    "snapshots": [
+      {
+        "time": 1792154385.821913,
+        "rows": [
+          {
+            "repo": "npcink-ai-cloud",
+            "head": "3ad10d70429d631df617e8519253d26ce369b1c8",
+            "branch": "codex/localize-provider-errors",
+            "status": "",
+            "files": {},
+            "log": "3ad10d70|2026-10-16T20:32:42+08:00|fix(frontend): distinguish client connectivity failures\nb93594fa|2026-10-16T20:25:32+08:00|fix(frontend): localize uncaught error boundary feedback\nd3f298bc|2026-10-16T20:19:48+08:00|fix(frontend): localize provider errors and fallback messages\nfe920796|2026-10-16T03:43:14Z|fix(admin): track provider async operation outcomes (#1117)"
+          },
+          {
+            "repo": "npcink-cloud-addon",
+            "head": "09732606de0e9b38b373c0b06a3a902250bbd847",
+            "branch": "codex/cloud-owner-readonly-evidence-2026-10-16",
+            "status": "",
+            "files": {},
+            "log": "0973260|2026-10-16T20:37:46+08:00|docs: record Cloud read-only coverage and owner evidence\n243c81f|2026-10-16T12:17:48Z|docs: add Cloud owner decision and state handoff drafts (#281)\nf0e2a58|2026-10-16T11:23:38Z|docs: record final clean matrix evidence (#280)\n6c9d3c4|2026-10-16T11:12:02Z|chore(deps): bump alibaba/open-code-review to 1.12.13 (#279)"
+          },
+          {
+            "repo": "npcink-workflow-toolbox",
+            "head": "569da58106c877fadb65316e4375a8bd3d1f6b1e",
+            "branch": "master",
+            "status": "M docs/session-handoff-2026-10-16-internal-link-related-content-history.md\n M tests/run.php\n M tests/smoke-editor-progressive-browser.mjs",
+            "files": {
+              "/Users/muze/gitee/npcink-workflow-toolbox/tests/run.php": {
+                "mtime_ns": 1792153094248271409,
+                "size": 843313
+              },
+              "/Users/muze/gitee/npcink-workflow-toolbox/tests/smoke-editor-progressive-browser.mjs": {
+                "mtime_ns": 1792153094213068061,
+                "size": 27704
+              }
+            },
+            "log": "569da58|2026-10-16T19:19:06+08:00|docs: record internal-link stage zero evidence (#270)\na04c129|2026-10-16T19:08:58+08:00|fix: avoid duplicate contextual ALT review cards (#265)\nee814e0|2026-10-16T15:40:55+08:00|refactor: split editor internal-link recommendations (#269)\n444128a|2026-10-14T16:10:06+08:00|test: align classification smoke fixtures with runtime guards (#268)"
+          }
+        ]
+      },
+      {
+        "time": 1792154533.776747,
+        "rows": [
+          {
+            "repo": "npcink-ai-cloud",
+            "head": "3ad10d70429d631df617e8519253d26ce369b1c8",
+            "branch": "codex/localize-provider-errors",
+            "status": "",
+            "files": {}
+          },
+          {
+            "repo": "npcink-workflow-toolbox",
+            "head": "569da58106c877fadb65316e4375a8bd3d1f6b1e",
+            "branch": "master",
+            "status": " M docs/session-handoff-2026-10-16-internal-link-related-content-history.md\n M tests/run.php\n M tests/smoke-editor-progressive-browser.mjs\n",
+            "files": {
+              "/Users/muze/gitee/npcink-workflow-toolbox/docs/session-handoff-2026-10-16-internal-link-related-content-history.md": {
+                "mtime_ns": 1792154420358661435,
+                "size": 17838
+              },
+              "/Users/muze/gitee/npcink-workflow-toolbox/tests/run.php": {
+                "mtime_ns": 1792153094248271409,
+                "size": 843313
+              },
+              "/Users/muze/gitee/npcink-workflow-toolbox/tests/smoke-editor-progressive-browser.mjs": {
+                "mtime_ns": 1792153094213068061,
+                "size": 27704
+              }
+            }
+          }
+        ]
+      },
+      {
+        "time": 1792154658.8635929,
+        "rows": [
+          {
+            "repo": "npcink-ai-cloud",
+            "head": "3ad10d70429d631df617e8519253d26ce369b1c8",
+            "branch": "codex/localize-provider-errors",
+            "status": "",
+            "files": {}
+          },
+          {
+            "repo": "npcink-cloud-addon",
+            "head": "0ae75febbfb391a7b405ddddad62d70fd4a7d578",
+            "branch": "master",
+            "status": "",
+            "files": {}
+          },
+          {
+            "repo": "npcink-workflow-toolbox",
+            "head": "569da58106c877fadb65316e4375a8bd3d1f6b1e",
+            "branch": "master",
+            "status": " M docs/session-handoff-2026-10-16-internal-link-related-content-history.md\n M tests/run.php\n M tests/smoke-editor-progressive-browser.mjs",
+            "files": {
+              "/Users/muze/gitee/npcink-workflow-toolbox/docs/session-handoff-2026-10-16-internal-link-related-content-history.md": {
+                "mtime_ns": 1792154420358661435,
+                "size": 17838
+              },
+              "/Users/muze/gitee/npcink-workflow-toolbox/tests/run.php": {
+                "mtime_ns": 1792153094248271409,
+                "size": 843313
+              },
+              "/Users/muze/gitee/npcink-workflow-toolbox/tests/smoke-editor-progressive-browser.mjs": {
+                "mtime_ns": 1792153094213068061,
+                "size": 27704
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "snapshot_note": "First snapshot omitted the first modified file mtime due to whitespace parsing; Toolbox file stability is supported by the correctly parsed second and third snapshots, 125 seconds apart. Second snapshot omitted Addon due to a wrong lookup name; first and third snapshots record its owner-managed topic-to-master transition.",
+    "active_owner_threads": [
+      "01a11abe-00cb-7b52-8049-51e831409978",
+      "01a14348-1a6b-70a0-84d4-915d3cfcf03d",
+      "01a1447a-4c96-7342-86f1-466eed68ac3b"
+    ],
+    "ai_cloud": {
+      "pr": "https://github.com/npcink/npcink-ai-cloud/pull/1119",
+      "state": "OPEN",
+      "head": "3ad10d70429d631df617e8519253d26ce369b1c8",
+      "pending_check": "frontend",
+      "pending_step": "Critical frontend paths",
+      "owner_action_remaining": "required CI, protected merge, clean-master promotion and M4 release"
+    },
+    "cloud_addon": {
+      "pr": "https://github.com/npcink/npcink-cloud-addon/pull/282",
+      "state": "MERGED",
+      "merged_at": "2026-10-16T12:39:24Z",
+      "merge_sha": "0ae75febbfb391a7b405ddddad62d70fd4a7d578",
+      "shared_root": "clean master; owner still collecting read-only reconciliation evidence"
+    },
+    "toolbox": {
+      "dirty_count": 3,
+      "owner_action_remaining": "waiting for AI Cloud M4 release, then performance/retrieval/browser evidence and owner publication",
+      "shared_files_modified_by_this_audit": false
+    }
+  },
+  "drift_decision": "Preserve RC2 pinned revisions. Core coordination and Addon documentation drift are excluded; AI Cloud frontend changes and uncommitted Toolbox owner changes have not been accepted into RC2. A successful live matrix would not by itself rebind the manifest.",
+  "published_snapshot_remote_reverified": {
+    "tag": "stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0",
+    "object": "ffb5e5d6d7b68fa952288524a181ff688a7698ee",
+    "peeled_commit": "ed28f984153200a8362fcd0928bbb32b83636159"
+  },
+  "tag_mutations": false
+}

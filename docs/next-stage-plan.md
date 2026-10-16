@@ -11,7 +11,11 @@ smoke baseline.
 `f0e2a58` and Toolbox `569da58`, with Core `7904f5b` and the other four pinned
 revisions. The exact seven-repository matrix passed 7/7 with exit 0 using
 three clean worktree overrides; the full three-layer release acceptance passed
-with zero skips. Default shared roots still contain separate owner work.
+with zero skips. The no-override default-root refresh at
+`2026-10-16T12:43:50Z` returned exit 1: 6/7 gates passed, AI Cloud `frontend` CI is pending, and Toolbox has
+three owner-held modified files. Addon PR #282 is merged and its shared root
+is clean at `0ae75fe`. AI Cloud runtime source and Addon documentation have
+drifted from RC2; the pinned manifest remains unchanged.
 
 See [the RC2 manifest and acceptance record](history/stack-rc2-acceptance-2026-10-16.md)
 and [machine-readable manifest](history/stack-rc2-manifest-2026-10-16.json).

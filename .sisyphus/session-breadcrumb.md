@@ -5,12 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - RC snapshot identity decided; historical tags preserved
-
-- **Exact matrix**: status-only central matrix at `2026-10-16T04:58:45+00:00` found all seven default roots clean. Candidate manifest is Core `8d9626b`, AI Cloud `fe920796`, Cloud Addon `d8bcac9`, Adapter `eb73e503`, Toolkit `921d1dc7`, Toolbox `216e102`, Eval Lab `5362655`.
-- **Decision**: reserve `stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0` as the RC identity. Core `v0.3.0` remains at historical `3357f916`; Toolkit `0.7.0` remains at historical `46c14054`; Adapter `v0.4.3` is available. `--require-tag-ready` fails by design and no tag was moved or created.
-- **Next**: rerun full acceptance against this exact manifest before any snapshot tag push, with explicit authorization. Real-site usage remains separate and the ledger is still empty.
-
 # 2026-10-16 - Exact RC manifest acceptance passed
 
 - **Manifest**: exact acceptance bound Core `8d9626b`, Adapter `eb73e503`, and Toolkit `921d1dc7`, with the previously recorded AI Cloud, Cloud Addon, Toolbox, and Eval Lab revisions.
@@ -110,3 +104,20 @@ Older history: `.sisyphus/archive/`.
 - **Record**: `docs/history/stack-rc2-acceptance-2026-10-16.md` and its JSON
   manifest. No new tag/push or retag; accumulate this docs-only closeout for the
   weekly docs PR. Published snapshot object/peeled commit remain unchanged.
+
+# 2026-10-16 - RC2 default-root refresh blocked by active owners
+
+- **Default matrix**: full no-override `--fail-on-dirty` at
+  `2026-10-16T12:43:50Z` returned exit 1: 6/7 gates passed; AI Cloud exact
+  `3ad10d70` frontend CI pending; Toolbox has three owner-held modified files.
+- **Owner state**: Addon PR #282 merged as `0ae75fe`, shared root clean on
+  master. AI Cloud PR #1119 open; its active owner retains M4 pending merge
+  and promotion. Toolbox owner waits for M4 before further smoke/publication.
+  No sibling files, branches or owner resources were modified by this audit.
+- **Manifest**: RC2 fixed SHAs unchanged. Core coordination/Addon's docs and
+  AI Cloud frontend changes are separate drift; Toolbox HEAD matches but its
+  working tree does not. New revisions need a deliberate candidate decision.
+- **Next/evidence**: finish existing owner work, then repeat the full default
+  matrix; see `docs/history/stack-rc2-acceptance-2026-10-16.md` and the separate
+  owner audit JSON. Existing snapshot remotely reverified unchanged; no new
+  tag, push or retag. Batch these local docs commits for the weekly docs PR.

@@ -1,8 +1,9 @@
 # Stack RC2 candidate and acceptance — 2026-10-16
 
-Status: exact candidate validated; not tagged or published. Default shared
-roots still contain owner work. This record does not supersede the published
-snapshot manifest.
+Status: exact candidate validated; not tagged or published. The default-root
+refresh at `2026-10-16T12:43:50Z` returned exit 1 (6/7 gates passed;
+Cloud CI pending and Toolbox owner files dirty). This record does not supersede
+the published snapshot manifest.
 
 ## Change envelope and candidate decision
 
@@ -115,3 +116,82 @@ validated candidate, not a release of the current dirty shared roots. Before
 any future publication, resolve owner state or explicitly select clean pinned
 checkouts, recheck this manifest and evidence, and obtain authorization for a
 new tag name. Historical closeout records accumulate for the weekly docs PR.
+
+## Default shared-root owner refresh — 2026-10-16 12:43 UTC
+
+This follow-up targets release coordination in Core only. Expected files are
+this record, the separate audit JSON, the two current-stage pointers and the
+bounded breadcrumb/archive. Public contracts and runtime code are unchanged.
+Sibling roots, owner files, active branches, M4 services, and all tags must not
+be changed by this audit. Required gates are the full central matrix with
+`--fail-on-dirty`, no repository overrides or filtering, Core documentation
+checks, and a read-only remote tag check. Rollback is a documentation revert.
+
+Owner activity was reverified rather than inferred from the earlier closeout:
+
+| Default root | Observed state | Owner closeout |
+| --- | --- | --- |
+| AI Cloud | clean topic `3ad10d70`; [PR #1119](https://github.com/npcink/npcink-ai-cloud/pull/1119) open | Required `frontend` CI still running its critical paths. Owner retains M4 until protected merge and clean-master promotion. |
+| Cloud Addon | clean `master` at `0ae75fe` | [PR #282](https://github.com/npcink/npcink-cloud-addon/pull/282) merged at `12:39:24Z`; shared root restored by its owner. Further read-only reconciliation evidence is still being collected. |
+| Toolbox | `master` at `569da58`, three modified files | Owner is waiting for M4 release before retrieval/browser verification and publication. Handoff document and two test files were preserved. |
+
+Two correctly parsed Toolbox status/mtime snapshots 125 seconds apart were
+stable, but the owner session remained active. Stability does not transfer
+ownership. No shared-root branch switch, staging, commit, stash, or cleanup
+was performed by this audit.
+
+The full command was:
+
+```bash
+composer quality:matrix:run -- --fail-on-dirty --json --output=/tmp/npcink-rc2-default-owner-matrix.json
+```
+
+All seven rows used `path_source=default` under `/Users/muze/gitee`. At
+`2026-10-16T12:43:50+00:00`, Toolkit, Core, Adapter, Toolbox, Addon and Eval Lab
+passed. AI Cloud returned exit 78 / `needs_validation` because exact clean
+`3ad10d70` had pending `frontend` CI. Toolbox also had dirty count 3:
+
+- `docs/session-handoff-2026-10-16-internal-link-related-content-history.md`;
+- `tests/run.php`;
+- `tests/smoke-editor-progressive-browser.mjs`.
+
+The matrix therefore returned exit 1 with two blocking conditions. It is a
+6/7 gate result, not a successful default-root 7/7. Toolbox's passing gate
+includes its uncommitted test changes and does not validate a new immutable
+revision. Full report and SHA observations are retained in
+[the owner audit JSON](stack-rc2-default-owner-audit-2026-10-16.json).
+The original report SHA-256 is
+`e783eaa7e60c4ff1627dbef40009b0e876ad1501ea511a93d329a5a758ad0e2f`.
+
+### RC2 drift decision and remaining order
+
+The pinned RC2 manifest is unchanged. Relative to that manifest:
+
+- Core `cac1689` contains only the preceding coordination records; it remains
+  excluded from the pinned `7904f5b` candidate.
+- AI Cloud `3ad10d70` includes frontend error handling and tests beyond pinned
+  `fe920796`; this is runtime source drift, not documentation-only drift.
+- Addon `0ae75fe` differs from pinned `f0e2a58` in four documentation files.
+- Toolbox HEAD still matches `569da58`, but its three uncommitted owner files
+  are outside the candidate. Adapter, Toolkit and Eval Lab still match exactly.
+
+Next, let the active AI Cloud owner finish required CI, protected merge and
+M4 release; then let the Toolbox owner finish its already active verification
+and publication. Recheck all default roots and rerun the same full no-override
+matrix after those changes. If the finished owner revisions are selected for
+a candidate, explicitly refresh its manifest and exact acceptance before
+publication. A green live matrix alone does not update RC2's fixed SHAs.
+The earlier pinned matrix and three-layer acceptance remain historical evidence
+for their recorded revisions; acceptance was not rerun during this audit.
+
+A read-only remote lookup still resolves the published snapshot to tag object
+`ffb5e5d6d7b68fa952288524a181ff688a7698ee` and peeled Core commit
+`ed28f984153200a8362fcd0928bbb32b83636159`. No tag was created, pushed or
+moved. This docs-only closeout stays local for the weekly docs PR.
+
+
+Core documentation verification passed: `composer validate --no-check-publish`,
+`composer test:all` (55 tests / 207 assertions), JSON parsing with all seven
+`default` rows and the unchanged manifest hash, and `git diff --check`.
+The breadcrumb remains bounded to ten entries. These checks validate this
+coordination record; the failed default-root matrix remains unresolved.
