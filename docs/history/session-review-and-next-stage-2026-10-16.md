@@ -191,10 +191,23 @@ historical `3357f916899ac4b013a753da6d99e712274f2221`; Toolkit `0.7.0` remains
 bound to historical `46c1405422ae0ac1f8ea6820b391b48d09326a14`; Adapter
 `v0.4.3` is still available. The `--require-tag-ready` check fails on the
 existing Core tag as designed, and the proposed stack snapshot tag is absent.
-No historical tag was moved or reused. A fresh acceptance run against this
-exact manifest and explicit tag authorization are still required before any
-snapshot tag is created. Core later received docs-only coordination commit
-`4a23d35`; that commit is not silently folded into the candidate manifest.
+No historical tag was moved or reused. Core later received docs-only
+coordination commit `4a23d35`; that commit is not silently folded into the
+candidate manifest.
+
+## RC manifest acceptance — 2026-10-16
+
+The exact-manifest rerun used a temporary ordinary clone at Core `8d9626b`,
+with Adapter `eb73e503` and Toolkit `921d1dc7` supplied from their clean
+checkouts. `composer acceptance:cross-repo-release` passed with exit 0;
+completion was observed at `2026-10-16T05:44:19Z`. Core validation, 55 tests /
+207 assertions, WordPress smoke, release verification, reproducible packaging,
+Adapter source/smoke/package checks, the signed M4 Ollama fixture with
+persisted provider-log correlation and duplicate refusal, Toolkit tests,
+PHPStan, release verification, Docker official-stack smoke, and Toolkit
+WordPress smoke all passed. Temporary Core clone, dependency link, plugin
+symlink, Ollama loader, and SSH tunnel were removed; the shared Core symlink
+was restored. No snapshot tag was created or pushed.
 
 ## Worktree ownership audit and release acceptance — 2026-10-16
 
