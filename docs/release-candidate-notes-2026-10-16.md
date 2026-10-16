@@ -75,3 +75,17 @@ After the tag was verified, the live Cloud Addon `master` advanced to
 modified `docs/session-handoff-2026-10-16-internal-link-related-content-history.md`
 in its shared root. Neither change is part of the published tag manifest; the
 tag remains fixed at the verified Core commit and is not retagged.
+
+## Post-tag audit refresh — 2026-10-16
+
+A read-only live-root matrix run completed with 7/7 and exit 0 at
+`2026-10-16T11:29:44+00:00`. Cloud Addon is now `f0e2a58` and Toolbox is now
+`569da58`; both roots are clean. These revisions are after the published
+manifest: Cloud Addon includes dependency/update documentation commits, while
+Toolbox includes the contextual ALT fix and internal-link stage evidence.
+
+No new candidate identity was selected and no new exact acceptance was run for
+these post-tag revisions. The existing snapshot tag remains bound to its
+verified peeled commit and is unaffected. Incorporating these revisions later
+requires a separately named manifest, fresh acceptance, and a new tag; the
+published tag must not be retagged.

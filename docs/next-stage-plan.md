@@ -870,3 +870,11 @@ Cloud Addon subsequently advanced to `6c9d3c4` through dependency update PR
 These changes occurred after the snapshot tag preflight and are excluded from
 the published manifest. Keep the tag immutable; a future candidate must rerun
 the matrix and exact acceptance.
+
+## Post-tag audit refresh — 2026-10-16
+
+The live 7/7 matrix passed at `2026-10-16T11:29:44+00:00`. Cloud Addon
+`f0e2a58` and Toolbox `569da58` are clean but newer than the published
+manifest. The current snapshot tag remains immutable and valid for its recorded
+revisions. Do not absorb these changes silently; if they become release scope,
+create a new candidate manifest and run exact acceptance before a new tag.
