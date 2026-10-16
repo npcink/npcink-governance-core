@@ -256,14 +256,14 @@ Older history: `.sisyphus/archive/`.
   exact tested revisions, including real Ollama persisted-log correlation,
   duplicate refusal, package checks, PHPStan, and Docker smoke. No tag, SVN
   publication, deployment, or real-user ledger row was created.
-- **AI Cloud owner closeout**: the six-file Admin async-state follow-up is
-  committed as `e5aa6143` on `codex/provider-async-state-followup`, pushed in
-  PR #1117, and the shared checkout is clean. Required exact-SHA checks passed;
-  the separate `code-review` advisory failed and is not merge authority.
-- **Matrix rerun**: no-override `quality:matrix:run -- --fail-on-dirty` at
-  `2026-10-16T03:45:30Z` passed all 7/7 gate rows, including AI Cloud. The
-  command still returned non-zero because Cloud Addon has two unrelated owner
-  docs files; those remain untouched.
+- **AI Cloud owner closeout**: the six-file Admin async-state follow-up was
+  committed as `e5aa6143`, merged by PR #1117, and is now clean on shared
+  `master` at `fe920796`. Required exact-SHA checks passed; the separate
+  `code-review` advisory failed and is not merge authority.
+- **Matrix rerun**: final no-override `quality:matrix:run -- --fail-on-dirty`
+  at `2026-10-16T03:51:28Z` passed all 7/7 gate rows, including merged AI
+  Cloud master. The command still returned non-zero because Cloud Addon has two
+  unrelated owner docs files; those remain untouched.
 - **Open gates**: Cloud Addon owner reconciliation -> fresh strict matrix ->
   worktree ownership audit -> full release acceptance -> explicit RC/tag
   decision -> real-user kickoff when an operating site exists.

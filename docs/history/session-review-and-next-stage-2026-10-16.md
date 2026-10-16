@@ -138,16 +138,16 @@ available for a future, explicitly authorized release decision.
 
 The AI Cloud owner work was reconciled without touching another task's files.
 The async Provider Admin state model was committed as `e5aa6143` on
-`codex/provider-async-state-followup`, pushed, and published as PR #1117. Its
-required exact-SHA checks passed, including frontend after one controlled retry;
-the separate `code-review` job failed as an advisory result and is not merge
-authority. AI Cloud is now clean.
+`codex/provider-async-state-followup`, pushed, and merged by PR #1117. The
+shared checkout now tracks clean `master` at `fe920796`. Its required exact-SHA
+checks passed, including frontend after one controlled retry; the separate
+`code-review` job failed as an advisory result and is not merge authority.
 
-The subsequent no-override command
+The final no-override command
 `composer quality:matrix:run -- --fail-on-dirty` generated
-`2026-10-16T03:45:30Z` and passed all seven repository gate rows, including the
-AI Cloud exact-SHA check. The command still returned exit 1 because Cloud Addon
-has two unrelated owner files (`docs/README.md` and
+`2026-10-16T03:51:28Z` and passed all seven repository gate rows, including the
+AI Cloud `master` exact-SHA check. The command still returned exit 1 because
+Cloud Addon has two unrelated owner files (`docs/README.md` and
 `docs/next-session-handoff-2026-10-16.md`). Those files remain untouched. The
 current state is therefore **7/7 gates passed, strict clean-matrix closeout
 blocked by Cloud Addon owner work**.

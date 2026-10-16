@@ -114,14 +114,14 @@ AI Cloud shared-root blocker. The audit, environment recovery, and limits are re
 
 The 2026-10-15 7/7 matrix and full cross-repository acceptance remain valid
 for the exact revisions tested then. The AI Cloud owner follow-up is now
-reconciled as PR #1117, commit `e5aa6143`, on clean branch
-`codex/provider-async-state-followup`; its required exact-SHA GitHub checks
-passed. The advisory `code-review` job failed separately and does not control
-merge authority.
+reconciled and merged as PR #1117. The source commit was `e5aa6143`; the
+shared checkout now tracks clean `master` at `fe920796`, and its required
+exact-SHA GitHub checks passed. The advisory `code-review` job failed
+separately and does not control merge authority.
 
-The no-override matrix rerun at `2026-10-16T03:45:30Z` passed all seven gate
-rows, but returned non-zero under `--fail-on-dirty` because Cloud Addon has
-owner files in `docs/README.md` and
+The final no-override matrix rerun at `2026-10-16T03:51:28Z` passed all seven
+gate rows, but returned non-zero under `--fail-on-dirty` because Cloud Addon
+has owner files in `docs/README.md` and
 `docs/next-session-handoff-2026-10-16.md`. Those files were not touched. The
 next gate is Cloud Addon owner reconciliation followed by another strict
 `composer quality:matrix:run -- --fail-on-dirty`; do not replace it with a
