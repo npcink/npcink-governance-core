@@ -155,9 +155,10 @@ This is a stack snapshot identity only. Core `v0.3.0` and Toolkit `0.7.0`
 remain historical tags at different commits, while Adapter `v0.4.3` is
 available. The conventional `--require-tag-ready` check fails by design; no
 tag moved, no snapshot tag was created, and the proposed snapshot name is
-currently absent remotely. Before publishing the snapshot, rerun full
-acceptance against the exact manifest and obtain explicit authorization for the
-tag push.
+currently absent remotely. Core later received docs-only coordination commit
+`4a23d35`; it is not silently folded into the candidate. Before publishing the
+snapshot, rerun full acceptance against the exact manifest and obtain explicit
+authorization for the tag push.
 
 ## Worktree Audit and Full Release Acceptance — 2026-10-16
 

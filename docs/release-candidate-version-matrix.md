@@ -54,7 +54,9 @@ and Toolkit `0.7.0` at historical commit
 therefore fails as designed; it is not permission to move either historical
 tag. A remote lookup confirms the proposed stack snapshot tag name is absent.
 The next tag action requires fresh full acceptance against this exact manifest
-and separate authorization to push the snapshot tag.
+and separate authorization to push the snapshot tag. The subsequent Core docs
+commit `4a23d35` is coordination-only; it is deliberately not substituted into
+this candidate manifest without a new exact-revision acceptance decision.
 
 ## Tag Preparation Rule
 

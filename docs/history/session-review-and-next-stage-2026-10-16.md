@@ -193,7 +193,8 @@ bound to historical `46c1405422ae0ac1f8ea6820b391b48d09326a14`; Adapter
 existing Core tag as designed, and the proposed stack snapshot tag is absent.
 No historical tag was moved or reused. A fresh acceptance run against this
 exact manifest and explicit tag authorization are still required before any
-snapshot tag is created.
+snapshot tag is created. Core later received docs-only coordination commit
+`4a23d35`; that commit is not silently folded into the candidate manifest.
 
 ## Worktree ownership audit and release acceptance — 2026-10-16
 
