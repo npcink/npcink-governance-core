@@ -1,10 +1,12 @@
 # Real Usage Validation — First-Week Kickoff
 
-Status: active. Companion to the [Real Usage Validation](real-usage-validation.md)
-program page: that page defines the four-week ledger and its triggers; this
-page is the executable runway for the owner's first ledger row. Nothing here
-adds code or governance — it only removes setup friction so week one starts
-on the real site, not in planning.
+Status: prepared; parked during local development. On 2026-10-15 the owner
+reconfirmed that there is no operating site or real-user rollout yet. The
+[Real Usage Validation](real-usage-validation.md) ledger therefore stays empty;
+local smoke, signed fixtures, and administrator acceptance do not start week
+one. Resume this checklist when the owner names an operating site and its
+allowed operations. The four-week program and its evidence triggers remain
+unchanged.
 
 ## 0. Pick the real site (owner, one decision)
 

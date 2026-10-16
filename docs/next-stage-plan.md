@@ -68,36 +68,96 @@ Documented, accepted, or readiness-complete (no longer "not implemented"):
 
 ## Current Execution Checkpoint — 2026-10-15
 
-The first closeout pass is complete: Core documentation PRs #162, #163, and
-#164, and Toolbox classification PR #268 are merged. Toolbox shared
-`codex/internal-link-recommendation-followup` now has a clean worktree and its
-local gate passes. The latest default matrix status snapshot at
-`2026-10-15T01:30:53Z` still shows AI Cloud dirty; the most recent gate run at
-`2026-10-14T09:52:18Z` had six repositories passed, while AI Cloud was
-`needs_validation` because its shared root contains eight owner changes.
-Using a clean detached AI Cloud `origin/master` worktree, the same matrix passed
-7/7 at `2026-10-14T10:17:37Z`; this is a valid exact-SHA acceptance result but
-does not close the shared-root owner handoff.
+The AI Cloud shared-root handoff blocker is resolved. PR #1115 merged as
+`0bb4d1fc`; the clean shared topic head `fca129f8` has the same tree and passed
+its exact-SHA required CI. The no-override central command
+`composer quality:matrix:run -- --fail-on-dirty` passed 7/7 at
+`2026-10-15T07:45:04Z`. This supersedes the earlier dirty-owner snapshots;
+a detached override is no longer needed.
 
-The next execution order is fixed:
+Full `composer acceptance:cross-repo-release` subsequently passed against
+Core `9716cf5e`, Adapter `ab32e503`, and Toolkit `921d1dc7`, all on their clean
+master checkouts. It included the real signed Ollama fixture, persisted log
+correlation, duplicate refusal, package installation, Toolkit PHPStan, and
+WordPress 6.9.4/PHP 8.0 Docker smoke. Temporary provider loaders, fixtures,
+model-discovery cache, and SSH tunnel were removed; the LocalWP provider
+registry returned to `npcink-cloud` only. Core PHPStan also passed.
 
-1. AI Cloud owner reconciles the eight modified/untracked files in
-`codex/provider-refresh-advisory`, or records an explicit keep/hand-off state.
-2. Re-run the default matrix with no `--repo-path` override and require 7/7.
-3. Audit every registered worktree and branch; retain locked or owner-held work
-   until ownership is explicitly resolved.
-4. Re-run full cross-repository release acceptance against the resulting exact
-   master revisions.
-5. Only then decide a new RC version/tag; do not move historical tags.
-6. Start the real-usage first-week kickoff and record the first ledger row.
+The next execution order now starts after those completed gates:
 
-Current worktree audit found one dirty auxiliary AI Cloud worktree
-(`m4-resource-baseline`, three untracked files); it remains preserved for its
-owner. The AI Cloud shared root has eight owner changes. The other inspected
-auxiliary worktrees were clean, locked, or clean with an upstream branch gone;
-none was deleted without owner confirmation.
+1. Preserve and reconcile the remaining owner-held work before claiming global
+   cleanup. The audit inspected 28 registered worktrees and 98 local branches:
+   five worktrees are locked, one AI Cloud worktree has three untracked files,
+   and Toolbox PRs #265/#269 remain open. Clean default roots do not imply all
+   branches are merged or all worktrees are disposable.
+2. Keep the accepted engineering candidate separate from tag publication.
+   The ordinary RC version matrix passes at Core `0.3.0`, Adapter `0.4.3`,
+   Toolkit `0.7.0`; `--require-tag-ready` rejects the historical Core tag.
+   Toolkit's conventional tag also differs from its current HEAD. Do not move
+   either tag. Prefer a separately named stack snapshot RC for this local
+   checkpoint; a final plugin release needs its own version decision and fresh
+   exact-revision release evidence.
+3. Complete classification lane 1 with a real present-administrator editor
+   action before claiming the full manual classification regression. Automated
+   signed fixtures do not supply that evidence.
+4. Keep the real-usage kickoff parked. On 2026-10-15 the owner reconfirmed
+   **local development only**; no operating site or real users are available.
+   Leave the ledger empty until that state changes. Do not generate a zero-use
+   real-site week from local fixtures.
+
+No tag, SVN publication, or production deployment was performed at that
+checkpoint. Remaining worktree ownership was separate from the then-resolved
+AI Cloud shared-root blocker. The audit, environment recovery, and limits are recorded in
+[the 2026-10-15 engineering checkpoint](history/cross-repo-engineering-checkpoint-2026-10-15.md).
+
+## Live Recalibration — 2026-10-16
+
+The 2026-10-15 7/7 matrix and full cross-repository acceptance remain valid
+for the exact revisions tested then. The AI Cloud owner follow-up is now
+reconciled and merged as PR #1117. The source commit was `e5aa6143`; the
+shared checkout now tracks clean `master` at `fe920796`, and its required
+exact-SHA GitHub checks passed. The advisory `code-review` job failed
+separately and does not control merge authority.
+
+The final no-override matrix rerun at `2026-10-16T04:01:39Z` passed all seven
+gate rows with exit 0. Cloud Addon is clean `master@d8bcac9`, and AI Cloud is
+clean `master@fe920796`. The owner/worktree cleanliness gate is complete; do
+not replace this result with a detached override when recording later release
+evidence.
+The worktree ownership audit and full release acceptance are now complete; the
+details and exact evidence are recorded below and in
+[Session Review And Next Stage — 2026-10-16](history/session-review-and-next-stage-2026-10-16.md).
+
+## Worktree Audit and Full Release Acceptance — 2026-10-16
+
+The read-only audit at `2026-10-16T04:05:03+00:00` covered 30 registered
+worktrees and 100 local branches. All seven default roots were clean. Six
+locked AI Cloud worktrees remain owner-held; `m4-resource-baseline` retains
+three untracked owner files. One Toolbox auxiliary worktree remains dirty on
+`codex/fix-classification-registry-owner` with the classification smoke test
+modified. These worktrees and their branches were preserved for their owners;
+the audit does not imply global cleanup or that every local branch is merged.
+
+The subsequent `composer acceptance:cross-repo-release` passed with exit 0
+(completion observed at `2026-10-16T04:14:31Z`). It passed the Core, Adapter,
+and Toolkit source, package, WordPress, signed-provider, PHPStan, Docker, and
+release gates, including persisted provider-log correlation and duplicate
+refusal. The M4 fixture used Ollama `qwen2.5:1.5b` at `172.16.3.35` through a
+temporary `11439` tunnel and official SDK loader; the loader and tunnel were
+cleaned up and LocalWP returned to the normal `npcink-cloud` provider
+registry. The exact accepted revisions are Core `a7ade2b`, AI Cloud
+`fe920796`, Cloud Addon `d8bcac9`, Adapter `eb73e503`, and Toolkit `921d1dc7`.
+
+The remaining release decisions are explicit: close classification Lane 1
+with visible generic AI output plus a normal present-administrator editor
+save, choose a new RC identity without moving historical Core or Toolkit tags,
+and wait for an operating site before creating the first real-usage ledger row.
+Tags, SVN publication, and production deployment remain unauthorized.
 
 ## Current Execution Decision
+
+The following dated checkpoints retain earlier evidence. The Current Execution
+Checkpoint above owns the latest owner-state and release-posture summary.
 
 Engineering checkpoint (2026-10-13): the owner confirmed this is still local
 development with no real users. The flagged-media governed deletion/restore
@@ -168,11 +228,10 @@ The cross-repository repair sequence is now complete:
    present-admin request headers are now modeled, and all abilities are checked
    through the WordPress Abilities API. Lanes 2 and 3 pass with fixture cleanup;
    lane 1 still requires a real administrator editor action.
-8. The clean exact AI Cloud `origin/master` worktree passes its required GitHub
-   checks. The shared AI Cloud root currently has owner changes in
-   `deploy/deploy-to-ssh-host.sh` and `deploy/remote-refresh-providers.sh`, so
-   default matrix runs must remain `needs_validation` until that owner
-   reconciles the worktree.
+8. At the 2026-10-14 checkpoint, clean AI Cloud `origin/master` passed its
+   required GitHub checks while the shared root still held owner changes.
+   That temporary `needs_validation` state is superseded by the 2026-10-15
+   no-override 7/7 result recorded above.
 
 Next stage: keep the real-usage program ready until an operating site and actual
 users exist. Automated fixtures, M4 Ollama evidence, and administrator

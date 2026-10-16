@@ -140,6 +140,7 @@ Core-local workflow and release references:
 - [GitHub Development Support](docs/github-development-support.md)
 - [Solo AI Development Workflow](docs/solo-ai-development-workflow.md)
 - [Project History Summary](docs/history/project-history-summary.md)
+- [Session Review And Next Stage - 2026-10-16](docs/history/session-review-and-next-stage-2026-10-16.md)
 - [AI Development Handoff Summary](docs/ai-development-handoff-summary.md)
 - [AI Development Workstream Summary](docs/ai-development-workstream-summary.md)
 - [Eval Lab Quality Gate](docs/eval-lab-quality-gate.md)
