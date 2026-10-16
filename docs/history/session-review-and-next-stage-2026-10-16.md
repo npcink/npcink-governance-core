@@ -209,6 +209,38 @@ WordPress smoke all passed. Temporary Core clone, dependency link, plugin
 symlink, Ollama loader, and SSH tunnel were removed; the shared Core symlink
 was restored. No snapshot tag was created or pushed.
 
+## PR #169 merge and final RC closeout — 2026-10-16
+
+PR #169 (`docs: record exact RC acceptance`) merged through the protected
+publisher at `2026-10-16T05:51:39Z` as
+`34d75e2dc00804320a82086f175d69e7e5f14a76`. The merge records the exact
+manifest acceptance and keeps the candidate identity separate from tag
+publication. The selected identity remains
+`stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0`, and the
+acceptance completed at `2026-10-16T05:44:19Z`.
+
+The RC is engineering-ready for a publication decision. The following items
+remain before any snapshot tag or release publication:
+
+1. Refresh the seven-root status-only matrix immediately before publication
+   and confirm that every exact manifest revision is unchanged and clean. If a
+   revision or owner checkout changes, rerun the exact-manifest acceptance.
+2. Keep Core `v0.3.0` and Toolkit `0.7.0` at their historical commits. If
+   publication is authorized, use only the named stack snapshot identity (or
+   make a separately approved version decision); never move a historical tag.
+3. Prepare the release notes and reproducible artifact checksums against the
+   exact manifest, then obtain explicit authorization before creating or
+   pushing any snapshot tag. No snapshot tag has been created or pushed.
+4. Treat WordPress.org SVN publication, production deployment, and the first
+   real-usage ledger row as separate decisions. The owner has confirmed local
+   development only, so the ledger remains empty.
+5. Preserve owner-held locked worktrees and unpublished branches. Their
+   existence is an ownership concern, not a reason to reset or delete them.
+
+The completed acceptance, merged documentation PR, and clean-up evidence close
+the current engineering stage; only the explicitly authorized publication and
+operating-site follow-up remain.
+
 ## Worktree ownership audit and release acceptance — 2026-10-16
 
 The read-only ownership audit was generated at
