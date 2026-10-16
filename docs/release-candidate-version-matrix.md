@@ -53,10 +53,14 @@ and Toolkit `0.7.0` at historical commit
 `46c1405422ae0ac1f8ea6820b391b48d09326a14`. The `--require-tag-ready` check
 therefore fails as designed; it is not permission to move either historical
 tag. A remote lookup confirms the proposed stack snapshot tag name is absent.
-The next tag action requires fresh full acceptance against this exact manifest
-and separate authorization to push the snapshot tag. The subsequent Core docs
+The exact-manifest `composer acceptance:cross-repo-release` rerun passed with
+exit 0 at `2026-10-16T05:44:19Z` using Core `8d9626b`, Adapter `eb73e503`, and
+Toolkit `921d1dc7`. Core, Adapter, and Toolkit source, WordPress, package,
+release, signed-provider, PHPStan, Docker, and duplicate-refusal checks passed;
+all temporary acceptance resources were cleaned. The subsequent Core docs
 commit `4a23d35` is coordination-only; it is deliberately not substituted into
-this candidate manifest without a new exact-revision acceptance decision.
+this candidate manifest. The snapshot tag remains uncreated and unpushed, and
+explicit authorization is still required for any tag action.
 
 ## Tag Preparation Rule
 

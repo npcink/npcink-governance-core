@@ -5,20 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-14 - Remote Addon head verified without touching shared root
-
-- **Liveness**: Cloud Addon shared `master` was clean and unchanged across two
-  snapshots three minutes apart; it remains one commit behind `origin/master`.
-- **Isolated verification**: remote commit `122ac79` was checked out in a
-  dedicated detached worktree. Its `composer run test:all` gate passed.
-- **Central matrix**: `composer quality:matrix:run -- --fail-on-dirty`
-  with the detached Addon worktree supplied through `--repo-path` passed 7/7
-  repositories at `2026-10-14T04:48:31Z`. A final default-path run after the
-  Core docs commit also passed 7/7 at `2026-10-14T04:56:57Z`; the shared Addon
-  gate remains green while its branch is one commit behind.
-- **Boundary**: no sibling shared checkout was switched, pulled, or edited;
-  no tag, SVN publication, deployment, or real-user ledger row was created.
-
 # 2026-10-14 - Classification regression fixtures repaired in isolation
 
 - **Cloud Addon**: after two stable liveness snapshots, shared `master` was
@@ -131,3 +117,9 @@ Older history: `.sisyphus/archive/`.
 - **Exact matrix**: status-only central matrix at `2026-10-16T04:58:45+00:00` found all seven default roots clean. Candidate manifest is Core `8d9626b`, AI Cloud `fe920796`, Cloud Addon `d8bcac9`, Adapter `eb73e503`, Toolkit `921d1dc7`, Toolbox `216e102`, Eval Lab `5362655`.
 - **Decision**: reserve `stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0` as the RC identity. Core `v0.3.0` remains at historical `3357f916`; Toolkit `0.7.0` remains at historical `46c14054`; Adapter `v0.4.3` is available. `--require-tag-ready` fails by design and no tag was moved or created.
 - **Next**: rerun full acceptance against this exact manifest before any snapshot tag push, with explicit authorization. Real-site usage remains separate and the ledger is still empty.
+
+# 2026-10-16 - Exact RC manifest acceptance passed
+
+- **Manifest**: exact acceptance bound Core `8d9626b`, Adapter `eb73e503`, and Toolkit `921d1dc7`, with the previously recorded AI Cloud, Cloud Addon, Toolbox, and Eval Lab revisions.
+- **Acceptance**: `composer acceptance:cross-repo-release` passed exit 0; completion observed at `2026-10-16T05:44:19Z`. Core 55/207, WordPress smoke, package/release, Adapter signed M4 Ollama correlation and duplicate refusal, Toolkit PHPStan, Docker and WordPress smoke all passed.
+- **Cleanup/posture**: temporary clone, symlink, loader, tunnel, and dependency link were removed; shared Core symlink was restored. Snapshot tag remains uncreated and unpushed; historical tags were not moved.
