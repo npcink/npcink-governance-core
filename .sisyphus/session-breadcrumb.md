@@ -5,37 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-12 - Flagged media removal Core slice staged; PR publish waits on a clean ocr round
-
-- **Stage recalibration (owner)**: project is local-development only, no
-  real users yet; the real-usage ledger cannot advance and stays the
-  recorded trigger mechanism. Owner approved the engineering queue order:
-  flagged-media slice -> #123 Admin_Page split -> briefs Decision 2
-  correlation assertion -> #105 test runner split.
-- **Completed**: `flagged_media_removal_plan.v1` Core governance slice on
-  branch `feat/flagged-media-removal-plan-intake` (code commit 7a78822):
-  allowlisted `build-flagged-media-removal-plan` intake, dual-branch
-  evidence contract (backup evidence XOR no-backup attestation),
-  manual-required in every policy mode including `dev_allow_all`,
-  illegal-branch attestation approval gate, preflight branch-evidence
-  revalidation covering plan batches AND direct `delete-attachment`
-  proposals, description-only audit blocks. Docs + README + static
-  contracts updated; PHPUnit 53 tests / 181 assertions; `test:all`,
-  `smoke:wp`, `check:wporg` all green.
-- **ocr review**: three fix rounds landed (direct REST proposal bypass,
-  preview-context test masking, attestation type-safety); the fourth
-  round failed on repeated HTTP 429 rate limits and did not run.
-- **Stopped before publish**: `composer pr:publish` needs one completed
-  clean ocr round first. Resume steps, ready PR body, and the full queue
-  live in
-  `.sisyphus/handoff-2026-10-12-flagged-media-queue.md`.
-- **Cross-repo leftovers (sibling repos, worktrees only)**: Toolkit
-  `delete-attachment` + `build-flagged-media-removal-plan` abilities,
-  Adapter execution profile, boundary matrix + governance catalog
-  registration (policy checklist item 5 open).
-
-
-
 # 2026-10-13 - Engineering queue implemented; M4 provider positive evidence passed
 
 - **Recalibration**: the 2026-10-12 pending Core/OCR/Toolkit/Adapter claims are
@@ -279,3 +248,24 @@ Older history: `.sisyphus/archive/`.
   recalibrated; full audit and lessons recorded in
   `docs/history/cross-repo-engineering-checkpoint-2026-10-15.md`. Batch these
   docs with the next weekly docs publication instead of a per-session PR.
+
+# 2026-10-16 - Session history summarized; AI Cloud owner work reopened validation
+
+- **Historical close point**: the referenced review session reached a 7/7
+  default matrix and full cross-repository acceptance on 2026-10-15 for the
+  exact tested revisions, including real Ollama persisted-log correlation,
+  duplicate refusal, package checks, PHPStan, and Docker smoke. No tag, SVN
+  publication, deployment, or real-user ledger row was created.
+- **Live recalibration**: the status-only matrix at
+  `2026-10-16T02:55:44Z` found six dirty owner files in AI Cloud, so the
+  current default status is `needs_validation`; the historical green result is
+  not current release evidence.
+- **Open gates**: AI Cloud owner reconciliation -> fresh no-override 7/7
+  matrix -> worktree ownership audit -> full release acceptance -> explicit
+  RC/tag decision -> real-user kickoff when an operating site exists.
+- **Classification**: Toolbox lanes 2 and 3 pass; native editor lane 1 still
+  needs exact visible-AI-output/present-author evidence and must not be
+  relabeled complete from a fixture or partial draft save.
+- **Docs**: detailed summary and live checkout table are recorded in
+  `docs/history/session-review-and-next-stage-2026-10-16.md`;
+  `docs/next-stage-plan.md` now carries the same live recalibration.
