@@ -179,3 +179,18 @@ The matrix is release coordination only.
 
 The matrix must not become a dependency resolver, package bundler, workflow
 runtime, updater, or second control plane.
+
+## Final stable manifest and package evidence — 2026-10-16
+
+The owner state closed and the default `composer quality:matrix
+-- --fail-on-dirty` passed 7/7 with exit 0 at
+`2026-10-16T10:26:15+00:00`. The final manifest is documented in
+[Stack RC Release Notes — 2026-10-16](release-candidate-notes-2026-10-16.md):
+Core `ed28f98`, AI Cloud `fe920796`, Cloud Addon `4978338`, Adapter `eb73e503`,
+Toolkit `921d1dc`, Toolbox `ee814e0`, and Eval Lab `5362655`.
+
+The exact three-repository acceptance passed against Core `ed28f98`, Adapter
+`eb73e503`, and Toolkit `921d1dc7`. Reproducible Core and Adapter package
+digests and the two-build Toolkit deterministic archive digest are recorded in
+the release notes. This evidence does not create or imply a tag: historical
+Core/Toolkit tags remain fixed, and the named snapshot tag is still absent.

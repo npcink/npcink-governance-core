@@ -351,3 +351,22 @@ sequence is:
 The principal owner, cleanliness, worktree audit, and full release acceptance
 gates are complete for this checkpoint. Release identity and real-usage work
 remain downstream of that evidence.
+
+## Final owner closeout, acceptance, and release notes — 2026-10-16
+
+The owner handoff completed after the previous audit. The default
+`composer quality:matrix:run -- --fail-on-dirty` passed all 7/7 rows with exit
+0 at `2026-10-16T10:26:15+00:00`. Toolbox is clean at `ee814e04` and Cloud
+Addon is clean at `4978338f`; the other five exact revisions are recorded in
+[the RC release notes](../release-candidate-notes-2026-10-16.md).
+
+The final exact-manifest acceptance then passed against Core `ed28f98`, Adapter
+`eb73e503`, and Toolkit `921d1dc7`, with completion observed at approximately
+`2026-10-16T18:32:56+08:00`. It included M4 provider-log correlation,
+duplicate refusal, package/release gates, PHPStan, official Docker smoke, and
+cleanup. Core, Adapter, and Toolkit reproducible package evidence is recorded
+in the release notes; the Toolkit deterministic archive matched on two builds.
+
+This closes the engineering evidence and checksum stage. The candidate remains
+untagged: historical Core and Toolkit tags were not moved, and snapshot tag,
+SVN, deployment, and real-usage actions remain separately authorized.

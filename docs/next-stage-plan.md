@@ -834,3 +834,20 @@ Stop and write a boundary note if a task tries to add:
 - Agent Gateway or MCP surfaces;
 - direct provider credential storage;
 - final commit execution before preflight and idempotency contracts exist.
+
+## Final stable RC evidence and checksums — 2026-10-16
+
+The owner state subsequently closed. The default `composer
+quality:matrix:run -- --fail-on-dirty` passed 7/7 with exit 0 at
+`2026-10-16T10:26:15+00:00`; Toolbox is clean at `ee814e04` and Cloud Addon
+is clean at `4978338f`.
+
+The exact acceptance rerun passed with Core `ed28f98`, Adapter `eb73e503`, and
+Toolkit `921d1dc7`, including M4 provider-log correlation, duplicate refusal,
+package/release checks, PHPStan, Docker smoke, and cleanup. Release notes and
+SHA-256 evidence are recorded in
+[Stack RC Release Notes — 2026-10-16](release-candidate-notes-2026-10-16.md).
+
+The candidate is ready for a separately authorized publication decision. Do not
+move historical tags, and do not create or push the snapshot tag, SVN
+publication, production deployment, or real-usage entry as part of this stage.
