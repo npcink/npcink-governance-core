@@ -144,6 +144,21 @@ audit event created. This closes the native-editor classification lane while
 preserving the boundary that visible AI output and an ordinary present-author
 save remain outside Core governance records.
 
+## RC Identity Decision — 2026-10-16
+
+The refreshed central matrix at `2026-10-16T04:58:45+00:00` found all seven
+default roots clean and bound the candidate to the exact revisions recorded in
+[the RC version matrix](release-candidate-version-matrix.md). The selected
+identity is `stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0`.
+
+This is a stack snapshot identity only. Core `v0.3.0` and Toolkit `0.7.0`
+remain historical tags at different commits, while Adapter `v0.4.3` is
+available. The conventional `--require-tag-ready` check fails by design; no
+tag moved, no snapshot tag was created, and the proposed snapshot name is
+currently absent remotely. Before publishing the snapshot, rerun full
+acceptance against the exact manifest and obtain explicit authorization for the
+tag push.
+
 ## Worktree Audit and Full Release Acceptance — 2026-10-16
 
 The read-only audit at `2026-10-16T04:05:03+00:00` covered 30 registered
@@ -164,10 +179,10 @@ cleaned up and LocalWP returned to the normal `npcink-cloud` provider
 registry. The exact accepted revisions are Core `a7ade2b`, AI Cloud
 `fe920796`, Cloud Addon `d8bcac9`, Adapter `eb73e503`, and Toolkit `921d1dc7`.
 
-The remaining release decisions are explicit: retain the completed Lane 1
-native-editor evidence in the RC record, choose a new RC identity without
-moving historical Core or Toolkit tags, and wait for an operating site before
-creating the first real-usage ledger row.
+The remaining release decisions are explicit: rerun acceptance against the
+selected stack snapshot manifest before any tag push, preserve historical Core
+and Toolkit tags, and wait for an operating site before creating the first
+real-usage ledger row.
 Tags, SVN publication, and production deployment remain unauthorized.
 
 ## Current Execution Decision
