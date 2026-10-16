@@ -119,14 +119,13 @@ shared checkout now tracks clean `master` at `fe920796`, and its required
 exact-SHA GitHub checks passed. The advisory `code-review` job failed
 separately and does not control merge authority.
 
-The final no-override matrix rerun at `2026-10-16T03:51:28Z` passed all seven
-gate rows, but returned non-zero under `--fail-on-dirty` because Cloud Addon
-has owner files in `docs/README.md` and
-`docs/next-session-handoff-2026-10-16.md`. Those files were not touched. The
-next gate is Cloud Addon owner reconciliation followed by another strict
-`composer quality:matrix:run -- --fail-on-dirty`; do not replace it with a
-detached override or claim global cleanliness from the 7/7 row result alone.
-The detailed session history and live checkout table are in
+The final no-override matrix rerun at `2026-10-16T04:01:39Z` passed all seven
+gate rows with exit 0. Cloud Addon is clean `master@d8bcac9`, and AI Cloud is
+clean `master@fe920796`. The owner/worktree cleanliness gate is complete; do
+not replace this result with a detached override when recording later release
+evidence.
+The next gate is the worktree ownership audit, followed by full release
+acceptance. The detailed session history and live checkout table are in
 [Session Review And Next Stage — 2026-10-16](history/session-review-and-next-stage-2026-10-16.md).
 
 ## Current Execution Decision

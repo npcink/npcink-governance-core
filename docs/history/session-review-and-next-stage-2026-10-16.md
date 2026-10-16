@@ -145,44 +145,34 @@ checks passed, including frontend after one controlled retry; the separate
 
 The final no-override command
 `composer quality:matrix:run -- --fail-on-dirty` generated
-`2026-10-16T03:51:28Z` and passed all seven repository gate rows, including the
-AI Cloud `master` exact-SHA check. The command still returned exit 1 because
-Cloud Addon has two unrelated owner files (`docs/README.md` and
-`docs/next-session-handoff-2026-10-16.md`). Those files remain untouched. The
-current state is therefore **7/7 gates passed, strict clean-matrix closeout
-blocked by Cloud Addon owner work**.
+`2026-10-16T04:01:39Z` and passed all seven repository gate rows with exit 0.
+Cloud Addon is clean `master@d8bcac9`; AI Cloud is clean
+`master@fe920796`. This closes the owner/worktree cleanliness gate for the
+current engineering checkpoint.
 
 ## Recommended next sequence
 
-1. **Reconcile the Cloud Addon owner checkout.** The owner should commit valid
-   work to its topic branch, discard it through the owner's own process, or
-   document an explicit handoff. Do not reset, delete, or commit those files
-   from Core.
-2. **Run the strict default matrix after Addon reconciliation.** Use
-   `composer quality:matrix:run -- --fail-on-dirty` from
-   `npcink-workflow-toolbox`. The gate rows already pass 7/7; this rerun is
-   needed to prove that all configured shared roots are clean as well.
-3. **Audit worktree ownership before cleanup claims.** Recheck locked
+1. **Audit worktree ownership before cleanup claims.** Recheck locked
    worktrees, untracked owner files, open PRs, and unpublished branches. Keep
    valuable or locked work intact and record ownership; do not equate a clean
    default path with global cleanup.
-4. **Close classification Lane 1 with exact evidence.** Use a present
+2. **Close classification Lane 1 with exact evidence.** Use a present
    administrator, visible generic AI output, normal editor save or publish,
    unchanged Core proposal/audit counts, and fixture cleanup. Keep this
    evidence separate from Core proposal and local-consent lanes.
-5. **Decide the RC identity before any publication.** Refresh exact revisions,
+3. **Decide the RC identity before any publication.** Refresh exact revisions,
    run the full acceptance gate, then choose either a new plugin version or a
    clearly named stack snapshot RC. Never move the historical Core or Toolkit
    tags. Tagging, SVN, and deployment require explicit authorization.
-6. **Keep real usage parked until the product state changes.** The owner has
+4. **Keep real usage parked until the product state changes.** The owner has
    confirmed local-only development. Leave the ledger empty until an operating
    site produces the first real-user record; fixtures, M4 provider evidence,
    and an administrator acceptance run do not count as real usage.
-7. **Publish the accumulated docs through the weekly docs flow.** Before
+5. **Publish the accumulated docs through the weekly docs flow.** Before
    publication, run the Core metadata validation, `composer test:all`, and
    `git diff --check`; use the repository's protected `composer pr:publish`
    flow rather than a direct push.
 
-The principal next gate is therefore Cloud Addon owner reconciliation followed
-by a fresh strict default matrix. Release and real-usage work should remain
-downstream of that gate.
+The principal owner and cleanliness gate is complete. The next engineering gate
+is worktree audit followed by full release acceptance; release and real-usage
+work remain downstream of that evidence.

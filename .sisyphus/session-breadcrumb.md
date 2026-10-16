@@ -261,12 +261,10 @@ Older history: `.sisyphus/archive/`.
   `master` at `fe920796`. Required exact-SHA checks passed; the separate
   `code-review` advisory failed and is not merge authority.
 - **Matrix rerun**: final no-override `quality:matrix:run -- --fail-on-dirty`
-  at `2026-10-16T03:51:28Z` passed all 7/7 gate rows, including merged AI
-  Cloud master. The command still returned non-zero because Cloud Addon has two
-  unrelated owner docs files; those remain untouched.
-- **Open gates**: Cloud Addon owner reconciliation -> fresh strict matrix ->
-  worktree ownership audit -> full release acceptance -> explicit RC/tag
-  decision -> real-user kickoff when an operating site exists.
+  at `2026-10-16T04:01:39Z` passed all 7/7 gate rows with exit 0. Cloud Addon
+  is clean `master@d8bcac9`; AI Cloud is clean `master@fe920796`.
+- **Open gates**: worktree ownership audit -> full release acceptance ->
+  explicit RC/tag decision -> real-user kickoff when an operating site exists.
 - **Classification**: Toolbox lanes 2 and 3 pass; native editor lane 1 still
   needs exact visible-AI-output/present-author evidence and must not be
   relabeled complete from a fixture or partial draft save.
