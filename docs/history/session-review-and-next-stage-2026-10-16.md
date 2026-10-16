@@ -263,6 +263,33 @@ release step is owner reconciliation for the Toolbox working tree, followed by
 a deliberate manifest decision and exact-manifest acceptance for the revised
 revisions. No snapshot tag was created or pushed.
 
+## Owner closeout audit and revised acceptance — 2026-10-16
+
+The Toolbox shared root was checked twice over an approximately two-minute
+interval. Its two owner-held changes remained stable: modified
+`docs/README.md` and untracked
+`docs/session-handoff-2026-10-16-internal-link-related-content-history.md`.
+No file was deleted, reset, staged, or committed. A clean verification copy of
+the recorded Toolbox revision remains the only safe matrix override until its
+owner decides how to publish or preserve those files.
+
+The Core/Adapter/Toolkit exact acceptance was then rerun with the live LocalWP
+socket and the disposable M4 Ollama loader/tunnel. Core `ec01042`, Adapter
+`eb73e503`, and Toolkit `921d1dc7` passed source, WordPress, package, release,
+M4 provider-log correlation, duplicate refusal, PHPStan, Docker, and cleanup
+checks; completion was observed at approximately `2026-10-16T14:39:02+08:00`.
+The run produced provisional package evidence for Core
+`71c752a7c100f58a4628646c071b72b1b862011fdaae776a8217d3ba6ad78fc4` and
+Adapter `4356f90721d56b7484d42ad4a73b1ed0500295f21580ce75a656b5f9cba68fbc`.
+
+Cloud Addon did not reach a stable owner checkpoint: its clean shared root
+advanced from `ac82a3b` at `14:29:50+08:00` to `5f223af` at
+`14:51:11+08:00` during the two-snapshot check. That movement is owner work,
+not a release decision, so it remains untouched and is not silently added to
+the RC manifest. Release notes and final reproducible checksums stay deferred
+until Cloud Addon is stable, the seven-root owner gate is resolved, and the
+manifest is deliberately refreshed. No snapshot tag was created or pushed.
+
 ## Worktree ownership audit and release acceptance — 2026-10-16
 
 The read-only ownership audit was generated at

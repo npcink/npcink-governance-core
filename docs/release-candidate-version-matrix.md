@@ -92,6 +92,26 @@ until the owner state is reconciled, the manifest is deliberately refreshed,
 and exact-manifest acceptance passes again. No snapshot tag was created or
 pushed.
 
+## Owner closeout and revised acceptance — 2026-10-16
+
+Toolbox remained owner-held after two stable snapshots: modified
+`docs/README.md` and untracked
+`docs/session-handoff-2026-10-16-internal-link-related-content-history.md`.
+The shared root was not changed. A revision-bound clean copy may be used for
+diagnostic gates, but it does not prove the shared root clean.
+
+The revised three-repository acceptance passed with Core `ec01042`, Adapter
+`eb73e503`, and Toolkit `921d1dc7` at approximately
+`2026-10-16T14:39:02+08:00`, including M4 provider-log correlation, duplicate
+refusal, package/release gates, PHPStan, Docker smoke, and cleanup. Core and
+Adapter package digests were recorded as provisional run evidence only.
+
+Cloud Addon was still moving during owner verification: `ac82a3b` was followed
+by `5f223af`. That current owner work must be deliberately included or
+excluded before the seven-root RC manifest can be frozen. Final release notes
+and reproducible checksums remain deferred; no snapshot tag was created or
+pushed.
+
 ## Tag Preparation Rule
 
 Do not retag historical releases.
