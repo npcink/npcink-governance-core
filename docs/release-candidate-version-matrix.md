@@ -5,6 +5,19 @@ Status: active RC preparation checklist.
 This document records how to freeze the current Core + Adapter + Toolkit
 release candidate without collapsing repository ownership boundaries.
 
+## Current separate candidate: RC2 — 2026-10-16
+
+`stack-rc2-2026-10-16` now includes the explicitly selected Cloud Addon
+`f0e2a58` and Toolbox `569da58`, with Core `7904f5b` and the other four pinned
+revisions. The exact seven-repository matrix passed 7/7 with exit 0 using
+three clean worktree overrides; the full three-layer release acceptance passed
+with zero skips. Default shared roots still contain separate owner work.
+
+See [the RC2 manifest and acceptance record](history/stack-rc2-acceptance-2026-10-16.md)
+and [machine-readable manifest](history/stack-rc2-manifest-2026-10-16.json).
+The existing published snapshot is unchanged. No new tag or retag was performed;
+subsequent documentation commits are outside this candidate manifest.
+
 ## Current Candidate Versions
 
 The current stack-level RC candidate is:

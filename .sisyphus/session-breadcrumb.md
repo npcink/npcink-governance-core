@@ -5,12 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - Classification Lane 1 passed with native editor evidence
-
-- **Lane 1**: on `https://magick-ai.local`, administrator `1` opened disposable draft `282453`, triggered the generic WordPress AI plugin's visible `生成文章摘要`, reviewed and edited the result, then clicked native `保存草稿`. AI ability and normal WordPress save both returned HTTP 200.
-- **Core boundary**: proposal count stayed `317 -> 317`; audit rows stayed `3366 -> 3366`; no Core proposal or audit event was created. The draft and one-time login helper were deleted.
-- **Stage**: native editor classification is complete. Keep the exact evidence with the RC record; remaining gates are RC identity and real-site usage. No tag, SVN publication, or production deployment was authorized.
-
 # 2026-10-16 - RC snapshot identity decided; historical tags preserved
 
 - **Exact matrix**: status-only central matrix at `2026-10-16T04:58:45+00:00` found all seven default roots clean. Candidate manifest is Core `8d9626b`, AI Cloud `fe920796`, Cloud Addon `d8bcac9`, Adapter `eb73e503`, Toolkit `921d1dc7`, Toolbox `216e102`, Eval Lab `5362655`.
@@ -101,3 +95,18 @@ Older history: `.sisyphus/archive/`.
   newer than the published manifest. The existing tag remains unchanged.
 - **Decision**: no new candidate or acceptance was selected; future inclusion
   requires a separate manifest and tag, never a retag.
+
+# 2026-10-16 - Separate RC2 manifest and exact acceptance passed
+
+- **Candidate**: Core `7904f5b`, Addon `f0e2a58`, Toolbox `569da58`; the other
+  four revisions remain pinned. Internal id `stack-rc2-2026-10-16` is not a tag.
+- **Matrix**: exact full 7/7 passed exit 0 at `2026-10-16T12:15:50+00:00`,
+  with clean Toolbox, AI Cloud and Addon worktree overrides. Default roots have
+  owner work; the default dirty-root closeout is not green.
+- **Acceptance**: full Core/Adapter/Toolkit wrapper passed exit 0 at
+  `2026-10-16T12:27:22Z`, zero skips, read grants, M4 correlation, duplicate
+  refusal, PHPStan, Docker, package/release and cleanup. A timeout-owned
+  subscriber was identified and removed before the successful rerun.
+- **Record**: `docs/history/stack-rc2-acceptance-2026-10-16.md` and its JSON
+  manifest. No new tag/push or retag; accumulate this docs-only closeout for the
+  weekly docs PR. Published snapshot object/peeled commit remain unchanged.
