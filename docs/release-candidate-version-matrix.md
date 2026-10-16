@@ -74,6 +74,24 @@ or pushing the snapshot tag. Historical Core and Toolkit tags remain fixed;
 SVN publication, production deployment, and real-usage recording are separate
 authorized actions.
 
+## Matrix refresh and manifest drift — 2026-10-16
+
+The default `composer quality:matrix:run -- --fail-on-dirty` refresh completed
+at `2026-10-16T06:10:45+00:00`. All seven gate rows passed, while the overall
+command returned exit 1 because the Toolbox default root has two owner-held
+working-tree changes (`docs/README.md` modified and
+`docs/session-handoff-2026-10-16-internal-link-related-content-history.md`
+untracked).
+
+The selected manifest is unchanged for AI Cloud `fe920796`, Adapter `eb73e503`,
+Toolkit `921d1dc7`, Toolbox `216e102`, and Eval Lab `5362655`. It drifted for
+Core (`8d9626b` → `1995342`) and Cloud Addon (`d8bcac9` → `633c62f`). Both
+drifts are documentation-only commits, but the candidate must not silently
+absorb them. Release notes and reproducible checksums are therefore deferred
+until the owner state is reconciled, the manifest is deliberately refreshed,
+and exact-manifest acceptance passes again. No snapshot tag was created or
+pushed.
+
 ## Tag Preparation Rule
 
 Do not retag historical releases.
