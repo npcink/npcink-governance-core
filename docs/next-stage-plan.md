@@ -194,6 +194,22 @@ Before any snapshot tag or release publication:
 No snapshot tag, SVN publication, production deployment, or real-usage ledger
 row was created by this stage.
 
+## Final matrix refresh — manifest drift blocks publication work — 2026-10-16
+
+The central `composer quality:matrix:run -- --fail-on-dirty` run completed at
+`2026-10-16T06:10:45+00:00`. All seven gate rows passed, but the command
+returned exit 1 because the Toolbox default root has owner-held changes in
+`docs/README.md` and the untracked
+`docs/session-handoff-2026-10-16-internal-link-related-content-history.md`.
+No sibling files were changed.
+
+The exact RC manifest is no longer current: Core moved from `8d9626b` to
+`1995342`, and Cloud Addon moved from `d8bcac9` to `633c62f`; AI Cloud,
+Adapter, Toolkit, Toolbox, and Eval Lab remain at their recorded revisions.
+Core and Cloud Addon changes are documentation-only, but their SHA drift still
+requires a new manifest decision and exact acceptance. Do not prepare release
+notes or reproducible checksums until that decision and acceptance are complete.
+
 ## Worktree Audit and Full Release Acceptance — 2026-10-16
 
 The read-only audit at `2026-10-16T04:05:03+00:00` covered 30 registered

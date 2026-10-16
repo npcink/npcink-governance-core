@@ -241,6 +241,28 @@ The completed acceptance, merged documentation PR, and clean-up evidence close
 the current engineering stage; only the explicitly authorized publication and
 operating-site follow-up remain.
 
+## Final matrix refresh and manifest drift — 2026-10-16
+
+The central command `composer quality:matrix:run -- --fail-on-dirty` completed
+at `2026-10-16T06:10:45+00:00`. All seven repository gate rows reported
+`passed`, but the command exited 1 because the Toolbox default root has two
+owner-held changes: modified `docs/README.md` and untracked
+`docs/session-handoff-2026-10-16-internal-link-related-content-history.md`.
+Those files were left untouched.
+
+The live revisions were compared with the selected RC manifest. Five roots
+are unchanged: AI Cloud `fe920796`, Adapter `eb73e503`, Toolkit `921d1dc7`,
+Toolbox `216e102`, and Eval Lab `5362655`. Two roots drifted through
+documentation commits: Core is `1995342` instead of `8d9626b`, and Cloud Addon
+is `633c62f` instead of `d8bcac9`. The drift is still a manifest change even
+though the inspected commits are documentation-only.
+
+Because the manifest and default cleanliness gate changed, release notes and
+reproducible build checksums were not prepared from this refresh. The next
+release step is owner reconciliation for the Toolbox working tree, followed by
+a deliberate manifest decision and exact-manifest acceptance for the revised
+revisions. No snapshot tag was created or pushed.
+
 ## Worktree ownership audit and release acceptance — 2026-10-16
 
 The read-only ownership audit was generated at

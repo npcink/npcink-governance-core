@@ -5,16 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-14 - Session closeout audit: local fixes complete, global closeout still open
-
-- **Core**: branch `codex/docs-week-2026-10-13` is clean at `075cd46`; `composer test:all` passes 55 tests / 207 assertions, `composer validate --no-check-publish` passes, and `git diff --check` passes. The branch remains local-only and is not merged to Core `master`.
-- **Toolbox classification repair**: isolated topic commit `d4bc150` passed `composer test:all`, local OCR session `bd48b658-64fa-485d-b3ee-3aebdf910117` returned 0 findings, and PR #268 merged as `444128a` after the protected publisher recorded the missing OpenCodeReview delivery as an explicit advisory exception.
-- **Cross-repo state**: the override matrix using clean AI Cloud `origin/master` and Toolbox `d4bc150` passed 7/7 at `2026-10-14T06:25:15Z`; the default matrix remains `needs_validation` because AI Cloud shared root has five owner-modified deploy/CI files.
-- **Cleanup boundary**: Cloud Addon shared `master`, Toolkit `master`, Adapter `master`, and AI Cloud related roots were inspected. Historical and locked worktrees remain intentionally preserved; no owner files, tags, deployments, or real-user data were altered.
-- **Core publication**: PR #162 merged as `e81aef9` after Core CI and PR body checks passed; its GitHub OpenCodeReview job failed twice at provider HTTP 400 with zero review comments, while local OCR session `7b6c2e43-b820-4e3a-b989-dad90a02b618` returned 0 findings.
-- **Open closeout items**: AI Cloud owner reconciliation, historical worktree ownership decisions, classification lane 1 real-admin action, first real-usage ledger row, and a new RC tag/version decision.
-- **Process lesson**: audit claims must separate local verification, protected PR merge, default-matrix cleanliness, and real-user evidence. A clean isolated worktree cannot be reported as a clean shared checkout.
-
 # 2026-10-14 - Next-stage owner handoff checkpoint
 
 - **Toolbox**: shared root is now clean on `codex/internal-link-recommendation-followup`; its local gate passed in the default matrix.
@@ -116,3 +106,16 @@ Older history: `.sisyphus/archive/`.
   rerun acceptance if the manifest drifts, prepare checksums/release notes,
   then obtain explicit authorization for tag, SVN, or deployment actions.
   Local-only development means the real-usage ledger stays empty.
+
+# 2026-10-16 - Final matrix refresh found manifest drift
+
+- **Matrix**: `composer quality:matrix:run -- --fail-on-dirty` completed at
+  `2026-10-16T06:10:45+00:00`; all seven gate rows passed, but exit 1 records
+  two owner-held Toolbox changes (`docs/README.md` and one untracked handoff
+  document).
+- **Drift**: Core is `1995342` versus manifest `8d9626b`; Cloud Addon is
+  `633c62f` versus `d8bcac9`. AI Cloud, Adapter, Toolkit, Toolbox, and Eval Lab
+  remain unchanged. The two drift commits are docs-only, but still require a
+  deliberate manifest decision and fresh exact acceptance.
+- **Posture**: release notes and reproducible checksums are deferred; no
+  snapshot tag was created or pushed.
