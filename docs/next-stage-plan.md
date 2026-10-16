@@ -128,6 +128,22 @@ The worktree ownership audit and full release acceptance are now complete; the
 details and exact evidence are recorded below and in
 [Session Review And Next Stage — 2026-10-16](history/session-review-and-next-stage-2026-10-16.md).
 
+## Classification Lane 1 Completion — 2026-10-16
+
+Lane 1 is complete for the current stage. On the local `magick-ai` site, the
+present administrator used a disposable Gutenberg draft (`282453`) and the
+active generic WordPress AI plugin. The editor displayed an excerpt generated
+by `ai/excerpt-generation`; the administrator reviewed it, edited the visible
+value, and used the native `保存草稿` action. The browser recorded HTTP 200 for
+the AI ability request and for the normal WordPress post save
+`POST /wp-json/wp/v2/posts/282453`.
+
+Core proposal and audit counts were 317 and 3,366 before and after the action.
+The draft and login helper were deleted, with no Core proposal and no Core
+audit event created. This closes the native-editor classification lane while
+preserving the boundary that visible AI output and an ordinary present-author
+save remain outside Core governance records.
+
 ## Worktree Audit and Full Release Acceptance — 2026-10-16
 
 The read-only audit at `2026-10-16T04:05:03+00:00` covered 30 registered
@@ -148,10 +164,10 @@ cleaned up and LocalWP returned to the normal `npcink-cloud` provider
 registry. The exact accepted revisions are Core `a7ade2b`, AI Cloud
 `fe920796`, Cloud Addon `d8bcac9`, Adapter `eb73e503`, and Toolkit `921d1dc7`.
 
-The remaining release decisions are explicit: close classification Lane 1
-with visible generic AI output plus a normal present-administrator editor
-save, choose a new RC identity without moving historical Core or Toolkit tags,
-and wait for an operating site before creating the first real-usage ledger row.
+The remaining release decisions are explicit: retain the completed Lane 1
+native-editor evidence in the RC record, choose a new RC identity without
+moving historical Core or Toolkit tags, and wait for an operating site before
+creating the first real-usage ledger row.
 Tags, SVN publication, and production deployment remain unauthorized.
 
 ## Current Execution Decision

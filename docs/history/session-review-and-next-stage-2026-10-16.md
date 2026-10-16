@@ -79,13 +79,14 @@ isolated Toolbox worktree:
 - Lane 3, the high-risk article/media batch path, passed as
   `core_proposal_required`: it created and purged the expected proposal,
   performed no WordPress write, and emitted no local-consent audit event.
-- Lane 1, native editor/generic AI-plugin acceptance, remains open as a
-  release evidence item. The referenced session included a user-assisted
-  draft save and confirmed unchanged Core counts (315 proposals and 3,234
-  audit rows before and after), but the closeout record did not establish the
-  full required evidence of visible generic AI output followed by a normal
-  present-author editor save. It must not be relabeled as complete without
-  that exact evidence.
+- Lane 1, native editor/generic AI-plugin acceptance, is now complete. A
+  present administrator opened a disposable Gutenberg draft, triggered the
+  WordPress AI plugin's visible excerpt suggestion, reviewed and edited the
+  result, and clicked the native `保存草稿` control. The AI ability request
+  returned 200, the native save issued `POST /wp-json/wp/v2/posts/282453`,
+  Core counts stayed at 317 proposals and 3,366 audit rows before and after,
+  and the draft was deleted after capture. No Core proposal or audit row was
+  created.
 
 The corrected Toolbox fixture was committed as `da02356` and later merged as
 `444128a`. Its repair models the present-admin nonce, cookie, and same-origin
@@ -150,6 +151,27 @@ Cloud Addon is clean `master@d8bcac9`; AI Cloud is clean
 `master@fe920796`. This closes the owner/worktree cleanliness gate for the
 current engineering checkpoint.
 
+## Classification Lane 1 completion — 2026-10-16
+
+The final native-editor evidence used LocalWP `https://magick-ai.local` and
+administrator user `1` with a disposable draft post `282453`. Before the
+browser action, Core held 317 proposals and 3,366 audit rows. In the real
+Gutenberg editor, the administrator clicked the generic WordPress AI plugin's
+`生成文章摘要` control. The visible excerpt suggestion returned through
+`POST /wp-json/wp-abilities/v1/abilities/ai/excerpt-generation/run` with HTTP
+200 at approximately `2026-10-16T04:45:21Z`. The administrator opened the
+excerpt editor, reviewed the suggestion, replaced it with a reviewed Chinese
+excerpt, and clicked the native `保存草稿` control. The editor emitted the
+normal `POST /wp-json/wp/v2/posts/282453` save with HTTP 200 at
+`2026-10-16T04:47:04Z`.
+
+After the save, Core still held exactly 317 proposals and 3,366 audit rows.
+The disposable draft and one-time login helper were deleted. This proves the
+Lane 1 boundary: visible AI output plus a present author's ordinary editor
+save stays outside Core proposal and audit ownership. The screenshot and raw
+provider text remain local-only; the committed record stores counts, route
+shapes, status, and cleanup outcome only.
+
 ## Worktree ownership audit and release acceptance — 2026-10-16
 
 The read-only ownership audit was generated at
@@ -191,10 +213,10 @@ production deployment, or real-user ledger entry.
 The ownership audit and full release acceptance are complete. The remaining
 sequence is:
 
-1. **Close classification Lane 1 with exact evidence.** Use a present
-   administrator, visible generic AI output, normal editor save or publish,
-   unchanged Core proposal/audit counts, and fixture cleanup. Keep this
-   evidence separate from Core proposal and local-consent lanes.
+1. **Keep the completed classification evidence attached to the RC record.**
+   Lane 1 now has visible generic AI output, present-administrator review,
+   native save, unchanged Core counts, and fixture cleanup. Keep it separate
+   from Core proposal and local-consent lanes.
 2. **Decide the RC identity before any publication.** Use the accepted exact
    revisions as the evidence baseline, then choose either a new plugin version
    or a clearly named stack snapshot RC. Never move the historical Core or
