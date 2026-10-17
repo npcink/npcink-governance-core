@@ -1,0 +1,117 @@
+{
+  "scope": "Core weekly two-commit checkpoint/receipt publication",
+  "baseline": "6de76163f8be8f2b2f4e1fb25a1e2a1f1d6fb4f1",
+  "pr": {
+    "url": "https://github.com/npcink/npcink-governance-core/pull/184",
+    "state": "MERGED",
+    "headRefOid": "75466f6e90ae1637748e1d11bce725a9ad5e13e6",
+    "mergeCommit": {
+      "oid": "a0d26847d77e273f9c8047aff28aeda02c9d77a0"
+    },
+    "mergedAt": "2026-10-17T09:03:01Z",
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T09:01:39Z",
+        "conclusion": "FAILURE",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39019540038/job/117358408842",
+        "name": "code-review",
+        "startedAt": "2026-10-17T09:01:23Z",
+        "status": "COMPLETED",
+        "workflowName": "OpenCodeReview PR Review"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T09:02:18Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39019539973/job/117358407863",
+        "name": "Static contracts",
+        "startedAt": "2026-10-17T09:01:22Z",
+        "status": "COMPLETED",
+        "workflowName": "Core CI"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T09:01:24Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39019540009/job/117358408049",
+        "name": "PR body contract",
+        "startedAt": "2026-10-17T09:01:22Z",
+        "status": "COMPLETED",
+        "workflowName": "PR Body Contract"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T09:02:49Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39019630317/job/117358672100",
+        "name": "PR body contract",
+        "startedAt": "2026-10-17T09:02:46Z",
+        "status": "COMPLETED",
+        "workflowName": "PR Body Contract"
+      }
+    ]
+  },
+  "published_commits": [
+    "7fa4c33b2ae7bc81a14247eb61160764816e10a3",
+    "75466f6e90ae1637748e1d11bce725a9ad5e13e6"
+  ],
+  "published_files": 7,
+  "topic_squash_trees_equal": true,
+  "protection": {
+    "contexts": [
+      "Static contracts",
+      "PR body contract"
+    ],
+    "strict": true
+  },
+  "merge_method": "publisher requested squash auto-merge; normal exact-head protected squash completed after both required checks passed; no admin/bypass",
+  "publication_network_retry": "first publisher failed on GitHub API EOF/TLS before push or PR; verified no partial resources, then publisher succeeded",
+  "local_gates": {
+    "metadata": "passed",
+    "test_all": "55 tests / 207 assertions plus component gates passed",
+    "wporg": "passed",
+    "json_links_breadcrumb_diff_scope_manifest": "passed"
+  },
+  "review": {
+    "manual_five_axis": "no blocking issue identified",
+    "local_ocr": "180-second timeout; no complete report",
+    "ci_ocr": {
+      "run": 39019540038,
+      "status": "failed",
+      "message": "Review failed: 0 finding(s); 2 of 2 selected item(s) failed.",
+      "summary": {
+        "files_reviewed": 2,
+        "comments": 0,
+        "total_tokens": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "elapsed": "1s"
+      }
+    },
+    "complete_external_review_claimed": false,
+    "gap_recorded_in_pr": true
+  },
+  "merged_sha_static_contracts": {
+    "status": "passed",
+    "run": 39019650917,
+    "sha": "a0d26847d77e273f9c8047aff28aeda02c9d77a0"
+  },
+  "preservation": {
+    "original_local_branches_tags_unchanged": true,
+    "existing_nonmaster_remote_heads_unchanged": true,
+    "all_remote_tags_unchanged": true,
+    "original_published_topic_retained": true,
+    "new_receipt_branch": "codex/scan-weekly-merge-receipt-2026-10-17",
+    "fixed_rc2_manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+    "sibling_runtime_or_tag_mutation": false,
+    "other_owner_work": "preserved"
+  },
+  "next": "one new local post-merge receipt for weekly batching; no recursive PR",
+  "post_merge_receipt_gates": {
+    "metadata": "passed",
+    "test_all": "55 tests / 207 assertions plus component gates passed",
+    "wporg": "passed",
+    "json_links_breadcrumb_diff_manifest": "passed"
+  }
+}

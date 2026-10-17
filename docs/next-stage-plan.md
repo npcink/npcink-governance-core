@@ -5,6 +5,21 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Scan checkpoint weekly documentation merged — 2026-10-17
+
+[PR #184](https://github.com/npcink/npcink-governance-core/pull/184) published
+7fa4c33 /75466f6 (seven docs/evidence files) as `a0d26847`. Required checks and
+body refresh and merged-SHA Static contracts passed; topic/squash trees match.
+Normal protected matched-
+head squash completed without admin/bypass. OCR incomplete locally and failed
+2/2 in CI; review gap retained, no full external-review claim.
+See [publication/preservation receipt](history/core-scan-checkpoint-weekly-publication-2026-10-17.md).
+
+Former two-commit backlog closed; this later receipt is one new local record
+for weekly batching. All original branches/source anchors/tags/fixedRC2 and
+other owner work retained. Dated channel/scan follow-ups stay open; no new
+live verification, sibling/runtime/candidate/tag operation occurred.
+
 ## Channel/reconciliation follow-up at 16:52 Beijing — 2026-10-17
 
 [Appended checkpoint](history/adapter-channel-natural-reconciliation-2026-10-17.md):
