@@ -5,32 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Historical UX synthesis and ADR reference prepared for weekly PR
-
-- **Scope**: Core documentation only, current master `289ce777` plus the two
-  local post-merge/audit receipts. Salvaged UX source `3c45612c` into
-  docs/history/user-perspective-ux-audit-2026-10-11.md; #151–#154 merges and
-  ancestry rechecked. Revocation confirmation already existed; old OCR/browser
-  claims remain historical. Workflow links the durable engineering checks.
-- **ADR**: corrected ADR-013's nonexistent ADR-012 Limitations reference;
-  decision/status/public behavior unchanged. No old limitation replay.
-- **Preservation**: original branches and other owner work retained; no tag,
-  manifest, source, runtime or sibling operation. Weekly publication pending.
-
-# 2026-10-17 - UX history and ADR reference weekly batch merged
-
-- **Published**: #180 auto-merged `27c6c570` as `c6031aff` with equal trees;
-  four accumulated docs/assertion commits published. Historical UX lessons,
-  workflow link and real ADR-012 reference replace the two pending doc gaps.
-- **Checks**: metadata/default gates (55 tests / 207 assertions), wporg and
-  both protected topic checks and merged-SHA Static contracts passed. Local
-  OCR timed out; CI advisory failed
-  all three items with zero tokens. No completed external review claimed.
-- **Retained**: original refs/other owner work, local+remote tags and fixed
-  manifest. No cleanup, sibling/source change, candidate/matrix/runtime or
-  tag operation. docs/history/core-ux-weekly-docs-publication-2026-10-17.md
-  and JSON are a new local receipt for next weekly batching, not another PR.
-
 # 2026-10-17 - Other-owner closeout classified from current evidence
 
 - **Resolved**: Cloud1126/1127, Toolkit262, Toolbox274, Eval111 and Adapter119/120
@@ -154,3 +128,33 @@ Older history: `.sisyphus/archive/`.
   deployment, owner message, automation or tag operation performed.
   Core gates55/207, metadata, JSON/links/breadcrumb/diff/manifest passed;
   original branch/tag/resource and sibling HEAD/status recheck unchanged.
+
+# 2026-10-17 - Two channel/reconciliation docs commits merged as PR183
+
+- **Published**: 210391f/c92707a, seven docs/evidence files; #183 protected
+  auto-merge6de76163, exact topic/squash trees equal; required Static/body pass.
+- **Review/gates**: Core55/207, metadata/wporg and docs checks pass. LocalOCR
+  180s timeout; CI2/2 failed zero tokens/comments. Coverage gap recorded; no
+  completed external review, retry, workflow/protection change or bypass.
+- **Preserve/next**: original branches, origin backups, all tags/fixedRC2;
+  other owner work and dated follow-ups independent. No sibling mutation,
+  owner message, runtime/acceptance/deployment/tag action. Published topic kept.
+- **Receipt**: docs/history/core-channel-weekly-publication-2026-10-17.md +JSON;
+  old two-commit backlog closed; one new local record for next weekly batch.
+  Merged-SHA Static contracts passed (run39018504300); local receipt gate
+  verification recorded at closeout.
+
+# 2026-10-17 - 16:52 follow-up: coverage intact, no new scan advancement
+
+- **Adapter**: API08:52:47Z still no0.4.3 offering; public info/package0.4.3.
+- **Fresh read-only**: stable1999/1999, no gap/chunk/embedding absence. Cursor
+  ID588/status08:10:45/total8458 unchanged; next08:47:21Z now320s overdue,
+  no newer sync run/active task.50 public keys at/before cursor,1949 beyond.
+- **Limits**: prior callback progress real; full pass/direct natural-trigger
+  source unproved, no callback-failure diagnosis. Generated access_log off,
+  old error logs/null source fields. No trigger/logging/automation/message.
+- **Preserve**: Addon new upstream41a78454 (#286) stays owner-held; site3e650d1b.
+  All original refs/resources/tags/RC2 retained. Append in existing channel/
+  reconciliation report+JSON, plan/breadcrumb/archive; local weekly batching.
+  Core gates55/207, metadata, JSON/links/breadcrumb/diff passed; original
+  refs/resources/tags, sibling HEAD/status and fixedRC2 unchanged at recheck.

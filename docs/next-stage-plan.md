@@ -5,6 +5,35 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Channel/reconciliation follow-up at 16:52 Beijing — 2026-10-17
+
+[Appended checkpoint](history/adapter-channel-natural-reconciliation-2026-10-17.md):
+Adapter update probes still do not offer0.4.3. Coverage remains1999/1999, no gap.
+Cursor stays ID588/2018-07-12 (50 public keys at/before,1949 beyond);
+last_reconciled08:10:45Z/total_sent8458 unchanged. The08:47:21Z event is320s
+overdue at sample, no newer sync run/active task. Prior progress stays evidenced;
+this cycle/full catch-up is not closed, and callback failure is not diagnosed.
+
+Generated nginx access logging is off; existing error logs and null-source
+Cloud runs cannot identify the direct natural trigger. No trigger/logging/
+monitor was added. Addon remote advanced via#286 to41a78454 while site remains
+3e650d1b; preserve owner change without synchronizing here. Other work/tags/RC2
+retained. This local audit joins post-#183 receipt for weekly batching.
+
+## Two channel/reconciliation documentation commits published — 2026-10-17
+
+[PR #183](https://github.com/npcink/npcink-governance-core/pull/183) published
+210391f / c92707a (seven docs/evidence files) as `6de76163`. Both protected
+checks and merged-SHA Static contracts passed; topic/squash trees match.
+Local OCR timed out and CI advisory
+failed2/2 with no delivered review. No bypass or complete external-review claim.
+See [publication/preservation receipt](history/core-channel-weekly-publication-2026-10-17.md).
+
+Former two-commit backlog closed; this later receipt is one new local record
+for weekly batching. Other owners and dated update/scan follow-ups stay open;
+two-gap recovery remains accepted. Original branches/source refs/tags and
+fixed RC2 unchanged. No sibling/runtime/candidate/tag action in publication.
+
 ## Adapter channel and reconciliation evidence refreshed — 2026-10-17
 
 [Fresh classified evidence](history/adapter-channel-natural-reconciliation-2026-10-17.md):
