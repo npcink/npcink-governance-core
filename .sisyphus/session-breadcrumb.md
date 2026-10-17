@@ -5,39 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Other-owner closeout classified from current evidence
-
-- **Resolved**: Cloud1126/1127, Toolkit262, Toolbox274, Eval111 and Adapter119/120
-  merged. Seven default roots clean; Addon two upstream commits behind. All
-  seven live heads differ from fixed RC2; no new 7/7/acceptance claim.
-- **Open/decisions**: Cloud budget/real mailbox/site/writing, CVE watch, human
-  gold/calibration/adoption, legacy owner source and seven dependency PRs.
-  User chooses budget/Provider, human scope, future candidate and cleanup scope.
-- **Record/preserve**: docs/history/other-owner-closeout-refresh-2026-10-17.md
-  and JSON; two read-only snapshots stable across 17.68s, not a handoff.
-  Original refs/resources, seven-repo tag maps and fixed manifest retained;
-  no cleanup, sibling mutation/message, model call, runtime or tag operation.
-  This local audit joins f764306b in next weekly documentation batch.
-  Final recheck: parallel Adapter added a topic and v0.4.3 at d3b114f7;
-  not this audit's operation. Existing snapshot/manifest unchanged; owner
-  standalone release closeout remains to verify, not stack acceptance.
-
-# 2026-10-17 - Adapter standalone publication and Addon drift verified
-
-- **Adapter**: #121 merged 0159f2c7; v0.4.3 remains d3b114f7. Downloaded GH
-  package hash matches; official WP ZIP has identical 26 unpacked files. SVN
-  r3751468 confirmed; update API still not offering 0.4.3 to probe clients.
-- **Compatibility**: existing owner RC3 has 7/7 plus zero-skip exact acceptance;
-  all seven source hashes, two matrix reports and 19 logs match. Not a new run,
-  fixed Core RC2 refresh, current-head acceptance or production deployment.
-- **Addon**: #284 runtime cursor/buffer fix, #285 docs. Shared root still
-  b80b9661 while upstream/candidate is 3e650d1b. Real missing-record recovery
-  and site update remain separate; other F-01/F-02 and owner tasks preserved.
-- **Record**: docs/history/adapter-release-addon-drift-review-2026-10-17.md
-  and JSON; local weekly batching. No tag/source/sibling/production mutation.
-  Core gates 55/207, metadata, JSON/links/breadcrumb/diff passed; final original
-  branch/tag/resource and sibling HEAD/status recheck unchanged.
-
 # 2026-10-17 - Three owner/release documentation commits merged as PR181
 
 - **Published**: f764306b / 5be60b35 / aec4acb7 (nine docs/evidence files)
@@ -157,4 +124,37 @@ Older history: `.sisyphus/archive/`.
   All original refs/resources/tags/RC2 retained. Append in existing channel/
   reconciliation report+JSON, plan/breadcrumb/archive; local weekly batching.
   Core gates55/207, metadata, JSON/links/breadcrumb/diff passed; original
+  refs/resources/tags, sibling HEAD/status and fixedRC2 unchanged at recheck.
+
+# 2026-10-17 - Two scan-checkpoint docs commits published via PR184
+
+- **Published**: 7fa4c33/75466f6, seven docs/evidence files; #184 squash a0d26847,
+  exact topic/squash trees equal. Required Static/body+body refresh pass;
+  normal protected exact-head merge, no admin/bypass.
+- **Gates/review**: Core55/207/metadata/wporg/docs pass. LocalOCR180s timeout,
+  CI2/2 failed zero tokens/comments; no complete external review claimed.
+  Initial GitHub EOF/TLS failed before push/PR; absence checked, publisher retry
+  succeeded, no duplicate/force push. No OCR retry/workflow/protection change.
+- **Preserve/receipt**: originals/remote anchors/tags/RC2 and owner work retained;
+  no sibling/message/runtime/cleanup/tag action. Receipt:
+  docs/history/core-scan-checkpoint-weekly-publication-2026-10-17.md +JSON.
+  Old backlog closed; one new local
+  receipt for weekly batching; published topic retained.
+  Merged-SHA Static contracts passed (run39019650917); local receipt
+  metadata/default55/207/wporg and docs-integrity gates passed.
+
+# 2026-10-17 - 17:13 next-cycle page advanced; 50-ID flush pending
+
+- **Adapter**: update API09:13:45Z still0.4.2/no entry, public info/package0.4.3.
+- **New state**: stable1999/1999; callback08:55:58Z/cursorID2657,100 keys at/
+  before,1899 beyond. Newly traversed50 public IDs exactly buffer50/attempts0.
+  Next scan09:47:21Z; flush08:58:58Z now882s overdue, no new/active run or
+  delivery-counter change. Page scan evidenced; delivery/full pass not closed.
+- **Attribution/boundary**: direct natural trigger unproved (access_log off,
+  old error logs/null source fields). No manual trigger/logging/monitor/message.
+  Two repaired gaps stay closed; Addon source3e650d1b/upstream41a78454 retained.
+- **Record**: append channel/reconciliation report+JSON, plan/breadcrumb/archive;
+  original refs/resources/tags/RC2/other owner work preserved; local weekly
+  batch with post-#184 receipt, no new PR/candidate/acceptance/deploy/tag action.
+  Core55/207/metadata and JSON/links/breadcrumb/diff checks passed; original
   refs/resources/tags, sibling HEAD/status and fixedRC2 unchanged at recheck.

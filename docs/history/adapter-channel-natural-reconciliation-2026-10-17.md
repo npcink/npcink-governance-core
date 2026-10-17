@@ -181,3 +181,77 @@ ten-entry breadcrumb and diff checks. Final Core/Adapter/Addon local/remote
 branch/tag refs, worktrees and stashes equal this follow-up's baseline; sibling
 HEAD/status and fixed RC2 bytes are unchanged. Core commits only this appended
 record and its plan/breadcrumb/archive update for weekly batching.
+
+## Next-cycle follow-up at 17:13 Beijing: scan advanced, flush pending
+
+This append preserves all prior checkpoint dates. Core scope remains this
+report/JSON, plan and bounded breadcrumb/archive only. The method is reviewed
+SHORTINIT/read-only SQL with rollback, official API reads and configuration/log
+metadata inspection; no plugin/cron bootstrap or task/refresh was invoked.
+No source/public contract, site/Cloud data or tag change. Rollback is a docs
+revert; original source and other owner resources remain preserved.
+
+Official Adapter readback at `09:13:45.069838Z` still has public version/package
+0.4.3, but update probes from 0.4.1 offer 0.4.2 and from 0.4.2 return no entry.
+The matching official/GitHub 26-file payload and recorded hashes remain intact.
+Update offering is not confirmed; this is still earlier than the owner's
+suggested 20:32 Beijing follow-up window. No republishing or update installation.
+
+The stable WordPress/Cloud/WordPress window is `09:13:39–09:13:40Z`. Independent
+set and chunk inventory comparison reconfirms **1999/1999**, no missing public
+key and none without chunks/nonempty dimensions. The two recovered targets
+remain indexed. Their acceptance is not contingent on this catch-up pass ending.
+
+| Stage | Prior 08:52Z checkpoint | New 09:13Z checkpoint |
+| --- | --- | --- |
+| last_reconciled_at | 08:10:45Z | **08:55:58Z** |
+| Cursor | 2018-07-12 08:14:25 / ID588 | **2018-10-16 07:13:36 / ID2657** |
+| Public keys at/before cursor | 50 | **100** |
+| Public keys after cursor | 1,949 | **1,899** |
+| Reconciliation event | 08:47:21Z, overdue | **09:47:21Z**, future at the sample |
+| Buffer | Empty | **50 IDs, attempts 0**, updated 08:55:58Z |
+| Flush event | None | **08:58:58Z**, 882 seconds overdue at the sample |
+| total_sent / last_delivered_at | 8,458 / 08:21:05Z | Unchanged / unchanged |
+| Active Cloud run | None | None |
+
+The coordinator independently compared the current public metadata against
+both cursor boundaries. The newly traversed 50 public IDs exactly equal the
+buffer's 50 IDs. Thus another callback page was retained and cursor advancement
+is now evidenced, superseding the prior cycle's no-new-progress checkpoint.
+The next periodic event also advanced by one hour.
+
+**The newly buffered page has not acquired delivery proof in this window.**
+There is no new Site Knowledge run among the latest records; the two most
+recent successful runs remain the 08:14:57Z and 08:21:05Z deliveries. No delivery
+counter change, no active run and attempts 0 are recorded. This is pending-flush
+state, not evidence that the new page completed Cloud execution or a diagnosis
+that the callback/flush failed. Current indexed coverage remains complete
+because those public objects already have records independently of this pass.
+
+Generated nginx configs still disable access logging; the available error logs
+have no new entries (their mtimes predate October 17). Cloud run source/input
+projections remain null. Scheduled-event progression plus callback state is
+strong execution-state evidence for the next cycle, but does not directly
+identify the initiator of that particular invocation. No explicit natural-cron
+call trace was captured. No logging/cron setting or automation was enabled.
+
+Updated checklist: Adapter update offering **pending**; historical two gaps
+**closed and reconfirmed**; second scan page/cursor retention **observed**;
+current page flush/Cloud execution **not yet evidenced**; full pass **unfinished**;
+direct natural-trigger attribution **unproven**. Later observation should bind
+the buffer/attempts, successful run and counter changes to their timestamps,
+without treating an overdue timestamp as a failed callback or forcing a run.
+
+Site Addon remains clean `3e650d1b`, behind known owner upstream `41a78454`.
+No synchronization occurred here. Cloud self-reported `abefc7b8`; this task did
+not deploy or promote it. Other owner work, original refs/resources, all tags
+and fixed RC2 bytes remain preserved. No owner message, monitor, runtime action,
+new matrix/acceptance or release operation was performed. This local record
+joins the post-#184 receipt for weekly batching.
+
+Next-cycle documentation gates passed: Composer metadata, `composer test:all`
+(55 PHPUnit tests / 207 assertions plus component gates), JSON/local links,
+ten-entry breadcrumb and diff checks. Core/Adapter/Addon local and remote
+branch/tag refs, worktrees and stash records match this checkpoint's baseline;
+sibling HEAD/status and fixed RC2 bytes remain unchanged. Core commits only
+this appended documentary checkpoint for weekly batching.
