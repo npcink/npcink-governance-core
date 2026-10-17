@@ -5,6 +5,37 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Adapter channel and reconciliation evidence refreshed — 2026-10-17
+
+[Fresh classified evidence](history/adapter-channel-natural-reconciliation-2026-10-17.md):
+16:23 Beijing update probes still do not offer Adapter0.4.3, while public
+package/info remain0.4.3. At 16:24, public coverage remains1999/1999 with no gap.
+Reconciliation now has new state evidence: last_reconciled08:10:45Z, nonempty
+cursor at ID588, next event08:47:21Z, total_sent +50, empty buffer/no active run.
+
+The two-object recovery stays closed. Callback/cursor progress supersedes old
+no-progress status, but 1949 public keys remain beyond cursor; full catch-up
+is not complete. Direct natural-cron invocation attribution is not established
+from null-source Cloud run projections. Observe later natural progression;
+no trigger/monitor was created here. Other owner work, originals/tags/RC2
+retained. Local docs batching with post-#182 receipt, no new PR or tag action.
+
+## Four recovery documentation commits published — 2026-10-17
+
+[PR #182](https://github.com/npcink/npcink-governance-core/pull/182) published
+5a03ada / c7a1abf / d5b526f / d7950a3 in 11 docs/evidence files through
+protected auto-merge as `c63b7b7a`. Required Static/body checks passed and
+reviewed topic/squash trees match; merged-SHA Static contracts also passed.
+Local OCR timed out; CI advisory failed
+4/4 selected items with no delivered review; gap recorded, no bypass.
+See [merge and preservation receipt](history/core-addon-recovery-weekly-publication-2026-10-17.md).
+
+The four-commit backlog is closed; this later receipt is one new local record
+for weekly batching. Two-gap recovery stays accepted at its recorded 1999/1999
+window; natural scan and other owner work remain separate. Original branches,
+source anchors, all Core tags and fixed RC2 are unchanged. No sibling mutation,
+owner message, new runtime verification, candidate or tag operation occurred.
+
 ## Addon two-gap recovery accepted — 2026-10-17
 
 [Bounded recovery closeout](history/addon-bounded-recovery-closeout-2026-10-17.md):

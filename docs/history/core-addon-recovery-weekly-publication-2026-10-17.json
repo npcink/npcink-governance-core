@@ -1,0 +1,108 @@
+{
+  "scope": "Core four-commit weekly documentation publication",
+  "baseline": "9f5b2bf25451b283c154bd5419564345fadfdb66",
+  "pr": {
+    "url": "https://github.com/npcink/npcink-governance-core/pull/182",
+    "state": "MERGED",
+    "headRefOid": "d7950a307400b03b357a2bd9b859d787de81f2fe",
+    "mergeCommit": {
+      "oid": "c63b7b7a1fad5673cabdbd809678c5a360c2e387"
+    },
+    "mergedAt": "2026-10-17T08:17:52Z",
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T08:17:11Z",
+        "conclusion": "FAILURE",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39016769014/job/117350382102",
+        "name": "code-review",
+        "startedAt": "2026-10-17T08:16:55Z",
+        "status": "COMPLETED",
+        "workflowName": "OpenCodeReview PR Review"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T08:17:47Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39016768952/job/117350380636",
+        "name": "Static contracts",
+        "startedAt": "2026-10-17T08:16:55Z",
+        "status": "COMPLETED",
+        "workflowName": "Core CI"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T08:16:58Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39016768958/job/117350380644",
+        "name": "PR body contract",
+        "startedAt": "2026-10-17T08:16:55Z",
+        "status": "COMPLETED",
+        "workflowName": "PR Body Contract"
+      }
+    ]
+  },
+  "published_commits": [
+    "5a03adade9b4bc62fe226e975150c3905972d4ca",
+    "c7a1abfc8b982d0bd3ded18c4379c361cb161d08",
+    "d5b526fcca2661dcd7cb57bcac9b35b9a95e2e6a",
+    "d7950a307400b03b357a2bd9b859d787de81f2fe"
+  ],
+  "files": 11,
+  "topic_squash_tree_equal": true,
+  "protected_checks": {
+    "contexts": [
+      "Static contracts",
+      "PR body contract"
+    ],
+    "strict": true
+  },
+  "local_gates": {
+    "metadata": "passed",
+    "test_all": "55 PHPUnit tests / 207 assertions and component gates passed",
+    "wporg": "passed",
+    "json_links_breadcrumb_scope_diff_manifest": "passed"
+  },
+  "review": {
+    "manual_five_axis": "no blocking issue identified",
+    "local_ocr": "180-second timeout on exact topic head; incomplete review",
+    "ci_ocr": {
+      "run": 39016769014,
+      "status": "failed",
+      "message": "Review failed: 0 finding(s); 4 of 4 selected item(s) failed.",
+      "summary": {
+        "files_reviewed": 4,
+        "comments": 0,
+        "total_tokens": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "elapsed": "2s"
+      }
+    },
+    "gap_recorded_in_pr": true,
+    "complete_external_review_claimed": false
+  },
+  "merged_sha_static_contracts": {
+    "status": "passed",
+    "run": 39016832880,
+    "sha": "c63b7b7a1fad5673cabdbd809678c5a360c2e387"
+  },
+  "preservation": {
+    "all_original_core_local_refs_tags_unchanged": true,
+    "all_existing_nonmaster_remote_heads_unchanged": true,
+    "all_remote_tags_unchanged": true,
+    "new_remote_head": "codex/owner-release-weekly-merge-receipt-2026-10-17",
+    "new_local_receipt_branch": "codex/addon-recovery-weekly-merge-receipt-2026-10-17",
+    "fixed_rc2_manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+    "sibling_or_runtime_mutation_this_publication": false,
+    "original_topic_retained": true,
+    "other_owner_work": "preserved; not closed by documentation publication"
+  },
+  "next": "one new local post-merge receipt for next weekly batch; no recursive PR",
+  "post_merge_receipt_gates": {
+    "metadata": "passed",
+    "test_all": "55 tests / 207 assertions and component gates passed",
+    "wporg": "passed",
+    "json_links_breadcrumb_diff_manifest": "passed"
+  }
+}
