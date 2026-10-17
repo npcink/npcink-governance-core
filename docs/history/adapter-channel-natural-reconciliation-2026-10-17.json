@@ -394,5 +394,253 @@
     "original_refs_tags_worktrees_stashes_unchanged": true,
     "sibling_status_unchanged": true,
     "manifest_unchanged": true
+  },
+  "followup_2026_10_17_0852": {
+    "scope": "read-only refresh; append without rewriting earlier observation",
+    "adapter": {
+      "checked_at": "2026-10-17T08:52:47.372883+00:00",
+      "plugin_information": {
+        "slug": "npcink-ai-client-adapter",
+        "version": "0.4.3",
+        "last_updated": "2026-10-17 6:32am GMT",
+        "download_link": "https://downloads.wordpress.org/plugin/npcink-ai-client-adapter.0.4.3.zip"
+      },
+      "update_api_probes": {
+        "0.4.2": {
+          "new_version": null,
+          "response_bucket": "absent"
+        },
+        "0.4.1": {
+          "new_version": "0.4.2",
+          "response_bucket": "plugins"
+        }
+      },
+      "github_zip": {
+        "bytes": 176899,
+        "sha256": "4356f90721d56b7484d42ad4a73b1ed0500295f21580ce75a656b5f9cba68fbc"
+      },
+      "wordpress_zip": {
+        "url": "https://downloads.wordpress.org/plugin/npcink-ai-client-adapter.0.4.3.zip",
+        "bytes": 176503,
+        "sha256": "0aa2d93bbd6f6b5e8730f33c8754c15f3d5bd13e2e2113d41813da1b49b4dc7b"
+      },
+      "files_equal": true,
+      "file_count": 26
+    },
+    "reconciliation": {
+      "wp_before": "2026-10-17T08:52:40+00:00",
+      "wp_after": "2026-10-17T08:52:41+00:00",
+      "cloud_observed_at": "2026-10-17T08:52:41.284239+00:00",
+      "manifest_stable": true,
+      "public_denominator": 1999,
+      "covered_public": 1999,
+      "missing_public": [],
+      "public_without_chunks": [],
+      "public_without_nonempty_embeddings": [],
+      "local_status": {
+        "last_reconciled_at": "2026-10-17T08:10:45+00:00",
+        "last_delivery_ok": true,
+        "last_delivered_at": "2026-10-17T08:21:05+00:00",
+        "last_error_code": "",
+        "last_error_at": "",
+        "total_sent": 8458,
+        "dropped_count": 0
+      },
+      "reconciliation_cursor": {
+        "modified_gmt": "2018-07-12 08:14:25",
+        "post_id": 588
+      },
+      "buffer": {
+        "post_ids": [],
+        "count": 0,
+        "attempts": 0,
+        "updated_at": ""
+      },
+      "cron_events": [
+        {
+          "timestamp": 1792226841,
+          "utc": "2026-10-17T08:47:21+00:00",
+          "hook": "npcink_cloud_addon_reconcile_site_knowledge_changes"
+        }
+      ],
+      "active_site_knowledge_runs": [],
+      "runtime_revision": "b9002eff5f6a3332aff55c2a0ba6f7281808caea",
+      "runtime_release": "m4-preview"
+    },
+    "new_sync_runs_since_previous_observation": false,
+    "latest_two_sync_runs": [
+      {
+        "run_id": "run_da146cf752584884a63718c6133b491d",
+        "ability_name": "npcink-cloud/site-knowledge-sync",
+        "status": "succeeded",
+        "error_code": null,
+        "started_at": "2026-10-17 08:21:05.088708+00:00",
+        "finished_at": "2026-10-17 08:21:19.603978+00:00",
+        "post_ids": null,
+        "operation_source": null
+      },
+      {
+        "run_id": "run_4c37792a06c549359fb5e8f395405e11",
+        "ability_name": "npcink-cloud/site-knowledge-sync",
+        "status": "succeeded",
+        "error_code": null,
+        "started_at": "2026-10-17 08:14:57.508520+00:00",
+        "finished_at": "2026-10-17 08:15:11.964161+00:00",
+        "post_ids": null,
+        "operation_source": null
+      }
+    ],
+    "comparison": {
+      "status_cursor_next_event_same_as_0824": true,
+      "public_at_or_before_cursor": 50,
+      "public_after_cursor": 1949,
+      "due_overdue_seconds_at_observation": 320,
+      "full_catchup_complete": false,
+      "direct_natural_trigger_source_proven": false,
+      "callback_failure_proven": false
+    },
+    "provenance_limits": {
+      "observed_at": "2026-10-17T08:53:03.156430+00:00",
+      "generated_nginx_config_found": true,
+      "access_log_directives": [
+        {
+          "file": "site.conf",
+          "directive": "access_log        off;"
+        },
+        {
+          "file": "site.conf",
+          "directive": "access_log        off;"
+        },
+        {
+          "file": "site.conf",
+          "directive": "access_log        off;"
+        },
+        {
+          "file": "nginx.conf",
+          "directive": "access_log         off;"
+        },
+        {
+          "file": "restrictions.conf",
+          "directive": "access_log off;"
+        },
+        {
+          "file": "restrictions.conf",
+          "directive": "access_log off;"
+        },
+        {
+          "file": "wordpress-multi.conf",
+          "directive": "access_log off;"
+        }
+      ],
+      "available_site_logs": [
+        {
+          "path": "php/error.log",
+          "bytes": 32642,
+          "mtime_utc": "2026-10-13T03:08:17.301251+00:00"
+        },
+        {
+          "path": "php/php-fpm.log",
+          "bytes": 39321,
+          "mtime_utc": "2026-10-14T01:24:59.312260+00:00"
+        },
+        {
+          "path": "nginx/error.log",
+          "bytes": 499,
+          "mtime_utc": "2026-09-27T08:35:04.530188+00:00"
+        }
+      ],
+      "live_request_performed": false
+    },
+    "source_state": {
+      "site_addon": "3e650d1bc74d9428d6671f27dd668938c6b6078b",
+      "actual_upstream": "41a7845457ddbc2a4331e490fb183668bbc3c8f7",
+      "upstream_pr": 286,
+      "synchronized_by_this_audit": false
+    },
+    "evidence": {
+      "root": "/tmp/core-natural-reconciliation-refresh-20261017",
+      "sha256": {
+        "wordpress-20261017T085240525807Z.json": "82b749dd5cf33bb3381cf77fe06ffffb659d32f7df08e4a0d846ec53a5561674",
+        "wordpress-20261017T085241842385Z.json": "7cd66bba68add17b69ca7eaee2747b2e6a2e29d9bf485ebaa289b88815d498bb",
+        "cloud-20261017T085241851731Z.json": "102771ad20dfeb8c7b8660b876541a99a8cdd513d253ff4366c5be7a5872afe6"
+      }
+    },
+    "initial_preservation": [
+      {
+        "repo": "npcink-governance-core",
+        "at": "2026-10-17T08:53:32.287852+00:00",
+        "head": "7fa4c33b2ae7bc81a14247eb61160764816e10a3",
+        "branch": "codex/channel-weekly-merge-receipt-2026-10-17",
+        "status": "",
+        "local_refs": "refs/heads/codex/addon-recovery-weekly-merge-receipt-2026-10-17 c92707aef1715bf7cec4820c1487e1db9729e5d4\nrefs/heads/codex/audit-weekly-docs-receipt-2026-10-17 27c6c570540f906c8d4653836ed16dd17986c905\nrefs/heads/codex/channel-weekly-merge-receipt-2026-10-17 7fa4c33b2ae7bc81a14247eb61160764816e10a3\nrefs/heads/codex/docs-classification-lane1-2026-10-16 31279cf66174efd460e94554a0c0db21897d49e9\nrefs/heads/codex/docs-rc-identity-2026-10-16 8d6083e234be290206e6c3fb4b3a739ce3ed232a\nrefs/heads/codex/docs-rc-post-tag-drift-2026-10-16 e93c330366c952c75db540465acfcd85eb2cd8ab\nrefs/heads/codex/docs-week-2026-10-13-followup 418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd\nrefs/heads/codex/execution-verification-reads e73f9684878bf10a43130f266c4ddd1d258ad161\nrefs/heads/codex/owner-release-weekly-merge-receipt-2026-10-17 d7950a307400b03b357a2bd9b859d787de81f2fe\nrefs/heads/codex/ux-history-merge-receipt-2026-10-17 aec4acb7d0dd9ff77fcabd87e89bdcb0c454f2c2\nrefs/heads/codex/verification-reads-hardening f4b17dbae132c8be2abdf8f162180b39843074ad\nrefs/heads/codex/weekly-docs-merge-receipt-2026-10-17 8df588847af0534f28755ff2a955df7748ceb0da\nrefs/heads/master 9716cf5eaae259874c03ad40363382fd065aded2\nrefs/heads/zcode/docs-2026-10-11-ux-audit-arc 3c45612c5ee15705374a19743b983dfce9a0258e\nrefs/tags/pre-refactor-2026-07-14 a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc\nrefs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1 8edb4ff1cd5564f389e8da490f183c7a56e0af5b\nrefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1 7de7062a3b6308d6b59a47553f3345dd29fab94f\nrefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2 589d82eb634efa92d3a41ecebf99c8dbfe7a19b2\nrefs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2 2891b0b532c75da1dbf3426404f99dbeb2310b39\nrefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0 ffb5e5d6d7b68fa952288524a181ff688a7698ee\nrefs/tags/v0.1.0 4e4099cec8d0a88deb006eb1e0e916c485c7de65\nrefs/tags/v0.1.1 ad1d41effcb04a3e1578567e3d30068973344f40\nrefs/tags/v0.2.0 fa27aa2a13e01048da411c06cc1dff25abbd45a5\nrefs/tags/v0.3.0 da05076343d7975e95800eddf1e9719358ac82df\n",
+        "remote_refs": "c92707aef1715bf7cec4820c1487e1db9729e5d4\trefs/heads/codex/addon-recovery-weekly-merge-receipt-2026-10-17\n27c6c570540f906c8d4653836ed16dd17986c905\trefs/heads/codex/audit-weekly-docs-receipt-2026-10-17\n8d9626b7a07ffca7126b400a404a6db05145d1e9\trefs/heads/codex/docs-classification-lane1-2026-10-16\nb07972c12f0fb822c674570f2cc5b22b2c8d8302\trefs/heads/codex/docs-publication-receipt-2026-10-17\n4006c644a3d0a62393e1d53f418fac1fd3e5a50c\trefs/heads/codex/docs-rc-acceptance-2026-10-16\n0d7153a98fe176b29063b0cd6141601ef26c78df\trefs/heads/codex/docs-rc-audit-refresh-2026-10-16\n19953429829f237551b752b8438e12b0f290a385\trefs/heads/codex/docs-rc-final-closeout-2026-10-16\n8d6083e234be290206e6c3fb4b3a739ce3ed232a\trefs/heads/codex/docs-rc-identity-2026-10-16\nec01042c7862a47a2534eb5f6cf9d35cf5d26e4a\trefs/heads/codex/docs-rc-matrix-drift-2026-10-16\n3402eca486af5d979b80f9196315b4a772ed464d\trefs/heads/codex/docs-rc-post-tag-drift-2026-10-16\nfe70ede92fa42a6f0880c1c9543ca34fe9ff9472\trefs/heads/codex/docs-rc-release-notes-2026-10-16\n94af361fa20bacd441506fd9d3be13e5d5aa8de1\trefs/heads/codex/docs-rc-tag-published-2026-10-16\n418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd\trefs/heads/codex/docs-week-2026-10-13-followup\nd7950a307400b03b357a2bd9b859d787de81f2fe\trefs/heads/codex/owner-release-weekly-merge-receipt-2026-10-17\nf5181a3ebe347624c468dbb36623421868c88857\trefs/heads/codex/rc2-validation-2026-10-16\naec4acb7d0dd9ff77fcabd87e89bdcb0c454f2c2\trefs/heads/codex/ux-history-merge-receipt-2026-10-17\n8df588847af0534f28755ff2a955df7748ceb0da\trefs/heads/codex/weekly-docs-merge-receipt-2026-10-17\n57624c2272f39d599ba620174ee05d0dc9415c0e\trefs/heads/dependabot/composer/phpstan/phpstan-2.3.1\nd3191f0dcdf6e2ed19417f17a6b82e2dc82c587b\trefs/heads/dependabot/github_actions/alibaba/open-code-review-1.12.13\n6de76163f8be8f2b2f4e1fb25a1e2a1f1d6fb4f1\trefs/heads/master\na012024d0e58a1e5be2d78b4f5d3f847c7c4acfc\trefs/tags/pre-refactor-2026-07-14\n5acce75322367d6d46b58665d35331039d4b301a\trefs/tags/pre-refactor-2026-07-14^{}\n8edb4ff1cd5564f389e8da490f183c7a56e0af5b\trefs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1\n5f79d32f8e50e381d1872d68c4f99c0e9ee77d51\trefs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}\n7de7062a3b6308d6b59a47553f3345dd29fab94f\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1\n8f08f8ac3ce836293581f1bc8be040158de2980d\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}\n589d82eb634efa92d3a41ecebf99c8dbfe7a19b2\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2\nbdb7df1ce92e8c7bd5c71b57b829d83097ac39e3\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2^{}\n2891b0b532c75da1dbf3426404f99dbeb2310b39\trefs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2\n1829fb828ea4d9e8f7caabea74d5b89117824355\trefs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2^{}\nffb5e5d6d7b68fa952288524a181ff688a7698ee\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0\ned28f984153200a8362fcd0928bbb32b83636159\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0^{}\n4e4099cec8d0a88deb006eb1e0e916c485c7de65\trefs/tags/v0.1.0\nbdb7df1ce92e8c7bd5c71b57b829d83097ac39e3\trefs/tags/v0.1.0^{}\nad1d41effcb04a3e1578567e3d30068973344f40\trefs/tags/v0.1.1\n1829fb828ea4d9e8f7caabea74d5b89117824355\trefs/tags/v0.1.1^{}\nfa27aa2a13e01048da411c06cc1dff25abbd45a5\trefs/tags/v0.2.0\n7f2c6bf5b3f810f65f2e3f2d396ecfdf78c07ee6\trefs/tags/v0.2.0^{}\nda05076343d7975e95800eddf1e9719358ac82df\trefs/tags/v0.3.0\n3357f916899ac4b013a753da6d99e712274f2221\trefs/tags/v0.3.0^{}\n",
+        "worktrees": "worktree /Users/muze/gitee/npcink-governance-core\nHEAD 7fa4c33b2ae7bc81a14247eb61160764816e10a3\nbranch refs/heads/codex/channel-weekly-merge-receipt-2026-10-17\n\n",
+        "stashes": ""
+      },
+      {
+        "repo": "npcink-ai-client-adapter",
+        "at": "2026-10-17T08:53:35.660297+00:00",
+        "head": "0159f2c7ffe9f2ffa310b6760efded1f5a618dfe",
+        "branch": "master",
+        "status": "",
+        "local_refs": "refs/heads/master 0159f2c7ffe9f2ffa310b6760efded1f5a618dfe\nrefs/tags/openclaw-grant-redeem-mvp 8af2c243952cd1589dcce65aed7ed565f656da06\nrefs/tags/pre-refactor-2026-07-14 afe1d8ceac39c6936df061073de6309bb5982d3a\nrefs/tags/v0.2.0 9a12b11953acbf7151e4c89ec97ed2b84588d65c\nrefs/tags/v0.2.1 0906755ef02ba9345eb108d5ca78a8fe22ac0077\nrefs/tags/v0.3.0 605f6fe7b57fec54bc523c95a40dd62fc73dca82\nrefs/tags/v0.3.1 9c5b8d6f6e41a482c978639cebf9bbf769adc0e6\nrefs/tags/v0.3.2 32737cca76d71e99c96f6c63775884ab4e767197\nrefs/tags/v0.3.3 57517fab449fa04e19dc30513e36ec57435564ed\nrefs/tags/v0.4.0 34b21582d6418b3fcf93f3efca94a71a62fde16e\nrefs/tags/v0.4.1 f8f8b8411ef5c48bb2c98e87528b88d464f622ce\nrefs/tags/v0.4.2 dcd7188c243cf03d4c2824588d489c7e86116965\nrefs/tags/v0.4.3 34c0b788885746d42bc41119d4cff33a5d1d5f7e\n",
+        "remote_refs": "eb73e503a8c102acd6f87b69f406ee4b94aac85f\trefs/heads/codex/m4-pgy-stack-rc-docs-2026-10-15\n0159f2c7ffe9f2ffa310b6760efded1f5a618dfe\trefs/heads/master\n8af2c243952cd1589dcce65aed7ed565f656da06\trefs/tags/openclaw-grant-redeem-mvp\nafe1d8ceac39c6936df061073de6309bb5982d3a\trefs/tags/pre-refactor-2026-07-14\n84554be1d9cccb5b6794404803f475162ee7ea00\trefs/tags/pre-refactor-2026-07-14^{}\n9a12b11953acbf7151e4c89ec97ed2b84588d65c\trefs/tags/v0.2.0\n3c4ea71f41ccb013341e12498520510ffcefa81f\trefs/tags/v0.2.0^{}\n0906755ef02ba9345eb108d5ca78a8fe22ac0077\trefs/tags/v0.2.1\n452d738c05972302cf6138f38184cfc5cec7cea6\trefs/tags/v0.2.1^{}\n605f6fe7b57fec54bc523c95a40dd62fc73dca82\trefs/tags/v0.3.0\n205ebda976aa51afd27c6d633082360194ba902b\trefs/tags/v0.3.0^{}\n9c5b8d6f6e41a482c978639cebf9bbf769adc0e6\trefs/tags/v0.3.1\n32737cca76d71e99c96f6c63775884ab4e767197\trefs/tags/v0.3.2\n65f1012c5f4072dd6c1251f2e2db98d5e836c598\trefs/tags/v0.3.2^{}\n57517fab449fa04e19dc30513e36ec57435564ed\trefs/tags/v0.3.3\n8800b8e4c4651c5d4dff759c3050135d74968927\trefs/tags/v0.3.3^{}\n34b21582d6418b3fcf93f3efca94a71a62fde16e\trefs/tags/v0.4.0\n7800b3da2f20637ffea621274e033a061d532e93\trefs/tags/v0.4.0^{}\nf8f8b8411ef5c48bb2c98e87528b88d464f622ce\trefs/tags/v0.4.1\ndcd7188c243cf03d4c2824588d489c7e86116965\trefs/tags/v0.4.2\n963318a6f99b4837a48290fb9abbdb7716f9d079\trefs/tags/v0.4.2^{}\n34c0b788885746d42bc41119d4cff33a5d1d5f7e\trefs/tags/v0.4.3\nd3b114f73029836277f42d04c292f661b255a332\trefs/tags/v0.4.3^{}\n",
+        "worktrees": "worktree /Users/muze/gitee/npcink-ai-client-adapter\nHEAD 0159f2c7ffe9f2ffa310b6760efded1f5a618dfe\nbranch refs/heads/master\n\n",
+        "stashes": ""
+      },
+      {
+        "repo": "npcink-cloud-addon",
+        "at": "2026-10-17T08:53:36.465051+00:00",
+        "head": "3e650d1bc74d9428d6671f27dd668938c6b6078b",
+        "branch": "master",
+        "status": "",
+        "local_refs": "refs/heads/codex/addon-onboarding-diagnostics 111b96fb4e4c64285890b9748a3cad49e905c89a\nrefs/heads/codex/recommendation-feedback-metadata 9637ca592f4570bd292b107144e61b4f8271cbae\nrefs/heads/codex/site-sync-before-20261017T071849Z b80b966151f26f114271a5534082c336ab2fea50\nrefs/heads/master 3e650d1bc74d9428d6671f27dd668938c6b6078b\nrefs/tags/0.2.0 265f001f0afb303206d0edd72f1f4b8f20dd5ef9\nrefs/tags/0.3.0 200ecf966494e531e57ab29c7706eef41bb9e1de\nrefs/tags/0.4.0 35915cf4e5a9f13d6808ab3052885793f47cb190\nrefs/tags/archive/wp-ai-localization-fix-20260928 0f643ff85842162d8cc8aa6d42a382f5e81c9ef2\nrefs/tags/pre-refactor-2026-07-14 bae0a4dfd59042482179766f743b4ffcaca876f7\n",
+        "remote_refs": "f379aadb6be38471a02d64de0db9ea79ff7c17f0\trefs/heads/codex/0-4-1-stale-entitlement\nf6b95295b4cfb682f78809bfde978d72d713d56c\trefs/heads/codex/041-final-release-record\n014fde9f44620320a8940b0e1f4e998cc04d3f00\trefs/heads/codex/041-maintenance-closeout-20261015\n3d42183d7782715e66485c3186f3bb90d5c58dea\trefs/heads/codex/041-refresh-closeout\n111b96fb4e4c64285890b9748a3cad49e905c89a\trefs/heads/codex/addon-onboarding-diagnostics\nc26f43dbbd340722a0835b4037f33ab2f483ff31\trefs/heads/codex/docs-next-session-handoff-20261016\n2f343a6e35281489e1ccf5ffc914cfa63cb88dc0\trefs/heads/codex/glotpress-closeout-20261012\na8431153fc71049b1f246965f4016769591a7195\trefs/heads/codex/ocr-ci-diagnostics-20261013\n000ca35f84f7896cc039ddae1485e483fbb863b3\trefs/heads/codex/ocr-glm-thinking-compat-20261013\n582177c2c2586cf3ed2e945f3e6476e86c0e0b37\trefs/heads/codex/provider-acceptance-closeout-20261012\n9637ca592f4570bd292b107144e61b4f8271cbae\trefs/heads/codex/recommendation-feedback-metadata\ndbddd65c9a970615bb556006d3e5998bb9ceb51a\trefs/heads/codex/release-status-20261013\n4e8c8e65f0ae272a170ff63f45057eeddc6cb63f\trefs/heads/codex/site-knowledge-recovery-20261015\n1209f5105ae94a48c9b7f65af77c952e09733f52\trefs/heads/codex/ux-closeout-20261012\ne55a04e0a3cdd6ee978916d3eaa30d8ecfa87e6c\trefs/heads/codex/ux-tail-20261012\n387687620db4886c42cd4d5c63b9dab60d0f9426\trefs/heads/docs/ux-paydown-handoff-2026-10-12\n4b72b953432557ec5b712b8c83c021ff8a7b571e\trefs/heads/fix/user-facing-ux-paydown-round\n41a7845457ddbc2a4331e490fb183668bbc3c8f7\trefs/heads/master\nf2a8dd61e6f676382444c7e1b884361a68ad31a9\trefs/tags/0.2.0\n7b85c903b2ffc94a5e91ec027d9d900be5176aa5\trefs/tags/0.2.0^{}\n200ecf966494e531e57ab29c7706eef41bb9e1de\trefs/tags/0.3.0\n8c56aae8a7665954db3fbf0cc16500db6068566e\trefs/tags/0.3.0^{}\n35915cf4e5a9f13d6808ab3052885793f47cb190\trefs/tags/0.4.0\n0f643ff85842162d8cc8aa6d42a382f5e81c9ef2\trefs/tags/archive/wp-ai-localization-fix-20260928\nbae0a4dfd59042482179766f743b4ffcaca876f7\trefs/tags/pre-refactor-2026-07-14\n9c46f4bff7a715a8eacd8e787705de0ea62e39ed\trefs/tags/pre-refactor-2026-07-14^{}\n",
+        "worktrees": "worktree /Users/muze/gitee/npcink-cloud-addon\nHEAD 3e650d1bc74d9428d6671f27dd668938c6b6078b\nbranch refs/heads/master\n\n",
+        "stashes": ""
+      }
+    ],
+    "verification": "Core metadata/test:all passed 55 tests/207 assertions plus component gates; independent exact coverage/cursor checks, JSON/links/breadcrumb/diff and ref/resource/manifest preservation passed",
+    "preservation": {
+      "passed": true,
+      "final_inventory": [
+        {
+          "repo": "npcink-governance-core",
+          "at": "2026-10-17T08:54:58.113966+00:00",
+          "head": "7fa4c33b2ae7bc81a14247eb61160764816e10a3",
+          "branch": "codex/channel-weekly-merge-receipt-2026-10-17",
+          "status": " M .sisyphus/archive/2026-10.md\n M .sisyphus/session-breadcrumb.md\n M docs/history/adapter-channel-natural-reconciliation-2026-10-17.json\n M docs/history/adapter-channel-natural-reconciliation-2026-10-17.md\n M docs/next-stage-plan.md\n",
+          "local_refs": "refs/heads/codex/addon-recovery-weekly-merge-receipt-2026-10-17 c92707aef1715bf7cec4820c1487e1db9729e5d4\nrefs/heads/codex/audit-weekly-docs-receipt-2026-10-17 27c6c570540f906c8d4653836ed16dd17986c905\nrefs/heads/codex/channel-weekly-merge-receipt-2026-10-17 7fa4c33b2ae7bc81a14247eb61160764816e10a3\nrefs/heads/codex/docs-classification-lane1-2026-10-16 31279cf66174efd460e94554a0c0db21897d49e9\nrefs/heads/codex/docs-rc-identity-2026-10-16 8d6083e234be290206e6c3fb4b3a739ce3ed232a\nrefs/heads/codex/docs-rc-post-tag-drift-2026-10-16 e93c330366c952c75db540465acfcd85eb2cd8ab\nrefs/heads/codex/docs-week-2026-10-13-followup 418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd\nrefs/heads/codex/execution-verification-reads e73f9684878bf10a43130f266c4ddd1d258ad161\nrefs/heads/codex/owner-release-weekly-merge-receipt-2026-10-17 d7950a307400b03b357a2bd9b859d787de81f2fe\nrefs/heads/codex/ux-history-merge-receipt-2026-10-17 aec4acb7d0dd9ff77fcabd87e89bdcb0c454f2c2\nrefs/heads/codex/verification-reads-hardening f4b17dbae132c8be2abdf8f162180b39843074ad\nrefs/heads/codex/weekly-docs-merge-receipt-2026-10-17 8df588847af0534f28755ff2a955df7748ceb0da\nrefs/heads/master 9716cf5eaae259874c03ad40363382fd065aded2\nrefs/heads/zcode/docs-2026-10-11-ux-audit-arc 3c45612c5ee15705374a19743b983dfce9a0258e\nrefs/tags/pre-refactor-2026-07-14 a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc\nrefs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1 8edb4ff1cd5564f389e8da490f183c7a56e0af5b\nrefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1 7de7062a3b6308d6b59a47553f3345dd29fab94f\nrefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2 589d82eb634efa92d3a41ecebf99c8dbfe7a19b2\nrefs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2 2891b0b532c75da1dbf3426404f99dbeb2310b39\nrefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0 ffb5e5d6d7b68fa952288524a181ff688a7698ee\nrefs/tags/v0.1.0 4e4099cec8d0a88deb006eb1e0e916c485c7de65\nrefs/tags/v0.1.1 ad1d41effcb04a3e1578567e3d30068973344f40\nrefs/tags/v0.2.0 fa27aa2a13e01048da411c06cc1dff25abbd45a5\nrefs/tags/v0.3.0 da05076343d7975e95800eddf1e9719358ac82df\n",
+          "remote_refs": "c92707aef1715bf7cec4820c1487e1db9729e5d4\trefs/heads/codex/addon-recovery-weekly-merge-receipt-2026-10-17\n27c6c570540f906c8d4653836ed16dd17986c905\trefs/heads/codex/audit-weekly-docs-receipt-2026-10-17\n8d9626b7a07ffca7126b400a404a6db05145d1e9\trefs/heads/codex/docs-classification-lane1-2026-10-16\nb07972c12f0fb822c674570f2cc5b22b2c8d8302\trefs/heads/codex/docs-publication-receipt-2026-10-17\n4006c644a3d0a62393e1d53f418fac1fd3e5a50c\trefs/heads/codex/docs-rc-acceptance-2026-10-16\n0d7153a98fe176b29063b0cd6141601ef26c78df\trefs/heads/codex/docs-rc-audit-refresh-2026-10-16\n19953429829f237551b752b8438e12b0f290a385\trefs/heads/codex/docs-rc-final-closeout-2026-10-16\n8d6083e234be290206e6c3fb4b3a739ce3ed232a\trefs/heads/codex/docs-rc-identity-2026-10-16\nec01042c7862a47a2534eb5f6cf9d35cf5d26e4a\trefs/heads/codex/docs-rc-matrix-drift-2026-10-16\n3402eca486af5d979b80f9196315b4a772ed464d\trefs/heads/codex/docs-rc-post-tag-drift-2026-10-16\nfe70ede92fa42a6f0880c1c9543ca34fe9ff9472\trefs/heads/codex/docs-rc-release-notes-2026-10-16\n94af361fa20bacd441506fd9d3be13e5d5aa8de1\trefs/heads/codex/docs-rc-tag-published-2026-10-16\n418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd\trefs/heads/codex/docs-week-2026-10-13-followup\nd7950a307400b03b357a2bd9b859d787de81f2fe\trefs/heads/codex/owner-release-weekly-merge-receipt-2026-10-17\nf5181a3ebe347624c468dbb36623421868c88857\trefs/heads/codex/rc2-validation-2026-10-16\naec4acb7d0dd9ff77fcabd87e89bdcb0c454f2c2\trefs/heads/codex/ux-history-merge-receipt-2026-10-17\n8df588847af0534f28755ff2a955df7748ceb0da\trefs/heads/codex/weekly-docs-merge-receipt-2026-10-17\n57624c2272f39d599ba620174ee05d0dc9415c0e\trefs/heads/dependabot/composer/phpstan/phpstan-2.3.1\nd3191f0dcdf6e2ed19417f17a6b82e2dc82c587b\trefs/heads/dependabot/github_actions/alibaba/open-code-review-1.12.13\n6de76163f8be8f2b2f4e1fb25a1e2a1f1d6fb4f1\trefs/heads/master\na012024d0e58a1e5be2d78b4f5d3f847c7c4acfc\trefs/tags/pre-refactor-2026-07-14\n5acce75322367d6d46b58665d35331039d4b301a\trefs/tags/pre-refactor-2026-07-14^{}\n8edb4ff1cd5564f389e8da490f183c7a56e0af5b\trefs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1\n5f79d32f8e50e381d1872d68c4f99c0e9ee77d51\trefs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}\n7de7062a3b6308d6b59a47553f3345dd29fab94f\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1\n8f08f8ac3ce836293581f1bc8be040158de2980d\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}\n589d82eb634efa92d3a41ecebf99c8dbfe7a19b2\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2\nbdb7df1ce92e8c7bd5c71b57b829d83097ac39e3\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2^{}\n2891b0b532c75da1dbf3426404f99dbeb2310b39\trefs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2\n1829fb828ea4d9e8f7caabea74d5b89117824355\trefs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2^{}\nffb5e5d6d7b68fa952288524a181ff688a7698ee\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0\ned28f984153200a8362fcd0928bbb32b83636159\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0^{}\n4e4099cec8d0a88deb006eb1e0e916c485c7de65\trefs/tags/v0.1.0\nbdb7df1ce92e8c7bd5c71b57b829d83097ac39e3\trefs/tags/v0.1.0^{}\nad1d41effcb04a3e1578567e3d30068973344f40\trefs/tags/v0.1.1\n1829fb828ea4d9e8f7caabea74d5b89117824355\trefs/tags/v0.1.1^{}\nfa27aa2a13e01048da411c06cc1dff25abbd45a5\trefs/tags/v0.2.0\n7f2c6bf5b3f810f65f2e3f2d396ecfdf78c07ee6\trefs/tags/v0.2.0^{}\nda05076343d7975e95800eddf1e9719358ac82df\trefs/tags/v0.3.0\n3357f916899ac4b013a753da6d99e712274f2221\trefs/tags/v0.3.0^{}\n",
+          "worktrees": "worktree /Users/muze/gitee/npcink-governance-core\nHEAD 7fa4c33b2ae7bc81a14247eb61160764816e10a3\nbranch refs/heads/codex/channel-weekly-merge-receipt-2026-10-17\n\n",
+          "stashes": ""
+        },
+        {
+          "repo": "npcink-ai-client-adapter",
+          "at": "2026-10-17T08:55:03.147487+00:00",
+          "head": "0159f2c7ffe9f2ffa310b6760efded1f5a618dfe",
+          "branch": "master",
+          "status": "",
+          "local_refs": "refs/heads/master 0159f2c7ffe9f2ffa310b6760efded1f5a618dfe\nrefs/tags/openclaw-grant-redeem-mvp 8af2c243952cd1589dcce65aed7ed565f656da06\nrefs/tags/pre-refactor-2026-07-14 afe1d8ceac39c6936df061073de6309bb5982d3a\nrefs/tags/v0.2.0 9a12b11953acbf7151e4c89ec97ed2b84588d65c\nrefs/tags/v0.2.1 0906755ef02ba9345eb108d5ca78a8fe22ac0077\nrefs/tags/v0.3.0 605f6fe7b57fec54bc523c95a40dd62fc73dca82\nrefs/tags/v0.3.1 9c5b8d6f6e41a482c978639cebf9bbf769adc0e6\nrefs/tags/v0.3.2 32737cca76d71e99c96f6c63775884ab4e767197\nrefs/tags/v0.3.3 57517fab449fa04e19dc30513e36ec57435564ed\nrefs/tags/v0.4.0 34b21582d6418b3fcf93f3efca94a71a62fde16e\nrefs/tags/v0.4.1 f8f8b8411ef5c48bb2c98e87528b88d464f622ce\nrefs/tags/v0.4.2 dcd7188c243cf03d4c2824588d489c7e86116965\nrefs/tags/v0.4.3 34c0b788885746d42bc41119d4cff33a5d1d5f7e\n",
+          "remote_refs": "eb73e503a8c102acd6f87b69f406ee4b94aac85f\trefs/heads/codex/m4-pgy-stack-rc-docs-2026-10-15\n0159f2c7ffe9f2ffa310b6760efded1f5a618dfe\trefs/heads/master\n8af2c243952cd1589dcce65aed7ed565f656da06\trefs/tags/openclaw-grant-redeem-mvp\nafe1d8ceac39c6936df061073de6309bb5982d3a\trefs/tags/pre-refactor-2026-07-14\n84554be1d9cccb5b6794404803f475162ee7ea00\trefs/tags/pre-refactor-2026-07-14^{}\n9a12b11953acbf7151e4c89ec97ed2b84588d65c\trefs/tags/v0.2.0\n3c4ea71f41ccb013341e12498520510ffcefa81f\trefs/tags/v0.2.0^{}\n0906755ef02ba9345eb108d5ca78a8fe22ac0077\trefs/tags/v0.2.1\n452d738c05972302cf6138f38184cfc5cec7cea6\trefs/tags/v0.2.1^{}\n605f6fe7b57fec54bc523c95a40dd62fc73dca82\trefs/tags/v0.3.0\n205ebda976aa51afd27c6d633082360194ba902b\trefs/tags/v0.3.0^{}\n9c5b8d6f6e41a482c978639cebf9bbf769adc0e6\trefs/tags/v0.3.1\n32737cca76d71e99c96f6c63775884ab4e767197\trefs/tags/v0.3.2\n65f1012c5f4072dd6c1251f2e2db98d5e836c598\trefs/tags/v0.3.2^{}\n57517fab449fa04e19dc30513e36ec57435564ed\trefs/tags/v0.3.3\n8800b8e4c4651c5d4dff759c3050135d74968927\trefs/tags/v0.3.3^{}\n34b21582d6418b3fcf93f3efca94a71a62fde16e\trefs/tags/v0.4.0\n7800b3da2f20637ffea621274e033a061d532e93\trefs/tags/v0.4.0^{}\nf8f8b8411ef5c48bb2c98e87528b88d464f622ce\trefs/tags/v0.4.1\ndcd7188c243cf03d4c2824588d489c7e86116965\trefs/tags/v0.4.2\n963318a6f99b4837a48290fb9abbdb7716f9d079\trefs/tags/v0.4.2^{}\n34c0b788885746d42bc41119d4cff33a5d1d5f7e\trefs/tags/v0.4.3\nd3b114f73029836277f42d04c292f661b255a332\trefs/tags/v0.4.3^{}\n",
+          "worktrees": "worktree /Users/muze/gitee/npcink-ai-client-adapter\nHEAD 0159f2c7ffe9f2ffa310b6760efded1f5a618dfe\nbranch refs/heads/master\n\n",
+          "stashes": ""
+        },
+        {
+          "repo": "npcink-cloud-addon",
+          "at": "2026-10-17T08:55:04.224032+00:00",
+          "head": "3e650d1bc74d9428d6671f27dd668938c6b6078b",
+          "branch": "master",
+          "status": "",
+          "local_refs": "refs/heads/codex/addon-onboarding-diagnostics 111b96fb4e4c64285890b9748a3cad49e905c89a\nrefs/heads/codex/recommendation-feedback-metadata 9637ca592f4570bd292b107144e61b4f8271cbae\nrefs/heads/codex/site-sync-before-20261017T071849Z b80b966151f26f114271a5534082c336ab2fea50\nrefs/heads/master 3e650d1bc74d9428d6671f27dd668938c6b6078b\nrefs/tags/0.2.0 265f001f0afb303206d0edd72f1f4b8f20dd5ef9\nrefs/tags/0.3.0 200ecf966494e531e57ab29c7706eef41bb9e1de\nrefs/tags/0.4.0 35915cf4e5a9f13d6808ab3052885793f47cb190\nrefs/tags/archive/wp-ai-localization-fix-20260928 0f643ff85842162d8cc8aa6d42a382f5e81c9ef2\nrefs/tags/pre-refactor-2026-07-14 bae0a4dfd59042482179766f743b4ffcaca876f7\n",
+          "remote_refs": "f379aadb6be38471a02d64de0db9ea79ff7c17f0\trefs/heads/codex/0-4-1-stale-entitlement\nf6b95295b4cfb682f78809bfde978d72d713d56c\trefs/heads/codex/041-final-release-record\n014fde9f44620320a8940b0e1f4e998cc04d3f00\trefs/heads/codex/041-maintenance-closeout-20261015\n3d42183d7782715e66485c3186f3bb90d5c58dea\trefs/heads/codex/041-refresh-closeout\n111b96fb4e4c64285890b9748a3cad49e905c89a\trefs/heads/codex/addon-onboarding-diagnostics\nc26f43dbbd340722a0835b4037f33ab2f483ff31\trefs/heads/codex/docs-next-session-handoff-20261016\n2f343a6e35281489e1ccf5ffc914cfa63cb88dc0\trefs/heads/codex/glotpress-closeout-20261012\na8431153fc71049b1f246965f4016769591a7195\trefs/heads/codex/ocr-ci-diagnostics-20261013\n000ca35f84f7896cc039ddae1485e483fbb863b3\trefs/heads/codex/ocr-glm-thinking-compat-20261013\n582177c2c2586cf3ed2e945f3e6476e86c0e0b37\trefs/heads/codex/provider-acceptance-closeout-20261012\n9637ca592f4570bd292b107144e61b4f8271cbae\trefs/heads/codex/recommendation-feedback-metadata\ndbddd65c9a970615bb556006d3e5998bb9ceb51a\trefs/heads/codex/release-status-20261013\n4e8c8e65f0ae272a170ff63f45057eeddc6cb63f\trefs/heads/codex/site-knowledge-recovery-20261015\n1209f5105ae94a48c9b7f65af77c952e09733f52\trefs/heads/codex/ux-closeout-20261012\ne55a04e0a3cdd6ee978916d3eaa30d8ecfa87e6c\trefs/heads/codex/ux-tail-20261012\n387687620db4886c42cd4d5c63b9dab60d0f9426\trefs/heads/docs/ux-paydown-handoff-2026-10-12\n4b72b953432557ec5b712b8c83c021ff8a7b571e\trefs/heads/fix/user-facing-ux-paydown-round\n41a7845457ddbc2a4331e490fb183668bbc3c8f7\trefs/heads/master\nf2a8dd61e6f676382444c7e1b884361a68ad31a9\trefs/tags/0.2.0\n7b85c903b2ffc94a5e91ec027d9d900be5176aa5\trefs/tags/0.2.0^{}\n200ecf966494e531e57ab29c7706eef41bb9e1de\trefs/tags/0.3.0\n8c56aae8a7665954db3fbf0cc16500db6068566e\trefs/tags/0.3.0^{}\n35915cf4e5a9f13d6808ab3052885793f47cb190\trefs/tags/0.4.0\n0f643ff85842162d8cc8aa6d42a382f5e81c9ef2\trefs/tags/archive/wp-ai-localization-fix-20260928\nbae0a4dfd59042482179766f743b4ffcaca876f7\trefs/tags/pre-refactor-2026-07-14\n9c46f4bff7a715a8eacd8e787705de0ea62e39ed\trefs/tags/pre-refactor-2026-07-14^{}\n",
+          "worktrees": "worktree /Users/muze/gitee/npcink-cloud-addon\nHEAD 3e650d1bc74d9428d6671f27dd668938c6b6078b\nbranch refs/heads/master\n\n",
+          "stashes": ""
+        }
+      ],
+      "all_original_branch_tag_worktree_stash_records_unchanged": true,
+      "sibling_head_status_unchanged": true,
+      "manifest_unchanged": true
+    }
   }
 }

@@ -5,20 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - UX history and ADR reference weekly batch merged
-
-- **Published**: #180 auto-merged `27c6c570` as `c6031aff` with equal trees;
-  four accumulated docs/assertion commits published. Historical UX lessons,
-  workflow link and real ADR-012 reference replace the two pending doc gaps.
-- **Checks**: metadata/default gates (55 tests / 207 assertions), wporg and
-  both protected topic checks and merged-SHA Static contracts passed. Local
-  OCR timed out; CI advisory failed
-  all three items with zero tokens. No completed external review claimed.
-- **Retained**: original refs/other owner work, local+remote tags and fixed
-  manifest. No cleanup, sibling/source change, candidate/matrix/runtime or
-  tag operation. docs/history/core-ux-weekly-docs-publication-2026-10-17.md
-  and JSON are a new local receipt for next weekly batching, not another PR.
-
 # 2026-10-17 - Other-owner closeout classified from current evidence
 
 - **Resolved**: Cloud1126/1127, Toolkit262, Toolbox274, Eval111 and Adapter119/120
@@ -157,3 +143,18 @@ Older history: `.sisyphus/archive/`.
   old two-commit backlog closed; one new local record for next weekly batch.
   Merged-SHA Static contracts passed (run39018504300); local receipt gate
   verification recorded at closeout.
+
+# 2026-10-17 - 16:52 follow-up: coverage intact, no new scan advancement
+
+- **Adapter**: API08:52:47Z still no0.4.3 offering; public info/package0.4.3.
+- **Fresh read-only**: stable1999/1999, no gap/chunk/embedding absence. Cursor
+  ID588/status08:10:45/total8458 unchanged; next08:47:21Z now320s overdue,
+  no newer sync run/active task.50 public keys at/before cursor,1949 beyond.
+- **Limits**: prior callback progress real; full pass/direct natural-trigger
+  source unproved, no callback-failure diagnosis. Generated access_log off,
+  old error logs/null source fields. No trigger/logging/automation/message.
+- **Preserve**: Addon new upstream41a78454 (#286) stays owner-held; site3e650d1b.
+  All original refs/resources/tags/RC2 retained. Append in existing channel/
+  reconciliation report+JSON, plan/breadcrumb/archive; local weekly batching.
+  Core gates55/207, metadata, JSON/links/breadcrumb/diff passed; original
+  refs/resources/tags, sibling HEAD/status and fixedRC2 unchanged at recheck.

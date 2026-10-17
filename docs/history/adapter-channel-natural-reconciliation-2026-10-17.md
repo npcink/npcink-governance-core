@@ -114,3 +114,70 @@ diff and fixed-manifest checks passed. Before/after Core/Adapter/Addon local
 and remote branch/tag refs, worktrees and stashes are identical; sibling
 HEAD/status remain clean and unchanged. Core advances only this local docs
 record. No trigger, owner message, external publication or tag action occurred.
+
+## Follow-up at 16:52 Beijing: no new cursor progress this cycle
+
+This append records a new read-only checkpoint on October 17; earlier
+observations above retain their original timestamps. Core changes only this
+report/JSON, plan and bounded breadcrumb/archive. No source/public contract,
+site state, owner resource, manifest or tag change. Evidence checks use the
+same reviewed SHORTINIT/read-only SQL/rollback method, plus official API reads
+and generated logging-configuration inspection. Rollback is a docs-only revert.
+
+Adapter official API/package recheck at `08:52:47.372883Z` still shows public
+version 0.4.3, while update probes from 0.4.1 offer 0.4.2 and from 0.4.2 return
+no entry. This still precedes the owner's suggested 20:32 Beijing follow-up
+window; no universal channel availability or rejection cause is established.
+Downloaded packages retain their matching 26-file sets and previous hashes.
+No republishing, site update or tag action was performed.
+
+WordPress/Cloud/WordPress window `08:52:40–08:52:41Z` is stable. Independent
+set/chunk comparison again gives **1999/1999**, no gaps and no public key
+without chunks/nonempty dimensions. The two historical repairs stay accepted.
+
+| Reconciliation check | New observation versus 08:24Z |
+| --- | --- |
+| last_reconciled_at | Still `08:10:45Z`; no newer callback state marker. |
+| Cursor | Still `2018-07-12 08:14:25 / ID588`; 50 public keys at/before it, 1,949 after it. |
+| Planned hourly event | Still `08:47:21Z`; **320 seconds overdue** at the final WordPress sample. |
+| Delivery | Still total_sent 8,458 / last_delivered_at `08:21:05Z`, success; no new run among the latest sync records. |
+| Buffer / drops / active runs | Empty / 0 / none. |
+
+The prior callback/cursor progress remains real evidence. This new cycle has
+no new observed state advancement, and the whole cursor pass is unfinished.
+An overdue event does not prove a callback failure: the available records do
+not distinguish absence of a natural trigger, loopback/dispatch interruption,
+or an early callback exit. No manual trigger was used to resolve that question.
+
+Current generated Local nginx configuration explicitly has `access_log off`.
+Only PHP/FPM/nginx error logs are present, last modified before this observation
+day; they provide no fresh invocation trail. Cloud run input/source projections
+are null. Direct per-invocation natural-trigger attribution therefore remains
+unavailable. No logging, cron configuration or polling automation was enabled.
+
+**Full indexed coverage and unfinished reconciliation are different states:**
+the first says all current public keys have indexed data; the second says how
+far this cursor pass has revisited the ordered candidates. Do not reopen the
+repaired gaps merely because 1,949 keys remain beyond the cursor, or close the
+full-scan item just because coverage is complete.
+
+The Addon site source is still clean `3e650d1b`; actual remote master has since
+advanced to `41a78454` through #286 (admin/setup/read-failure changes). That
+new owner change was not synchronized here. Cloud self-reported `b9002eff` in
+the read; this is an observation, not a deployment/promotion by this task.
+Original branches/owner work and tags remain preserved; fixed RC2 is unchanged.
+
+Updated dispositions: Adapter channel **pending**; two-gap recovery **closed**;
+prior callback progress **observed**; this cycle's further progress and complete
+catch-up **not established**; direct trigger source **unproven**. Next work is
+a separately scoped natural observation or owner diagnostic using supported
+logging evidence, while retaining all unrelated owner tasks. This audit does
+not request owner work, run a task, enable monitoring, or perform a new stack
+matrix/acceptance. It joins the post-#183 receipt for weekly docs batching.
+
+Follow-up documentation checks passed: Composer metadata, `composer test:all`
+(55 PHPUnit tests / 207 assertions plus component gates), JSON/local links,
+ten-entry breadcrumb and diff checks. Final Core/Adapter/Addon local/remote
+branch/tag refs, worktrees and stashes equal this follow-up's baseline; sibling
+HEAD/status and fixed RC2 bytes are unchanged. Core commits only this appended
+record and its plan/breadcrumb/archive update for weekly batching.
