@@ -5,27 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Toolbox Lane 3 repair merged and real WP cleanup verified
-
-- **Merge**: Toolbox PR #272 merged as `3ae12c4`; exact final head `eb0c24f`
-  passed required PHP/body checks and static analysis. Advisory OCR workflow is
-  disabled; publisher exception recorded, no delivered AI review claimed.
-- **Runtime**: after 144.49s stable owner-root snapshots, Toolbox fast-forwarded
-  clean master. Merged default smoke passed 65 assertions. A real post-intake
-  fault exited 1 as expected and cleaned up. Both runs preserved 326 proposals,
-  4,140 audits and all existing-row hashes; posts 2,391 / attachments 26 /
-  local-consent audits six unchanged. Runtime source snapshots stayed stable
-  during those runs; other owners resumed moving afterward.
-- **Matrix**: final no-override --fail-on-dirty at 02:39:36Z returned 6/7,
-  exit 1: Toolbox clean/passed; Toolkit owner matcher source dirty; Cloud exact
-  SHA lacks backend evidence. No wider clean candidate or release acceptance.
-- **Preservation/next**: original Toolbox/Cloud stashes and other owner work
-  retained. Our temporary Toolbox worktree removed cleanly; its topic retained.
-  Adapter pin, weekly Core docs, Addon/candidate drift and owner checks remain.
-  See docs/history/toolbox-lane3-closeout-2026-10-17.md and JSON/matrix evidence.
-  Five prior local Core docs commits plus this closeout await the weekly PR.
-  Fixed manifest/published snapshot preserved; no tag creation/push/move.
-
 # 2026-10-17 - Toolkit owner and Cloud backend ready; default 7/7 passed
 
 - **Owners**: Toolkit #262 merged as `b09ad300`, clean synchronized master;
@@ -179,3 +158,15 @@ Older history: `.sisyphus/archive/`.
   This audit joins local 89adeb8 for weekly batching. No source/ADR/ref/tag
   change, cleanup, owner message, new PR, matrix, acceptance or runtime action;
   preserve other owner work and all original source refs.
+
+# 2026-10-17 - Historical UX synthesis and ADR reference prepared for weekly PR
+
+- **Scope**: Core documentation only, current master `289ce777` plus the two
+  local post-merge/audit receipts. Salvaged UX source `3c45612c` into
+  docs/history/user-perspective-ux-audit-2026-10-11.md; #151–#154 merges and
+  ancestry rechecked. Revocation confirmation already existed; old OCR/browser
+  claims remain historical. Workflow links the durable engineering checks.
+- **ADR**: corrected ADR-013's nonexistent ADR-012 Limitations reference;
+  decision/status/public behavior unchanged. No old limitation replay.
+- **Preservation**: original branches and other owner work retained; no tag,
+  manifest, source, runtime or sibling operation. Weekly publication pending.

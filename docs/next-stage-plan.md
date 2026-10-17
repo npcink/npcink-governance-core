@@ -5,6 +5,21 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Historical UX synthesis and ADR reference follow-up — 2026-10-17
+
+The two follow-ups identified by the coverage audit are now prepared from
+current master: [the UX retrospective](history/user-perspective-ux-audit-2026-10-11.md)
+preserves four merged PRs, the corrected revoke-confirmation finding and
+repeatable engineering checks. Development Workflow links to it. ADR-013 now
+references the preflight-only limitation in its Context and the actual ADR-012
+file, without changing its accepted decision or runtime contract.
+
+This weekly docs batch also includes the post-#179 receipt and historical
+coverage audit. Publication/merge checks remain pending at this point; older
+“two follow-ups remain” entries below describe the preceding audit checkpoint.
+All original branches and other owner work remain retained. No tag, manifest,
+candidate, runtime, M4 or production operation is included.
+
 ## Remaining historical doc coverage audited — 2026-10-17
 
 Across the ten remaining local refs, six post-PR docs commits plus one standalone
