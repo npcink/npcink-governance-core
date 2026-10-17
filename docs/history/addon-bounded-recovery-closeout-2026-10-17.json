@@ -1,0 +1,259 @@
+{
+  "scope": "Core independent closeout of explicitly resumed two-object Addon recovery",
+  "owner_thread": {
+    "id": "01a1447a-4c96-7342-86f1-466eed68ac3b",
+    "hostId": "local",
+    "resume_request_count": 1,
+    "turn": "01a148e6-286c-7162-a154-dd9502741cfd",
+    "status": "completed; idle",
+    "original_human_authorization_read_by_owner": true
+  },
+  "evidence_root": "/Users/muze/gitee/npcink-cloud-addon/build/site-recovery-acceptance-20261017T071849Z",
+  "evidence_manifest_sha256": "85baa1d5d5f2343bd300708e436b3c54877451c4aa2a535c867e72cd2dab610d",
+  "verified_manifest_entries": 44,
+  "final_coverage_sha256": "f8916429ece297a90626ca1fdcd8897e0d486b7e8aa7d9e5d901b23dae847d0f",
+  "owner_acceptance": {
+    "completed_at": "2026-10-17T08:10:04.544529+00:00",
+    "acceptance": "passed: exact current public document and nonempty embedding/chunk coverage; two-target recovery complete",
+    "site": "https://magick-ai.local",
+    "site_id": "site_magick-ai-local",
+    "addon_revision": "3e650d1bc74d9428d6671f27dd668938c6b6078b",
+    "bridge_sha256": "4ed4452cdb8bfffa9c9d76fac7acb00c6817cef986add92000a86c037aa65c46",
+    "runtime_revision": "a8cd22aa882a1c7ef7ab646cba4393ffc704ae93",
+    "runtime_release": "m4-preview",
+    "before_evidence": "coverage-20261017T080706935374Z.json",
+    "final_evidence": "coverage-20261017T080851065548Z.json",
+    "before_coverage": [
+      1997,
+      1999
+    ],
+    "final_coverage": [
+      1999,
+      1999
+    ],
+    "public_manifest_stable_across_recovery": true,
+    "missing_public": [],
+    "public_without_chunks": [],
+    "public_without_nonempty_embeddings": [],
+    "target_documents": [
+      {
+        "source_type": "page",
+        "source_id": 282641,
+        "post_type": "page",
+        "post_status": "publish",
+        "modified_gmt": "2026-10-16 12:17:16",
+        "content_hash": "d39e58eb4b6be654a273eeb2e1802b9e797b4b93d72375ec1e9ed815fd9b4e0a",
+        "last_sync_run_id": "run_1098a21fd0854e56adc4265aa4ee013d",
+        "last_indexed_at": "2026-10-17 08:08:20.502548+00:00"
+      },
+      {
+        "source_type": "post",
+        "source_id": 282639,
+        "post_type": "post",
+        "post_status": "publish",
+        "modified_gmt": "2026-10-16 12:17:16",
+        "content_hash": "190a7f7af8f7be725f975adf77b40cd3de2e91a3b9780461e14e4215f3900855",
+        "last_sync_run_id": "run_f3607aebf0554034b1c88ca97da830d3",
+        "last_indexed_at": "2026-10-17 08:08:17.838715+00:00"
+      }
+    ],
+    "target_chunks": [
+      {
+        "source_type": "page",
+        "source_id": 282641,
+        "chunk_index": 0,
+        "post_type": "page",
+        "post_status": "publish",
+        "content_hash": "d39e58eb4b6be654a273eeb2e1802b9e797b4b93d72375ec1e9ed815fd9b4e0a",
+        "embedding_model": "ollama-m4-embedding:qwen3-embedding:0.6b",
+        "dimensions": 1024,
+        "indexed_at": "2026-10-17 08:08:20.502548+00:00"
+      },
+      {
+        "source_type": "post",
+        "source_id": 282639,
+        "chunk_index": 0,
+        "post_type": "post",
+        "post_status": "publish",
+        "content_hash": "190a7f7af8f7be725f975adf77b40cd3de2e91a3b9780461e14e4215f3900855",
+        "embedding_model": "ollama-m4-embedding:qwen3-embedding:0.6b",
+        "dimensions": 1024,
+        "indexed_at": "2026-10-17 08:08:17.838715+00:00"
+      }
+    ],
+    "successful_target_runs": {
+      "282639": {
+        "run_id": "run_f3607aebf0554034b1c88ca97da830d3",
+        "ability_name": "npcink-cloud/site-knowledge-sync",
+        "status": "succeeded",
+        "error_code": null,
+        "started_at": "2026-10-17 08:08:14.815573+00:00",
+        "finished_at": "2026-10-17 08:08:17.850105+00:00",
+        "post_ids": null,
+        "operation_source": null
+      },
+      "282641": {
+        "run_id": "run_1098a21fd0854e56adc4265aa4ee013d",
+        "ability_name": "npcink-cloud/site-knowledge-sync",
+        "status": "succeeded",
+        "error_code": null,
+        "started_at": "2026-10-17 08:08:19.753147+00:00",
+        "finished_at": "2026-10-17 08:08:20.514366+00:00",
+        "post_ids": null,
+        "operation_source": null
+      }
+    },
+    "active_runs": [],
+    "new_failed_runs": [],
+    "historical_failed_run_preserved": "run_518d2762faa5475f91a2372a635b1bad: provider.timeout; not attributed to this recovery",
+    "existing_documents_unchanged": true,
+    "historical_64_keys_unchanged": true,
+    "cursor_buffer_status_unchanged": true,
+    "manual_reconcile_or_flush": false,
+    "cloud_deployment": false,
+    "code_changes": false,
+    "tag_changes": false,
+    "remaining_followups": [
+      "F01: Cloud owner disposition for historical 64 records, status projection and development quota decision",
+      "F02: historical real OCR evidence remains incomplete",
+      "F03: five unrelated Cloud Dependabot PRs remain independent; not refreshed"
+    ],
+    "limits": [
+      "This is observed M4 preview coverage, not Cloud production or accepted-master deployment proof.",
+      "No post-fix natural reconciliation execution observed; overdue cron remains untriggered by this task.",
+      "Coverage is structural documents/chunks/nonempty embeddings, not semantic retrieval-quality acceptance.",
+      "No new PR or tracked documentation changes; coordinating Core thread owns closeout checklist update."
+    ]
+  },
+  "bounded_requests": [
+    {
+      "started_at": "2026-10-17T08:08:14+00:00",
+      "finished_at": "2026-10-17T08:08:15+00:00",
+      "target": 282639,
+      "method": "existing request_article_refresh; one singleton public document; request-local cron disabled, all other outbound HTTP blocked",
+      "bridge_sha256": "4ed4452cdb8bfffa9c9d76fac7acb00c6817cef986add92000a86c037aa65c46",
+      "result": {
+        "ok": true,
+        "code": "article_refresh_requested",
+        "operation": "article_refresh",
+        "sent_count": 1,
+        "source_error_code": ""
+      },
+      "http": [
+        {
+          "at": "2026-10-17T08:08:14+00:00",
+          "post_id": 282639,
+          "operation_source": "article_refresh",
+          "documents": 1,
+          "payload_sha256": "ca319a0d4c312fd70c83b4228dcaa6a55ec36440108b6ef7709ba2c04d038dc3",
+          "endpoint": "http://127.0.0.1:18010/v1/runtime/execute",
+          "http_status": 200,
+          "run_id": "run_f3607aebf0554034b1c88ca97da830d3",
+          "status": "queued"
+        }
+      ],
+      "blocked_http": 0,
+      "cursor_buffer_unchanged": true,
+      "before": {
+        "cursor": [],
+        "buffer": []
+      },
+      "after": {
+        "cursor": [],
+        "buffer": []
+      },
+      "reconcile_invocations": 0,
+      "flush_invocations": 0
+    },
+    {
+      "started_at": "2026-10-17T08:08:19+00:00",
+      "finished_at": "2026-10-17T08:08:19+00:00",
+      "target": 282641,
+      "method": "existing request_article_refresh; one singleton public document; request-local cron disabled, all other outbound HTTP blocked",
+      "bridge_sha256": "4ed4452cdb8bfffa9c9d76fac7acb00c6817cef986add92000a86c037aa65c46",
+      "result": {
+        "ok": true,
+        "code": "article_refresh_requested",
+        "operation": "article_refresh",
+        "sent_count": 1,
+        "source_error_code": ""
+      },
+      "http": [
+        {
+          "at": "2026-10-17T08:08:19+00:00",
+          "post_id": 282641,
+          "operation_source": "article_refresh",
+          "documents": 1,
+          "payload_sha256": "a4d8a8be572be1c2f46442b8b4eda60066fef89941fa5561e49b09793d8e691c",
+          "endpoint": "http://127.0.0.1:18010/v1/runtime/execute",
+          "http_status": 200,
+          "run_id": "run_1098a21fd0854e56adc4265aa4ee013d",
+          "status": "queued"
+        }
+      ],
+      "blocked_http": 0,
+      "cursor_buffer_unchanged": true,
+      "before": {
+        "cursor": [],
+        "buffer": []
+      },
+      "after": {
+        "cursor": [],
+        "buffer": []
+      },
+      "reconcile_invocations": 0,
+      "flush_invocations": 0
+    }
+  ],
+  "independent_verification": {
+    "stable_public_metadata_before_and_after": true,
+    "public_denominator": 1999,
+    "covered_public": 1999,
+    "missing_public": [],
+    "all_public_have_chunks_and_nonempty_dimensions": true,
+    "new_document_keys_only_targets": true,
+    "old_document_metadata_unchanged": true,
+    "both_request_document_run_links_match": true,
+    "target_chunks_dimensions": 1024,
+    "target_chunk_document_content_hashes_equal": true,
+    "no_active_site_knowledge_runs": true
+  },
+  "source_final": {
+    "observed_at": "2026-10-17T08:09:10.133720+00:00",
+    "head": "3e650d1bc74d9428d6671f27dd668938c6b6078b",
+    "status": "## master...origin/master",
+    "local_refs": "refs/heads/codex/addon-onboarding-diagnostics 111b96fb4e4c64285890b9748a3cad49e905c89a\nrefs/heads/codex/recommendation-feedback-metadata 9637ca592f4570bd292b107144e61b4f8271cbae\nrefs/heads/codex/site-sync-before-20261017T071849Z b80b966151f26f114271a5534082c336ab2fea50\nrefs/heads/master 3e650d1bc74d9428d6671f27dd668938c6b6078b\nrefs/tags/0.2.0 265f001f0afb303206d0edd72f1f4b8f20dd5ef9\nrefs/tags/0.3.0 200ecf966494e531e57ab29c7706eef41bb9e1de\nrefs/tags/0.4.0 35915cf4e5a9f13d6808ab3052885793f47cb190\nrefs/tags/archive/wp-ai-localization-fix-20260928 0f643ff85842162d8cc8aa6d42a382f5e81c9ef2\nrefs/tags/pre-refactor-2026-07-14 bae0a4dfd59042482179766f743b4ffcaca876f7",
+    "remote_refs": "f379aadb6be38471a02d64de0db9ea79ff7c17f0\trefs/heads/codex/0-4-1-stale-entitlement\nf6b95295b4cfb682f78809bfde978d72d713d56c\trefs/heads/codex/041-final-release-record\n014fde9f44620320a8940b0e1f4e998cc04d3f00\trefs/heads/codex/041-maintenance-closeout-20261015\n3d42183d7782715e66485c3186f3bb90d5c58dea\trefs/heads/codex/041-refresh-closeout\nc26f43dbbd340722a0835b4037f33ab2f483ff31\trefs/heads/codex/docs-next-session-handoff-20261016\n2f343a6e35281489e1ccf5ffc914cfa63cb88dc0\trefs/heads/codex/glotpress-closeout-20261012\na8431153fc71049b1f246965f4016769591a7195\trefs/heads/codex/ocr-ci-diagnostics-20261013\n000ca35f84f7896cc039ddae1485e483fbb863b3\trefs/heads/codex/ocr-glm-thinking-compat-20261013\n582177c2c2586cf3ed2e945f3e6476e86c0e0b37\trefs/heads/codex/provider-acceptance-closeout-20261012\n9637ca592f4570bd292b107144e61b4f8271cbae\trefs/heads/codex/recommendation-feedback-metadata\ndbddd65c9a970615bb556006d3e5998bb9ceb51a\trefs/heads/codex/release-status-20261013\n4e8c8e65f0ae272a170ff63f45057eeddc6cb63f\trefs/heads/codex/site-knowledge-recovery-20261015\n1209f5105ae94a48c9b7f65af77c952e09733f52\trefs/heads/codex/ux-closeout-20261012\ne55a04e0a3cdd6ee978916d3eaa30d8ecfa87e6c\trefs/heads/codex/ux-tail-20261012\n387687620db4886c42cd4d5c63b9dab60d0f9426\trefs/heads/docs/ux-paydown-handoff-2026-10-12\n4b72b953432557ec5b712b8c83c021ff8a7b571e\trefs/heads/fix/user-facing-ux-paydown-round\n3e650d1bc74d9428d6671f27dd668938c6b6078b\trefs/heads/master\nf2a8dd61e6f676382444c7e1b884361a68ad31a9\trefs/tags/0.2.0\n7b85c903b2ffc94a5e91ec027d9d900be5176aa5\trefs/tags/0.2.0^{}\n200ecf966494e531e57ab29c7706eef41bb9e1de\trefs/tags/0.3.0\n8c56aae8a7665954db3fbf0cc16500db6068566e\trefs/tags/0.3.0^{}\n35915cf4e5a9f13d6808ab3052885793f47cb190\trefs/tags/0.4.0\n0f643ff85842162d8cc8aa6d42a382f5e81c9ef2\trefs/tags/archive/wp-ai-localization-fix-20260928\nbae0a4dfd59042482179766f743b4ffcaca876f7\trefs/tags/pre-refactor-2026-07-14\n9c46f4bff7a715a8eacd8e787705de0ea62e39ed\trefs/tags/pre-refactor-2026-07-14^{}",
+    "worktrees": "worktree /Users/muze/gitee/npcink-cloud-addon\nHEAD 3e650d1bc74d9428d6671f27dd668938c6b6078b\nbranch refs/heads/master\n\nworktree /Users/muze/gitee/.worktrees/addon-onboarding-diagnostics\nHEAD 111b96fb4e4c64285890b9748a3cad49e905c89a\nbranch refs/heads/codex/addon-onboarding-diagnostics\nlocked codex:01a1429e-69d0-7be3-b432-63784b51a8ab",
+    "stashes": "",
+    "original_local_refs_preserved": true,
+    "local_remote_tags_unchanged": true,
+    "remote_changes_since_start": {},
+    "new_remote_refs": {},
+    "new_local_refs": {
+      "refs/heads/codex/addon-onboarding-diagnostics": "111b96fb4e4c64285890b9748a3cad49e905c89a",
+      "refs/heads/codex/site-sync-before-20261017T071849Z": "b80b966151f26f114271a5534082c336ab2fea50"
+    },
+    "backup_branch_preserved": true,
+    "bridge_sha256": "4ed4452cdb8bfffa9c9d76fac7acb00c6817cef986add92000a86c037aa65c46",
+    "bundle_sha256": "575dafe0f5742d25761fc5c417a4c2c33c2e7ee32b7a3c6a6dd6ef5fe05cf36a",
+    "cleanup": "No branches, worktrees or stashes deleted; no tag creation/movement/push; no remote Git mutations by this task."
+  },
+  "runtime_limits": {
+    "runtime_revision": "a8cd22aa882a1c7ef7ab646cba4393ffc704ae93",
+    "runtime_release": "m4-preview",
+    "not_current_cloud_master_promotion": true,
+    "natural_reconciliation_not_proven": true,
+    "semantic_quality_and_production_adoption_not_proven": true
+  },
+  "fixed_rc2_manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+  "verification": "Core metadata and test:all passed 55 tests/207 assertions and component gates; 44 evidence hashes, independent coverage/run links, preservation, JSON/local links/breadcrumb/diff/manifest passed",
+  "preservation": {
+    "observed_at": "2026-10-17T08:12:17.853803+00:00",
+    "addon_final_refs_retained": true,
+    "addon_original_remote_refs_tags_unchanged": true,
+    "addon_clean_original_source_backup_and_stashes_preserved": true,
+    "core_refs_tags_unchanged_before_documentation_commit": true,
+    "fixed_rc2_unchanged": true
+  }
+}

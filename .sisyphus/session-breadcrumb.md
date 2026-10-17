@@ -5,23 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Authorized Core nine-local and one-remote branch cleanup complete
-
-- **Authority/guards**: human explicitly authorized the prior Core-only list.
-  Rechecked all nine full SHAs, origin backups, owner/worktree occupancy and
-  merged PR heads/tree equivalence against current origin/master `95ef2108`.
-- **Executed**: nine ordinary local branch deletions, one remote deletion at
-  expected `ed28f984` with SHA lease and tag-following disabled. Core branches
-  18→9 local / 16→15 actual origin; exact before/after delta is recorded.
-- **Preserved**: all other origin heads, including b07972c1 matrix source and
-  f5181a3e RC2 history; snapshot object ffb5e5d6/peeled ed28f984 and every tag
-  unchanged. Current HEAD/worktree/stash and manifest unchanged before docs edit.
-  No sibling/owner work, auxiliary worktree, saved stash or other topic removed.
-- **Receipt**: docs/history/core-scoped-branch-cleanup-2026-10-17.md and JSON;
-  rollback sources retained. Batch this new receipt with ac69fa7 / 92c4a02 in
-  the next weekly docs PR. No new candidate, matrix, acceptance, runtime or tag
-  operation; broader owner housekeeping remains open.
-
 # 2026-10-17 - Audit and cleanup three-commit docs batch merged as PR179
 
 - **Published**: ac69fa72 / 92c4a02a / 8df58884, ten docs/evidence files,
@@ -158,3 +141,19 @@ Older history: `.sisyphus/archive/`.
   and JSON; local weekly batch with two receipts, no new PR or tag operation.
   Core metadata/gates 55/207, JSON/links/breadcrumb/diff and original-ref/tag
   preservation passed; owner final full-gate/cleanup receipt remains absent.
+
+# 2026-10-17 - Renewed Addon request completed; two gaps recovered and accepted
+
+- **Scope**: one newly authorized continuation message; owner reread original
+  human scope. Existing request_article_refresh singleton called once per
+  post282639/page282641; both Cloud runs succeeded, no error codes.
+- **Accepted**: 08:08:49–51Z stable public 1999/covered1999, no gap; two targets
+  each document+chunk+1024-dimensional embedding. Core independently checked
+  stable exact sets, run/content-hash links and all 44 evidence file hashes.
+- **Boundary**: clean Addon3e650d1b, backups/original refs/other owner work and
+  tags/RC2 retained. Natural scan not proved; F01/F02/F03, quality/production
+  and other resources remain independent. No rewind/flush/rebuild/deploy/tag.
+- **Record**: docs/history/addon-bounded-recovery-closeout-2026-10-17.md + JSON;
+  local weekly batching with three prior commits, no new PR or stack matrix.
+  Core gates 55/207, metadata, JSON/links/breadcrumb/diff and original-ref/tag
+  preservation checks passed; no new tag, remote publication or sibling edit.

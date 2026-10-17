@@ -5,6 +5,22 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Addon two-gap recovery accepted — 2026-10-17
+
+[Bounded recovery closeout](history/addon-bounded-recovery-closeout-2026-10-17.md):
+the renewed owner request completed. Two singleton requests through the existing
+supported article-refresh path produced successful runs and real documents/
+chunks/1024-dimensional embeddings. At 16:08:49–51 Beijing, the stable public
+manifest is covered 1999/1999 with no gaps. Core independently verified exact
+sets, request/run links and all 44 owner evidence hashes.
+
+Site sync/loading and these two historical gaps are now closed. Earlier pending
+entries below are dated history. Natural reconciliation execution, 64-key
+owner disposition, historical OCR, dependency/quality/adoption and other owner
+resources remain independent. No new stack release or production promotion,
+original-ref deletion or tag action occurred. This receipt joins three local
+Core docs commits for weekly batching; no PR is opened here.
+
 ## Authorized Addon owner request: sync complete, recovery still open — 2026-10-17
 
 [Owner handoff and independent evidence](history/addon-owner-sync-recovery-handoff-2026-10-17.md):
