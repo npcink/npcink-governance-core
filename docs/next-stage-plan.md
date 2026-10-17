@@ -5,6 +5,21 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Toolbox closed; Cloud current source awaits publication — 2026-10-17
+
+Toolbox #273 merged as `d253bdb1`; default master is clean and synchronized,
+with protected checks and owner real-editor/native-save cleanup evidence.
+Cloud's current clean local head is `f7aab8c4`, one unpushed implementation
+commit beyond merged #1124 `585aa660`. GitHub cannot resolve that new SHA
+(HTTP 422); the five green checks on `585aa660` do not cover it.
+
+The readiness condition is therefore unmet: no new full matrix ran this refresh.
+The earlier 7/7 remains historical. Ask the Cloud owner to complete formal
+publication/PR/exact-SHA CI and default-root closeout, then rerun the full
+no-override `--fail-on-dirty` matrix. A new owner-message authorization is pending.
+See [the refresh evidence and next gate](history/toolbox-cloud-owner-refresh-2026-10-17.md).
+RC2 bytes and the remote snapshot remain unchanged; retain other unfinished work.
+
 ## Adapter source saved and seven-docs batch merged — 2026-10-17
 
 Adapter `eb73e503` is now preserved on its named origin branch; an empty bare

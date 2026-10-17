@@ -1,0 +1,173 @@
+{
+  "observed_at": "2026-10-17T03:21:49.578375+00:00",
+  "repositories": [
+    {
+      "name": "npcink-abilities-toolkit",
+      "path": "/Users/muze/gitee/npcink-abilities-toolkit",
+      "head": "b09ad3008a027782f672d929e79c77ac7a01333e",
+      "branch": "master",
+      "status": "",
+      "upstream": "## master...origin/master",
+      "tracked_content_mtime_sha256": "f1c11ec6270ffc13e5d26ee7821a2ef823300477aa0c7635fa582ab5d0f0f831",
+      "stashes": ""
+    },
+    {
+      "name": "npcink-governance-core",
+      "path": "/Users/muze/gitee/npcink-governance-core",
+      "head": "397fee55d1b07a7eaa8aeb75f6162cf4a225c49f",
+      "branch": "codex/docs-publication-receipt-2026-10-17",
+      "status": "",
+      "upstream": "## codex/docs-publication-receipt-2026-10-17...origin/master [ahead 1]",
+      "tracked_content_mtime_sha256": "5afa502168d9ede144282db19382abe4435a7e5e9bbdc95fd4f468b68490a4b4",
+      "stashes": ""
+    },
+    {
+      "name": "npcink-ai-client-adapter",
+      "path": "/Users/muze/gitee/npcink-ai-client-adapter",
+      "head": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+      "branch": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+      "status": "",
+      "upstream": "## codex/m4-pgy-stack-rc-docs-2026-10-15",
+      "tracked_content_mtime_sha256": "0596e5fb26227383c88bb3a22aff445fac02d20d9d4ed43b5cd85d6c3f3751c8",
+      "stashes": ""
+    },
+    {
+      "name": "npcink-workflow-toolbox",
+      "path": "/Users/muze/gitee/npcink-workflow-toolbox",
+      "head": "d253bdb110be353f959b27d5b6d93682db5b2df8",
+      "branch": "master",
+      "status": "",
+      "upstream": "## master...origin/master",
+      "tracked_content_mtime_sha256": "6595b7ae6dfc60ec6997057ea30402a1e58ec2ee0e09ec25ed696576a705c78f",
+      "stashes": "4830f19e350f9a7e8447cbe8d0a5b3eedd222f21 On codex/fix-classification-registry-owner: preserved before 2026-10-16 worktree cleanup"
+    },
+    {
+      "name": "npcink-cloud-addon",
+      "path": "/Users/muze/gitee/npcink-cloud-addon",
+      "head": "b80b966151f26f114271a5534082c336ab2fea50",
+      "branch": "master",
+      "status": "",
+      "upstream": "## master...origin/master [behind 2]",
+      "tracked_content_mtime_sha256": "a5af2f32cf717769ddda4f7e6fb0a3ae73a1f4881048066f3cdbdbe966a51417",
+      "stashes": ""
+    },
+    {
+      "name": "npcink-eval-lab",
+      "path": "/Users/muze/gitee/npcink-eval-lab",
+      "head": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+      "branch": "main",
+      "status": "",
+      "upstream": "## main...origin/main",
+      "tracked_content_mtime_sha256": "360e8d9aa7912893f3954cf4ee62dad6ee23c5cc3f2f49857adcb3b6746d275c",
+      "stashes": ""
+    },
+    {
+      "name": "npcink-ai-cloud",
+      "path": "/Users/muze/gitee/npcink-ai-cloud",
+      "head": "f7aab8c493b41683e402ea0a307d8b1e856d4a35",
+      "branch": "codex/zero-paid-critical-regression-20261017",
+      "status": "",
+      "upstream": "## codex/zero-paid-critical-regression-20261017...origin/master [ahead 1]",
+      "tracked_content_mtime_sha256": "7d799f0e134e7274ed43eeda469cbe833a5160ccc71ceee8a146f6a97a3f556e",
+      "stashes": ""
+    }
+  ],
+  "toolbox_pr": {
+    "body": "## Scope\n\n- [x] This change is limited to the stated Toolbox module.\n- [x] Public REST, ability ids, workflow shape, lifecycle, or product boundary docs were updated if changed.\n- [x] No unrelated generated files, local environment files, or cross-repo worktree changes are included.\n\nInternal-link rows used the server's `can_apply_to_editor` flag to show Ready to apply, while actual Apply additionally checked current rich-text link formats, existing targets, density and stale source text. On real article 18817 this advertised five ready candidates although only one passed Apply.\n\nProject each candidate's readiness through the existing pure single-candidate Apply engine against live Gutenberg blocks. Reference-only rows show the existing translated rejection reason and retain copy/open actions. Format-only edits refresh readiness, stale selections leave the actionable selection, and impression applicable-count buckets use the same live check. Apply still reruns the original engine at click time.\n\nThe raw block tree stays in local editor controls, outside request context and telemetry. Frozen ranking weights, thresholds, deduplication, candidate order, Top K, candidate ranks, `internal_links.v1` and `related_content.v1` remain unchanged. Multi-selection conflicts retain ADR-014's click-time per-item partial-success contract.\n\n## Toolbox Boundary\n\n- [x] Toolbox remains the operator-facing AI tool surface.\n- [x] Provider outputs remain suggestions, planning artifacts, or Core handoff packets.\n- [x] This does not add final WordPress writes from fixed-flow buttons.\n- [x] This does not add a second ability registry, workflow registry, approval store, queue/runtime, scheduler, indexing lifecycle, or provider billing/logging owner.\n- [x] Unsplash/Pixabay/Pexels remain image-source connectors, not AI image generation.\n\nNo REST route, permission, scope, backend write, automatic save, Cloud source or runtime ownership change. Only explicit native WordPress save persists the reviewed current editor state. No production deployment, M4 synchronization/promotion, release version/tag, or WordPress.org publishing.\n\n## Verification\n\n- [x] `composer validate --no-check-publish`\n- [x] `composer test:all` (including 4,216 static assertions and JS behavior tests)\n- [x] `composer check:wporg`\n- [x] Relevant smoke test if the change touches editor UI, Cloud handoff, Core handoff, activation, or REST routing.\n- [x] `composer lint:standards`\n- [x] `composer analyse:php`\n- [x] `git diff --check`\n\nSource regressions cover already-linked ranges, canonical existing target URLs, stale text, code blocks, external targets, fallback evidence, article/block density, unsupported target types, weak candidates, missing rich-text APIs, readiness restoration, unchanged candidates/ranks/blocks and metadata-only impression counts.\n\nReal local site: `https://magick-ai.local/`; existing M4-backed Cloud preview reused without sync/deploy. PC viewport: 1440 x 1000.\n\n1. Published article 18817, with `NPCINK_INTERNAL_LINK_LIVE_STATE_SMOKE=1`: eight Cloud results, seven existing deduplicated candidates, one ready candidate at original rank 5; four linked-range candidates become reference-only with the concrete reason. All DOM states and the impression bucket agree with actual Apply eligibility.\n2. Native format-only changes on that real paragraph test both linking the candidate range and linking a different phrase to the same target. Both immediately disable insertion, restoring the HTML restores readiness, and no recommendation fetch or database body change occurs.\n3. Select the page's ready candidate directly (no test-side safe-candidate selection workaround): Apply 1 / reject 0; rank 5 preserved in metadata; the candidate becomes reference-only after Apply. Undo restores every Gutenberg block and attribute exactly and restores readiness. Original published body remains byte-for-byte unchanged.\n4. Temporary draft 282814 copies the same real source body with correct WordPress slashing and asserts byte-for-byte equality before opening the editor. One ready candidate applies; only explicit core editor native save persists the complete reviewed content. `internal_link_saved_unchanged` keeps the original session, bounded ranks, frozen version and metadata-only redaction. Final native-save run: zero console/network errors. Drafts 282812 and 282814 and temporary login helpers are removed.\n5. Browser harness now checks actual row readiness, metadata ranks/counts, format-only refresh and exact block Undo rather than old legacy HTML serialization, and asserts exact saved content. Initial and post-transaction screenshots are local ignored test artifacts; no article body snapshots are written by the harness.\n\nKnown fixture limitations: published article 18817 references missing historical attachment 18818 (two existing WP media 404s); Toolbox/Addon requests pass. One earlier native run reported an external asset console failure; the final run passed without console/network errors. UI review confirms textual rejection reasons and copy/open actions, with existing grouping and collapsed-reference behavior retained. This proves developer integration acceptance, not human relevance/gold-set or production acceptance.\n\n## Risk\n\n- Residual risk: readiness describes independent application at the current render; subsequent edits or combined selection overlaps/duplicate targets/density can still reject at click time. Existing fail-closed checks and per-item results remain authoritative. Preview is bounded to the existing at-most-eight candidates and does not dispatch editor changes or network calls.\n- Rollback plan: revert this focused commit; no data migration or new persistent state is introduced.\n\n## AI Review Triage\n\nNo external review was delivered: GitHub reports the OpenCodeReview workflow as `disabled_manually`, so no run exists on head `86c6ac7ae699211e593bc61420aa82ba85851164`. The separate Codex connector also reports its review usage limit. This is an undelivered review, not a clean review.\n\nThe focused change has been reviewed locally for correctness, architecture, readability, security and performance: existing Apply engine reused, no duplicate placement policy, unchanged ranking and write authority, local-only blocks and metadata-only feedback, and bounded at-most-eight previews with no dispatch/network effects. All protected CI checks and advisory static analysis passed on the exact head; source gates and the real-site cases above passed. Use the publisher's explicit recorded no-review exception, without enabling workflows or bypassing protection.\n\n## Release Impact\n\n- [x] No release impact.\n- [ ] Requires package/release verification.\n\n## Notes\n\nUpdates the recommendation standard, current-state orientation and historical baseline's resolved-limitations note; the frozen ranking table and source ranking code are unchanged. Toolkit's previous anchor/schema repair remains Toolkit PR #262. This change is Toolbox-only: repository-local gates plus actual consumer integration evidence, without a cross-repository deployment matrix.\n\n## AI Review Exceptions\n\n- 2026-10-17 — merged without a delivered OpenCodeReview round (no OpenCodeReview run registered for this head): OpenCodeReview workflow is disabled_manually and no exact-head run is available; Codex review quota is exhausted. Local five-axis review, all source gates, real-article linked-range/same-target/format-only/Apply/Undo/native-save checks and exact-head protected CI passed. No workflow settings or protection are bypassed.",
+    "headRefOid": "86c6ac7ae699211e593bc61420aa82ba85851164",
+    "mergeCommit": {
+      "oid": "d253bdb110be353f959b27d5b6d93682db5b2df8"
+    },
+    "mergedAt": "2026-10-17T03:17:07Z",
+    "state": "MERGED",
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T03:13:28Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/38997950080/job/117294548164",
+        "name": "PR body contract",
+        "startedAt": "2026-10-17T03:13:25Z",
+        "status": "COMPLETED",
+        "workflowName": "PR Body Contract"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T03:15:02Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/38998048792/job/117294854840",
+        "name": "PR body contract",
+        "startedAt": "2026-10-17T03:14:59Z",
+        "status": "COMPLETED",
+        "workflowName": "PR Body Contract"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T03:16:53Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/38998170418/job/117295226072",
+        "name": "PR body contract",
+        "startedAt": "2026-10-17T03:16:50Z",
+        "status": "COMPLETED",
+        "workflowName": "PR Body Contract"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T03:14:18Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/38997950084/job/117294548030",
+        "name": "PHP contracts",
+        "startedAt": "2026-10-17T03:13:25Z",
+        "status": "COMPLETED",
+        "workflowName": "Toolbox CI"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T03:14:15Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/38997950084/job/117294547888",
+        "name": "Static analysis (advisory)",
+        "startedAt": "2026-10-17T03:13:25Z",
+        "status": "COMPLETED",
+        "workflowName": "Toolbox CI"
+      }
+    ],
+    "url": "https://github.com/npcink/npcink-workflow-toolbox/pull/273"
+  },
+  "cloud_ci": {
+    "local_head": "f7aab8c493b41683e402ea0a307d8b1e856d4a35",
+    "remote_master": "585aa6609b45eff3e41e4a3e4718ae68941824ef",
+    "remote_topic_exists": false,
+    "exact_sha_check_runs_http_status": 422,
+    "exact_sha_check_runs_message": "No commit found for SHA",
+    "ready": false,
+    "owner_reported_local_validation": {
+      "api": 22,
+      "browser": 15,
+      "contracts": 6,
+      "strict_typecheck": "passed",
+      "publication": "local commit only"
+    }
+  },
+  "matrix": {
+    "executed_this_refresh": false,
+    "reason": "Cloud current exact SHA is local-only and lacks remote CI; wait-until-ready condition is not met.",
+    "last_full_success": "2026-10-17T02:45:41Z",
+    "last_full_success_scope": "historical versions only",
+    "last_diagnostic": "2026-10-17T03:08:09Z",
+    "last_diagnostic_passed": 6,
+    "total": 7
+  },
+  "immutable": {
+    "manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+    "snapshot_tag": "stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0",
+    "remote_tag_object": "ffb5e5d6d7b68fa952288524a181ff688a7698ee",
+    "remote_tag_peeled": "ed28f984153200a8362fcd0928bbb32b83636159",
+    "unchanged": true
+  },
+  "coordination": {
+    "new_owner_messages_sent": 0,
+    "cloud_publication_request_authorization": "asked; pending reply"
+  },
+  "scope": "read-only sibling audit; Core documentation only"
+}

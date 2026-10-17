@@ -5,15 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - Post-tag live checkout drift recorded
-
-- **Post-tag state**: Cloud Addon `master` advanced to `6c9d3c4` via dependency
-  update PR #279; Toolbox has one new owner-held uncommitted documentation
-  change.
-- **Boundary**: both changes occurred after tag preflight and are excluded
-  from the immutable snapshot tag. Any future candidate needs fresh matrix and
-  acceptance evidence.
-
 # 2026-10-16 - Post-tag audit refresh; no new candidate selected
 
 - **Matrix**: live default `--fail-on-dirty` passed 7/7 with exit 0 at
@@ -173,3 +164,15 @@ Older history: `.sisyphus/archive/`.
   codex/docs-publication-receipt-2026-10-17. Preserve other work/stashes,
   Addon drift and owner dispositions. Fixed manifest and tags unchanged; no
   tag creation/push/move, new candidate, owner message or deployment.
+
+# 2026-10-17 - Toolbox273 closed; Cloud local-only SHA blocks readiness
+
+- **Toolbox**: #273 merged as `d253bdb1`; clean synchronized master, protected
+  checks and real-editor/native-save owner cleanup receipts recorded.
+- **Cloud**: clean local `f7aab8c4` is unpushed; remote master `585aa660` has
+  five green checks, but GitHub returns 422 for the current SHA. Local tests
+  are not current remote CI. Owner ended local-only; new message authorization
+  asked, no extra message sent.
+- **Gate**: no new full matrix until ready; prior 7/7 is historical. Keep other
+  work/stashes and weekly docs receipts. RC2 and remote snapshot unchanged;
+  no tag creation, push or movement. See the Toolbox/Cloud refresh history.
