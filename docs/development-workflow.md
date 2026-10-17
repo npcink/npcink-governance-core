@@ -5,6 +5,14 @@ Status: active.
 This project is developed as a standalone WordPress plugin mounted into the
 local `magick-ai` WordPress site.
 
+## Lessons from the administrator UX review
+
+Before repeating an audit or regenerating catalogs, use the
+[2026-10-11 UX retrospective](history/user-perspective-ux-audit-2026-10-11.md)
+for corrected findings and the stable-checkout, catalog-slug, plural-header
+and integration-source checks. Keep new evidence bound to the current SHA;
+historical review receipts do not validate a later checkout.
+
 ## Local Paths
 
 Project:

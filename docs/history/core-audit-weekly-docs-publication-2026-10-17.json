@@ -1,0 +1,227 @@
+{
+  "recorded_at": "2026-10-17T05:53:20.710362+00:00",
+  "status": "three_accumulated_audit_cleanup_docs_commits_published_and_merged",
+  "scope": "Core documentation publication and merge receipt only",
+  "pr": {
+    "url": "https://github.com/npcink/npcink-governance-core/pull/179",
+    "state": "MERGED",
+    "headRefOid": "8df588847af0534f28755ff2a955df7748ceb0da",
+    "mergeCommit": {
+      "oid": "289ce777eff158e8f2d5088c30d90866efc87e2c"
+    },
+    "mergedAt": "2026-10-17T05:51:31Z",
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T05:49:35Z",
+        "conclusion": "FAILURE",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39007652209/job/117323298283",
+        "name": "code-review",
+        "startedAt": "2026-10-17T05:49:19Z",
+        "status": "COMPLETED",
+        "workflowName": "OpenCodeReview PR Review"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T05:50:13Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39007652221/job/117323297851",
+        "name": "Static contracts",
+        "startedAt": "2026-10-17T05:49:19Z",
+        "status": "COMPLETED",
+        "workflowName": "Core CI"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T05:49:22Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39007652280/job/117323297966",
+        "name": "PR body contract",
+        "startedAt": "2026-10-17T05:49:19Z",
+        "status": "COMPLETED",
+        "workflowName": "PR Body Contract"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T05:50:07Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39007698240/job/117323431222",
+        "name": "PR body contract",
+        "startedAt": "2026-10-17T05:50:05Z",
+        "status": "COMPLETED",
+        "workflowName": "PR Body Contract"
+      }
+    ]
+  },
+  "baseline": "95ef21089f281c16f69f8898d7eb89c3e7671795",
+  "original_commits": [
+    "ac69fa7285ef25479e4e562f22dc7b0a56a5d330",
+    "92c4a02a137cd0990446b83ce30d8e1c9449ed75",
+    "8df588847af0534f28755ff2a955df7748ceb0da"
+  ],
+  "published_files": [
+    ".sisyphus/archive/2026-10.md",
+    ".sisyphus/session-breadcrumb.md",
+    "docs/history/branch-worktree-stash-audit-2026-10-17.json",
+    "docs/history/branch-worktree-stash-audit-2026-10-17.md",
+    "docs/history/core-scoped-branch-cleanup-2026-10-17.json",
+    "docs/history/core-scoped-branch-cleanup-2026-10-17.md",
+    "docs/history/core-weekly-docs-publication-2026-10-17.json",
+    "docs/history/core-weekly-docs-publication-2026-10-17.md",
+    "docs/next-stage-plan.md",
+    "docs/release-closeout-standard.md"
+  ],
+  "original_topic": "codex/weekly-docs-merge-receipt-2026-10-17",
+  "original_local_and_remote_topic_sha": "8df588847af0534f28755ff2a955df7748ceb0da",
+  "identical_topic_squash_tree": "59df625fd5ffdf80a8532135e8814bcf537e485a",
+  "merged_sha_checks": [
+    {
+      "name": "Static contracts",
+      "head_sha": "289ce777eff158e8f2d5088c30d90866efc87e2c",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-17T05:51:35Z",
+      "completed_at": "2026-10-17T05:52:15Z",
+      "html_url": "https://github.com/npcink/npcink-governance-core/actions/runs/39007790429/job/117323697184"
+    }
+  ],
+  "publication": {
+    "publisher": "composer pr:publish with repository body template; no-tags fetch and tag following disabled",
+    "initial_request": "protected squash auto-merge",
+    "final_merge": "normal gh pr merge --squash --match-head-commit after all required checks passed; no --admin",
+    "reason_for_final_merge": "Auto-merge remained OPEN/UNSTABLE after required checks passed and advisory OCR failed",
+    "required_protection": {
+      "strict": true,
+      "contexts": [
+        "Static contracts",
+        "PR body contract"
+      ]
+    },
+    "required_checks_bypassed": false,
+    "new_owner_messages": 0
+  },
+  "advisory_review": {
+    "local": {
+      "exit_code": 124,
+      "timed_out": true,
+      "duration_seconds": 180.0
+    },
+    "local_selected_items": 3,
+    "complete_local_external_review_delivered": false,
+    "ci_run_url": "https://github.com/npcink/npcink-governance-core/actions/runs/39007652209",
+    "ci_status": "failed",
+    "ci_message": "Review failed: 0 finding(s); 3 of 3 selected item(s) failed.",
+    "ci_summary": {
+      "files_reviewed": 3,
+      "comments": 0,
+      "total_tokens": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "elapsed": "2s"
+    },
+    "retries": 0,
+    "disposition": "No complete external review; local focused five-axis review and all required gates passed. Failure recorded in PR body."
+  },
+  "local_checks_before_publication": {
+    "composer_validate": "passed",
+    "composer_test_all": "55 tests / 207 assertions and all component gates",
+    "check_wporg": "passed",
+    "json_links_breadcrumb_diff": "passed",
+    "evidence_consistency_and_credential_patterns": "passed"
+  },
+  "preservation": {
+    "remote_heads_before": {
+      "refs/heads/codex/docs-classification-lane1-2026-10-16": "8d9626b7a07ffca7126b400a404a6db05145d1e9",
+      "refs/heads/codex/docs-publication-receipt-2026-10-17": "b07972c12f0fb822c674570f2cc5b22b2c8d8302",
+      "refs/heads/codex/docs-rc-acceptance-2026-10-16": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+      "refs/heads/codex/docs-rc-audit-refresh-2026-10-16": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+      "refs/heads/codex/docs-rc-final-closeout-2026-10-16": "19953429829f237551b752b8438e12b0f290a385",
+      "refs/heads/codex/docs-rc-identity-2026-10-16": "8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+      "refs/heads/codex/docs-rc-matrix-drift-2026-10-16": "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a",
+      "refs/heads/codex/docs-rc-post-tag-drift-2026-10-16": "3402eca486af5d979b80f9196315b4a772ed464d",
+      "refs/heads/codex/docs-rc-release-notes-2026-10-16": "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472",
+      "refs/heads/codex/docs-rc-tag-published-2026-10-16": "94af361fa20bacd441506fd9d3be13e5d5aa8de1",
+      "refs/heads/codex/docs-week-2026-10-13-followup": "418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+      "refs/heads/codex/rc2-validation-2026-10-16": "f5181a3ebe347624c468dbb36623421868c88857",
+      "refs/heads/dependabot/composer/phpstan/phpstan-2.3.1": "57624c2272f39d599ba620174ee05d0dc9415c0e",
+      "refs/heads/dependabot/github_actions/alibaba/open-code-review-1.12.13": "d3191f0dcdf6e2ed19417f17a6b82e2dc82c587b",
+      "refs/heads/master": "95ef21089f281c16f69f8898d7eb89c3e7671795"
+    },
+    "remote_heads_after": {
+      "refs/heads/codex/docs-classification-lane1-2026-10-16": "8d9626b7a07ffca7126b400a404a6db05145d1e9",
+      "refs/heads/codex/docs-publication-receipt-2026-10-17": "b07972c12f0fb822c674570f2cc5b22b2c8d8302",
+      "refs/heads/codex/docs-rc-acceptance-2026-10-16": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+      "refs/heads/codex/docs-rc-audit-refresh-2026-10-16": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+      "refs/heads/codex/docs-rc-final-closeout-2026-10-16": "19953429829f237551b752b8438e12b0f290a385",
+      "refs/heads/codex/docs-rc-identity-2026-10-16": "8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+      "refs/heads/codex/docs-rc-matrix-drift-2026-10-16": "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a",
+      "refs/heads/codex/docs-rc-post-tag-drift-2026-10-16": "3402eca486af5d979b80f9196315b4a772ed464d",
+      "refs/heads/codex/docs-rc-release-notes-2026-10-16": "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472",
+      "refs/heads/codex/docs-rc-tag-published-2026-10-16": "94af361fa20bacd441506fd9d3be13e5d5aa8de1",
+      "refs/heads/codex/docs-week-2026-10-13-followup": "418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+      "refs/heads/codex/rc2-validation-2026-10-16": "f5181a3ebe347624c468dbb36623421868c88857",
+      "refs/heads/codex/weekly-docs-merge-receipt-2026-10-17": "8df588847af0534f28755ff2a955df7748ceb0da",
+      "refs/heads/dependabot/composer/phpstan/phpstan-2.3.1": "57624c2272f39d599ba620174ee05d0dc9415c0e",
+      "refs/heads/dependabot/github_actions/alibaba/open-code-review-1.12.13": "d3191f0dcdf6e2ed19417f17a6b82e2dc82c587b",
+      "refs/heads/master": "289ce777eff158e8f2d5088c30d90866efc87e2c"
+    },
+    "all_prior_nonmaster_source_refs_unchanged": true,
+    "expected_new_publication_topic": "refs/heads/codex/weekly-docs-merge-receipt-2026-10-17",
+    "prior_deleted_remote_ref_still_absent": true,
+    "local_tags_unchanged": true,
+    "remote_tags_unchanged": true,
+    "remote_tags": [
+      "a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc\trefs/tags/pre-refactor-2026-07-14",
+      "5acce75322367d6d46b58665d35331039d4b301a\trefs/tags/pre-refactor-2026-07-14^{}",
+      "8edb4ff1cd5564f389e8da490f183c7a56e0af5b\trefs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1",
+      "5f79d32f8e50e381d1872d68c4f99c0e9ee77d51\trefs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}",
+      "7de7062a3b6308d6b59a47553f3345dd29fab94f\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1",
+      "8f08f8ac3ce836293581f1bc8be040158de2980d\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}",
+      "589d82eb634efa92d3a41ecebf99c8dbfe7a19b2\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2",
+      "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2^{}",
+      "2891b0b532c75da1dbf3426404f99dbeb2310b39\trefs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2",
+      "1829fb828ea4d9e8f7caabea74d5b89117824355\trefs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2^{}",
+      "ffb5e5d6d7b68fa952288524a181ff688a7698ee\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0",
+      "ed28f984153200a8362fcd0928bbb32b83636159\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0^{}",
+      "4e4099cec8d0a88deb006eb1e0e916c485c7de65\trefs/tags/v0.1.0",
+      "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3\trefs/tags/v0.1.0^{}",
+      "ad1d41effcb04a3e1578567e3d30068973344f40\trefs/tags/v0.1.1",
+      "1829fb828ea4d9e8f7caabea74d5b89117824355\trefs/tags/v0.1.1^{}",
+      "fa27aa2a13e01048da411c06cc1dff25abbd45a5\trefs/tags/v0.2.0",
+      "7f2c6bf5b3f810f65f2e3f2d396ecfdf78c07ee6\trefs/tags/v0.2.0^{}",
+      "da05076343d7975e95800eddf1e9719358ac82df\trefs/tags/v0.3.0",
+      "3357f916899ac4b013a753da6d99e712274f2221\trefs/tags/v0.3.0^{}"
+    ],
+    "manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+    "tag_mutations": [],
+    "sibling_mutations": false,
+    "branch_worktree_stash_cleanup": false,
+    "runtime_or_m4_operations": false
+  },
+  "head_counts": {
+    "core_local_before_publication": 9,
+    "core_remote_before_publication": 15,
+    "core_local_after_new_receipt_branch": 10,
+    "core_remote_after_publication": 16,
+    "interpretation": "One intended publication topic remote and one new local receipt branch; prior cleanup remains closed, no old deleted branch restored."
+  },
+  "remaining_work": [
+    "other-owner local candidate disposition, worktrees and stashes",
+    "unreconciled legacy local source / post-PR receipts",
+    "Addon source/candidate drift and workflow diagnostic branch",
+    "open dependency PRs",
+    "quality labels / human production acceptance",
+    "new candidate only if explicitly requested"
+  ],
+  "post_merge_receipt": {
+    "branch": "codex/audit-weekly-docs-receipt-2026-10-17",
+    "publication": "new local docs-only receipt for next weekly batch; no second PR this session",
+    "verification": {
+      "composer_test_all": "passed after documentation update: 55 tests / 207 assertions and all component gates",
+      "composer_validate": "passed",
+      "receipt_json_links_breadcrumb_diff": "passed",
+      "source_preservation_and_immutable_manifest": "passed"
+    }
+  },
+  "matrix_or_exact_acceptance_rerun": false
+}

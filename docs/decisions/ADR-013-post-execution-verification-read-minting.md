@@ -72,5 +72,6 @@ single-use, verification-sourced, and TTL-bounded by the record window.
   execution role and no new channel scope.
 - The Adapter changes its execution order: execute -> provisional record ->
   readback -> final record.
-- Supersedes the Limitations section of ADR-012 for the in-transaction case;
+- Resolves the preflight-only limitation described in Context for
+  in-transaction objects; [ADR-012](ADR-012-execution-attached-verification-reads.md)
   preflight minting remains for statically-addressed objects.

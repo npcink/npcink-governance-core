@@ -5,6 +5,56 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Historical UX synthesis and ADR reference follow-up — 2026-10-17
+
+The two follow-ups identified by the coverage audit are now prepared from
+current master: [the UX retrospective](history/user-perspective-ux-audit-2026-10-11.md)
+preserves four merged PRs, the corrected revoke-confirmation finding and
+repeatable engineering checks. Development Workflow links to it. ADR-013 now
+references the preflight-only limitation in its Context and the actual ADR-012
+file, without changing its accepted decision or runtime contract. The static ADR
+reference assertion now checks the real link and rejects the absent-section claim.
+
+This weekly docs batch also includes the post-#179 receipt and historical
+coverage audit. Publication/merge checks remain pending at this point; older
+“two follow-ups remain” entries below describe the preceding audit checkpoint.
+All original branches and other owner work remain retained. No tag, manifest,
+candidate, runtime, M4 or production operation is included.
+
+## Remaining historical doc coverage audited — 2026-10-17
+
+Across the ten remaining local refs, six post-PR docs commits plus one standalone
+UX-summary commit were traced. **Five patches are already published** through
+#167/#168/#169/#176 with equal stable patch IDs and verified PR/squash trees.
+The old `e73f9684` preflight limitation is semantically covered by ADR-013 and
+#138/#139; do not replay it as a current unresolved runtime limitation.
+See [the per-commit coverage and retain/republish list](history/core-historical-doc-coverage-2026-10-17.md).
+
+Two focused doc follow-ups remain: salvage the local `3c45612c` UX synthesis
+(the four #151–#154 implementations are already merged), and correct ADR-013's
+reference to a nonexistent ADR-012 Limitations section. Prepare from current
+baseline, retaining dated provenance and excluding stale branch/breadcrumb
+state. All source refs and other owner work remain preserved; no deletion,
+ADR/source edit, new PR, tag or runtime operation occurred. Batch this audit
+with the local post-#179 receipt; no duplicate PR for already covered patches.
+
+## Audit/cleanup weekly documentation batch merged — 2026-10-17
+
+Three accumulated commits `ac69fa72`, `92c4a02a`, `8df58884` merged through
+[PR #179](https://github.com/npcink/npcink-governance-core/pull/179) as
+`289ce777` at `05:51:31Z`. Both protected topic checks and merged-SHA Static
+contracts passed; topic/squash trees match. Normal matched-head squash completed
+without bypass after advisory OCR failed; no full external review is claimed.
+See [publication and preservation receipt](history/core-audit-weekly-docs-publication-2026-10-17.md).
+
+The former three docs commits are published. This later merge receipt is one
+new local record for the next weekly batch. Other source backups are unchanged,
+old deleted branches remain absent, and all tags/manifest are unchanged. Core
+now has 10 local / 16 remote branches because publication adds a remote topic
+and a local receipt branch; earlier cleanup counts are historical. Preserve
+other owner tasks and unresolved source/quality/human-acceptance work. No
+additional cleanup, matrix, candidate acceptance, production or M4 action occurred.
+
 ## Authorized Core-only branch cleanup completed — 2026-10-17
 
 After fresh exact-SHA, ownership, worktree and live merged-PR/tree checks,

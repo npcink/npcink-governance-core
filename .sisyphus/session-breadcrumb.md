@@ -5,65 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Owner PR closeout and default no-override 7/7 passed
-
-- **Coordination**: sent exactly one authorized request to each owner chat.
-  Cloud #1120/#1121 and the separate #1122, Addon #283, Toolbox #271 merged.
-  Owner roots are clean, synchronized master: Cloud `ea62b3f2`, Addon
-  `b80b9661`, Toolbox `135090bd`.
-- **Matrix**: full default `--fail-on-dirty` passed 7/7, exit 0 at
-  `2026-10-17T01:39:54Z`; all seven rows default/dirty 0. Two pre-run
-  snapshots 211s apart and the post-run snapshot had identical SHA/branch/status
-  and tracked mtimes. Core tested `0a63aab`; closeout docs remain excluded.
-- **Drift**: fixed RC2 JSON bytes unchanged. Core docs, Cloud runtime/CI/docs,
-  Addon metadata and Toolbox baseline/metadata differ; other three HEADs match.
-  No new candidate was selected and no full release acceptance rerun occurred.
-- **M4**: owner accepted final `ea62b3f2`, recovered the local LAN tunnel,
-  repeated candidates/metadata/positive editor smoke; zero image deploys.
-  AI review gaps and Toolkit anchor-hint limitation remain explicit.
-- **Evidence/next**: `docs/history/stack-rc2-owner-closeout-2026-10-17.md`,
-  audit JSON and original matrix JSON. Choose future candidate revisions before
-  manifest/acceptance refresh. Remote snapshot/historical tags unchanged; no
-  tag creation/push/move or production deployment. Batch local docs for weekly PR.
-
-# 2026-10-17 - Historical closure audit found preserved unfinished work
-
-- **Review**: fully read the referenced chat and checked live Git/PR/source/stash
-  evidence. Current stage can be handed off, but all-history closure is false.
-- **Pending**: Toolbox Lane 3 registry-owner/fixture-audit correction remains in
-  stash `4830f19e`; Cloud resource-baseline scripts/tests/docs in stash `e4d7601c`.
-  Adapter exact docs pin `eb73e503` is local only (origin commit API 422).
-  Toolkit local mirror topic needs owner disposition. Preserve all saved work.
-- **Inventory**: nine clean/present/unlocked worktrees, 55 local and 89 actual
-  origin branches, two retained stashes. Addon #284 merged after the green
-  matrix; default root b80b9661 is one commit behind ba6a621c.
-- **Docs/next**: closure review + durable inventory, dated Lane 3 correction and
-  release audit rules recorded. Four earlier Core docs commits plus this audit
-  await the weekly PR. First close the Lane 3 owner fix and real WP rerun, then
-  source preservation/publication and owner-aware housekeeping. No sibling edits,
-  owner messages, branch/stash removal, new candidate, tag or deployment.
-
-# 2026-10-17 - Toolbox Lane 3 repair merged and real WP cleanup verified
-
-- **Merge**: Toolbox PR #272 merged as `3ae12c4`; exact final head `eb0c24f`
-  passed required PHP/body checks and static analysis. Advisory OCR workflow is
-  disabled; publisher exception recorded, no delivered AI review claimed.
-- **Runtime**: after 144.49s stable owner-root snapshots, Toolbox fast-forwarded
-  clean master. Merged default smoke passed 65 assertions. A real post-intake
-  fault exited 1 as expected and cleaned up. Both runs preserved 326 proposals,
-  4,140 audits and all existing-row hashes; posts 2,391 / attachments 26 /
-  local-consent audits six unchanged. Runtime source snapshots stayed stable
-  during those runs; other owners resumed moving afterward.
-- **Matrix**: final no-override --fail-on-dirty at 02:39:36Z returned 6/7,
-  exit 1: Toolbox clean/passed; Toolkit owner matcher source dirty; Cloud exact
-  SHA lacks backend evidence. No wider clean candidate or release acceptance.
-- **Preservation/next**: original Toolbox/Cloud stashes and other owner work
-  retained. Our temporary Toolbox worktree removed cleanly; its topic retained.
-  Adapter pin, weekly Core docs, Addon/candidate drift and owner checks remain.
-  See docs/history/toolbox-lane3-closeout-2026-10-17.md and JSON/matrix evidence.
-  Five prior local Core docs commits plus this closeout await the weekly PR.
-  Fixed manifest/published snapshot preserved; no tag creation/push/move.
-
 # 2026-10-17 - Toolkit owner and Cloud backend ready; default 7/7 passed
 
 - **Owners**: Toolkit #262 merged as `b09ad300`, clean synchronized master;
@@ -183,3 +124,49 @@ Older history: `.sisyphus/archive/`.
   rollback sources retained. Batch this new receipt with ac69fa7 / 92c4a02 in
   the next weekly docs PR. No new candidate, matrix, acceptance, runtime or tag
   operation; broader owner housekeeping remains open.
+
+# 2026-10-17 - Audit and cleanup three-commit docs batch merged as PR179
+
+- **Published**: ac69fa72 / 92c4a02a / 8df58884, ten docs/evidence files,
+  merged #179 as `289ce777` at `05:51:31Z`. Both required topic checks and
+  merged-SHA Static contracts passed; identical tree `59df625f`.
+- **Merge/review**: publisher requested protected auto-merge; OPEN/UNSTABLE
+  after advisory failure resolved with normal exact-head squash, no --admin.
+  Local OCR timed out at 180s; CI failed 3/3 with zero comments/tokens; no
+  complete external review or retry. Local review and Core gates 55/207 passed.
+- **Preserved**: all prior non-master origin refs and exact source anchors,
+  all tags/manifest, owner work/worktrees/stashes. Deleted remote target remains
+  absent; no repeat cleanup, sibling message/mutation, runtime or candidate work.
+- **Receipt**: docs/history/core-audit-weekly-docs-publication-2026-10-17.md
+  and JSON. New local receipt on codex/audit-weekly-docs-receipt-2026-10-17
+  waits for the next weekly batch. Core 10 local/16 remote includes intended
+  publication/receipt branches; former three-commit backlog is closed.
+
+# 2026-10-17 - Historical post-PR docs coverage reconciled; two doc follow-ups
+
+- **Reviewed**: ten local refs; six post-PR docs commits and one independent
+  UX summary. Five originals have exact replay patch IDs and merged PR/tree
+  proof: 418a081d→#167, 4a23d358/31279cf6→#168, 8d6083e2→#169,
+  e93c3303→#176. No duplicate publication needed; original refs stay retained.
+- **ADR**: e73f9684's static-object limitation is semantically carried by
+  ADR-013 / #135/#136/#138/#139, not an unmerged code feature. Keep source;
+  narrow follow-up corrects ADR-013's reference to absent ADR-012 Limitations.
+- **UX**: 3c45612c synthesis remains local, while #151–#154 implementation is
+  merged. Salvage historical recap/lessons from current baseline; do not replay
+  stale breadcrumb moves, pre-tag blockers or current ledger/package claims.
+- **Record**: docs/history/core-historical-doc-coverage-2026-10-17.md and JSON.
+  This audit joins local 89adeb8 for weekly batching. No source/ADR/ref/tag
+  change, cleanup, owner message, new PR, matrix, acceptance or runtime action;
+  preserve other owner work and all original source refs.
+
+# 2026-10-17 - Historical UX synthesis and ADR reference prepared for weekly PR
+
+- **Scope**: Core documentation only, current master `289ce777` plus the two
+  local post-merge/audit receipts. Salvaged UX source `3c45612c` into
+  docs/history/user-perspective-ux-audit-2026-10-11.md; #151–#154 merges and
+  ancestry rechecked. Revocation confirmation already existed; old OCR/browser
+  claims remain historical. Workflow links the durable engineering checks.
+- **ADR**: corrected ADR-013's nonexistent ADR-012 Limitations reference;
+  decision/status/public behavior unchanged. No old limitation replay.
+- **Preservation**: original branches and other owner work retained; no tag,
+  manifest, source, runtime or sibling operation. Weekly publication pending.
