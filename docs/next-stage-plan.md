@@ -1,9 +1,37 @@
 # Next Stage Plan
 
-Status: active planning guide.
+Status: planning guide; this session's development and closeout workstream is
+paused by user decision on 2026-10-17. Independent owner work is unaffected.
+
+## User-directed pause — 2026-10-17
+
+Read the [pause archive and resumption conditions](history/session-development-pause-2026-10-17.md)
+before acting on any earlier next step. Preserve completed work, dated evidence
+and unresolved owner items. No automatic follow-up, routine polling, new feature
+work or receipt-only PR cycle; resume only after the user decides to continue.
+Installed services/cron are not disabled by this development pause.
+
+PR #185 is merged at `5d36dbb2`. Receipt `f6350d2` and the subsequent pause
+record remain local for weekly documentation batching; no new PR or tag action.
+The dated sections below are historical planning/evidence, not instructions to
+resume suspended work or claims of current runtime health.
 
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
+
+## Next-page checkpoint documentation merged — 2026-10-17
+
+[PR #185](https://github.com/npcink/npcink-governance-core/pull/185) published fcee7b2 / 4b5692a (seven docs/evidence files)
+as `5d36dbb2`. Required checks, body refresh and merged-SHA Static contracts
+passed; exact topic/squash
+trees match. Protected exact-head squash used no admin/bypass. Local OCR
+incomplete; CI failed2/2 with zero tokens/comments. Coverage gap retained.
+See [publication receipt](history/core-next-page-weekly-publication-2026-10-17.md).
+
+Former backlog closed; this later receipt is one local commit for weekly batching.
+Original branches/source anchors/tags/RC2 and other owner work preserved.
+Dated Adapter channel and reconciliation delivery/catch-up/trigger follow-ups
+remain open. No fresh live verification, sibling/runtime/tag operation here.
 
 ## Next scheduled-cycle state rechecked at 17:13 Beijing — 2026-10-17
 

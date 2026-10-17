@@ -2,6 +2,12 @@
 
 Npcink Governance Core is the Npcink AI governance layer for WordPress operations.
 
+The development and cross-repository closeout workstream from the current
+session is **paused by user decision as of 2026-10-17**, pending a future
+decision to resume. See the [pause archive and resumption conditions](docs/history/session-development-pause-2026-10-17.md).
+Existing contracts remain in force; this does not stop installed services or
+independent work owned by other sessions.
+
 npcink-governance-core is the local WordPress AI operation governance control
 plane: it classifies, records, approves, preflights, and audits AI-initiated
 site operations. It does not plan, execute, route models, run workflows, or own

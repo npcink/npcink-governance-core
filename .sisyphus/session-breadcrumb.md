@@ -5,34 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Three owner/release documentation commits merged as PR181
-
-- **Published**: f764306b / 5be60b35 / aec4acb7 (nine docs/evidence files)
-  merged #181 as 9f5b2bf2; equal topic/squash trees, protected auto-merge.
-- **Checks**: required Static/body, local Core 55/207, metadata/wporg and docs
-  integrity passed. Local OCR timed out; CI failed 3/3 with zero tokens/comments.
-  No full external review claimed; no bypass, retry or workflow change.
-- **Retain/next**: original branches and remote source refs, Core tag maps and
-  fixed manifest unchanged; other owner work and dated follow-ups stay open.
-  docs/history/core-owner-release-weekly-publication-2026-10-17.md plus JSON
-  form one new local receipt for next weekly batch; no recursive PR, sibling
-  mutation/message, cleanup, acceptance, deployment or tag operation.
-  Merged-SHA Static contracts passed (run 39012548194); receipt docs gates pass.
-
-# 2026-10-17 - Adapter update channel and Addon site/recovery rechecked
-
-- **Adapter**: 07:11:27Z info/package still 0.4.3; update probes from 0.4.1
-  offer 0.4.2, from 0.4.2 no entry. No update-channel closure or monitor.
-- **Addon**: site symlink/file hash still old b80b9661; upstream 3e650d1b.
-  Owner handoff explicitly performed no site sync/recovery. Historical two-gap
-  1997/1999 sample is October 16, not new coverage; live recovery unverified.
-- **Record**: docs/history/adapter-update-addon-recovery-refresh-2026-10-17.md
-  plus JSON. Preserve owner work/original refs/tags/RC2; no site/Cloud/model
-  calls, cleanup, tag operation or owner message. Local weekly batching with
-  post-#181 receipt, no new PR or candidate/matrix/acceptance run.
-  Core gates 55/207, metadata, JSON/links/breadcrumb/diff passed; original
-  refs/tags/resources and sibling HEAD/status unchanged at final recheck.
-
 # 2026-10-17 - One Addon owner request delivered; sync verified, gaps remain
 
 - **Authority/action**: sent one authorized request to Addon owner 01a1447a;
@@ -158,3 +130,33 @@ Older history: `.sisyphus/archive/`.
   batch with post-#184 receipt, no new PR/candidate/acceptance/deploy/tag action.
   Core55/207/metadata and JSON/links/breadcrumb/diff checks passed; original
   refs/resources/tags, sibling HEAD/status and fixedRC2 unchanged at recheck.
+
+# 2026-10-17 - Next-page checkpoint docs published via PR185
+
+- **Published**: fcee7b2/4b5692a, seven docs/evidence files; #185 squash 5d36dbb2,
+  topic/squash trees equal. Required Static/body and body refresh passed;
+  normal protected exact-head merge, no admin/bypass.
+- **Checks/review**: Core55/207/metadata/wporg/docs and 3 raw hashes passed.
+  Local OCR180s timeout; CI2/2 failed zero tokens/comments; gap recorded.
+  Merged-SHA Static contracts passed (run39021081940).
+- **Preserve/next**: original refs/resources/tags/fixedRC2 and owner work retained.
+  No sibling/message/runtime/cleanup/tag action. Dated channel and scan delivery/
+  full-pass/trigger follow-ups stay open. docs/history/core-next-page-weekly-
+  publication-2026-10-17.md +JSON; one local receipt for next weekly batch.
+  Receipt metadata/Core55/207/wporg/docs integrity gates passed.
+
+# 2026-10-17 - User paused this session's development; archive before closure
+
+- **Decision**: stop this workstream's feature development, cross-repo closeout
+  and channel/reconciliation follow-ups until an explicit user resumption.
+  Other owner work and existing runtime/cron/services are not stopped.
+- **Archive**: docs/history/session-development-pause-2026-10-17.md records
+  delivered work, dated pending evidence, exact source/release identities,
+  lessons, preservation and focused recovery conditions. README/plan/resume
+  entry points now give the pause precedence over older next steps.
+- **Retain**: #185 merged5d36dbb2; receiptf6350d2 and this pause record local
+  for weekly batching. Original refs/worktrees/stashes/owner work/tags/RC2
+  retained. No fresh runtime read, owner message, new PR/candidate/tag action.
+- **Next**: user decides whether to resume. No polling/automatic wakeup or
+  receipt-only publication loop. Local recovery bundle under Git session-archives.
+  Archive metadata/Core55/207/wporg/links/breadcrumb/diff/manifest and preservation checks passed.

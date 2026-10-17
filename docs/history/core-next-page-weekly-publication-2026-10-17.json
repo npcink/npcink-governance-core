@@ -1,0 +1,140 @@
+{
+  "scope": "Core weekly next-page reconciliation documentation publication",
+  "baseline": "a0d26847d77e273f9c8047aff28aeda02c9d77a0",
+  "pr": {
+    "headRefOid": "4b5692aece36ee73ec4c9002319e04398fd9ff7b",
+    "mergeCommit": {
+      "oid": "5d36dbb21c9766eb0a815a7a0762a9f4edf5c1a0"
+    },
+    "mergedAt": "2026-10-17T09:25:37Z",
+    "state": "MERGED",
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T09:24:32Z",
+        "conclusion": "FAILURE",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39020990355/job/117362593092",
+        "name": "code-review",
+        "startedAt": "2026-10-17T09:24:18Z",
+        "status": "COMPLETED",
+        "workflowName": "OpenCodeReview PR Review"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T09:25:14Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39020990313/job/117362592471",
+        "name": "Static contracts",
+        "startedAt": "2026-10-17T09:24:18Z",
+        "status": "COMPLETED",
+        "workflowName": "Core CI"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T09:24:20Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39020990250/job/117362592196",
+        "name": "PR body contract",
+        "startedAt": "2026-10-17T09:24:17Z",
+        "status": "COMPLETED",
+        "workflowName": "PR Body Contract"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T09:25:16Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39021049343/job/117362761149",
+        "name": "PR body contract",
+        "startedAt": "2026-10-17T09:25:12Z",
+        "status": "COMPLETED",
+        "workflowName": "PR Body Contract"
+      }
+    ],
+    "url": "https://github.com/npcink/npcink-governance-core/pull/185"
+  },
+  "published_commits": [
+    "fcee7b2eb7f4a994dd2967d6fb5961d7187a8ad3",
+    "4b5692aece36ee73ec4c9002319e04398fd9ff7b"
+  ],
+  "published_files": 7,
+  "topic_squash_trees_equal": true,
+  "protection": {
+    "url": "https://api.github.com/repos/npcink/npcink-governance-core/branches/master/protection/required_status_checks",
+    "strict": true,
+    "contexts": [
+      "Static contracts",
+      "PR body contract"
+    ],
+    "contexts_url": "https://api.github.com/repos/npcink/npcink-governance-core/branches/master/protection/required_status_checks/contexts",
+    "checks": [
+      {
+        "context": "Static contracts",
+        "app_id": 15368
+      },
+      {
+        "context": "PR body contract",
+        "app_id": 15368
+      }
+    ]
+  },
+  "merge_method": "publisher requested auto-merge; normal protected exact-head squash completed after required checks passed; no admin/bypass",
+  "local_gates": {
+    "metadata": "passed",
+    "test_all": "55 tests / 207 assertions plus component gates passed",
+    "wporg": "passed",
+    "docs_scope_json_links_breadcrumb_diff_manifest": "passed",
+    "checkpoint_raw_evidence_hashes": "3/3 verified"
+  },
+  "review": {
+    "manual_five_axis": "no blocker identified",
+    "local_ocr": {
+      "status": "timeout",
+      "seconds": 180
+    },
+    "ci_ocr": {
+      "run": 39020990355,
+      "status": "failed",
+      "message": "Review failed: 0 finding(s); 2 of 2 selected item(s) failed.",
+      "summary": {
+        "files_reviewed": 2,
+        "comments": 0,
+        "total_tokens": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "elapsed": "1s"
+      }
+    },
+    "complete_external_review_claimed": false,
+    "gap_recorded_in_pr": true
+  },
+  "merged_sha_static_contracts": {
+    "run": 39021081940,
+    "status": "passed",
+    "sha": "5d36dbb21c9766eb0a815a7a0762a9f4edf5c1a0"
+  },
+  "preservation": {
+    "original_local_branch_tag_refs_unchanged": true,
+    "new_local_refs": {
+      "refs/heads/codex/page-weekly-merge-receipt-2026-10-17": "5d36dbb21c9766eb0a815a7a0762a9f4edf5c1a0"
+    },
+    "original_nonmaster_remote_heads_unchanged": true,
+    "new_remote_heads": {
+      "refs/heads/codex/scan-weekly-merge-receipt-2026-10-17": "4b5692aece36ee73ec4c9002319e04398fd9ff7b"
+    },
+    "remote_master": "5d36dbb21c9766eb0a815a7a0762a9f4edf5c1a0",
+    "complete_remote_tag_map_unchanged": true,
+    "worktree_paths_and_stashes_unchanged": true,
+    "fixed_rc2_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+    "sibling_mutation_or_owner_message": false,
+    "tag_creation_push_or_movement": false,
+    "other_owner_work": "preserved"
+  },
+  "remaining_owner_tasks": "Adapter update offering; pending-page delivery; full reconciliation catch-up and direct trigger attribution; other independent owner work",
+  "next": "one new local post-merge receipt for next weekly documentation batch; no recursive PR",
+  "post_merge_receipt_gates": {
+    "metadata": "passed",
+    "test_all": "55 tests / 207 assertions plus component gates passed",
+    "wporg": "passed",
+    "json_links_breadcrumb_diff_manifest": "passed"
+  }
+}
