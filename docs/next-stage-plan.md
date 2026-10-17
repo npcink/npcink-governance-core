@@ -5,6 +5,53 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Adapter publication and Addon drift evidence reconciled — 2026-10-17
+
+[The release/drift closeout](history/adapter-release-addon-drift-review-2026-10-17.md)
+verifies Adapter v0.4.3 GitHub/SVN publication and matching 26-file official
+packages. Update API probes still do not offer 0.4.3; external distribution
+follow-up remains. Adapter #121 is merged; original eb73e503 source retained.
+
+The separate owner RC3 compatibility candidate has stored 7/7 and zero-skip
+exact acceptance evidence, with source/matrix/log hashes checked here. It
+includes Addon 3e650d1b but does not replace fixed Core RC2 or cover today's
+moving heads. Addon #284 is a runtime reconciliation fix; #285 is documentation.
+Its shared root intentionally stays b80b9661; site update and actual Cloud-gap
+recovery need separate scope/evidence. Preserve other owner work and all tags.
+This local audit joins the two receipts for weekly batching; no publication,
+checkout synchronization or acceptance rerun occurred in this session.
+
+## Other-owner closeout refreshed — 2026-10-17
+
+[The current classified checklist](history/other-owner-closeout-refresh-2026-10-17.md)
+supersedes older pending-owner claims: Cloud #1126/#1127, Toolkit #262,
+Toolbox #274, Eval Lab #111 and Adapter #119/#120 are merged. Seven default
+roots are clean at observation, but Addon is two upstream commits behind;
+all seven live heads now differ from fixed RC2. No new gate run is implied. Final recheck saw a parallel Adapter `v0.4.3`
+publication at `d3b114f7`; this audit performed no tag operation. Its owner
+release closeout remains to verify; the stack snapshot/manifest are unchanged.
+
+Remaining owner work includes Cloud budget/real-mail/site/writing acceptance,
+CVE-watch triage, independent human quality gold/calibration, legacy source,
+dependency PRs and owner housekeeping. User decisions concern paid Provider
+scope/budget, human validation scope, any future candidate and cleanup scope.
+Preserve all original branches/resources and tags. New audit and `f764306b`
+receipt await weekly batching; no sibling mutation or owner message occurred.
+
+## UX retrospective and ADR correction published — 2026-10-17
+
+[PR #180](https://github.com/npcink/npcink-governance-core/pull/180) merged as
+`c6031aff` after both protected checks passed. The historical UX synthesis,
+reusable engineering lessons, workflow link and ADR-013 reference/assertion
+correction are published with the two accumulated receipts. These two follow-up
+items are closed; preceding preparation/audit entries remain dated history.
+See [publication and preservation receipt](history/core-ux-weekly-docs-publication-2026-10-17.md).
+
+Advisory OCR did not complete successfully; no full external review is claimed.
+All original branches, other owner work, tags and fixed manifest are retained.
+No broader cleanup, candidate acceptance, runtime or release action occurred.
+This later receipt is one new local record for the next weekly docs batch.
+
 ## Historical UX synthesis and ADR reference follow-up — 2026-10-17
 
 The two follow-ups identified by the coverage audit are now prepared from

@@ -1,0 +1,132 @@
+{
+  "scope": "Core weekly UX/history documentation publication and ADR reference assertion",
+  "baseline": "289ce777eff158e8f2d5088c30d90866efc87e2c",
+  "pr": {
+    "url": "https://github.com/npcink/npcink-governance-core/pull/180",
+    "state": "MERGED",
+    "headRefOid": "27c6c570540f906c8d4653836ed16dd17986c905",
+    "mergeCommit": {
+      "oid": "c6031aff5f15b0ab568479e1099314c1e901b6a8"
+    },
+    "mergedAt": "2026-10-17T06:20:31Z",
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T06:19:31Z",
+        "conclusion": "FAILURE",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39009468162/job/117328663052",
+        "name": "code-review",
+        "startedAt": "2026-10-17T06:19:18Z",
+        "status": "COMPLETED",
+        "workflowName": "OpenCodeReview PR Review"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T06:20:17Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39009468145/job/117328662364",
+        "name": "Static contracts",
+        "startedAt": "2026-10-17T06:19:18Z",
+        "status": "COMPLETED",
+        "workflowName": "Core CI"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T06:19:21Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39009468115/job/117328662320",
+        "name": "PR body contract",
+        "startedAt": "2026-10-17T06:19:18Z",
+        "status": "COMPLETED",
+        "workflowName": "PR Body Contract"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T06:20:40Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39009552191/job/117328907850",
+        "name": "PR body contract",
+        "startedAt": "2026-10-17T06:20:37Z",
+        "status": "COMPLETED",
+        "workflowName": "PR Body Contract"
+      }
+    ]
+  },
+  "published_commits": [
+    "89adeb8f9ce33423d9c0647f79b0ffcec1838df7",
+    "55c876897e28694164a119f052534699b4034595",
+    "ddcbc78100a63dd5e094658264582a544f556074",
+    "27c6c570540f906c8d4653836ed16dd17986c905"
+  ],
+  "topic_and_squash_trees_equal": true,
+  "historical_implementation_prs": [
+    {
+      "mergeCommit": {
+        "oid": "c7d5847ee682c65059b3f62ebf2f291a66941408"
+      },
+      "mergedAt": "2026-10-11T03:56:48Z",
+      "number": 151,
+      "state": "MERGED",
+      "url": "https://github.com/npcink/npcink-governance-core/pull/151"
+    },
+    {
+      "mergeCommit": {
+        "oid": "e1efe262196ecefe027720b135b36c32c3976f5c"
+      },
+      "mergedAt": "2026-10-11T04:28:27Z",
+      "number": 152,
+      "state": "MERGED",
+      "url": "https://github.com/npcink/npcink-governance-core/pull/152"
+    },
+    {
+      "mergeCommit": {
+        "oid": "db704db14be5e944240cf54489ef3096d55e540b"
+      },
+      "mergedAt": "2026-10-11T04:41:39Z",
+      "number": 153,
+      "state": "MERGED",
+      "url": "https://github.com/npcink/npcink-governance-core/pull/153"
+    },
+    {
+      "mergeCommit": {
+        "oid": "16a7ec895a1e2e51d09f1551d7fd335d02e2ea1c"
+      },
+      "mergedAt": "2026-10-11T05:01:18Z",
+      "number": 154,
+      "state": "MERGED",
+      "url": "https://github.com/npcink/npcink-governance-core/pull/154"
+    }
+  ],
+  "verification": {
+    "composer_metadata": "passed",
+    "test_all": "passed: 55 PHPUnit tests / 207 assertions and component gates",
+    "wporg": "passed",
+    "documentation_links_json_scope_breadcrumb_diff": "passed",
+    "local_advisory_ocr": "final-head 180-second timeout; earlier run interrupted for assertion correction",
+    "ci_advisory_ocr": {
+      "run": 39009468162,
+      "status": "failed",
+      "selected_items": 3,
+      "failed_items": 3,
+      "comments": 0,
+      "tokens": 0
+    },
+    "merged_sha_static_contracts": {
+      "status": "passed",
+      "run": 39009552269,
+      "sha": "c6031aff5f15b0ab568479e1099314c1e901b6a8"
+    }
+  },
+  "preservation": {
+    "all_original_historical_branches_retained": true,
+    "existing_remote_source_backups_unchanged": true,
+    "local_and_remote_tag_maps_equal_before_after": true,
+    "fixed_rc2_manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+    "sibling_mutation": false,
+    "cleanup": false,
+    "new_candidate_acceptance": false,
+    "tag_operation": false,
+    "other_owner_work": "retained; not closed by this docs batch"
+  },
+  "receipt_publication": "new local closeout record for next weekly docs batch; no recursive PR"
+}

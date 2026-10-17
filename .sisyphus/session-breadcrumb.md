@@ -5,60 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Toolkit owner and Cloud backend ready; default 7/7 passed
-
-- **Owners**: Toolkit #262 merged as `b09ad300`, clean synchronized master;
-  merged-SHA PHP/minimum/current WP smoke all passed. Cloud #1123 merged as
-  `c75c2db9`, clean synchronized master; final pytest shard and backend
-  aggregate completed, all five exact-SHA source checks passed.
-- **Matrix**: full no-override --fail-on-dirty passed 7/7, exit 0 at
-  02:45:41Z, every path default/dirty zero. First/ready/post snapshots across
-  178.82s have identical seven-root SHA/branch/status/tracked content+mtime
-  fingerprints and stash refs. Core tested `13031b80` excludes this docs update.
-- **Drift/boundary**: fixed RC2 bytes unchanged; Core/Cloud/Addon/Toolkit/Toolbox
-  heads differ, Adapter/Eval Lab match. No new candidate, exact acceptance,
-  tag operation, M4 promotion or production deployment. Toolkit's hint consumer
-  is implemented; unchanged host guards still decide which suggestions apply.
-- **Records/next**: docs/history/stack-owner-readiness-2026-10-17.md plus audit
-  JSON and original matrix. Preserve other owner work/stashes, Adapter pin,
-  Addon/candidate decisions and branch/worktree dispositions. No owner message
-  or sibling mutation. Six earlier local Core docs commits plus this closeout
-  await the weekly PR; choose any future candidate deliberately.
-
-# 2026-10-17 - Adapter exact source saved; seven Core docs commits merged
-
-- **Adapter**: pushed exact `eb73e503` to origin's named existing-local topic
-  branch without tags/force or local checkout changes. Empty bare fetch and
-  GitHub API resolve the exact commit; tree `cd78059d` equals local. Temporary
-  verification repository removed; preservation branch retained, no master merge.
-- **Core publication**: seven commits cac1689..f5181a3 / 21 docs-only files
-  published through PR #177. Required Static contracts/body checks passed;
-  squash `9d153849` at 03:06:09Z has identical tree to f5181a3. Merged-SHA
-  Static contracts also passed. Original local/remote topic refs preserved.
-- **Review**: local advisory OCR timed out at 180s. CI OCR failed all ten
-  selected items, zero comments/tokens; no complete or clean AI review claimed.
-- **Matrix/owners**: post-merge default --fail-on-dirty at 03:08:09Z is 6/7,
-  exit 1; Core/Adapter pass, Toolbox owner source dirty and Cloud c8469e26 lacks
-  five exact-SHA checks. Owners continued moving; no frozen candidate claim.
-- **Receipt/next**: docs/history/adapter-preservation-and-core-docs-publication-2026-10-17.md
-  plus JSON and raw matrix. Former seven docs commits are merged; this new
-  receipt is one local docs commit for the next weekly batch on
-  codex/docs-publication-receipt-2026-10-17. Preserve other work/stashes,
-  Addon drift and owner dispositions. Fixed manifest and tags unchanged; no
-  tag creation/push/move, new candidate, owner message or deployment.
-
-# 2026-10-17 - Toolbox273 closed; Cloud local-only SHA blocks readiness
-
-- **Toolbox**: #273 merged as `d253bdb1`; clean synchronized master, protected
-  checks and real-editor/native-save owner cleanup receipts recorded.
-- **Cloud**: clean local `f7aab8c4` is unpushed; remote master `585aa660` has
-  five green checks, but GitHub returns 422 for the current SHA. Local tests
-  are not current remote CI. Owner ended local-only; new message authorization
-  asked, no extra message sent.
-- **Gate**: no new full matrix until ready; prior 7/7 is historical. Keep other
-  work/stashes and weekly docs receipts. RC2 and remote snapshot unchanged;
-  no tag creation, push or movement. See the Toolbox/Cloud refresh history.
-
 # 2026-10-17 - Cloud1126 publication and refreshed default 7/7 complete
 
 - **Owner request**: exactly one newly authorized request sent. Cloud #1126
@@ -170,3 +116,50 @@ Older history: `.sisyphus/archive/`.
   decision/status/public behavior unchanged. No old limitation replay.
 - **Preservation**: original branches and other owner work retained; no tag,
   manifest, source, runtime or sibling operation. Weekly publication pending.
+
+# 2026-10-17 - UX history and ADR reference weekly batch merged
+
+- **Published**: #180 auto-merged `27c6c570` as `c6031aff` with equal trees;
+  four accumulated docs/assertion commits published. Historical UX lessons,
+  workflow link and real ADR-012 reference replace the two pending doc gaps.
+- **Checks**: metadata/default gates (55 tests / 207 assertions), wporg and
+  both protected topic checks and merged-SHA Static contracts passed. Local
+  OCR timed out; CI advisory failed
+  all three items with zero tokens. No completed external review claimed.
+- **Retained**: original refs/other owner work, local+remote tags and fixed
+  manifest. No cleanup, sibling/source change, candidate/matrix/runtime or
+  tag operation. docs/history/core-ux-weekly-docs-publication-2026-10-17.md
+  and JSON are a new local receipt for next weekly batching, not another PR.
+
+# 2026-10-17 - Other-owner closeout classified from current evidence
+
+- **Resolved**: Cloud1126/1127, Toolkit262, Toolbox274, Eval111 and Adapter119/120
+  merged. Seven default roots clean; Addon two upstream commits behind. All
+  seven live heads differ from fixed RC2; no new 7/7/acceptance claim.
+- **Open/decisions**: Cloud budget/real mailbox/site/writing, CVE watch, human
+  gold/calibration/adoption, legacy owner source and seven dependency PRs.
+  User chooses budget/Provider, human scope, future candidate and cleanup scope.
+- **Record/preserve**: docs/history/other-owner-closeout-refresh-2026-10-17.md
+  and JSON; two read-only snapshots stable across 17.68s, not a handoff.
+  Original refs/resources, seven-repo tag maps and fixed manifest retained;
+  no cleanup, sibling mutation/message, model call, runtime or tag operation.
+  This local audit joins f764306b in next weekly documentation batch.
+  Final recheck: parallel Adapter added a topic and v0.4.3 at d3b114f7;
+  not this audit's operation. Existing snapshot/manifest unchanged; owner
+  standalone release closeout remains to verify, not stack acceptance.
+
+# 2026-10-17 - Adapter standalone publication and Addon drift verified
+
+- **Adapter**: #121 merged 0159f2c7; v0.4.3 remains d3b114f7. Downloaded GH
+  package hash matches; official WP ZIP has identical 26 unpacked files. SVN
+  r3751468 confirmed; update API still not offering 0.4.3 to probe clients.
+- **Compatibility**: existing owner RC3 has 7/7 plus zero-skip exact acceptance;
+  all seven source hashes, two matrix reports and 19 logs match. Not a new run,
+  fixed Core RC2 refresh, current-head acceptance or production deployment.
+- **Addon**: #284 runtime cursor/buffer fix, #285 docs. Shared root still
+  b80b9661 while upstream/candidate is 3e650d1b. Real missing-record recovery
+  and site update remain separate; other F-01/F-02 and owner tasks preserved.
+- **Record**: docs/history/adapter-release-addon-drift-review-2026-10-17.md
+  and JSON; local weekly batching. No tag/source/sibling/production mutation.
+  Core gates 55/207, metadata, JSON/links/breadcrumb/diff passed; final original
+  branch/tag/resource and sibling HEAD/status recheck unchanged.
