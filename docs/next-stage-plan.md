@@ -5,6 +5,21 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Next scheduled-cycle state rechecked at 17:13 Beijing — 2026-10-17
+
+[Appended next-cycle evidence](history/adapter-channel-natural-reconciliation-2026-10-17.md):
+Adapter update probes still do not offer0.4.3. Public coverage remains1999/1999.
+last_reconciled08:55:58Z/cursorID2657 now covers100 public keys (1899 beyond);
+the new50 IDs exactly match buffer50. Next scan09:47:21Z; new flush08:58:58Z
+is882s overdue, attempts0, no active/new Cloud run, delivery counters unchanged.
+
+Second-page callback/cursor retention is evidenced; new-page Cloud delivery,
+full catch-up and direct natural-cron invocation attribution remain unproven.
+Access logs remain off; no trigger/logging/monitor/message was introduced.
+Two historical gaps stay closed. Other owner work/original refs/tags/RC2 kept;
+Addon site3e650d1b not synchronized to owner upstream41a78454. Local docs batch
+with post-#184 receipt, no PR or runtime/release/tag action here.
+
 ## Scan checkpoint weekly documentation merged — 2026-10-17
 
 [PR #184](https://github.com/npcink/npcink-governance-core/pull/184) published
