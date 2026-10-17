@@ -192,6 +192,27 @@ Do not automatically delete:
 because the topic commit is not an ancestor of the squash commit. Use PR state,
 reviewed diff or patch equivalence, and owner confirmation before cleanup.
 
+### Actionable Cleanup Lists Must Name Their Preservation Scope
+
+A cleanup audit is not deletion authorization. Record a full SHA, current owner
+or explicit unknown status, PR head/merge proof, worktree occupancy, remote
+source backup and intended local-versus-remote action for every candidate.
+A merged same-name PR does not cover commits added after its reviewed head.
+For squash/rebased history, compare the reviewed patch/tree and preserve
+unreconciled local commits instead of labelling all non-ancestors unmerged.
+
+A local-ref-only candidate can depend on keeping its exact remote ref; do not
+turn the list into paired local/remote deletion. Preserve manifest and tested
+source anchors. Inspect stash index, worktree and untracked parents separately,
+and inspect ignored-path inventory before removing a clean auxiliary worktree.
+Functional redundancy does not settle an owner's archival requirement.
+
+For shallow repositories, complete history only in an isolated audit object
+store before making ancestry claims. Recheck actual remote heads, local refs,
+worktrees, stash refs and tags at the end of the audit and again before any
+later cleanup. Record resources already absent as prior changes with unknown
+provenance, not cleanup performed by the audit.
+
 ## Failure Classification
 
 ### Signed Adapter Returns 401

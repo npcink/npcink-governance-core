@@ -5,6 +5,26 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Branch / worktree / stash audit and cleanup candidates — 2026-10-17
+
+Fresh seven-repository audit counts **56 local branches, 91 actual origin
+branches, eight clean/present/unlocked worktrees, one stash and seven open PRs**.
+See [the ownership inventory and exact cleanup scope](history/branch-worktree-stash-audit-2026-10-17.md).
+Nine merged Core local refs have exact remote backups and no worktree occupancy;
+one separate remote Core ref is retained by the published snapshot tag. These
+are future scoped candidates, not authorization or completed cleanup. Seventeen
+other-owner local candidates, one Cloud auxiliary worktree and Toolbox's
+functionally redundant stash require owner disposition. Keep exact remote
+source anchors, especially RC2 and matrix-tested original commits.
+
+Preserve Core post-PR receipts, Toolkit's unpublished mirror PHP feature,
+Addon diagnostic workflow branch, Adapter's exact pin and all open dependency
+PRs. Cloud/Toolbox owner work is active. The old Cloud stash and Addon auxiliary
+registration were already absent before this audit; do not attribute removal to
+this session. Local/remote tags and fixed manifest are unchanged; no deletion,
+publication, matrix, acceptance or runtime operation occurred. Batch this local
+audit with the post-#178 receipt in the next weekly docs PR.
+
 ## Three-receipt weekly Core docs batch merged — 2026-10-17
 
 The three accumulated commits `397fee55`, `03be509f`, `b07972c1` merged through

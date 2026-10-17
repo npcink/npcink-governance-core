@@ -5,23 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - RC2 default-root refresh blocked by active owners
-
-- **Default matrix**: full no-override `--fail-on-dirty` at
-  `2026-10-16T12:43:50Z` returned exit 1: 6/7 gates passed; AI Cloud exact
-  `3ad10d70` frontend CI pending; Toolbox has three owner-held modified files.
-- **Owner state**: Addon PR #282 merged as `0ae75fe`, shared root clean on
-  master. AI Cloud PR #1119 open; its active owner retains M4 pending merge
-  and promotion. Toolbox owner waits for M4 before further smoke/publication.
-  No sibling files, branches or owner resources were modified by this audit.
-- **Manifest**: RC2 fixed SHAs unchanged. Core coordination/Addon's docs and
-  AI Cloud frontend changes are separate drift; Toolbox HEAD matches but its
-  working tree does not. New revisions need a deliberate candidate decision.
-- **Next/evidence**: finish existing owner work, then repeat the full default
-  matrix; see `docs/history/stack-rc2-acceptance-2026-10-16.md` and the separate
-  owner audit JSON. Existing snapshot remotely reverified unchanged; no new
-  tag, push or retag. Batch these local docs commits for the weekly docs PR.
-
 # 2026-10-16 - PR1119 handoff complete; formal owner closeout pending
 
 - **AI Cloud**: PR #1119 merged `13:00:36Z` as `2fd7282f`; final CI passed
@@ -183,3 +166,21 @@ Older history: `.sisyphus/archive/`.
 - **Receipt**: docs/history/core-weekly-docs-publication-2026-10-17.md and JSON.
   Old three-commit backlog closed; this one new local post-merge receipt on
   codex/weekly-docs-merge-receipt-2026-10-17 waits for the next weekly batch.
+
+# 2026-10-17 - Ownership audit produced scoped cleanup candidates; no deletion
+
+- **Inventory**: seven repositories, 56 local / 91 actual origin branches,
+  eight present/clean/unlocked worktrees, one stash, seven open dependency PRs.
+  Two collection rounds confirm branch heads, worktree status, stashes and all
+  tags unchanged. Shared sibling refs/checkouts were never mutated.
+- **Candidates**: nine Core local refs (keep exact remote backups); one remote
+  Core ed28f984 ref backed by unchanged snapshot tag. Other-owner 17 local refs,
+  Cloud auxiliary worktree and redundant Toolbox stash await owner disposition.
+- **Preserve**: Core post-PR receipts, Toolkit mirror PHP/tests, Addon workflow
+  diagnostic branch, Adapter exact pin and active Cloud/Toolbox/Eval owner work.
+  Historical Cloud stash / Addon auxiliary registration absent before audit;
+  do not attribute their removal here. Shallow Eval history checked in isolation.
+- **Evidence/next**: docs/history/branch-worktree-stash-audit-2026-10-17.md and
+  full JSON inventory; cleanup scope rules in release-closeout-standard.md.
+  No deletion, owner message, branch publication, tag, matrix, acceptance,
+  deployment or M4 operation. Batch with ac69fa7 in next weekly docs PR.
