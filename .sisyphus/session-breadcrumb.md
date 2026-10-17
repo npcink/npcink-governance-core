@@ -5,19 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - Final matrix refresh found manifest drift
-
-- **Matrix**: `composer quality:matrix:run -- --fail-on-dirty` completed at
-  `2026-10-16T06:10:45+00:00`; all seven gate rows passed, but exit 1 records
-  two owner-held Toolbox changes (`docs/README.md` and one untracked handoff
-  document).
-- **Drift**: Core is `1995342` versus manifest `8d9626b`; Cloud Addon is
-  `633c62f` versus `d8bcac9`. AI Cloud, Adapter, Toolkit, Toolbox, and Eval Lab
-  remain unchanged. The two drift commits are docs-only, but still require a
-  deliberate manifest decision and fresh exact acceptance.
-- **Posture**: release notes and reproducible checksums are deferred; no
-  snapshot tag was created or pushed.
-
 # 2026-10-16 - Toolbox stable audit; Cloud Addon owner still moving
 
 - **Toolbox**: two snapshots over approximately two minutes showed stable
@@ -141,3 +128,20 @@ Older history: `.sisyphus/archive/`.
   audit JSON and original matrix JSON. Choose future candidate revisions before
   manifest/acceptance refresh. Remote snapshot/historical tags unchanged; no
   tag creation/push/move or production deployment. Batch local docs for weekly PR.
+
+# 2026-10-17 - Historical closure audit found preserved unfinished work
+
+- **Review**: fully read the referenced chat and checked live Git/PR/source/stash
+  evidence. Current stage can be handed off, but all-history closure is false.
+- **Pending**: Toolbox Lane 3 registry-owner/fixture-audit correction remains in
+  stash `4830f19e`; Cloud resource-baseline scripts/tests/docs in stash `e4d7601c`.
+  Adapter exact docs pin `eb73e503` is local only (origin commit API 422).
+  Toolkit local mirror topic needs owner disposition. Preserve all saved work.
+- **Inventory**: nine clean/present/unlocked worktrees, 55 local and 89 actual
+  origin branches, two retained stashes. Addon #284 merged after the green
+  matrix; default root b80b9661 is one commit behind ba6a621c.
+- **Docs/next**: closure review + durable inventory, dated Lane 3 correction and
+  release audit rules recorded. Four earlier Core docs commits plus this audit
+  await the weekly PR. First close the Lane 3 owner fix and real WP rerun, then
+  source preservation/publication and owner-aware housekeeping. No sibling edits,
+  owner messages, branch/stash removal, new candidate, tag or deployment.

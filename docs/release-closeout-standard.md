@@ -37,6 +37,30 @@ because a candidate or tag exists.
 
 ## Required Sequence
 
+### Closure Audit Of Saved Work And Evidence Coverage
+
+Before claiming all historical work is merged or workspace cleanup complete:
+
+1. Inspect every registered worktree, local topic, actual remote branch and
+   stash. Include untracked stash contents (`git stash show --include-untracked`);
+   clean working trees can coexist with unpublished scripts and tests in stashes.
+2. Verify PR state and patch equivalence before classifying topic branches.
+   Squash merges do not preserve topic ancestry. Counts include main and
+   unrelated branches and must not be treated as a deletion list.
+3. Confirm every exact manifest dependency SHA can be retrieved from its
+   declared origin, including documentation-only revisions. Local acceptance
+   and runtime equivalence do not prove remote source availability. Preserve
+   unpublished pins; do not repair their availability by moving released tags.
+4. Name the suites actually run. A default aggregate matrix cannot close a
+   historical real WordPress lane that it does not exercise. Test fixture
+   ownership and cleanup must be checked in the direct lane's owning repository.
+5. Record local documentation commits awaiting the weekly PR separately from
+   merged implementation. Correct overbroad historical summaries with a dated
+   note rather than silently treating old evidence as current verification.
+
+These checks extend the independent completion states above; they do not
+authorize sibling-root mutation, stash removal, branch deletion or tag changes.
+
 ### 1. Freeze Boundaries And Candidate Identities
 
 1. Confirm the Core, Adapter, and Toolkit responsibilities still match their

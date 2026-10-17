@@ -5,10 +5,26 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Session closure audit — 2026-10-17, after the matrix
+
+The owner coordination stage can be handed off, but all-history closure is
+incomplete. The [closure review](history/session-closure-review-2026-10-17.md)
+and [inventory](history/session-closure-inventory-2026-10-17.json) supersede
+broader completion interpretations of older notes. Toolbox's historical Lane 3
+registry-owner/fixture-cleanup correction is still stashed, Adapter's exact
+`eb73e503` documentation SHA is not available from origin, and Core's docs
+commits await the weekly PR. All nine registered worktrees are clean/unlocked,
+but retained branches, two auxiliary worktrees and two stashes are not globally
+cleaned. Addon #284 merged after the green matrix; its default checkout is one
+commit behind. Prioritize the Lane 3 owner fix and real WordPress rerun, then
+source preservation/publication and owner-aware housekeeping. A new candidate
+needs an explicit manifest decision and fresh acceptance; no retag is implied.
+
 ## Latest owner closeout and default matrix — 2026-10-17
 
-The authorized owner requests completed. AI Cloud, Addon and Toolbox shared
-roots are clean, synchronized `master`. A complete no-override
+The authorized owner requests completed. At the matrix checkpoint, AI Cloud,
+Addon and Toolbox shared roots were clean, synchronized `master`. A complete
+no-override
 `composer quality:matrix:run -- --fail-on-dirty` passed **7/7, exit 0** at
 `2026-10-17T01:39:54Z`, with all seven default dirty counts zero. Tested owner
 revisions are Cloud `ea62b3f2`, Addon `b80b9661` and Toolbox `135090bd`.

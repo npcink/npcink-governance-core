@@ -1,0 +1,1417 @@
+{
+  "observed_at": "2026-10-17T01:52:02.306337+00:00",
+  "scope": "Read-only pre-documentation closure inventory; not a deletion list or runtime rerun.",
+  "referenced_thread": {
+    "hostId": "local",
+    "threadId": "01a132ca-00c6-79a2-ab05-be8e8a3c693d",
+    "title": "Review pending work and next steps",
+    "all_pages_read": true
+  },
+  "repositories": [
+    {
+      "repo": "npcink-governance-core",
+      "root": "/Users/muze/gitee/npcink-governance-core",
+      "head": "4753aa4cd84bce5795b6b016cf5ae0bf7c116ee6",
+      "status": "## codex/rc2-validation-2026-10-16...origin/master [ahead 4]",
+      "origin": "git@github.com:npcink/npcink-governance-core.git",
+      "origin_master_cached": "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0",
+      "worktrees": [
+        {
+          "worktree": "/Users/muze/gitee/npcink-governance-core",
+          "HEAD": "4753aa4cd84bce5795b6b016cf5ae0bf7c116ee6",
+          "branch": "refs/heads/codex/rc2-validation-2026-10-16",
+          "exists": true,
+          "status": "## codex/rc2-validation-2026-10-16...origin/master [ahead 4]",
+          "error": null
+        }
+      ],
+      "local_branches": [
+        {
+          "name": "codex/docs-classification-lane1-2026-10-16",
+          "sha": "31279cf66174efd460e94554a0c0db21897d49e9",
+          "upstream": "origin/codex/docs-classification-lane1-2026-10-16",
+          "tracking": "[ahead 2]"
+        },
+        {
+          "name": "codex/docs-rc-acceptance-2026-10-16",
+          "sha": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+          "upstream": "origin/codex/docs-rc-acceptance-2026-10-16",
+          "tracking": ""
+        },
+        {
+          "name": "codex/docs-rc-acceptance-owner-handoff-2026-10-16",
+          "sha": "ed28f984153200a8362fcd0928bbb32b83636159",
+          "upstream": "origin/codex/docs-rc-acceptance-owner-handoff-2026-10-16",
+          "tracking": ""
+        },
+        {
+          "name": "codex/docs-rc-audit-refresh-2026-10-16",
+          "sha": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+          "upstream": "origin/codex/docs-rc-audit-refresh-2026-10-16",
+          "tracking": ""
+        },
+        {
+          "name": "codex/docs-rc-final-closeout-2026-10-16",
+          "sha": "19953429829f237551b752b8438e12b0f290a385",
+          "upstream": "origin/codex/docs-rc-final-closeout-2026-10-16",
+          "tracking": ""
+        },
+        {
+          "name": "codex/docs-rc-identity-2026-10-16",
+          "sha": "8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+          "upstream": "origin/codex/docs-rc-identity-2026-10-16",
+          "tracking": ""
+        },
+        {
+          "name": "codex/docs-rc-matrix-drift-2026-10-16",
+          "sha": "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a",
+          "upstream": "origin/codex/docs-rc-matrix-drift-2026-10-16",
+          "tracking": ""
+        },
+        {
+          "name": "codex/docs-rc-post-tag-drift-2026-10-16",
+          "sha": "e93c330366c952c75db540465acfcd85eb2cd8ab",
+          "upstream": "origin/codex/docs-rc-post-tag-drift-2026-10-16",
+          "tracking": "[ahead 1]"
+        },
+        {
+          "name": "codex/docs-rc-release-notes-2026-10-16",
+          "sha": "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472",
+          "upstream": "origin/codex/docs-rc-release-notes-2026-10-16",
+          "tracking": ""
+        },
+        {
+          "name": "codex/docs-rc-tag-published-2026-10-16",
+          "sha": "94af361fa20bacd441506fd9d3be13e5d5aa8de1",
+          "upstream": "origin/codex/docs-rc-tag-published-2026-10-16",
+          "tracking": ""
+        },
+        {
+          "name": "codex/docs-week-2026-10-13-followup",
+          "sha": "418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+          "upstream": "origin/codex/docs-week-2026-10-13-followup",
+          "tracking": ""
+        },
+        {
+          "name": "codex/execution-verification-reads",
+          "sha": "e73f9684878bf10a43130f266c4ddd1d258ad161",
+          "upstream": "origin/codex/execution-verification-reads",
+          "tracking": "[gone]"
+        },
+        {
+          "name": "codex/rc2-validation-2026-10-16",
+          "sha": "4753aa4cd84bce5795b6b016cf5ae0bf7c116ee6",
+          "upstream": "origin/master",
+          "tracking": "[ahead 4]"
+        },
+        {
+          "name": "codex/verification-reads-hardening",
+          "sha": "f4b17dbae132c8be2abdf8f162180b39843074ad",
+          "upstream": "origin/codex/verification-reads-hardening",
+          "tracking": "[gone]"
+        },
+        {
+          "name": "master",
+          "sha": "9716cf5eaae259874c03ad40363382fd065aded2",
+          "upstream": "origin/master",
+          "tracking": "[behind 11]"
+        },
+        {
+          "name": "zcode/docs-2026-10-11-ux-audit-arc",
+          "sha": "3c45612c5ee15705374a19743b983dfce9a0258e",
+          "upstream": "",
+          "tracking": ""
+        }
+      ],
+      "actual_remote_branches": [
+        {
+          "name": "codex/docs-classification-lane1-2026-10-16",
+          "sha": "8d9626b7a07ffca7126b400a404a6db05145d1e9"
+        },
+        {
+          "name": "codex/docs-rc-acceptance-2026-10-16",
+          "sha": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c"
+        },
+        {
+          "name": "codex/docs-rc-acceptance-owner-handoff-2026-10-16",
+          "sha": "ed28f984153200a8362fcd0928bbb32b83636159"
+        },
+        {
+          "name": "codex/docs-rc-audit-refresh-2026-10-16",
+          "sha": "0d7153a98fe176b29063b0cd6141601ef26c78df"
+        },
+        {
+          "name": "codex/docs-rc-final-closeout-2026-10-16",
+          "sha": "19953429829f237551b752b8438e12b0f290a385"
+        },
+        {
+          "name": "codex/docs-rc-identity-2026-10-16",
+          "sha": "8d6083e234be290206e6c3fb4b3a739ce3ed232a"
+        },
+        {
+          "name": "codex/docs-rc-matrix-drift-2026-10-16",
+          "sha": "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a"
+        },
+        {
+          "name": "codex/docs-rc-post-tag-drift-2026-10-16",
+          "sha": "3402eca486af5d979b80f9196315b4a772ed464d"
+        },
+        {
+          "name": "codex/docs-rc-release-notes-2026-10-16",
+          "sha": "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472"
+        },
+        {
+          "name": "codex/docs-rc-tag-published-2026-10-16",
+          "sha": "94af361fa20bacd441506fd9d3be13e5d5aa8de1"
+        },
+        {
+          "name": "codex/docs-week-2026-10-13-followup",
+          "sha": "418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd"
+        },
+        {
+          "name": "dependabot/composer/phpstan/phpstan-2.3.1",
+          "sha": "57624c2272f39d599ba620174ee05d0dc9415c0e"
+        },
+        {
+          "name": "dependabot/github_actions/alibaba/open-code-review-1.12.13",
+          "sha": "d3191f0dcdf6e2ed19417f17a6b82e2dc82c587b"
+        },
+        {
+          "name": "master",
+          "sha": "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0"
+        }
+      ],
+      "stashes": ""
+    },
+    {
+      "repo": "npcink-ai-cloud",
+      "root": "/Users/muze/gitee/npcink-ai-cloud",
+      "head": "ea62b3f2eea225eafd72cbd55296e69e998af863",
+      "status": "## master...origin/master",
+      "origin": "git@github-magick-ai-cloud:npcink/npcink-ai-cloud.git",
+      "origin_master_cached": "ea62b3f2eea225eafd72cbd55296e69e998af863",
+      "worktrees": [
+        {
+          "worktree": "/Users/muze/gitee/npcink-ai-cloud",
+          "HEAD": "ea62b3f2eea225eafd72cbd55296e69e998af863",
+          "branch": "refs/heads/master",
+          "exists": true,
+          "status": "## master...origin/master",
+          "error": null
+        },
+        {
+          "worktree": "/Users/muze/gitee/.worktrees/cloud-site-anchor-performance",
+          "HEAD": "ea62b3f2eea225eafd72cbd55296e69e998af863",
+          "detached": true,
+          "exists": true,
+          "status": "## HEAD (no branch)",
+          "error": null
+        }
+      ],
+      "local_branches": [
+        {
+          "name": "codex/fix-ocr-startup-race",
+          "sha": "9ecc3a1e2926e46a7c2adb5f34e1e6361aaa5197",
+          "upstream": "origin/codex/fix-ocr-startup-race",
+          "tracking": "[gone]"
+        },
+        {
+          "name": "codex/localize-provider-errors",
+          "sha": "3e3c17abc0c13e5f29b563727b2e3267d3f84bef",
+          "upstream": "origin/codex/localize-provider-errors",
+          "tracking": "[gone]"
+        },
+        {
+          "name": "codex/m4-lan-first-routing",
+          "sha": "3d686c0db66e7d42411a9426a1fb5682cd802cc4",
+          "upstream": "origin/codex/m4-lan-first-routing",
+          "tracking": "[gone]"
+        },
+        {
+          "name": "codex/site-anchor-performance",
+          "sha": "d7741eed15b9c590bf3836a4816d46bb3d9b7cc1",
+          "upstream": "origin/codex/site-anchor-performance",
+          "tracking": "[gone]"
+        },
+        {
+          "name": "master",
+          "sha": "ea62b3f2eea225eafd72cbd55296e69e998af863",
+          "upstream": "origin/master",
+          "tracking": ""
+        },
+        {
+          "name": "production",
+          "sha": "2af00741a2ce06ea56a78e62864d4a35d86c66ab",
+          "upstream": "origin/production",
+          "tracking": ""
+        }
+      ],
+      "actual_remote_branches": [
+        {
+          "name": "dependabot/github_actions/alibaba/open-code-review-1.12.13",
+          "sha": "db23658689f4697eb17b161d8651d3f63dbd8598"
+        },
+        {
+          "name": "dependabot/npm_and_yarn/autoprefixer-10.6.1",
+          "sha": "97363c8dd2aa0d5c340bdb65b4523a28f246fb42"
+        },
+        {
+          "name": "dependabot/npm_and_yarn/tailwind-merge-3.7.0",
+          "sha": "4b2cb3202b187445cc1a536e7c79256bf67d4c32"
+        },
+        {
+          "name": "dependabot/uv/fastapi-0.143.0",
+          "sha": "ed379fff6ec1d442cd864f52f7600821fbbc5280"
+        },
+        {
+          "name": "dependabot/uv/ruff-0.16.10",
+          "sha": "cd8ae9e27905e7e303f9ce8ba139f1177567da6e"
+        },
+        {
+          "name": "master",
+          "sha": "ea62b3f2eea225eafd72cbd55296e69e998af863"
+        },
+        {
+          "name": "production",
+          "sha": "2af00741a2ce06ea56a78e62864d4a35d86c66ab"
+        }
+      ],
+      "stashes": "stash@{0}: On codex/m4-resource-baseline: preserved before 2026-10-16 worktree cleanup"
+    },
+    {
+      "repo": "npcink-cloud-addon",
+      "root": "/Users/muze/gitee/npcink-cloud-addon",
+      "head": "b80b966151f26f114271a5534082c336ab2fea50",
+      "status": "## master...origin/master [behind 1]",
+      "origin": "https://github.com/npcink/npcink-cloud-addon.git",
+      "origin_master_cached": "ba6a621c019ee894df5f1b96a6c16985cacf2c71",
+      "worktrees": [
+        {
+          "worktree": "/Users/muze/gitee/npcink-cloud-addon",
+          "HEAD": "b80b966151f26f114271a5534082c336ab2fea50",
+          "branch": "refs/heads/master",
+          "exists": true,
+          "status": "## master...origin/master [behind 1]",
+          "error": null
+        },
+        {
+          "worktree": "/Users/muze/.codex/worktrees/reconciliation-cursor-capacity/npcink-cloud-addon",
+          "HEAD": "f18c93f20c1e552465e61a2b9780d9422692e207",
+          "branch": "refs/heads/codex/reconciliation-cursor-capacity",
+          "exists": true,
+          "status": "## codex/reconciliation-cursor-capacity...origin/codex/reconciliation-cursor-capacity",
+          "error": null
+        }
+      ],
+      "local_branches": [
+        {
+          "name": "codex/cloud-owner-decision-docs-2026-10-16",
+          "sha": "eb95b5d68b10240a5719f341c1ad1e5cba0ebc5d",
+          "upstream": "origin/codex/cloud-owner-decision-docs-2026-10-16",
+          "tracking": ""
+        },
+        {
+          "name": "codex/cloud-owner-readonly-evidence-2026-10-16",
+          "sha": "09732606de0e9b38b373c0b06a3a902250bbd847",
+          "upstream": "origin/codex/cloud-owner-readonly-evidence-2026-10-16",
+          "tracking": ""
+        },
+        {
+          "name": "codex/recommendation-feedback-metadata",
+          "sha": "9637ca592f4570bd292b107144e61b4f8271cbae",
+          "upstream": "origin/codex/recommendation-feedback-metadata",
+          "tracking": ""
+        },
+        {
+          "name": "codex/reconciliation-cursor-capacity",
+          "sha": "f18c93f20c1e552465e61a2b9780d9422692e207",
+          "upstream": "origin/codex/reconciliation-cursor-capacity",
+          "tracking": ""
+        },
+        {
+          "name": "master",
+          "sha": "b80b966151f26f114271a5534082c336ab2fea50",
+          "upstream": "origin/master",
+          "tracking": "[behind 1]"
+        }
+      ],
+      "actual_remote_branches": [
+        {
+          "name": "codex/0-4-1-stale-entitlement",
+          "sha": "f379aadb6be38471a02d64de0db9ea79ff7c17f0"
+        },
+        {
+          "name": "codex/041-final-release-record",
+          "sha": "f6b95295b4cfb682f78809bfde978d72d713d56c"
+        },
+        {
+          "name": "codex/041-maintenance-closeout-20261015",
+          "sha": "014fde9f44620320a8940b0e1f4e998cc04d3f00"
+        },
+        {
+          "name": "codex/041-refresh-closeout",
+          "sha": "3d42183d7782715e66485c3186f3bb90d5c58dea"
+        },
+        {
+          "name": "codex/cloud-owner-decision-docs-2026-10-16",
+          "sha": "eb95b5d68b10240a5719f341c1ad1e5cba0ebc5d"
+        },
+        {
+          "name": "codex/cloud-owner-readonly-evidence-2026-10-16",
+          "sha": "09732606de0e9b38b373c0b06a3a902250bbd847"
+        },
+        {
+          "name": "codex/docs-next-session-handoff-20261016",
+          "sha": "c26f43dbbd340722a0835b4037f33ab2f483ff31"
+        },
+        {
+          "name": "codex/glotpress-closeout-20261012",
+          "sha": "2f343a6e35281489e1ccf5ffc914cfa63cb88dc0"
+        },
+        {
+          "name": "codex/ocr-ci-diagnostics-20261013",
+          "sha": "a8431153fc71049b1f246965f4016769591a7195"
+        },
+        {
+          "name": "codex/ocr-glm-thinking-compat-20261013",
+          "sha": "000ca35f84f7896cc039ddae1485e483fbb863b3"
+        },
+        {
+          "name": "codex/provider-acceptance-closeout-20261012",
+          "sha": "582177c2c2586cf3ed2e945f3e6476e86c0e0b37"
+        },
+        {
+          "name": "codex/recommendation-feedback-metadata",
+          "sha": "9637ca592f4570bd292b107144e61b4f8271cbae"
+        },
+        {
+          "name": "codex/reconciliation-cursor-capacity",
+          "sha": "f18c93f20c1e552465e61a2b9780d9422692e207"
+        },
+        {
+          "name": "codex/release-status-20261013",
+          "sha": "dbddd65c9a970615bb556006d3e5998bb9ceb51a"
+        },
+        {
+          "name": "codex/site-knowledge-recovery-20261015",
+          "sha": "4e8c8e65f0ae272a170ff63f45057eeddc6cb63f"
+        },
+        {
+          "name": "codex/ux-closeout-20261012",
+          "sha": "1209f5105ae94a48c9b7f65af77c952e09733f52"
+        },
+        {
+          "name": "codex/ux-tail-20261012",
+          "sha": "e55a04e0a3cdd6ee978916d3eaa30d8ecfa87e6c"
+        },
+        {
+          "name": "docs/ux-paydown-handoff-2026-10-12",
+          "sha": "387687620db4886c42cd4d5c63b9dab60d0f9426"
+        },
+        {
+          "name": "fix/user-facing-ux-paydown-round",
+          "sha": "4b72b953432557ec5b712b8c83c021ff8a7b571e"
+        },
+        {
+          "name": "master",
+          "sha": "ba6a621c019ee894df5f1b96a6c16985cacf2c71"
+        }
+      ],
+      "stashes": ""
+    },
+    {
+      "repo": "npcink-ai-client-adapter",
+      "root": "/Users/muze/gitee/npcink-ai-client-adapter",
+      "head": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+      "status": "## codex/m4-pgy-stack-rc-docs-2026-10-15",
+      "origin": "https://github.com/npcink/npcink-ai-client-adapter.git",
+      "origin_master_cached": "ab32e5031765bce0d72e2340510ff34d47b26706",
+      "worktrees": [
+        {
+          "worktree": "/Users/muze/gitee/npcink-ai-client-adapter",
+          "HEAD": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "branch": "refs/heads/codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "exists": true,
+          "status": "## codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "error": null
+        }
+      ],
+      "local_branches": [
+        {
+          "name": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "sha": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "upstream": "",
+          "tracking": ""
+        },
+        {
+          "name": "master",
+          "sha": "ab32e5031765bce0d72e2340510ff34d47b26706",
+          "upstream": "origin/master",
+          "tracking": ""
+        }
+      ],
+      "actual_remote_branches": [
+        {
+          "name": "master",
+          "sha": "ab32e5031765bce0d72e2340510ff34d47b26706"
+        }
+      ],
+      "stashes": ""
+    },
+    {
+      "repo": "npcink-abilities-toolkit",
+      "root": "/Users/muze/gitee/npcink-abilities-toolkit",
+      "head": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+      "status": "## master...origin/master",
+      "origin": "git@github.com:npcink/npcink-abilities-toolkit.git",
+      "origin_master_cached": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+      "worktrees": [
+        {
+          "worktree": "/Users/muze/gitee/npcink-abilities-toolkit",
+          "HEAD": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+          "branch": "refs/heads/master",
+          "exists": true,
+          "status": "## master...origin/master",
+          "error": null
+        }
+      ],
+      "local_branches": [
+        {
+          "name": "codex/zh-cn-docs-mirror-default",
+          "sha": "aee42eaeb7ee57825ad740bbc51a032cd203d5f4",
+          "upstream": "",
+          "tracking": ""
+        },
+        {
+          "name": "master",
+          "sha": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+          "upstream": "origin/master",
+          "tracking": ""
+        }
+      ],
+      "actual_remote_branches": [
+        {
+          "name": "master",
+          "sha": "921d1dc7cb5661fef10ca8f83b781690c98034cb"
+        }
+      ],
+      "stashes": ""
+    },
+    {
+      "repo": "npcink-workflow-toolbox",
+      "root": "/Users/muze/gitee/npcink-workflow-toolbox",
+      "head": "135090bdc2c8a70389f81065fe0bd44f9a6959c8",
+      "status": "## master...origin/master",
+      "origin": "https://github.com/npcink/npcink-workflow-toolbox.git",
+      "origin_master_cached": "135090bdc2c8a70389f81065fe0bd44f9a6959c8",
+      "worktrees": [
+        {
+          "worktree": "/Users/muze/gitee/npcink-workflow-toolbox",
+          "HEAD": "135090bdc2c8a70389f81065fe0bd44f9a6959c8",
+          "branch": "refs/heads/master",
+          "exists": true,
+          "status": "## master...origin/master",
+          "error": null
+        }
+      ],
+      "local_branches": [
+        {
+          "name": "codex/rc2-validation-2026-10-16",
+          "sha": "569da58106c877fadb65316e4375a8bd3d1f6b1e",
+          "upstream": "origin/master",
+          "tracking": "[behind 1]"
+        },
+        {
+          "name": "codex/recommendation-baseline-metadata",
+          "sha": "68a9d32405dfee7ebbffdcb05715bb2dcb442523",
+          "upstream": "origin/codex/recommendation-baseline-metadata",
+          "tracking": ""
+        },
+        {
+          "name": "master",
+          "sha": "135090bdc2c8a70389f81065fe0bd44f9a6959c8",
+          "upstream": "origin/master",
+          "tracking": ""
+        }
+      ],
+      "actual_remote_branches": [
+        {
+          "name": "codex/dependency-error-copy",
+          "sha": "d95756ed7f9c18dfb05ecce2cec82b367834c22f"
+        },
+        {
+          "name": "codex/dependency-phpstan-maintenance",
+          "sha": "34d5c790b1b71f82e61619b01471ad6025dbf1f0"
+        },
+        {
+          "name": "codex/docs-status-closeout",
+          "sha": "fffb8b4657ad3adf3e17f881d527b1ba9bb6e891"
+        },
+        {
+          "name": "codex/fix-classification-smoke",
+          "sha": "d4bc1503ce1b47d68ca6493a99039fe16cba0cc1"
+        },
+        {
+          "name": "codex/flagged-media-matrix",
+          "sha": "30e627069f6477405c5a38dcd6567619090ddc95"
+        },
+        {
+          "name": "codex/local-ocr-config",
+          "sha": "7ebab73244e72e4396599ba16e49636ef777d797"
+        },
+        {
+          "name": "codex/milestone-1-gate-repair",
+          "sha": "35a386d80ae1293d21e29eb8bbf6b3aa866e184e"
+        },
+        {
+          "name": "codex/milestone-2-failure-visibility",
+          "sha": "3cd1a9732e5831858a52fd49b2a98de4bef6e93d"
+        },
+        {
+          "name": "codex/milestone-3-site-check-visibility",
+          "sha": "1425e61ed2358911d792cdb1f04000cbab698f82"
+        },
+        {
+          "name": "codex/milestone-4-internal-link-i18n",
+          "sha": "d1c98b0d343d803eced620f80268f83091c02bd0"
+        },
+        {
+          "name": "codex/milestone-5-batch-feedback",
+          "sha": "3618926492c7117d162df2c4dad5ae6d13ac2c96"
+        },
+        {
+          "name": "codex/milestone-6-editor-sidebar-ux",
+          "sha": "fd39d87c320132ac1cf94ed842b4fe8857cd4233"
+        },
+        {
+          "name": "codex/recommendation-baseline-metadata",
+          "sha": "68a9d32405dfee7ebbffdcb05715bb2dcb442523"
+        },
+        {
+          "name": "codex/wp-ai-central-matrix",
+          "sha": "d593c8743b6b0d3d2e0d34db47a38f81da9a7197"
+        },
+        {
+          "name": "master",
+          "sha": "135090bdc2c8a70389f81065fe0bd44f9a6959c8"
+        }
+      ],
+      "stashes": "stash@{0}: On codex/fix-classification-registry-owner: preserved before 2026-10-16 worktree cleanup"
+    },
+    {
+      "repo": "npcink-eval-lab",
+      "root": "/Users/muze/gitee/npcink-eval-lab",
+      "head": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+      "status": "## main...origin/main",
+      "origin": "https://github.com/npcink/npcink-eval-lab.git",
+      "origin_master_cached": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+      "worktrees": [
+        {
+          "worktree": "/Users/muze/gitee/npcink-eval-lab",
+          "HEAD": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "branch": "refs/heads/main",
+          "exists": true,
+          "status": "## main...origin/main",
+          "error": null
+        }
+      ],
+      "local_branches": [
+        {
+          "name": "codex/wordpress-ai-provider-ci",
+          "sha": "90bcdefe54a358ec703a2ac9b8b042266d8f8181",
+          "upstream": "",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-capability-matrix",
+          "sha": "24ba3cc6e5c795a1b43bf9ae4e22ed7ec09d6939",
+          "upstream": "origin/codex/wp-ai-capability-matrix",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-capability-matrix-status",
+          "sha": "47d79ceda595e6e5c927f16e4fab663f72415b9c",
+          "upstream": "origin/codex/wp-ai-capability-matrix-status",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-case-quota-blocked",
+          "sha": "5efe7a8bc1a00505a18c6314955aaba727906a05",
+          "upstream": "",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-grounding-expanded",
+          "sha": "197de6673ee1e35a75163a1aeeb6df944604cb9a",
+          "upstream": "origin/codex/wp-ai-grounding-expanded",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-grounding-quality-guard",
+          "sha": "f1df0c1b934ca7e1a7a3cf36398c7e091b010c24",
+          "upstream": "origin/codex/wp-ai-grounding-quality-guard",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-image-generation-quality",
+          "sha": "42d324c27296e29644d014f67db76a7844e39cc9",
+          "upstream": "origin/codex/wp-ai-image-generation-quality",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-m4-acceptance",
+          "sha": "f23cfa33fefb500b33c91fef00fc7017c170eb63",
+          "upstream": "origin/codex/wp-ai-m4-acceptance",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-media-quality",
+          "sha": "e0cc2cb70c78d92ca6036e6f422b2efa58363871",
+          "upstream": "origin/codex/wp-ai-media-quality",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-optional-evidence-correction",
+          "sha": "a76a829588b07e87ebe5fe92fc34ae4442e989bf",
+          "upstream": "origin/codex/wp-ai-optional-evidence-correction",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-quality-closure-evidence",
+          "sha": "e2745288574e9657bf6f0743bb518fbd8ea5bd84",
+          "upstream": "origin/codex/wp-ai-quality-closure-evidence",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-quality-evidence-sync",
+          "sha": "156ed2fc2a4660c2c452a4769c1509689118e766",
+          "upstream": "",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-quality-quota-blocked",
+          "sha": "83d0b1c942c7903f8f53e3a21d2463bcf7a070d1",
+          "upstream": "",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-quota-preflight-eval",
+          "sha": "c21cfd359d227dc2dc6bdeea758bdd7b03f2e6dc",
+          "upstream": "origin/codex/wp-ai-quota-preflight-eval",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-restored-quota-evidence",
+          "sha": "899668a8a2a3247969b2e36ee5d43832da44bd95",
+          "upstream": "origin/main",
+          "tracking": "[behind 10]"
+        },
+        {
+          "name": "codex/wp-ai-scenario-quality",
+          "sha": "f7c1c0affe90cae2483f3f9c3121ca83b9066aad",
+          "upstream": "origin/codex/wp-ai-scenario-quality",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-stage3-eval",
+          "sha": "73dd932ea90ea8d5c5ab2bcd7071b5a53cf11e1c",
+          "upstream": "origin/main",
+          "tracking": "[ahead 123, behind 12]"
+        },
+        {
+          "name": "codex/wp-ai-structured-quality",
+          "sha": "b67453177f073098d15445ba2862c7a2987a45e7",
+          "upstream": "origin/codex/wp-ai-structured-quality",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-text-quality",
+          "sha": "01ea9d1675e7866f2ec54c249f976ef9dc463215",
+          "upstream": "origin/codex/wp-ai-text-quality",
+          "tracking": ""
+        },
+        {
+          "name": "codex/wp-ai-title-quality-criteria",
+          "sha": "a51a902847f2066d2e75a2b1ad130c2dc19036ad",
+          "upstream": "origin/main",
+          "tracking": "[ahead 133, behind 12]"
+        },
+        {
+          "name": "main",
+          "sha": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "upstream": "origin/main",
+          "tracking": ""
+        }
+      ],
+      "actual_remote_branches": [
+        {
+          "name": "codex/wordpress-ai-provider-ci",
+          "sha": "466d5ce45524919d0b985906b2c9bb48acbbd6f4"
+        },
+        {
+          "name": "codex/wordpress-ai-provider-ci-followup",
+          "sha": "6d29eea3e8a4d7257892af688a390f5c033288bd"
+        },
+        {
+          "name": "codex/wp-ai-capability-fixtures",
+          "sha": "20e5db352209021b1052ad2b73816f0876ab28b9"
+        },
+        {
+          "name": "codex/wp-ai-capability-matrix",
+          "sha": "24ba3cc6e5c795a1b43bf9ae4e22ed7ec09d6939"
+        },
+        {
+          "name": "codex/wp-ai-capability-matrix-status",
+          "sha": "47d79ceda595e6e5c927f16e4fab663f72415b9c"
+        },
+        {
+          "name": "codex/wp-ai-case-quota-blocked",
+          "sha": "940c56c40463d399fc001c57541776a4dce25b32"
+        },
+        {
+          "name": "codex/wp-ai-comment-vision-evidence-20260929",
+          "sha": "2a8241aac59bfc0a5ad720e75c211c134d310bfa"
+        },
+        {
+          "name": "codex/wp-ai-core-batch-evidence-20260929",
+          "sha": "7e77b512f995e7f7ed2dcb1105144663226362f5"
+        },
+        {
+          "name": "codex/wp-ai-deterministic-quality",
+          "sha": "4fcbbf1df8e4915398e95a23f44bdc651e034642"
+        },
+        {
+          "name": "codex/wp-ai-grounding-expanded",
+          "sha": "197de6673ee1e35a75163a1aeeb6df944604cb9a"
+        },
+        {
+          "name": "codex/wp-ai-grounding-quality-guard",
+          "sha": "f1df0c1b934ca7e1a7a3cf36398c7e091b010c24"
+        },
+        {
+          "name": "codex/wp-ai-human-review-20260929",
+          "sha": "b09a974049f622e43a1a7ebb16bd735b24ec17e7"
+        },
+        {
+          "name": "codex/wp-ai-human-review-expanded-20260929",
+          "sha": "f9b8ad195386053b8355592a01cbbb6257b51ae9"
+        },
+        {
+          "name": "codex/wp-ai-human-review-gate-20260929",
+          "sha": "5751bfa25111908210ccd4196d473bf41584946d"
+        },
+        {
+          "name": "codex/wp-ai-image-generation-quality",
+          "sha": "42d324c27296e29644d014f67db76a7844e39cc9"
+        },
+        {
+          "name": "codex/wp-ai-judge-input-20260929",
+          "sha": "72ead654803c84c6a1936125b5aa81699ac18c4a"
+        },
+        {
+          "name": "codex/wp-ai-m4-acceptance",
+          "sha": "f23cfa33fefb500b33c91fef00fc7017c170eb63"
+        },
+        {
+          "name": "codex/wp-ai-media-quality",
+          "sha": "e0cc2cb70c78d92ca6036e6f422b2efa58363871"
+        },
+        {
+          "name": "codex/wp-ai-optional-evidence-correction",
+          "sha": "a76a829588b07e87ebe5fe92fc34ae4442e989bf"
+        },
+        {
+          "name": "codex/wp-ai-quality-closure-evidence",
+          "sha": "e2745288574e9657bf6f0743bb518fbd8ea5bd84"
+        },
+        {
+          "name": "codex/wp-ai-quality-evidence-sync",
+          "sha": "b4a7f6c93aae61f32ec08fdd9454463b90ecafd0"
+        },
+        {
+          "name": "codex/wp-ai-quality-quota-blocked",
+          "sha": "80f25b1ae6e4c70facc969dbaa0f210d123512ac"
+        },
+        {
+          "name": "codex/wp-ai-quality-report-20260929",
+          "sha": "9328daffeff152f9238ab9d529f50f498c7ca859"
+        },
+        {
+          "name": "codex/wp-ai-quota-preflight-eval",
+          "sha": "c21cfd359d227dc2dc6bdeea758bdd7b03f2e6dc"
+        },
+        {
+          "name": "codex/wp-ai-run-correlation-evidence-20260929",
+          "sha": "3c9e4f508516f29a465e34f76e49ce6549cda104"
+        },
+        {
+          "name": "codex/wp-ai-scenario-quality",
+          "sha": "f7c1c0affe90cae2483f3f9c3121ca83b9066aad"
+        },
+        {
+          "name": "codex/wp-ai-stage3-eval",
+          "sha": "edfa233f4221446ccd50a7f32a7ac9d75c7bdc51"
+        },
+        {
+          "name": "codex/wp-ai-structured-quality",
+          "sha": "b67453177f073098d15445ba2862c7a2987a45e7"
+        },
+        {
+          "name": "codex/wp-ai-text-quality",
+          "sha": "01ea9d1675e7866f2ec54c249f976ef9dc463215"
+        },
+        {
+          "name": "codex/wp-ai-title-quality-criteria",
+          "sha": "87018865fbbf9be6864d42e287a02323a12cf37d"
+        },
+        {
+          "name": "main",
+          "sha": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f"
+        }
+      ],
+      "stashes": ""
+    }
+  ],
+  "totals": {
+    "registered_worktrees": 9,
+    "local_branches": 55,
+    "actual_origin_branches": 89,
+    "preserved_stashes": 2,
+    "all_worktrees_clean_present_unlocked": true
+  },
+  "pr_observed_at": "2026-10-17T01:53:02.967692+00:00",
+  "relevant_pr_states": [
+    {
+      "repo": "npcink-governance-core",
+      "slug": "npcink/npcink-governance-core",
+      "prs": [
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/docs-rc-audit-refresh-2026-10-16",
+          "headRefOid": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+          "mergeCommit": {
+            "oid": "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0"
+          },
+          "mergedAt": "2026-10-16T11:36:25Z",
+          "number": 176,
+          "state": "MERGED",
+          "title": "docs: record post-tag audit refresh",
+          "url": "https://github.com/npcink/npcink-governance-core/pull/176"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/docs-rc-acceptance-2026-10-16",
+          "headRefOid": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+          "mergeCommit": {
+            "oid": "34d75e2dc00804320a82086f175d69e7e5f14a76"
+          },
+          "mergedAt": "2026-10-16T05:51:39Z",
+          "number": 169,
+          "state": "MERGED",
+          "title": "docs: record exact RC acceptance",
+          "url": "https://github.com/npcink/npcink-governance-core/pull/169"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/docs-classification-lane1-2026-10-16",
+          "headRefOid": "8d9626b7a07ffca7126b400a404a6db05145d1e9",
+          "mergeCommit": {
+            "oid": "aab91198b3765942aa8f4121dcb68895405deaa1"
+          },
+          "mergedAt": "2026-10-16T04:52:58Z",
+          "number": 167,
+          "state": "MERGED",
+          "title": "docs: record classification lane one evidence",
+          "url": "https://github.com/npcink/npcink-governance-core/pull/167"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/docs-week-2026-10-13",
+          "headRefOid": "6639b95d1270d971be31a8f582293d6d139fa255",
+          "mergeCommit": {
+            "oid": "9716cf5eaae259874c03ad40363382fd065aded2"
+          },
+          "mergedAt": "2026-10-15T01:42:27Z",
+          "number": 165,
+          "state": "MERGED",
+          "title": "docs: update owner-state audit checkpoint",
+          "url": "https://github.com/npcink/npcink-governance-core/pull/165"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/docs-week-2026-10-13",
+          "headRefOid": "d7f04fdad6f4fbfba5b1348cf1c4f4bfa3e27187",
+          "mergeCommit": {
+            "oid": "930efd72dda97e01b46c676cbca6c8a36ec839e7"
+          },
+          "mergedAt": "2026-10-14T08:39:28Z",
+          "number": 163,
+          "state": "MERGED",
+          "title": "docs: mark closeout publication complete",
+          "url": "https://github.com/npcink/npcink-governance-core/pull/163"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/docs-week-2026-10-13",
+          "headRefOid": "02f99678d3906945fbad2c49fd78f795b14dda36",
+          "mergeCommit": {
+            "oid": "e81aef95a31fca0282a1abc3d59a20412acf93bf"
+          },
+          "mergedAt": "2026-10-14T08:22:51Z",
+          "number": 162,
+          "state": "MERGED",
+          "title": "docs: record cross-repo closeout audit",
+          "url": "https://github.com/npcink/npcink-governance-core/pull/162"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/fix-m4-package-version",
+          "headRefOid": "e57d9135f5bbda30fb21c50b9247ecbc14c03452",
+          "mergeCommit": {
+            "oid": "391c2910e99fd90ad891340be6d91a009911ac0a"
+          },
+          "mergedAt": "2026-10-13T11:10:41Z",
+          "number": 161,
+          "state": "MERGED",
+          "title": "fix: match M4 packaged Core against candidate version",
+          "url": "https://github.com/npcink/npcink-governance-core/pull/161"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/test-runner-modules",
+          "headRefOid": "f856ad624c4e696ab7abcaba29a9dd87fccf1960",
+          "mergeCommit": {
+            "oid": "6ac6400323f458777bc719f8f68b757dd7f21c10"
+          },
+          "mergedAt": "2026-10-13T08:23:29Z",
+          "number": 160,
+          "state": "MERGED",
+          "title": "Refactor governance test runners into ordered modules",
+          "url": "https://github.com/npcink/npcink-governance-core/pull/160"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/admin-view-clusters",
+          "headRefOid": "4b1d2817c9ae53adcb0d0de86911da552993e352",
+          "mergeCommit": {
+            "oid": "e3098a183007e1a383df37fe01d049cd6d696c45"
+          },
+          "mergedAt": "2026-10-13T07:39:58Z",
+          "number": 159,
+          "state": "MERGED",
+          "title": "refactor: extract private governance admin views",
+          "url": "https://github.com/npcink/npcink-governance-core/pull/159"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/flagged-media-preflight-batch",
+          "headRefOid": "29b1ff83c177a799d4b652052ac708f9284234f7",
+          "mergeCommit": {
+            "oid": "98ffa002fc41b0e628b8b23dc4ed5aa3559a8440"
+          },
+          "mergedAt": "2026-10-13T07:03:16Z",
+          "number": 158,
+          "state": "MERGED",
+          "title": "fix: preflight delete-first flagged media batches",
+          "url": "https://github.com/npcink/npcink-governance-core/pull/158"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "feat/flagged-media-removal-plan-intake",
+          "headRefOid": "622722d082fd465caed704210e2066e388564307",
+          "mergeCommit": {
+            "oid": "1e98454ff64bf2448f475ad8eb43d5d67baf9b93"
+          },
+          "mergedAt": "2026-10-13T03:46:49Z",
+          "number": 157,
+          "state": "MERGED",
+          "title": "fix: harden flagged media governance gates",
+          "url": "https://github.com/npcink/npcink-governance-core/pull/157"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "dependabot/composer/phpstan/phpstan-2.3.1",
+          "headRefOid": "57624c2272f39d599ba620174ee05d0dc9415c0e",
+          "mergeCommit": null,
+          "mergedAt": null,
+          "number": 156,
+          "state": "OPEN",
+          "title": "build(deps-dev): bump phpstan/phpstan from 2.2.17 to 2.3.1",
+          "url": "https://github.com/npcink/npcink-governance-core/pull/156"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "dependabot/github_actions/alibaba/open-code-review-1.12.13",
+          "headRefOid": "d3191f0dcdf6e2ed19417f17a6b82e2dc82c587b",
+          "mergeCommit": null,
+          "mergedAt": null,
+          "number": 155,
+          "state": "OPEN",
+          "title": "build(deps): bump alibaba/open-code-review from 1.12.12 to 1.12.13",
+          "url": "https://github.com/npcink/npcink-governance-core/pull/155"
+        }
+      ]
+    },
+    {
+      "repo": "npcink-ai-cloud",
+      "slug": "npcink/npcink-ai-cloud",
+      "prs": [
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/fix-ocr-startup-race",
+          "headRefOid": "9ecc3a1e2926e46a7c2adb5f34e1e6361aaa5197",
+          "mergeCommit": {
+            "oid": "ea62b3f2eea225eafd72cbd55296e69e998af863"
+          },
+          "mergedAt": "2026-10-17T01:27:24Z",
+          "number": 1122,
+          "state": "MERGED",
+          "title": "fix(ci): keep pinned OCR stable during startup",
+          "url": "https://github.com/npcink/npcink-ai-cloud/pull/1122"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/site-anchor-performance",
+          "headRefOid": "d7741eed15b9c590bf3836a4816d46bb3d9b7cc1",
+          "mergeCommit": {
+            "oid": "a40625b59e60a957021190febbb22c95203ff242"
+          },
+          "mergedAt": "2026-10-17T01:12:31Z",
+          "number": 1121,
+          "state": "MERGED",
+          "title": "fix(recommendations): bound anchor search and preserve ranking metadata",
+          "url": "https://github.com/npcink/npcink-ai-cloud/pull/1121"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/m4-lan-first-routing",
+          "headRefOid": "3d686c0db66e7d42411a9426a1fb5682cd802cc4",
+          "mergeCommit": {
+            "oid": "d06ff4820027f3dcdb255c10032fa71cb463a662"
+          },
+          "mergedAt": "2026-10-17T01:07:10Z",
+          "number": 1120,
+          "state": "MERGED",
+          "title": "docs(m4): prefer LAN before Pgy and Tailscale",
+          "url": "https://github.com/npcink/npcink-ai-cloud/pull/1120"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/localize-provider-errors",
+          "headRefOid": "3e3c17abc0c13e5f29b563727b2e3267d3f84bef",
+          "mergeCommit": {
+            "oid": "2fd7282fe28bd4e73697587ebe961afd2cee2c3d"
+          },
+          "mergedAt": "2026-10-16T13:00:36Z",
+          "number": 1119,
+          "state": "MERGED",
+          "title": "fix(frontend): localize provider catalog and service errors",
+          "url": "https://github.com/npcink/npcink-ai-cloud/pull/1119"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "dependabot/uv/ruff-0.16.10",
+          "headRefOid": "cd8ae9e27905e7e303f9ce8ba139f1177567da6e",
+          "mergeCommit": null,
+          "mergedAt": null,
+          "number": 1105,
+          "state": "OPEN",
+          "title": "build(deps): Bump ruff from 0.16.8 to 0.16.10",
+          "url": "https://github.com/npcink/npcink-ai-cloud/pull/1105"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "dependabot/uv/fastapi-0.143.0",
+          "headRefOid": "ed379fff6ec1d442cd864f52f7600821fbbc5280",
+          "mergeCommit": null,
+          "mergedAt": null,
+          "number": 1104,
+          "state": "OPEN",
+          "title": "build(deps): Bump fastapi from 0.141.1 to 0.143.0",
+          "url": "https://github.com/npcink/npcink-ai-cloud/pull/1104"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "dependabot/npm_and_yarn/tailwind-merge-3.7.0",
+          "headRefOid": "4b2cb3202b187445cc1a536e7c79256bf67d4c32",
+          "mergeCommit": null,
+          "mergedAt": null,
+          "number": 1103,
+          "state": "OPEN",
+          "title": "build(deps): Bump tailwind-merge from 3.5.0 to 3.7.0",
+          "url": "https://github.com/npcink/npcink-ai-cloud/pull/1103"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "dependabot/npm_and_yarn/autoprefixer-10.6.1",
+          "headRefOid": "97363c8dd2aa0d5c340bdb65b4523a28f246fb42",
+          "mergeCommit": null,
+          "mergedAt": null,
+          "number": 1102,
+          "state": "OPEN",
+          "title": "build(deps-dev): Bump autoprefixer from 10.4.20 to 10.6.1",
+          "url": "https://github.com/npcink/npcink-ai-cloud/pull/1102"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "dependabot/github_actions/alibaba/open-code-review-1.12.13",
+          "headRefOid": "db23658689f4697eb17b161d8651d3f63dbd8598",
+          "mergeCommit": null,
+          "mergedAt": null,
+          "number": 1101,
+          "state": "OPEN",
+          "title": "build(deps): Bump alibaba/open-code-review from 1.12.11 to 1.13.0",
+          "url": "https://github.com/npcink/npcink-ai-cloud/pull/1101"
+        }
+      ]
+    },
+    {
+      "repo": "npcink-cloud-addon",
+      "slug": "npcink/npcink-cloud-addon",
+      "prs": [
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/reconciliation-cursor-capacity",
+          "headRefOid": "f18c93f20c1e552465e61a2b9780d9422692e207",
+          "mergeCommit": {
+            "oid": "ba6a621c019ee894df5f1b96a6c16985cacf2c71"
+          },
+          "mergedAt": "2026-10-17T01:38:09Z",
+          "number": 284,
+          "state": "MERGED",
+          "title": "fix: initialize reconciliation without skipping older content",
+          "url": "https://github.com/npcink/npcink-cloud-addon/pull/284"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/recommendation-feedback-metadata",
+          "headRefOid": "9637ca592f4570bd292b107144e61b4f8271cbae",
+          "mergeCommit": {
+            "oid": "b80b966151f26f114271a5534082c336ab2fea50"
+          },
+          "mergedAt": "2026-10-17T01:18:55Z",
+          "number": 283,
+          "state": "MERGED",
+          "title": "feat(feedback): transport bounded recommendation ranking metadata",
+          "url": "https://github.com/npcink/npcink-cloud-addon/pull/283"
+        }
+      ]
+    },
+    {
+      "repo": "npcink-ai-client-adapter",
+      "slug": "npcink/npcink-ai-client-adapter",
+      "prs": [
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/reproducible-release-package",
+          "headRefOid": "312abcb8ffdfe14fab4f9be6b0027087ca29e146",
+          "mergeCommit": {
+            "oid": "ab32e5031765bce0d72e2340510ff34d47b26706"
+          },
+          "mergedAt": "2026-10-14T05:10:31Z",
+          "number": 118,
+          "state": "MERGED",
+          "title": "fix: make release packages reproducible",
+          "url": "https://github.com/npcink/npcink-ai-client-adapter/pull/118"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/fix-write-provider-log-context",
+          "headRefOid": "863ca2fa045789337dddcfed020687c0e8a5f94b",
+          "mergeCommit": {
+            "oid": "7b8431c345c4e07c37499e2270a282618a1da7f6"
+          },
+          "mergedAt": "2026-10-13T09:37:12Z",
+          "number": 116,
+          "state": "MERGED",
+          "title": "fix: preserve provider log correlation during approved writes",
+          "url": "https://github.com/npcink/npcink-ai-client-adapter/pull/116"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/provider-log-acceptance",
+          "headRefOid": "8daae47feda053724fb36bd6b81d42a302ca0584",
+          "mergeCommit": {
+            "oid": "35afff46847c44aac8f3f6c9e46b498f28899715"
+          },
+          "mergedAt": "2026-10-13T08:43:10Z",
+          "number": 115,
+          "state": "MERGED",
+          "title": "Require provider log correlation in signed draft acceptance",
+          "url": "https://github.com/npcink/npcink-ai-client-adapter/pull/115"
+        }
+      ]
+    },
+    {
+      "repo": "npcink-abilities-toolkit",
+      "slug": "npcink/npcink-abilities-toolkit",
+      "prs": []
+    },
+    {
+      "repo": "npcink-workflow-toolbox",
+      "slug": "npcink/npcink-workflow-toolbox",
+      "prs": [
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/recommendation-baseline-metadata",
+          "headRefOid": "68a9d32405dfee7ebbffdcb05715bb2dcb442523",
+          "mergeCommit": {
+            "oid": "135090bdc2c8a70389f81065fe0bd44f9a6959c8"
+          },
+          "mergedAt": "2026-10-17T01:26:21Z",
+          "number": 271,
+          "state": "MERGED",
+          "title": "feat(recommendations): freeze baselines and bounded ranking telemetry",
+          "url": "https://github.com/npcink/npcink-workflow-toolbox/pull/271"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/internal-link-stage0-closeout-20261016",
+          "headRefOid": "4e5688bff95eaedec346fc24686342c5b86f50db",
+          "mergeCommit": {
+            "oid": "569da58106c877fadb65316e4375a8bd3d1f6b1e"
+          },
+          "mergedAt": "2026-10-16T11:19:06Z",
+          "number": 270,
+          "state": "MERGED",
+          "title": "docs: record internal-link stage zero evidence",
+          "url": "https://github.com/npcink/npcink-workflow-toolbox/pull/270"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/internal-link-recommendation-followup",
+          "headRefOid": "033d68a1c80120db7fc387e07a49f6c886ecb5cc",
+          "mergeCommit": {
+            "oid": "ee814e04de54e4774d7851181837ea767e552a14"
+          },
+          "mergedAt": "2026-10-16T07:40:56Z",
+          "number": 269,
+          "state": "MERGED",
+          "title": "refactor: split editor internal-link recommendations",
+          "url": "https://github.com/npcink/npcink-workflow-toolbox/pull/269"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/fix-classification-smoke",
+          "headRefOid": "d4bc1503ce1b47d68ca6493a99039fe16cba0cc1",
+          "mergeCommit": {
+            "oid": "444128a516b072e4ddc87c4ac759ea96daefa7bb"
+          },
+          "mergedAt": "2026-10-14T08:10:07Z",
+          "number": 268,
+          "state": "MERGED",
+          "title": "test: align classification smoke fixtures with runtime guards",
+          "url": "https://github.com/npcink/npcink-workflow-toolbox/pull/268"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/local-ocr-config",
+          "headRefOid": "7ebab73244e72e4396599ba16e49636ef777d797",
+          "mergeCommit": {
+            "oid": "a7dc1edc908e71d67bdd06d3d1f29b276e079dce"
+          },
+          "mergedAt": "2026-10-14T02:23:25Z",
+          "number": 267,
+          "state": "MERGED",
+          "title": "chore: add local OCR configuration lane",
+          "url": "https://github.com/npcink/npcink-workflow-toolbox/pull/267"
+        },
+        {
+          "baseRefName": "master",
+          "headRefName": "codex/fix-contextual-alt-duplicate",
+          "headRefOid": "e85e0fd1f90bafd6e13acda06b67dcd8bcb60c84",
+          "mergeCommit": {
+            "oid": "a04c129681b6eb454e0f56f73313b19a4fc7fa66"
+          },
+          "mergedAt": "2026-10-16T11:08:59Z",
+          "number": 265,
+          "state": "MERGED",
+          "title": "fix: avoid duplicate contextual ALT review cards",
+          "url": "https://github.com/npcink/npcink-workflow-toolbox/pull/265"
+        }
+      ]
+    },
+    {
+      "repo": "npcink-eval-lab",
+      "slug": "npcink/npcink-eval-lab",
+      "prs": []
+    }
+  ],
+  "core_issue_states": [
+    {
+      "closedAt": null,
+      "number": 3,
+      "state": "OPEN",
+      "title": "Track WordPress.org reviewer feedback and recurring guards",
+      "url": "https://github.com/npcink/npcink-governance-core/issues/3"
+    },
+    {
+      "closedAt": null,
+      "number": 4,
+      "state": "OPEN",
+      "title": "Improve LocalWP smoke reliability",
+      "url": "https://github.com/npcink/npcink-governance-core/issues/4"
+    },
+    {
+      "closedAt": null,
+      "number": 6,
+      "state": "OPEN",
+      "title": "Track npcink-abilities-toolkit compatibility",
+      "url": "https://github.com/npcink/npcink-governance-core/issues/6"
+    },
+    {
+      "closedAt": "2026-10-13T08:23:30Z",
+      "number": 105,
+      "state": "CLOSED",
+      "title": "Split the monolithic static test runners by module",
+      "url": "https://github.com/npcink/npcink-governance-core/issues/105"
+    },
+    {
+      "closedAt": "2026-10-13T07:39:59Z",
+      "number": 123,
+      "state": "CLOSED",
+      "title": "Split Admin_Page.php views opportunistically on next admin-surface changes",
+      "url": "https://github.com/npcink/npcink-governance-core/issues/123"
+    }
+  ],
+  "preserved_work": [
+    {
+      "repo": "npcink-workflow-toolbox",
+      "stash_sha": "4830f19e350f9a7e8447cbe8d0a5b3eedd222f21",
+      "files": 1,
+      "insertions": 25,
+      "deletions": 8,
+      "description": "Uncommitted Lane 3 registry-owner assertion correction and fixture audit cleanup; current source still has the unconditional private registry assertion."
+    },
+    {
+      "repo": "npcink-ai-cloud",
+      "stash_sha": "e4d7601cb37b800ba393525b5f38553c757f7dc7",
+      "include_untracked": true,
+      "files": 3,
+      "insertions": 1025,
+      "description": "Uncommitted resource-baseline document, script and tests."
+    }
+  ],
+  "adapter_remote_pin_check": {
+    "sha": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+    "github_commit_api_status": 422,
+    "message": "No commit found for SHA",
+    "origin_branch_references": 0,
+    "remote_master_sha": "ab32e5031765bce0d72e2340510ff34d47b26706",
+    "remote_master_api_resolved": true,
+    "interpretation": "Preserve unpublished exact documentation pin; no tag or manifest change performed."
+  },
+  "local_documentation_commits_before_audit": [
+    "cac1689",
+    "a249fcb",
+    "0a63aab",
+    "4753aa4"
+  ],
+  "core_origin_master": "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0",
+  "limits": [
+    "Branch counts include main, dependency and unrelated refs.",
+    "Squash ancestry and untracked stash contents require explicit checks.",
+    "No WordPress lane or full matrix was rerun during this audit.",
+    "This audit adds one local documentation commit after the recorded state."
+  ]
+}
