@@ -2,6 +2,12 @@
 
 Status: active.
 
+**2026-10-17 pause:** this session's development/coordination workstream is
+paused by the user. Read the [pause archive](history/session-development-pause-2026-10-17.md)
+first. This page is a recovery reference, not authorization to resume development,
+poll runtime state, change owner resources or publish. Wait for an explicit
+user decision to resume; other owners' independent work is unaffected.
+
 This page is the shortest path back into Core work after days or weeks away
 (for example after the 2026-08 gap month). It points at state, it does not
 duplicate state: every fact below lives in exactly one maintained source, and
@@ -9,8 +15,10 @@ this page only names the order to read them.
 
 ## Shortest Path (about ten minutes)
 
-1. `git status --short --branch`, then sync: `git checkout master && git pull
-   --ff-only origin master`.
+1. After the user decides to resume, run `git status --short --branch` and
+   `git fetch --no-tags origin master`; inspect local unpublished commits and
+   worktree ownership before selecting a checkout. Preserve paused branches;
+   do not automatically switch, reset or update a shared root.
 2. Read `.sisyphus/session-breadcrumb.md` — the rolling newest sessions. The
    last entry names the open thread and its owner decisions. Older months are
    in `.sisyphus/archive/YYYY-MM.md` and are read only when the task needs

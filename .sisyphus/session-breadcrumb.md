@@ -5,20 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Adapter update channel and Addon site/recovery rechecked
-
-- **Adapter**: 07:11:27Z info/package still 0.4.3; update probes from 0.4.1
-  offer 0.4.2, from 0.4.2 no entry. No update-channel closure or monitor.
-- **Addon**: site symlink/file hash still old b80b9661; upstream 3e650d1b.
-  Owner handoff explicitly performed no site sync/recovery. Historical two-gap
-  1997/1999 sample is October 16, not new coverage; live recovery unverified.
-- **Record**: docs/history/adapter-update-addon-recovery-refresh-2026-10-17.md
-  plus JSON. Preserve owner work/original refs/tags/RC2; no site/Cloud/model
-  calls, cleanup, tag operation or owner message. Local weekly batching with
-  post-#181 receipt, no new PR or candidate/matrix/acceptance run.
-  Core gates 55/207, metadata, JSON/links/breadcrumb/diff passed; original
-  refs/tags/resources and sibling HEAD/status unchanged at final recheck.
-
 # 2026-10-17 - One Addon owner request delivered; sync verified, gaps remain
 
 - **Authority/action**: sent one authorized request to Addon owner 01a1447a;
@@ -158,3 +144,19 @@ Older history: `.sisyphus/archive/`.
   full-pass/trigger follow-ups stay open. docs/history/core-next-page-weekly-
   publication-2026-10-17.md +JSON; one local receipt for next weekly batch.
   Receipt metadata/Core55/207/wporg/docs integrity gates passed.
+
+# 2026-10-17 - User paused this session's development; archive before closure
+
+- **Decision**: stop this workstream's feature development, cross-repo closeout
+  and channel/reconciliation follow-ups until an explicit user resumption.
+  Other owner work and existing runtime/cron/services are not stopped.
+- **Archive**: docs/history/session-development-pause-2026-10-17.md records
+  delivered work, dated pending evidence, exact source/release identities,
+  lessons, preservation and focused recovery conditions. README/plan/resume
+  entry points now give the pause precedence over older next steps.
+- **Retain**: #185 merged5d36dbb2; receiptf6350d2 and this pause record local
+  for weekly batching. Original refs/worktrees/stashes/owner work/tags/RC2
+  retained. No fresh runtime read, owner message, new PR/candidate/tag action.
+- **Next**: user decides whether to resume. No polling/automatic wakeup or
+  receipt-only publication loop. Local recovery bundle under Git session-archives.
+  Archive metadata/Core55/207/wporg/links/breadcrumb/diff/manifest and preservation checks passed.
