@@ -12,7 +12,8 @@ current master: [the UX retrospective](history/user-perspective-ux-audit-2026-10
 preserves four merged PRs, the corrected revoke-confirmation finding and
 repeatable engineering checks. Development Workflow links to it. ADR-013 now
 references the preflight-only limitation in its Context and the actual ADR-012
-file, without changing its accepted decision or runtime contract.
+file, without changing its accepted decision or runtime contract. The static ADR
+reference assertion now checks the real link and rejects the absent-section claim.
 
 This weekly docs batch also includes the post-#179 receipt and historical
 coverage audit. Publication/merge checks remain pending at this point; older
