@@ -5,18 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - Final 7/7 owner closeout and acceptance passed
-
-- **Owner state**: Toolbox is clean at `ee814e04`; Cloud Addon is clean at
-  `4978338f`. The default `--fail-on-dirty` matrix passed 7/7 with exit 0 at
-  `2026-10-16T10:26:15+00:00`.
-- **Acceptance**: Core `ed28f98`, Adapter `eb73e503`, and Toolkit `921d1dc7`
-  passed exact acceptance, including M4 provider-log correlation, duplicate
-  refusal, Docker smoke, package/release gates, and cleanup.
-- **Release evidence**: Core, Adapter, and two-build Toolkit checksums are in
-  `docs/release-candidate-notes-2026-10-16.md`; no snapshot tag was created or
-  pushed.
-
 # 2026-10-16 - Authorized stack snapshot tag pushed
 
 - **Preflight**: final 7/7 matrix passed exit 0; Core/Adapter checksums matched;
@@ -154,3 +142,23 @@ Older history: `.sisyphus/archive/`.
   See docs/history/toolbox-lane3-closeout-2026-10-17.md and JSON/matrix evidence.
   Five prior local Core docs commits plus this closeout await the weekly PR.
   Fixed manifest/published snapshot preserved; no tag creation/push/move.
+
+# 2026-10-17 - Toolkit owner and Cloud backend ready; default 7/7 passed
+
+- **Owners**: Toolkit #262 merged as `b09ad300`, clean synchronized master;
+  merged-SHA PHP/minimum/current WP smoke all passed. Cloud #1123 merged as
+  `c75c2db9`, clean synchronized master; final pytest shard and backend
+  aggregate completed, all five exact-SHA source checks passed.
+- **Matrix**: full no-override --fail-on-dirty passed 7/7, exit 0 at
+  02:45:41Z, every path default/dirty zero. First/ready/post snapshots across
+  178.82s have identical seven-root SHA/branch/status/tracked content+mtime
+  fingerprints and stash refs. Core tested `13031b80` excludes this docs update.
+- **Drift/boundary**: fixed RC2 bytes unchanged; Core/Cloud/Addon/Toolkit/Toolbox
+  heads differ, Adapter/Eval Lab match. No new candidate, exact acceptance,
+  tag operation, M4 promotion or production deployment. Toolkit's hint consumer
+  is implemented; unchanged host guards still decide which suggestions apply.
+- **Records/next**: docs/history/stack-owner-readiness-2026-10-17.md plus audit
+  JSON and original matrix. Preserve other owner work/stashes, Adapter pin,
+  Addon/candidate decisions and branch/worktree dispositions. No owner message
+  or sibling mutation. Six earlier local Core docs commits plus this closeout
+  await the weekly PR; choose any future candidate deliberately.

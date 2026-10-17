@@ -3,6 +3,12 @@
 Status: focused fixture repair merged and verified on real local WordPress;
 the wider default matrix is not green.
 
+**Subsequent readiness update:** Toolkit owner source merged and Cloud's
+backend aggregate completed. A new full no-override matrix passed 7/7 at
+`2026-10-17T02:45:41Z`. See the [owner readiness closeout](stack-owner-readiness-2026-10-17.md).
+The non-green matrix below is the original earlier checkpoint, not the latest
+default-root status.
+
 ## Delivered change
 
 Toolbox [PR #272](https://github.com/npcink/npcink-workflow-toolbox/pull/272)

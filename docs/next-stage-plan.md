@@ -5,6 +5,23 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Toolkit / Cloud source readiness and default 7/7 — 2026-10-17
+
+Toolkit #262 is merged; clean master is `b09ad300`, with merged-SHA PHP and
+minimum/current WordPress smoke passing. Cloud #1123 is merged; clean master
+is `c75c2db9`. Its previously missing backend aggregate completed successfully,
+and all five exact-SHA source checks now pass. The complete no-override
+`--fail-on-dirty` matrix passed **7/7, exit 0** at `02:45:41Z`, all default
+paths and dirty counts zero. Three seven-root snapshots remained identical
+across 178.82 seconds. See the [readiness closeout and evidence](history/stack-owner-readiness-2026-10-17.md).
+
+Toolkit now consumes the optional Cloud anchor/context hint; the owner records
+Apply/Undo/native-save evidence while host guards remain in force. Preserve
+other owner work, stashes, Adapter publication and housekeeping follow-ups.
+The fixed RC2 manifest and published snapshot remain unchanged. Five live
+repository heads now differ from RC2; select any new candidate explicitly
+before exact acceptance. No new tag, deployment or M4 promotion is implied.
+
 ## Lane 3 fixture closeout — 2026-10-17
 
 Toolbox PR #272 merged as `3ae12c4`; required CI and static analysis passed.
@@ -57,8 +74,8 @@ See [the owner closeout and drift record](history/stack-rc2-owner-closeout-2026-
 `f0e2a58`, Toolbox `569da58` and its other three fixed SHAs. Its earlier exact
 7/7 with three overrides and zero-skip three-layer acceptance remain historical
 evidence. Today's live default matrix does not update that candidate.
-Core coordination docs and three owner repositories have drifted; Adapter,
-Toolkit and Eval Lab default HEADs still match. Select any new candidate
+Core coordination docs, AI Cloud, Addon, Toolkit and Toolbox have drifted;
+Adapter and Eval Lab default HEADs still match. Select any new candidate
 revisions explicitly before refreshing its manifest and exact acceptance.
 
 The [RC2 record](history/stack-rc2-acceptance-2026-10-16.md) and
