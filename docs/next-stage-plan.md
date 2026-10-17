@@ -5,6 +5,57 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Authorized Core-only branch cleanup completed — 2026-10-17
+
+After fresh exact-SHA, ownership, worktree and live merged-PR/tree checks,
+the human-authorized nine Core local refs were removed with ordinary branch
+deletion; the one separately authorized `docs-rc-acceptance-owner-handoff`
+origin ref was removed using an exact-SHA lease. Core is now **9 local / 15
+actual origin branches** (18/16 before). Every other remote ref is unchanged,
+including the original RC2 and matrix-tested source anchors. The unchanged
+snapshot tag retains the deleted remote tip `ed28f984`.
+
+See [execution, preservation and recovery evidence](history/core-scoped-branch-cleanup-2026-10-17.md).
+All tag maps, RC2 manifest, worktrees and stashes are unchanged. Preserve other
+owner candidates and unresolved source/dependency/human-acceptance tasks; no
+sibling mutation or broader cleanup occurred. This receipt joins the two local
+docs records for the next weekly PR. Older inventory totals below are historical.
+
+## Branch / worktree / stash audit and cleanup candidates — 2026-10-17
+
+Fresh seven-repository audit counts **56 local branches, 91 actual origin
+branches, eight clean/present/unlocked worktrees, one stash and seven open PRs**.
+See [the ownership inventory and exact cleanup scope](history/branch-worktree-stash-audit-2026-10-17.md).
+Nine merged Core local refs have exact remote backups and no worktree occupancy;
+one separate remote Core ref is retained by the published snapshot tag. These
+are future scoped candidates, not authorization or completed cleanup. Seventeen
+other-owner local candidates, one Cloud auxiliary worktree and Toolbox's
+functionally redundant stash require owner disposition. Keep exact remote
+source anchors, especially RC2 and matrix-tested original commits.
+
+Preserve Core post-PR receipts, Toolkit's unpublished mirror PHP feature,
+Addon diagnostic workflow branch, Adapter's exact pin and all open dependency
+PRs. Cloud/Toolbox owner work is active. The old Cloud stash and Addon auxiliary
+registration were already absent before this audit; do not attribute removal to
+this session. Local/remote tags and fixed manifest are unchanged; no deletion,
+publication, matrix, acceptance or runtime operation occurred. Batch this local
+audit with the post-#178 receipt in the next weekly docs PR.
+
+## Three-receipt weekly Core docs batch merged — 2026-10-17
+
+The three accumulated commits `397fee55`, `03be509f`, `b07972c1` merged through
+[PR #178](https://github.com/npcink/npcink-governance-core/pull/178) as
+`95ef2108` at `04:14:39Z`. Exact topic protected checks and merged-SHA Static
+contracts passed; topic/squash trees match, and original refs remain preserved.
+Local/CI advisory OCR delivered no complete review; that gap is recorded.
+See [publication receipt and evidence](history/core-weekly-docs-publication-2026-10-17.md).
+
+The former three docs commits are published. This later merge receipt is one
+new local record for the next weekly batch. Historical 7/7 stays bound to its
+recorded SHAs; no new matrix or candidate acceptance is implied. Preserve other
+owner/quality/human acceptance and housekeeping work. RC2 and all tag inventories
+are unchanged; no tag, deployment, M4 promotion or sibling cleanup occurred.
+
 ## Cloud publication and refreshed default 7/7 complete — 2026-10-17
 
 One newly authorized Cloud owner request completed: #1126 merged as `fbdfa372`,

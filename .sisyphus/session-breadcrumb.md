@@ -5,56 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - Separate RC2 manifest and exact acceptance passed
-
-- **Candidate**: Core `7904f5b`, Addon `f0e2a58`, Toolbox `569da58`; the other
-  four revisions remain pinned. Internal id `stack-rc2-2026-10-16` is not a tag.
-- **Matrix**: exact full 7/7 passed exit 0 at `2026-10-16T12:15:50+00:00`,
-  with clean Toolbox, AI Cloud and Addon worktree overrides. Default roots have
-  owner work; the default dirty-root closeout is not green.
-- **Acceptance**: full Core/Adapter/Toolkit wrapper passed exit 0 at
-  `2026-10-16T12:27:22Z`, zero skips, read grants, M4 correlation, duplicate
-  refusal, PHPStan, Docker, package/release and cleanup. A timeout-owned
-  subscriber was identified and removed before the successful rerun.
-- **Record**: `docs/history/stack-rc2-acceptance-2026-10-16.md` and its JSON
-  manifest. No new tag/push or retag; accumulate this docs-only closeout for the
-  weekly docs PR. Published snapshot object/peeled commit remain unchanged.
-
-# 2026-10-16 - RC2 default-root refresh blocked by active owners
-
-- **Default matrix**: full no-override `--fail-on-dirty` at
-  `2026-10-16T12:43:50Z` returned exit 1: 6/7 gates passed; AI Cloud exact
-  `3ad10d70` frontend CI pending; Toolbox has three owner-held modified files.
-- **Owner state**: Addon PR #282 merged as `0ae75fe`, shared root clean on
-  master. AI Cloud PR #1119 open; its active owner retains M4 pending merge
-  and promotion. Toolbox owner waits for M4 before further smoke/publication.
-  No sibling files, branches or owner resources were modified by this audit.
-- **Manifest**: RC2 fixed SHAs unchanged. Core coordination/Addon's docs and
-  AI Cloud frontend changes are separate drift; Toolbox HEAD matches but its
-  working tree does not. New revisions need a deliberate candidate decision.
-- **Next/evidence**: finish existing owner work, then repeat the full default
-  matrix; see `docs/history/stack-rc2-acceptance-2026-10-16.md` and the separate
-  owner audit JSON. Existing snapshot remotely reverified unchanged; no new
-  tag, push or retag. Batch these local docs commits for the weekly docs PR.
-
-# 2026-10-16 - PR1119 handoff complete; formal owner closeout pending
-
-- **AI Cloud**: PR #1119 merged `13:00:36Z` as `2fd7282f`; final CI passed
-  294 unit / 143 browser tests. Receipt records accepted clean master and
-  M4 release at `13:04:13Z`; Toolbox acknowledged and took M4 candidate work.
-- **Toolbox**: development verification/baselines/metadata completed, but
-  21 Toolbox + five Addon + five auxiliary Cloud files remain uncommitted.
-  PRs, exact-SHA CI and new accepted closeout are not yet performed. Toolkit
-  anchor-hint limitation remains documented separately from positive draft tests.
-- **Default roots**: status-only audit sees 33 owner files (Toolbox 21, Addon
-  five, AI Cloud seven routing docs from a later task). Full no-override rerun
-  awaits formal closeout; last completed full run is `12:43:50Z`, exit 1 / 6/7.
-- **Next**: owner commit/PR/required-check closeout, clean default roots, then
-  full dirty gate and manifest comparison. Cross-thread request authorization
-  was asked; no message sent yet. RC2 bytes and published tag unchanged.
-  See `docs/history/stack-rc2-owner-handoff-2026-10-16.json`; batch local docs
-  for the weekly PR. No tag creation, push, retag or production deployment.
-
 # 2026-10-17 - Owner PR closeout and default no-override 7/7 passed
 
 - **Coordination**: sent exactly one authorized request to each owner chat.
@@ -182,3 +132,54 @@ Older history: `.sisyphus/archive/`.
   exact acceptance. No tag operations, production action or M4 promotion.
 - **Evidence**: docs/history/cloud-publication-owner-closeout-2026-10-17.md
   plus audit and original matrix JSON. Batch this local record in weekly docs PR.
+
+# 2026-10-17 - Three Core receipts published through weekly docs PR178
+
+- **Published**: 397fee55 / 03be509f / b07972c1, 12 docs-only files, merged
+  through #178 as `95ef2108` at `04:14:39Z`. Both protected topic checks and
+  merged-SHA Static contracts passed; identical topic/squash tree `5b23168d`.
+- **Review**: local OCR reached 180s; CI failed 5/5 selected files with zero
+  comments/tokens. No complete external review delivered; gap in PR, no retry.
+  Local five-axis review, Core tests 55/207, metadata and wporg passed.
+- **Preserved**: original local/remote topic b07972c1; all sibling owner work,
+  branches/worktrees/stashes and other open quality/human acceptance tasks.
+  Fixed manifest and complete local/remote tag inventories unchanged. No tag
+  operation, sibling change/message, deployment, M4 or matrix rerun.
+- **Receipt**: docs/history/core-weekly-docs-publication-2026-10-17.md and JSON.
+  Old three-commit backlog closed; this one new local post-merge receipt on
+  codex/weekly-docs-merge-receipt-2026-10-17 waits for the next weekly batch.
+
+# 2026-10-17 - Ownership audit produced scoped cleanup candidates; no deletion
+
+- **Inventory**: seven repositories, 56 local / 91 actual origin branches,
+  eight present/clean/unlocked worktrees, one stash, seven open dependency PRs.
+  Two collection rounds confirm branch heads, worktree status, stashes and all
+  tags unchanged. Shared sibling refs/checkouts were never mutated.
+- **Candidates**: nine Core local refs (keep exact remote backups); one remote
+  Core ed28f984 ref backed by unchanged snapshot tag. Other-owner 17 local refs,
+  Cloud auxiliary worktree and redundant Toolbox stash await owner disposition.
+- **Preserve**: Core post-PR receipts, Toolkit mirror PHP/tests, Addon workflow
+  diagnostic branch, Adapter exact pin and active Cloud/Toolbox/Eval owner work.
+  Historical Cloud stash / Addon auxiliary registration absent before audit;
+  do not attribute their removal here. Shallow Eval history checked in isolation.
+- **Evidence/next**: docs/history/branch-worktree-stash-audit-2026-10-17.md and
+  full JSON inventory; cleanup scope rules in release-closeout-standard.md.
+  No deletion, owner message, branch publication, tag, matrix, acceptance,
+  deployment or M4 operation. Batch with ac69fa7 in next weekly docs PR.
+
+# 2026-10-17 - Authorized Core nine-local and one-remote branch cleanup complete
+
+- **Authority/guards**: human explicitly authorized the prior Core-only list.
+  Rechecked all nine full SHAs, origin backups, owner/worktree occupancy and
+  merged PR heads/tree equivalence against current origin/master `95ef2108`.
+- **Executed**: nine ordinary local branch deletions, one remote deletion at
+  expected `ed28f984` with SHA lease and tag-following disabled. Core branches
+  18→9 local / 16→15 actual origin; exact before/after delta is recorded.
+- **Preserved**: all other origin heads, including b07972c1 matrix source and
+  f5181a3e RC2 history; snapshot object ffb5e5d6/peeled ed28f984 and every tag
+  unchanged. Current HEAD/worktree/stash and manifest unchanged before docs edit.
+  No sibling/owner work, auxiliary worktree, saved stash or other topic removed.
+- **Receipt**: docs/history/core-scoped-branch-cleanup-2026-10-17.md and JSON;
+  rollback sources retained. Batch this new receipt with ac69fa7 / 92c4a02 in
+  the next weekly docs PR. No new candidate, matrix, acceptance, runtime or tag
+  operation; broader owner housekeeping remains open.

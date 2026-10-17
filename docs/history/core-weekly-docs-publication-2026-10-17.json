@@ -1,0 +1,183 @@
+{
+  "recorded_at": "2026-10-17T04:16:42.824175+00:00",
+  "status": "three_accumulated_docs_commits_published_and_merged",
+  "scope": "Core weekly documentation publication and post-merge receipt only",
+  "pr": {
+    "url": "https://github.com/npcink/npcink-governance-core/pull/178",
+    "state": "MERGED",
+    "headRefOid": "b07972c12f0fb822c674570f2cc5b22b2c8d8302",
+    "mergeCommit": {
+      "oid": "95ef21089f281c16f69f8898d7eb89c3e7671795"
+    },
+    "mergedAt": "2026-10-17T04:14:39Z",
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T04:13:49Z",
+        "conclusion": "FAILURE",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39001760116/job/117305991335",
+        "name": "code-review",
+        "startedAt": "2026-10-17T04:13:37Z",
+        "status": "COMPLETED",
+        "workflowName": "OpenCodeReview PR Review"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T04:14:25Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39001760029/job/117305989773",
+        "name": "Static contracts",
+        "startedAt": "2026-10-17T04:13:36Z",
+        "status": "COMPLETED",
+        "workflowName": "Core CI"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T04:13:41Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39001760035/job/117305989844",
+        "name": "PR body contract",
+        "startedAt": "2026-10-17T04:13:37Z",
+        "status": "COMPLETED",
+        "workflowName": "PR Body Contract"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T04:14:36Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/39001818334/job/117306166041",
+        "name": "PR body contract",
+        "startedAt": "2026-10-17T04:14:33Z",
+        "status": "COMPLETED",
+        "workflowName": "PR Body Contract"
+      }
+    ]
+  },
+  "previous_baseline": "9d153849b2fc130e7d3ab7e2a090995e184954a1",
+  "original_commits": [
+    "397fee55d1b07a7eaa8aeb75f6162cf4a225c49f",
+    "03be509f71c8d3fffe730d87f762c1733dcad359",
+    "b07972c12f0fb822c674570f2cc5b22b2c8d8302"
+  ],
+  "published_files": [
+    ".sisyphus/archive/2026-10.md",
+    ".sisyphus/session-breadcrumb.md",
+    "docs/history/adapter-preservation-and-core-docs-publication-2026-10-17.json",
+    "docs/history/adapter-preservation-and-core-docs-publication-2026-10-17.md",
+    "docs/history/cloud-publication-default-matrix-2026-10-17.json",
+    "docs/history/cloud-publication-owner-closeout-2026-10-17.json",
+    "docs/history/cloud-publication-owner-closeout-2026-10-17.md",
+    "docs/history/core-docs-publication-matrix-2026-10-17.json",
+    "docs/history/session-closure-review-2026-10-17.md",
+    "docs/history/toolbox-cloud-owner-refresh-2026-10-17.json",
+    "docs/history/toolbox-cloud-owner-refresh-2026-10-17.md",
+    "docs/next-stage-plan.md"
+  ],
+  "topic_branch": "codex/docs-publication-receipt-2026-10-17",
+  "topic_preserved": {
+    "local": "b07972c12f0fb822c674570f2cc5b22b2c8d8302",
+    "remote": "b07972c12f0fb822c674570f2cc5b22b2c8d8302\trefs/heads/codex/docs-publication-receipt-2026-10-17"
+  },
+  "identical_squash_topic_tree": "5b23168d54735e91ffac991e33ae17df3ee3c9dd",
+  "merged_sha_checks": [
+    {
+      "name": "Static contracts",
+      "head_sha": "95ef21089f281c16f69f8898d7eb89c3e7671795",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/npcink/npcink-governance-core/actions/runs/39001829742/job/117306199566",
+      "started_at": "2026-10-17T04:14:44Z",
+      "completed_at": "2026-10-17T04:15:37Z"
+    }
+  ],
+  "publisher": "composer pr:publish with repository template, protected squash auto-merge; push.followTags=false and remote.origin.tagOpt=--no-tags",
+  "local_verification": {
+    "composer_validate": "passed",
+    "composer_test_all": "55 tests / 207 assertions; all component gates passed",
+    "check_wporg": "passed",
+    "changed_json_links_breadcrumb_diff": "passed"
+  },
+  "advisory_review": {
+    "local": {
+      "exit_code": 124,
+      "timed_out": true,
+      "duration_seconds": 180.01
+    },
+    "local_complete_review_delivered": false,
+    "ci_run_url": "https://github.com/npcink/npcink-governance-core/actions/runs/39001760116",
+    "ci_status": "failed",
+    "ci_message": "Review failed: 0 finding(s); 5 of 5 selected item(s) failed.",
+    "ci_summary": {
+      "files_reviewed": 5,
+      "comments": 0,
+      "total_tokens": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "elapsed": "2s"
+    },
+    "retries": 0,
+    "complete_external_review_delivered": false,
+    "disposition": "No external review delivered. Locally reviewed docs-only facts, hashes, links, version binding, privacy and boundary. Required checks passed; advisory gap recorded in PR body."
+  },
+  "immutable_release": {
+    "manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+    "manifest_unchanged": true,
+    "local_tag_refs_unchanged": true,
+    "remote_tag_refs_unchanged": true,
+    "remote_tag_refs": [
+      "a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc\trefs/tags/pre-refactor-2026-07-14",
+      "5acce75322367d6d46b58665d35331039d4b301a\trefs/tags/pre-refactor-2026-07-14^{}",
+      "8edb4ff1cd5564f389e8da490f183c7a56e0af5b\trefs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1",
+      "5f79d32f8e50e381d1872d68c4f99c0e9ee77d51\trefs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}",
+      "7de7062a3b6308d6b59a47553f3345dd29fab94f\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1",
+      "8f08f8ac3ce836293581f1bc8be040158de2980d\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}",
+      "589d82eb634efa92d3a41ecebf99c8dbfe7a19b2\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2",
+      "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2^{}",
+      "2891b0b532c75da1dbf3426404f99dbeb2310b39\trefs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2",
+      "1829fb828ea4d9e8f7caabea74d5b89117824355\trefs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2^{}",
+      "ffb5e5d6d7b68fa952288524a181ff688a7698ee\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0",
+      "ed28f984153200a8362fcd0928bbb32b83636159\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0^{}",
+      "4e4099cec8d0a88deb006eb1e0e916c485c7de65\trefs/tags/v0.1.0",
+      "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3\trefs/tags/v0.1.0^{}",
+      "ad1d41effcb04a3e1578567e3d30068973344f40\trefs/tags/v0.1.1",
+      "1829fb828ea4d9e8f7caabea74d5b89117824355\trefs/tags/v0.1.1^{}",
+      "fa27aa2a13e01048da411c06cc1dff25abbd45a5\trefs/tags/v0.2.0",
+      "7f2c6bf5b3f810f65f2e3f2d396ecfdf78c07ee6\trefs/tags/v0.2.0^{}",
+      "da05076343d7975e95800eddf1e9719358ac82df\trefs/tags/v0.3.0",
+      "3357f916899ac4b013a753da6d99e712274f2221\trefs/tags/v0.3.0^{}"
+    ],
+    "tag_mutations": [],
+    "candidate_changed": false
+  },
+  "matrix": {
+    "rerun_this_docs_publication": false,
+    "last_report": "cloud-publication-default-matrix-2026-10-17.json",
+    "last_report_sha256": "145cd7929faeeb9f2d63f843e921974ee6a56d719f9a9f56411a7fd42987a777",
+    "last_result": "7/7 exit 0 at report timestamp 2026-10-17T04:05:45Z",
+    "tested_core_sha": "03be509f71c8d3fffe730d87f762c1733dcad359",
+    "scope": "historical tested revisions only; merge CI and tree identity prove this docs publication, not new cross-repo acceptance"
+  },
+  "preservation": {
+    "sibling_mutations": false,
+    "new_owner_messages": 0,
+    "cleanup": false,
+    "deployment_or_m4_promotion": false,
+    "remaining_work": [
+      "retained owner branches/worktrees and historical stashes",
+      "Addon checkout/candidate drift decisions",
+      "Toolbox quality evaluation and human labels",
+      "Cloud real mailbox/writing human production acceptance",
+      "new candidate selection/exact acceptance only if requested"
+    ]
+  },
+  "post_merge_receipt": {
+    "branch": "codex/weekly-docs-merge-receipt-2026-10-17",
+    "publication": "new local docs-only receipt for the next weekly batch; not another PR this session",
+    "verification": {
+      "composer_test_all": "passed: 55 tests / 207 assertions and all component gates",
+      "composer_validate": "passed",
+      "json_links_breadcrumb_diff": "passed",
+      "matrix_and_manifest_hashes": "unchanged"
+    }
+  }
+}
