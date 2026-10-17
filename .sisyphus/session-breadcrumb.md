@@ -5,21 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Cloud1126 publication and refreshed default 7/7 complete
-
-- **Owner request**: exactly one newly authorized request sent. Cloud #1126
-  merged `fbdfa372`; five exact-merge-SHA checks pass, clean synchronized master.
-  Toolbox #274 advanced to `a2ad8981`, also clean synchronized with owner receipts.
-- **Gate**: complete default no-override `--fail-on-dirty` 7/7, exit 0 at
-  `04:05:45Z`; all dirty 0. Four snapshots identical across 516.22 seconds.
-  Tested Core `03be509f`; this later documentation commit is excluded.
-- **Limits**: one authorized OCR timed out, no full review delivered, no retry.
-  Preserve owner resources, quality/human acceptance and weekly docs follow-ups.
-  Five heads drift from fixed RC2; manifest/tag unchanged, no new candidate or
-  exact acceptance. No tag operations, production action or M4 promotion.
-- **Evidence**: docs/history/cloud-publication-owner-closeout-2026-10-17.md
-  plus audit and original matrix JSON. Batch this local record in weekly docs PR.
-
 # 2026-10-17 - Three Core receipts published through weekly docs PR178
 
 - **Published**: 397fee55 / 03be509f / b07972c1, 12 docs-only files, merged
@@ -163,3 +148,17 @@ Older history: `.sisyphus/archive/`.
   and JSON; local weekly batching. No tag/source/sibling/production mutation.
   Core gates 55/207, metadata, JSON/links/breadcrumb/diff passed; final original
   branch/tag/resource and sibling HEAD/status recheck unchanged.
+
+# 2026-10-17 - Three owner/release documentation commits merged as PR181
+
+- **Published**: f764306b / 5be60b35 / aec4acb7 (nine docs/evidence files)
+  merged #181 as 9f5b2bf2; equal topic/squash trees, protected auto-merge.
+- **Checks**: required Static/body, local Core 55/207, metadata/wporg and docs
+  integrity passed. Local OCR timed out; CI failed 3/3 with zero tokens/comments.
+  No full external review claimed; no bypass, retry or workflow change.
+- **Retain/next**: original branches and remote source refs, Core tag maps and
+  fixed manifest unchanged; other owner work and dated follow-ups stay open.
+  docs/history/core-owner-release-weekly-publication-2026-10-17.md plus JSON
+  form one new local receipt for next weekly batch; no recursive PR, sibling
+  mutation/message, cleanup, acceptance, deployment or tag operation.
+  Merged-SHA Static contracts passed (run 39012548194); receipt docs gates pass.

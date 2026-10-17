@@ -5,6 +5,20 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Owner/release weekly documentation batch merged — 2026-10-17
+
+[PR #181](https://github.com/npcink/npcink-governance-core/pull/181) published
+f764306b / 5be60b35 / aec4acb7 as `9f5b2bf2` after both required checks passed.
+Topic/squash trees match; merged-SHA Static contracts also passed. Protected
+auto-merge used no bypass. Local OCR timed
+out and CI advisory failed; no completed external review is claimed.
+See [publication and preservation receipt](history/core-owner-release-weekly-publication-2026-10-17.md).
+
+The former three-doc-commit backlog is closed. This later receipt is one new
+local record for weekly batching. Original branches, source backups, all Core
+tags and fixed RC2 are unchanged. Other-owner and dated Adapter/Addon follow-ups
+remain open; no sibling, runtime, candidate, production or tag action occurred.
+
 ## Adapter publication and Addon drift evidence reconciled — 2026-10-17
 
 [The release/drift closeout](history/adapter-release-addon-drift-review-2026-10-17.md)
