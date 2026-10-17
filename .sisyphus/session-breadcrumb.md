@@ -5,23 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Historical closure audit found preserved unfinished work
-
-- **Review**: fully read the referenced chat and checked live Git/PR/source/stash
-  evidence. Current stage can be handed off, but all-history closure is false.
-- **Pending**: Toolbox Lane 3 registry-owner/fixture-audit correction remains in
-  stash `4830f19e`; Cloud resource-baseline scripts/tests/docs in stash `e4d7601c`.
-  Adapter exact docs pin `eb73e503` is local only (origin commit API 422).
-  Toolkit local mirror topic needs owner disposition. Preserve all saved work.
-- **Inventory**: nine clean/present/unlocked worktrees, 55 local and 89 actual
-  origin branches, two retained stashes. Addon #284 merged after the green
-  matrix; default root b80b9661 is one commit behind ba6a621c.
-- **Docs/next**: closure review + durable inventory, dated Lane 3 correction and
-  release audit rules recorded. Four earlier Core docs commits plus this audit
-  await the weekly PR. First close the Lane 3 owner fix and real WP rerun, then
-  source preservation/publication and owner-aware housekeeping. No sibling edits,
-  owner messages, branch/stash removal, new candidate, tag or deployment.
-
 # 2026-10-17 - Toolbox Lane 3 repair merged and real WP cleanup verified
 
 - **Merge**: Toolbox PR #272 merged as `3ae12c4`; exact final head `eb0c24f`
@@ -179,3 +162,20 @@ Older history: `.sisyphus/archive/`.
   and JSON. New local receipt on codex/audit-weekly-docs-receipt-2026-10-17
   waits for the next weekly batch. Core 10 local/16 remote includes intended
   publication/receipt branches; former three-commit backlog is closed.
+
+# 2026-10-17 - Historical post-PR docs coverage reconciled; two doc follow-ups
+
+- **Reviewed**: ten local refs; six post-PR docs commits and one independent
+  UX summary. Five originals have exact replay patch IDs and merged PR/tree
+  proof: 418a081d→#167, 4a23d358/31279cf6→#168, 8d6083e2→#169,
+  e93c3303→#176. No duplicate publication needed; original refs stay retained.
+- **ADR**: e73f9684's static-object limitation is semantically carried by
+  ADR-013 / #135/#136/#138/#139, not an unmerged code feature. Keep source;
+  narrow follow-up corrects ADR-013's reference to absent ADR-012 Limitations.
+- **UX**: 3c45612c synthesis remains local, while #151–#154 implementation is
+  merged. Salvage historical recap/lessons from current baseline; do not replay
+  stale breadcrumb moves, pre-tag blockers or current ledger/package claims.
+- **Record**: docs/history/core-historical-doc-coverage-2026-10-17.md and JSON.
+  This audit joins local 89adeb8 for weekly batching. No source/ADR/ref/tag
+  change, cleanup, owner message, new PR, matrix, acceptance or runtime action;
+  preserve other owner work and all original source refs.

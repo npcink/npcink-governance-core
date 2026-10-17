@@ -5,6 +5,23 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Remaining historical doc coverage audited — 2026-10-17
+
+Across the ten remaining local refs, six post-PR docs commits plus one standalone
+UX-summary commit were traced. **Five patches are already published** through
+#167/#168/#169/#176 with equal stable patch IDs and verified PR/squash trees.
+The old `e73f9684` preflight limitation is semantically covered by ADR-013 and
+#138/#139; do not replay it as a current unresolved runtime limitation.
+See [the per-commit coverage and retain/republish list](history/core-historical-doc-coverage-2026-10-17.md).
+
+Two focused doc follow-ups remain: salvage the local `3c45612c` UX synthesis
+(the four #151–#154 implementations are already merged), and correct ADR-013's
+reference to a nonexistent ADR-012 Limitations section. Prepare from current
+baseline, retaining dated provenance and excluding stale branch/breadcrumb
+state. All source refs and other owner work remain preserved; no deletion,
+ADR/source edit, new PR, tag or runtime operation occurred. Batch this audit
+with the local post-#179 receipt; no duplicate PR for already covered patches.
+
 ## Audit/cleanup weekly documentation batch merged — 2026-10-17
 
 Three accumulated commits `ac69fa72`, `92c4a02a`, `8df58884` merged through

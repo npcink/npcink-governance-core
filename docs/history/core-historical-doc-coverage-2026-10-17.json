@@ -1,0 +1,432 @@
+{
+  "observed_at": "2026-10-17T05:59:52.866316+00:00",
+  "scope": "Core historical post-merge documentation coverage only; no publish/cleanup/source mutation",
+  "baseline_origin_master": "289ce777eff158e8f2d5088c30d90866efc87e2c",
+  "audited_current_head": "89adeb8f9ce33423d9c0647f79b0ffcec1838df7",
+  "local_branches": [
+    {
+      "name": "codex/audit-weekly-docs-receipt-2026-10-17",
+      "sha": "89adeb8f9ce33423d9c0647f79b0ffcec1838df7"
+    },
+    {
+      "name": "codex/docs-classification-lane1-2026-10-16",
+      "sha": "31279cf66174efd460e94554a0c0db21897d49e9"
+    },
+    {
+      "name": "codex/docs-rc-identity-2026-10-16",
+      "sha": "8d6083e234be290206e6c3fb4b3a739ce3ed232a"
+    },
+    {
+      "name": "codex/docs-rc-post-tag-drift-2026-10-16",
+      "sha": "e93c330366c952c75db540465acfcd85eb2cd8ab"
+    },
+    {
+      "name": "codex/docs-week-2026-10-13-followup",
+      "sha": "418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd"
+    },
+    {
+      "name": "codex/execution-verification-reads",
+      "sha": "e73f9684878bf10a43130f266c4ddd1d258ad161"
+    },
+    {
+      "name": "codex/verification-reads-hardening",
+      "sha": "f4b17dbae132c8be2abdf8f162180b39843074ad"
+    },
+    {
+      "name": "codex/weekly-docs-merge-receipt-2026-10-17",
+      "sha": "8df588847af0534f28755ff2a955df7748ceb0da"
+    },
+    {
+      "name": "master",
+      "sha": "9716cf5eaae259874c03ad40363382fd065aded2"
+    },
+    {
+      "name": "zcode/docs-2026-10-11-ux-audit-arc",
+      "sha": "3c45612c5ee15705374a19743b983dfce9a0258e"
+    }
+  ],
+  "exact_patch_covered_commits": [
+    {
+      "original_commit": "418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+      "subject": "docs: record classification lane one evidence",
+      "retained_branch": "codex/docs-week-2026-10-13-followup",
+      "original_merged_pr": 166,
+      "published_equivalent_commit": "8d9626b7a07ffca7126b400a404a6db05145d1e9",
+      "stable_patch_id": "01657c672a5f414ec6a554192a817441962b6a91",
+      "patch_identical": true,
+      "published_by": {
+        "headRefName": "codex/docs-classification-lane1-2026-10-16",
+        "headRefOid": "8d9626b7a07ffca7126b400a404a6db05145d1e9",
+        "mergeCommit": {
+          "oid": "aab91198b3765942aa8f4121dcb68895405deaa1"
+        },
+        "mergedAt": "2026-10-16T04:52:58Z",
+        "number": 167,
+        "title": "docs: record classification lane one evidence",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/167"
+      },
+      "equivalent_commit_ancestor_of_pr_head": true,
+      "topic_squash_tree_equal": true,
+      "merge_ancestor_of_current_default": true,
+      "original_sha_ancestor_of_current_default": false,
+      "files": [
+        ".sisyphus/archive/2026-10.md",
+        ".sisyphus/session-breadcrumb.md",
+        "docs/history/ai-write-classification-regression-evidence.md",
+        "docs/history/session-review-and-next-stage-2026-10-16.md",
+        "docs/next-stage-plan.md"
+      ],
+      "disposition": "no republication needed; retain original ref pending separately authorized cleanup"
+    },
+    {
+      "original_commit": "4a23d35885d9817369661a6e91cb5646de241892",
+      "subject": "docs: decide stack RC identity",
+      "retained_branch": "codex/docs-classification-lane1-2026-10-16",
+      "original_merged_pr": 167,
+      "published_equivalent_commit": "50f72a2aa16c809462250583f9a22008cf52c867",
+      "stable_patch_id": "ab7cd46c3fbf72ea4efb9d71f3264750b7cec4ea",
+      "patch_identical": true,
+      "published_by": {
+        "headRefName": "codex/docs-rc-identity-2026-10-16",
+        "headRefOid": "1d8a21444eb920553a8b94621fee4a33a4bba680",
+        "mergeCommit": {
+          "oid": "dd39be6aefc1fa4f46a872b127338ac32e73c4ac"
+        },
+        "mergedAt": "2026-10-16T05:04:50Z",
+        "number": 168,
+        "title": "docs: decide stack RC identity",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/168"
+      },
+      "equivalent_commit_ancestor_of_pr_head": true,
+      "topic_squash_tree_equal": true,
+      "merge_ancestor_of_current_default": true,
+      "original_sha_ancestor_of_current_default": false,
+      "files": [
+        ".sisyphus/archive/2026-10.md",
+        ".sisyphus/session-breadcrumb.md",
+        "docs/history/session-review-and-next-stage-2026-10-16.md",
+        "docs/next-stage-plan.md",
+        "docs/release-candidate-version-matrix.md"
+      ],
+      "disposition": "no republication needed; retain original ref pending separately authorized cleanup"
+    },
+    {
+      "original_commit": "31279cf66174efd460e94554a0c0db21897d49e9",
+      "subject": "docs: pin RC snapshot manifest",
+      "retained_branch": "codex/docs-classification-lane1-2026-10-16",
+      "original_merged_pr": 167,
+      "published_equivalent_commit": "1d8a21444eb920553a8b94621fee4a33a4bba680",
+      "stable_patch_id": "6d07ddfb68dffa8d2b784ae4a1ba348b62ebe80f",
+      "patch_identical": true,
+      "published_by": {
+        "headRefName": "codex/docs-rc-identity-2026-10-16",
+        "headRefOid": "1d8a21444eb920553a8b94621fee4a33a4bba680",
+        "mergeCommit": {
+          "oid": "dd39be6aefc1fa4f46a872b127338ac32e73c4ac"
+        },
+        "mergedAt": "2026-10-16T05:04:50Z",
+        "number": 168,
+        "title": "docs: decide stack RC identity",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/168"
+      },
+      "equivalent_commit_ancestor_of_pr_head": true,
+      "topic_squash_tree_equal": true,
+      "merge_ancestor_of_current_default": true,
+      "original_sha_ancestor_of_current_default": false,
+      "files": [
+        "docs/history/session-review-and-next-stage-2026-10-16.md",
+        "docs/next-stage-plan.md",
+        "docs/release-candidate-version-matrix.md"
+      ],
+      "disposition": "no republication needed; retain original ref pending separately authorized cleanup"
+    },
+    {
+      "original_commit": "8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+      "subject": "docs: record exact RC acceptance",
+      "retained_branch": "codex/docs-rc-identity-2026-10-16",
+      "original_merged_pr": 168,
+      "published_equivalent_commit": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+      "stable_patch_id": "c33edd215e8281865a5afd9ac6610a2ee7386311",
+      "patch_identical": true,
+      "published_by": {
+        "headRefName": "codex/docs-rc-acceptance-2026-10-16",
+        "headRefOid": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+        "mergeCommit": {
+          "oid": "34d75e2dc00804320a82086f175d69e7e5f14a76"
+        },
+        "mergedAt": "2026-10-16T05:51:39Z",
+        "number": 169,
+        "title": "docs: record exact RC acceptance",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/169"
+      },
+      "equivalent_commit_ancestor_of_pr_head": true,
+      "topic_squash_tree_equal": true,
+      "merge_ancestor_of_current_default": true,
+      "original_sha_ancestor_of_current_default": false,
+      "files": [
+        ".sisyphus/archive/2026-10.md",
+        ".sisyphus/session-breadcrumb.md",
+        "docs/history/session-review-and-next-stage-2026-10-16.md",
+        "docs/next-stage-plan.md",
+        "docs/release-candidate-version-matrix.md"
+      ],
+      "disposition": "no republication needed; retain original ref pending separately authorized cleanup"
+    },
+    {
+      "original_commit": "e93c330366c952c75db540465acfcd85eb2cd8ab",
+      "subject": "docs: record post-tag audit refresh",
+      "retained_branch": "codex/docs-rc-post-tag-drift-2026-10-16",
+      "original_merged_pr": 175,
+      "published_equivalent_commit": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+      "stable_patch_id": "e94194d962d9a36c48c19789d91d6f4fd05753b7",
+      "patch_identical": true,
+      "published_by": {
+        "headRefName": "codex/docs-rc-audit-refresh-2026-10-16",
+        "headRefOid": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+        "mergeCommit": {
+          "oid": "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0"
+        },
+        "mergedAt": "2026-10-16T11:36:25Z",
+        "number": 176,
+        "title": "docs: record post-tag audit refresh",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/176"
+      },
+      "equivalent_commit_ancestor_of_pr_head": true,
+      "topic_squash_tree_equal": true,
+      "merge_ancestor_of_current_default": true,
+      "original_sha_ancestor_of_current_default": false,
+      "files": [
+        ".sisyphus/archive/2026-10.md",
+        ".sisyphus/session-breadcrumb.md",
+        "docs/history/session-review-and-next-stage-2026-10-16.md",
+        "docs/next-stage-plan.md",
+        "docs/release-candidate-notes-2026-10-16.md",
+        "docs/release-candidate-version-matrix.md"
+      ],
+      "disposition": "no republication needed; retain original ref pending separately authorized cleanup"
+    }
+  ],
+  "semantic_successor": {
+    "original_commit": "e73f9684878bf10a43130f266c4ddd1d258ad161",
+    "branch": "codex/execution-verification-reads",
+    "original_parent_pr": 128,
+    "original_path": "docs/decisions/ADR-011-execution-attached-verification-reads.md",
+    "original_added_lines": 11,
+    "original_literal_paragraph_found_in_master_history": false,
+    "coverage": "semantic successor, not identical-patch publication",
+    "successor_path": "docs/decisions/ADR-013-post-execution-verification-read-minting.md",
+    "merged_successor_prs": [
+      {
+        "headRefName": "docs/adr-012-reconcile-verification-reads",
+        "headRefOid": "710e3cfaf9305c2fa1646ac75624b30a820cffad",
+        "mergeCommit": {
+          "oid": "16c26434c336c6d98542b26b13257c7d0117c151"
+        },
+        "mergedAt": "2026-10-08T13:47:36Z",
+        "number": 132,
+        "title": "docs: reconcile the verification-read decision as ADR-012 superseding ADR-011",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/132"
+      },
+      {
+        "headRefName": "codex/adr-012-post-execution-minting",
+        "headRefOid": "a1f83922947e9104d26a3fa553cc650461cf671a",
+        "mergeCommit": {
+          "oid": "f93b6f584475d26438047b77520a6b115c30db5e"
+        },
+        "mergedAt": "2026-10-09T02:28:57Z",
+        "number": 135,
+        "title": "docs(adr): propose post-execution verification read minting (ADR-012)",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/135"
+      },
+      {
+        "headRefName": "docs/adr-013-renumber",
+        "headRefOid": "b0f6756c256390ec90c19252f1571e996c3f8740",
+        "mergeCommit": {
+          "oid": "60820dfe63dad6044e063eecb064ad8d4e2c8e93"
+        },
+        "mergedAt": "2026-10-09T02:44:14Z",
+        "number": 136,
+        "title": "docs: renumber the proposed minting ADR to ADR-013",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/136"
+      },
+      {
+        "headRefName": "codex/adr-013-provisional-verification-reads",
+        "headRefOid": "0f8eb58855f62776bc066fdd1567ef1056ab42c1",
+        "mergeCommit": {
+          "oid": "265a3b9653332942a50398cda8eafca7bf8d917e"
+        },
+        "mergedAt": "2026-10-09T04:09:18Z",
+        "number": 138,
+        "title": "feat(governance): implement ADR-013 provisional-record verification read minting",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/138"
+      },
+      {
+        "headRefName": "codex/adr-013-mint-hardening",
+        "headRefOid": "8e2c5377724ff42e89d0752fc033acb2e81b93be",
+        "mergeCommit": {
+          "oid": "5f796ae9555510da15c1781e9c13ec4f8ca53585"
+        },
+        "mergedAt": "2026-10-09T05:41:24Z",
+        "number": 139,
+        "title": "hardening: bind result-bound mints to proposal membership and reference-only addressing",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/139"
+      }
+    ],
+    "facts_preserved": [
+      "preflight cannot bind a newly created object id",
+      "grants bind only Core-verified execution evidence, never an Adapter-asserted id",
+      "new decision accepted and implemented through provisional execution records",
+      "static addressed objects retain preflight minting"
+    ],
+    "remaining_documentation_gap": "ADR-013 Consequences refers to ADR-012 Limitations section, but that section is absent from canonical ADR-012",
+    "disposition": "do not replay the old current-limitation text; preserve original SHA; prepare a narrow historical-reference/link correction without changing accepted decisions or runtime"
+  },
+  "unpublished_summary": {
+    "original_commit": "3c45612c5ee15705374a19743b983dfce9a0258e",
+    "branch": "zcode/docs-2026-10-11-ux-audit-arc",
+    "source_heading": "User-perspective UX audit implemented across four merged PRs",
+    "summary_found_in_main_current_or_history": false,
+    "source_files": [
+      ".sisyphus/archive/2026-10.md",
+      ".sisyphus/session-breadcrumb.md"
+    ],
+    "implementation_prs": [
+      {
+        "headRefName": "zcode/single-action-review-summary",
+        "headRefOid": "3b15887f9fce98a08068b4852263face09003bc1",
+        "mergeCommit": {
+          "oid": "c7d5847ee682c65059b3f62ebf2f291a66941408"
+        },
+        "mergedAt": "2026-10-11T03:56:48Z",
+        "number": 151,
+        "title": "feat: render single-action input and registry labels in review detail",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/151"
+      },
+      {
+        "headRefName": "zcode/audit-event-label-coverage",
+        "headRefOid": "cea88862598ad0a856fbfe56b382b5148d871b77",
+        "mergeCommit": {
+          "oid": "e1efe262196ecefe027720b135b36c32c3976f5c"
+        },
+        "mergedAt": "2026-10-11T04:28:27Z",
+        "number": 152,
+        "title": "feat: label and filter every emitted governance audit event",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/152"
+      },
+      {
+        "headRefName": "zcode/expired-queue-signal",
+        "headRefOid": "30a1ab4c9c442d667be0148997e672635020b81c",
+        "mergeCommit": {
+          "oid": "db704db14be5e944240cf54489ef3096d55e540b"
+        },
+        "mergedAt": "2026-10-11T04:41:39Z",
+        "number": 153,
+        "title": "feat: surface expired-unreviewed proposals in the review queue",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/153"
+      },
+      {
+        "headRefName": "zcode/admin-polish-batch",
+        "headRefOid": "eb04f90a28c85167f0e03168d81c4fc910dffefd",
+        "mergeCommit": {
+          "oid": "16a7ec895a1e2e51d09f1551d7fd335d02e2ea1c"
+        },
+        "mergedAt": "2026-10-11T05:01:18Z",
+        "number": 154,
+        "title": "feat: admin polish batch from the user-perspective UX audit",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/154"
+      }
+    ],
+    "implementation_status": "all four PRs merged and reachable from current default; no implementation republish required",
+    "missing_material": [
+      "corrected revoke-confirm audit finding and four-PR UX synthesis",
+      "OCR/worktree interruption experience",
+      "make-pot Report-Msgid-Bugs-To slug derivation experience",
+      "plural catalog header consistency lesson"
+    ],
+    "live_catalog_crosscheck": {
+      "pot_slug_correct": true,
+      "zh_cn_plural_header": "nplurals=2; plural=0",
+      "scope": "repository catalog state only, not a universal locale recommendation"
+    },
+    "suggested_salvage_target": "docs/history/user-perspective-ux-audit-2026-10-11.md",
+    "salvage_rules": [
+      "Reconcile against current default; do not cherry-pick entire stale breadcrumb/archive snapshot.",
+      "Retain date and owner-reported provenance; do not assert historical OCR claims are newly verified.",
+      "Do not restore stale pre-tag stop, unresolved ADR conflict, zero-ledger or current package hash claims.",
+      "Keep corrected audit finding, four merged PR links and verifiable engineering lessons."
+    ],
+    "disposition": "retain original local branch; missing historical synthesis should be prepared as a focused docs follow-up, not a code fix",
+    "exact_head_pr_query": []
+  },
+  "other_remaining_refs": {
+    "verification_reads_hardening": {
+      "sha": "f4b17dbae132c8be2abdf8f162180b39843074ad",
+      "reviewed_pr": 131,
+      "post_pr_docs_commits": 0,
+      "disposition": "already reviewed predecessor tip; retain, no documentation republish identified"
+    },
+    "weekly_docs_merge_receipt": {
+      "sha": "8df588847af0534f28755ff2a955df7748ceb0da",
+      "merged_pr": 179,
+      "post_pr_docs_commits": 0,
+      "disposition": "original published source anchor; retain"
+    },
+    "current_receipt": {
+      "sha": "89adeb8f9ce33423d9c0647f79b0ffcec1838df7",
+      "pending_local_commits": [
+        "89adeb8f9ce33423d9c0647f79b0ffcec1838df7"
+      ],
+      "disposition": "one intentional post-#179 weekly receipt; separate from legacy gaps"
+    },
+    "master": "protected local base; excluded from historical-topic disposition"
+  },
+  "counts": {
+    "local_branches_reviewed": 10,
+    "post_pr_documentation_commits": 6,
+    "additional_unpublished_summary_commits": 1,
+    "exact_patch_covered": 5,
+    "semantic_successor_covered": 1,
+    "unpublished_historical_summary": 1,
+    "followup_documentation_items": 2
+  },
+  "invariants": {
+    "local_branch_and_tag_refs_unchanged": true,
+    "remote_branch_and_tag_refs_unchanged": true,
+    "all_original_refs_retained": true,
+    "manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+    "source_code_changed": false,
+    "adr_source_changed": false,
+    "owner_messages_sent": 0,
+    "branch_push_or_deletion": false,
+    "new_pr": false,
+    "matrix_or_acceptance_rerun": false,
+    "runtime_or_tag_operations": [],
+    "comparison_scope": "investigation before documentation edits; the later docs commit advances only the current receipt branch"
+  },
+  "followups": [
+    {
+      "priority": 1,
+      "type": "historical synthesis salvage",
+      "source_commit": "3c45612c5ee15705374a19743b983dfce9a0258e",
+      "target": "docs/history/user-perspective-ux-audit-2026-10-11.md",
+      "action": "prepare from current baseline and publish through a future normal docs PR; original branch retained until then"
+    },
+    {
+      "priority": 2,
+      "type": "ADR historical reference correction",
+      "source_commit": "e73f9684878bf10a43130f266c4ddd1d258ad161",
+      "target": "docs/decisions/ADR-013-post-execution-verification-read-minting.md:75",
+      "action": "replace the nonexistent-section reference with an accurate historical limitation / current ADR link; no authority, lifecycle or runtime change"
+    }
+  ],
+  "verification": {
+    "proof_script": "passed: five stable-patch matches; replay ancestry to reviewed heads; exact topic/squash tree; merge reachability; semantic and missing-heading checks",
+    "documentation_gate": {
+      "composer_test_all": "passed: 55 PHPUnit tests / 207 assertions and all component gates",
+      "composer_validate": "passed",
+      "json_counts_followup_scope_links_breadcrumb_diff": "passed",
+      "final_local_remote_branch_tag_recheck": "unchanged before this docs commit",
+      "final_rechecked_at": "2026-10-17T06:02:00.798182+00:00"
+    }
+  }
+}
