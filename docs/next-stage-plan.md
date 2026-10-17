@@ -5,6 +5,23 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Cloud publication and refreshed default 7/7 complete — 2026-10-17
+
+One newly authorized Cloud owner request completed: #1126 merged as `fbdfa372`,
+clean synchronized master, with all five merge-SHA CI checks passing. Toolbox
+advanced through #274 to clean synchronized `a2ad8981`; its source checks and
+owner real-article/native-save cleanup evidence are recorded. The complete
+no-override `--fail-on-dirty` matrix passed **7/7, exit 0** at `04:05:45Z`, all
+paths default / dirty zero, with unchanged seven-root snapshots over 516 seconds.
+See [publication closeout, matrix and audit](history/cloud-publication-owner-closeout-2026-10-17.md).
+
+OCR timed out without a delivered report; final-source full model review is
+not claimed. Fixed RC2 manifest and the remote snapshot remain unchanged. Five
+live heads differ from RC2; this is current-default readiness, not new candidate
+acceptance. Preserve remaining quality evaluation, human production acceptance,
+Addon drift, retained owner resources and weekly Core docs receipts. No tag,
+deployment or M4 promotion occurred. Prior pending entries below are historical.
+
 ## Toolbox closed; Cloud current source awaits publication — 2026-10-17
 
 Toolbox #273 merged as `d253bdb1`; default master is clean and synchronized,

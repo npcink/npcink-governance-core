@@ -5,15 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - Post-tag audit refresh; no new candidate selected
-
-- **Matrix**: live default `--fail-on-dirty` passed 7/7 with exit 0 at
-  `2026-10-16T11:29:44+00:00`.
-- **Drift**: Cloud Addon is `f0e2a58`; Toolbox is `569da58`; both are clean but
-  newer than the published manifest. The existing tag remains unchanged.
-- **Decision**: no new candidate or acceptance was selected; future inclusion
-  requires a separate manifest and tag, never a retag.
-
 # 2026-10-16 - Separate RC2 manifest and exact acceptance passed
 
 - **Candidate**: Core `7904f5b`, Addon `f0e2a58`, Toolbox `569da58`; the other
@@ -176,3 +167,18 @@ Older history: `.sisyphus/archive/`.
 - **Gate**: no new full matrix until ready; prior 7/7 is historical. Keep other
   work/stashes and weekly docs receipts. RC2 and remote snapshot unchanged;
   no tag creation, push or movement. See the Toolbox/Cloud refresh history.
+
+# 2026-10-17 - Cloud1126 publication and refreshed default 7/7 complete
+
+- **Owner request**: exactly one newly authorized request sent. Cloud #1126
+  merged `fbdfa372`; five exact-merge-SHA checks pass, clean synchronized master.
+  Toolbox #274 advanced to `a2ad8981`, also clean synchronized with owner receipts.
+- **Gate**: complete default no-override `--fail-on-dirty` 7/7, exit 0 at
+  `04:05:45Z`; all dirty 0. Four snapshots identical across 516.22 seconds.
+  Tested Core `03be509f`; this later documentation commit is excluded.
+- **Limits**: one authorized OCR timed out, no full review delivered, no retry.
+  Preserve owner resources, quality/human acceptance and weekly docs follow-ups.
+  Five heads drift from fixed RC2; manifest/tag unchanged, no new candidate or
+  exact acceptance. No tag operations, production action or M4 promotion.
+- **Evidence**: docs/history/cloud-publication-owner-closeout-2026-10-17.md
+  plus audit and original matrix JSON. Batch this local record in weekly docs PR.
