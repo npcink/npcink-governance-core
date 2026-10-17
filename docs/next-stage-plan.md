@@ -5,6 +5,22 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Adapter source saved and seven-docs batch merged — 2026-10-17
+
+Adapter `eb73e503` is now preserved on its named origin branch; an empty bare
+repository fetched the exact commit/tree and GitHub resolves the SHA. Core's
+seven accumulated documentation commits merged through PR #177 as `9d153849`,
+with both required checks passing and an identical topic/squash tree. Original
+source branches are retained. See the [publication receipt](history/adapter-preservation-and-core-docs-publication-2026-10-17.md).
+
+The post-merge default `--fail-on-dirty` diagnostic at `03:08:09Z` is 6/7,
+exit 1: Core/Adapter pass; Toolbox has new owner-held changes and Cloud's new
+`c8469e26` lacks its exact-SHA checks. Preserve that work. The earlier 7/7 is
+historical evidence for its own versions, not current candidate readiness.
+OCR delivered no complete external review; local/CI limitations are recorded.
+Fixed RC2 and all tags remain unchanged. This new post-merge receipt is one
+local docs commit for the next weekly batch; the former seven are published.
+
 ## Toolkit / Cloud source readiness and default 7/7 — 2026-10-17
 
 Toolkit #262 is merged; clean master is `b09ad300`, with merged-SHA PHP and

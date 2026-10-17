@@ -1,0 +1,321 @@
+{
+  "scope": "Preserve Adapter exact source on origin; publish the seven accumulated Core docs commits; record the protected merge and preserved unrelated owner work.",
+  "adapter_preservation": {
+    "observed_at": "2026-10-17T03:01:56.075832+00:00",
+    "remote": "https://github.com/npcink/npcink-ai-client-adapter.git",
+    "ref": "refs/heads/codex/m4-pgy-stack-rc-docs-2026-10-15",
+    "remote_sha": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+    "fresh_fetch_sha": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+    "tree_sha": "cd78059dd4243cfc5239b4950ad348070e9d017f",
+    "local_tree_matches": true,
+    "commit_api_sha": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+    "commit_url": "https://github.com/npcink/npcink-ai-client-adapter/commit/eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+    "temporary_bare_repository_removed": true,
+    "source_files_or_shared_branch_changed": false,
+    "tags_pushed": false,
+    "push_command": "git -c push.followTags=false push origin eb73e503a8c102acd6f87b69f406ee4b94aac85f:refs/heads/codex/m4-pgy-stack-rc-docs-2026-10-15"
+  },
+  "core_publication": {
+    "pr": {
+      "headRefOid": "f5181a3ebe347624c468dbb36623421868c88857",
+      "mergeCommit": {
+        "oid": "9d153849b2fc130e7d3ab7e2a090995e184954a1"
+      },
+      "mergedAt": "2026-10-17T03:06:09Z",
+      "state": "MERGED",
+      "statusCheckRollup": [
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:05:25Z",
+          "conclusion": "FAILURE",
+          "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/38997412881/job/117292892223",
+          "name": "code-review",
+          "startedAt": "2026-10-17T03:05:06Z",
+          "status": "COMPLETED",
+          "workflowName": "OpenCodeReview PR Review"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:06:01Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/38997412861/job/117292891093",
+          "name": "Static contracts",
+          "startedAt": "2026-10-17T03:05:06Z",
+          "status": "COMPLETED",
+          "workflowName": "Core CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:05:10Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-governance-core/actions/runs/38997412737/job/117292890798",
+          "name": "PR body contract",
+          "startedAt": "2026-10-17T03:05:06Z",
+          "status": "COMPLETED",
+          "workflowName": "PR Body Contract"
+        }
+      ],
+      "url": "https://github.com/npcink/npcink-governance-core/pull/177"
+    },
+    "original_seven_commits": [
+      "cac1689493c57aa525535142d5b98a2221ce9b8d",
+      "a249fcbd6beb8281868fc522af88e6635ba1da16",
+      "0a63aab18e99c1febf1f81f852854fb79548109b",
+      "4753aa4cd84bce5795b6b016cf5ae0bf7c116ee6",
+      "79c247f10768b6a7c9243b3ec1e06c5cb0e07d65",
+      "13031b80e7a6c60a8997246fda87409fb0cd8e94",
+      "f5181a3ebe347624c468dbb36623421868c88857"
+    ],
+    "changed_files": [
+      ".sisyphus/archive/2026-10.md",
+      ".sisyphus/session-breadcrumb.md",
+      "docs/history/session-closure-inventory-2026-10-17.json",
+      "docs/history/session-closure-review-2026-10-17.md",
+      "docs/history/session-review-and-next-stage-2026-10-16.md",
+      "docs/history/stack-owner-default-matrix-2026-10-17.json",
+      "docs/history/stack-owner-readiness-2026-10-17.json",
+      "docs/history/stack-owner-readiness-2026-10-17.md",
+      "docs/history/stack-rc2-acceptance-2026-10-16.md",
+      "docs/history/stack-rc2-default-matrix-2026-10-17.json",
+      "docs/history/stack-rc2-default-owner-audit-2026-10-16.json",
+      "docs/history/stack-rc2-manifest-2026-10-16.json",
+      "docs/history/stack-rc2-owner-closeout-2026-10-17.json",
+      "docs/history/stack-rc2-owner-closeout-2026-10-17.md",
+      "docs/history/stack-rc2-owner-handoff-2026-10-16.json",
+      "docs/history/toolbox-lane3-closeout-2026-10-17.json",
+      "docs/history/toolbox-lane3-closeout-2026-10-17.md",
+      "docs/history/toolbox-lane3-default-matrix-2026-10-17.json",
+      "docs/next-stage-plan.md",
+      "docs/release-candidate-version-matrix.md",
+      "docs/release-closeout-standard.md"
+    ],
+    "original_topic_branch": "codex/rc2-validation-2026-10-16",
+    "original_topic_sha": "f5181a3ebe347624c468dbb36623421868c88857",
+    "original_local_and_remote_topic_preserved": true,
+    "squash_tree_sha": "840bf2fc476657abaa482bfd9d69d2734adedf9e",
+    "squash_tree_matches_topic": true,
+    "required_check_names": [
+      "Static contracts",
+      "PR body contract"
+    ],
+    "required_checks_passed": true,
+    "merged_sha_checks": [
+      {
+        "name": "Static contracts",
+        "head_sha": "9d153849b2fc130e7d3ab7e2a090995e184954a1",
+        "status": "completed",
+        "conclusion": "success",
+        "details_url": "https://github.com/npcink/npcink-governance-core/actions/runs/38997488667/job/117293120476"
+      }
+    ]
+  },
+  "review": {
+    "manual_document_review": "scope, chronology, boundary, evidence binding and preservation checked; no blocking findings",
+    "local_ocr": {
+      "timeout_seconds": 180,
+      "complete_review_delivered": false,
+      "selected_json_files": 10,
+      "partial_groups_completed_without_findings": 2
+    },
+    "ci_ocr": {
+      "run_id": 38997412881,
+      "artifact_url": "https://github.com/npcink/npcink-governance-core/actions/runs/38997412881/artifacts/12087856992",
+      "artifact_json_sha256": "ecd99be968773cdf368b90cbea37a80bac84514fdb53dda448bb49619549b3d0",
+      "status": "failed",
+      "message": "Review failed: 0 finding(s); 10 of 10 selected item(s) failed.",
+      "total_tokens": 0,
+      "comments": 0,
+      "complete_review_delivered": false
+    },
+    "advisory_not_required": true
+  },
+  "post_merge_matrix": {
+    "command": "composer quality:matrix:run -- --fail-on-dirty --json --output=/tmp/core-publication-default-matrix-2026-10-17.json",
+    "generated_at": "2026-10-17T03:08:09+00:00",
+    "report": "core-docs-publication-matrix-2026-10-17.json",
+    "sha256": "5f90f39e95234c7873271447374232c5c86d9d6b333f4faab1f90f14fa51e81d",
+    "exit_code": 1,
+    "passed": 6,
+    "total": 7,
+    "all_paths_default": true,
+    "failures": 2,
+    "core_merged_sha_gate_passed": true,
+    "source_before": {
+      "observed_at": "2026-10-17T03:06:52.705557+00:00",
+      "repositories": [
+        {
+          "name": "npcink-abilities-toolkit",
+          "path": "/Users/muze/gitee/npcink-abilities-toolkit",
+          "head": "b09ad3008a027782f672d929e79c77ac7a01333e",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master",
+          "tracked_content_mtime_sha256": "f1c11ec6270ffc13e5d26ee7821a2ef823300477aa0c7635fa582ab5d0f0f831",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-governance-core",
+          "path": "/Users/muze/gitee/npcink-governance-core",
+          "head": "9d153849b2fc130e7d3ab7e2a090995e184954a1",
+          "branch": "codex/docs-publication-receipt-2026-10-17",
+          "status": "",
+          "upstream": "## codex/docs-publication-receipt-2026-10-17...origin/master",
+          "tracked_content_mtime_sha256": "30d4e2b25e70837c2d954bd67d5966838d08f016019a66f01100ce1b52ebdf13",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-ai-client-adapter",
+          "path": "/Users/muze/gitee/npcink-ai-client-adapter",
+          "head": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "branch": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "status": "",
+          "upstream": "## codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "tracked_content_mtime_sha256": "0596e5fb26227383c88bb3a22aff445fac02d20d9d4ed43b5cd85d6c3f3751c8",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-workflow-toolbox",
+          "path": "/Users/muze/gitee/npcink-workflow-toolbox",
+          "head": "3ae12c4a6a167cceddb1a22c5f9501cbeb7ab7c9",
+          "branch": "codex/internal-link-live-eligibility",
+          "status": "M assets/editor-content-support.js\n M assets/editor-content-support/internal-links.js\n M docs/current-state.md\n M docs/recommendation-ranking-baseline-v1.md\n M docs/related-article-and-internal-link-recommendation-standard-v1.md\n M tests/internal-link-editor-behavior.mjs\n M tests/run.php",
+          "upstream": "## codex/internal-link-live-eligibility",
+          "tracked_content_mtime_sha256": "fe5724551e474536ff76accb147315ef82e5b4d18ac4832f078dbe4085c80215",
+          "stashes": "4830f19e350f9a7e8447cbe8d0a5b3eedd222f21 On codex/fix-classification-registry-owner: preserved before 2026-10-16 worktree cleanup"
+        },
+        {
+          "name": "npcink-cloud-addon",
+          "path": "/Users/muze/gitee/npcink-cloud-addon",
+          "head": "b80b966151f26f114271a5534082c336ab2fea50",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master [behind 2]",
+          "tracked_content_mtime_sha256": "a5af2f32cf717769ddda4f7e6fb0a3ae73a1f4881048066f3cdbdbe966a51417",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-eval-lab",
+          "path": "/Users/muze/gitee/npcink-eval-lab",
+          "head": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "branch": "main",
+          "status": "",
+          "upstream": "## main...origin/main",
+          "tracked_content_mtime_sha256": "360e8d9aa7912893f3954cf4ee62dad6ee23c5cc3f2f49857adcb3b6746d275c",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-ai-cloud",
+          "path": "/Users/muze/gitee/npcink-ai-cloud",
+          "head": "c8469e26f1c50b5036d3ab6ea0d9bd59c7c6c938",
+          "branch": "codex/user-center-synthesis-20261017",
+          "status": "",
+          "upstream": "## codex/user-center-synthesis-20261017",
+          "tracked_content_mtime_sha256": "6c202e8ba22b05fee527503e5f54d758ddae7e69c21ecae1177ac04abec8c193",
+          "stashes": ""
+        }
+      ]
+    },
+    "source_after": {
+      "observed_at": "2026-10-17T03:08:22.273643+00:00",
+      "repositories": [
+        {
+          "name": "npcink-abilities-toolkit",
+          "path": "/Users/muze/gitee/npcink-abilities-toolkit",
+          "head": "b09ad3008a027782f672d929e79c77ac7a01333e",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master",
+          "tracked_content_mtime_sha256": "f1c11ec6270ffc13e5d26ee7821a2ef823300477aa0c7635fa582ab5d0f0f831",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-governance-core",
+          "path": "/Users/muze/gitee/npcink-governance-core",
+          "head": "9d153849b2fc130e7d3ab7e2a090995e184954a1",
+          "branch": "codex/docs-publication-receipt-2026-10-17",
+          "status": "",
+          "upstream": "## codex/docs-publication-receipt-2026-10-17...origin/master",
+          "tracked_content_mtime_sha256": "30d4e2b25e70837c2d954bd67d5966838d08f016019a66f01100ce1b52ebdf13",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-ai-client-adapter",
+          "path": "/Users/muze/gitee/npcink-ai-client-adapter",
+          "head": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "branch": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "status": "",
+          "upstream": "## codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "tracked_content_mtime_sha256": "0596e5fb26227383c88bb3a22aff445fac02d20d9d4ed43b5cd85d6c3f3751c8",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-workflow-toolbox",
+          "path": "/Users/muze/gitee/npcink-workflow-toolbox",
+          "head": "3ae12c4a6a167cceddb1a22c5f9501cbeb7ab7c9",
+          "branch": "codex/internal-link-live-eligibility",
+          "status": "M assets/editor-content-support.js\n M assets/editor-content-support/internal-links.js\n M docs/current-state.md\n M docs/recommendation-ranking-baseline-v1.md\n M docs/related-article-and-internal-link-recommendation-standard-v1.md\n M tests/internal-link-editor-behavior.mjs\n M tests/run.php\n M tests/smoke-editor-progressive-browser.mjs",
+          "upstream": "## codex/internal-link-live-eligibility",
+          "tracked_content_mtime_sha256": "31f091f970112a0d76894be858ff8bb5eb1c62c657523c45aae0b32317b18c26",
+          "stashes": "4830f19e350f9a7e8447cbe8d0a5b3eedd222f21 On codex/fix-classification-registry-owner: preserved before 2026-10-16 worktree cleanup"
+        },
+        {
+          "name": "npcink-cloud-addon",
+          "path": "/Users/muze/gitee/npcink-cloud-addon",
+          "head": "b80b966151f26f114271a5534082c336ab2fea50",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master [behind 2]",
+          "tracked_content_mtime_sha256": "a5af2f32cf717769ddda4f7e6fb0a3ae73a1f4881048066f3cdbdbe966a51417",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-eval-lab",
+          "path": "/Users/muze/gitee/npcink-eval-lab",
+          "head": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "branch": "main",
+          "status": "",
+          "upstream": "## main...origin/main",
+          "tracked_content_mtime_sha256": "360e8d9aa7912893f3954cf4ee62dad6ee23c5cc3f2f49857adcb3b6746d275c",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-ai-cloud",
+          "path": "/Users/muze/gitee/npcink-ai-cloud",
+          "head": "c8469e26f1c50b5036d3ab6ea0d9bd59c7c6c938",
+          "branch": "codex/user-center-synthesis-20261017",
+          "status": "",
+          "upstream": "## codex/user-center-synthesis-20261017...origin/codex/user-center-synthesis-20261017",
+          "tracked_content_mtime_sha256": "6c202e8ba22b05fee527503e5f54d758ddae7e69c21ecae1177ac04abec8c193",
+          "stashes": ""
+        }
+      ]
+    },
+    "repositories_moving_during_run": [
+      "npcink-workflow-toolbox",
+      "npcink-ai-cloud"
+    ],
+    "candidate_stability_claimed": false
+  },
+  "preservation": {
+    "fixed_rc2_manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+    "local_core_tags_unchanged": true,
+    "remote_published_snapshot": "ffb5e5d6d7b68fa952288524a181ff688a7698ee\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0\ned28f984153200a8362fcd0928bbb32b83636159\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0^{}",
+    "tag_creation_push_move_delete": false,
+    "new_candidate_selected": false,
+    "full_exact_candidate_acceptance_rerun": false,
+    "production_or_m4_deployment": false,
+    "other_owner_work": "No changes to Toolbox/Cloud active source, retained stashes, other topics/worktrees or Addon drift. Their changes between source snapshots are independent owner activity.",
+    "owner_messages_sent": 0,
+    "adapter_origin_master_merged": false
+  },
+  "receipt_policy": "The seven earlier docs commits are published and merged. This post-merge receipt is a new local docs-only commit on codex/docs-publication-receipt-2026-10-17 for the next weekly batch, excluded from the merged SHA and post-merge matrix.",
+  "receipt_verification": {
+    "core_test_all": "passed",
+    "phpunit_tests": 55,
+    "phpunit_assertions": 207,
+    "composer_validate": "passed",
+    "diff_check": "passed",
+    "source_merge_evidence_json_hashes_and_links": "passed",
+    "breadcrumb_entries": 10
+  }
+}

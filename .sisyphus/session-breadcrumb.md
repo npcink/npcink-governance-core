@@ -5,17 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - Authorized stack snapshot tag pushed
-
-- **Preflight**: final 7/7 matrix passed exit 0; Core/Adapter checksums matched;
-  Toolkit deterministic checksum matched twice.
-- **Tag**: annotated
-  `stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0` was pushed
-  without force. Remote object `ffb5e5d6` peels to verified Core commit
-  `ed28f984`.
-- **Boundary**: historical plugin tags were not moved; SVN, deployment, and
-  real-usage actions remain separate.
-
 # 2026-10-16 - Post-tag live checkout drift recorded
 
 - **Post-tag state**: Cloud Addon `master` advanced to `6c9d3c4` via dependency
@@ -162,3 +151,25 @@ Older history: `.sisyphus/archive/`.
   Addon/candidate decisions and branch/worktree dispositions. No owner message
   or sibling mutation. Six earlier local Core docs commits plus this closeout
   await the weekly PR; choose any future candidate deliberately.
+
+# 2026-10-17 - Adapter exact source saved; seven Core docs commits merged
+
+- **Adapter**: pushed exact `eb73e503` to origin's named existing-local topic
+  branch without tags/force or local checkout changes. Empty bare fetch and
+  GitHub API resolve the exact commit; tree `cd78059d` equals local. Temporary
+  verification repository removed; preservation branch retained, no master merge.
+- **Core publication**: seven commits cac1689..f5181a3 / 21 docs-only files
+  published through PR #177. Required Static contracts/body checks passed;
+  squash `9d153849` at 03:06:09Z has identical tree to f5181a3. Merged-SHA
+  Static contracts also passed. Original local/remote topic refs preserved.
+- **Review**: local advisory OCR timed out at 180s. CI OCR failed all ten
+  selected items, zero comments/tokens; no complete or clean AI review claimed.
+- **Matrix/owners**: post-merge default --fail-on-dirty at 03:08:09Z is 6/7,
+  exit 1; Core/Adapter pass, Toolbox owner source dirty and Cloud c8469e26 lacks
+  five exact-SHA checks. Owners continued moving; no frozen candidate claim.
+- **Receipt/next**: docs/history/adapter-preservation-and-core-docs-publication-2026-10-17.md
+  plus JSON and raw matrix. Former seven docs commits are merged; this new
+  receipt is one local docs commit for the next weekly batch on
+  codex/docs-publication-receipt-2026-10-17. Preserve other work/stashes,
+  Addon drift and owner dispositions. Fixed manifest and tags unchanged; no
+  tag creation/push/move, new candidate, owner message or deployment.
