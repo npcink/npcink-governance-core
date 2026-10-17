@@ -5,72 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Cloud1126 publication and refreshed default 7/7 complete
-
-- **Owner request**: exactly one newly authorized request sent. Cloud #1126
-  merged `fbdfa372`; five exact-merge-SHA checks pass, clean synchronized master.
-  Toolbox #274 advanced to `a2ad8981`, also clean synchronized with owner receipts.
-- **Gate**: complete default no-override `--fail-on-dirty` 7/7, exit 0 at
-  `04:05:45Z`; all dirty 0. Four snapshots identical across 516.22 seconds.
-  Tested Core `03be509f`; this later documentation commit is excluded.
-- **Limits**: one authorized OCR timed out, no full review delivered, no retry.
-  Preserve owner resources, quality/human acceptance and weekly docs follow-ups.
-  Five heads drift from fixed RC2; manifest/tag unchanged, no new candidate or
-  exact acceptance. No tag operations, production action or M4 promotion.
-- **Evidence**: docs/history/cloud-publication-owner-closeout-2026-10-17.md
-  plus audit and original matrix JSON. Batch this local record in weekly docs PR.
-
-# 2026-10-17 - Three Core receipts published through weekly docs PR178
-
-- **Published**: 397fee55 / 03be509f / b07972c1, 12 docs-only files, merged
-  through #178 as `95ef2108` at `04:14:39Z`. Both protected topic checks and
-  merged-SHA Static contracts passed; identical topic/squash tree `5b23168d`.
-- **Review**: local OCR reached 180s; CI failed 5/5 selected files with zero
-  comments/tokens. No complete external review delivered; gap in PR, no retry.
-  Local five-axis review, Core tests 55/207, metadata and wporg passed.
-- **Preserved**: original local/remote topic b07972c1; all sibling owner work,
-  branches/worktrees/stashes and other open quality/human acceptance tasks.
-  Fixed manifest and complete local/remote tag inventories unchanged. No tag
-  operation, sibling change/message, deployment, M4 or matrix rerun.
-- **Receipt**: docs/history/core-weekly-docs-publication-2026-10-17.md and JSON.
-  Old three-commit backlog closed; this one new local post-merge receipt on
-  codex/weekly-docs-merge-receipt-2026-10-17 waits for the next weekly batch.
-
-# 2026-10-17 - Ownership audit produced scoped cleanup candidates; no deletion
-
-- **Inventory**: seven repositories, 56 local / 91 actual origin branches,
-  eight present/clean/unlocked worktrees, one stash, seven open dependency PRs.
-  Two collection rounds confirm branch heads, worktree status, stashes and all
-  tags unchanged. Shared sibling refs/checkouts were never mutated.
-- **Candidates**: nine Core local refs (keep exact remote backups); one remote
-  Core ed28f984 ref backed by unchanged snapshot tag. Other-owner 17 local refs,
-  Cloud auxiliary worktree and redundant Toolbox stash await owner disposition.
-- **Preserve**: Core post-PR receipts, Toolkit mirror PHP/tests, Addon workflow
-  diagnostic branch, Adapter exact pin and active Cloud/Toolbox/Eval owner work.
-  Historical Cloud stash / Addon auxiliary registration absent before audit;
-  do not attribute their removal here. Shallow Eval history checked in isolation.
-- **Evidence/next**: docs/history/branch-worktree-stash-audit-2026-10-17.md and
-  full JSON inventory; cleanup scope rules in release-closeout-standard.md.
-  No deletion, owner message, branch publication, tag, matrix, acceptance,
-  deployment or M4 operation. Batch with ac69fa7 in next weekly docs PR.
-
-# 2026-10-17 - Authorized Core nine-local and one-remote branch cleanup complete
-
-- **Authority/guards**: human explicitly authorized the prior Core-only list.
-  Rechecked all nine full SHAs, origin backups, owner/worktree occupancy and
-  merged PR heads/tree equivalence against current origin/master `95ef2108`.
-- **Executed**: nine ordinary local branch deletions, one remote deletion at
-  expected `ed28f984` with SHA lease and tag-following disabled. Core branches
-  18→9 local / 16→15 actual origin; exact before/after delta is recorded.
-- **Preserved**: all other origin heads, including b07972c1 matrix source and
-  f5181a3e RC2 history; snapshot object ffb5e5d6/peeled ed28f984 and every tag
-  unchanged. Current HEAD/worktree/stash and manifest unchanged before docs edit.
-  No sibling/owner work, auxiliary worktree, saved stash or other topic removed.
-- **Receipt**: docs/history/core-scoped-branch-cleanup-2026-10-17.md and JSON;
-  rollback sources retained. Batch this new receipt with ac69fa7 / 92c4a02 in
-  the next weekly docs PR. No new candidate, matrix, acceptance, runtime or tag
-  operation; broader owner housekeeping remains open.
-
 # 2026-10-17 - Audit and cleanup three-commit docs batch merged as PR179
 
 - **Published**: ac69fa72 / 92c4a02a / 8df58884, ten docs/evidence files,
@@ -163,3 +97,63 @@ Older history: `.sisyphus/archive/`.
   and JSON; local weekly batching. No tag/source/sibling/production mutation.
   Core gates 55/207, metadata, JSON/links/breadcrumb/diff passed; final original
   branch/tag/resource and sibling HEAD/status recheck unchanged.
+
+# 2026-10-17 - Three owner/release documentation commits merged as PR181
+
+- **Published**: f764306b / 5be60b35 / aec4acb7 (nine docs/evidence files)
+  merged #181 as 9f5b2bf2; equal topic/squash trees, protected auto-merge.
+- **Checks**: required Static/body, local Core 55/207, metadata/wporg and docs
+  integrity passed. Local OCR timed out; CI failed 3/3 with zero tokens/comments.
+  No full external review claimed; no bypass, retry or workflow change.
+- **Retain/next**: original branches and remote source refs, Core tag maps and
+  fixed manifest unchanged; other owner work and dated follow-ups stay open.
+  docs/history/core-owner-release-weekly-publication-2026-10-17.md plus JSON
+  form one new local receipt for next weekly batch; no recursive PR, sibling
+  mutation/message, cleanup, acceptance, deployment or tag operation.
+  Merged-SHA Static contracts passed (run 39012548194); receipt docs gates pass.
+
+# 2026-10-17 - Adapter update channel and Addon site/recovery rechecked
+
+- **Adapter**: 07:11:27Z info/package still 0.4.3; update probes from 0.4.1
+  offer 0.4.2, from 0.4.2 no entry. No update-channel closure or monitor.
+- **Addon**: site symlink/file hash still old b80b9661; upstream 3e650d1b.
+  Owner handoff explicitly performed no site sync/recovery. Historical two-gap
+  1997/1999 sample is October 16, not new coverage; live recovery unverified.
+- **Record**: docs/history/adapter-update-addon-recovery-refresh-2026-10-17.md
+  plus JSON. Preserve owner work/original refs/tags/RC2; no site/Cloud/model
+  calls, cleanup, tag operation or owner message. Local weekly batching with
+  post-#181 receipt, no new PR or candidate/matrix/acceptance run.
+  Core gates 55/207, metadata, JSON/links/breadcrumb/diff passed; original
+  refs/tags/resources and sibling HEAD/status unchanged at final recheck.
+
+# 2026-10-17 - One Addon owner request delivered; sync verified, gaps remain
+
+- **Authority/action**: sent one authorized request to Addon owner 01a1447a;
+  owner read original human message. Source clean/stable then ff b80b9661→
+  3e650d1b; old source backup branch/bundle preserved. WP/FPM hash/load verified.
+- **Fresh coverage**: 07:23:42–43Z stable public set 1999, covered 1997;
+  post282639/page282641 documents/chunks absent. Independently recomputed set;
+  actual recovery not complete, no new full matrix/candidate acceptance.
+- **Stop/next**: owner received human archive instruction, turn interrupted;
+  follow-ups/gaps retained. No second message/reactivation. Future recovery
+  needs resumed/reassigned owner; all original refs/resources/tags/RC2 preserved.
+- **Record**: docs/history/addon-owner-sync-recovery-handoff-2026-10-17.md
+  and JSON; local weekly batch with two receipts, no new PR or tag operation.
+  Core metadata/gates 55/207, JSON/links/breadcrumb/diff and original-ref/tag
+  preservation passed; owner final full-gate/cleanup receipt remains absent.
+
+# 2026-10-17 - Renewed Addon request completed; two gaps recovered and accepted
+
+- **Scope**: one newly authorized continuation message; owner reread original
+  human scope. Existing request_article_refresh singleton called once per
+  post282639/page282641; both Cloud runs succeeded, no error codes.
+- **Accepted**: 08:08:49–51Z stable public 1999/covered1999, no gap; two targets
+  each document+chunk+1024-dimensional embedding. Core independently checked
+  stable exact sets, run/content-hash links and all 44 evidence file hashes.
+- **Boundary**: clean Addon3e650d1b, backups/original refs/other owner work and
+  tags/RC2 retained. Natural scan not proved; F01/F02/F03, quality/production
+  and other resources remain independent. No rewind/flush/rebuild/deploy/tag.
+- **Record**: docs/history/addon-bounded-recovery-closeout-2026-10-17.md + JSON;
+  local weekly batching with three prior commits, no new PR or stack matrix.
+  Core gates 55/207, metadata, JSON/links/breadcrumb/diff and original-ref/tag
+  preservation checks passed; no new tag, remote publication or sibling edit.

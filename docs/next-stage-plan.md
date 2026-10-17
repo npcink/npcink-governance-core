@@ -5,6 +5,67 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Addon two-gap recovery accepted — 2026-10-17
+
+[Bounded recovery closeout](history/addon-bounded-recovery-closeout-2026-10-17.md):
+the renewed owner request completed. Two singleton requests through the existing
+supported article-refresh path produced successful runs and real documents/
+chunks/1024-dimensional embeddings. At 16:08:49–51 Beijing, the stable public
+manifest is covered 1999/1999 with no gaps. Core independently verified exact
+sets, request/run links and all 44 owner evidence hashes.
+
+Site sync/loading and these two historical gaps are now closed. Earlier pending
+entries below are dated history. Natural reconciliation execution, 64-key
+owner disposition, historical OCR, dependency/quality/adoption and other owner
+resources remain independent. No new stack release or production promotion,
+original-ref deletion or tag action occurred. This receipt joins three local
+Core docs commits for weekly batching; no PR is opened here.
+
+## Authorized Addon owner request: sync complete, recovery still open — 2026-10-17
+
+[Owner handoff and independent evidence](history/addon-owner-sync-recovery-handoff-2026-10-17.md):
+one authorized request delivered. Owner preserved source and synchronized the
+site to 3e650d1b; WP/FPM bridge hash/loading checks passed. Fresh stable-window
+set comparison at 15:23 Beijing still shows 1997/1999, with both target
+documents/chunks absent. Site-sync status supersedes the older unsynchronized
+notes below; actual Cloud recovery remains open.
+
+Owner then received a human archive instruction and stopped, retaining all
+three independent follow-ups and two-target acceptance. No second message or
+reactivation occurred. Further recovery needs resumed/reassigned ownership;
+preserve original branches, new source backup, other owner work, tags and RC2.
+This Core audit joins two local receipts for weekly batching; no new PR/tag or
+whole-stack acceptance. See the report before resuming site operations.
+
+## Adapter update channel and Addon recovery rechecked — 2026-10-17
+
+[Fresh closeout checklist](history/adapter-update-addon-recovery-refresh-2026-10-17.md):
+at 15:11 Beijing Adapter plugin-info/package reads confirm 0.4.3 publication,
+but update probes still offer 0.4.2 or no update. Distribution availability
+remains unconfirmed; no background monitor or republishing action was created.
+
+Addon site symlink and bridge hash still bind clean b80b9661, behind upstream
+3e650d1b. Owner handoff explicitly retained site sync and two-target recovery;
+no new completion evidence was found in the inspected records. Historical
+1997/1999 coverage is dated October 16, not a new measurement. Site update and
+live documents/chunks/cursor/denominator evidence need separate scope. Preserve
+other owner work, original branches/tags and fixed RC2. This audit joins the
+post-#181 receipt for weekly batching; no runtime or tag operation occurred.
+
+## Owner/release weekly documentation batch merged — 2026-10-17
+
+[PR #181](https://github.com/npcink/npcink-governance-core/pull/181) published
+f764306b / 5be60b35 / aec4acb7 as `9f5b2bf2` after both required checks passed.
+Topic/squash trees match; merged-SHA Static contracts also passed. Protected
+auto-merge used no bypass. Local OCR timed
+out and CI advisory failed; no completed external review is claimed.
+See [publication and preservation receipt](history/core-owner-release-weekly-publication-2026-10-17.md).
+
+The former three-doc-commit backlog is closed. This later receipt is one new
+local record for weekly batching. Original branches, source backups, all Core
+tags and fixed RC2 are unchanged. Other-owner and dated Adapter/Addon follow-ups
+remain open; no sibling, runtime, candidate, production or tag action occurred.
+
 ## Adapter publication and Addon drift evidence reconciled — 2026-10-17
 
 [The release/drift closeout](history/adapter-release-addon-drift-review-2026-10-17.md)
