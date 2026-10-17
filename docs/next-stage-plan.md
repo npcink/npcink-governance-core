@@ -5,6 +5,21 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Three-receipt weekly Core docs batch merged — 2026-10-17
+
+The three accumulated commits `397fee55`, `03be509f`, `b07972c1` merged through
+[PR #178](https://github.com/npcink/npcink-governance-core/pull/178) as
+`95ef2108` at `04:14:39Z`. Exact topic protected checks and merged-SHA Static
+contracts passed; topic/squash trees match, and original refs remain preserved.
+Local/CI advisory OCR delivered no complete review; that gap is recorded.
+See [publication receipt and evidence](history/core-weekly-docs-publication-2026-10-17.md).
+
+The former three docs commits are published. This later merge receipt is one
+new local record for the next weekly batch. Historical 7/7 stays bound to its
+recorded SHAs; no new matrix or candidate acceptance is implied. Preserve other
+owner/quality/human acceptance and housekeeping work. RC2 and all tag inventories
+are unchanged; no tag, deployment, M4 promotion or sibling cleanup occurred.
+
 ## Cloud publication and refreshed default 7/7 complete — 2026-10-17
 
 One newly authorized Cloud owner request completed: #1126 merged as `fbdfa372`,

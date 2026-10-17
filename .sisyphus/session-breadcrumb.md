@@ -5,21 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - Separate RC2 manifest and exact acceptance passed
-
-- **Candidate**: Core `7904f5b`, Addon `f0e2a58`, Toolbox `569da58`; the other
-  four revisions remain pinned. Internal id `stack-rc2-2026-10-16` is not a tag.
-- **Matrix**: exact full 7/7 passed exit 0 at `2026-10-16T12:15:50+00:00`,
-  with clean Toolbox, AI Cloud and Addon worktree overrides. Default roots have
-  owner work; the default dirty-root closeout is not green.
-- **Acceptance**: full Core/Adapter/Toolkit wrapper passed exit 0 at
-  `2026-10-16T12:27:22Z`, zero skips, read grants, M4 correlation, duplicate
-  refusal, PHPStan, Docker, package/release and cleanup. A timeout-owned
-  subscriber was identified and removed before the successful rerun.
-- **Record**: `docs/history/stack-rc2-acceptance-2026-10-16.md` and its JSON
-  manifest. No new tag/push or retag; accumulate this docs-only closeout for the
-  weekly docs PR. Published snapshot object/peeled commit remain unchanged.
-
 # 2026-10-16 - RC2 default-root refresh blocked by active owners
 
 - **Default matrix**: full no-override `--fail-on-dirty` at
@@ -182,3 +167,19 @@ Older history: `.sisyphus/archive/`.
   exact acceptance. No tag operations, production action or M4 promotion.
 - **Evidence**: docs/history/cloud-publication-owner-closeout-2026-10-17.md
   plus audit and original matrix JSON. Batch this local record in weekly docs PR.
+
+# 2026-10-17 - Three Core receipts published through weekly docs PR178
+
+- **Published**: 397fee55 / 03be509f / b07972c1, 12 docs-only files, merged
+  through #178 as `95ef2108` at `04:14:39Z`. Both protected topic checks and
+  merged-SHA Static contracts passed; identical topic/squash tree `5b23168d`.
+- **Review**: local OCR reached 180s; CI failed 5/5 selected files with zero
+  comments/tokens. No complete external review delivered; gap in PR, no retry.
+  Local five-axis review, Core tests 55/207, metadata and wporg passed.
+- **Preserved**: original local/remote topic b07972c1; all sibling owner work,
+  branches/worktrees/stashes and other open quality/human acceptance tasks.
+  Fixed manifest and complete local/remote tag inventories unchanged. No tag
+  operation, sibling change/message, deployment, M4 or matrix rerun.
+- **Receipt**: docs/history/core-weekly-docs-publication-2026-10-17.md and JSON.
+  Old three-commit backlog closed; this one new local post-merge receipt on
+  codex/weekly-docs-merge-receipt-2026-10-17 waits for the next weekly batch.
