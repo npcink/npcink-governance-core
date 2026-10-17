@@ -5,25 +5,35 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
-## Current separate candidate: RC2 — 2026-10-16
+## Latest owner closeout and default matrix — 2026-10-17
 
-`stack-rc2-2026-10-16` now includes the explicitly selected Cloud Addon
-`f0e2a58` and Toolbox `569da58`, with Core `7904f5b` and the other four pinned
-revisions. The exact seven-repository matrix passed 7/7 with exit 0 using
-three clean worktree overrides; the full three-layer release acceptance passed
-with zero skips. PR #1119 subsequently merged as `2fd7282f`; its M4 accepted
-handoff completed at `13:04:13Z`. Toolbox finished development verification,
-but formal owner closeout is pending: default roots have 21 Toolbox, five
-Addon and seven AI Cloud files uncommitted. The requested full no-override
-rerun awaits that closeout; the last full default result remains exit 1 / 6/7
-at `12:43:50Z`. Committed and working-tree drift is recorded separately;
-RC2's pinned manifest remains unchanged.
+The authorized owner requests completed. AI Cloud, Addon and Toolbox shared
+roots are clean, synchronized `master`. A complete no-override
+`composer quality:matrix:run -- --fail-on-dirty` passed **7/7, exit 0** at
+`2026-10-17T01:39:54Z`, with all seven default dirty counts zero. Tested owner
+revisions are Cloud `ea62b3f2`, Addon `b80b9661` and Toolbox `135090bd`.
+Cloud exact-SHA CI and owner M4 accepted alignment passed; advisory AI review
+limits and the known Toolkit anchor-hint limitation remain recorded.
 
-See [the RC2 manifest and acceptance record](history/stack-rc2-acceptance-2026-10-16.md)
-and [machine-readable manifest](history/stack-rc2-manifest-2026-10-16.json),
-with [latest owner handoff evidence](history/stack-rc2-owner-handoff-2026-10-16.json).
-The existing published snapshot is unchanged. No new tag or retag was performed;
-subsequent documentation commits are outside this candidate manifest.
+See [the owner closeout and drift record](history/stack-rc2-owner-closeout-2026-10-17.md),
+[raw default matrix](history/stack-rc2-default-matrix-2026-10-17.json) and
+[audit evidence](history/stack-rc2-owner-closeout-2026-10-17.json).
+
+## Fixed separate candidate: RC2 — 2026-10-16
+
+`stack-rc2-2026-10-16` retains Core `7904f5b`, Cloud `fe920796`, Addon
+`f0e2a58`, Toolbox `569da58` and its other three fixed SHAs. Its earlier exact
+7/7 with three overrides and zero-skip three-layer acceptance remain historical
+evidence. Today's live default matrix does not update that candidate.
+Core coordination docs and three owner repositories have drifted; Adapter,
+Toolkit and Eval Lab default HEADs still match. Select any new candidate
+revisions explicitly before refreshing its manifest and exact acceptance.
+
+The [RC2 record](history/stack-rc2-acceptance-2026-10-16.md) and
+[fixed manifest](history/stack-rc2-manifest-2026-10-16.json) are preserved.
+The published snapshot and historical tags are unchanged. No new tag, push,
+retag or production deployment was performed; subsequent coordination commits
+remain outside the tested and fixed candidate SHAs.
 
 ## Current Baseline
 

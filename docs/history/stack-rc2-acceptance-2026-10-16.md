@@ -1,10 +1,9 @@
 # Stack RC2 candidate and acceptance — 2026-10-16
 
-Status: fixed RC2 candidate remains validated and untagged. PR #1119 and
-its M4 handoff are complete; subsequent owner development is uncommitted.
-The requested full default matrix rerun is deferred until formal owner
-closeout. Latest completed full default run remains 6/7 with exit 1 at
-`2026-10-16T12:43:50Z`. This record does not supersede the published snapshot.
+Status: fixed RC2 remains validated and untagged. The owner closeout and full
+no-override default matrix passed 7/7, exit 0 at `2026-10-17T01:39:54Z`.
+Current roots drift from RC2; the fixed manifest and published snapshot remain
+unchanged. See [the latest closeout](stack-rc2-owner-closeout-2026-10-17.md).
 
 ## Change envelope and candidate decision
 
@@ -295,3 +294,14 @@ Follow-up documentation gates passed: Composer metadata validation,
 status-only rows / 33 owner files and the unchanged manifest hash,
 `git diff --check`, and the ten-entry breadcrumb bound. These documentation
 gates do not substitute for the deferred full matrix.
+
+
+## 2026-10-17 default-root closeout supersedes the pending checkpoint
+
+The explicitly authorized one-time requests to both owner chats completed.
+Formal PRs merged and all seven default roots passed a complete no-override
+`--fail-on-dirty` matrix at `01:39:54Z`, exit 0. This supersedes the earlier
+pending owner/default-root checkpoints, not the fixed RC2 manifest or its
+historical exact acceptance. Current source drift, retained report and owner
+M4 receipts are in [the new closeout](stack-rc2-owner-closeout-2026-10-17.md).
+No new tag or retag was performed.

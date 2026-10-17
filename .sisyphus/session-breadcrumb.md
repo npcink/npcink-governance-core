@@ -5,19 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - PR #169 merged; final RC publication remains gated
-
-- **Merge**: PR #169 merged through the protected publisher at
-  `2026-10-16T05:51:39Z` as `34d75e2d`; the exact RC acceptance record is now
-  on Core `master`.
-- **RC posture**: selected identity remains
-  `stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0`; no snapshot tag
-  was created or pushed, and historical Core/Toolkit tags were not moved.
-- **Remaining**: refresh the seven-root matrix immediately before publication,
-  rerun acceptance if the manifest drifts, prepare checksums/release notes,
-  then obtain explicit authorization for tag, SVN, or deployment actions.
-  Local-only development means the real-usage ledger stays empty.
-
 # 2026-10-16 - Final matrix refresh found manifest drift
 
 - **Matrix**: `composer quality:matrix:run -- --fail-on-dirty` completed at
@@ -133,3 +120,24 @@ Older history: `.sisyphus/archive/`.
   was asked; no message sent yet. RC2 bytes and published tag unchanged.
   See `docs/history/stack-rc2-owner-handoff-2026-10-16.json`; batch local docs
   for the weekly PR. No tag creation, push, retag or production deployment.
+
+# 2026-10-17 - Owner PR closeout and default no-override 7/7 passed
+
+- **Coordination**: sent exactly one authorized request to each owner chat.
+  Cloud #1120/#1121 and the separate #1122, Addon #283, Toolbox #271 merged.
+  Owner roots are clean, synchronized master: Cloud `ea62b3f2`, Addon
+  `b80b9661`, Toolbox `135090bd`.
+- **Matrix**: full default `--fail-on-dirty` passed 7/7, exit 0 at
+  `2026-10-17T01:39:54Z`; all seven rows default/dirty 0. Two pre-run
+  snapshots 211s apart and the post-run snapshot had identical SHA/branch/status
+  and tracked mtimes. Core tested `0a63aab`; closeout docs remain excluded.
+- **Drift**: fixed RC2 JSON bytes unchanged. Core docs, Cloud runtime/CI/docs,
+  Addon metadata and Toolbox baseline/metadata differ; other three HEADs match.
+  No new candidate was selected and no full release acceptance rerun occurred.
+- **M4**: owner accepted final `ea62b3f2`, recovered the local LAN tunnel,
+  repeated candidates/metadata/positive editor smoke; zero image deploys.
+  AI review gaps and Toolkit anchor-hint limitation remain explicit.
+- **Evidence/next**: `docs/history/stack-rc2-owner-closeout-2026-10-17.md`,
+  audit JSON and original matrix JSON. Choose future candidate revisions before
+  manifest/acceptance refresh. Remote snapshot/historical tags unchanged; no
+  tag creation/push/move or production deployment. Batch local docs for weekly PR.

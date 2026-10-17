@@ -1,0 +1,649 @@
+{
+  "status": "default_matrix_passed_with_rc2_drift",
+  "recorded_at": "2026-10-17T01:42:18.191613+00:00",
+  "reference_candidate": "stack-rc2-2026-10-16",
+  "rc2_manifest_file": "stack-rc2-manifest-2026-10-16.json",
+  "rc2_manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+  "rc2_manifest_modified": false,
+  "candidate_revisions_adopted": false,
+  "coordination": {
+    "human_authorization": "2026-10-17, explicitly authorize one formal closeout request to each owner",
+    "toolbox_thread": "01a14348-1a6b-70a0-84d4-915d3cfcf03d",
+    "cloud_thread": "01a11abe-00cb-7b52-8049-51e831409978",
+    "messages_sent": 2,
+    "additional_messages_authorized": false,
+    "tags_authorized": false,
+    "production_deployment_authorized": false,
+    "status": "fulfilled, exactly one request delivered to each owner",
+    "toolbox_title": "归纳会话并制定下一阶段建议",
+    "cloud_title": "服务器资源占用监测",
+    "initial_dirty_counts": {
+      "npcink-governance-core": 0,
+      "npcink-ai-cloud": 7,
+      "npcink-cloud-addon": 5,
+      "npcink-ai-client-adapter": 0,
+      "npcink-abilities-toolkit": 0,
+      "npcink-workflow-toolbox": 21,
+      "npcink-eval-lab": 0
+    }
+  },
+  "matrix": {
+    "command": "composer quality:matrix:run -- --fail-on-dirty --json --output=/tmp/npcink-rc2-default-final-matrix-2026-10-17.json",
+    "exit_code": 0,
+    "fail_on_dirty": true,
+    "repo_overrides": [],
+    "repo_filters": [],
+    "generated_at": "2026-10-17T01:39:54+00:00",
+    "family_root": "/Users/muze/gitee",
+    "cloud_m4": false,
+    "report_file": "stack-rc2-default-matrix-2026-10-17.json",
+    "report_sha256": "1bc2ac7b9c8301d5728e0806ee3cec46802aa1d9232a5b3baa3b4a35add65765",
+    "passed": 7,
+    "total": 7
+  },
+  "stability": {
+    "first": {
+      "time": 1792200914.772157,
+      "observed_at": "2026-10-17T01:35:14.772168+00:00",
+      "rows": [
+        {
+          "repo": "npcink-governance-core",
+          "pinned": "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0",
+          "head": "0a63aab18e99c1febf1f81f852854fb79548109b",
+          "branch": "codex/rc2-validation-2026-10-16",
+          "status": "",
+          "tracked_file_count": 254,
+          "tracked_file_mtime_sha256": "d5cbaf5506990f53892a521e27cd15d4248f027ebb7a77378c71d2481c056cca",
+          "max_tracked_mtime_ns": 1792158042173044507
+        },
+        {
+          "repo": "npcink-ai-cloud",
+          "pinned": "fe9207965f4a5049f80736019114f360186ec96b",
+          "head": "ea62b3f2eea225eafd72cbd55296e69e998af863",
+          "branch": "master",
+          "status": "",
+          "tracked_file_count": 1975,
+          "tracked_file_mtime_sha256": "5f30a85fd741a8d96f39e73537837976cbc260e75f4c952b232cc46ded4dae5b",
+          "max_tracked_mtime_ns": 1792200492077495173
+        },
+        {
+          "repo": "npcink-cloud-addon",
+          "pinned": "f0e2a5854bbe373e45240b23b5fce30b00df57fa",
+          "head": "b80b966151f26f114271a5534082c336ab2fea50",
+          "branch": "master",
+          "status": "",
+          "tracked_file_count": 249,
+          "tracked_file_mtime_sha256": "a0f7492af140e4e8c2868f42f53c4001040a2acd4db07b523d20a8c3c3340378",
+          "max_tracked_mtime_ns": 1792199945193521865
+        },
+        {
+          "repo": "npcink-ai-client-adapter",
+          "pinned": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "head": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "branch": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "status": "",
+          "tracked_file_count": 202,
+          "tracked_file_mtime_sha256": "d334140281abc574a69316ee6428b0ea32ed50f32d1b6466883f6c55b80696c2",
+          "max_tracked_mtime_ns": 1792058107658179209
+        },
+        {
+          "repo": "npcink-abilities-toolkit",
+          "pinned": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+          "head": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+          "branch": "master",
+          "status": "",
+          "tracked_file_count": 323,
+          "tracked_file_mtime_sha256": "a3a950a9edc32550d8770fce134f18bd5cd05e9ba87888483e4a2e458aad2851",
+          "max_tracked_mtime_ns": 1791960324822332220
+        },
+        {
+          "repo": "npcink-workflow-toolbox",
+          "pinned": "569da58106c877fadb65316e4375a8bd3d1f6b1e",
+          "head": "135090bdc2c8a70389f81065fe0bd44f9a6959c8",
+          "branch": "master",
+          "status": "",
+          "tracked_file_count": 435,
+          "tracked_file_mtime_sha256": "5d8b150eb89dd9f21c80ff7e6343ef2e61868f78db446a4c0b3976f96e225fb2",
+          "max_tracked_mtime_ns": 1792200403641875025
+        },
+        {
+          "repo": "npcink-eval-lab",
+          "pinned": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "head": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "branch": "main",
+          "status": "",
+          "tracked_file_count": 252,
+          "tracked_file_mtime_sha256": "ae24946873d7f039ef1139fd8ca60776fe179a09a3d5820cb6193a5735cbb7c2",
+          "max_tracked_mtime_ns": 1791729393243480158
+        }
+      ]
+    },
+    "before_matrix": {
+      "time": 1792201125.976379,
+      "observed_at": "2026-10-17T01:38:45.976389+00:00",
+      "rows": [
+        {
+          "repo": "npcink-governance-core",
+          "pinned": "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0",
+          "head": "0a63aab18e99c1febf1f81f852854fb79548109b",
+          "branch": "codex/rc2-validation-2026-10-16",
+          "status": "",
+          "tracked_file_count": 254,
+          "tracked_file_mtime_sha256": "d5cbaf5506990f53892a521e27cd15d4248f027ebb7a77378c71d2481c056cca",
+          "max_tracked_mtime_ns": 1792158042173044507
+        },
+        {
+          "repo": "npcink-ai-cloud",
+          "pinned": "fe9207965f4a5049f80736019114f360186ec96b",
+          "head": "ea62b3f2eea225eafd72cbd55296e69e998af863",
+          "branch": "master",
+          "status": "",
+          "tracked_file_count": 1975,
+          "tracked_file_mtime_sha256": "5f30a85fd741a8d96f39e73537837976cbc260e75f4c952b232cc46ded4dae5b",
+          "max_tracked_mtime_ns": 1792200492077495173
+        },
+        {
+          "repo": "npcink-cloud-addon",
+          "pinned": "f0e2a5854bbe373e45240b23b5fce30b00df57fa",
+          "head": "b80b966151f26f114271a5534082c336ab2fea50",
+          "branch": "master",
+          "status": "",
+          "tracked_file_count": 249,
+          "tracked_file_mtime_sha256": "a0f7492af140e4e8c2868f42f53c4001040a2acd4db07b523d20a8c3c3340378",
+          "max_tracked_mtime_ns": 1792199945193521865
+        },
+        {
+          "repo": "npcink-ai-client-adapter",
+          "pinned": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "head": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "branch": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "status": "",
+          "tracked_file_count": 202,
+          "tracked_file_mtime_sha256": "d334140281abc574a69316ee6428b0ea32ed50f32d1b6466883f6c55b80696c2",
+          "max_tracked_mtime_ns": 1792058107658179209
+        },
+        {
+          "repo": "npcink-abilities-toolkit",
+          "pinned": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+          "head": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+          "branch": "master",
+          "status": "",
+          "tracked_file_count": 323,
+          "tracked_file_mtime_sha256": "a3a950a9edc32550d8770fce134f18bd5cd05e9ba87888483e4a2e458aad2851",
+          "max_tracked_mtime_ns": 1791960324822332220
+        },
+        {
+          "repo": "npcink-workflow-toolbox",
+          "pinned": "569da58106c877fadb65316e4375a8bd3d1f6b1e",
+          "head": "135090bdc2c8a70389f81065fe0bd44f9a6959c8",
+          "branch": "master",
+          "status": "",
+          "tracked_file_count": 435,
+          "tracked_file_mtime_sha256": "5d8b150eb89dd9f21c80ff7e6343ef2e61868f78db446a4c0b3976f96e225fb2",
+          "max_tracked_mtime_ns": 1792200403641875025
+        },
+        {
+          "repo": "npcink-eval-lab",
+          "pinned": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "head": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "branch": "main",
+          "status": "",
+          "tracked_file_count": 252,
+          "tracked_file_mtime_sha256": "ae24946873d7f039ef1139fd8ca60776fe179a09a3d5820cb6193a5735cbb7c2",
+          "max_tracked_mtime_ns": 1791729393243480158
+        }
+      ]
+    },
+    "after_matrix": {
+      "time": 1792201229.219902,
+      "observed_at": "2026-10-17T01:40:29.219917+00:00",
+      "rows": [
+        {
+          "repo": "npcink-governance-core",
+          "pinned": "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0",
+          "head": "0a63aab18e99c1febf1f81f852854fb79548109b",
+          "branch": "codex/rc2-validation-2026-10-16",
+          "status": "",
+          "tracked_file_count": 254,
+          "tracked_file_mtime_sha256": "d5cbaf5506990f53892a521e27cd15d4248f027ebb7a77378c71d2481c056cca",
+          "max_tracked_mtime_ns": 1792158042173044507
+        },
+        {
+          "repo": "npcink-ai-cloud",
+          "pinned": "fe9207965f4a5049f80736019114f360186ec96b",
+          "head": "ea62b3f2eea225eafd72cbd55296e69e998af863",
+          "branch": "master",
+          "status": "",
+          "tracked_file_count": 1975,
+          "tracked_file_mtime_sha256": "5f30a85fd741a8d96f39e73537837976cbc260e75f4c952b232cc46ded4dae5b",
+          "max_tracked_mtime_ns": 1792200492077495173
+        },
+        {
+          "repo": "npcink-cloud-addon",
+          "pinned": "f0e2a5854bbe373e45240b23b5fce30b00df57fa",
+          "head": "b80b966151f26f114271a5534082c336ab2fea50",
+          "branch": "master",
+          "status": "",
+          "tracked_file_count": 249,
+          "tracked_file_mtime_sha256": "a0f7492af140e4e8c2868f42f53c4001040a2acd4db07b523d20a8c3c3340378",
+          "max_tracked_mtime_ns": 1792199945193521865
+        },
+        {
+          "repo": "npcink-ai-client-adapter",
+          "pinned": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "head": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "branch": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "status": "",
+          "tracked_file_count": 202,
+          "tracked_file_mtime_sha256": "d334140281abc574a69316ee6428b0ea32ed50f32d1b6466883f6c55b80696c2",
+          "max_tracked_mtime_ns": 1792058107658179209
+        },
+        {
+          "repo": "npcink-abilities-toolkit",
+          "pinned": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+          "head": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+          "branch": "master",
+          "status": "",
+          "tracked_file_count": 323,
+          "tracked_file_mtime_sha256": "a3a950a9edc32550d8770fce134f18bd5cd05e9ba87888483e4a2e458aad2851",
+          "max_tracked_mtime_ns": 1791960324822332220
+        },
+        {
+          "repo": "npcink-workflow-toolbox",
+          "pinned": "569da58106c877fadb65316e4375a8bd3d1f6b1e",
+          "head": "135090bdc2c8a70389f81065fe0bd44f9a6959c8",
+          "branch": "master",
+          "status": "",
+          "tracked_file_count": 435,
+          "tracked_file_mtime_sha256": "5d8b150eb89dd9f21c80ff7e6343ef2e61868f78db446a4c0b3976f96e225fb2",
+          "max_tracked_mtime_ns": 1792200403641875025
+        },
+        {
+          "repo": "npcink-eval-lab",
+          "pinned": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "head": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "branch": "main",
+          "status": "",
+          "tracked_file_count": 252,
+          "tracked_file_mtime_sha256": "ae24946873d7f039ef1139fd8ca60776fe179a09a3d5820cb6193a5735cbb7c2",
+          "max_tracked_mtime_ns": 1791729393243480158
+        }
+      ]
+    },
+    "interval_before_matrix_seconds": 211,
+    "head_branch_status_tracked_mtimes_identical": true
+  },
+  "revision_comparison": [
+    {
+      "repo": "npcink-governance-core",
+      "pinned_sha": "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0",
+      "tested_sha": "0a63aab18e99c1febf1f81f852854fb79548109b",
+      "drift": true,
+      "classification": "coordination documentation only; three local closeout commits excluded from fixed RC2",
+      "committed_changed_paths": [
+        ".sisyphus/archive/2026-10.md",
+        ".sisyphus/session-breadcrumb.md",
+        "docs/history/stack-rc2-acceptance-2026-10-16.md",
+        "docs/history/stack-rc2-default-owner-audit-2026-10-16.json",
+        "docs/history/stack-rc2-manifest-2026-10-16.json",
+        "docs/history/stack-rc2-owner-handoff-2026-10-16.json",
+        "docs/next-stage-plan.md",
+        "docs/release-candidate-version-matrix.md"
+      ],
+      "commits_since_pin": [
+        "0a63aab docs: record PR1119 handoff and pending owner integration",
+        "a249fcb docs: record RC2 default-root owner blockers",
+        "cac1689 docs: validate separate RC2 manifest and acceptance"
+      ]
+    },
+    {
+      "repo": "npcink-ai-cloud",
+      "pinned_sha": "fe9207965f4a5049f80736019114f360186ec96b",
+      "tested_sha": "ea62b3f2eea225eafd72cbd55296e69e998af863",
+      "drift": true,
+      "classification": "frontend runtime/error handling, bounded anchor matching and feedback metadata, routing docs, CI startup fix",
+      "committed_changed_paths": [
+        ".github/workflows/ocr-review.yml",
+        ".github/workflows/ocr-startup-check.yml",
+        "README.md",
+        "app/api/routes/agent_feedback.py",
+        "app/domain/site_knowledge/service.py",
+        "docs/README.md",
+        "docs/cloud-agent-feedback-quality-gate-v1.md",
+        "docs/decisions/052-pgy-primary-m4-access.md",
+        "docs/decisions/060-lan-first-m4-operation-routing.md",
+        "docs/m4-preview-ai-development-standard-v1.md",
+        "docs/m4-preview-development-v1.md",
+        "docs/m4-remote-development-and-overlay-network-standard-v1.md",
+        "docs/ocr-review-usage-policy-v1.md",
+        "frontend/src/app/admin/ai-resources/page.tsx",
+        "frontend/src/app/admin/external-services/page.tsx",
+        "frontend/src/app/admin/service-settings/page.tsx",
+        "frontend/src/components/ErrorBoundary.tsx",
+        "frontend/src/components/ui/Alert.tsx",
+        "frontend/src/lib/errors.ts",
+        "frontend/src/lib/i18n.ts",
+        "frontend/src/lib/portal-error.ts",
+        "frontend/tests/e2e/admin-audit-workspace.spec.ts",
+        "frontend/tests/e2e/admin-customer-detail-v2.spec.ts",
+        "frontend/tests/e2e/admin-external-services.spec.ts",
+        "frontend/tests/e2e/admin-overview-navigation-v2.spec.ts",
+        "frontend/tests/e2e/admin-plugin-observability-v2.spec.ts",
+        "frontend/tests/e2e/admin-provider-directory-v2.spec.ts",
+        "frontend/tests/e2e/admin-runtime-diagnostics-v2.spec.ts",
+        "frontend/tests/e2e/admin-runtime-profiles-workspace.spec.ts",
+        "frontend/tests/e2e/admin-service-queue-v2.spec.ts",
+        "frontend/tests/e2e/admin-service-settings-v2.spec.ts",
+        "frontend/tests/e2e/admin-site-detail-pc-v2.spec.ts",
+        "frontend/tests/e2e/admin-subscription-detail-pc-v2.spec.ts",
+        "frontend/tests/e2e/admin-support-request-operator-closure.spec.ts",
+        "frontend/tests/vitest/error-boundary.test.ts",
+        "frontend/tests/vitest/errors.test.ts",
+        "frontend/tests/vitest/portal-error.test.ts",
+        "tests/api/test_agent_feedback_routes.py",
+        "tests/contract/test_ocr_startup_contract.py",
+        "tests/domain/test_site_knowledge_anchor_performance.py"
+      ],
+      "commits_since_pin": [
+        "ea62b3f2 fix(ci): disable OCR self-update during pinned startup (#1122)",
+        "a40625b5 fix(recommendations): bound anchor search and preserve ranking metadata (#1121)",
+        "d06ff482 docs(m4): prefer LAN before Pgy and Tailscale (#1120)",
+        "2fd7282f fix(frontend): localize provider catalog and service errors (#1119)"
+      ]
+    },
+    {
+      "repo": "npcink-cloud-addon",
+      "pinned_sha": "f0e2a5854bbe373e45240b23b5fce30b00df57fa",
+      "tested_sha": "b80b966151f26f114271a5534082c336ab2fea50",
+      "drift": true,
+      "classification": "owner docs, metadata transport/validation, translation/package updates",
+      "committed_changed_paths": [
+        "docs/README.md",
+        "docs/cloud-addon-complexity-budget.md",
+        "docs/cloud-owner-decision-package-draft-2026-10-16.md",
+        "docs/current-state-truth-draft-2026-10-16.md",
+        "docs/next-session-handoff-2026-10-16.md",
+        "includes/class-cloud-agent-feedback-metadata.php",
+        "includes/class-cloud-runtime-request-guards.php",
+        "languages/npcink-cloud-addon-zh_CN.mo",
+        "languages/npcink-cloud-addon-zh_CN.po",
+        "languages/npcink-cloud-addon.pot",
+        "release-manifest.txt",
+        "tests/behavior-agent-feedback.php"
+      ],
+      "commits_since_pin": [
+        "b80b966 feat(feedback): transport bounded recommendation ranking metadata (#283)",
+        "0ae75fe docs: record Cloud read-only coverage and owner evidence (#282)",
+        "243c81f docs: add Cloud owner decision and state handoff drafts (#281)"
+      ]
+    },
+    {
+      "repo": "npcink-ai-client-adapter",
+      "pinned_sha": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+      "tested_sha": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+      "drift": false,
+      "classification": "matches fixed RC2",
+      "committed_changed_paths": [],
+      "commits_since_pin": []
+    },
+    {
+      "repo": "npcink-abilities-toolkit",
+      "pinned_sha": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+      "tested_sha": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+      "drift": false,
+      "classification": "matches fixed RC2",
+      "committed_changed_paths": [],
+      "commits_since_pin": []
+    },
+    {
+      "repo": "npcink-workflow-toolbox",
+      "pinned_sha": "569da58106c877fadb65316e4375a8bd3d1f6b1e",
+      "tested_sha": "135090bdc2c8a70389f81065fe0bd44f9a6959c8",
+      "drift": true,
+      "classification": "recommendation baseline/metadata/deduplication, editor assets, tests and package inputs",
+      "committed_changed_paths": [
+        "assets/editor-content-support.js",
+        "composer.json",
+        "docs/README.md",
+        "docs/current-state.md",
+        "docs/recommendation-candidate-contract.md",
+        "docs/recommendation-eval.md",
+        "docs/recommendation-ranking-baseline-v1.md",
+        "docs/related-article-and-internal-link-recommendation-standard-v1.md",
+        "docs/session-handoff-2026-10-16-internal-link-related-content-history.md",
+        "includes/Provider_Agent_Feedback_Service.php",
+        "includes/Provider_Site_Knowledge_Service.php",
+        "includes/Recommendation_Metadata.php",
+        "includes/Rest_Editor_Content_Support.php",
+        "npcink-workflow-toolbox.php",
+        "tests/editor-content-support-behavior.php",
+        "tests/internal-link-editor-behavior.mjs",
+        "tests/load-provider-client.php",
+        "tests/media-derivative-local-review-behavior.php",
+        "tests/progressive-recommendations-behavior.php",
+        "tests/recommendation-metadata-behavior.php",
+        "tests/run.php",
+        "tests/smoke-editor-progressive-browser.mjs"
+      ],
+      "commits_since_pin": [
+        "135090b feat(recommendations): freeze baselines and bounded ranking telemetry (#271)"
+      ]
+    },
+    {
+      "repo": "npcink-eval-lab",
+      "pinned_sha": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+      "tested_sha": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+      "drift": false,
+      "classification": "matches fixed RC2",
+      "committed_changed_paths": [],
+      "commits_since_pin": []
+    }
+  ],
+  "pull_requests": [
+    {
+      "headRefOid": "3d686c0db66e7d42411a9426a1fb5682cd802cc4",
+      "mergeCommit": {
+        "oid": "d06ff4820027f3dcdb255c10032fa71cb463a662"
+      },
+      "mergedAt": "2026-10-17T01:07:10Z",
+      "number": 1120,
+      "state": "MERGED",
+      "title": "docs(m4): prefer LAN before Pgy and Tailscale",
+      "url": "https://github.com/npcink/npcink-ai-cloud/pull/1120",
+      "repository": "npcink-ai-cloud",
+      "non_successful_checks": [
+        {
+          "name": "code-review",
+          "status": "COMPLETED",
+          "conclusion": "FAILURE",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38989381524/job/117268105122"
+        }
+      ]
+    },
+    {
+      "headRefOid": "d7741eed15b9c590bf3836a4816d46bb3d9b7cc1",
+      "mergeCommit": {
+        "oid": "a40625b59e60a957021190febbb22c95203ff242"
+      },
+      "mergedAt": "2026-10-17T01:12:31Z",
+      "number": 1121,
+      "state": "MERGED",
+      "title": "fix(recommendations): bound anchor search and preserve ranking metadata",
+      "url": "https://github.com/npcink/npcink-ai-cloud/pull/1121",
+      "repository": "npcink-ai-cloud",
+      "non_successful_checks": [
+        {
+          "name": "code-review",
+          "status": "COMPLETED",
+          "conclusion": "FAILURE",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38989536686/job/117268616590"
+        }
+      ]
+    },
+    {
+      "headRefOid": "9ecc3a1e2926e46a7c2adb5f34e1e6361aaa5197",
+      "mergeCommit": {
+        "oid": "ea62b3f2eea225eafd72cbd55296e69e998af863"
+      },
+      "mergedAt": "2026-10-17T01:27:24Z",
+      "number": 1122,
+      "state": "MERGED",
+      "title": "fix(ci): keep pinned OCR stable during startup",
+      "url": "https://github.com/npcink/npcink-ai-cloud/pull/1122",
+      "repository": "npcink-ai-cloud",
+      "non_successful_checks": [
+        {
+          "name": "code-review",
+          "status": "COMPLETED",
+          "conclusion": "FAILURE",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38990631163/job/117272032936"
+        }
+      ]
+    },
+    {
+      "headRefOid": "9637ca592f4570bd292b107144e61b4f8271cbae",
+      "mergeCommit": {
+        "oid": "b80b966151f26f114271a5534082c336ab2fea50"
+      },
+      "mergedAt": "2026-10-17T01:18:55Z",
+      "number": 283,
+      "state": "MERGED",
+      "title": "feat(feedback): transport bounded recommendation ranking metadata",
+      "url": "https://github.com/npcink/npcink-cloud-addon/pull/283",
+      "repository": "npcink-cloud-addon",
+      "non_successful_checks": []
+    },
+    {
+      "headRefOid": "68a9d32405dfee7ebbffdcb05715bb2dcb442523",
+      "mergeCommit": {
+        "oid": "135090bdc2c8a70389f81065fe0bd44f9a6959c8"
+      },
+      "mergedAt": "2026-10-17T01:26:21Z",
+      "number": 271,
+      "state": "MERGED",
+      "title": "feat(recommendations): freeze baselines and bounded ranking telemetry",
+      "url": "https://github.com/npcink/npcink-workflow-toolbox/pull/271",
+      "repository": "npcink-workflow-toolbox",
+      "non_successful_checks": []
+    }
+  ],
+  "remote_heads": {
+    "observed_at": "2026-10-17T01:33:00.616882+00:00",
+    "rows": [
+      {
+        "repo": "npcink-governance-core",
+        "heads": [
+          "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0\trefs/heads/master"
+        ]
+      },
+      {
+        "repo": "npcink-ai-cloud",
+        "heads": [
+          "ea62b3f2eea225eafd72cbd55296e69e998af863\trefs/heads/master"
+        ]
+      },
+      {
+        "repo": "npcink-cloud-addon",
+        "heads": [
+          "b80b966151f26f114271a5534082c336ab2fea50\trefs/heads/master"
+        ]
+      },
+      {
+        "repo": "npcink-ai-client-adapter",
+        "heads": [
+          "ab32e5031765bce0d72e2340510ff34d47b26706\trefs/heads/master"
+        ]
+      },
+      {
+        "repo": "npcink-abilities-toolkit",
+        "heads": [
+          "921d1dc7cb5661fef10ca8f83b781690c98034cb\trefs/heads/master"
+        ]
+      },
+      {
+        "repo": "npcink-workflow-toolbox",
+        "heads": [
+          "135090bdc2c8a70389f81065fe0bd44f9a6959c8\trefs/heads/master"
+        ]
+      },
+      {
+        "repo": "npcink-eval-lab",
+        "heads": [
+          "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f\trefs/heads/main"
+        ]
+      }
+    ]
+  },
+  "owner_receipts": [
+    {
+      "path": "/Users/muze/gitee/npcink-workflow-toolbox/build/recommendation-baseline-closeout-2026-10-17.md",
+      "sha256": "85c1fc3712810685bbc1302d9525a62a1e510cc5e547d111e11cb3f5bd66ffec",
+      "text": "# Recommendation Baseline / Metadata Merge Closeout — 2026-10-17\n\nOutcome: all three scoped PRs merged after required checks. No production branch promotion/deployment, tag creation/move/push, or WordPress.org publication.\n\n| Repository | PR | Topic head | Squash merge |\n| --- | --- | --- | --- |\n| Toolbox | [271](https://github.com/npcink/npcink-workflow-toolbox/pull/271) | `68a9d32405dfee7ebbffdcb05715bb2dcb442523` | `135090bdc2c8a70389f81065fe0bd44f9a6959c8` |\n| Cloud Addon | [283](https://github.com/npcink/npcink-cloud-addon/pull/283) | `9637ca592f4570bd292b107144e61b4f8271cbae` | `b80b966151f26f114271a5534082c336ab2fea50` |\n| AI Cloud | [1121](https://github.com/npcink/npcink-ai-cloud/pull/1121) | `d7741eed15b9c590bf3836a4816d46bb3d9b7cc1` | `a40625b59e60a957021190febbb22c95203ff242` |\n\nEvery topic/merge tree pair is identical. Toolbox and Addon shared roots are clean master, 0 ahead / 0 behind. The initial acceptance worktree was clean detached at the recommendation merge SHA; after the separate CI-only master advancement it was fast-forwarded to the final current master (see final receipt below). The auxiliary worktree is retained clean for recovery and its task lock has been released.\n\nHistorical snapshot while the separate OCR owner task was active (preserved, not switched or published by this task):\n\n```text\n## master...origin/master\nHEAD=ea62b3f2eea225eafd72cbd55296e69e998af863\nHEAD...origin/master=0\t0\n```\n\nThe reconciliation auxiliary Addon worktree is also preserved. Full default 7/7 coordination is outside this scoped three-repository run.\n\n## Verification\n\n- Final central matrix: 3/3 passed with --fail-on-dirty, Cloud override `/Users/muze/gitee/.worktrees/cloud-site-anchor-performance`. Toolbox/Addon composer test:all passed; Cloud exact-SHA source gate passed on a40625b59e60a957021190febbb22c95203ff242.\n- Cloud PR required checks passed; merged master Cloud CI 38989868856 and CodeQL passed with actual backend lanes executed. Focused API/anchor 36 tests, release policy, Ruff/mypy, feedback quality and anti-drift passed. 1200 mixed-script legacy-matcher equivalence cases passed.\n- Addon all 14 final PR checks passed, including Release static gates, PHP matrices, WordPress AI compatibility and PHPStan. Corrected the initial stale-POT failure, refreshed POT/PO/MO, and verified the 52-file package.\n- Toolbox PR required checks and advisory static analysis passed. Local full gate passed (4212 static assertions plus behavior suites), PHPCS/PHPStan, Composer metadata, WP.org guard, ZIP integrity, minified JS syntax and Packaged Plugin Check passed. Existing PHP dynamic-property deprecations / package warnings were not expanded into unrelated source changes.\n- Read-only Cloud release planner classified the scope as backend; production remains excluded. No authoring-Mac Cloud Docker runtime started. The default check:fast failed before startup due missing worktree .env and was replaced by focused local source checks plus actual GitHub backend CI evidence.\n\n## Advisory AI evidence\n\nCloud CI review was undelivered due OCR startup error Cannot find module /usr/local/bin/ocr; no repeat quota spent. Addon local review e05fe81d-ace2-4f03-950b-8ed74f4e9e73 was partial at the token budget: 3 findings triaged, loader/rank-message fixes applied, nullable semantics documented and tested. Toolbox workflow 377185263 is disabled_manually; no exact-head review run existed. Its publisher recorded the supported --no-review-because exception in PR #271 before protected auto-merge. These are incomplete/absent AI evidence, not completed clean reviews. Required deterministic checks were not bypassed.\n\n## Accepted runtime and smoke\n\nLAN direct source promotion from clean master, PR 1121, 20.04s; source_revision=a40625b59e60a957021190febbb22c95203ff242, source_branch=master, source_dirty=false, acceptance_state=accepted. Final status still accepted, services running, / and /health/live 200. One source promotion, zero image deploys.\n\nThree consecutive uncached public-article replays: related 4511/1377/1314ms, internal (24 passages) 3897/3758/3739ms; eight candidates per query, stable ID order. Both metadata families accepted impression/copy before and again after all three merges. Final post-merge event receipts: 29675/29676 (related), 29681/29682 (internal).\n\nPositive editor draft smokes: eight candidates, two eligible/applied, distinct displayed positions; Undo canonical content restored and DB unchanged; native save alone persisted content and emitted internal_link_saved_unchanged. No Toolbox/Addon network or console errors. Fixtures 282803/282804/282805 removed. No public source article saved. The bounded summary had zero orphan events and raw_content/raw_anchor/provider_output stored=false; developer sessions remain insufficient for quality claims.\n\nNatural-article Apply remains limited by Toolkit ignoring Cloud anchor hints / undeclared schema. Baselines stay independent (internal_links.v1 and related_content.v1), with no ranking/model/weight changes. Next work is real observation plus a separate Toolkit contract fix.\n\n## Evidence files\n\n- [npcink-recommendation-merged-three-repo-matrix.md](/tmp/npcink-recommendation-merged-three-repo-matrix.md)\n- [npcink-recommendation-cloud-exact-sha-matrix.md](/tmp/npcink-recommendation-cloud-exact-sha-matrix.md)\n- [npcink-recommendation-accepted-promotion.log](/tmp/npcink-recommendation-accepted-promotion.log)\n- [npcink-recommendation-closeout-m4-status.log](/tmp/npcink-recommendation-closeout-m4-status.log)\n- [npcink-recommendation-accepted-replay.log](/tmp/npcink-recommendation-accepted-replay.log)\n- [npcink-recommendation-accepted-browser-undo.log](/tmp/npcink-recommendation-accepted-browser-undo.log)\n- [npcink-recommendation-accepted-browser-save.log](/tmp/npcink-recommendation-accepted-browser-save.log)\n- [npcink-recommendation-merged-metadata-smoke.log](/tmp/npcink-recommendation-merged-metadata-smoke.log)\n\n\n## Concurrent master advancement\n\nAfter the first scoped closeout, the separate Cloud OCR owner merged PR #1122 as ea62b3f2eea225eafd72cbd55296e69e998af863 and restored the shared root to clean master. Its four files are two GitHub workflows, an OCR policy document and the pinned-startup contract test. Application source, deployment inputs and frontend runtime files are byte-identical to a40625b5. Final current-master exact-SHA CI and accepted alignment are captured below; the earlier a40625b5 receipts remain valid historical recommendation evidence.\n\n## Final current-master accepted receipt\n\nThe independent CI-only PR #1122 advanced Cloud master after the first accepted receipt. Its full merged-master Cloud CI 38990931167 and CodeQL 38990931110 passed; the central exact-SHA gate was rerun without an override against ea62b3f2eea225eafd72cbd55296e69e998af863 and passed. Toolbox/Addon gates remain valid for unchanged merge SHAs from the earlier actual 3/3 matrix; no synthetic fixture was substituted for CI evidence.\n\nAll three shared roots are now clean master, 0 ahead / 0 behind:\n\n- Toolbox: `135090bdc2c8a70389f81065fe0bd44f9a6959c8` — `/Users/muze/gitee/npcink-workflow-toolbox`.\n- Cloud Addon: `b80b966151f26f114271a5534082c336ab2fea50` — `/Users/muze/gitee/npcink-cloud-addon`.\n- AI Cloud: `ea62b3f2eea225eafd72cbd55296e69e998af863` — `/Users/muze/gitee/npcink-ai-cloud`.\n\nThe retained Cloud auxiliary worktree is clean detached at ea62b3f2eea225eafd72cbd55296e69e998af863, task lock released. The independent Addon reconciliation worktree is preserved.\n\nSecond source promotion: 20.25s via LAN direct, promotion_pr=1121, source_branch=master, source_dirty=false, acceptance_state=accepted, source_revision=ea62b3f2eea225eafd72cbd55296e69e998af863. Total this closeout: two source promotions (20.04s and 20.25s), zero image deploys. No production or tag operations.\n\nFirst final query attempt failed immediately because the old authoring-Mac 18010 SSH tunnel had exited: curl reported connection refused and no listener existed. This was a local connectivity failure, not an M4 HTTP 502 or application regression; M4 LAN /health/live remained 200. Restored only the missing standard m4:preview:auto tunnel, selected_route=lan, loopback port 18010, exec session 79610 retained for Local WordPress. Recovered /health/live=200 and both recommendation metadata families were accepted again, event receipts related 29687/29688 and internal 29693/29694. The failed attempt log is retained separately.\n\nLatest exact-SHA report: [/tmp/npcink-recommendation-latest-master-exact-sha-matrix.md](/tmp/npcink-recommendation-latest-master-exact-sha-matrix.md). Latest accepted status: [/tmp/npcink-recommendation-current-master-accepted-status.log](/tmp/npcink-recommendation-current-master-accepted-status.log). Latest recovered smoke: [/tmp/npcink-recommendation-current-master-metadata-smoke-recovered.log](/tmp/npcink-recommendation-current-master-metadata-smoke-recovered.log).\n\nAfter tunnel recovery, three additional uncached rounds on the final accepted master also passed: related_content: 1328/1222/1243ms, 8 candidates in stable order; internal_links: 3868/3833/3839ms, 8 candidates in stable order. Log: [/tmp/npcink-recommendation-current-master-replay.log](/tmp/npcink-recommendation-current-master-replay.log).\n\nM4_OBSERVATION_RECEIPT date=2026-10-17; route=lan_direct_192.168.10.200; sync=not_measured; focused=not_measured; promotion=20.04s_then_20.25s; operations=sync2_deploy0; stable_502=0_m4_observed; m4_only=not_occurred; coordination=CI_only_master_advance_and_local_tunnel_recovered\n"
+    },
+    {
+      "path": "/Users/muze/gitee/npcink-ai-cloud/.runtime/m4-lan-first-merge-closeout.md",
+      "sha256": "2ee41ab9eb43b52ec9564053eebe3956160a1dc8d9f6e2f0b3e2c0946464a5d4",
+      "text": "# M4 route-priority documentation merge closeout\n\nPR: https://github.com/npcink/npcink-ai-cloud/pull/1120 (merged, 2026-10-17 09:07:10 Asia/Shanghai).\n\n- Topic SHA: `3d686c0db66e7d42411a9426a1fb5682cd802cc4`.\n- Merge and shared-root SHA: `d06ff4820027f3dcdb255c10032fa71cb463a662`.\n- Scope: seven Markdown files; ADR-060, partial ADR-052 supersession, operator runbook, AI standard, network standard and entry points.\n- Priority: LAN `192.168.10.200` -> Pgy `172.16.3.35` -> Tailscale `100.102.170.79`. Commands without automatic selection explicitly pin the chosen existing host override. No deployment-script default change or automatic in-flight route replay.\n\n## Checks\n\n- Documentation reachability passed (506/506).\n- Focused mocked M4 contract checks: 4 passed, 66 deselected (3.53s). No real SSH/M4 connection.\n- Lightweight release policy and diff/staged checks passed.\n- Local release-impact planner: `no_deploy` for the exact seven-file task diff.\n- Required checks all passed: CodeQL Python, CodeQL JavaScript/TypeScript, PR body contract, secret scan, backend documentation lane and frontend unchanged acknowledgement.\n- Cloud CI: https://github.com/npcink/npcink-ai-cloud/actions/runs/38989381489 (success).\n- CodeQL: https://github.com/npcink/npcink-ai-cloud/actions/runs/38989381502 (success).\n- Do not interpret the skipped backend/runtime lanes as executed tests.\n- Five-axis document/source review completed with no blocking finding.\n- Advisory OCR run 38989381524 failed during setup (`Cannot find module /usr/local/bin/ocr`), before the model-review step. No completed AI review or findings were delivered. Recorded in the PR; no retry/local model substitute and no unrelated workflow repair.\n\n## Shared-root and runtime handoff\n\n`/Users/muze/gitee/npcink-ai-cloud` is on clean `master`; `HEAD=origin/master=d06ff4820027f3dcdb255c10032fa71cb463a662`.\n\nThe independent `/Users/muze/gitee/.worktrees/cloud-site-anchor-performance` remains present and locked to its owner. This task did not edit, stage, commit or publish its files, nor remove or unlock its worktree.\n\nThis merge task made zero M4 connections and zero M4 sync/deploy/promote, tunnel, source-transfer, container or lease operations. It does not take M4 ownership. No production branch promotion, deployment, host operation, or tag creation/push/move was performed. Existing #1119 / M4 receipts remain historical evidence and were not overwritten.\n\nNo M4 promotion or runtime acceptance step applies to this documentation-only PR. The shared root is ready for the coordinating task's read-only matrix.\n\nM4_OBSERVATION_RECEIPT date=2026-10-17; route=not used; sync=not occurred; focused=not applicable; promotion=not occurred; operations=0; stable_502=not measured; m4_only=not occurred; coordination=not occurred\n"
+    },
+    {
+      "path": "/Users/muze/gitee/npcink-ai-cloud/.runtime/ocr-startup-fix/closeout.md",
+      "sha256": "710180b9ec5ec52b207307642ba1f614f627e224217a6e84699f4b06beead7bf",
+      "text": "# OCR startup fix closeout\n\nPR https://github.com/npcink/npcink-ai-cloud/pull/1122 merged on 2026-10-17 09:27:24 Asia/Shanghai.\n\n- Merge / shared-root SHA: `ea62b3f2eea225eafd72cbd55296e69e998af863`.\n- Topic SHA: `9ecc3a1e2926e46a7c2adb5f34e1e6361aaa5197`.\n- Shared root `/Users/muze/gitee/npcink-ai-cloud`: clean master, HEAD equals origin/master.\n- L2 CI-only merge lane; runtime lane none; exact change impact `no_deploy`.\n\n## Cause and fix\n\nThe npm launcher can start a detached auto-updater even from a version command. The updater globally reinstalls the package, creating an entry-removal window. The missing `/usr/local/bin/ocr` signature after prior successful commands is consistent with this mechanism. A replay using the exact pinned launcher and a mocked updater removal window reproduces the error; disabling the updater prevents the removal. The historical runner did not directly log the detached updater, so this is mechanism/compatibility evidence rather than a historical filesystem trace.\n\nSet OCR_NO_UPDATE=1 at the review job level so it applies before every command in the composite action, including version/configuration. Action/CLI pins, credentials, trust, review budgets and cadence remain unchanged. Added a fresh-runner startup workflow with read-only token permissions, no checkout, no secrets, a .invalid endpoint and no model command. It verifies the pinned version before and after the failing configuration sequence and the absence of the update timestamp.\n\nPrimary launcher/updater sources:\n- https://github.com/alibaba/open-code-review/blob/v1.12.13/bin/ocr.js\n- https://github.com/alibaba/open-code-review/blob/v1.12.13/scripts/update.js\n\n## Evidence\n\n- Regression contract failed before the fix and all 3 focused contracts passed afterwards.\n- Local pinned-launcher replay: auto-update enabled -> first invocation succeeds and next entry lookup fails; disabled -> 3 stable invocations with zero updater starts. No network, real global reinstall or configuration mutation in this replay.\n- Ruff/format, changed Python quality, shell syntax, doc reachability and lightweight release policy passed.\n- Real Linux startup check passed: https://github.com/npcink/npcink-ai-cloud/actions/runs/38990631178 . Exact OCR 1.12.13 on Ubuntu 26.04; llm.extra_body and later configuration succeeded, final version unchanged, no updater timestamp. No model call.\n- Required GitHub checks passed. Cloud CI: https://github.com/npcink/npcink-ai-cloud/actions/runs/38990631063 . Contract shards: 248 + 325 + 461 = 1034 passed; impacted and static lanes passed. Skipped application/domain lanes are not claimed as executed.\n- CodeQL passed: https://github.com/npcink/npcink-ai-cloud/actions/runs/38990631057 .\n- Old advisory run 38990631163 used the trusted base workflow, failed with the same entry-missing error, and skipped the model-review step. No AI findings or completed AI evidence were delivered; recorded without retries. The candidate startup job, deterministic checks and five-axis source review provide the fix evidence. The merged job environment applies to subsequent review runs.\n- No post-merge duplicate startup dispatch was needed: the candidate job ran the same installed pin/config sequence and the merged tree is unchanged.\n\n## Shared local use\n\nOne machine-level OCR install/config already serves multiple repositories. Existing active provider metadata is qwen-shared. The canonical Toolbox `scripts/ocr-local.sh` entry was invoked from the Cloud repo with --preview and OCR_NO_UPDATE=1 and successfully read the shared metadata without a model request. No local credentials/config were changed or copied; no resident service was added. This proves local entry reuse, not a rollout of new policies to every repository. Hosted GitHub runners retain their separate configuration; no change to CI-versus-local review authority was made while the operator's preference question remains unanswered.\n\n## Handoff\n\nZero M4 connections/operations, source transfers, image builds or production operations. No tags created/pushed/moved. The independent cloud-site-anchor-performance worktree remains present and locked; no owner files or worktrees were edited or removed by this task. Existing M4 receipts remain historical and were not rewritten.\n\nRollback: reviewed revert of this CI-only change; no runtime rollback.\n"
+    }
+  ],
+  "m4": {
+    "evidence_authority": "owner closeout receipt; coordinator performed no M4 operations",
+    "accepted_source_revision": "ea62b3f2eea225eafd72cbd55296e69e998af863",
+    "source_branch": "master",
+    "source_dirty": false,
+    "acceptance_state": "accepted",
+    "source_promotions": 2,
+    "image_deploys": 0,
+    "local_tunnel_recovered": true,
+    "latest_uncached_rounds": 3,
+    "candidates_each_intent": 8,
+    "metadata_and_positive_draft_apply_undo_native_save": "passed"
+  },
+  "auxiliary_worktrees": [
+    {
+      "repo": "npcink-ai-cloud",
+      "worktree_inventory": "worktree /Users/muze/gitee/npcink-ai-cloud\nHEAD ea62b3f2eea225eafd72cbd55296e69e998af863\nbranch refs/heads/master\n\nworktree /Users/muze/gitee/.worktrees/cloud-site-anchor-performance\nHEAD ea62b3f2eea225eafd72cbd55296e69e998af863\ndetached\n\n"
+    },
+    {
+      "repo": "npcink-cloud-addon",
+      "worktree_inventory": "worktree /Users/muze/gitee/npcink-cloud-addon\nHEAD b80b966151f26f114271a5534082c336ab2fea50\nbranch refs/heads/master\n\nworktree /Users/muze/.codex/worktrees/reconciliation-cursor-capacity/npcink-cloud-addon\nHEAD f18c93f20c1e552465e61a2b9780d9422692e207\nbranch refs/heads/codex/reconciliation-cursor-capacity\n\n"
+    }
+  ],
+  "scope_limits": {
+    "global_auxiliary_worktree_disposal_proven": false,
+    "advisory_ai_review_complete": false,
+    "full_release_acceptance_rerun": false,
+    "ranking_quality_claim": false,
+    "known_toolkit_anchor_hint_limitation_resolved": false
+  },
+  "published_snapshot_unchanged": {
+    "tag": "stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0",
+    "object": "ffb5e5d6d7b68fa952288524a181ff688a7698ee",
+    "peeled_commit": "ed28f984153200a8362fcd0928bbb32b83636159"
+  },
+  "historical_tags": {
+    "core_v0.3.0_object": "da05076343d7975e95800eddf1e9719358ac82df",
+    "core_v0.3.0_peeled": "3357f916899ac4b013a753da6d99e712274f2221",
+    "toolkit_0.7.0": "46c1405422ae0ac1f8ea6820b391b48d09326a14",
+    "adapter_v0.4.3": "absent"
+  },
+  "tag_operations": 0,
+  "production_deployments": 0,
+  "documentation_closeout_commit_excluded_from_tested_shas": true,
+  "documentation_verification": {
+    "composer_validate": "passed",
+    "composer_test_all": {
+      "exit_code": 0,
+      "unit_tests": 55,
+      "assertions": 207
+    },
+    "json_integrity": "passed",
+    "diff_check": "passed",
+    "breadcrumb_entries": 10
+  }
+}
