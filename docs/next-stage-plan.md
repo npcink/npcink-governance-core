@@ -5,6 +5,22 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Lane 3 fixture closeout — 2026-10-17
+
+Toolbox PR #272 merged as `3ae12c4`; required CI and static analysis passed.
+The clean default shared root is synchronized to that merge. Normal and
+post-intake-failure runs on real WordPress both purged their fixtures; all
+existing Core rows and hashes, post/attachment counts and local-consent counts
+were preserved. The original stash is retained as history, not an unresolved
+Lane 3 patch. See the [merged closeout and evidence](history/toolbox-lane3-closeout-2026-10-17.md).
+
+The final full no-override matrix is **6/7, exit 1** at `02:39:36Z`: Toolbox
+passes cleanly, Toolkit has active owner source changes and Cloud's current
+SHA lacks `backend` evidence. Preserve those owners' work. Adapter exact-pin
+publication, Core weekly docs PR, Addon/candidate drift decisions and broader
+housekeeping remain open. No RC2 manifest or tag was changed; this is not a
+new candidate release acceptance.
+
 ## Session closure audit — 2026-10-17, after the matrix
 
 The owner coordination stage can be handed off, but all-history closure is

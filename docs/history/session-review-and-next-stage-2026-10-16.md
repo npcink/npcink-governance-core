@@ -80,6 +80,12 @@ does not include that follow-up. Lane 3 therefore remains an open fixture
 closeout, requiring an owner PR and real WordPress rerun. See the
 [closure review](session-closure-review-2026-10-17.md).
 
+**Later follow-up on 2026-10-17:** the registry-owner and batch-audit cleanup
+patch subsequently merged through Toolbox PR #272 (`3ae12c4`). Normal and
+post-intake-failure runs on the merged script both restored all existing Core
+rows and hashes and left no new post/media fixture. The original stash is
+preserved; see the [merged Lane 3 closeout](toolbox-lane3-closeout-2026-10-17.md).
+
 The earlier classification regression record reported these runs in an
 isolated Toolbox worktree:
 

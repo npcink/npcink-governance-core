@@ -2,6 +2,13 @@
 
 Status: scoped coordination can be handed off; global historical closeout is incomplete.
 
+**Subsequent focused closeout:** Toolbox Lane 3 was repaired and merged by
+PR #272 as `3ae12c4`, with real WordPress normal/failure cleanup verification.
+The stash is retained as history. This supersedes the pending Lane 3 finding
+below; other audit findings remain separate. The latest default matrix is
+6/7, exit 1 because of subsequent owner activity. See the
+[Lane 3 closeout](toolbox-lane3-closeout-2026-10-17.md).
+
 ## Goal and evidence
 
 The user asked whether this session and **Review pending work and next steps**

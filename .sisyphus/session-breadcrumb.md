@@ -5,18 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - Toolbox stable audit; Cloud Addon owner still moving
-
-- **Toolbox**: two snapshots over approximately two minutes showed stable
-  owner-held changes in `docs/README.md` and the untracked internal-link handoff
-  document. Nothing was deleted, reset, staged, or committed.
-- **Acceptance**: Core `ec01042`, Adapter `eb73e503`, and Toolkit `921d1dc7`
-  passed exact three-repository acceptance, including M4 provider-log
-  correlation, duplicate refusal, Docker smoke, and cleanup.
-- **Cloud Addon**: owner work advanced from `ac82a3b` to `5f223af` during its
-  stability check. Manifest freeze, release notes, and final checksums remain
-  deferred; no snapshot tag was created or pushed.
-
 # 2026-10-16 - Final 7/7 owner closeout and acceptance passed
 
 - **Owner state**: Toolbox is clean at `ee814e04`; Cloud Addon is clean at
@@ -145,3 +133,24 @@ Older history: `.sisyphus/archive/`.
   await the weekly PR. First close the Lane 3 owner fix and real WP rerun, then
   source preservation/publication and owner-aware housekeeping. No sibling edits,
   owner messages, branch/stash removal, new candidate, tag or deployment.
+
+# 2026-10-17 - Toolbox Lane 3 repair merged and real WP cleanup verified
+
+- **Merge**: Toolbox PR #272 merged as `3ae12c4`; exact final head `eb0c24f`
+  passed required PHP/body checks and static analysis. Advisory OCR workflow is
+  disabled; publisher exception recorded, no delivered AI review claimed.
+- **Runtime**: after 144.49s stable owner-root snapshots, Toolbox fast-forwarded
+  clean master. Merged default smoke passed 65 assertions. A real post-intake
+  fault exited 1 as expected and cleaned up. Both runs preserved 326 proposals,
+  4,140 audits and all existing-row hashes; posts 2,391 / attachments 26 /
+  local-consent audits six unchanged. Runtime source snapshots stayed stable
+  during those runs; other owners resumed moving afterward.
+- **Matrix**: final no-override --fail-on-dirty at 02:39:36Z returned 6/7,
+  exit 1: Toolbox clean/passed; Toolkit owner matcher source dirty; Cloud exact
+  SHA lacks backend evidence. No wider clean candidate or release acceptance.
+- **Preservation/next**: original Toolbox/Cloud stashes and other owner work
+  retained. Our temporary Toolbox worktree removed cleanly; its topic retained.
+  Adapter pin, weekly Core docs, Addon/candidate drift and owner checks remain.
+  See docs/history/toolbox-lane3-closeout-2026-10-17.md and JSON/matrix evidence.
+  Five prior local Core docs commits plus this closeout await the weekly PR.
+  Fixed manifest/published snapshot preserved; no tag creation/push/move.
