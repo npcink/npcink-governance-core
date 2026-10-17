@@ -5,6 +5,23 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Audit/cleanup weekly documentation batch merged — 2026-10-17
+
+Three accumulated commits `ac69fa72`, `92c4a02a`, `8df58884` merged through
+[PR #179](https://github.com/npcink/npcink-governance-core/pull/179) as
+`289ce777` at `05:51:31Z`. Both protected topic checks and merged-SHA Static
+contracts passed; topic/squash trees match. Normal matched-head squash completed
+without bypass after advisory OCR failed; no full external review is claimed.
+See [publication and preservation receipt](history/core-audit-weekly-docs-publication-2026-10-17.md).
+
+The former three docs commits are published. This later merge receipt is one
+new local record for the next weekly batch. Other source backups are unchanged,
+old deleted branches remain absent, and all tags/manifest are unchanged. Core
+now has 10 local / 16 remote branches because publication adds a remote topic
+and a local receipt branch; earlier cleanup counts are historical. Preserve
+other owner tasks and unresolved source/quality/human-acceptance work. No
+additional cleanup, matrix, candidate acceptance, production or M4 action occurred.
+
 ## Authorized Core-only branch cleanup completed — 2026-10-17
 
 After fresh exact-SHA, ownership, worktree and live merged-PR/tree checks,
