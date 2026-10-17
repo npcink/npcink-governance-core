@@ -5,6 +5,20 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Next-page checkpoint documentation merged — 2026-10-17
+
+[PR #185](https://github.com/npcink/npcink-governance-core/pull/185) published fcee7b2 / 4b5692a (seven docs/evidence files)
+as `5d36dbb2`. Required checks, body refresh and merged-SHA Static contracts
+passed; exact topic/squash
+trees match. Protected exact-head squash used no admin/bypass. Local OCR
+incomplete; CI failed2/2 with zero tokens/comments. Coverage gap retained.
+See [publication receipt](history/core-next-page-weekly-publication-2026-10-17.md).
+
+Former backlog closed; this later receipt is one local commit for weekly batching.
+Original branches/source anchors/tags/RC2 and other owner work preserved.
+Dated Adapter channel and reconciliation delivery/catch-up/trigger follow-ups
+remain open. No fresh live verification, sibling/runtime/tag operation here.
+
 ## Next scheduled-cycle state rechecked at 17:13 Beijing — 2026-10-17
 
 [Appended next-cycle evidence](history/adapter-channel-natural-reconciliation-2026-10-17.md):

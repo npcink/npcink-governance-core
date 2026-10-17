@@ -5,20 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Three owner/release documentation commits merged as PR181
-
-- **Published**: f764306b / 5be60b35 / aec4acb7 (nine docs/evidence files)
-  merged #181 as 9f5b2bf2; equal topic/squash trees, protected auto-merge.
-- **Checks**: required Static/body, local Core 55/207, metadata/wporg and docs
-  integrity passed. Local OCR timed out; CI failed 3/3 with zero tokens/comments.
-  No full external review claimed; no bypass, retry or workflow change.
-- **Retain/next**: original branches and remote source refs, Core tag maps and
-  fixed manifest unchanged; other owner work and dated follow-ups stay open.
-  docs/history/core-owner-release-weekly-publication-2026-10-17.md plus JSON
-  form one new local receipt for next weekly batch; no recursive PR, sibling
-  mutation/message, cleanup, acceptance, deployment or tag operation.
-  Merged-SHA Static contracts passed (run 39012548194); receipt docs gates pass.
-
 # 2026-10-17 - Adapter update channel and Addon site/recovery rechecked
 
 - **Adapter**: 07:11:27Z info/package still 0.4.3; update probes from 0.4.1
@@ -158,3 +144,17 @@ Older history: `.sisyphus/archive/`.
   batch with post-#184 receipt, no new PR/candidate/acceptance/deploy/tag action.
   Core55/207/metadata and JSON/links/breadcrumb/diff checks passed; original
   refs/resources/tags, sibling HEAD/status and fixedRC2 unchanged at recheck.
+
+# 2026-10-17 - Next-page checkpoint docs published via PR185
+
+- **Published**: fcee7b2/4b5692a, seven docs/evidence files; #185 squash 5d36dbb2,
+  topic/squash trees equal. Required Static/body and body refresh passed;
+  normal protected exact-head merge, no admin/bypass.
+- **Checks/review**: Core55/207/metadata/wporg/docs and 3 raw hashes passed.
+  Local OCR180s timeout; CI2/2 failed zero tokens/comments; gap recorded.
+  Merged-SHA Static contracts passed (run39021081940).
+- **Preserve/next**: original refs/resources/tags/fixedRC2 and owner work retained.
+  No sibling/message/runtime/cleanup/tag action. Dated channel and scan delivery/
+  full-pass/trigger follow-ups stay open. docs/history/core-next-page-weekly-
+  publication-2026-10-17.md +JSON; one local receipt for next weekly batch.
+  Receipt metadata/Core55/207/wporg/docs integrity gates passed.
