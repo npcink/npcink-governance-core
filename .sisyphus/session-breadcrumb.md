@@ -5,35 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - Authorized stack snapshot tag pushed
-
-- **Preflight**: final 7/7 matrix passed exit 0; Core/Adapter checksums matched;
-  Toolkit deterministic checksum matched twice.
-- **Tag**: annotated
-  `stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0` was pushed
-  without force. Remote object `ffb5e5d6` peels to verified Core commit
-  `ed28f984`.
-- **Boundary**: historical plugin tags were not moved; SVN, deployment, and
-  real-usage actions remain separate.
-
-# 2026-10-16 - Post-tag live checkout drift recorded
-
-- **Post-tag state**: Cloud Addon `master` advanced to `6c9d3c4` via dependency
-  update PR #279; Toolbox has one new owner-held uncommitted documentation
-  change.
-- **Boundary**: both changes occurred after tag preflight and are excluded
-  from the immutable snapshot tag. Any future candidate needs fresh matrix and
-  acceptance evidence.
-
-# 2026-10-16 - Post-tag audit refresh; no new candidate selected
-
-- **Matrix**: live default `--fail-on-dirty` passed 7/7 with exit 0 at
-  `2026-10-16T11:29:44+00:00`.
-- **Drift**: Cloud Addon is `f0e2a58`; Toolbox is `569da58`; both are clean but
-  newer than the published manifest. The existing tag remains unchanged.
-- **Decision**: no new candidate or acceptance was selected; future inclusion
-  requires a separate manifest and tag, never a retag.
-
 # 2026-10-16 - Separate RC2 manifest and exact acceptance passed
 
 - **Candidate**: Core `7904f5b`, Addon `f0e2a58`, Toolbox `569da58`; the other
@@ -162,3 +133,52 @@ Older history: `.sisyphus/archive/`.
   Addon/candidate decisions and branch/worktree dispositions. No owner message
   or sibling mutation. Six earlier local Core docs commits plus this closeout
   await the weekly PR; choose any future candidate deliberately.
+
+# 2026-10-17 - Adapter exact source saved; seven Core docs commits merged
+
+- **Adapter**: pushed exact `eb73e503` to origin's named existing-local topic
+  branch without tags/force or local checkout changes. Empty bare fetch and
+  GitHub API resolve the exact commit; tree `cd78059d` equals local. Temporary
+  verification repository removed; preservation branch retained, no master merge.
+- **Core publication**: seven commits cac1689..f5181a3 / 21 docs-only files
+  published through PR #177. Required Static contracts/body checks passed;
+  squash `9d153849` at 03:06:09Z has identical tree to f5181a3. Merged-SHA
+  Static contracts also passed. Original local/remote topic refs preserved.
+- **Review**: local advisory OCR timed out at 180s. CI OCR failed all ten
+  selected items, zero comments/tokens; no complete or clean AI review claimed.
+- **Matrix/owners**: post-merge default --fail-on-dirty at 03:08:09Z is 6/7,
+  exit 1; Core/Adapter pass, Toolbox owner source dirty and Cloud c8469e26 lacks
+  five exact-SHA checks. Owners continued moving; no frozen candidate claim.
+- **Receipt/next**: docs/history/adapter-preservation-and-core-docs-publication-2026-10-17.md
+  plus JSON and raw matrix. Former seven docs commits are merged; this new
+  receipt is one local docs commit for the next weekly batch on
+  codex/docs-publication-receipt-2026-10-17. Preserve other work/stashes,
+  Addon drift and owner dispositions. Fixed manifest and tags unchanged; no
+  tag creation/push/move, new candidate, owner message or deployment.
+
+# 2026-10-17 - Toolbox273 closed; Cloud local-only SHA blocks readiness
+
+- **Toolbox**: #273 merged as `d253bdb1`; clean synchronized master, protected
+  checks and real-editor/native-save owner cleanup receipts recorded.
+- **Cloud**: clean local `f7aab8c4` is unpushed; remote master `585aa660` has
+  five green checks, but GitHub returns 422 for the current SHA. Local tests
+  are not current remote CI. Owner ended local-only; new message authorization
+  asked, no extra message sent.
+- **Gate**: no new full matrix until ready; prior 7/7 is historical. Keep other
+  work/stashes and weekly docs receipts. RC2 and remote snapshot unchanged;
+  no tag creation, push or movement. See the Toolbox/Cloud refresh history.
+
+# 2026-10-17 - Cloud1126 publication and refreshed default 7/7 complete
+
+- **Owner request**: exactly one newly authorized request sent. Cloud #1126
+  merged `fbdfa372`; five exact-merge-SHA checks pass, clean synchronized master.
+  Toolbox #274 advanced to `a2ad8981`, also clean synchronized with owner receipts.
+- **Gate**: complete default no-override `--fail-on-dirty` 7/7, exit 0 at
+  `04:05:45Z`; all dirty 0. Four snapshots identical across 516.22 seconds.
+  Tested Core `03be509f`; this later documentation commit is excluded.
+- **Limits**: one authorized OCR timed out, no full review delivered, no retry.
+  Preserve owner resources, quality/human acceptance and weekly docs follow-ups.
+  Five heads drift from fixed RC2; manifest/tag unchanged, no new candidate or
+  exact acceptance. No tag operations, production action or M4 promotion.
+- **Evidence**: docs/history/cloud-publication-owner-closeout-2026-10-17.md
+  plus audit and original matrix JSON. Batch this local record in weekly docs PR.

@@ -1,0 +1,920 @@
+{
+  "recorded_at": "2026-10-17T04:06:57.808340+00:00",
+  "status": "default_matrix_passed",
+  "scope": "Core release coordination documentation; read-only sibling audit",
+  "authorization": {
+    "request": "one formal Cloud owner publication/PR/CI/shared-root closeout request",
+    "owner_thread_id": "01a1429e-69d0-7be3-b432-63784b51a8ab",
+    "messages_sent": 1,
+    "owner_completed": true,
+    "ocr_decision": "Human separately allowed one bounded OCR in the Cloud owner chat; business regression remains zero-paid"
+  },
+  "cloud": {
+    "original_local_commit": "f7aab8c493b41683e402ea0a307d8b1e856d4a35",
+    "final_topic_sha": "2d491ca7f3221b0748ee73871c94b5a47e03e8b2",
+    "merge_sha": "fbdfa372bb60ee8a1304359132afdd59c699f084",
+    "pr": {
+      "url": "https://github.com/npcink/npcink-ai-cloud/pull/1126",
+      "state": "MERGED",
+      "headRefOid": "2d491ca7f3221b0748ee73871c94b5a47e03e8b2",
+      "mergeCommit": {
+        "oid": "fbdfa372bb60ee8a1304359132afdd59c699f084"
+      },
+      "mergedAt": "2026-10-17T03:56:20Z",
+      "statusCheckRollup": [
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:31Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300311932",
+          "name": "Dockerfile COPY contract precheck",
+          "startedAt": "2026-10-17T03:43:24Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:42:42Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763673/job/117300010525",
+          "name": "Analyze (python)",
+          "startedAt": "2026-10-17T03:41:46Z",
+          "status": "COMPLETED",
+          "workflowName": "CodeQL"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:41:53Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763675/job/117300010471",
+          "name": "PR body contract",
+          "startedAt": "2026-10-17T03:41:46Z",
+          "status": "COMPLETED",
+          "workflowName": "PR Body Contract"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:56:12Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39000664165/job/117302692624",
+          "name": "PR body contract",
+          "startedAt": "2026-10-17T03:56:06Z",
+          "status": "COMPLETED",
+          "workflowName": "PR Body Contract"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:42:59Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763673/job/117300010351",
+          "name": "Analyze (javascript-typescript)",
+          "startedAt": "2026-10-17T03:41:45Z",
+          "status": "COMPLETED",
+          "workflowName": "CodeQL"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:22Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300312502",
+          "name": "Production PR base contract precheck",
+          "startedAt": "2026-10-17T03:43:22Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:22Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300312439",
+          "name": "Production release plan",
+          "startedAt": "2026-10-17T03:43:22Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:22Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300312396",
+          "name": "Production PR CI evidence",
+          "startedAt": "2026-10-17T03:43:22Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:32Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300311810",
+          "name": "Secret scan",
+          "startedAt": "2026-10-17T03:43:24Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:32Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300311668",
+          "name": "classify",
+          "startedAt": "2026-10-17T03:43:24Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:39Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300340343",
+          "name": "Authoritative CVE range precheck",
+          "startedAt": "2026-10-17T03:43:34Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:32Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300341498",
+          "name": "Specialized changed-domain quality gates",
+          "startedAt": "2026-10-17T03:43:32Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:40Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300340181",
+          "name": "backend-scope",
+          "startedAt": "2026-10-17T03:43:34Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:45Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300340213",
+          "name": "Python dependency audit",
+          "startedAt": "2026-10-17T03:43:33Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:43Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300340218",
+          "name": "Documentation reachability",
+          "startedAt": "2026-10-17T03:43:34Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:51:04Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300340195",
+          "name": "frontend",
+          "startedAt": "2026-10-17T03:43:34Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:32Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300341169",
+          "name": "static-terms",
+          "startedAt": "2026-10-17T03:43:32Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:39Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300362614",
+          "name": "Production deploy bundle",
+          "startedAt": "2026-10-17T03:43:40Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:40Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300364727",
+          "name": "Python 3.14 Alpine production image smoke",
+          "startedAt": "2026-10-17T03:43:40Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:44:04Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300363963",
+          "name": "backend-targeted (static, --targeted-static, true)",
+          "startedAt": "2026-10-17T03:43:42Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:45:51Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300363948",
+          "name": "backend-targeted (contract-1, --targeted-contract-shard 1, false)",
+          "startedAt": "2026-10-17T03:43:42Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:46:51Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300364072",
+          "name": "backend-targeted (contract-2, --targeted-contract-shard 2, false)",
+          "startedAt": "2026-10-17T03:43:42Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:47:26Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300363932",
+          "name": "backend-targeted (contract-3, --targeted-contract-shard 3, false)",
+          "startedAt": "2026-10-17T03:43:42Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:55Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300364053",
+          "name": "backend-targeted (impacted, --targeted-impacted, false)",
+          "startedAt": "2026-10-17T03:43:42Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:40Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300364929",
+          "name": "backend-docs",
+          "startedAt": "2026-10-17T03:43:40Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:40Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300364976",
+          "name": "backend-static",
+          "startedAt": "2026-10-17T03:43:40Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:40Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300364828",
+          "name": "backend-pytest",
+          "startedAt": "2026-10-17T03:43:40Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:43:40Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117300364801",
+          "name": "PostgreSQL 16 encryption cutover regression",
+          "startedAt": "2026-10-17T03:43:40Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:47:33Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117301084638",
+          "name": "backend",
+          "startedAt": "2026-10-17T03:47:28Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:51:18Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999763665/job/117301765203",
+          "name": "CI observability",
+          "startedAt": "2026-10-17T03:51:06Z",
+          "status": "COMPLETED",
+          "workflowName": "Cloud CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:42:35Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-cloud/runs/117300158008",
+          "name": "CodeQL",
+          "startedAt": "2026-10-17T03:42:32Z",
+          "status": "COMPLETED",
+          "workflowName": ""
+        }
+      ]
+    },
+    "exact_sha_checks": [
+      {
+        "id": 117303930394,
+        "name": "backend",
+        "head_sha": "fbdfa372bb60ee8a1304359132afdd59c699f084",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-17T04:02:47Z",
+        "completed_at": "2026-10-17T04:02:49Z",
+        "html_url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39000683574/job/117303930394"
+      },
+      {
+        "id": 117302778261,
+        "name": "frontend",
+        "head_sha": "fbdfa372bb60ee8a1304359132afdd59c699f084",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-17T03:56:35Z",
+        "completed_at": "2026-10-17T04:02:35Z",
+        "html_url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39000683574/job/117302778261"
+      },
+      {
+        "id": 117302748863,
+        "name": "Secret scan",
+        "head_sha": "fbdfa372bb60ee8a1304359132afdd59c699f084",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-17T03:56:25Z",
+        "completed_at": "2026-10-17T03:56:33Z",
+        "html_url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39000683574/job/117302748863"
+      },
+      {
+        "id": 117302748698,
+        "name": "Analyze (python)",
+        "head_sha": "fbdfa372bb60ee8a1304359132afdd59c699f084",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-17T03:56:25Z",
+        "completed_at": "2026-10-17T03:58:18Z",
+        "html_url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39000683610/job/117302748698"
+      },
+      {
+        "id": 117302748815,
+        "name": "Analyze (javascript-typescript)",
+        "head_sha": "fbdfa372bb60ee8a1304359132afdd59c699f084",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-17T03:56:25Z",
+        "completed_at": "2026-10-17T03:58:33Z",
+        "html_url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39000683610/job/117302748815"
+      }
+    ],
+    "source_gate_exit": 0,
+    "ocr": {
+      "run_url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/38999650102",
+      "reviewed_initial_sha": "9d9e82658b5bcc479efc093f64b5c6371804c800",
+      "attempts": 1,
+      "result": "action timeout after 15 minutes; no report or inline findings delivered",
+      "final_sha_fully_model_reviewed": false,
+      "codex_review": "quota exhausted; not delivered"
+    },
+    "local_owner_tests": {
+      "api": 22,
+      "browser": 15,
+      "contracts": 6,
+      "executor_after_receipt_fix": 13
+    },
+    "unrelated_ops_pr": 1125
+  },
+  "toolbox": {
+    "pr273": {
+      "url": "https://github.com/npcink/npcink-workflow-toolbox/pull/273",
+      "state": "MERGED",
+      "headRefOid": "86c6ac7ae699211e593bc61420aa82ba85851164",
+      "mergeCommit": {
+        "oid": "d253bdb110be353f959b27d5b6d93682db5b2df8"
+      },
+      "mergedAt": "2026-10-17T03:17:07Z",
+      "statusCheckRollup": [
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:13:28Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/38997950080/job/117294548164",
+          "name": "PR body contract",
+          "startedAt": "2026-10-17T03:13:25Z",
+          "status": "COMPLETED",
+          "workflowName": "PR Body Contract"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:15:02Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/38998048792/job/117294854840",
+          "name": "PR body contract",
+          "startedAt": "2026-10-17T03:14:59Z",
+          "status": "COMPLETED",
+          "workflowName": "PR Body Contract"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:16:53Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/38998170418/job/117295226072",
+          "name": "PR body contract",
+          "startedAt": "2026-10-17T03:16:50Z",
+          "status": "COMPLETED",
+          "workflowName": "PR Body Contract"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:14:18Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/38997950084/job/117294548030",
+          "name": "PHP contracts",
+          "startedAt": "2026-10-17T03:13:25Z",
+          "status": "COMPLETED",
+          "workflowName": "Toolbox CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:14:15Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/38997950084/job/117294547888",
+          "name": "Static analysis (advisory)",
+          "startedAt": "2026-10-17T03:13:25Z",
+          "status": "COMPLETED",
+          "workflowName": "Toolbox CI"
+        }
+      ]
+    },
+    "pr274": {
+      "url": "https://github.com/npcink/npcink-workflow-toolbox/pull/274",
+      "state": "MERGED",
+      "headRefOid": "1cfeb340ccc107448aea83a90fe13b1eb9ef130d",
+      "mergeCommit": {
+        "oid": "a2ad8981e7d31a90e822bca46278296f56fb6ee5"
+      },
+      "mergedAt": "2026-10-17T03:46:41Z",
+      "statusCheckRollup": [
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:44:50Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/38999949974/job/117300570734",
+          "name": "PR body contract",
+          "startedAt": "2026-10-17T03:44:47Z",
+          "status": "COMPLETED",
+          "workflowName": "PR Body Contract"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:46:27Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/39000056442/job/117300885999",
+          "name": "PR body contract",
+          "startedAt": "2026-10-17T03:46:25Z",
+          "status": "COMPLETED",
+          "workflowName": "PR Body Contract"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:45:37Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/38999949985/job/117300570885",
+          "name": "PHP contracts",
+          "startedAt": "2026-10-17T03:44:46Z",
+          "status": "COMPLETED",
+          "workflowName": "Toolbox CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T03:46:05Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/38999949985/job/117300570756",
+          "name": "Static analysis (advisory)",
+          "startedAt": "2026-10-17T03:44:47Z",
+          "status": "COMPLETED",
+          "workflowName": "Toolbox CI"
+        }
+      ]
+    },
+    "owner_real_article_receipt": {
+      "articles": 12,
+      "apply_undo_cases": 19,
+      "feedback_receipts": 82,
+      "temporary_draft_native_save": "passed; cleanup recorded",
+      "ranking_baseline": "unchanged",
+      "quality_debt": "weak relevance and unnatural anchors require human-labelled evaluation"
+    },
+    "owner_thread_idle_at_read": true
+  },
+  "matrix": {
+    "command": "composer quality:matrix:run -- --fail-on-dirty --json --output=/tmp/cloud-publication-default-matrix-2026-10-17.json",
+    "cwd": "/Users/muze/gitee/npcink-workflow-toolbox",
+    "report": "cloud-publication-default-matrix-2026-10-17.json",
+    "report_sha256": "145cd7929faeeb9f2d63f843e921974ee6a56d719f9a9f56411a7fd42987a777",
+    "generated_at": "2026-10-17T04:05:45+00:00",
+    "exit_code": 0,
+    "passed": 7,
+    "total": 7,
+    "failures": 0,
+    "all_paths_default": true,
+    "all_dirty_counts_zero": true,
+    "fixture_or_family_root_environment_overrides": false
+  },
+  "snapshots": {
+    "first": {
+      "observed_at": "2026-10-17T03:57:15.524759+00:00",
+      "repositories": [
+        {
+          "name": "npcink-abilities-toolkit",
+          "path": "/Users/muze/gitee/npcink-abilities-toolkit",
+          "head": "b09ad3008a027782f672d929e79c77ac7a01333e",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master",
+          "tracked_content_mtime_sha256": "f1c11ec6270ffc13e5d26ee7821a2ef823300477aa0c7635fa582ab5d0f0f831",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-governance-core",
+          "path": "/Users/muze/gitee/npcink-governance-core",
+          "head": "03be509f71c8d3fffe730d87f762c1733dcad359",
+          "branch": "codex/docs-publication-receipt-2026-10-17",
+          "status": "",
+          "upstream": "## codex/docs-publication-receipt-2026-10-17...origin/master [ahead 2]",
+          "tracked_content_mtime_sha256": "eefeed11db02faf73afdd950d1dd78c65e99cc4bddc0d25b955a0aefd05f9060",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-ai-client-adapter",
+          "path": "/Users/muze/gitee/npcink-ai-client-adapter",
+          "head": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "branch": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "status": "",
+          "upstream": "## codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "tracked_content_mtime_sha256": "0596e5fb26227383c88bb3a22aff445fac02d20d9d4ed43b5cd85d6c3f3751c8",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-workflow-toolbox",
+          "path": "/Users/muze/gitee/npcink-workflow-toolbox",
+          "head": "a2ad8981e7d31a90e822bca46278296f56fb6ee5",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master",
+          "tracked_content_mtime_sha256": "b3fb6b9ec1cb220256ef21f99f02f5d5453e0825409720aae0ddddb7b472387f",
+          "stashes": "4830f19e350f9a7e8447cbe8d0a5b3eedd222f21 On codex/fix-classification-registry-owner: preserved before 2026-10-16 worktree cleanup"
+        },
+        {
+          "name": "npcink-cloud-addon",
+          "path": "/Users/muze/gitee/npcink-cloud-addon",
+          "head": "b80b966151f26f114271a5534082c336ab2fea50",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master [behind 2]",
+          "tracked_content_mtime_sha256": "a5af2f32cf717769ddda4f7e6fb0a3ae73a1f4881048066f3cdbdbe966a51417",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-eval-lab",
+          "path": "/Users/muze/gitee/npcink-eval-lab",
+          "head": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "branch": "main",
+          "status": "",
+          "upstream": "## main...origin/main",
+          "tracked_content_mtime_sha256": "360e8d9aa7912893f3954cf4ee62dad6ee23c5cc3f2f49857adcb3b6746d275c",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-ai-cloud",
+          "path": "/Users/muze/gitee/npcink-ai-cloud",
+          "head": "fbdfa372bb60ee8a1304359132afdd59c699f084",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master",
+          "tracked_content_mtime_sha256": "fbff80e410d03818d8cd65234bd218aa4235ca7a07f4f5b417973f90bad82ee8",
+          "stashes": ""
+        }
+      ]
+    },
+    "second": {
+      "observed_at": "2026-10-17T03:59:51.397783+00:00",
+      "repositories": [
+        {
+          "name": "npcink-abilities-toolkit",
+          "path": "/Users/muze/gitee/npcink-abilities-toolkit",
+          "head": "b09ad3008a027782f672d929e79c77ac7a01333e",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master",
+          "tracked_content_mtime_sha256": "f1c11ec6270ffc13e5d26ee7821a2ef823300477aa0c7635fa582ab5d0f0f831",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-governance-core",
+          "path": "/Users/muze/gitee/npcink-governance-core",
+          "head": "03be509f71c8d3fffe730d87f762c1733dcad359",
+          "branch": "codex/docs-publication-receipt-2026-10-17",
+          "status": "",
+          "upstream": "## codex/docs-publication-receipt-2026-10-17...origin/master [ahead 2]",
+          "tracked_content_mtime_sha256": "eefeed11db02faf73afdd950d1dd78c65e99cc4bddc0d25b955a0aefd05f9060",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-ai-client-adapter",
+          "path": "/Users/muze/gitee/npcink-ai-client-adapter",
+          "head": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "branch": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "status": "",
+          "upstream": "## codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "tracked_content_mtime_sha256": "0596e5fb26227383c88bb3a22aff445fac02d20d9d4ed43b5cd85d6c3f3751c8",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-workflow-toolbox",
+          "path": "/Users/muze/gitee/npcink-workflow-toolbox",
+          "head": "a2ad8981e7d31a90e822bca46278296f56fb6ee5",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master",
+          "tracked_content_mtime_sha256": "b3fb6b9ec1cb220256ef21f99f02f5d5453e0825409720aae0ddddb7b472387f",
+          "stashes": "4830f19e350f9a7e8447cbe8d0a5b3eedd222f21 On codex/fix-classification-registry-owner: preserved before 2026-10-16 worktree cleanup"
+        },
+        {
+          "name": "npcink-cloud-addon",
+          "path": "/Users/muze/gitee/npcink-cloud-addon",
+          "head": "b80b966151f26f114271a5534082c336ab2fea50",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master [behind 2]",
+          "tracked_content_mtime_sha256": "a5af2f32cf717769ddda4f7e6fb0a3ae73a1f4881048066f3cdbdbe966a51417",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-eval-lab",
+          "path": "/Users/muze/gitee/npcink-eval-lab",
+          "head": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "branch": "main",
+          "status": "",
+          "upstream": "## main...origin/main",
+          "tracked_content_mtime_sha256": "360e8d9aa7912893f3954cf4ee62dad6ee23c5cc3f2f49857adcb3b6746d275c",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-ai-cloud",
+          "path": "/Users/muze/gitee/npcink-ai-cloud",
+          "head": "fbdfa372bb60ee8a1304359132afdd59c699f084",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master",
+          "tracked_content_mtime_sha256": "fbff80e410d03818d8cd65234bd218aa4235ca7a07f4f5b417973f90bad82ee8",
+          "stashes": ""
+        }
+      ]
+    },
+    "ready": {
+      "observed_at": "2026-10-17T04:04:33.665949+00:00",
+      "repositories": [
+        {
+          "name": "npcink-abilities-toolkit",
+          "path": "/Users/muze/gitee/npcink-abilities-toolkit",
+          "head": "b09ad3008a027782f672d929e79c77ac7a01333e",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master",
+          "tracked_content_mtime_sha256": "f1c11ec6270ffc13e5d26ee7821a2ef823300477aa0c7635fa582ab5d0f0f831",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-governance-core",
+          "path": "/Users/muze/gitee/npcink-governance-core",
+          "head": "03be509f71c8d3fffe730d87f762c1733dcad359",
+          "branch": "codex/docs-publication-receipt-2026-10-17",
+          "status": "",
+          "upstream": "## codex/docs-publication-receipt-2026-10-17...origin/master [ahead 2]",
+          "tracked_content_mtime_sha256": "eefeed11db02faf73afdd950d1dd78c65e99cc4bddc0d25b955a0aefd05f9060",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-ai-client-adapter",
+          "path": "/Users/muze/gitee/npcink-ai-client-adapter",
+          "head": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "branch": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "status": "",
+          "upstream": "## codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "tracked_content_mtime_sha256": "0596e5fb26227383c88bb3a22aff445fac02d20d9d4ed43b5cd85d6c3f3751c8",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-workflow-toolbox",
+          "path": "/Users/muze/gitee/npcink-workflow-toolbox",
+          "head": "a2ad8981e7d31a90e822bca46278296f56fb6ee5",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master",
+          "tracked_content_mtime_sha256": "b3fb6b9ec1cb220256ef21f99f02f5d5453e0825409720aae0ddddb7b472387f",
+          "stashes": "4830f19e350f9a7e8447cbe8d0a5b3eedd222f21 On codex/fix-classification-registry-owner: preserved before 2026-10-16 worktree cleanup"
+        },
+        {
+          "name": "npcink-cloud-addon",
+          "path": "/Users/muze/gitee/npcink-cloud-addon",
+          "head": "b80b966151f26f114271a5534082c336ab2fea50",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master [behind 2]",
+          "tracked_content_mtime_sha256": "a5af2f32cf717769ddda4f7e6fb0a3ae73a1f4881048066f3cdbdbe966a51417",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-eval-lab",
+          "path": "/Users/muze/gitee/npcink-eval-lab",
+          "head": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "branch": "main",
+          "status": "",
+          "upstream": "## main...origin/main",
+          "tracked_content_mtime_sha256": "360e8d9aa7912893f3954cf4ee62dad6ee23c5cc3f2f49857adcb3b6746d275c",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-ai-cloud",
+          "path": "/Users/muze/gitee/npcink-ai-cloud",
+          "head": "fbdfa372bb60ee8a1304359132afdd59c699f084",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master",
+          "tracked_content_mtime_sha256": "fbff80e410d03818d8cd65234bd218aa4235ca7a07f4f5b417973f90bad82ee8",
+          "stashes": ""
+        }
+      ]
+    },
+    "post": {
+      "observed_at": "2026-10-17T04:05:51.747201+00:00",
+      "repositories": [
+        {
+          "name": "npcink-abilities-toolkit",
+          "path": "/Users/muze/gitee/npcink-abilities-toolkit",
+          "head": "b09ad3008a027782f672d929e79c77ac7a01333e",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master",
+          "tracked_content_mtime_sha256": "f1c11ec6270ffc13e5d26ee7821a2ef823300477aa0c7635fa582ab5d0f0f831",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-governance-core",
+          "path": "/Users/muze/gitee/npcink-governance-core",
+          "head": "03be509f71c8d3fffe730d87f762c1733dcad359",
+          "branch": "codex/docs-publication-receipt-2026-10-17",
+          "status": "",
+          "upstream": "## codex/docs-publication-receipt-2026-10-17...origin/master [ahead 2]",
+          "tracked_content_mtime_sha256": "eefeed11db02faf73afdd950d1dd78c65e99cc4bddc0d25b955a0aefd05f9060",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-ai-client-adapter",
+          "path": "/Users/muze/gitee/npcink-ai-client-adapter",
+          "head": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "branch": "codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "status": "",
+          "upstream": "## codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "tracked_content_mtime_sha256": "0596e5fb26227383c88bb3a22aff445fac02d20d9d4ed43b5cd85d6c3f3751c8",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-workflow-toolbox",
+          "path": "/Users/muze/gitee/npcink-workflow-toolbox",
+          "head": "a2ad8981e7d31a90e822bca46278296f56fb6ee5",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master",
+          "tracked_content_mtime_sha256": "b3fb6b9ec1cb220256ef21f99f02f5d5453e0825409720aae0ddddb7b472387f",
+          "stashes": "4830f19e350f9a7e8447cbe8d0a5b3eedd222f21 On codex/fix-classification-registry-owner: preserved before 2026-10-16 worktree cleanup"
+        },
+        {
+          "name": "npcink-cloud-addon",
+          "path": "/Users/muze/gitee/npcink-cloud-addon",
+          "head": "b80b966151f26f114271a5534082c336ab2fea50",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master [behind 2]",
+          "tracked_content_mtime_sha256": "a5af2f32cf717769ddda4f7e6fb0a3ae73a1f4881048066f3cdbdbe966a51417",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-eval-lab",
+          "path": "/Users/muze/gitee/npcink-eval-lab",
+          "head": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "branch": "main",
+          "status": "",
+          "upstream": "## main...origin/main",
+          "tracked_content_mtime_sha256": "360e8d9aa7912893f3954cf4ee62dad6ee23c5cc3f2f49857adcb3b6746d275c",
+          "stashes": ""
+        },
+        {
+          "name": "npcink-ai-cloud",
+          "path": "/Users/muze/gitee/npcink-ai-cloud",
+          "head": "fbdfa372bb60ee8a1304359132afdd59c699f084",
+          "branch": "master",
+          "status": "",
+          "upstream": "## master...origin/master",
+          "tracked_content_mtime_sha256": "fbff80e410d03818d8cd65234bd218aa4235ca7a07f4f5b417973f90bad82ee8",
+          "stashes": ""
+        }
+      ]
+    },
+    "identical_repository_state": true,
+    "stable_interval_seconds": 516.222442
+  },
+  "release_identity": {
+    "manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+    "manifest_unchanged": true,
+    "snapshot_remote_refs": [
+      "ffb5e5d6d7b68fa952288524a181ff688a7698ee\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0",
+      "ed28f984153200a8362fcd0928bbb32b83636159\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0^{}"
+    ],
+    "tag_operations": [],
+    "candidate_changed": false,
+    "exact_release_acceptance_rerun": false,
+    "drift": [
+      {
+        "repository": "npcink-abilities-toolkit",
+        "fixed_rc2_sha": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+        "tested_sha": "b09ad3008a027782f672d929e79c77ac7a01333e",
+        "differs": true
+      },
+      {
+        "repository": "npcink-governance-core",
+        "fixed_rc2_sha": "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0",
+        "tested_sha": "03be509f71c8d3fffe730d87f762c1733dcad359",
+        "differs": true
+      },
+      {
+        "repository": "npcink-ai-client-adapter",
+        "fixed_rc2_sha": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+        "tested_sha": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+        "differs": false
+      },
+      {
+        "repository": "npcink-workflow-toolbox",
+        "fixed_rc2_sha": "569da58106c877fadb65316e4375a8bd3d1f6b1e",
+        "tested_sha": "a2ad8981e7d31a90e822bca46278296f56fb6ee5",
+        "differs": true
+      },
+      {
+        "repository": "npcink-cloud-addon",
+        "fixed_rc2_sha": "f0e2a5854bbe373e45240b23b5fce30b00df57fa",
+        "tested_sha": "b80b966151f26f114271a5534082c336ab2fea50",
+        "differs": true
+      },
+      {
+        "repository": "npcink-eval-lab",
+        "fixed_rc2_sha": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+        "tested_sha": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+        "differs": false
+      },
+      {
+        "repository": "npcink-ai-cloud",
+        "fixed_rc2_sha": "fe9207965f4a5049f80736019114f360186ec96b",
+        "tested_sha": "fbdfa372bb60ee8a1304359132afdd59c699f084",
+        "differs": true
+      }
+    ]
+  },
+  "preserved_work": [
+    "Core local weekly documentation receipts",
+    "retained owner branches and worktrees",
+    "Cloud and Toolbox historical stashes",
+    "Addon default root remains behind its later merged source",
+    "Toolbox human quality/gold-label work",
+    "Cloud real mailbox and writing production acceptance remains human-owned"
+  ],
+  "verification": {
+    "json_and_links": "passed",
+    "breadcrumb_entries": 10,
+    "raw_matrix_byte_identity": "passed",
+    "manifest_sha256": "unchanged",
+    "composer_test_all": "passed after documentation update: 55 PHPUnit tests / 207 assertions; lint, static contracts, fault injection, reproducible release package and revision-bound smoke evidence behavior passed",
+    "composer_validate": "passed",
+    "git_diff_check": "passed",
+    "cloud_squash_and_topic_tree": "d3c0163350a3d020ba7673de832e1bcd031e2d15"
+  }
+}

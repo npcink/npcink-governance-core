@@ -5,6 +5,54 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Cloud publication and refreshed default 7/7 complete — 2026-10-17
+
+One newly authorized Cloud owner request completed: #1126 merged as `fbdfa372`,
+clean synchronized master, with all five merge-SHA CI checks passing. Toolbox
+advanced through #274 to clean synchronized `a2ad8981`; its source checks and
+owner real-article/native-save cleanup evidence are recorded. The complete
+no-override `--fail-on-dirty` matrix passed **7/7, exit 0** at `04:05:45Z`, all
+paths default / dirty zero, with unchanged seven-root snapshots over 516 seconds.
+See [publication closeout, matrix and audit](history/cloud-publication-owner-closeout-2026-10-17.md).
+
+OCR timed out without a delivered report; final-source full model review is
+not claimed. Fixed RC2 manifest and the remote snapshot remain unchanged. Five
+live heads differ from RC2; this is current-default readiness, not new candidate
+acceptance. Preserve remaining quality evaluation, human production acceptance,
+Addon drift, retained owner resources and weekly Core docs receipts. No tag,
+deployment or M4 promotion occurred. Prior pending entries below are historical.
+
+## Toolbox closed; Cloud current source awaits publication — 2026-10-17
+
+Toolbox #273 merged as `d253bdb1`; default master is clean and synchronized,
+with protected checks and owner real-editor/native-save cleanup evidence.
+Cloud's current clean local head is `f7aab8c4`, one unpushed implementation
+commit beyond merged #1124 `585aa660`. GitHub cannot resolve that new SHA
+(HTTP 422); the five green checks on `585aa660` do not cover it.
+
+The readiness condition is therefore unmet: no new full matrix ran this refresh.
+The earlier 7/7 remains historical. Ask the Cloud owner to complete formal
+publication/PR/exact-SHA CI and default-root closeout, then rerun the full
+no-override `--fail-on-dirty` matrix. A new owner-message authorization is pending.
+See [the refresh evidence and next gate](history/toolbox-cloud-owner-refresh-2026-10-17.md).
+RC2 bytes and the remote snapshot remain unchanged; retain other unfinished work.
+
+## Adapter source saved and seven-docs batch merged — 2026-10-17
+
+Adapter `eb73e503` is now preserved on its named origin branch; an empty bare
+repository fetched the exact commit/tree and GitHub resolves the SHA. Core's
+seven accumulated documentation commits merged through PR #177 as `9d153849`,
+with both required checks passing and an identical topic/squash tree. Original
+source branches are retained. See the [publication receipt](history/adapter-preservation-and-core-docs-publication-2026-10-17.md).
+
+The post-merge default `--fail-on-dirty` diagnostic at `03:08:09Z` is 6/7,
+exit 1: Core/Adapter pass; Toolbox has new owner-held changes and Cloud's new
+`c8469e26` lacks its exact-SHA checks. Preserve that work. The earlier 7/7 is
+historical evidence for its own versions, not current candidate readiness.
+OCR delivered no complete external review; local/CI limitations are recorded.
+Fixed RC2 and all tags remain unchanged. This new post-merge receipt is one
+local docs commit for the next weekly batch; the former seven are published.
+
 ## Toolkit / Cloud source readiness and default 7/7 — 2026-10-17
 
 Toolkit #262 is merged; clean master is `b09ad300`, with merged-SHA PHP and

@@ -2,6 +2,13 @@
 
 Status: scoped coordination can be handed off; global historical closeout is incomplete.
 
+**Publication follow-up:** Adapter exact `eb73e503` is now saved on its named
+origin branch and verified by a fresh fetch/tree comparison. Core's seven
+accumulated docs commits merged through PR #177 (`9d153849`). These supersede
+the original local-only source/publication findings below. Other owners are
+working again; no blanket cleanup or candidate readiness is claimed. See the
+[publication receipt](adapter-preservation-and-core-docs-publication-2026-10-17.md).
+
 **Subsequent focused closeout:** Toolbox Lane 3 was repaired and merged by
 PR #272 as `3ae12c4`, with real WordPress normal/failure cleanup verification.
 The stash is retained as history. This supersedes the pending Lane 3 finding
