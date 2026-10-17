@@ -5,6 +5,20 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## UX retrospective and ADR correction published — 2026-10-17
+
+[PR #180](https://github.com/npcink/npcink-governance-core/pull/180) merged as
+`c6031aff` after both protected checks passed. The historical UX synthesis,
+reusable engineering lessons, workflow link and ADR-013 reference/assertion
+correction are published with the two accumulated receipts. These two follow-up
+items are closed; preceding preparation/audit entries remain dated history.
+See [publication and preservation receipt](history/core-ux-weekly-docs-publication-2026-10-17.md).
+
+Advisory OCR did not complete successfully; no full external review is claimed.
+All original branches, other owner work, tags and fixed manifest are retained.
+No broader cleanup, candidate acceptance, runtime or release action occurred.
+This later receipt is one new local record for the next weekly docs batch.
+
 ## Historical UX synthesis and ADR reference follow-up — 2026-10-17
 
 The two follow-ups identified by the coverage audit are now prepared from
