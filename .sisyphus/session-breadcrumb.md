@@ -5,18 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Toolbox273 closed; Cloud local-only SHA blocks readiness
-
-- **Toolbox**: #273 merged as `d253bdb1`; clean synchronized master, protected
-  checks and real-editor/native-save owner cleanup receipts recorded.
-- **Cloud**: clean local `f7aab8c4` is unpushed; remote master `585aa660` has
-  five green checks, but GitHub returns 422 for the current SHA. Local tests
-  are not current remote CI. Owner ended local-only; new message authorization
-  asked, no extra message sent.
-- **Gate**: no new full matrix until ready; prior 7/7 is historical. Keep other
-  work/stashes and weekly docs receipts. RC2 and remote snapshot unchanged;
-  no tag creation, push or movement. See the Toolbox/Cloud refresh history.
-
 # 2026-10-17 - Cloud1126 publication and refreshed default 7/7 complete
 
 - **Owner request**: exactly one newly authorized request sent. Cloud #1126
@@ -159,3 +147,19 @@ Older history: `.sisyphus/archive/`.
   Final recheck: parallel Adapter added a topic and v0.4.3 at d3b114f7;
   not this audit's operation. Existing snapshot/manifest unchanged; owner
   standalone release closeout remains to verify, not stack acceptance.
+
+# 2026-10-17 - Adapter standalone publication and Addon drift verified
+
+- **Adapter**: #121 merged 0159f2c7; v0.4.3 remains d3b114f7. Downloaded GH
+  package hash matches; official WP ZIP has identical 26 unpacked files. SVN
+  r3751468 confirmed; update API still not offering 0.4.3 to probe clients.
+- **Compatibility**: existing owner RC3 has 7/7 plus zero-skip exact acceptance;
+  all seven source hashes, two matrix reports and 19 logs match. Not a new run,
+  fixed Core RC2 refresh, current-head acceptance or production deployment.
+- **Addon**: #284 runtime cursor/buffer fix, #285 docs. Shared root still
+  b80b9661 while upstream/candidate is 3e650d1b. Real missing-record recovery
+  and site update remain separate; other F-01/F-02 and owner tasks preserved.
+- **Record**: docs/history/adapter-release-addon-drift-review-2026-10-17.md
+  and JSON; local weekly batching. No tag/source/sibling/production mutation.
+  Core gates 55/207, metadata, JSON/links/breadcrumb/diff passed; final original
+  branch/tag/resource and sibling HEAD/status recheck unchanged.

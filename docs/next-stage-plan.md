@@ -5,6 +5,22 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Adapter publication and Addon drift evidence reconciled — 2026-10-17
+
+[The release/drift closeout](history/adapter-release-addon-drift-review-2026-10-17.md)
+verifies Adapter v0.4.3 GitHub/SVN publication and matching 26-file official
+packages. Update API probes still do not offer 0.4.3; external distribution
+follow-up remains. Adapter #121 is merged; original eb73e503 source retained.
+
+The separate owner RC3 compatibility candidate has stored 7/7 and zero-skip
+exact acceptance evidence, with source/matrix/log hashes checked here. It
+includes Addon 3e650d1b but does not replace fixed Core RC2 or cover today's
+moving heads. Addon #284 is a runtime reconciliation fix; #285 is documentation.
+Its shared root intentionally stays b80b9661; site update and actual Cloud-gap
+recovery need separate scope/evidence. Preserve other owner work and all tags.
+This local audit joins the two receipts for weekly batching; no publication,
+checkout synchronization or acceptance rerun occurred in this session.
+
 ## Other-owner closeout refreshed — 2026-10-17
 
 [The current classified checklist](history/other-owner-closeout-refresh-2026-10-17.md)

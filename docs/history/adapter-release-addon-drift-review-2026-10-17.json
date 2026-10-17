@@ -1,0 +1,1268 @@
+{
+  "scope": "Core documentary reconciliation; no publication/runtime changes",
+  "observed_at": "2026-10-17T06:50:04.262621+00:00",
+  "initial_inventory": [
+    {
+      "repo": "npcink-governance-core",
+      "at": "2026-10-17T06:48:23.514170+00:00",
+      "head": "5be60b35e0b8ee1c004d5f42991471971a519427",
+      "branch": "codex/ux-history-merge-receipt-2026-10-17",
+      "status": "",
+      "local_heads": [
+        "refs/heads/codex/audit-weekly-docs-receipt-2026-10-17 27c6c570540f906c8d4653836ed16dd17986c905",
+        "refs/heads/codex/docs-classification-lane1-2026-10-16 31279cf66174efd460e94554a0c0db21897d49e9",
+        "refs/heads/codex/docs-rc-identity-2026-10-16 8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+        "refs/heads/codex/docs-rc-post-tag-drift-2026-10-16 e93c330366c952c75db540465acfcd85eb2cd8ab",
+        "refs/heads/codex/docs-week-2026-10-13-followup 418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+        "refs/heads/codex/execution-verification-reads e73f9684878bf10a43130f266c4ddd1d258ad161",
+        "refs/heads/codex/ux-history-merge-receipt-2026-10-17 5be60b35e0b8ee1c004d5f42991471971a519427",
+        "refs/heads/codex/verification-reads-hardening f4b17dbae132c8be2abdf8f162180b39843074ad",
+        "refs/heads/codex/weekly-docs-merge-receipt-2026-10-17 8df588847af0534f28755ff2a955df7748ceb0da",
+        "refs/heads/master 9716cf5eaae259874c03ad40363382fd065aded2",
+        "refs/heads/zcode/docs-2026-10-11-ux-audit-arc 3c45612c5ee15705374a19743b983dfce9a0258e"
+      ],
+      "local_tags": [
+        "refs/tags/pre-refactor-2026-07-14 a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc",
+        "refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1 8edb4ff1cd5564f389e8da490f183c7a56e0af5b",
+        "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1 7de7062a3b6308d6b59a47553f3345dd29fab94f",
+        "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2 589d82eb634efa92d3a41ecebf99c8dbfe7a19b2",
+        "refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2 2891b0b532c75da1dbf3426404f99dbeb2310b39",
+        "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0 ffb5e5d6d7b68fa952288524a181ff688a7698ee",
+        "refs/tags/v0.1.0 4e4099cec8d0a88deb006eb1e0e916c485c7de65",
+        "refs/tags/v0.1.1 ad1d41effcb04a3e1578567e3d30068973344f40",
+        "refs/tags/v0.2.0 fa27aa2a13e01048da411c06cc1dff25abbd45a5",
+        "refs/tags/v0.3.0 da05076343d7975e95800eddf1e9719358ac82df"
+      ],
+      "remote_refs": [
+        "27c6c570540f906c8d4653836ed16dd17986c905\trefs/heads/codex/audit-weekly-docs-receipt-2026-10-17",
+        "8d9626b7a07ffca7126b400a404a6db05145d1e9\trefs/heads/codex/docs-classification-lane1-2026-10-16",
+        "b07972c12f0fb822c674570f2cc5b22b2c8d8302\trefs/heads/codex/docs-publication-receipt-2026-10-17",
+        "4006c644a3d0a62393e1d53f418fac1fd3e5a50c\trefs/heads/codex/docs-rc-acceptance-2026-10-16",
+        "0d7153a98fe176b29063b0cd6141601ef26c78df\trefs/heads/codex/docs-rc-audit-refresh-2026-10-16",
+        "19953429829f237551b752b8438e12b0f290a385\trefs/heads/codex/docs-rc-final-closeout-2026-10-16",
+        "8d6083e234be290206e6c3fb4b3a739ce3ed232a\trefs/heads/codex/docs-rc-identity-2026-10-16",
+        "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a\trefs/heads/codex/docs-rc-matrix-drift-2026-10-16",
+        "3402eca486af5d979b80f9196315b4a772ed464d\trefs/heads/codex/docs-rc-post-tag-drift-2026-10-16",
+        "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472\trefs/heads/codex/docs-rc-release-notes-2026-10-16",
+        "94af361fa20bacd441506fd9d3be13e5d5aa8de1\trefs/heads/codex/docs-rc-tag-published-2026-10-16",
+        "418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd\trefs/heads/codex/docs-week-2026-10-13-followup",
+        "f5181a3ebe347624c468dbb36623421868c88857\trefs/heads/codex/rc2-validation-2026-10-16",
+        "8df588847af0534f28755ff2a955df7748ceb0da\trefs/heads/codex/weekly-docs-merge-receipt-2026-10-17",
+        "57624c2272f39d599ba620174ee05d0dc9415c0e\trefs/heads/dependabot/composer/phpstan/phpstan-2.3.1",
+        "d3191f0dcdf6e2ed19417f17a6b82e2dc82c587b\trefs/heads/dependabot/github_actions/alibaba/open-code-review-1.12.13",
+        "c6031aff5f15b0ab568479e1099314c1e901b6a8\trefs/heads/master",
+        "a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc\trefs/tags/pre-refactor-2026-07-14",
+        "5acce75322367d6d46b58665d35331039d4b301a\trefs/tags/pre-refactor-2026-07-14^{}",
+        "8edb4ff1cd5564f389e8da490f183c7a56e0af5b\trefs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1",
+        "5f79d32f8e50e381d1872d68c4f99c0e9ee77d51\trefs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}",
+        "7de7062a3b6308d6b59a47553f3345dd29fab94f\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1",
+        "8f08f8ac3ce836293581f1bc8be040158de2980d\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}",
+        "589d82eb634efa92d3a41ecebf99c8dbfe7a19b2\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2",
+        "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2^{}",
+        "2891b0b532c75da1dbf3426404f99dbeb2310b39\trefs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2",
+        "1829fb828ea4d9e8f7caabea74d5b89117824355\trefs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2^{}",
+        "ffb5e5d6d7b68fa952288524a181ff688a7698ee\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0",
+        "ed28f984153200a8362fcd0928bbb32b83636159\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0^{}",
+        "4e4099cec8d0a88deb006eb1e0e916c485c7de65\trefs/tags/v0.1.0",
+        "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3\trefs/tags/v0.1.0^{}",
+        "ad1d41effcb04a3e1578567e3d30068973344f40\trefs/tags/v0.1.1",
+        "1829fb828ea4d9e8f7caabea74d5b89117824355\trefs/tags/v0.1.1^{}",
+        "fa27aa2a13e01048da411c06cc1dff25abbd45a5\trefs/tags/v0.2.0",
+        "7f2c6bf5b3f810f65f2e3f2d396ecfdf78c07ee6\trefs/tags/v0.2.0^{}",
+        "da05076343d7975e95800eddf1e9719358ac82df\trefs/tags/v0.3.0",
+        "3357f916899ac4b013a753da6d99e712274f2221\trefs/tags/v0.3.0^{}"
+      ],
+      "worktrees": "worktree /Users/muze/gitee/npcink-governance-core\nHEAD 5be60b35e0b8ee1c004d5f42991471971a519427\nbranch refs/heads/codex/ux-history-merge-receipt-2026-10-17\n\n",
+      "stashes": ""
+    },
+    {
+      "repo": "npcink-ai-client-adapter",
+      "at": "2026-10-17T06:48:27.518900+00:00",
+      "head": "0159f2c7ffe9f2ffa310b6760efded1f5a618dfe",
+      "branch": "master",
+      "status": "",
+      "local_heads": [
+        "refs/heads/master 0159f2c7ffe9f2ffa310b6760efded1f5a618dfe"
+      ],
+      "local_tags": [
+        "refs/tags/openclaw-grant-redeem-mvp 8af2c243952cd1589dcce65aed7ed565f656da06",
+        "refs/tags/pre-refactor-2026-07-14 afe1d8ceac39c6936df061073de6309bb5982d3a",
+        "refs/tags/v0.2.0 9a12b11953acbf7151e4c89ec97ed2b84588d65c",
+        "refs/tags/v0.2.1 0906755ef02ba9345eb108d5ca78a8fe22ac0077",
+        "refs/tags/v0.3.0 605f6fe7b57fec54bc523c95a40dd62fc73dca82",
+        "refs/tags/v0.3.1 9c5b8d6f6e41a482c978639cebf9bbf769adc0e6",
+        "refs/tags/v0.3.2 32737cca76d71e99c96f6c63775884ab4e767197",
+        "refs/tags/v0.3.3 57517fab449fa04e19dc30513e36ec57435564ed",
+        "refs/tags/v0.4.0 34b21582d6418b3fcf93f3efca94a71a62fde16e",
+        "refs/tags/v0.4.1 f8f8b8411ef5c48bb2c98e87528b88d464f622ce",
+        "refs/tags/v0.4.2 dcd7188c243cf03d4c2824588d489c7e86116965",
+        "refs/tags/v0.4.3 34c0b788885746d42bc41119d4cff33a5d1d5f7e"
+      ],
+      "remote_refs": [
+        "eb73e503a8c102acd6f87b69f406ee4b94aac85f\trefs/heads/codex/m4-pgy-stack-rc-docs-2026-10-15",
+        "0159f2c7ffe9f2ffa310b6760efded1f5a618dfe\trefs/heads/master",
+        "8af2c243952cd1589dcce65aed7ed565f656da06\trefs/tags/openclaw-grant-redeem-mvp",
+        "afe1d8ceac39c6936df061073de6309bb5982d3a\trefs/tags/pre-refactor-2026-07-14",
+        "84554be1d9cccb5b6794404803f475162ee7ea00\trefs/tags/pre-refactor-2026-07-14^{}",
+        "9a12b11953acbf7151e4c89ec97ed2b84588d65c\trefs/tags/v0.2.0",
+        "3c4ea71f41ccb013341e12498520510ffcefa81f\trefs/tags/v0.2.0^{}",
+        "0906755ef02ba9345eb108d5ca78a8fe22ac0077\trefs/tags/v0.2.1",
+        "452d738c05972302cf6138f38184cfc5cec7cea6\trefs/tags/v0.2.1^{}",
+        "605f6fe7b57fec54bc523c95a40dd62fc73dca82\trefs/tags/v0.3.0",
+        "205ebda976aa51afd27c6d633082360194ba902b\trefs/tags/v0.3.0^{}",
+        "9c5b8d6f6e41a482c978639cebf9bbf769adc0e6\trefs/tags/v0.3.1",
+        "32737cca76d71e99c96f6c63775884ab4e767197\trefs/tags/v0.3.2",
+        "65f1012c5f4072dd6c1251f2e2db98d5e836c598\trefs/tags/v0.3.2^{}",
+        "57517fab449fa04e19dc30513e36ec57435564ed\trefs/tags/v0.3.3",
+        "8800b8e4c4651c5d4dff759c3050135d74968927\trefs/tags/v0.3.3^{}",
+        "34b21582d6418b3fcf93f3efca94a71a62fde16e\trefs/tags/v0.4.0",
+        "7800b3da2f20637ffea621274e033a061d532e93\trefs/tags/v0.4.0^{}",
+        "f8f8b8411ef5c48bb2c98e87528b88d464f622ce\trefs/tags/v0.4.1",
+        "dcd7188c243cf03d4c2824588d489c7e86116965\trefs/tags/v0.4.2",
+        "963318a6f99b4837a48290fb9abbdb7716f9d079\trefs/tags/v0.4.2^{}",
+        "34c0b788885746d42bc41119d4cff33a5d1d5f7e\trefs/tags/v0.4.3",
+        "d3b114f73029836277f42d04c292f661b255a332\trefs/tags/v0.4.3^{}"
+      ],
+      "worktrees": "worktree /Users/muze/gitee/npcink-ai-client-adapter\nHEAD 0159f2c7ffe9f2ffa310b6760efded1f5a618dfe\nbranch refs/heads/master\n\n",
+      "stashes": ""
+    },
+    {
+      "repo": "npcink-cloud-addon",
+      "at": "2026-10-17T06:48:28.573550+00:00",
+      "head": "b80b966151f26f114271a5534082c336ab2fea50",
+      "branch": "master",
+      "status": "",
+      "local_heads": [
+        "refs/heads/codex/recommendation-feedback-metadata 9637ca592f4570bd292b107144e61b4f8271cbae",
+        "refs/heads/master b80b966151f26f114271a5534082c336ab2fea50"
+      ],
+      "local_tags": [
+        "refs/tags/0.2.0 265f001f0afb303206d0edd72f1f4b8f20dd5ef9",
+        "refs/tags/0.3.0 200ecf966494e531e57ab29c7706eef41bb9e1de",
+        "refs/tags/0.4.0 35915cf4e5a9f13d6808ab3052885793f47cb190",
+        "refs/tags/archive/wp-ai-localization-fix-20260928 0f643ff85842162d8cc8aa6d42a382f5e81c9ef2",
+        "refs/tags/pre-refactor-2026-07-14 bae0a4dfd59042482179766f743b4ffcaca876f7"
+      ],
+      "remote_refs": [
+        "f379aadb6be38471a02d64de0db9ea79ff7c17f0\trefs/heads/codex/0-4-1-stale-entitlement",
+        "f6b95295b4cfb682f78809bfde978d72d713d56c\trefs/heads/codex/041-final-release-record",
+        "014fde9f44620320a8940b0e1f4e998cc04d3f00\trefs/heads/codex/041-maintenance-closeout-20261015",
+        "3d42183d7782715e66485c3186f3bb90d5c58dea\trefs/heads/codex/041-refresh-closeout",
+        "c26f43dbbd340722a0835b4037f33ab2f483ff31\trefs/heads/codex/docs-next-session-handoff-20261016",
+        "2f343a6e35281489e1ccf5ffc914cfa63cb88dc0\trefs/heads/codex/glotpress-closeout-20261012",
+        "a8431153fc71049b1f246965f4016769591a7195\trefs/heads/codex/ocr-ci-diagnostics-20261013",
+        "000ca35f84f7896cc039ddae1485e483fbb863b3\trefs/heads/codex/ocr-glm-thinking-compat-20261013",
+        "582177c2c2586cf3ed2e945f3e6476e86c0e0b37\trefs/heads/codex/provider-acceptance-closeout-20261012",
+        "9637ca592f4570bd292b107144e61b4f8271cbae\trefs/heads/codex/recommendation-feedback-metadata",
+        "dbddd65c9a970615bb556006d3e5998bb9ceb51a\trefs/heads/codex/release-status-20261013",
+        "4e8c8e65f0ae272a170ff63f45057eeddc6cb63f\trefs/heads/codex/site-knowledge-recovery-20261015",
+        "1209f5105ae94a48c9b7f65af77c952e09733f52\trefs/heads/codex/ux-closeout-20261012",
+        "e55a04e0a3cdd6ee978916d3eaa30d8ecfa87e6c\trefs/heads/codex/ux-tail-20261012",
+        "387687620db4886c42cd4d5c63b9dab60d0f9426\trefs/heads/docs/ux-paydown-handoff-2026-10-12",
+        "4b72b953432557ec5b712b8c83c021ff8a7b571e\trefs/heads/fix/user-facing-ux-paydown-round",
+        "3e650d1bc74d9428d6671f27dd668938c6b6078b\trefs/heads/master",
+        "f2a8dd61e6f676382444c7e1b884361a68ad31a9\trefs/tags/0.2.0",
+        "7b85c903b2ffc94a5e91ec027d9d900be5176aa5\trefs/tags/0.2.0^{}",
+        "200ecf966494e531e57ab29c7706eef41bb9e1de\trefs/tags/0.3.0",
+        "8c56aae8a7665954db3fbf0cc16500db6068566e\trefs/tags/0.3.0^{}",
+        "35915cf4e5a9f13d6808ab3052885793f47cb190\trefs/tags/0.4.0",
+        "0f643ff85842162d8cc8aa6d42a382f5e81c9ef2\trefs/tags/archive/wp-ai-localization-fix-20260928",
+        "bae0a4dfd59042482179766f743b4ffcaca876f7\trefs/tags/pre-refactor-2026-07-14",
+        "9c46f4bff7a715a8eacd8e787705de0ea62e39ed\trefs/tags/pre-refactor-2026-07-14^{}"
+      ],
+      "worktrees": "worktree /Users/muze/gitee/npcink-cloud-addon\nHEAD b80b966151f26f114271a5534082c336ab2fea50\nbranch refs/heads/master\n\n",
+      "stashes": ""
+    }
+  ],
+  "adapter": {
+    "release": {
+      "assets": [
+        {
+          "apiUrl": "https://api.github.com/repos/npcink/npcink-ai-client-adapter/releases/assets/649765166",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-17T06:31:44Z",
+          "digest": "sha256:4356f90721d56b7484d42ad4a73b1ed0500295f21580ce75a656b5f9cba68fbc",
+          "downloadCount": 1,
+          "id": "RA_kwDOS8Y9iM4muqEu",
+          "label": "",
+          "name": "npcink-ai-client-adapter-0.4.3.zip",
+          "size": 176899,
+          "state": "uploaded",
+          "updatedAt": "2026-10-17T06:31:44Z",
+          "url": "https://github.com/npcink/npcink-ai-client-adapter/releases/download/v0.4.3/npcink-ai-client-adapter-0.4.3.zip"
+        }
+      ],
+      "body": "# Npcink AI Client Adapter 0.4.3\n\n* Add an explicit post-Core execution profile for `npcink-abilities-toolkit/delete-attachment` on hosts providing that Toolkit ability; require deletion policy branch, operator reason, idempotency key, approval and commit preflight.\n* Add a complete local development acceptance command covering deterministic gates, WordPress fixtures, fresh package installation and restoration, and signed client contract checks; reject incomplete or skipped smoke passes.\n* Preserve the original plugin on package smoke prerequisite failures, restore network activation correctly, and accept the standard Local.app MySQL socket setting in Plugin Check.\n* Keep the 0.4.2 non-numeric `limit` rejection on both list routes and test media-deletion proposals without current Core branch evidence as fail-closed.\n* Accept Toolkit flagged-media removal plans through the existing proposal bridge and verify signed deletion, retained-backup restoration, and duplicate-execution refusal over HTTPS.\n* Forward scoped proposal, correlation, and Adapter request identifiers during approved writes so real AI Request Logs can match the signed execution; restore prior log context on success, errors, and exceptions without forwarding private execution authority.\n\n\u53d1\u5e03\u6e90\u7801\uff1a`d3b114f73029836277f42d04c292f661b255a332`\u3002\u6b63\u5f0f\u53d1\u5e03\u8303\u56f4\u4ec5\u4e3a Adapter\uff1b\u672c\u6b21\u53d1\u5e03\u4e0d\u5305\u542b Core\u3001Toolkit\u3001Cloud Addon\u3001Toolbox\u3001AI Cloud \u6216 npm CLI\u3002\n\n\u5df2\u6709 Core/Toolkit \u540c\u540d\u5386\u53f2 tag \u4e0d\u79fb\u52a8\uff1b\u672c\u8f6e\u517c\u5bb9\u6027\u57fa\u7ebf\u4f7f\u7528\u7cbe\u786e SHA\uff0c\u4e0d\u628a\u5b83\u4eec\u5192\u5145\u4e3a\u91cd\u65b0\u53d1\u5e03\u7684\u5386\u53f2\u7248\u672c\u3002\n\n\u53d1\u5e03\u5305 SHA-256\uff1a`4356f90721d56b7484d42ad4a73b1ed0500295f21580ce75a656b5f9cba68fbc`\uff08176,899 bytes\uff09\u3002\n\n\u8be5\u7248\u672c\u901a\u8fc7\u51bb\u7ed3\u5019\u9009\u590d\u9a8c\u3001Plugin Check\u3001\u7ffb\u8bd1\u8986\u76d6\u53ca\u53cc\u6784\u5efa\u53ef\u91cd\u590d\u6027\u68c0\u67e5\u3002\u5b89\u88c5\u524d\u8bf7\u6838\u5bf9\u76ee\u6807\u7ad9\u70b9\u7684 Core/Toolkit \u4f9d\u8d56\u4e0e\u5907\u4efd\uff1b\u53d1\u5e03\u4e0d\u5305\u542b\u7ad9\u70b9\u81ea\u52a8\u90e8\u7f72\u3002\n",
+      "isDraft": false,
+      "isPrerelease": false,
+      "name": "Npcink AI Client Adapter 0.4.3",
+      "publishedAt": "2026-10-17T06:31:44Z",
+      "tagName": "v0.4.3",
+      "targetCommitish": "master",
+      "url": "https://github.com/npcink/npcink-ai-client-adapter/releases/tag/v0.4.3"
+    },
+    "publication_closeout_pr": {
+      "mergeCommit": {
+        "oid": "0159f2c7ffe9f2ffa310b6760efded1f5a618dfe"
+      },
+      "mergedAt": "2026-10-17T06:36:51Z",
+      "state": "MERGED",
+      "statusCheckRollup": [
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T06:36:37Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-client-adapter/actions/runs/39010520860/job/117331897435",
+          "name": "PHP contracts",
+          "startedAt": "2026-10-17T06:36:11Z",
+          "status": "COMPLETED",
+          "workflowName": "Adapter CI"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T06:36:25Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-client-adapter/actions/runs/39010520968/job/117331898703",
+          "name": "code-review",
+          "startedAt": "2026-10-17T06:36:11Z",
+          "status": "COMPLETED",
+          "workflowName": "OpenCodeReview PR Review"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T06:36:13Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-client-adapter/actions/runs/39010520859/job/117331897639",
+          "name": "PR body contract",
+          "startedAt": "2026-10-17T06:36:11Z",
+          "status": "COMPLETED",
+          "workflowName": "PR Body Contract"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-10-17T06:36:42Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/npcink/npcink-ai-client-adapter/actions/runs/39010520860/job/117331897601",
+          "name": "Static analysis (advisory)",
+          "startedAt": "2026-10-17T06:36:11Z",
+          "status": "COMPLETED",
+          "workflowName": "Adapter CI"
+        }
+      ],
+      "url": "https://github.com/npcink/npcink-ai-client-adapter/pull/121"
+    },
+    "official_readback": {
+      "checked_at": "2026-10-17T06:48:44.937722+00:00",
+      "github_zip": {
+        "bytes": 176899,
+        "sha256": "4356f90721d56b7484d42ad4a73b1ed0500295f21580ce75a656b5f9cba68fbc"
+      },
+      "wordpress_zip": {
+        "url": "https://downloads.wordpress.org/plugin/npcink-ai-client-adapter.0.4.3.zip",
+        "bytes": 176503,
+        "sha256": "0aa2d93bbd6f6b5e8730f33c8754c15f3d5bd13e2e2113d41813da1b49b4dc7b"
+      },
+      "files_equal": true,
+      "file_count": 26,
+      "file_sha256": {
+        "npcink-ai-client-adapter/assets/admin.css": "63dcab3dd46e0930ad32814bef510a629f45cc357d2a00c7fa9e4f60581acccc",
+        "npcink-ai-client-adapter/assets/admin.js": "e937822df829abe24eb503cac6f6d4d565f469dd66493ab5afa1cebba589ad1f",
+        "npcink-ai-client-adapter/assets/created-handoff.css": "cc6105dfcaf3bd6d82654874c5ed388cf6ba6adb9590c7f76f3dd161f76f312e",
+        "npcink-ai-client-adapter/assets/created-handoff.js": "ac92e3c9ed3f68b89181e4661939d06497eb5d1ed03b3dfc1f05a83c0260a30f",
+        "npcink-ai-client-adapter/includes/Admin/Connection_Page.php": "38c3b906fc5f9f2317f5380e77f0269ac957dfc576c76cdebaffb7ea7b1199c3",
+        "npcink-ai-client-adapter/includes/Observability.php": "ca4d1522e766dbacfae17c28e73447723d077a6a36857f01bf4f43368f264a93",
+        "npcink-ai-client-adapter/includes/Plugin.php": "adee085112e1444c20e9dab25f91493fa96154764489766deba5da29b6788390",
+        "npcink-ai-client-adapter/includes/Rest/Contract_Metadata.php": "428461cfbf899c3fa07e679ce681ffedbecd5916d76c414d4181d9f01ae937a8",
+        "npcink-ai-client-adapter/includes/Rest/Controller.php": "c21a69922a826a76899b58396610b05c0d7637e318a2e4d30ac754638577a066",
+        "npcink-ai-client-adapter/includes/Rest/Dependency_Status.php": "7d0d4e20517da12e000dd7a072b7f8a27c20809b692c435d56b5c9cc571d7cc2",
+        "npcink-ai-client-adapter/includes/Rest/Execution_Action_Runner.php": "40e5cad1f787f3c0deb8c4959580f7954f95d3d2235dd17cc1cbcd31c7e7564a",
+        "npcink-ai-client-adapter/includes/Rest/Execution_Input_Validator.php": "daeabf85cad963a19dc82c0719467c27d66b7a1f3b5c6520c1437e9c2d96f823",
+        "npcink-ai-client-adapter/includes/Rest/Execution_Profile_Registry.php": "ccf9d4ff1d738da249c2e8faeee81eed717f756be49cc941a2385eacf4cc284b",
+        "npcink-ai-client-adapter/includes/Rest/Execution_Records.php": "74ea1e80f286ce581f636b5af5efb7532013b1c709d132f1d13d57969dd3253c",
+        "npcink-ai-client-adapter/includes/Rest/Preflight_Handoffs.php": "041d70b37d94945190bb34a46786cbc3b1f01fcd6e0753ee8e01108235df67f7",
+        "npcink-ai-client-adapter/includes/Rest/Proposal_Review.php": "57cb9262504db93ce9af75cfc29a30c054cce89fc694e23a99572c2042cda28f",
+        "npcink-ai-client-adapter/includes/Rest/Read_Governance.php": "0b50bc6c9febe01d189f9d9537ee2084fd4e74c91815fb685b093e396bdc885c",
+        "npcink-ai-client-adapter/includes/Rest/Signing_Auth.php": "670f0cf409a4f23e306b3e5d41254dc02aa42042c0afa88f06f43ee5fecb0e0c",
+        "npcink-ai-client-adapter/includes/Rest/Supported_Plan_Abilities.php": "2ebf2fc0018836f65a7eead2d9ec1a8e1b282bbd2627d57066c21cedf6ee8e8a",
+        "npcink-ai-client-adapter/includes/Rest/Upstream_Dispatch.php": "f8c73796ad0dcd480f3522498674b8da2c4d194292ba8eb2bdf5b397d14d6eec",
+        "npcink-ai-client-adapter/languages/npcink-ai-client-adapter-zh_CN.mo": "72ee35f72ed61528f535204cf1fb26da4b8c81cda012ff38c5bb78cfdcab7b08",
+        "npcink-ai-client-adapter/languages/npcink-ai-client-adapter-zh_CN.po": "536a1f8a176390602ec86a0caf3f91fd1a482c9882e7d118e9b3d30405125536",
+        "npcink-ai-client-adapter/languages/npcink-ai-client-adapter.pot": "2b79aa66dd00b6926850ac99253c8fba9022fc823489d8cab876510c1450c359",
+        "npcink-ai-client-adapter/npcink-ai-client-adapter.php": "a434dbf4b45d9986f613bdd5df28a8f52bd9a4d79795c5e85504f8b3b8ed45b6",
+        "npcink-ai-client-adapter/readme.txt": "9990e57c69d42d187946eeef23ce8e5a05c3a936663ade03978d9a1850a2d88e",
+        "npcink-ai-client-adapter/uninstall.php": "860161beb931072121e8d0f6d69c836c3be08f1113468dd5f9fc006c22f17896"
+      },
+      "plugin_information": {
+        "slug": "npcink-ai-client-adapter",
+        "version": "0.4.3",
+        "last_updated": "2026-10-17 6:32am GMT",
+        "download_link": "https://downloads.wordpress.org/plugin/npcink-ai-client-adapter.0.4.3.zip"
+      },
+      "update_api_probes": {
+        "0.4.2": {
+          "new_version": null,
+          "response_bucket": "absent"
+        },
+        "0.4.1": {
+          "new_version": "0.4.2",
+          "response_bucket": "plugins"
+        }
+      }
+    },
+    "svn_readback": {
+      "revision": "3751468",
+      "date": "2026-10-17T06:32:02.667055Z",
+      "message": "Release Npcink AI Client Adapter 0.4.3 from approved d3b114f package",
+      "tag_file_count": 26
+    },
+    "frozen_candidate": {
+      "id": "adapter-0.4.3-rc3-2026-10-17",
+      "sha256": "38abcf4d0a7ed60c220bc75083c67ffe05539e83388d9a5f452b44965360faf8",
+      "verification_sha256": "f10fb8a3da62605c60f2709a3fb129389b2b4050f5a41627dbd56bc7d72675fe",
+      "components": [
+        {
+          "repository": "npcink-ai-client-adapter",
+          "origin": "https://github.com/npcink/npcink-ai-client-adapter.git",
+          "selected_from": "origin/master",
+          "source_revision": "d3b114f73029836277f42d04c292f661b255a332",
+          "git_tree": "9ea9adae9512151e5369cd4cd1e085feb2b3af78",
+          "git_archive_sha256": "80a89cc01d27e4e1c0963ef5516bedbb35b8b33136da9f92936b3a86a85c82cc",
+          "declared_plugin_version": "0.4.3",
+          "published_snapshot_revision": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "publication_scope": "adapter_plugin_only"
+        },
+        {
+          "repository": "npcink-governance-core",
+          "origin": "https://github.com/npcink/npcink-governance-core.git",
+          "selected_from": "origin/master",
+          "source_revision": "289ce777eff158e8f2d5088c30d90866efc87e2c",
+          "git_tree": "59df625fd5ffdf80a8532135e8814bcf537e485a",
+          "git_archive_sha256": "fc9a347b3431ed7ac064f3a4b7a8d0e4f61741779b0f8d51c3166875ab13281e",
+          "declared_plugin_version": "0.3.0",
+          "published_snapshot_revision": "ed28f984153200a8362fcd0928bbb32b83636159",
+          "publication_scope": "compatibility_baseline_only"
+        },
+        {
+          "repository": "npcink-abilities-toolkit",
+          "origin": "https://github.com/npcink/npcink-abilities-toolkit.git",
+          "selected_from": "origin/master",
+          "source_revision": "b09ad3008a027782f672d929e79c77ac7a01333e",
+          "git_tree": "93829933f7bc3b349ca2b5cab6010cd4c191c58e",
+          "git_archive_sha256": "01b7337a5ead62449d04a15ed904ca44d6141037227fbdde9071157b890d963f",
+          "declared_plugin_version": "0.7.0",
+          "published_snapshot_revision": "921d1dc7cb5661fef10ca8f83b781690c98034cb",
+          "publication_scope": "compatibility_baseline_only"
+        },
+        {
+          "repository": "npcink-workflow-toolbox",
+          "origin": "https://github.com/npcink/npcink-workflow-toolbox.git",
+          "selected_from": "origin/master",
+          "source_revision": "a2ad8981e7d31a90e822bca46278296f56fb6ee5",
+          "git_tree": "f843b6047f654f3ceb1843e218e34c32cf3b832e",
+          "git_archive_sha256": "b32b671d5c4cb68cb5fded2bd98869fefb06fd66af64e3d7d9d8522cb201f90d",
+          "declared_plugin_version": "0.6.0",
+          "published_snapshot_revision": "ee814e04de54e4774d7851181837ea767e552a14",
+          "publication_scope": "compatibility_baseline_only"
+        },
+        {
+          "repository": "npcink-cloud-addon",
+          "origin": "https://github.com/npcink/npcink-cloud-addon.git",
+          "selected_from": "origin/master",
+          "source_revision": "3e650d1bc74d9428d6671f27dd668938c6b6078b",
+          "git_tree": "12414b8af0f6e40359029a04df9f627dd57df6a4",
+          "git_archive_sha256": "bd22b5014de794812d77256cd79dd52638352e4711928a33226efdb1d0cfed72",
+          "declared_plugin_version": "0.4.1",
+          "published_snapshot_revision": "4978338f4ebf36ec9a3cb704e9d84f418202b15b",
+          "publication_scope": "compatibility_baseline_only"
+        },
+        {
+          "repository": "npcink-eval-lab",
+          "origin": "https://github.com/npcink/npcink-eval-lab.git",
+          "selected_from": "origin/main",
+          "source_revision": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "git_tree": "95011ed4a4c5823938e92a56ae730f9c083ff602",
+          "git_archive_sha256": "eb1f72f91776e90dd08664175bedbc8eebaa76b73c91253b5bfb1c791321b071",
+          "declared_plugin_version": null,
+          "published_snapshot_revision": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "publication_scope": "compatibility_baseline_only"
+        },
+        {
+          "repository": "npcink-ai-cloud",
+          "origin": "https://github.com/npcink/npcink-ai-cloud.git",
+          "selected_from": "origin/master",
+          "source_revision": "6fddd93d03b712431c742eea30e722bbc87fafb6",
+          "git_tree": "69c5540ffa436d7f4e337c8ee018a555803d8070",
+          "git_archive_sha256": "450fff9a9ffdb6e03db58791d2b7da81da08a9adefb381797d9c0574f57935db",
+          "declared_plugin_version": null,
+          "published_snapshot_revision": "fe9207965f4a5049f80736019114f360186ec96b",
+          "publication_scope": "compatibility_baseline_only"
+        }
+      ],
+      "publication_authorized_at_freeze": false
+    },
+    "existing_owner_evidence": {
+      "completed_at": "2026-10-17T06:11:03.150818+00:00",
+      "matrices": [
+        {
+          "kind": "default",
+          "sha256": "86bbdeb601d41132817ff94a01a9b371b0252087edfc879d3af68a25d86fe5f4",
+          "generated_at": "2026-10-17T06:00:34+00:00",
+          "rows": [
+            {
+              "name": "npcink-abilities-toolkit",
+              "path_source": "default",
+              "dirty_count": 0,
+              "gate_status": "passed",
+              "gate_exit": 0
+            },
+            {
+              "name": "npcink-governance-core",
+              "path_source": "default",
+              "dirty_count": 0,
+              "gate_status": "passed",
+              "gate_exit": 0
+            },
+            {
+              "name": "npcink-ai-client-adapter",
+              "path_source": "default",
+              "dirty_count": 0,
+              "gate_status": "passed",
+              "gate_exit": 0
+            },
+            {
+              "name": "npcink-workflow-toolbox",
+              "path_source": "default",
+              "dirty_count": 0,
+              "gate_status": "passed",
+              "gate_exit": 0
+            },
+            {
+              "name": "npcink-cloud-addon",
+              "path_source": "default",
+              "dirty_count": 0,
+              "gate_status": "passed",
+              "gate_exit": 0
+            },
+            {
+              "name": "npcink-eval-lab",
+              "path_source": "default",
+              "dirty_count": 0,
+              "gate_status": "passed",
+              "gate_exit": 0
+            },
+            {
+              "name": "npcink-ai-cloud",
+              "path_source": "default",
+              "dirty_count": 0,
+              "gate_status": "passed",
+              "gate_exit": 0
+            }
+          ],
+          "failures": 0
+        },
+        {
+          "kind": "candidate",
+          "sha256": "44cbd660a75895f23c2000b7f5bd837292e786052f371059f9ac53a1b09a15dd",
+          "generated_at": "2026-10-17T06:01:20+00:00",
+          "rows": [
+            {
+              "name": "npcink-abilities-toolkit",
+              "path_source": "override",
+              "dirty_count": 0,
+              "gate_status": "passed",
+              "gate_exit": 0
+            },
+            {
+              "name": "npcink-governance-core",
+              "path_source": "override",
+              "dirty_count": 0,
+              "gate_status": "passed",
+              "gate_exit": 0
+            },
+            {
+              "name": "npcink-ai-client-adapter",
+              "path_source": "override",
+              "dirty_count": 0,
+              "gate_status": "passed",
+              "gate_exit": 0
+            },
+            {
+              "name": "npcink-workflow-toolbox",
+              "path_source": "override",
+              "dirty_count": 0,
+              "gate_status": "passed",
+              "gate_exit": 0
+            },
+            {
+              "name": "npcink-cloud-addon",
+              "path_source": "override",
+              "dirty_count": 0,
+              "gate_status": "passed",
+              "gate_exit": 0
+            },
+            {
+              "name": "npcink-eval-lab",
+              "path_source": "override",
+              "dirty_count": 0,
+              "gate_status": "passed",
+              "gate_exit": 0
+            },
+            {
+              "name": "npcink-ai-cloud",
+              "path_source": "override",
+              "dirty_count": 0,
+              "gate_status": "passed",
+              "gate_exit": 0
+            }
+          ],
+          "failures": 0
+        }
+      ],
+      "acceptance_events": [
+        {
+          "name": "cross-repo-release",
+          "command": [
+            "composer",
+            "acceptance:cross-repo-release"
+          ],
+          "started_at": "2026-10-17T06:04:49.167717+00:00",
+          "exit_code": 0,
+          "completed_at": "2026-10-17T06:09:05.385679+00:00",
+          "duration_seconds": 256.22
+        },
+        {
+          "name": "adapter-phpstan",
+          "command": [
+            "composer",
+            "analyse:php"
+          ],
+          "started_at": "2026-10-17T06:09:05.386267+00:00",
+          "exit_code": 0,
+          "completed_at": "2026-10-17T06:09:16.828731+00:00",
+          "duration_seconds": 11.44
+        },
+        {
+          "name": "adapter-phpcs",
+          "command": [
+            "composer",
+            "lint:standards"
+          ],
+          "started_at": "2026-10-17T06:09:16.829216+00:00",
+          "exit_code": 0,
+          "completed_at": "2026-10-17T06:09:18.547669+00:00",
+          "duration_seconds": 1.72
+        },
+        {
+          "name": "signed-client-contract",
+          "command": [
+            "composer",
+            "accept:local-ai-client"
+          ],
+          "started_at": "2026-10-17T06:09:18.547930+00:00",
+          "exit_code": 0,
+          "completed_at": "2026-10-17T06:09:19.897952+00:00",
+          "duration_seconds": 1.35
+        },
+        {
+          "name": "flagged-media-https",
+          "command": [
+            "composer",
+            "accept:local-ai-client-flagged-media"
+          ],
+          "started_at": "2026-10-17T06:09:19.898238+00:00",
+          "exit_code": 0,
+          "completed_at": "2026-10-17T06:09:29.708951+00:00",
+          "duration_seconds": 9.81
+        },
+        {
+          "name": "cli-tests",
+          "command": [
+            "npm",
+            "test"
+          ],
+          "started_at": "2026-10-17T06:09:29.709311+00:00",
+          "exit_code": 0,
+          "completed_at": "2026-10-17T06:09:30.057408+00:00",
+          "duration_seconds": 0.35
+        },
+        {
+          "name": "rc-version-matrix",
+          "command": [
+            "composer",
+            "rc:version-matrix"
+          ],
+          "started_at": "2026-10-17T06:09:30.057777+00:00",
+          "exit_code": 0,
+          "completed_at": "2026-10-17T06:09:30.355517+00:00",
+          "duration_seconds": 0.3
+        }
+      ],
+      "cross_repo_skip_count": 0,
+      "log_hash_validation": [
+        {
+          "name": "adapter-phpcs.log",
+          "sha256": "4a82a4201ec95cdff5ee5d955037510ce834e31238a67ce8d49dc0a7c6a62a82",
+          "matching_paths": [
+            "logs/adapter-phpcs.log"
+          ]
+        },
+        {
+          "name": "adapter-phpstan.log",
+          "sha256": "48060449d2bdfa2095e5772c78414f5cc13d9ad9bb5c94efdc4488ff85f57c3d",
+          "matching_paths": [
+            "logs/adapter-phpstan.log"
+          ]
+        },
+        {
+          "name": "candidate-matrix.log",
+          "sha256": "44cbd660a75895f23c2000b7f5bd837292e786052f371059f9ac53a1b09a15dd",
+          "matching_paths": [
+            "logs/candidate-matrix.log"
+          ]
+        },
+        {
+          "name": "cli-tests.log",
+          "sha256": "5121520b2fe36666dbe04b4d3a43af30b2cbf6a04740e8c10ab3dc4b44a86c08",
+          "matching_paths": [
+            "logs/cli-tests.log"
+          ]
+        },
+        {
+          "name": "cloud-upstream-watch-failure.log",
+          "sha256": "3e46eeccec6122424478d2a4e39dc4dbbbc3626d350f428dc0c6c87470bc1727",
+          "matching_paths": [
+            "logs/cloud-upstream-watch-failure.log"
+          ]
+        },
+        {
+          "name": "core-m4-smoke.log",
+          "sha256": "4ec2dcd2ca9c4d2bd125513f770d603b1e8841f9d47fb03ee9c94efa7dd1bf65",
+          "matching_paths": [
+            "logs/core-m4-smoke.log"
+          ]
+        },
+        {
+          "name": "cross-repo-release.log",
+          "sha256": "91127a5f5336a5d0afd75dd9dd7b52e6e06b1d340e45ff1b1a094ea44270dc1b",
+          "matching_paths": [
+            "logs/cross-repo-release.log"
+          ]
+        },
+        {
+          "name": "dependencies-npcink-abilities-toolkit.log",
+          "sha256": "90e2ee4c969b7d2b6da61618f95ad8308a4b5cc47b1cf50fa6afb1df975bc9d8",
+          "matching_paths": [
+            "logs/dependencies-npcink-abilities-toolkit.log"
+          ]
+        },
+        {
+          "name": "dependencies-npcink-ai-client-adapter.log",
+          "sha256": "a779099edb5fe18543a562bc9c863111fdb475b637f834f1a79b0e2f7971613d",
+          "matching_paths": [
+            "logs/dependencies-npcink-ai-client-adapter.log"
+          ]
+        },
+        {
+          "name": "dependencies-npcink-cloud-addon.log",
+          "sha256": "4133adc80bc3b54e0b02ec53951fda293a0351963746d7cb66c7ca2fa919a66d",
+          "matching_paths": [
+            "logs/dependencies-npcink-cloud-addon.log"
+          ]
+        },
+        {
+          "name": "dependencies-npcink-governance-core.log",
+          "sha256": "7576bb3dc06c0b243a99feaa4b953160a9509ec57860fc91eb87d9e80ea0a3aa",
+          "matching_paths": [
+            "logs/dependencies-npcink-governance-core.log"
+          ]
+        },
+        {
+          "name": "dependencies-npcink-workflow-toolbox.log",
+          "sha256": "00930e9c9a5a90bab6c973ac37efbe30e99898cfea40ec0a629947f236eb230f",
+          "matching_paths": [
+            "logs/dependencies-npcink-workflow-toolbox.log"
+          ]
+        },
+        {
+          "name": "flagged-media-https.log",
+          "sha256": "3ca0e36b1445cfc18b51b93af4c72c491f4d671974925a7342a3d3c9677a57f6",
+          "matching_paths": [
+            "logs/flagged-media-https.log"
+          ]
+        },
+        {
+          "name": "local-acceptance-driver.log",
+          "sha256": "e27fbf5e7981908236ee3da7854b186c8b4db39ceeabb7f18378caa5bb945fc1",
+          "matching_paths": [
+            "logs/local-acceptance-driver.log"
+          ]
+        },
+        {
+          "name": "ollama-tunnel.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "matching_paths": [
+            "logs/ollama-tunnel.log"
+          ]
+        },
+        {
+          "name": "rc-version-matrix.log",
+          "sha256": "f6b38eb94aa68d460426806ee59cd4047ab23c424f7fa2c977b6ed009221d0b6",
+          "matching_paths": [
+            "logs/rc-version-matrix.log"
+          ]
+        },
+        {
+          "name": "setup-attempt-1-driver.log",
+          "sha256": "2bc2cc4dd098fa895d834bced372ef4cf58b0c46f1898cf874f152f9b555a54c",
+          "matching_paths": [
+            "logs/setup-attempt-1-driver.log"
+          ]
+        },
+        {
+          "name": "signed-client-contract.log",
+          "sha256": "3626808b02787ae7cae159639d4c1b00f2bb4b7e8efeed535153b90bd8a5689b",
+          "matching_paths": [
+            "logs/signed-client-contract.log"
+          ]
+        },
+        {
+          "name": "toolkit-m4-smoke.log",
+          "sha256": "bda337cbfec928a84bb1da3e57a974e3e59214bfc0af74cec03a25a8fa6c9419",
+          "matching_paths": [
+            "logs/toolkit-m4-smoke.log"
+          ]
+        }
+      ],
+      "source_validation": [
+        {
+          "repo": "npcink-ai-client-adapter",
+          "sha": "d3b114f73029836277f42d04c292f661b255a332",
+          "tree_equal": true,
+          "archive_equal": true
+        },
+        {
+          "repo": "npcink-governance-core",
+          "sha": "289ce777eff158e8f2d5088c30d90866efc87e2c",
+          "tree_equal": true,
+          "archive_equal": true
+        },
+        {
+          "repo": "npcink-abilities-toolkit",
+          "sha": "b09ad3008a027782f672d929e79c77ac7a01333e",
+          "tree_equal": true,
+          "archive_equal": true
+        },
+        {
+          "repo": "npcink-workflow-toolbox",
+          "sha": "a2ad8981e7d31a90e822bca46278296f56fb6ee5",
+          "tree_equal": true,
+          "archive_equal": true
+        },
+        {
+          "repo": "npcink-cloud-addon",
+          "sha": "3e650d1bc74d9428d6671f27dd668938c6b6078b",
+          "tree_equal": true,
+          "archive_equal": true
+        },
+        {
+          "repo": "npcink-eval-lab",
+          "sha": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f",
+          "tree_equal": true,
+          "archive_equal": true
+        },
+        {
+          "repo": "npcink-ai-cloud",
+          "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6",
+          "tree_equal": true,
+          "archive_equal": true
+        }
+      ],
+      "cleanup": {
+        "started_at": "2026-10-17T06:09:30.671647+00:00",
+        "errors": [],
+        "completed_at": "2026-10-17T06:09:33.682799+00:00",
+        "passed": true
+      },
+      "limits": [
+        "No tag, Release, SVN publication, npm publication or production deployment performed.",
+        "No Cloud runtime deployment or real-user observation performed.",
+        "Existing Core/Toolkit conventional tags remain historical; pinned compatibility SHAs are not replacement public releases.",
+        "Cloud Python CVE Upstream Watch run 39006725612 failed; exact source CI is separate from image readiness."
+      ],
+      "approval_evidence": "automated administrator test context in this run; historical manual browser approval is not rerun"
+    },
+    "verification_rerun_by_this_audit": false
+  },
+  "addon": {
+    "base": "b80b9661",
+    "upstream": "3e650d1bc74d9428d6671f27dd668938c6b6078b",
+    "prs": [
+      {
+        "mergeCommit": {
+          "oid": "ba6a621c019ee894df5f1b96a6c16985cacf2c71"
+        },
+        "mergedAt": "2026-10-17T01:38:09Z",
+        "state": "MERGED",
+        "statusCheckRollup": [
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T01:37:52Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38991653062/job/117275146760",
+            "name": "PHP 8.0 contracts",
+            "startedAt": "2026-10-17T01:37:30Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T01:37:51Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38991653068/job/117275146403",
+            "name": "PHPStan level 5 (advisory)",
+            "startedAt": "2026-10-17T01:37:29Z",
+            "status": "COMPLETED",
+            "workflowName": "PHPStan (advisory)"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T01:37:36Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38991653061/job/117275151582",
+            "name": "PR body contract",
+            "startedAt": "2026-10-17T01:37:31Z",
+            "status": "COMPLETED",
+            "workflowName": "PR Body Contract"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T01:37:46Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38991653062/job/117275146719",
+            "name": "PHP 8.2 contracts",
+            "startedAt": "2026-10-17T01:37:30Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T01:37:45Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38991653062/job/117275146706",
+            "name": "PHP 8.4 contracts",
+            "startedAt": "2026-10-17T01:37:30Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T01:37:58Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38991653062/job/117275146768",
+            "name": "WordPress AI stable-primary / PHP 8.0",
+            "startedAt": "2026-10-17T01:37:30Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T01:38:02Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38991653062/job/117275146784",
+            "name": "WordPress AI stable-primary / PHP 8.2",
+            "startedAt": "2026-10-17T01:37:29Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T01:37:56Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38991653062/job/117275146721",
+            "name": "WordPress AI stable-primary / PHP 8.4",
+            "startedAt": "2026-10-17T01:37:30Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T01:37:59Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38991653062/job/117275146689",
+            "name": "WordPress AI stable-regression / PHP 8.2",
+            "startedAt": "2026-10-17T01:37:30Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T01:38:09Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38991653062/job/117275146679",
+            "name": "WordPress AI upstream-warning / PHP 8.2",
+            "startedAt": "2026-10-17T01:37:30Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T01:38:04Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38991653062/job/117275146483",
+            "name": "Release static gates",
+            "startedAt": "2026-10-17T01:37:30Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T01:37:56Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38991653062/job/117275230450",
+            "name": "PHP contracts",
+            "startedAt": "2026-10-17T01:37:54Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T01:38:13Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38991653062/job/117275288944",
+            "name": "WordPress AI compatibility blocking lanes",
+            "startedAt": "2026-10-17T01:38:11Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          }
+        ],
+        "url": "https://github.com/npcink/npcink-cloud-addon/pull/284"
+      },
+      {
+        "mergeCommit": {
+          "oid": "3e650d1bc74d9428d6671f27dd668938c6b6078b"
+        },
+        "mergedAt": "2026-10-17T02:41:39Z",
+        "state": "MERGED",
+        "statusCheckRollup": [
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T02:41:06Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38995863214/job/117288170918",
+            "name": "PHP 8.0 contracts",
+            "startedAt": "2026-10-17T02:40:45Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T02:41:14Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38995863165/job/117288170302",
+            "name": "PHPStan level 5 (advisory)",
+            "startedAt": "2026-10-17T02:40:45Z",
+            "status": "COMPLETED",
+            "workflowName": "PHPStan (advisory)"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T02:40:51Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38995863076/job/117288170001",
+            "name": "PR body contract",
+            "startedAt": "2026-10-17T02:40:45Z",
+            "status": "COMPLETED",
+            "workflowName": "PR Body Contract"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T02:41:04Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38995863214/job/117288170958",
+            "name": "PHP 8.2 contracts",
+            "startedAt": "2026-10-17T02:40:45Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T02:41:06Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38995863214/job/117288170838",
+            "name": "PHP 8.4 contracts",
+            "startedAt": "2026-10-17T02:40:45Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T02:41:21Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38995863214/job/117288170861",
+            "name": "WordPress AI stable-primary / PHP 8.0",
+            "startedAt": "2026-10-17T02:40:46Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T02:41:15Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38995863214/job/117288170931",
+            "name": "WordPress AI stable-primary / PHP 8.2",
+            "startedAt": "2026-10-17T02:40:45Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T02:41:17Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38995863214/job/117288170888",
+            "name": "WordPress AI stable-primary / PHP 8.4",
+            "startedAt": "2026-10-17T02:40:45Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T02:41:10Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38995863214/job/117288170927",
+            "name": "WordPress AI stable-regression / PHP 8.2",
+            "startedAt": "2026-10-17T02:40:45Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T02:41:18Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38995863214/job/117288170811",
+            "name": "WordPress AI upstream-warning / PHP 8.2",
+            "startedAt": "2026-10-17T02:40:45Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T02:41:34Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38995863214/job/117288170751",
+            "name": "Release static gates",
+            "startedAt": "2026-10-17T02:40:45Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T02:41:11Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38995863214/job/117288248030",
+            "name": "PHP contracts",
+            "startedAt": "2026-10-17T02:41:08Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          },
+          {
+            "__typename": "CheckRun",
+            "completedAt": "2026-10-17T02:41:25Z",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38995863214/job/117288296109",
+            "name": "WordPress AI compatibility blocking lanes",
+            "startedAt": "2026-10-17T02:41:23Z",
+            "status": "COMPLETED",
+            "workflowName": "CI"
+          }
+        ],
+        "url": "https://github.com/npcink/npcink-cloud-addon/pull/285"
+      }
+    ],
+    "classification": {
+      "284": "runtime reconciliation missing-cursor/backpressure fix plus tests/catalog references",
+      "285": "documentation-only retrospective and handoff"
+    },
+    "shared_root_synchronized": false,
+    "live_gap_recovery_retested": false
+  },
+  "fixed_rc2_manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+  "preservation_recheck": {
+    "status": "passed",
+    "final_inventory": [
+      {
+        "repo": "npcink-governance-core",
+        "at": "2026-10-17T06:50:20.959867+00:00",
+        "head": "5be60b35e0b8ee1c004d5f42991471971a519427",
+        "branch": "codex/ux-history-merge-receipt-2026-10-17",
+        "status": " M .sisyphus/archive/2026-10.md\n M .sisyphus/session-breadcrumb.md\n M docs/next-stage-plan.md\n?? docs/history/adapter-release-addon-drift-review-2026-10-17.json\n?? docs/history/adapter-release-addon-drift-review-2026-10-17.md\n",
+        "local_heads": [
+          "refs/heads/codex/audit-weekly-docs-receipt-2026-10-17 27c6c570540f906c8d4653836ed16dd17986c905",
+          "refs/heads/codex/docs-classification-lane1-2026-10-16 31279cf66174efd460e94554a0c0db21897d49e9",
+          "refs/heads/codex/docs-rc-identity-2026-10-16 8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+          "refs/heads/codex/docs-rc-post-tag-drift-2026-10-16 e93c330366c952c75db540465acfcd85eb2cd8ab",
+          "refs/heads/codex/docs-week-2026-10-13-followup 418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+          "refs/heads/codex/execution-verification-reads e73f9684878bf10a43130f266c4ddd1d258ad161",
+          "refs/heads/codex/ux-history-merge-receipt-2026-10-17 5be60b35e0b8ee1c004d5f42991471971a519427",
+          "refs/heads/codex/verification-reads-hardening f4b17dbae132c8be2abdf8f162180b39843074ad",
+          "refs/heads/codex/weekly-docs-merge-receipt-2026-10-17 8df588847af0534f28755ff2a955df7748ceb0da",
+          "refs/heads/master 9716cf5eaae259874c03ad40363382fd065aded2",
+          "refs/heads/zcode/docs-2026-10-11-ux-audit-arc 3c45612c5ee15705374a19743b983dfce9a0258e"
+        ],
+        "local_tags": [
+          "refs/tags/pre-refactor-2026-07-14 a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc",
+          "refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1 8edb4ff1cd5564f389e8da490f183c7a56e0af5b",
+          "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1 7de7062a3b6308d6b59a47553f3345dd29fab94f",
+          "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2 589d82eb634efa92d3a41ecebf99c8dbfe7a19b2",
+          "refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2 2891b0b532c75da1dbf3426404f99dbeb2310b39",
+          "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0 ffb5e5d6d7b68fa952288524a181ff688a7698ee",
+          "refs/tags/v0.1.0 4e4099cec8d0a88deb006eb1e0e916c485c7de65",
+          "refs/tags/v0.1.1 ad1d41effcb04a3e1578567e3d30068973344f40",
+          "refs/tags/v0.2.0 fa27aa2a13e01048da411c06cc1dff25abbd45a5",
+          "refs/tags/v0.3.0 da05076343d7975e95800eddf1e9719358ac82df"
+        ],
+        "remote_refs": [
+          "27c6c570540f906c8d4653836ed16dd17986c905\trefs/heads/codex/audit-weekly-docs-receipt-2026-10-17",
+          "8d9626b7a07ffca7126b400a404a6db05145d1e9\trefs/heads/codex/docs-classification-lane1-2026-10-16",
+          "b07972c12f0fb822c674570f2cc5b22b2c8d8302\trefs/heads/codex/docs-publication-receipt-2026-10-17",
+          "4006c644a3d0a62393e1d53f418fac1fd3e5a50c\trefs/heads/codex/docs-rc-acceptance-2026-10-16",
+          "0d7153a98fe176b29063b0cd6141601ef26c78df\trefs/heads/codex/docs-rc-audit-refresh-2026-10-16",
+          "19953429829f237551b752b8438e12b0f290a385\trefs/heads/codex/docs-rc-final-closeout-2026-10-16",
+          "8d6083e234be290206e6c3fb4b3a739ce3ed232a\trefs/heads/codex/docs-rc-identity-2026-10-16",
+          "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a\trefs/heads/codex/docs-rc-matrix-drift-2026-10-16",
+          "3402eca486af5d979b80f9196315b4a772ed464d\trefs/heads/codex/docs-rc-post-tag-drift-2026-10-16",
+          "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472\trefs/heads/codex/docs-rc-release-notes-2026-10-16",
+          "94af361fa20bacd441506fd9d3be13e5d5aa8de1\trefs/heads/codex/docs-rc-tag-published-2026-10-16",
+          "418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd\trefs/heads/codex/docs-week-2026-10-13-followup",
+          "f5181a3ebe347624c468dbb36623421868c88857\trefs/heads/codex/rc2-validation-2026-10-16",
+          "8df588847af0534f28755ff2a955df7748ceb0da\trefs/heads/codex/weekly-docs-merge-receipt-2026-10-17",
+          "57624c2272f39d599ba620174ee05d0dc9415c0e\trefs/heads/dependabot/composer/phpstan/phpstan-2.3.1",
+          "d3191f0dcdf6e2ed19417f17a6b82e2dc82c587b\trefs/heads/dependabot/github_actions/alibaba/open-code-review-1.12.13",
+          "c6031aff5f15b0ab568479e1099314c1e901b6a8\trefs/heads/master",
+          "a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc\trefs/tags/pre-refactor-2026-07-14",
+          "5acce75322367d6d46b58665d35331039d4b301a\trefs/tags/pre-refactor-2026-07-14^{}",
+          "8edb4ff1cd5564f389e8da490f183c7a56e0af5b\trefs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1",
+          "5f79d32f8e50e381d1872d68c4f99c0e9ee77d51\trefs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}",
+          "7de7062a3b6308d6b59a47553f3345dd29fab94f\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1",
+          "8f08f8ac3ce836293581f1bc8be040158de2980d\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}",
+          "589d82eb634efa92d3a41ecebf99c8dbfe7a19b2\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2",
+          "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3\trefs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2^{}",
+          "2891b0b532c75da1dbf3426404f99dbeb2310b39\trefs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2",
+          "1829fb828ea4d9e8f7caabea74d5b89117824355\trefs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2^{}",
+          "ffb5e5d6d7b68fa952288524a181ff688a7698ee\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0",
+          "ed28f984153200a8362fcd0928bbb32b83636159\trefs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0^{}",
+          "4e4099cec8d0a88deb006eb1e0e916c485c7de65\trefs/tags/v0.1.0",
+          "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3\trefs/tags/v0.1.0^{}",
+          "ad1d41effcb04a3e1578567e3d30068973344f40\trefs/tags/v0.1.1",
+          "1829fb828ea4d9e8f7caabea74d5b89117824355\trefs/tags/v0.1.1^{}",
+          "fa27aa2a13e01048da411c06cc1dff25abbd45a5\trefs/tags/v0.2.0",
+          "7f2c6bf5b3f810f65f2e3f2d396ecfdf78c07ee6\trefs/tags/v0.2.0^{}",
+          "da05076343d7975e95800eddf1e9719358ac82df\trefs/tags/v0.3.0",
+          "3357f916899ac4b013a753da6d99e712274f2221\trefs/tags/v0.3.0^{}"
+        ],
+        "worktrees": "worktree /Users/muze/gitee/npcink-governance-core\nHEAD 5be60b35e0b8ee1c004d5f42991471971a519427\nbranch refs/heads/codex/ux-history-merge-receipt-2026-10-17\n\n",
+        "stashes": ""
+      },
+      {
+        "repo": "npcink-ai-client-adapter",
+        "at": "2026-10-17T06:50:24.151581+00:00",
+        "head": "0159f2c7ffe9f2ffa310b6760efded1f5a618dfe",
+        "branch": "master",
+        "status": "",
+        "local_heads": [
+          "refs/heads/master 0159f2c7ffe9f2ffa310b6760efded1f5a618dfe"
+        ],
+        "local_tags": [
+          "refs/tags/openclaw-grant-redeem-mvp 8af2c243952cd1589dcce65aed7ed565f656da06",
+          "refs/tags/pre-refactor-2026-07-14 afe1d8ceac39c6936df061073de6309bb5982d3a",
+          "refs/tags/v0.2.0 9a12b11953acbf7151e4c89ec97ed2b84588d65c",
+          "refs/tags/v0.2.1 0906755ef02ba9345eb108d5ca78a8fe22ac0077",
+          "refs/tags/v0.3.0 605f6fe7b57fec54bc523c95a40dd62fc73dca82",
+          "refs/tags/v0.3.1 9c5b8d6f6e41a482c978639cebf9bbf769adc0e6",
+          "refs/tags/v0.3.2 32737cca76d71e99c96f6c63775884ab4e767197",
+          "refs/tags/v0.3.3 57517fab449fa04e19dc30513e36ec57435564ed",
+          "refs/tags/v0.4.0 34b21582d6418b3fcf93f3efca94a71a62fde16e",
+          "refs/tags/v0.4.1 f8f8b8411ef5c48bb2c98e87528b88d464f622ce",
+          "refs/tags/v0.4.2 dcd7188c243cf03d4c2824588d489c7e86116965",
+          "refs/tags/v0.4.3 34c0b788885746d42bc41119d4cff33a5d1d5f7e"
+        ],
+        "remote_refs": [
+          "eb73e503a8c102acd6f87b69f406ee4b94aac85f\trefs/heads/codex/m4-pgy-stack-rc-docs-2026-10-15",
+          "0159f2c7ffe9f2ffa310b6760efded1f5a618dfe\trefs/heads/master",
+          "8af2c243952cd1589dcce65aed7ed565f656da06\trefs/tags/openclaw-grant-redeem-mvp",
+          "afe1d8ceac39c6936df061073de6309bb5982d3a\trefs/tags/pre-refactor-2026-07-14",
+          "84554be1d9cccb5b6794404803f475162ee7ea00\trefs/tags/pre-refactor-2026-07-14^{}",
+          "9a12b11953acbf7151e4c89ec97ed2b84588d65c\trefs/tags/v0.2.0",
+          "3c4ea71f41ccb013341e12498520510ffcefa81f\trefs/tags/v0.2.0^{}",
+          "0906755ef02ba9345eb108d5ca78a8fe22ac0077\trefs/tags/v0.2.1",
+          "452d738c05972302cf6138f38184cfc5cec7cea6\trefs/tags/v0.2.1^{}",
+          "605f6fe7b57fec54bc523c95a40dd62fc73dca82\trefs/tags/v0.3.0",
+          "205ebda976aa51afd27c6d633082360194ba902b\trefs/tags/v0.3.0^{}",
+          "9c5b8d6f6e41a482c978639cebf9bbf769adc0e6\trefs/tags/v0.3.1",
+          "32737cca76d71e99c96f6c63775884ab4e767197\trefs/tags/v0.3.2",
+          "65f1012c5f4072dd6c1251f2e2db98d5e836c598\trefs/tags/v0.3.2^{}",
+          "57517fab449fa04e19dc30513e36ec57435564ed\trefs/tags/v0.3.3",
+          "8800b8e4c4651c5d4dff759c3050135d74968927\trefs/tags/v0.3.3^{}",
+          "34b21582d6418b3fcf93f3efca94a71a62fde16e\trefs/tags/v0.4.0",
+          "7800b3da2f20637ffea621274e033a061d532e93\trefs/tags/v0.4.0^{}",
+          "f8f8b8411ef5c48bb2c98e87528b88d464f622ce\trefs/tags/v0.4.1",
+          "dcd7188c243cf03d4c2824588d489c7e86116965\trefs/tags/v0.4.2",
+          "963318a6f99b4837a48290fb9abbdb7716f9d079\trefs/tags/v0.4.2^{}",
+          "34c0b788885746d42bc41119d4cff33a5d1d5f7e\trefs/tags/v0.4.3",
+          "d3b114f73029836277f42d04c292f661b255a332\trefs/tags/v0.4.3^{}"
+        ],
+        "worktrees": "worktree /Users/muze/gitee/npcink-ai-client-adapter\nHEAD 0159f2c7ffe9f2ffa310b6760efded1f5a618dfe\nbranch refs/heads/master\n\n",
+        "stashes": ""
+      },
+      {
+        "repo": "npcink-cloud-addon",
+        "at": "2026-10-17T06:50:25.502985+00:00",
+        "head": "b80b966151f26f114271a5534082c336ab2fea50",
+        "branch": "master",
+        "status": "",
+        "local_heads": [
+          "refs/heads/codex/recommendation-feedback-metadata 9637ca592f4570bd292b107144e61b4f8271cbae",
+          "refs/heads/master b80b966151f26f114271a5534082c336ab2fea50"
+        ],
+        "local_tags": [
+          "refs/tags/0.2.0 265f001f0afb303206d0edd72f1f4b8f20dd5ef9",
+          "refs/tags/0.3.0 200ecf966494e531e57ab29c7706eef41bb9e1de",
+          "refs/tags/0.4.0 35915cf4e5a9f13d6808ab3052885793f47cb190",
+          "refs/tags/archive/wp-ai-localization-fix-20260928 0f643ff85842162d8cc8aa6d42a382f5e81c9ef2",
+          "refs/tags/pre-refactor-2026-07-14 bae0a4dfd59042482179766f743b4ffcaca876f7"
+        ],
+        "remote_refs": [
+          "f379aadb6be38471a02d64de0db9ea79ff7c17f0\trefs/heads/codex/0-4-1-stale-entitlement",
+          "f6b95295b4cfb682f78809bfde978d72d713d56c\trefs/heads/codex/041-final-release-record",
+          "014fde9f44620320a8940b0e1f4e998cc04d3f00\trefs/heads/codex/041-maintenance-closeout-20261015",
+          "3d42183d7782715e66485c3186f3bb90d5c58dea\trefs/heads/codex/041-refresh-closeout",
+          "c26f43dbbd340722a0835b4037f33ab2f483ff31\trefs/heads/codex/docs-next-session-handoff-20261016",
+          "2f343a6e35281489e1ccf5ffc914cfa63cb88dc0\trefs/heads/codex/glotpress-closeout-20261012",
+          "a8431153fc71049b1f246965f4016769591a7195\trefs/heads/codex/ocr-ci-diagnostics-20261013",
+          "000ca35f84f7896cc039ddae1485e483fbb863b3\trefs/heads/codex/ocr-glm-thinking-compat-20261013",
+          "582177c2c2586cf3ed2e945f3e6476e86c0e0b37\trefs/heads/codex/provider-acceptance-closeout-20261012",
+          "9637ca592f4570bd292b107144e61b4f8271cbae\trefs/heads/codex/recommendation-feedback-metadata",
+          "dbddd65c9a970615bb556006d3e5998bb9ceb51a\trefs/heads/codex/release-status-20261013",
+          "4e8c8e65f0ae272a170ff63f45057eeddc6cb63f\trefs/heads/codex/site-knowledge-recovery-20261015",
+          "1209f5105ae94a48c9b7f65af77c952e09733f52\trefs/heads/codex/ux-closeout-20261012",
+          "e55a04e0a3cdd6ee978916d3eaa30d8ecfa87e6c\trefs/heads/codex/ux-tail-20261012",
+          "387687620db4886c42cd4d5c63b9dab60d0f9426\trefs/heads/docs/ux-paydown-handoff-2026-10-12",
+          "4b72b953432557ec5b712b8c83c021ff8a7b571e\trefs/heads/fix/user-facing-ux-paydown-round",
+          "3e650d1bc74d9428d6671f27dd668938c6b6078b\trefs/heads/master",
+          "f2a8dd61e6f676382444c7e1b884361a68ad31a9\trefs/tags/0.2.0",
+          "7b85c903b2ffc94a5e91ec027d9d900be5176aa5\trefs/tags/0.2.0^{}",
+          "200ecf966494e531e57ab29c7706eef41bb9e1de\trefs/tags/0.3.0",
+          "8c56aae8a7665954db3fbf0cc16500db6068566e\trefs/tags/0.3.0^{}",
+          "35915cf4e5a9f13d6808ab3052885793f47cb190\trefs/tags/0.4.0",
+          "0f643ff85842162d8cc8aa6d42a382f5e81c9ef2\trefs/tags/archive/wp-ai-localization-fix-20260928",
+          "bae0a4dfd59042482179766f743b4ffcaca876f7\trefs/tags/pre-refactor-2026-07-14",
+          "9c46f4bff7a715a8eacd8e787705de0ea62e39ed\trefs/tags/pre-refactor-2026-07-14^{}"
+        ],
+        "worktrees": "worktree /Users/muze/gitee/npcink-cloud-addon\nHEAD b80b966151f26f114271a5534082c336ab2fea50\nbranch refs/heads/master\n\n",
+        "stashes": ""
+      }
+    ],
+    "all_branch_tag_worktree_stash_records_unchanged": true,
+    "sibling_heads_status_unchanged": true
+  },
+  "verification": "JSON, local links, breadcrumb bound, unchanged manifest and original ref/resource/tag inventories passed; Core gates recorded in report"
+}
