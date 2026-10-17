@@ -5,22 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Three Core receipts published through weekly docs PR178
-
-- **Published**: 397fee55 / 03be509f / b07972c1, 12 docs-only files, merged
-  through #178 as `95ef2108` at `04:14:39Z`. Both protected topic checks and
-  merged-SHA Static contracts passed; identical topic/squash tree `5b23168d`.
-- **Review**: local OCR reached 180s; CI failed 5/5 selected files with zero
-  comments/tokens. No complete external review delivered; gap in PR, no retry.
-  Local five-axis review, Core tests 55/207, metadata and wporg passed.
-- **Preserved**: original local/remote topic b07972c1; all sibling owner work,
-  branches/worktrees/stashes and other open quality/human acceptance tasks.
-  Fixed manifest and complete local/remote tag inventories unchanged. No tag
-  operation, sibling change/message, deployment, M4 or matrix rerun.
-- **Receipt**: docs/history/core-weekly-docs-publication-2026-10-17.md and JSON.
-  Old three-commit backlog closed; this one new local post-merge receipt on
-  codex/weekly-docs-merge-receipt-2026-10-17 waits for the next weekly batch.
-
 # 2026-10-17 - Ownership audit produced scoped cleanup candidates; no deletion
 
 - **Inventory**: seven repositories, 56 local / 91 actual origin branches,
@@ -162,3 +146,17 @@ Older history: `.sisyphus/archive/`.
   form one new local receipt for next weekly batch; no recursive PR, sibling
   mutation/message, cleanup, acceptance, deployment or tag operation.
   Merged-SHA Static contracts passed (run 39012548194); receipt docs gates pass.
+
+# 2026-10-17 - Adapter update channel and Addon site/recovery rechecked
+
+- **Adapter**: 07:11:27Z info/package still 0.4.3; update probes from 0.4.1
+  offer 0.4.2, from 0.4.2 no entry. No update-channel closure or monitor.
+- **Addon**: site symlink/file hash still old b80b9661; upstream 3e650d1b.
+  Owner handoff explicitly performed no site sync/recovery. Historical two-gap
+  1997/1999 sample is October 16, not new coverage; live recovery unverified.
+- **Record**: docs/history/adapter-update-addon-recovery-refresh-2026-10-17.md
+  plus JSON. Preserve owner work/original refs/tags/RC2; no site/Cloud/model
+  calls, cleanup, tag operation or owner message. Local weekly batching with
+  post-#181 receipt, no new PR or candidate/matrix/acceptance run.
+  Core gates 55/207, metadata, JSON/links/breadcrumb/diff passed; original
+  refs/tags/resources and sibling HEAD/status unchanged at final recheck.

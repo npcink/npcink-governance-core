@@ -5,6 +5,21 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Adapter update channel and Addon recovery rechecked — 2026-10-17
+
+[Fresh closeout checklist](history/adapter-update-addon-recovery-refresh-2026-10-17.md):
+at 15:11 Beijing Adapter plugin-info/package reads confirm 0.4.3 publication,
+but update probes still offer 0.4.2 or no update. Distribution availability
+remains unconfirmed; no background monitor or republishing action was created.
+
+Addon site symlink and bridge hash still bind clean b80b9661, behind upstream
+3e650d1b. Owner handoff explicitly retained site sync and two-target recovery;
+no new completion evidence was found in the inspected records. Historical
+1997/1999 coverage is dated October 16, not a new measurement. Site update and
+live documents/chunks/cursor/denominator evidence need separate scope. Preserve
+other owner work, original branches/tags and fixed RC2. This audit joins the
+post-#181 receipt for weekly batching; no runtime or tag operation occurred.
+
 ## Owner/release weekly documentation batch merged — 2026-10-17
 
 [PR #181](https://github.com/npcink/npcink-governance-core/pull/181) published
