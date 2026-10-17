@@ -5,24 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-16 - PR1119 handoff complete; formal owner closeout pending
-
-- **AI Cloud**: PR #1119 merged `13:00:36Z` as `2fd7282f`; final CI passed
-  294 unit / 143 browser tests. Receipt records accepted clean master and
-  M4 release at `13:04:13Z`; Toolbox acknowledged and took M4 candidate work.
-- **Toolbox**: development verification/baselines/metadata completed, but
-  21 Toolbox + five Addon + five auxiliary Cloud files remain uncommitted.
-  PRs, exact-SHA CI and new accepted closeout are not yet performed. Toolkit
-  anchor-hint limitation remains documented separately from positive draft tests.
-- **Default roots**: status-only audit sees 33 owner files (Toolbox 21, Addon
-  five, AI Cloud seven routing docs from a later task). Full no-override rerun
-  awaits formal closeout; last completed full run is `12:43:50Z`, exit 1 / 6/7.
-- **Next**: owner commit/PR/required-check closeout, clean default roots, then
-  full dirty gate and manifest comparison. Cross-thread request authorization
-  was asked; no message sent yet. RC2 bytes and published tag unchanged.
-  See `docs/history/stack-rc2-owner-handoff-2026-10-16.json`; batch local docs
-  for the weekly PR. No tag creation, push, retag or production deployment.
-
 # 2026-10-17 - Owner PR closeout and default no-override 7/7 passed
 
 - **Coordination**: sent exactly one authorized request to each owner chat.
@@ -184,3 +166,20 @@ Older history: `.sisyphus/archive/`.
   full JSON inventory; cleanup scope rules in release-closeout-standard.md.
   No deletion, owner message, branch publication, tag, matrix, acceptance,
   deployment or M4 operation. Batch with ac69fa7 in next weekly docs PR.
+
+# 2026-10-17 - Authorized Core nine-local and one-remote branch cleanup complete
+
+- **Authority/guards**: human explicitly authorized the prior Core-only list.
+  Rechecked all nine full SHAs, origin backups, owner/worktree occupancy and
+  merged PR heads/tree equivalence against current origin/master `95ef2108`.
+- **Executed**: nine ordinary local branch deletions, one remote deletion at
+  expected `ed28f984` with SHA lease and tag-following disabled. Core branches
+  18→9 local / 16→15 actual origin; exact before/after delta is recorded.
+- **Preserved**: all other origin heads, including b07972c1 matrix source and
+  f5181a3e RC2 history; snapshot object ffb5e5d6/peeled ed28f984 and every tag
+  unchanged. Current HEAD/worktree/stash and manifest unchanged before docs edit.
+  No sibling/owner work, auxiliary worktree, saved stash or other topic removed.
+- **Receipt**: docs/history/core-scoped-branch-cleanup-2026-10-17.md and JSON;
+  rollback sources retained. Batch this new receipt with ac69fa7 / 92c4a02 in
+  the next weekly docs PR. No new candidate, matrix, acceptance, runtime or tag
+  operation; broader owner housekeeping remains open.

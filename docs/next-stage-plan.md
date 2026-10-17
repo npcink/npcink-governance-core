@@ -5,6 +5,22 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Authorized Core-only branch cleanup completed — 2026-10-17
+
+After fresh exact-SHA, ownership, worktree and live merged-PR/tree checks,
+the human-authorized nine Core local refs were removed with ordinary branch
+deletion; the one separately authorized `docs-rc-acceptance-owner-handoff`
+origin ref was removed using an exact-SHA lease. Core is now **9 local / 15
+actual origin branches** (18/16 before). Every other remote ref is unchanged,
+including the original RC2 and matrix-tested source anchors. The unchanged
+snapshot tag retains the deleted remote tip `ed28f984`.
+
+See [execution, preservation and recovery evidence](history/core-scoped-branch-cleanup-2026-10-17.md).
+All tag maps, RC2 manifest, worktrees and stashes are unchanged. Preserve other
+owner candidates and unresolved source/dependency/human-acceptance tasks; no
+sibling mutation or broader cleanup occurred. This receipt joins the two local
+docs records for the next weekly PR. Older inventory totals below are historical.
+
 ## Branch / worktree / stash audit and cleanup candidates — 2026-10-17
 
 Fresh seven-repository audit counts **56 local branches, 91 actual origin

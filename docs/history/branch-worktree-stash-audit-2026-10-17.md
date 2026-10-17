@@ -4,6 +4,12 @@ Status: inventory and cleanup plan complete; **no owner resource was deleted**.
 Global housekeeping remains incomplete. Scope is the seven matrix repositories
 and their registered worktrees, not every project on this machine.
 
+**Subsequent authorized execution:** the human later authorized the exact Core
+subset. Nine local refs and the one snapshot-backed remote ref were rechecked
+and removed; all other owner work/source refs were preserved. The audit below
+remains its original pre-cleanup snapshot, not current branch counts. See the
+[scoped execution receipt](core-scoped-branch-cleanup-2026-10-17.md).
+
 ## Current inventory
 
 The first collection and final recheck cover `2026-10-17T04:56:33.725062+00:00`

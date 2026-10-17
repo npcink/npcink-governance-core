@@ -1,0 +1,691 @@
+{
+  "recorded_at": "2026-10-17T05:36:51.008872+00:00",
+  "status": "authorized_core_scoped_cleanup_completed",
+  "authorization": "Human explicitly authorized these exact nine local Core branches and one separately confirmed remote branch; all other source backups and owner work must remain",
+  "scope": "Core references and coordination documentation only",
+  "preflight": {
+    "observed_at": "2026-10-17T05:34:25.128607+00:00",
+    "scope": "exact user-authorized nine local Core refs and one remote Core ref only",
+    "head": "92c4a02a137cd0990446b83ce30d8e1c9449ed75",
+    "branch": "codex/weekly-docs-merge-receipt-2026-10-17",
+    "origin_master": "95ef21089f281c16f69f8898d7eb89c3e7671795",
+    "local_candidates": [
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-publication-receipt-2026-10-17",
+        "sha": "b07972c12f0fb822c674570f2cc5b22b2c8d8302",
+        "proof_prs": [
+          178
+        ]
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-acceptance-2026-10-16",
+        "sha": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+        "proof_prs": [
+          169
+        ]
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-acceptance-owner-handoff-2026-10-16",
+        "sha": "ed28f984153200a8362fcd0928bbb32b83636159",
+        "proof_prs": [
+          172
+        ]
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-audit-refresh-2026-10-16",
+        "sha": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+        "proof_prs": [
+          176
+        ]
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-final-closeout-2026-10-16",
+        "sha": "19953429829f237551b752b8438e12b0f290a385",
+        "proof_prs": [
+          170
+        ]
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-matrix-drift-2026-10-16",
+        "sha": "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a",
+        "proof_prs": [
+          171
+        ]
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-release-notes-2026-10-16",
+        "sha": "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472",
+        "proof_prs": [
+          173
+        ]
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-tag-published-2026-10-16",
+        "sha": "94af361fa20bacd441506fd9d3be13e5d5aa8de1",
+        "proof_prs": [
+          174
+        ]
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/rc2-validation-2026-10-16",
+        "sha": "f5181a3ebe347624c468dbb36623421868c88857",
+        "proof_prs": [
+          177
+        ]
+      }
+    ],
+    "remote_candidates": [
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-acceptance-owner-handoff-2026-10-16",
+        "sha": "ed28f984153200a8362fcd0928bbb32b83636159",
+        "proof_prs": [
+          172
+        ]
+      }
+    ],
+    "local_heads": {
+      "refs/heads/codex/docs-classification-lane1-2026-10-16": "31279cf66174efd460e94554a0c0db21897d49e9",
+      "refs/heads/codex/docs-publication-receipt-2026-10-17": "b07972c12f0fb822c674570f2cc5b22b2c8d8302",
+      "refs/heads/codex/docs-rc-acceptance-2026-10-16": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+      "refs/heads/codex/docs-rc-acceptance-owner-handoff-2026-10-16": "ed28f984153200a8362fcd0928bbb32b83636159",
+      "refs/heads/codex/docs-rc-audit-refresh-2026-10-16": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+      "refs/heads/codex/docs-rc-final-closeout-2026-10-16": "19953429829f237551b752b8438e12b0f290a385",
+      "refs/heads/codex/docs-rc-identity-2026-10-16": "8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+      "refs/heads/codex/docs-rc-matrix-drift-2026-10-16": "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a",
+      "refs/heads/codex/docs-rc-post-tag-drift-2026-10-16": "e93c330366c952c75db540465acfcd85eb2cd8ab",
+      "refs/heads/codex/docs-rc-release-notes-2026-10-16": "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472",
+      "refs/heads/codex/docs-rc-tag-published-2026-10-16": "94af361fa20bacd441506fd9d3be13e5d5aa8de1",
+      "refs/heads/codex/docs-week-2026-10-13-followup": "418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+      "refs/heads/codex/execution-verification-reads": "e73f9684878bf10a43130f266c4ddd1d258ad161",
+      "refs/heads/codex/rc2-validation-2026-10-16": "f5181a3ebe347624c468dbb36623421868c88857",
+      "refs/heads/codex/verification-reads-hardening": "f4b17dbae132c8be2abdf8f162180b39843074ad",
+      "refs/heads/codex/weekly-docs-merge-receipt-2026-10-17": "92c4a02a137cd0990446b83ce30d8e1c9449ed75",
+      "refs/heads/master": "9716cf5eaae259874c03ad40363382fd065aded2",
+      "refs/heads/zcode/docs-2026-10-11-ux-audit-arc": "3c45612c5ee15705374a19743b983dfce9a0258e"
+    },
+    "remote_heads": {
+      "refs/heads/codex/docs-classification-lane1-2026-10-16": "8d9626b7a07ffca7126b400a404a6db05145d1e9",
+      "refs/heads/codex/docs-publication-receipt-2026-10-17": "b07972c12f0fb822c674570f2cc5b22b2c8d8302",
+      "refs/heads/codex/docs-rc-acceptance-2026-10-16": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+      "refs/heads/codex/docs-rc-acceptance-owner-handoff-2026-10-16": "ed28f984153200a8362fcd0928bbb32b83636159",
+      "refs/heads/codex/docs-rc-audit-refresh-2026-10-16": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+      "refs/heads/codex/docs-rc-final-closeout-2026-10-16": "19953429829f237551b752b8438e12b0f290a385",
+      "refs/heads/codex/docs-rc-identity-2026-10-16": "8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+      "refs/heads/codex/docs-rc-matrix-drift-2026-10-16": "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a",
+      "refs/heads/codex/docs-rc-post-tag-drift-2026-10-16": "3402eca486af5d979b80f9196315b4a772ed464d",
+      "refs/heads/codex/docs-rc-release-notes-2026-10-16": "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472",
+      "refs/heads/codex/docs-rc-tag-published-2026-10-16": "94af361fa20bacd441506fd9d3be13e5d5aa8de1",
+      "refs/heads/codex/docs-week-2026-10-13-followup": "418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+      "refs/heads/codex/rc2-validation-2026-10-16": "f5181a3ebe347624c468dbb36623421868c88857",
+      "refs/heads/dependabot/composer/phpstan/phpstan-2.3.1": "57624c2272f39d599ba620174ee05d0dc9415c0e",
+      "refs/heads/dependabot/github_actions/alibaba/open-code-review-1.12.13": "d3191f0dcdf6e2ed19417f17a6b82e2dc82c587b",
+      "refs/heads/master": "95ef21089f281c16f69f8898d7eb89c3e7671795"
+    },
+    "remote_tags": {
+      "refs/tags/pre-refactor-2026-07-14": "a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc",
+      "refs/tags/pre-refactor-2026-07-14^{}": "5acce75322367d6d46b58665d35331039d4b301a",
+      "refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1": "8edb4ff1cd5564f389e8da490f183c7a56e0af5b",
+      "refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}": "5f79d32f8e50e381d1872d68c4f99c0e9ee77d51",
+      "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1": "7de7062a3b6308d6b59a47553f3345dd29fab94f",
+      "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}": "8f08f8ac3ce836293581f1bc8be040158de2980d",
+      "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2": "589d82eb634efa92d3a41ecebf99c8dbfe7a19b2",
+      "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2^{}": "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3",
+      "refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2": "2891b0b532c75da1dbf3426404f99dbeb2310b39",
+      "refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2^{}": "1829fb828ea4d9e8f7caabea74d5b89117824355",
+      "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0": "ffb5e5d6d7b68fa952288524a181ff688a7698ee",
+      "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0^{}": "ed28f984153200a8362fcd0928bbb32b83636159",
+      "refs/tags/v0.1.0": "4e4099cec8d0a88deb006eb1e0e916c485c7de65",
+      "refs/tags/v0.1.0^{}": "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3",
+      "refs/tags/v0.1.1": "ad1d41effcb04a3e1578567e3d30068973344f40",
+      "refs/tags/v0.1.1^{}": "1829fb828ea4d9e8f7caabea74d5b89117824355",
+      "refs/tags/v0.2.0": "fa27aa2a13e01048da411c06cc1dff25abbd45a5",
+      "refs/tags/v0.2.0^{}": "7f2c6bf5b3f810f65f2e3f2d396ecfdf78c07ee6",
+      "refs/tags/v0.3.0": "da05076343d7975e95800eddf1e9719358ac82df",
+      "refs/tags/v0.3.0^{}": "3357f916899ac4b013a753da6d99e712274f2221"
+    },
+    "local_tags": [
+      "a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc refs/tags/pre-refactor-2026-07-14",
+      "8edb4ff1cd5564f389e8da490f183c7a56e0af5b refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1",
+      "7de7062a3b6308d6b59a47553f3345dd29fab94f refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1",
+      "589d82eb634efa92d3a41ecebf99c8dbfe7a19b2 refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2",
+      "2891b0b532c75da1dbf3426404f99dbeb2310b39 refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2",
+      "ffb5e5d6d7b68fa952288524a181ff688a7698ee refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0",
+      "4e4099cec8d0a88deb006eb1e0e916c485c7de65 refs/tags/v0.1.0",
+      "ad1d41effcb04a3e1578567e3d30068973344f40 refs/tags/v0.1.1",
+      "fa27aa2a13e01048da411c06cc1dff25abbd45a5 refs/tags/v0.2.0",
+      "da05076343d7975e95800eddf1e9719358ac82df refs/tags/v0.3.0"
+    ],
+    "worktrees": "worktree /Users/muze/gitee/npcink-governance-core\nHEAD 92c4a02a137cd0990446b83ce30d8e1c9449ed75\nbranch refs/heads/codex/weekly-docs-merge-receipt-2026-10-17",
+    "stashes": [],
+    "prs": [
+      {
+        "baseRefName": "master",
+        "headRefName": "codex/docs-publication-receipt-2026-10-17",
+        "headRefOid": "b07972c12f0fb822c674570f2cc5b22b2c8d8302",
+        "mergeCommit": {
+          "oid": "95ef21089f281c16f69f8898d7eb89c3e7671795"
+        },
+        "mergedAt": "2026-10-17T04:14:39Z",
+        "number": 178,
+        "state": "MERGED",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/178",
+        "equivalent_tree": "5b23168d54735e91ffac991e33ae17df3ee3c9dd",
+        "merge_reachable_from_origin_master": true
+      },
+      {
+        "baseRefName": "master",
+        "headRefName": "codex/docs-rc-acceptance-2026-10-16",
+        "headRefOid": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+        "mergeCommit": {
+          "oid": "34d75e2dc00804320a82086f175d69e7e5f14a76"
+        },
+        "mergedAt": "2026-10-16T05:51:39Z",
+        "number": 169,
+        "state": "MERGED",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/169",
+        "equivalent_tree": "85eab3490fa9b65f3451a16a2e50ea084d5708eb",
+        "merge_reachable_from_origin_master": true
+      },
+      {
+        "baseRefName": "master",
+        "headRefName": "codex/docs-rc-acceptance-owner-handoff-2026-10-16",
+        "headRefOid": "ed28f984153200a8362fcd0928bbb32b83636159",
+        "mergeCommit": {
+          "oid": "08068d1d9b12e219e0435b8e605f5c55897ffb50"
+        },
+        "mergedAt": "2026-10-16T10:23:41Z",
+        "number": 172,
+        "state": "MERGED",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/172",
+        "equivalent_tree": "d6749c08333b21b54d37959a98343ceeb4a3361b",
+        "merge_reachable_from_origin_master": true
+      },
+      {
+        "baseRefName": "master",
+        "headRefName": "codex/docs-rc-audit-refresh-2026-10-16",
+        "headRefOid": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+        "mergeCommit": {
+          "oid": "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0"
+        },
+        "mergedAt": "2026-10-16T11:36:25Z",
+        "number": 176,
+        "state": "MERGED",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/176",
+        "equivalent_tree": "c727fe7cfdf32ceeda16f943d83e311db90f4c9c",
+        "merge_reachable_from_origin_master": true
+      },
+      {
+        "baseRefName": "master",
+        "headRefName": "codex/docs-rc-final-closeout-2026-10-16",
+        "headRefOid": "19953429829f237551b752b8438e12b0f290a385",
+        "mergeCommit": {
+          "oid": "7f370761cafe0f680f0d68097628d8446f389206"
+        },
+        "mergedAt": "2026-10-16T05:58:48Z",
+        "number": 170,
+        "state": "MERGED",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/170",
+        "equivalent_tree": "9ba3d7b026145d64f0e03f48dcd7408f5e048193",
+        "merge_reachable_from_origin_master": true
+      },
+      {
+        "baseRefName": "master",
+        "headRefName": "codex/docs-rc-matrix-drift-2026-10-16",
+        "headRefOid": "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a",
+        "mergeCommit": {
+          "oid": "a64dea514d730437295ab80c099fcb43b9b0e1dc"
+        },
+        "mergedAt": "2026-10-16T06:17:02Z",
+        "number": 171,
+        "state": "MERGED",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/171",
+        "equivalent_tree": "cffa6bb643a403284da7babec41998c92f6caa08",
+        "merge_reachable_from_origin_master": true
+      },
+      {
+        "baseRefName": "master",
+        "headRefName": "codex/docs-rc-release-notes-2026-10-16",
+        "headRefOid": "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472",
+        "mergeCommit": {
+          "oid": "6cade13d38076a4e9643d717b4dfe2d2df69075c"
+        },
+        "mergedAt": "2026-10-16T10:41:30Z",
+        "number": 173,
+        "state": "MERGED",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/173",
+        "equivalent_tree": "03628929e9f4fddd8140e4db7f7c462b4e408992",
+        "merge_reachable_from_origin_master": true
+      },
+      {
+        "baseRefName": "master",
+        "headRefName": "codex/docs-rc-tag-published-2026-10-16",
+        "headRefOid": "94af361fa20bacd441506fd9d3be13e5d5aa8de1",
+        "mergeCommit": {
+          "oid": "97c14bfd220469deb4af519a0287466d3491a734"
+        },
+        "mergedAt": "2026-10-16T11:13:18Z",
+        "number": 174,
+        "state": "MERGED",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/174",
+        "equivalent_tree": "7877b4c43289388d3dd879ab82788d78e94a15f6",
+        "merge_reachable_from_origin_master": true
+      },
+      {
+        "baseRefName": "master",
+        "headRefName": "codex/rc2-validation-2026-10-16",
+        "headRefOid": "f5181a3ebe347624c468dbb36623421868c88857",
+        "mergeCommit": {
+          "oid": "9d153849b2fc130e7d3ab7e2a090995e184954a1"
+        },
+        "mergedAt": "2026-10-17T03:06:09Z",
+        "number": 177,
+        "state": "MERGED",
+        "url": "https://github.com/npcink/npcink-governance-core/pull/177",
+        "equivalent_tree": "840bf2fc476657abaa482bfd9d69d2734adedf9e",
+        "merge_reachable_from_origin_master": true
+      }
+    ],
+    "open_prs": [
+      {
+        "headRefName": "dependabot/composer/phpstan/phpstan-2.3.1",
+        "headRefOid": "57624c2272f39d599ba620174ee05d0dc9415c0e",
+        "number": 156,
+        "url": "https://github.com/npcink/npcink-governance-core/pull/156"
+      },
+      {
+        "headRefName": "dependabot/github_actions/alibaba/open-code-review-1.12.13",
+        "headRefOid": "d3191f0dcdf6e2ed19417f17a6b82e2dc82c587b",
+        "number": 155,
+        "url": "https://github.com/npcink/npcink-governance-core/pull/155"
+      }
+    ],
+    "manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+    "owner": "current release coordination chat; only Core cwd thread active in app snapshot",
+    "guards": "clean worktree, exact local/remote SHA, no worktree occupancy/open PR, merged PR exact head and tree equivalence, current origin/master ancestry, tag retained and original matrix/RC2 source anchors retained"
+  },
+  "actions": {
+    "started_at": "2026-10-17T05:34:49.372843+00:00",
+    "local_deletions": [
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-publication-receipt-2026-10-17",
+        "sha": "b07972c12f0fb822c674570f2cc5b22b2c8d8302",
+        "proof_prs": [
+          178
+        ],
+        "command": [
+          "git",
+          "branch",
+          "-d",
+          "--",
+          "codex/docs-publication-receipt-2026-10-17"
+        ],
+        "exit_code": 0,
+        "stdout": "Deleted branch codex/docs-publication-receipt-2026-10-17 (was b07972c).",
+        "stderr": "warning: deleting branch 'codex/docs-publication-receipt-2026-10-17' that has been merged to\n         'refs/remotes/origin/codex/docs-publication-receipt-2026-10-17', but not yet merged to HEAD"
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-acceptance-2026-10-16",
+        "sha": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+        "proof_prs": [
+          169
+        ],
+        "command": [
+          "git",
+          "branch",
+          "-d",
+          "--",
+          "codex/docs-rc-acceptance-2026-10-16"
+        ],
+        "exit_code": 0,
+        "stdout": "Deleted branch codex/docs-rc-acceptance-2026-10-16 (was 4006c64).",
+        "stderr": "warning: deleting branch 'codex/docs-rc-acceptance-2026-10-16' that has been merged to\n         'refs/remotes/origin/codex/docs-rc-acceptance-2026-10-16', but not yet merged to HEAD"
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-acceptance-owner-handoff-2026-10-16",
+        "sha": "ed28f984153200a8362fcd0928bbb32b83636159",
+        "proof_prs": [
+          172
+        ],
+        "command": [
+          "git",
+          "branch",
+          "-d",
+          "--",
+          "codex/docs-rc-acceptance-owner-handoff-2026-10-16"
+        ],
+        "exit_code": 0,
+        "stdout": "Deleted branch codex/docs-rc-acceptance-owner-handoff-2026-10-16 (was ed28f98).",
+        "stderr": "warning: deleting branch 'codex/docs-rc-acceptance-owner-handoff-2026-10-16' that has been merged to\n         'refs/remotes/origin/codex/docs-rc-acceptance-owner-handoff-2026-10-16', but not yet merged to HEAD"
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-audit-refresh-2026-10-16",
+        "sha": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+        "proof_prs": [
+          176
+        ],
+        "command": [
+          "git",
+          "branch",
+          "-d",
+          "--",
+          "codex/docs-rc-audit-refresh-2026-10-16"
+        ],
+        "exit_code": 0,
+        "stdout": "Deleted branch codex/docs-rc-audit-refresh-2026-10-16 (was 0d7153a).",
+        "stderr": "warning: deleting branch 'codex/docs-rc-audit-refresh-2026-10-16' that has been merged to\n         'refs/remotes/origin/codex/docs-rc-audit-refresh-2026-10-16', but not yet merged to HEAD"
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-final-closeout-2026-10-16",
+        "sha": "19953429829f237551b752b8438e12b0f290a385",
+        "proof_prs": [
+          170
+        ],
+        "command": [
+          "git",
+          "branch",
+          "-d",
+          "--",
+          "codex/docs-rc-final-closeout-2026-10-16"
+        ],
+        "exit_code": 0,
+        "stdout": "Deleted branch codex/docs-rc-final-closeout-2026-10-16 (was 1995342).",
+        "stderr": "warning: deleting branch 'codex/docs-rc-final-closeout-2026-10-16' that has been merged to\n         'refs/remotes/origin/codex/docs-rc-final-closeout-2026-10-16', but not yet merged to HEAD"
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-matrix-drift-2026-10-16",
+        "sha": "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a",
+        "proof_prs": [
+          171
+        ],
+        "command": [
+          "git",
+          "branch",
+          "-d",
+          "--",
+          "codex/docs-rc-matrix-drift-2026-10-16"
+        ],
+        "exit_code": 0,
+        "stdout": "Deleted branch codex/docs-rc-matrix-drift-2026-10-16 (was ec01042).",
+        "stderr": "warning: deleting branch 'codex/docs-rc-matrix-drift-2026-10-16' that has been merged to\n         'refs/remotes/origin/codex/docs-rc-matrix-drift-2026-10-16', but not yet merged to HEAD"
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-release-notes-2026-10-16",
+        "sha": "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472",
+        "proof_prs": [
+          173
+        ],
+        "command": [
+          "git",
+          "branch",
+          "-d",
+          "--",
+          "codex/docs-rc-release-notes-2026-10-16"
+        ],
+        "exit_code": 0,
+        "stdout": "Deleted branch codex/docs-rc-release-notes-2026-10-16 (was fe70ede).",
+        "stderr": "warning: deleting branch 'codex/docs-rc-release-notes-2026-10-16' that has been merged to\n         'refs/remotes/origin/codex/docs-rc-release-notes-2026-10-16', but not yet merged to HEAD"
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-tag-published-2026-10-16",
+        "sha": "94af361fa20bacd441506fd9d3be13e5d5aa8de1",
+        "proof_prs": [
+          174
+        ],
+        "command": [
+          "git",
+          "branch",
+          "-d",
+          "--",
+          "codex/docs-rc-tag-published-2026-10-16"
+        ],
+        "exit_code": 0,
+        "stdout": "Deleted branch codex/docs-rc-tag-published-2026-10-16 (was 94af361).",
+        "stderr": "warning: deleting branch 'codex/docs-rc-tag-published-2026-10-16' that has been merged to\n         'refs/remotes/origin/codex/docs-rc-tag-published-2026-10-16', but not yet merged to HEAD"
+      },
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/rc2-validation-2026-10-16",
+        "sha": "f5181a3ebe347624c468dbb36623421868c88857",
+        "proof_prs": [
+          177
+        ],
+        "command": [
+          "git",
+          "branch",
+          "-d",
+          "--",
+          "codex/rc2-validation-2026-10-16"
+        ],
+        "exit_code": 0,
+        "stdout": "Deleted branch codex/rc2-validation-2026-10-16 (was f5181a3).",
+        "stderr": "warning: deleting branch 'codex/rc2-validation-2026-10-16' that has been merged to\n         'refs/remotes/origin/codex/rc2-validation-2026-10-16', but not yet merged to HEAD"
+      }
+    ],
+    "remote_deletions": [
+      {
+        "repo": "npcink-governance-core",
+        "branch": "codex/docs-rc-acceptance-owner-handoff-2026-10-16",
+        "sha": "ed28f984153200a8362fcd0928bbb32b83636159",
+        "proof_prs": [
+          172
+        ],
+        "command": [
+          "git",
+          "-c",
+          "push.followTags=false",
+          "push",
+          "--no-follow-tags",
+          "--force-with-lease=refs/heads/codex/docs-rc-acceptance-owner-handoff-2026-10-16:ed28f984153200a8362fcd0928bbb32b83636159",
+          "--porcelain",
+          "origin",
+          ":refs/heads/codex/docs-rc-acceptance-owner-handoff-2026-10-16"
+        ],
+        "exit_code": 0,
+        "stdout": "To github.com:npcink/npcink-governance-core.git\n-\t:refs/heads/codex/docs-rc-acceptance-owner-handoff-2026-10-16\t[deleted]\nDone",
+        "stderr": ""
+      }
+    ],
+    "completed_at": "2026-10-17T05:35:37.007359+00:00"
+  },
+  "post_cleanup_before_documentation": {
+    "observed_at": "2026-10-17T05:35:54.316238+00:00",
+    "head": "92c4a02a137cd0990446b83ce30d8e1c9449ed75",
+    "branch": "codex/weekly-docs-merge-receipt-2026-10-17",
+    "local_heads": {
+      "refs/heads/codex/docs-classification-lane1-2026-10-16": "31279cf66174efd460e94554a0c0db21897d49e9",
+      "refs/heads/codex/docs-rc-identity-2026-10-16": "8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+      "refs/heads/codex/docs-rc-post-tag-drift-2026-10-16": "e93c330366c952c75db540465acfcd85eb2cd8ab",
+      "refs/heads/codex/docs-week-2026-10-13-followup": "418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+      "refs/heads/codex/execution-verification-reads": "e73f9684878bf10a43130f266c4ddd1d258ad161",
+      "refs/heads/codex/verification-reads-hardening": "f4b17dbae132c8be2abdf8f162180b39843074ad",
+      "refs/heads/codex/weekly-docs-merge-receipt-2026-10-17": "92c4a02a137cd0990446b83ce30d8e1c9449ed75",
+      "refs/heads/master": "9716cf5eaae259874c03ad40363382fd065aded2",
+      "refs/heads/zcode/docs-2026-10-11-ux-audit-arc": "3c45612c5ee15705374a19743b983dfce9a0258e"
+    },
+    "remote_heads": {
+      "refs/heads/codex/docs-classification-lane1-2026-10-16": "8d9626b7a07ffca7126b400a404a6db05145d1e9",
+      "refs/heads/codex/docs-publication-receipt-2026-10-17": "b07972c12f0fb822c674570f2cc5b22b2c8d8302",
+      "refs/heads/codex/docs-rc-acceptance-2026-10-16": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+      "refs/heads/codex/docs-rc-audit-refresh-2026-10-16": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+      "refs/heads/codex/docs-rc-final-closeout-2026-10-16": "19953429829f237551b752b8438e12b0f290a385",
+      "refs/heads/codex/docs-rc-identity-2026-10-16": "8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+      "refs/heads/codex/docs-rc-matrix-drift-2026-10-16": "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a",
+      "refs/heads/codex/docs-rc-post-tag-drift-2026-10-16": "3402eca486af5d979b80f9196315b4a772ed464d",
+      "refs/heads/codex/docs-rc-release-notes-2026-10-16": "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472",
+      "refs/heads/codex/docs-rc-tag-published-2026-10-16": "94af361fa20bacd441506fd9d3be13e5d5aa8de1",
+      "refs/heads/codex/docs-week-2026-10-13-followup": "418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+      "refs/heads/codex/rc2-validation-2026-10-16": "f5181a3ebe347624c468dbb36623421868c88857",
+      "refs/heads/dependabot/composer/phpstan/phpstan-2.3.1": "57624c2272f39d599ba620174ee05d0dc9415c0e",
+      "refs/heads/dependabot/github_actions/alibaba/open-code-review-1.12.13": "d3191f0dcdf6e2ed19417f17a6b82e2dc82c587b",
+      "refs/heads/master": "95ef21089f281c16f69f8898d7eb89c3e7671795"
+    },
+    "local_tags": [
+      "a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc refs/tags/pre-refactor-2026-07-14",
+      "8edb4ff1cd5564f389e8da490f183c7a56e0af5b refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1",
+      "7de7062a3b6308d6b59a47553f3345dd29fab94f refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1",
+      "589d82eb634efa92d3a41ecebf99c8dbfe7a19b2 refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2",
+      "2891b0b532c75da1dbf3426404f99dbeb2310b39 refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2",
+      "ffb5e5d6d7b68fa952288524a181ff688a7698ee refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0",
+      "4e4099cec8d0a88deb006eb1e0e916c485c7de65 refs/tags/v0.1.0",
+      "ad1d41effcb04a3e1578567e3d30068973344f40 refs/tags/v0.1.1",
+      "fa27aa2a13e01048da411c06cc1dff25abbd45a5 refs/tags/v0.2.0",
+      "da05076343d7975e95800eddf1e9719358ac82df refs/tags/v0.3.0"
+    ],
+    "remote_tags": {
+      "refs/tags/pre-refactor-2026-07-14": "a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc",
+      "refs/tags/pre-refactor-2026-07-14^{}": "5acce75322367d6d46b58665d35331039d4b301a",
+      "refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1": "8edb4ff1cd5564f389e8da490f183c7a56e0af5b",
+      "refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}": "5f79d32f8e50e381d1872d68c4f99c0e9ee77d51",
+      "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1": "7de7062a3b6308d6b59a47553f3345dd29fab94f",
+      "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}": "8f08f8ac3ce836293581f1bc8be040158de2980d",
+      "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2": "589d82eb634efa92d3a41ecebf99c8dbfe7a19b2",
+      "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2^{}": "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3",
+      "refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2": "2891b0b532c75da1dbf3426404f99dbeb2310b39",
+      "refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2^{}": "1829fb828ea4d9e8f7caabea74d5b89117824355",
+      "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0": "ffb5e5d6d7b68fa952288524a181ff688a7698ee",
+      "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0^{}": "ed28f984153200a8362fcd0928bbb32b83636159",
+      "refs/tags/v0.1.0": "4e4099cec8d0a88deb006eb1e0e916c485c7de65",
+      "refs/tags/v0.1.0^{}": "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3",
+      "refs/tags/v0.1.1": "ad1d41effcb04a3e1578567e3d30068973344f40",
+      "refs/tags/v0.1.1^{}": "1829fb828ea4d9e8f7caabea74d5b89117824355",
+      "refs/tags/v0.2.0": "fa27aa2a13e01048da411c06cc1dff25abbd45a5",
+      "refs/tags/v0.2.0^{}": "7f2c6bf5b3f810f65f2e3f2d396ecfdf78c07ee6",
+      "refs/tags/v0.3.0": "da05076343d7975e95800eddf1e9719358ac82df",
+      "refs/tags/v0.3.0^{}": "3357f916899ac4b013a753da6d99e712274f2221"
+    },
+    "worktrees": "worktree /Users/muze/gitee/npcink-governance-core\nHEAD 92c4a02a137cd0990446b83ce30d8e1c9449ed75\nbranch refs/heads/codex/weekly-docs-merge-receipt-2026-10-17",
+    "stashes": [],
+    "manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+    "exact_only_authorized_local_ref_delta": true,
+    "exact_only_authorized_remote_ref_delta": true,
+    "all_other_remote_source_refs_unchanged": true,
+    "all_local_remote_tags_unchanged": true,
+    "head_worktree_stashes_unchanged": true
+  },
+  "recovery_sources": [
+    {
+      "branch": "codex/docs-publication-receipt-2026-10-17",
+      "sha": "b07972c12f0fb822c674570f2cc5b22b2c8d8302",
+      "retained_source_ref": "refs/heads/codex/docs-publication-receipt-2026-10-17",
+      "source_location": "origin",
+      "local_recovery": "git branch <branch> <verified-sha>; fetch the retained origin source first only if object unavailable",
+      "remote_ref_recreation": "not performed; only the authorized remote target was deleted; its commit remains snapshot-tag-backed"
+    },
+    {
+      "branch": "codex/docs-rc-acceptance-2026-10-16",
+      "sha": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+      "retained_source_ref": "refs/heads/codex/docs-rc-acceptance-2026-10-16",
+      "source_location": "origin",
+      "local_recovery": "git branch <branch> <verified-sha>; fetch the retained origin source first only if object unavailable",
+      "remote_ref_recreation": "not performed; only the authorized remote target was deleted; its commit remains snapshot-tag-backed"
+    },
+    {
+      "branch": "codex/docs-rc-acceptance-owner-handoff-2026-10-16",
+      "sha": "ed28f984153200a8362fcd0928bbb32b83636159",
+      "retained_source_ref": "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0^{}",
+      "source_location": "origin",
+      "local_recovery": "git branch <branch> <verified-sha>; fetch the retained origin source first only if object unavailable",
+      "remote_ref_recreation": "not performed; only the authorized remote target was deleted; its commit remains snapshot-tag-backed"
+    },
+    {
+      "branch": "codex/docs-rc-audit-refresh-2026-10-16",
+      "sha": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+      "retained_source_ref": "refs/heads/codex/docs-rc-audit-refresh-2026-10-16",
+      "source_location": "origin",
+      "local_recovery": "git branch <branch> <verified-sha>; fetch the retained origin source first only if object unavailable",
+      "remote_ref_recreation": "not performed; only the authorized remote target was deleted; its commit remains snapshot-tag-backed"
+    },
+    {
+      "branch": "codex/docs-rc-final-closeout-2026-10-16",
+      "sha": "19953429829f237551b752b8438e12b0f290a385",
+      "retained_source_ref": "refs/heads/codex/docs-rc-final-closeout-2026-10-16",
+      "source_location": "origin",
+      "local_recovery": "git branch <branch> <verified-sha>; fetch the retained origin source first only if object unavailable",
+      "remote_ref_recreation": "not performed; only the authorized remote target was deleted; its commit remains snapshot-tag-backed"
+    },
+    {
+      "branch": "codex/docs-rc-matrix-drift-2026-10-16",
+      "sha": "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a",
+      "retained_source_ref": "refs/heads/codex/docs-rc-matrix-drift-2026-10-16",
+      "source_location": "origin",
+      "local_recovery": "git branch <branch> <verified-sha>; fetch the retained origin source first only if object unavailable",
+      "remote_ref_recreation": "not performed; only the authorized remote target was deleted; its commit remains snapshot-tag-backed"
+    },
+    {
+      "branch": "codex/docs-rc-release-notes-2026-10-16",
+      "sha": "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472",
+      "retained_source_ref": "refs/heads/codex/docs-rc-release-notes-2026-10-16",
+      "source_location": "origin",
+      "local_recovery": "git branch <branch> <verified-sha>; fetch the retained origin source first only if object unavailable",
+      "remote_ref_recreation": "not performed; only the authorized remote target was deleted; its commit remains snapshot-tag-backed"
+    },
+    {
+      "branch": "codex/docs-rc-tag-published-2026-10-16",
+      "sha": "94af361fa20bacd441506fd9d3be13e5d5aa8de1",
+      "retained_source_ref": "refs/heads/codex/docs-rc-tag-published-2026-10-16",
+      "source_location": "origin",
+      "local_recovery": "git branch <branch> <verified-sha>; fetch the retained origin source first only if object unavailable",
+      "remote_ref_recreation": "not performed; only the authorized remote target was deleted; its commit remains snapshot-tag-backed"
+    },
+    {
+      "branch": "codex/rc2-validation-2026-10-16",
+      "sha": "f5181a3ebe347624c468dbb36623421868c88857",
+      "retained_source_ref": "refs/heads/codex/rc2-validation-2026-10-16",
+      "source_location": "origin",
+      "local_recovery": "git branch <branch> <verified-sha>; fetch the retained origin source first only if object unavailable",
+      "remote_ref_recreation": "not performed; only the authorized remote target was deleted; its commit remains snapshot-tag-backed"
+    }
+  ],
+  "outcome": {
+    "local_branches_before": 18,
+    "local_branches_after": 9,
+    "remote_branches_before": 16,
+    "remote_branches_after": 15,
+    "deleted_local": 9,
+    "deleted_remote": 1,
+    "local_forced_deletion": false,
+    "remote_expected_sha_lease": true,
+    "tag_operations": [],
+    "other_remote_refs_changed": false,
+    "worktree_removed": false,
+    "stash_removed": false,
+    "sibling_repository_mutation": false,
+    "owner_message_sent": false,
+    "manifest_changed": false,
+    "new_candidate_selected": false,
+    "matrix_or_acceptance_rerun": false,
+    "production_or_m4_operation": false
+  },
+  "remaining_work": "Other-owner candidates, Cloud auxiliary worktree, Toolbox stash, unresolved local source and all open dependency PRs remain outside this authorization",
+  "verification": {
+    "ref_delta_and_exact_source_preservation": "passed",
+    "tags_manifest_head_worktrees_stashes": "passed",
+    "documentation_gate": {
+      "composer_test_all": "passed: 55 PHPUnit tests / 207 assertions and all component gates",
+      "composer_validate": "passed",
+      "json_and_documentation_links": "passed",
+      "breadcrumb_entries": 10,
+      "deleted_branch_config_absent": "passed",
+      "git_diff_check": "passed",
+      "manifest_hash": "unchanged"
+    }
+  }
+}
