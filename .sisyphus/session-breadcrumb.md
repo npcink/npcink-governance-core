@@ -5,23 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Historical post-PR docs coverage reconciled; two doc follow-ups
-
-- **Reviewed**: ten local refs; six post-PR docs commits and one independent
-  UX summary. Five originals have exact replay patch IDs and merged PR/tree
-  proof: 418a081d→#167, 4a23d358/31279cf6→#168, 8d6083e2→#169,
-  e93c3303→#176. No duplicate publication needed; original refs stay retained.
-- **ADR**: e73f9684's static-object limitation is semantically carried by
-  ADR-013 / #135/#136/#138/#139, not an unmerged code feature. Keep source;
-  narrow follow-up corrects ADR-013's reference to absent ADR-012 Limitations.
-- **UX**: 3c45612c synthesis remains local, while #151–#154 implementation is
-  merged. Salvage historical recap/lessons from current baseline; do not replay
-  stale breadcrumb moves, pre-tag blockers or current ledger/package claims.
-- **Record**: docs/history/core-historical-doc-coverage-2026-10-17.md and JSON.
-  This audit joins local 89adeb8 for weekly batching. No source/ADR/ref/tag
-  change, cleanup, owner message, new PR, matrix, acceptance or runtime action;
-  preserve other owner work and all original source refs.
-
 # 2026-10-17 - Historical UX synthesis and ADR reference prepared for weekly PR
 
 - **Scope**: Core documentation only, current master `289ce777` plus the two
@@ -156,3 +139,18 @@ Older history: `.sisyphus/archive/`.
   weekly batch, no recursive PR. Published source topic retained.
   Merged-SHA Static contracts passed (run39016832880); final receipt docs
   metadata/default/wporg and integrity gates recorded at closeout.
+
+# 2026-10-17 - Adapter channel pending; reconciliation state now progresses
+
+- **Read-only**: update API16:23 still offers0.4.2/no entry, info/package0.4.3.
+  WP SHORTINIT/Cloud read-only snapshots16:24 show stable1999/1999 and no gap.
+- **Scan**: last_reconciled08:10:45Z/cursor2018-07-12 ID588, next08:47:21Z;
+  total_sent+50, buffer empty, no active run. Callback progress now evidenced;
+  1949 public keys beyond cursor. Full scan/direct natural-trigger provenance
+  not proved; newer succeeded Cloud runs have null operation-source projection.
+- **Record**: docs/history/adapter-channel-natural-reconciliation-2026-10-17.md
+  + JSON, weekly batch with post-#182 receipt. Two-target recovery stays closed;
+  other owner work/original refs/tags/RC2 retained. No task/cron/refresh/flush,
+  deployment, owner message, automation or tag operation performed.
+  Core gates55/207, metadata, JSON/links/breadcrumb/diff/manifest passed;
+  original branch/tag/resource and sibling HEAD/status recheck unchanged.

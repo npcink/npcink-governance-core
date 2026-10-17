@@ -5,6 +5,21 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Adapter channel and reconciliation evidence refreshed — 2026-10-17
+
+[Fresh classified evidence](history/adapter-channel-natural-reconciliation-2026-10-17.md):
+16:23 Beijing update probes still do not offer Adapter0.4.3, while public
+package/info remain0.4.3. At 16:24, public coverage remains1999/1999 with no gap.
+Reconciliation now has new state evidence: last_reconciled08:10:45Z, nonempty
+cursor at ID588, next event08:47:21Z, total_sent +50, empty buffer/no active run.
+
+The two-object recovery stays closed. Callback/cursor progress supersedes old
+no-progress status, but 1949 public keys remain beyond cursor; full catch-up
+is not complete. Direct natural-cron invocation attribution is not established
+from null-source Cloud run projections. Observe later natural progression;
+no trigger/monitor was created here. Other owner work, originals/tags/RC2
+retained. Local docs batching with post-#182 receipt, no new PR or tag action.
+
 ## Four recovery documentation commits published — 2026-10-17
 
 [PR #182](https://github.com/npcink/npcink-governance-core/pull/182) published
