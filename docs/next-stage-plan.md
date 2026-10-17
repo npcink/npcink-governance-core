@@ -5,6 +5,23 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Other-owner closeout refreshed — 2026-10-17
+
+[The current classified checklist](history/other-owner-closeout-refresh-2026-10-17.md)
+supersedes older pending-owner claims: Cloud #1126/#1127, Toolkit #262,
+Toolbox #274, Eval Lab #111 and Adapter #119/#120 are merged. Seven default
+roots are clean at observation, but Addon is two upstream commits behind;
+all seven live heads now differ from fixed RC2. No new gate run is implied. Final recheck saw a parallel Adapter `v0.4.3`
+publication at `d3b114f7`; this audit performed no tag operation. Its owner
+release closeout remains to verify; the stack snapshot/manifest are unchanged.
+
+Remaining owner work includes Cloud budget/real-mail/site/writing acceptance,
+CVE-watch triage, independent human quality gold/calibration, legacy source,
+dependency PRs and owner housekeeping. User decisions concern paid Provider
+scope/budget, human validation scope, any future candidate and cleanup scope.
+Preserve all original branches/resources and tags. New audit and `f764306b`
+receipt await weekly batching; no sibling mutation or owner message occurred.
+
 ## UX retrospective and ADR correction published — 2026-10-17
 
 [PR #180](https://github.com/npcink/npcink-governance-core/pull/180) merged as

@@ -1,0 +1,2688 @@
+{
+  "scope": "read-only other-owner closeout refresh; Core docs only",
+  "snapshots": [
+    {
+      "observed_at": "2026-10-17T06:30:26.206791+00:00",
+      "repositories": [
+        {
+          "repo": "npcink-governance-core",
+          "observed_at": "2026-10-17T06:30:25.667428+00:00",
+          "head": "f764306b0c5b2f8f650521c5c68d02f54234a169",
+          "branch": "codex/ux-history-merge-receipt-2026-10-17",
+          "status": "",
+          "remote_refs": {
+            "refs/heads/codex/audit-weekly-docs-receipt-2026-10-17": "27c6c570540f906c8d4653836ed16dd17986c905",
+            "refs/heads/codex/docs-classification-lane1-2026-10-16": "8d9626b7a07ffca7126b400a404a6db05145d1e9",
+            "refs/heads/codex/docs-publication-receipt-2026-10-17": "b07972c12f0fb822c674570f2cc5b22b2c8d8302",
+            "refs/heads/codex/docs-rc-acceptance-2026-10-16": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+            "refs/heads/codex/docs-rc-audit-refresh-2026-10-16": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+            "refs/heads/codex/docs-rc-final-closeout-2026-10-16": "19953429829f237551b752b8438e12b0f290a385",
+            "refs/heads/codex/docs-rc-identity-2026-10-16": "8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+            "refs/heads/codex/docs-rc-matrix-drift-2026-10-16": "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a",
+            "refs/heads/codex/docs-rc-post-tag-drift-2026-10-16": "3402eca486af5d979b80f9196315b4a772ed464d",
+            "refs/heads/codex/docs-rc-release-notes-2026-10-16": "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472",
+            "refs/heads/codex/docs-rc-tag-published-2026-10-16": "94af361fa20bacd441506fd9d3be13e5d5aa8de1",
+            "refs/heads/codex/docs-week-2026-10-13-followup": "418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+            "refs/heads/codex/rc2-validation-2026-10-16": "f5181a3ebe347624c468dbb36623421868c88857",
+            "refs/heads/codex/weekly-docs-merge-receipt-2026-10-17": "8df588847af0534f28755ff2a955df7748ceb0da",
+            "refs/heads/dependabot/composer/phpstan/phpstan-2.3.1": "57624c2272f39d599ba620174ee05d0dc9415c0e",
+            "refs/heads/dependabot/github_actions/alibaba/open-code-review-1.12.13": "d3191f0dcdf6e2ed19417f17a6b82e2dc82c587b",
+            "refs/heads/master": "c6031aff5f15b0ab568479e1099314c1e901b6a8",
+            "refs/tags/pre-refactor-2026-07-14": "a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc",
+            "refs/tags/pre-refactor-2026-07-14^{}": "5acce75322367d6d46b58665d35331039d4b301a",
+            "refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1": "8edb4ff1cd5564f389e8da490f183c7a56e0af5b",
+            "refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}": "5f79d32f8e50e381d1872d68c4f99c0e9ee77d51",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1": "7de7062a3b6308d6b59a47553f3345dd29fab94f",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}": "8f08f8ac3ce836293581f1bc8be040158de2980d",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2": "589d82eb634efa92d3a41ecebf99c8dbfe7a19b2",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2^{}": "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2": "2891b0b532c75da1dbf3426404f99dbeb2310b39",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2^{}": "1829fb828ea4d9e8f7caabea74d5b89117824355",
+            "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0": "ffb5e5d6d7b68fa952288524a181ff688a7698ee",
+            "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0^{}": "ed28f984153200a8362fcd0928bbb32b83636159",
+            "refs/tags/v0.1.0": "4e4099cec8d0a88deb006eb1e0e916c485c7de65",
+            "refs/tags/v0.1.0^{}": "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3",
+            "refs/tags/v0.1.1": "ad1d41effcb04a3e1578567e3d30068973344f40",
+            "refs/tags/v0.1.1^{}": "1829fb828ea4d9e8f7caabea74d5b89117824355",
+            "refs/tags/v0.2.0": "fa27aa2a13e01048da411c06cc1dff25abbd45a5",
+            "refs/tags/v0.2.0^{}": "7f2c6bf5b3f810f65f2e3f2d396ecfdf78c07ee6",
+            "refs/tags/v0.3.0": "da05076343d7975e95800eddf1e9719358ac82df",
+            "refs/tags/v0.3.0^{}": "3357f916899ac4b013a753da6d99e712274f2221"
+          },
+          "local_heads": [
+            "refs/heads/codex/audit-weekly-docs-receipt-2026-10-17 27c6c570540f906c8d4653836ed16dd17986c905",
+            "refs/heads/codex/docs-classification-lane1-2026-10-16 31279cf66174efd460e94554a0c0db21897d49e9",
+            "refs/heads/codex/docs-rc-identity-2026-10-16 8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+            "refs/heads/codex/docs-rc-post-tag-drift-2026-10-16 e93c330366c952c75db540465acfcd85eb2cd8ab",
+            "refs/heads/codex/docs-week-2026-10-13-followup 418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+            "refs/heads/codex/execution-verification-reads e73f9684878bf10a43130f266c4ddd1d258ad161",
+            "refs/heads/codex/ux-history-merge-receipt-2026-10-17 f764306b0c5b2f8f650521c5c68d02f54234a169",
+            "refs/heads/codex/verification-reads-hardening f4b17dbae132c8be2abdf8f162180b39843074ad",
+            "refs/heads/codex/weekly-docs-merge-receipt-2026-10-17 8df588847af0534f28755ff2a955df7748ceb0da",
+            "refs/heads/master 9716cf5eaae259874c03ad40363382fd065aded2",
+            "refs/heads/zcode/docs-2026-10-11-ux-audit-arc 3c45612c5ee15705374a19743b983dfce9a0258e"
+          ],
+          "local_tags": [
+            "refs/tags/pre-refactor-2026-07-14 a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc",
+            "refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1 8edb4ff1cd5564f389e8da490f183c7a56e0af5b",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1 7de7062a3b6308d6b59a47553f3345dd29fab94f",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2 589d82eb634efa92d3a41ecebf99c8dbfe7a19b2",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2 2891b0b532c75da1dbf3426404f99dbeb2310b39",
+            "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0 ffb5e5d6d7b68fa952288524a181ff688a7698ee",
+            "refs/tags/v0.1.0 4e4099cec8d0a88deb006eb1e0e916c485c7de65",
+            "refs/tags/v0.1.1 ad1d41effcb04a3e1578567e3d30068973344f40",
+            "refs/tags/v0.2.0 fa27aa2a13e01048da411c06cc1dff25abbd45a5",
+            "refs/tags/v0.3.0 da05076343d7975e95800eddf1e9719358ac82df"
+          ],
+          "worktrees": "worktree /Users/muze/gitee/npcink-governance-core\nHEAD f764306b0c5b2f8f650521c5c68d02f54234a169\nbranch refs/heads/codex/ux-history-merge-receipt-2026-10-17\n\n",
+          "stashes": "",
+          "tracked_fingerprint": "8069015a1a7292a83c4d4d9284b20e0031c3595362d8f4762f4fc508e96691ba",
+          "pr_query_unavailable": false,
+          "open_prs": [
+            {
+              "headRefName": "dependabot/composer/phpstan/phpstan-2.3.1",
+              "headRefOid": "57624c2272f39d599ba620174ee05d0dc9415c0e",
+              "number": 156,
+              "title": "build(deps-dev): bump phpstan/phpstan from 2.2.17 to 2.3.1",
+              "url": "https://github.com/npcink/npcink-governance-core/pull/156",
+              "check_failures": [],
+              "check_pending": [],
+              "checks_count": 3
+            },
+            {
+              "headRefName": "dependabot/github_actions/alibaba/open-code-review-1.12.13",
+              "headRefOid": "d3191f0dcdf6e2ed19417f17a6b82e2dc82c587b",
+              "number": 155,
+              "title": "build(deps): bump alibaba/open-code-review from 1.12.12 to 1.12.13",
+              "url": "https://github.com/npcink/npcink-governance-core/pull/155",
+              "check_failures": [],
+              "check_pending": [],
+              "checks_count": 3
+            }
+          ],
+          "head_checks_unavailable": true,
+          "head_checks": []
+        },
+        {
+          "repo": "npcink-ai-cloud",
+          "observed_at": "2026-10-17T06:30:26.112136+00:00",
+          "head": "6fddd93d03b712431c742eea30e722bbc87fafb6",
+          "branch": "master",
+          "status": "",
+          "remote_refs": {
+            "refs/heads/dependabot/github_actions/alibaba/open-code-review-1.12.13": "db23658689f4697eb17b161d8651d3f63dbd8598",
+            "refs/heads/dependabot/npm_and_yarn/autoprefixer-10.6.1": "97363c8dd2aa0d5c340bdb65b4523a28f246fb42",
+            "refs/heads/dependabot/npm_and_yarn/tailwind-merge-3.7.0": "4b2cb3202b187445cc1a536e7c79256bf67d4c32",
+            "refs/heads/dependabot/uv/fastapi-0.143.0": "ed379fff6ec1d442cd864f52f7600821fbbc5280",
+            "refs/heads/dependabot/uv/ruff-0.16.10": "cd8ae9e27905e7e303f9ce8ba139f1177567da6e",
+            "refs/heads/master": "6fddd93d03b712431c742eea30e722bbc87fafb6",
+            "refs/heads/production": "2af00741a2ce06ea56a78e62864d4a35d86c66ab",
+            "refs/tags/pre-refactor-dev-2026-07-14": "9450572bdd6257f011cd9574de08c1208e2afd9f",
+            "refs/tags/pre-refactor-dev-2026-07-14^{}": "8cd73cde7647c9866f541a920f6d98fe2c25fcc8",
+            "refs/tags/pre-refactor-production-2026-07-14": "2611bb0205bbe9a96a875d963025067eac7bafb6",
+            "refs/tags/pre-refactor-production-2026-07-14^{}": "251ad3cb183f40ddb5bd0d22b1aa8e80b6093770",
+            "refs/tags/release-candidate-2026-07-28": "2924c2cb93dec3b89dc798dca60b626b1667260a",
+            "refs/tags/release-candidate-2026-07-28^{}": "db9c5edfaf34572e49b2d42411bf21e01781cfdf"
+          },
+          "local_heads": [
+            "refs/heads/codex/site-anchor-performance d7741eed15b9c590bf3836a4816d46bb3d9b7cc1",
+            "refs/heads/codex/usage-rollup-health-reuse 1937404d139292057e44983162b6be2079a58c56",
+            "refs/heads/codex/user-center-synthesis-20261017 c8469e26f1c50b5036d3ab6ea0d9bd59c7c6c938",
+            "refs/heads/codex/zero-paid-critical-regression-20261017 2d491ca7f3221b0748ee73871c94b5a47e03e8b2",
+            "refs/heads/master 6fddd93d03b712431c742eea30e722bbc87fafb6",
+            "refs/heads/production 2af00741a2ce06ea56a78e62864d4a35d86c66ab"
+          ],
+          "local_tags": [
+            "refs/tags/pre-refactor-dev-2026-07-14 9450572bdd6257f011cd9574de08c1208e2afd9f",
+            "refs/tags/pre-refactor-production-2026-07-14 2611bb0205bbe9a96a875d963025067eac7bafb6",
+            "refs/tags/release-candidate-2026-07-28 2924c2cb93dec3b89dc798dca60b626b1667260a",
+            "refs/tags/restore-before-admin-overview-phase1-20260701 ea6a2eddb4faf7c6f15944635ae05b8aefe63978"
+          ],
+          "worktrees": "worktree /Users/muze/gitee/npcink-ai-cloud\nHEAD 6fddd93d03b712431c742eea30e722bbc87fafb6\nbranch refs/heads/master\n\nworktree /Users/muze/gitee/.worktrees/cloud-site-anchor-performance\nHEAD ea62b3f2eea225eafd72cbd55296e69e998af863\ndetached\n\n",
+          "stashes": "",
+          "tracked_fingerprint": "f2dd4df6b66290d6e3f892a6efcf87af89a9ef90bc73c66f7c5fa8ed30d04d9c",
+          "pr_query_unavailable": false,
+          "open_prs": [
+            {
+              "headRefName": "dependabot/uv/ruff-0.16.10",
+              "headRefOid": "cd8ae9e27905e7e303f9ce8ba139f1177567da6e",
+              "number": 1105,
+              "title": "build(deps): Bump ruff from 0.16.8 to 0.16.10",
+              "url": "https://github.com/npcink/npcink-ai-cloud/pull/1105",
+              "check_failures": [],
+              "check_pending": [],
+              "checks_count": 30
+            },
+            {
+              "headRefName": "dependabot/uv/fastapi-0.143.0",
+              "headRefOid": "ed379fff6ec1d442cd864f52f7600821fbbc5280",
+              "number": 1104,
+              "title": "build(deps): Bump fastapi from 0.141.1 to 0.143.0",
+              "url": "https://github.com/npcink/npcink-ai-cloud/pull/1104",
+              "check_failures": [],
+              "check_pending": [],
+              "checks_count": 30
+            },
+            {
+              "headRefName": "dependabot/npm_and_yarn/tailwind-merge-3.7.0",
+              "headRefOid": "4b2cb3202b187445cc1a536e7c79256bf67d4c32",
+              "number": 1103,
+              "title": "build(deps): Bump tailwind-merge from 3.5.0 to 3.7.0",
+              "url": "https://github.com/npcink/npcink-ai-cloud/pull/1103",
+              "check_failures": [
+                "code-review"
+              ],
+              "check_pending": [],
+              "checks_count": 31
+            },
+            {
+              "headRefName": "dependabot/npm_and_yarn/autoprefixer-10.6.1",
+              "headRefOid": "97363c8dd2aa0d5c340bdb65b4523a28f246fb42",
+              "number": 1102,
+              "title": "build(deps-dev): Bump autoprefixer from 10.4.20 to 10.6.1",
+              "url": "https://github.com/npcink/npcink-ai-cloud/pull/1102",
+              "check_failures": [
+                "code-review"
+              ],
+              "check_pending": [],
+              "checks_count": 31
+            },
+            {
+              "headRefName": "dependabot/github_actions/alibaba/open-code-review-1.12.13",
+              "headRefOid": "db23658689f4697eb17b161d8651d3f63dbd8598",
+              "number": 1101,
+              "title": "build(deps): Bump alibaba/open-code-review from 1.12.11 to 1.13.0",
+              "url": "https://github.com/npcink/npcink-ai-cloud/pull/1101",
+              "check_failures": [],
+              "check_pending": [],
+              "checks_count": 31
+            }
+          ],
+          "head_checks_unavailable": false,
+          "head_checks": [
+            {
+              "name": "CI observability",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117323699036",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117323686308",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Production deploy bundle",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322490736",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-targeted",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322490070",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-docs",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322489683",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Python 3.14 Alpine production image smoke",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322489633",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-pytest (4)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488927",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-static",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488921",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-pytest (3)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488854",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "PostgreSQL 16 encryption cutover regression",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488824",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-pytest (1)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488823",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-pytest (2)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488808",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Specialized changed-domain quality gates",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322464554",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "static-terms",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322464189",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Authoritative CVE range precheck",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322463278",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "frontend",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322463275",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Documentation reachability",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322463257",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-scope",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322463256",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Python dependency audit",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322463251",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Production PR CI evidence",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322443753",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Production release plan",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322443709",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Production PR base contract precheck",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322443575",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Dockerfile COPY contract precheck",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322442794",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "classify",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322442735",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Analyze (python)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356458/job/117322442689",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Analyze (javascript-typescript)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356458/job/117322442582",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Secret scan",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322442558",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            }
+          ]
+        },
+        {
+          "repo": "npcink-cloud-addon",
+          "observed_at": "2026-10-17T06:30:23.977796+00:00",
+          "head": "b80b966151f26f114271a5534082c336ab2fea50",
+          "branch": "master",
+          "status": "",
+          "remote_refs": {
+            "refs/heads/codex/0-4-1-stale-entitlement": "f379aadb6be38471a02d64de0db9ea79ff7c17f0",
+            "refs/heads/codex/041-final-release-record": "f6b95295b4cfb682f78809bfde978d72d713d56c",
+            "refs/heads/codex/041-maintenance-closeout-20261015": "014fde9f44620320a8940b0e1f4e998cc04d3f00",
+            "refs/heads/codex/041-refresh-closeout": "3d42183d7782715e66485c3186f3bb90d5c58dea",
+            "refs/heads/codex/docs-next-session-handoff-20261016": "c26f43dbbd340722a0835b4037f33ab2f483ff31",
+            "refs/heads/codex/glotpress-closeout-20261012": "2f343a6e35281489e1ccf5ffc914cfa63cb88dc0",
+            "refs/heads/codex/ocr-ci-diagnostics-20261013": "a8431153fc71049b1f246965f4016769591a7195",
+            "refs/heads/codex/ocr-glm-thinking-compat-20261013": "000ca35f84f7896cc039ddae1485e483fbb863b3",
+            "refs/heads/codex/provider-acceptance-closeout-20261012": "582177c2c2586cf3ed2e945f3e6476e86c0e0b37",
+            "refs/heads/codex/recommendation-feedback-metadata": "9637ca592f4570bd292b107144e61b4f8271cbae",
+            "refs/heads/codex/release-status-20261013": "dbddd65c9a970615bb556006d3e5998bb9ceb51a",
+            "refs/heads/codex/site-knowledge-recovery-20261015": "4e8c8e65f0ae272a170ff63f45057eeddc6cb63f",
+            "refs/heads/codex/ux-closeout-20261012": "1209f5105ae94a48c9b7f65af77c952e09733f52",
+            "refs/heads/codex/ux-tail-20261012": "e55a04e0a3cdd6ee978916d3eaa30d8ecfa87e6c",
+            "refs/heads/docs/ux-paydown-handoff-2026-10-12": "387687620db4886c42cd4d5c63b9dab60d0f9426",
+            "refs/heads/fix/user-facing-ux-paydown-round": "4b72b953432557ec5b712b8c83c021ff8a7b571e",
+            "refs/heads/master": "3e650d1bc74d9428d6671f27dd668938c6b6078b",
+            "refs/tags/0.2.0": "f2a8dd61e6f676382444c7e1b884361a68ad31a9",
+            "refs/tags/0.2.0^{}": "7b85c903b2ffc94a5e91ec027d9d900be5176aa5",
+            "refs/tags/0.3.0": "200ecf966494e531e57ab29c7706eef41bb9e1de",
+            "refs/tags/0.3.0^{}": "8c56aae8a7665954db3fbf0cc16500db6068566e",
+            "refs/tags/0.4.0": "35915cf4e5a9f13d6808ab3052885793f47cb190",
+            "refs/tags/archive/wp-ai-localization-fix-20260928": "0f643ff85842162d8cc8aa6d42a382f5e81c9ef2",
+            "refs/tags/pre-refactor-2026-07-14": "bae0a4dfd59042482179766f743b4ffcaca876f7",
+            "refs/tags/pre-refactor-2026-07-14^{}": "9c46f4bff7a715a8eacd8e787705de0ea62e39ed"
+          },
+          "local_heads": [
+            "refs/heads/codex/recommendation-feedback-metadata 9637ca592f4570bd292b107144e61b4f8271cbae",
+            "refs/heads/master b80b966151f26f114271a5534082c336ab2fea50"
+          ],
+          "local_tags": [
+            "refs/tags/0.2.0 265f001f0afb303206d0edd72f1f4b8f20dd5ef9",
+            "refs/tags/0.3.0 200ecf966494e531e57ab29c7706eef41bb9e1de",
+            "refs/tags/0.4.0 35915cf4e5a9f13d6808ab3052885793f47cb190",
+            "refs/tags/archive/wp-ai-localization-fix-20260928 0f643ff85842162d8cc8aa6d42a382f5e81c9ef2",
+            "refs/tags/pre-refactor-2026-07-14 bae0a4dfd59042482179766f743b4ffcaca876f7"
+          ],
+          "worktrees": "worktree /Users/muze/gitee/npcink-cloud-addon\nHEAD b80b966151f26f114271a5534082c336ab2fea50\nbranch refs/heads/master\n\n",
+          "stashes": "",
+          "tracked_fingerprint": "cd92896a841335b9d152e90d01b7d7da6c22d59028353063b68ea605b69af293",
+          "pr_query_unavailable": false,
+          "open_prs": [],
+          "head_checks_unavailable": false,
+          "head_checks": [
+            {
+              "name": "WordPress AI compatibility blocking lanes",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271201788",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "PHP contracts",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271172050",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "WordPress AI stable-primary / PHP 8.4",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070538",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "WordPress AI stable-regression / PHP 8.2",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070534",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "PHP 8.4 contracts",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070523",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "WordPress AI upstream-warning / PHP 8.2",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070512",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "WordPress AI stable-primary / PHP 8.0",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070481",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "PHP 8.0 contracts",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070475",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "PHP 8.2 contracts",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070444",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "WordPress AI stable-primary / PHP 8.2",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070438",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "Release static gates",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070292",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "PHPStan level 5 (advisory)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323108/job/117271069417",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            }
+          ]
+        },
+        {
+          "repo": "npcink-ai-client-adapter",
+          "observed_at": "2026-10-17T06:30:21.768426+00:00",
+          "head": "4188be8b528b867f09e70526f0279ccb530e7edc",
+          "branch": "master",
+          "status": "",
+          "remote_refs": {
+            "refs/heads/codex/m4-pgy-stack-rc-docs-2026-10-15": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+            "refs/heads/master": "4188be8b528b867f09e70526f0279ccb530e7edc",
+            "refs/tags/openclaw-grant-redeem-mvp": "8af2c243952cd1589dcce65aed7ed565f656da06",
+            "refs/tags/pre-refactor-2026-07-14": "afe1d8ceac39c6936df061073de6309bb5982d3a",
+            "refs/tags/pre-refactor-2026-07-14^{}": "84554be1d9cccb5b6794404803f475162ee7ea00",
+            "refs/tags/v0.2.0": "9a12b11953acbf7151e4c89ec97ed2b84588d65c",
+            "refs/tags/v0.2.0^{}": "3c4ea71f41ccb013341e12498520510ffcefa81f",
+            "refs/tags/v0.2.1": "0906755ef02ba9345eb108d5ca78a8fe22ac0077",
+            "refs/tags/v0.2.1^{}": "452d738c05972302cf6138f38184cfc5cec7cea6",
+            "refs/tags/v0.3.0": "605f6fe7b57fec54bc523c95a40dd62fc73dca82",
+            "refs/tags/v0.3.0^{}": "205ebda976aa51afd27c6d633082360194ba902b",
+            "refs/tags/v0.3.1": "9c5b8d6f6e41a482c978639cebf9bbf769adc0e6",
+            "refs/tags/v0.3.2": "32737cca76d71e99c96f6c63775884ab4e767197",
+            "refs/tags/v0.3.2^{}": "65f1012c5f4072dd6c1251f2e2db98d5e836c598",
+            "refs/tags/v0.3.3": "57517fab449fa04e19dc30513e36ec57435564ed",
+            "refs/tags/v0.3.3^{}": "8800b8e4c4651c5d4dff759c3050135d74968927",
+            "refs/tags/v0.4.0": "34b21582d6418b3fcf93f3efca94a71a62fde16e",
+            "refs/tags/v0.4.0^{}": "7800b3da2f20637ffea621274e033a061d532e93",
+            "refs/tags/v0.4.1": "f8f8b8411ef5c48bb2c98e87528b88d464f622ce",
+            "refs/tags/v0.4.2": "dcd7188c243cf03d4c2824588d489c7e86116965",
+            "refs/tags/v0.4.2^{}": "963318a6f99b4837a48290fb9abbdb7716f9d079"
+          },
+          "local_heads": [
+            "refs/heads/master 4188be8b528b867f09e70526f0279ccb530e7edc"
+          ],
+          "local_tags": [
+            "refs/tags/openclaw-grant-redeem-mvp 8af2c243952cd1589dcce65aed7ed565f656da06",
+            "refs/tags/pre-refactor-2026-07-14 afe1d8ceac39c6936df061073de6309bb5982d3a",
+            "refs/tags/v0.2.0 9a12b11953acbf7151e4c89ec97ed2b84588d65c",
+            "refs/tags/v0.2.1 0906755ef02ba9345eb108d5ca78a8fe22ac0077",
+            "refs/tags/v0.3.0 605f6fe7b57fec54bc523c95a40dd62fc73dca82",
+            "refs/tags/v0.3.1 9c5b8d6f6e41a482c978639cebf9bbf769adc0e6",
+            "refs/tags/v0.3.2 32737cca76d71e99c96f6c63775884ab4e767197",
+            "refs/tags/v0.3.3 57517fab449fa04e19dc30513e36ec57435564ed",
+            "refs/tags/v0.4.0 34b21582d6418b3fcf93f3efca94a71a62fde16e",
+            "refs/tags/v0.4.1 f8f8b8411ef5c48bb2c98e87528b88d464f622ce",
+            "refs/tags/v0.4.2 dcd7188c243cf03d4c2824588d489c7e86116965"
+          ],
+          "worktrees": "worktree /Users/muze/gitee/npcink-ai-client-adapter\nHEAD 4188be8b528b867f09e70526f0279ccb530e7edc\nbranch refs/heads/master\n\n",
+          "stashes": "",
+          "tracked_fingerprint": "eef27b013d43700bf776abd972a3aee88dbb5dbf11a03e9d5308289dae0fdb0d",
+          "pr_query_unavailable": false,
+          "open_prs": [],
+          "head_checks_unavailable": false,
+          "head_checks": [
+            {
+              "name": "Static analysis (advisory)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-client-adapter/actions/runs/39009700473/job/117329381126",
+              "sha": "4188be8b528b867f09e70526f0279ccb530e7edc"
+            },
+            {
+              "name": "PHP contracts",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-client-adapter/actions/runs/39009700473/job/117329380916",
+              "sha": "4188be8b528b867f09e70526f0279ccb530e7edc"
+            }
+          ]
+        },
+        {
+          "repo": "npcink-abilities-toolkit",
+          "observed_at": "2026-10-17T06:30:25.538738+00:00",
+          "head": "b09ad3008a027782f672d929e79c77ac7a01333e",
+          "branch": "master",
+          "status": "",
+          "remote_refs": {
+            "refs/heads/master": "b09ad3008a027782f672d929e79c77ac7a01333e",
+            "refs/tags/0.2.0": "58c5b363c7a67a8e75aea41efee3b8020a2192ab",
+            "refs/tags/0.2.0^{}": "7ecda76c3c13bea0c40f5d9109afafffb4f92147",
+            "refs/tags/0.4.0": "53e13e2c1da3758f9154c92577cef046ae9967ce",
+            "refs/tags/0.4.0^{}": "c982bf657ee3ab7aa72b3e7b77a57e49629eddf4",
+            "refs/tags/0.5.0": "ff3e88bd86185d402d4df7265f3589f4b0e0f0a6",
+            "refs/tags/0.5.1": "edb7f1c953b8d08d09e6f8ef34cff4fd439833e5",
+            "refs/tags/0.5.1^{}": "78ffb4f7e4db173421225597dcfc7aedc0d9fd42",
+            "refs/tags/0.5.10": "4756d77cdfe5ccb6f65a639729816ab46a3a4cbb",
+            "refs/tags/0.5.10^{}": "dd4b42f035ffc1d672ff3dbd5bd019539772e96a",
+            "refs/tags/0.5.11": "8192e7461d29d2946c19e8ff9c0bf46d0995150a",
+            "refs/tags/0.5.12": "7be527b3f36a5748daf810c2d2e09bb85076314f",
+            "refs/tags/0.5.2": "b52d96dc04746b3375173f79718299fa628fb3a6",
+            "refs/tags/0.5.2^{}": "98974bd613da8091c5bd648ef515c67afe254c29",
+            "refs/tags/0.5.3": "ecff157693aa27101edbc750817bd1849e8d5bfa",
+            "refs/tags/0.5.3^{}": "072405e3d82e01682dde7c7e8dadcc3137b61d1a",
+            "refs/tags/0.5.4": "061c11b2c68441396493eb403555b7ee3102cccc",
+            "refs/tags/0.5.4^{}": "e68397ebf8f7862c19b6051587473e735c253b36",
+            "refs/tags/0.5.5": "4506dd99fae91c3f4bff422a5d9045407adae51d",
+            "refs/tags/0.5.5^{}": "3e237d91cbc1f135c559d47d1e20106aee62c1bb",
+            "refs/tags/0.5.6": "70c10d9a86b6e3c120edc52c796afcd5d8dcf13c",
+            "refs/tags/0.5.7": "fa8a0ddcacc8049b42b03f74c23e7940b8764a57",
+            "refs/tags/0.5.7^{}": "9e9f9ead29a5f8853bf9101eddd24c6f6852c8e8",
+            "refs/tags/0.5.8": "29a22db12ee93057f1093240c966f958ee5a1f50",
+            "refs/tags/0.5.8^{}": "0618e41ff5c457fd1414ba45c4a108af806cc653",
+            "refs/tags/0.5.9": "a5ef13a7b2528b14e8b7081aaa083b472460f411",
+            "refs/tags/0.6.0": "9d94274e36f6ab2424110373b003929e1ca0362f",
+            "refs/tags/0.7.0": "46c1405422ae0ac1f8ea6820b391b48d09326a14",
+            "refs/tags/pre-refactor-2026-07-14": "1fa097c7cf8c268c273bf18efba5f3300ea24caa",
+            "refs/tags/pre-refactor-2026-07-14^{}": "314596c5d515b50b8254537d017eec2f9b0f89f8"
+          },
+          "local_heads": [
+            "refs/heads/codex/internal-link-anchor-evidence 1537165c1ab6e0fcf46a0cc9a92be0570ce400fd",
+            "refs/heads/codex/zh-cn-docs-mirror-default aee42eaeb7ee57825ad740bbc51a032cd203d5f4",
+            "refs/heads/master b09ad3008a027782f672d929e79c77ac7a01333e"
+          ],
+          "local_tags": [
+            "refs/tags/0.2.0 58c5b363c7a67a8e75aea41efee3b8020a2192ab",
+            "refs/tags/0.4.0 53e13e2c1da3758f9154c92577cef046ae9967ce",
+            "refs/tags/0.5.0 ff3e88bd86185d402d4df7265f3589f4b0e0f0a6",
+            "refs/tags/0.5.1 edb7f1c953b8d08d09e6f8ef34cff4fd439833e5",
+            "refs/tags/0.5.10 4756d77cdfe5ccb6f65a639729816ab46a3a4cbb",
+            "refs/tags/0.5.11 8192e7461d29d2946c19e8ff9c0bf46d0995150a",
+            "refs/tags/0.5.12 7be527b3f36a5748daf810c2d2e09bb85076314f",
+            "refs/tags/0.5.2 b52d96dc04746b3375173f79718299fa628fb3a6",
+            "refs/tags/0.5.3 ecff157693aa27101edbc750817bd1849e8d5bfa",
+            "refs/tags/0.5.4 061c11b2c68441396493eb403555b7ee3102cccc",
+            "refs/tags/0.5.5 4506dd99fae91c3f4bff422a5d9045407adae51d",
+            "refs/tags/0.5.6 70c10d9a86b6e3c120edc52c796afcd5d8dcf13c",
+            "refs/tags/0.5.7 fa8a0ddcacc8049b42b03f74c23e7940b8764a57",
+            "refs/tags/0.5.8 29a22db12ee93057f1093240c966f958ee5a1f50",
+            "refs/tags/0.5.9 a5ef13a7b2528b14e8b7081aaa083b472460f411",
+            "refs/tags/0.6.0 9d94274e36f6ab2424110373b003929e1ca0362f",
+            "refs/tags/0.7.0 46c1405422ae0ac1f8ea6820b391b48d09326a14",
+            "refs/tags/pre-refactor-2026-07-14 1fa097c7cf8c268c273bf18efba5f3300ea24caa"
+          ],
+          "worktrees": "worktree /Users/muze/gitee/npcink-abilities-toolkit\nHEAD b09ad3008a027782f672d929e79c77ac7a01333e\nbranch refs/heads/master\n\n",
+          "stashes": "",
+          "tracked_fingerprint": "ea022c7c975f403ddc73abef2b13c6f90f0b09533e120483d37d479f71217dba",
+          "pr_query_unavailable": false,
+          "open_prs": [],
+          "head_checks_unavailable": false,
+          "head_checks": [
+            {
+              "name": "mirror",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-abilities-toolkit/actions/runs/38995965527/job/117288480270",
+              "sha": "b09ad3008a027782f672d929e79c77ac7a01333e"
+            },
+            {
+              "name": "php (8.3)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-abilities-toolkit/actions/runs/38995965548/job/117288479490",
+              "sha": "b09ad3008a027782f672d929e79c77ac7a01333e"
+            },
+            {
+              "name": "wordpress-smoke (minimum)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-abilities-toolkit/actions/runs/38995965548/job/117288479425",
+              "sha": "b09ad3008a027782f672d929e79c77ac7a01333e"
+            },
+            {
+              "name": "wordpress-smoke (current)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-abilities-toolkit/actions/runs/38995965548/job/117288479371",
+              "sha": "b09ad3008a027782f672d929e79c77ac7a01333e"
+            },
+            {
+              "name": "php (8.0)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-abilities-toolkit/actions/runs/38995965548/job/117288479274",
+              "sha": "b09ad3008a027782f672d929e79c77ac7a01333e"
+            }
+          ]
+        },
+        {
+          "repo": "npcink-workflow-toolbox",
+          "observed_at": "2026-10-17T06:30:23.992856+00:00",
+          "head": "a2ad8981e7d31a90e822bca46278296f56fb6ee5",
+          "branch": "master",
+          "status": "",
+          "remote_refs": {
+            "refs/heads/codex/dependency-error-copy": "d95756ed7f9c18dfb05ecce2cec82b367834c22f",
+            "refs/heads/codex/dependency-phpstan-maintenance": "34d5c790b1b71f82e61619b01471ad6025dbf1f0",
+            "refs/heads/codex/docs-status-closeout": "fffb8b4657ad3adf3e17f881d527b1ba9bb6e891",
+            "refs/heads/codex/fix-classification-smoke": "d4bc1503ce1b47d68ca6493a99039fe16cba0cc1",
+            "refs/heads/codex/fix-lane3-registry-owner-2026-10-17": "eb0c24f638cf40cfcce32ca109bcebe4b1c699b0",
+            "refs/heads/codex/flagged-media-matrix": "30e627069f6477405c5a38dcd6567619090ddc95",
+            "refs/heads/codex/local-ocr-config": "7ebab73244e72e4396599ba16e49636ef777d797",
+            "refs/heads/codex/milestone-1-gate-repair": "35a386d80ae1293d21e29eb8bbf6b3aa866e184e",
+            "refs/heads/codex/milestone-2-failure-visibility": "3cd1a9732e5831858a52fd49b2a98de4bef6e93d",
+            "refs/heads/codex/milestone-3-site-check-visibility": "1425e61ed2358911d792cdb1f04000cbab698f82",
+            "refs/heads/codex/milestone-4-internal-link-i18n": "d1c98b0d343d803eced620f80268f83091c02bd0",
+            "refs/heads/codex/milestone-5-batch-feedback": "3618926492c7117d162df2c4dad5ae6d13ac2c96",
+            "refs/heads/codex/milestone-6-editor-sidebar-ux": "fd39d87c320132ac1cf94ed842b4fe8857cd4233",
+            "refs/heads/codex/recommendation-baseline-metadata": "68a9d32405dfee7ebbffdcb05715bb2dcb442523",
+            "refs/heads/codex/recommendation-real-article-regression": "1cfeb340ccc107448aea83a90fe13b1eb9ef130d",
+            "refs/heads/codex/wp-ai-central-matrix": "d593c8743b6b0d3d2e0d34db47a38f81da9a7197",
+            "refs/heads/master": "a2ad8981e7d31a90e822bca46278296f56fb6ee5",
+            "refs/tags/pre-refactor-2026-07-14": "276b026561770a7b1d8a6d0a7458264a92f5ef91",
+            "refs/tags/pre-refactor-2026-07-14^{}": "e8c9075ae65b75ca7a165906a16dcbebec8cb370",
+            "refs/tags/v0.1.1": "3fa48084a9a0f487763db95b27382eacaa7f289a",
+            "refs/tags/v0.1.1^{}": "7ba95f1b62d28478d0d2874e8d506b3461f01b61"
+          },
+          "local_heads": [
+            "refs/heads/codex/fix-lane3-registry-owner-2026-10-17 eb0c24f638cf40cfcce32ca109bcebe4b1c699b0",
+            "refs/heads/codex/rc2-validation-2026-10-16 569da58106c877fadb65316e4375a8bd3d1f6b1e",
+            "refs/heads/codex/recommendation-baseline-metadata 68a9d32405dfee7ebbffdcb05715bb2dcb442523",
+            "refs/heads/codex/recommendation-real-article-regression 1cfeb340ccc107448aea83a90fe13b1eb9ef130d",
+            "refs/heads/master a2ad8981e7d31a90e822bca46278296f56fb6ee5"
+          ],
+          "local_tags": [
+            "refs/tags/pre-refactor-2026-07-14 276b026561770a7b1d8a6d0a7458264a92f5ef91",
+            "refs/tags/v0.1.1 3fa48084a9a0f487763db95b27382eacaa7f289a"
+          ],
+          "worktrees": "worktree /Users/muze/gitee/npcink-workflow-toolbox\nHEAD a2ad8981e7d31a90e822bca46278296f56fb6ee5\nbranch refs/heads/master\n\n",
+          "stashes": "4830f19e350f9a7e8447cbe8d0a5b3eedd222f21 stash@{0}\n",
+          "tracked_fingerprint": "540d4564e868b55c9bc7ae3aac233fabd4bb8fe85264f6f5173d9f375af23c70",
+          "pr_query_unavailable": false,
+          "open_prs": [],
+          "head_checks_unavailable": false,
+          "head_checks": [
+            {
+              "name": "Static analysis (advisory)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/39000078547/job/117300951825",
+              "sha": "a2ad8981e7d31a90e822bca46278296f56fb6ee5"
+            },
+            {
+              "name": "PHP contracts",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/39000078547/job/117300951694",
+              "sha": "a2ad8981e7d31a90e822bca46278296f56fb6ee5"
+            }
+          ]
+        },
+        {
+          "repo": "npcink-eval-lab",
+          "observed_at": "2026-10-17T06:30:24.435701+00:00",
+          "head": "09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d",
+          "branch": "main",
+          "status": "",
+          "remote_refs": {
+            "refs/heads/codex/link-review-evidence-gates": "4b7b39a876e90900c27c3a1379a5b1067768969d",
+            "refs/heads/codex/wordpress-ai-provider-ci": "466d5ce45524919d0b985906b2c9bb48acbbd6f4",
+            "refs/heads/codex/wordpress-ai-provider-ci-followup": "6d29eea3e8a4d7257892af688a390f5c033288bd",
+            "refs/heads/codex/wp-ai-capability-fixtures": "20e5db352209021b1052ad2b73816f0876ab28b9",
+            "refs/heads/codex/wp-ai-capability-matrix": "24ba3cc6e5c795a1b43bf9ae4e22ed7ec09d6939",
+            "refs/heads/codex/wp-ai-capability-matrix-status": "47d79ceda595e6e5c927f16e4fab663f72415b9c",
+            "refs/heads/codex/wp-ai-case-quota-blocked": "940c56c40463d399fc001c57541776a4dce25b32",
+            "refs/heads/codex/wp-ai-comment-vision-evidence-20260929": "2a8241aac59bfc0a5ad720e75c211c134d310bfa",
+            "refs/heads/codex/wp-ai-core-batch-evidence-20260929": "7e77b512f995e7f7ed2dcb1105144663226362f5",
+            "refs/heads/codex/wp-ai-deterministic-quality": "4fcbbf1df8e4915398e95a23f44bdc651e034642",
+            "refs/heads/codex/wp-ai-grounding-expanded": "197de6673ee1e35a75163a1aeeb6df944604cb9a",
+            "refs/heads/codex/wp-ai-grounding-quality-guard": "f1df0c1b934ca7e1a7a3cf36398c7e091b010c24",
+            "refs/heads/codex/wp-ai-human-review-20260929": "b09a974049f622e43a1a7ebb16bd735b24ec17e7",
+            "refs/heads/codex/wp-ai-human-review-expanded-20260929": "f9b8ad195386053b8355592a01cbbb6257b51ae9",
+            "refs/heads/codex/wp-ai-human-review-gate-20260929": "5751bfa25111908210ccd4196d473bf41584946d",
+            "refs/heads/codex/wp-ai-image-generation-quality": "42d324c27296e29644d014f67db76a7844e39cc9",
+            "refs/heads/codex/wp-ai-judge-input-20260929": "72ead654803c84c6a1936125b5aa81699ac18c4a",
+            "refs/heads/codex/wp-ai-m4-acceptance": "f23cfa33fefb500b33c91fef00fc7017c170eb63",
+            "refs/heads/codex/wp-ai-media-quality": "e0cc2cb70c78d92ca6036e6f422b2efa58363871",
+            "refs/heads/codex/wp-ai-optional-evidence-correction": "a76a829588b07e87ebe5fe92fc34ae4442e989bf",
+            "refs/heads/codex/wp-ai-quality-closure-evidence": "e2745288574e9657bf6f0743bb518fbd8ea5bd84",
+            "refs/heads/codex/wp-ai-quality-evidence-sync": "b4a7f6c93aae61f32ec08fdd9454463b90ecafd0",
+            "refs/heads/codex/wp-ai-quality-quota-blocked": "80f25b1ae6e4c70facc969dbaa0f210d123512ac",
+            "refs/heads/codex/wp-ai-quality-report-20260929": "9328daffeff152f9238ab9d529f50f498c7ca859",
+            "refs/heads/codex/wp-ai-quota-preflight-eval": "c21cfd359d227dc2dc6bdeea758bdd7b03f2e6dc",
+            "refs/heads/codex/wp-ai-run-correlation-evidence-20260929": "3c9e4f508516f29a465e34f76e49ce6549cda104",
+            "refs/heads/codex/wp-ai-scenario-quality": "f7c1c0affe90cae2483f3f9c3121ca83b9066aad",
+            "refs/heads/codex/wp-ai-stage3-eval": "edfa233f4221446ccd50a7f32a7ac9d75c7bdc51",
+            "refs/heads/codex/wp-ai-structured-quality": "b67453177f073098d15445ba2862c7a2987a45e7",
+            "refs/heads/codex/wp-ai-text-quality": "01ea9d1675e7866f2ec54c249f976ef9dc463215",
+            "refs/heads/codex/wp-ai-title-quality-criteria": "87018865fbbf9be6864d42e287a02323a12cf37d",
+            "refs/heads/main": "09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d"
+          },
+          "local_heads": [
+            "refs/heads/codex/link-review-evidence-gates 4b7b39a876e90900c27c3a1379a5b1067768969d",
+            "refs/heads/codex/wordpress-ai-provider-ci 90bcdefe54a358ec703a2ac9b8b042266d8f8181",
+            "refs/heads/codex/wp-ai-capability-matrix 24ba3cc6e5c795a1b43bf9ae4e22ed7ec09d6939",
+            "refs/heads/codex/wp-ai-capability-matrix-status 47d79ceda595e6e5c927f16e4fab663f72415b9c",
+            "refs/heads/codex/wp-ai-case-quota-blocked 5efe7a8bc1a00505a18c6314955aaba727906a05",
+            "refs/heads/codex/wp-ai-grounding-expanded 197de6673ee1e35a75163a1aeeb6df944604cb9a",
+            "refs/heads/codex/wp-ai-grounding-quality-guard f1df0c1b934ca7e1a7a3cf36398c7e091b010c24",
+            "refs/heads/codex/wp-ai-image-generation-quality 42d324c27296e29644d014f67db76a7844e39cc9",
+            "refs/heads/codex/wp-ai-m4-acceptance f23cfa33fefb500b33c91fef00fc7017c170eb63",
+            "refs/heads/codex/wp-ai-media-quality e0cc2cb70c78d92ca6036e6f422b2efa58363871",
+            "refs/heads/codex/wp-ai-optional-evidence-correction a76a829588b07e87ebe5fe92fc34ae4442e989bf",
+            "refs/heads/codex/wp-ai-quality-closure-evidence e2745288574e9657bf6f0743bb518fbd8ea5bd84",
+            "refs/heads/codex/wp-ai-quality-evidence-sync 156ed2fc2a4660c2c452a4769c1509689118e766",
+            "refs/heads/codex/wp-ai-quality-quota-blocked 83d0b1c942c7903f8f53e3a21d2463bcf7a070d1",
+            "refs/heads/codex/wp-ai-quota-preflight-eval c21cfd359d227dc2dc6bdeea758bdd7b03f2e6dc",
+            "refs/heads/codex/wp-ai-restored-quota-evidence 899668a8a2a3247969b2e36ee5d43832da44bd95",
+            "refs/heads/codex/wp-ai-scenario-quality f7c1c0affe90cae2483f3f9c3121ca83b9066aad",
+            "refs/heads/codex/wp-ai-stage3-eval 73dd932ea90ea8d5c5ab2bcd7071b5a53cf11e1c",
+            "refs/heads/codex/wp-ai-structured-quality b67453177f073098d15445ba2862c7a2987a45e7",
+            "refs/heads/codex/wp-ai-text-quality 01ea9d1675e7866f2ec54c249f976ef9dc463215",
+            "refs/heads/codex/wp-ai-title-quality-criteria a51a902847f2066d2e75a2b1ad130c2dc19036ad",
+            "refs/heads/main 09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d"
+          ],
+          "local_tags": [],
+          "worktrees": "worktree /Users/muze/gitee/npcink-eval-lab\nHEAD 09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d\nbranch refs/heads/main\n\n",
+          "stashes": "",
+          "tracked_fingerprint": "73b9c723d61f2142e9f848977e11dd69031c71867e9fa298666565733c86ba76",
+          "pr_query_unavailable": false,
+          "open_prs": [],
+          "head_checks_unavailable": false,
+          "head_checks": [
+            {
+              "name": "offline-checks",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-eval-lab/actions/runs/39009049148/job/117327401674",
+              "sha": "09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "observed_at": "2026-10-17T06:30:43.888458+00:00",
+      "repositories": [
+        {
+          "repo": "npcink-governance-core",
+          "observed_at": "2026-10-17T06:30:42.151343+00:00",
+          "head": "f764306b0c5b2f8f650521c5c68d02f54234a169",
+          "branch": "codex/ux-history-merge-receipt-2026-10-17",
+          "status": "",
+          "remote_refs": {
+            "refs/heads/codex/audit-weekly-docs-receipt-2026-10-17": "27c6c570540f906c8d4653836ed16dd17986c905",
+            "refs/heads/codex/docs-classification-lane1-2026-10-16": "8d9626b7a07ffca7126b400a404a6db05145d1e9",
+            "refs/heads/codex/docs-publication-receipt-2026-10-17": "b07972c12f0fb822c674570f2cc5b22b2c8d8302",
+            "refs/heads/codex/docs-rc-acceptance-2026-10-16": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+            "refs/heads/codex/docs-rc-audit-refresh-2026-10-16": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+            "refs/heads/codex/docs-rc-final-closeout-2026-10-16": "19953429829f237551b752b8438e12b0f290a385",
+            "refs/heads/codex/docs-rc-identity-2026-10-16": "8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+            "refs/heads/codex/docs-rc-matrix-drift-2026-10-16": "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a",
+            "refs/heads/codex/docs-rc-post-tag-drift-2026-10-16": "3402eca486af5d979b80f9196315b4a772ed464d",
+            "refs/heads/codex/docs-rc-release-notes-2026-10-16": "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472",
+            "refs/heads/codex/docs-rc-tag-published-2026-10-16": "94af361fa20bacd441506fd9d3be13e5d5aa8de1",
+            "refs/heads/codex/docs-week-2026-10-13-followup": "418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+            "refs/heads/codex/rc2-validation-2026-10-16": "f5181a3ebe347624c468dbb36623421868c88857",
+            "refs/heads/codex/weekly-docs-merge-receipt-2026-10-17": "8df588847af0534f28755ff2a955df7748ceb0da",
+            "refs/heads/dependabot/composer/phpstan/phpstan-2.3.1": "57624c2272f39d599ba620174ee05d0dc9415c0e",
+            "refs/heads/dependabot/github_actions/alibaba/open-code-review-1.12.13": "d3191f0dcdf6e2ed19417f17a6b82e2dc82c587b",
+            "refs/heads/master": "c6031aff5f15b0ab568479e1099314c1e901b6a8",
+            "refs/tags/pre-refactor-2026-07-14": "a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc",
+            "refs/tags/pre-refactor-2026-07-14^{}": "5acce75322367d6d46b58665d35331039d4b301a",
+            "refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1": "8edb4ff1cd5564f389e8da490f183c7a56e0af5b",
+            "refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}": "5f79d32f8e50e381d1872d68c4f99c0e9ee77d51",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1": "7de7062a3b6308d6b59a47553f3345dd29fab94f",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}": "8f08f8ac3ce836293581f1bc8be040158de2980d",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2": "589d82eb634efa92d3a41ecebf99c8dbfe7a19b2",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2^{}": "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2": "2891b0b532c75da1dbf3426404f99dbeb2310b39",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2^{}": "1829fb828ea4d9e8f7caabea74d5b89117824355",
+            "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0": "ffb5e5d6d7b68fa952288524a181ff688a7698ee",
+            "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0^{}": "ed28f984153200a8362fcd0928bbb32b83636159",
+            "refs/tags/v0.1.0": "4e4099cec8d0a88deb006eb1e0e916c485c7de65",
+            "refs/tags/v0.1.0^{}": "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3",
+            "refs/tags/v0.1.1": "ad1d41effcb04a3e1578567e3d30068973344f40",
+            "refs/tags/v0.1.1^{}": "1829fb828ea4d9e8f7caabea74d5b89117824355",
+            "refs/tags/v0.2.0": "fa27aa2a13e01048da411c06cc1dff25abbd45a5",
+            "refs/tags/v0.2.0^{}": "7f2c6bf5b3f810f65f2e3f2d396ecfdf78c07ee6",
+            "refs/tags/v0.3.0": "da05076343d7975e95800eddf1e9719358ac82df",
+            "refs/tags/v0.3.0^{}": "3357f916899ac4b013a753da6d99e712274f2221"
+          },
+          "local_heads": [
+            "refs/heads/codex/audit-weekly-docs-receipt-2026-10-17 27c6c570540f906c8d4653836ed16dd17986c905",
+            "refs/heads/codex/docs-classification-lane1-2026-10-16 31279cf66174efd460e94554a0c0db21897d49e9",
+            "refs/heads/codex/docs-rc-identity-2026-10-16 8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+            "refs/heads/codex/docs-rc-post-tag-drift-2026-10-16 e93c330366c952c75db540465acfcd85eb2cd8ab",
+            "refs/heads/codex/docs-week-2026-10-13-followup 418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+            "refs/heads/codex/execution-verification-reads e73f9684878bf10a43130f266c4ddd1d258ad161",
+            "refs/heads/codex/ux-history-merge-receipt-2026-10-17 f764306b0c5b2f8f650521c5c68d02f54234a169",
+            "refs/heads/codex/verification-reads-hardening f4b17dbae132c8be2abdf8f162180b39843074ad",
+            "refs/heads/codex/weekly-docs-merge-receipt-2026-10-17 8df588847af0534f28755ff2a955df7748ceb0da",
+            "refs/heads/master 9716cf5eaae259874c03ad40363382fd065aded2",
+            "refs/heads/zcode/docs-2026-10-11-ux-audit-arc 3c45612c5ee15705374a19743b983dfce9a0258e"
+          ],
+          "local_tags": [
+            "refs/tags/pre-refactor-2026-07-14 a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc",
+            "refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1 8edb4ff1cd5564f389e8da490f183c7a56e0af5b",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1 7de7062a3b6308d6b59a47553f3345dd29fab94f",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2 589d82eb634efa92d3a41ecebf99c8dbfe7a19b2",
+            "refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2 2891b0b532c75da1dbf3426404f99dbeb2310b39",
+            "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0 ffb5e5d6d7b68fa952288524a181ff688a7698ee",
+            "refs/tags/v0.1.0 4e4099cec8d0a88deb006eb1e0e916c485c7de65",
+            "refs/tags/v0.1.1 ad1d41effcb04a3e1578567e3d30068973344f40",
+            "refs/tags/v0.2.0 fa27aa2a13e01048da411c06cc1dff25abbd45a5",
+            "refs/tags/v0.3.0 da05076343d7975e95800eddf1e9719358ac82df"
+          ],
+          "worktrees": "worktree /Users/muze/gitee/npcink-governance-core\nHEAD f764306b0c5b2f8f650521c5c68d02f54234a169\nbranch refs/heads/codex/ux-history-merge-receipt-2026-10-17\n\n",
+          "stashes": "",
+          "tracked_fingerprint": "8069015a1a7292a83c4d4d9284b20e0031c3595362d8f4762f4fc508e96691ba",
+          "pr_query_unavailable": false,
+          "open_prs": [
+            {
+              "headRefName": "dependabot/composer/phpstan/phpstan-2.3.1",
+              "headRefOid": "57624c2272f39d599ba620174ee05d0dc9415c0e",
+              "number": 156,
+              "title": "build(deps-dev): bump phpstan/phpstan from 2.2.17 to 2.3.1",
+              "url": "https://github.com/npcink/npcink-governance-core/pull/156",
+              "check_failures": [],
+              "check_pending": [],
+              "checks_count": 3
+            },
+            {
+              "headRefName": "dependabot/github_actions/alibaba/open-code-review-1.12.13",
+              "headRefOid": "d3191f0dcdf6e2ed19417f17a6b82e2dc82c587b",
+              "number": 155,
+              "title": "build(deps): bump alibaba/open-code-review from 1.12.12 to 1.12.13",
+              "url": "https://github.com/npcink/npcink-governance-core/pull/155",
+              "check_failures": [],
+              "check_pending": [],
+              "checks_count": 3
+            }
+          ],
+          "head_checks_unavailable": true,
+          "head_checks": []
+        },
+        {
+          "repo": "npcink-ai-cloud",
+          "observed_at": "2026-10-17T06:30:43.791289+00:00",
+          "head": "6fddd93d03b712431c742eea30e722bbc87fafb6",
+          "branch": "master",
+          "status": "",
+          "remote_refs": {
+            "refs/heads/dependabot/github_actions/alibaba/open-code-review-1.12.13": "db23658689f4697eb17b161d8651d3f63dbd8598",
+            "refs/heads/dependabot/npm_and_yarn/autoprefixer-10.6.1": "97363c8dd2aa0d5c340bdb65b4523a28f246fb42",
+            "refs/heads/dependabot/npm_and_yarn/tailwind-merge-3.7.0": "4b2cb3202b187445cc1a536e7c79256bf67d4c32",
+            "refs/heads/dependabot/uv/fastapi-0.143.0": "ed379fff6ec1d442cd864f52f7600821fbbc5280",
+            "refs/heads/dependabot/uv/ruff-0.16.10": "cd8ae9e27905e7e303f9ce8ba139f1177567da6e",
+            "refs/heads/master": "6fddd93d03b712431c742eea30e722bbc87fafb6",
+            "refs/heads/production": "2af00741a2ce06ea56a78e62864d4a35d86c66ab",
+            "refs/tags/pre-refactor-dev-2026-07-14": "9450572bdd6257f011cd9574de08c1208e2afd9f",
+            "refs/tags/pre-refactor-dev-2026-07-14^{}": "8cd73cde7647c9866f541a920f6d98fe2c25fcc8",
+            "refs/tags/pre-refactor-production-2026-07-14": "2611bb0205bbe9a96a875d963025067eac7bafb6",
+            "refs/tags/pre-refactor-production-2026-07-14^{}": "251ad3cb183f40ddb5bd0d22b1aa8e80b6093770",
+            "refs/tags/release-candidate-2026-07-28": "2924c2cb93dec3b89dc798dca60b626b1667260a",
+            "refs/tags/release-candidate-2026-07-28^{}": "db9c5edfaf34572e49b2d42411bf21e01781cfdf"
+          },
+          "local_heads": [
+            "refs/heads/codex/site-anchor-performance d7741eed15b9c590bf3836a4816d46bb3d9b7cc1",
+            "refs/heads/codex/usage-rollup-health-reuse 1937404d139292057e44983162b6be2079a58c56",
+            "refs/heads/codex/user-center-synthesis-20261017 c8469e26f1c50b5036d3ab6ea0d9bd59c7c6c938",
+            "refs/heads/codex/zero-paid-critical-regression-20261017 2d491ca7f3221b0748ee73871c94b5a47e03e8b2",
+            "refs/heads/master 6fddd93d03b712431c742eea30e722bbc87fafb6",
+            "refs/heads/production 2af00741a2ce06ea56a78e62864d4a35d86c66ab"
+          ],
+          "local_tags": [
+            "refs/tags/pre-refactor-dev-2026-07-14 9450572bdd6257f011cd9574de08c1208e2afd9f",
+            "refs/tags/pre-refactor-production-2026-07-14 2611bb0205bbe9a96a875d963025067eac7bafb6",
+            "refs/tags/release-candidate-2026-07-28 2924c2cb93dec3b89dc798dca60b626b1667260a",
+            "refs/tags/restore-before-admin-overview-phase1-20260701 ea6a2eddb4faf7c6f15944635ae05b8aefe63978"
+          ],
+          "worktrees": "worktree /Users/muze/gitee/npcink-ai-cloud\nHEAD 6fddd93d03b712431c742eea30e722bbc87fafb6\nbranch refs/heads/master\n\nworktree /Users/muze/gitee/.worktrees/cloud-site-anchor-performance\nHEAD ea62b3f2eea225eafd72cbd55296e69e998af863\ndetached\n\n",
+          "stashes": "",
+          "tracked_fingerprint": "f2dd4df6b66290d6e3f892a6efcf87af89a9ef90bc73c66f7c5fa8ed30d04d9c",
+          "pr_query_unavailable": false,
+          "open_prs": [
+            {
+              "headRefName": "dependabot/uv/ruff-0.16.10",
+              "headRefOid": "cd8ae9e27905e7e303f9ce8ba139f1177567da6e",
+              "number": 1105,
+              "title": "build(deps): Bump ruff from 0.16.8 to 0.16.10",
+              "url": "https://github.com/npcink/npcink-ai-cloud/pull/1105",
+              "check_failures": [],
+              "check_pending": [],
+              "checks_count": 30
+            },
+            {
+              "headRefName": "dependabot/uv/fastapi-0.143.0",
+              "headRefOid": "ed379fff6ec1d442cd864f52f7600821fbbc5280",
+              "number": 1104,
+              "title": "build(deps): Bump fastapi from 0.141.1 to 0.143.0",
+              "url": "https://github.com/npcink/npcink-ai-cloud/pull/1104",
+              "check_failures": [],
+              "check_pending": [],
+              "checks_count": 30
+            },
+            {
+              "headRefName": "dependabot/npm_and_yarn/tailwind-merge-3.7.0",
+              "headRefOid": "4b2cb3202b187445cc1a536e7c79256bf67d4c32",
+              "number": 1103,
+              "title": "build(deps): Bump tailwind-merge from 3.5.0 to 3.7.0",
+              "url": "https://github.com/npcink/npcink-ai-cloud/pull/1103",
+              "check_failures": [
+                "code-review"
+              ],
+              "check_pending": [],
+              "checks_count": 31
+            },
+            {
+              "headRefName": "dependabot/npm_and_yarn/autoprefixer-10.6.1",
+              "headRefOid": "97363c8dd2aa0d5c340bdb65b4523a28f246fb42",
+              "number": 1102,
+              "title": "build(deps-dev): Bump autoprefixer from 10.4.20 to 10.6.1",
+              "url": "https://github.com/npcink/npcink-ai-cloud/pull/1102",
+              "check_failures": [
+                "code-review"
+              ],
+              "check_pending": [],
+              "checks_count": 31
+            },
+            {
+              "headRefName": "dependabot/github_actions/alibaba/open-code-review-1.12.13",
+              "headRefOid": "db23658689f4697eb17b161d8651d3f63dbd8598",
+              "number": 1101,
+              "title": "build(deps): Bump alibaba/open-code-review from 1.12.11 to 1.13.0",
+              "url": "https://github.com/npcink/npcink-ai-cloud/pull/1101",
+              "check_failures": [],
+              "check_pending": [],
+              "checks_count": 31
+            }
+          ],
+          "head_checks_unavailable": false,
+          "head_checks": [
+            {
+              "name": "CI observability",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117323699036",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117323686308",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Production deploy bundle",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322490736",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-targeted",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322490070",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-docs",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322489683",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Python 3.14 Alpine production image smoke",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322489633",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-pytest (4)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488927",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-static",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488921",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-pytest (3)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488854",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "PostgreSQL 16 encryption cutover regression",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488824",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-pytest (1)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488823",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-pytest (2)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488808",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Specialized changed-domain quality gates",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322464554",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "static-terms",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322464189",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Authoritative CVE range precheck",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322463278",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "frontend",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322463275",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Documentation reachability",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322463257",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "backend-scope",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322463256",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Python dependency audit",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322463251",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Production PR CI evidence",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322443753",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Production release plan",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322443709",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Production PR base contract precheck",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322443575",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Dockerfile COPY contract precheck",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322442794",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "classify",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322442735",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Analyze (python)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356458/job/117322442689",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Analyze (javascript-typescript)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356458/job/117322442582",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            },
+            {
+              "name": "Secret scan",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322442558",
+              "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+            }
+          ]
+        },
+        {
+          "repo": "npcink-cloud-addon",
+          "observed_at": "2026-10-17T06:30:39.451329+00:00",
+          "head": "b80b966151f26f114271a5534082c336ab2fea50",
+          "branch": "master",
+          "status": "",
+          "remote_refs": {
+            "refs/heads/codex/0-4-1-stale-entitlement": "f379aadb6be38471a02d64de0db9ea79ff7c17f0",
+            "refs/heads/codex/041-final-release-record": "f6b95295b4cfb682f78809bfde978d72d713d56c",
+            "refs/heads/codex/041-maintenance-closeout-20261015": "014fde9f44620320a8940b0e1f4e998cc04d3f00",
+            "refs/heads/codex/041-refresh-closeout": "3d42183d7782715e66485c3186f3bb90d5c58dea",
+            "refs/heads/codex/docs-next-session-handoff-20261016": "c26f43dbbd340722a0835b4037f33ab2f483ff31",
+            "refs/heads/codex/glotpress-closeout-20261012": "2f343a6e35281489e1ccf5ffc914cfa63cb88dc0",
+            "refs/heads/codex/ocr-ci-diagnostics-20261013": "a8431153fc71049b1f246965f4016769591a7195",
+            "refs/heads/codex/ocr-glm-thinking-compat-20261013": "000ca35f84f7896cc039ddae1485e483fbb863b3",
+            "refs/heads/codex/provider-acceptance-closeout-20261012": "582177c2c2586cf3ed2e945f3e6476e86c0e0b37",
+            "refs/heads/codex/recommendation-feedback-metadata": "9637ca592f4570bd292b107144e61b4f8271cbae",
+            "refs/heads/codex/release-status-20261013": "dbddd65c9a970615bb556006d3e5998bb9ceb51a",
+            "refs/heads/codex/site-knowledge-recovery-20261015": "4e8c8e65f0ae272a170ff63f45057eeddc6cb63f",
+            "refs/heads/codex/ux-closeout-20261012": "1209f5105ae94a48c9b7f65af77c952e09733f52",
+            "refs/heads/codex/ux-tail-20261012": "e55a04e0a3cdd6ee978916d3eaa30d8ecfa87e6c",
+            "refs/heads/docs/ux-paydown-handoff-2026-10-12": "387687620db4886c42cd4d5c63b9dab60d0f9426",
+            "refs/heads/fix/user-facing-ux-paydown-round": "4b72b953432557ec5b712b8c83c021ff8a7b571e",
+            "refs/heads/master": "3e650d1bc74d9428d6671f27dd668938c6b6078b",
+            "refs/tags/0.2.0": "f2a8dd61e6f676382444c7e1b884361a68ad31a9",
+            "refs/tags/0.2.0^{}": "7b85c903b2ffc94a5e91ec027d9d900be5176aa5",
+            "refs/tags/0.3.0": "200ecf966494e531e57ab29c7706eef41bb9e1de",
+            "refs/tags/0.3.0^{}": "8c56aae8a7665954db3fbf0cc16500db6068566e",
+            "refs/tags/0.4.0": "35915cf4e5a9f13d6808ab3052885793f47cb190",
+            "refs/tags/archive/wp-ai-localization-fix-20260928": "0f643ff85842162d8cc8aa6d42a382f5e81c9ef2",
+            "refs/tags/pre-refactor-2026-07-14": "bae0a4dfd59042482179766f743b4ffcaca876f7",
+            "refs/tags/pre-refactor-2026-07-14^{}": "9c46f4bff7a715a8eacd8e787705de0ea62e39ed"
+          },
+          "local_heads": [
+            "refs/heads/codex/recommendation-feedback-metadata 9637ca592f4570bd292b107144e61b4f8271cbae",
+            "refs/heads/master b80b966151f26f114271a5534082c336ab2fea50"
+          ],
+          "local_tags": [
+            "refs/tags/0.2.0 265f001f0afb303206d0edd72f1f4b8f20dd5ef9",
+            "refs/tags/0.3.0 200ecf966494e531e57ab29c7706eef41bb9e1de",
+            "refs/tags/0.4.0 35915cf4e5a9f13d6808ab3052885793f47cb190",
+            "refs/tags/archive/wp-ai-localization-fix-20260928 0f643ff85842162d8cc8aa6d42a382f5e81c9ef2",
+            "refs/tags/pre-refactor-2026-07-14 bae0a4dfd59042482179766f743b4ffcaca876f7"
+          ],
+          "worktrees": "worktree /Users/muze/gitee/npcink-cloud-addon\nHEAD b80b966151f26f114271a5534082c336ab2fea50\nbranch refs/heads/master\n\n",
+          "stashes": "",
+          "tracked_fingerprint": "cd92896a841335b9d152e90d01b7d7da6c22d59028353063b68ea605b69af293",
+          "pr_query_unavailable": false,
+          "open_prs": [],
+          "head_checks_unavailable": false,
+          "head_checks": [
+            {
+              "name": "WordPress AI compatibility blocking lanes",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271201788",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "PHP contracts",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271172050",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "WordPress AI stable-primary / PHP 8.4",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070538",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "WordPress AI stable-regression / PHP 8.2",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070534",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "PHP 8.4 contracts",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070523",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "WordPress AI upstream-warning / PHP 8.2",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070512",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "WordPress AI stable-primary / PHP 8.0",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070481",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "PHP 8.0 contracts",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070475",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "PHP 8.2 contracts",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070444",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "WordPress AI stable-primary / PHP 8.2",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070438",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "Release static gates",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070292",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            },
+            {
+              "name": "PHPStan level 5 (advisory)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323108/job/117271069417",
+              "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+            }
+          ]
+        },
+        {
+          "repo": "npcink-ai-client-adapter",
+          "observed_at": "2026-10-17T06:30:40.222826+00:00",
+          "head": "4188be8b528b867f09e70526f0279ccb530e7edc",
+          "branch": "master",
+          "status": "",
+          "remote_refs": {
+            "refs/heads/codex/m4-pgy-stack-rc-docs-2026-10-15": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+            "refs/heads/master": "4188be8b528b867f09e70526f0279ccb530e7edc",
+            "refs/tags/openclaw-grant-redeem-mvp": "8af2c243952cd1589dcce65aed7ed565f656da06",
+            "refs/tags/pre-refactor-2026-07-14": "afe1d8ceac39c6936df061073de6309bb5982d3a",
+            "refs/tags/pre-refactor-2026-07-14^{}": "84554be1d9cccb5b6794404803f475162ee7ea00",
+            "refs/tags/v0.2.0": "9a12b11953acbf7151e4c89ec97ed2b84588d65c",
+            "refs/tags/v0.2.0^{}": "3c4ea71f41ccb013341e12498520510ffcefa81f",
+            "refs/tags/v0.2.1": "0906755ef02ba9345eb108d5ca78a8fe22ac0077",
+            "refs/tags/v0.2.1^{}": "452d738c05972302cf6138f38184cfc5cec7cea6",
+            "refs/tags/v0.3.0": "605f6fe7b57fec54bc523c95a40dd62fc73dca82",
+            "refs/tags/v0.3.0^{}": "205ebda976aa51afd27c6d633082360194ba902b",
+            "refs/tags/v0.3.1": "9c5b8d6f6e41a482c978639cebf9bbf769adc0e6",
+            "refs/tags/v0.3.2": "32737cca76d71e99c96f6c63775884ab4e767197",
+            "refs/tags/v0.3.2^{}": "65f1012c5f4072dd6c1251f2e2db98d5e836c598",
+            "refs/tags/v0.3.3": "57517fab449fa04e19dc30513e36ec57435564ed",
+            "refs/tags/v0.3.3^{}": "8800b8e4c4651c5d4dff759c3050135d74968927",
+            "refs/tags/v0.4.0": "34b21582d6418b3fcf93f3efca94a71a62fde16e",
+            "refs/tags/v0.4.0^{}": "7800b3da2f20637ffea621274e033a061d532e93",
+            "refs/tags/v0.4.1": "f8f8b8411ef5c48bb2c98e87528b88d464f622ce",
+            "refs/tags/v0.4.2": "dcd7188c243cf03d4c2824588d489c7e86116965",
+            "refs/tags/v0.4.2^{}": "963318a6f99b4837a48290fb9abbdb7716f9d079"
+          },
+          "local_heads": [
+            "refs/heads/master 4188be8b528b867f09e70526f0279ccb530e7edc"
+          ],
+          "local_tags": [
+            "refs/tags/openclaw-grant-redeem-mvp 8af2c243952cd1589dcce65aed7ed565f656da06",
+            "refs/tags/pre-refactor-2026-07-14 afe1d8ceac39c6936df061073de6309bb5982d3a",
+            "refs/tags/v0.2.0 9a12b11953acbf7151e4c89ec97ed2b84588d65c",
+            "refs/tags/v0.2.1 0906755ef02ba9345eb108d5ca78a8fe22ac0077",
+            "refs/tags/v0.3.0 605f6fe7b57fec54bc523c95a40dd62fc73dca82",
+            "refs/tags/v0.3.1 9c5b8d6f6e41a482c978639cebf9bbf769adc0e6",
+            "refs/tags/v0.3.2 32737cca76d71e99c96f6c63775884ab4e767197",
+            "refs/tags/v0.3.3 57517fab449fa04e19dc30513e36ec57435564ed",
+            "refs/tags/v0.4.0 34b21582d6418b3fcf93f3efca94a71a62fde16e",
+            "refs/tags/v0.4.1 f8f8b8411ef5c48bb2c98e87528b88d464f622ce",
+            "refs/tags/v0.4.2 dcd7188c243cf03d4c2824588d489c7e86116965"
+          ],
+          "worktrees": "worktree /Users/muze/gitee/npcink-ai-client-adapter\nHEAD 4188be8b528b867f09e70526f0279ccb530e7edc\nbranch refs/heads/master\n\n",
+          "stashes": "",
+          "tracked_fingerprint": "eef27b013d43700bf776abd972a3aee88dbb5dbf11a03e9d5308289dae0fdb0d",
+          "pr_query_unavailable": false,
+          "open_prs": [],
+          "head_checks_unavailable": false,
+          "head_checks": [
+            {
+              "name": "Static analysis (advisory)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-client-adapter/actions/runs/39009700473/job/117329381126",
+              "sha": "4188be8b528b867f09e70526f0279ccb530e7edc"
+            },
+            {
+              "name": "PHP contracts",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-ai-client-adapter/actions/runs/39009700473/job/117329380916",
+              "sha": "4188be8b528b867f09e70526f0279ccb530e7edc"
+            }
+          ]
+        },
+        {
+          "repo": "npcink-abilities-toolkit",
+          "observed_at": "2026-10-17T06:30:42.295898+00:00",
+          "head": "b09ad3008a027782f672d929e79c77ac7a01333e",
+          "branch": "master",
+          "status": "",
+          "remote_refs": {
+            "refs/heads/master": "b09ad3008a027782f672d929e79c77ac7a01333e",
+            "refs/tags/0.2.0": "58c5b363c7a67a8e75aea41efee3b8020a2192ab",
+            "refs/tags/0.2.0^{}": "7ecda76c3c13bea0c40f5d9109afafffb4f92147",
+            "refs/tags/0.4.0": "53e13e2c1da3758f9154c92577cef046ae9967ce",
+            "refs/tags/0.4.0^{}": "c982bf657ee3ab7aa72b3e7b77a57e49629eddf4",
+            "refs/tags/0.5.0": "ff3e88bd86185d402d4df7265f3589f4b0e0f0a6",
+            "refs/tags/0.5.1": "edb7f1c953b8d08d09e6f8ef34cff4fd439833e5",
+            "refs/tags/0.5.1^{}": "78ffb4f7e4db173421225597dcfc7aedc0d9fd42",
+            "refs/tags/0.5.10": "4756d77cdfe5ccb6f65a639729816ab46a3a4cbb",
+            "refs/tags/0.5.10^{}": "dd4b42f035ffc1d672ff3dbd5bd019539772e96a",
+            "refs/tags/0.5.11": "8192e7461d29d2946c19e8ff9c0bf46d0995150a",
+            "refs/tags/0.5.12": "7be527b3f36a5748daf810c2d2e09bb85076314f",
+            "refs/tags/0.5.2": "b52d96dc04746b3375173f79718299fa628fb3a6",
+            "refs/tags/0.5.2^{}": "98974bd613da8091c5bd648ef515c67afe254c29",
+            "refs/tags/0.5.3": "ecff157693aa27101edbc750817bd1849e8d5bfa",
+            "refs/tags/0.5.3^{}": "072405e3d82e01682dde7c7e8dadcc3137b61d1a",
+            "refs/tags/0.5.4": "061c11b2c68441396493eb403555b7ee3102cccc",
+            "refs/tags/0.5.4^{}": "e68397ebf8f7862c19b6051587473e735c253b36",
+            "refs/tags/0.5.5": "4506dd99fae91c3f4bff422a5d9045407adae51d",
+            "refs/tags/0.5.5^{}": "3e237d91cbc1f135c559d47d1e20106aee62c1bb",
+            "refs/tags/0.5.6": "70c10d9a86b6e3c120edc52c796afcd5d8dcf13c",
+            "refs/tags/0.5.7": "fa8a0ddcacc8049b42b03f74c23e7940b8764a57",
+            "refs/tags/0.5.7^{}": "9e9f9ead29a5f8853bf9101eddd24c6f6852c8e8",
+            "refs/tags/0.5.8": "29a22db12ee93057f1093240c966f958ee5a1f50",
+            "refs/tags/0.5.8^{}": "0618e41ff5c457fd1414ba45c4a108af806cc653",
+            "refs/tags/0.5.9": "a5ef13a7b2528b14e8b7081aaa083b472460f411",
+            "refs/tags/0.6.0": "9d94274e36f6ab2424110373b003929e1ca0362f",
+            "refs/tags/0.7.0": "46c1405422ae0ac1f8ea6820b391b48d09326a14",
+            "refs/tags/pre-refactor-2026-07-14": "1fa097c7cf8c268c273bf18efba5f3300ea24caa",
+            "refs/tags/pre-refactor-2026-07-14^{}": "314596c5d515b50b8254537d017eec2f9b0f89f8"
+          },
+          "local_heads": [
+            "refs/heads/codex/internal-link-anchor-evidence 1537165c1ab6e0fcf46a0cc9a92be0570ce400fd",
+            "refs/heads/codex/zh-cn-docs-mirror-default aee42eaeb7ee57825ad740bbc51a032cd203d5f4",
+            "refs/heads/master b09ad3008a027782f672d929e79c77ac7a01333e"
+          ],
+          "local_tags": [
+            "refs/tags/0.2.0 58c5b363c7a67a8e75aea41efee3b8020a2192ab",
+            "refs/tags/0.4.0 53e13e2c1da3758f9154c92577cef046ae9967ce",
+            "refs/tags/0.5.0 ff3e88bd86185d402d4df7265f3589f4b0e0f0a6",
+            "refs/tags/0.5.1 edb7f1c953b8d08d09e6f8ef34cff4fd439833e5",
+            "refs/tags/0.5.10 4756d77cdfe5ccb6f65a639729816ab46a3a4cbb",
+            "refs/tags/0.5.11 8192e7461d29d2946c19e8ff9c0bf46d0995150a",
+            "refs/tags/0.5.12 7be527b3f36a5748daf810c2d2e09bb85076314f",
+            "refs/tags/0.5.2 b52d96dc04746b3375173f79718299fa628fb3a6",
+            "refs/tags/0.5.3 ecff157693aa27101edbc750817bd1849e8d5bfa",
+            "refs/tags/0.5.4 061c11b2c68441396493eb403555b7ee3102cccc",
+            "refs/tags/0.5.5 4506dd99fae91c3f4bff422a5d9045407adae51d",
+            "refs/tags/0.5.6 70c10d9a86b6e3c120edc52c796afcd5d8dcf13c",
+            "refs/tags/0.5.7 fa8a0ddcacc8049b42b03f74c23e7940b8764a57",
+            "refs/tags/0.5.8 29a22db12ee93057f1093240c966f958ee5a1f50",
+            "refs/tags/0.5.9 a5ef13a7b2528b14e8b7081aaa083b472460f411",
+            "refs/tags/0.6.0 9d94274e36f6ab2424110373b003929e1ca0362f",
+            "refs/tags/0.7.0 46c1405422ae0ac1f8ea6820b391b48d09326a14",
+            "refs/tags/pre-refactor-2026-07-14 1fa097c7cf8c268c273bf18efba5f3300ea24caa"
+          ],
+          "worktrees": "worktree /Users/muze/gitee/npcink-abilities-toolkit\nHEAD b09ad3008a027782f672d929e79c77ac7a01333e\nbranch refs/heads/master\n\n",
+          "stashes": "",
+          "tracked_fingerprint": "ea022c7c975f403ddc73abef2b13c6f90f0b09533e120483d37d479f71217dba",
+          "pr_query_unavailable": false,
+          "open_prs": [],
+          "head_checks_unavailable": false,
+          "head_checks": [
+            {
+              "name": "mirror",
+              "status": "completed",
+              "conclusion": "skipped",
+              "url": "https://github.com/npcink/npcink-abilities-toolkit/actions/runs/38995965527/job/117288480270",
+              "sha": "b09ad3008a027782f672d929e79c77ac7a01333e"
+            },
+            {
+              "name": "php (8.3)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-abilities-toolkit/actions/runs/38995965548/job/117288479490",
+              "sha": "b09ad3008a027782f672d929e79c77ac7a01333e"
+            },
+            {
+              "name": "wordpress-smoke (minimum)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-abilities-toolkit/actions/runs/38995965548/job/117288479425",
+              "sha": "b09ad3008a027782f672d929e79c77ac7a01333e"
+            },
+            {
+              "name": "wordpress-smoke (current)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-abilities-toolkit/actions/runs/38995965548/job/117288479371",
+              "sha": "b09ad3008a027782f672d929e79c77ac7a01333e"
+            },
+            {
+              "name": "php (8.0)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-abilities-toolkit/actions/runs/38995965548/job/117288479274",
+              "sha": "b09ad3008a027782f672d929e79c77ac7a01333e"
+            }
+          ]
+        },
+        {
+          "repo": "npcink-workflow-toolbox",
+          "observed_at": "2026-10-17T06:30:39.736481+00:00",
+          "head": "a2ad8981e7d31a90e822bca46278296f56fb6ee5",
+          "branch": "master",
+          "status": "",
+          "remote_refs": {
+            "refs/heads/codex/dependency-error-copy": "d95756ed7f9c18dfb05ecce2cec82b367834c22f",
+            "refs/heads/codex/dependency-phpstan-maintenance": "34d5c790b1b71f82e61619b01471ad6025dbf1f0",
+            "refs/heads/codex/docs-status-closeout": "fffb8b4657ad3adf3e17f881d527b1ba9bb6e891",
+            "refs/heads/codex/fix-classification-smoke": "d4bc1503ce1b47d68ca6493a99039fe16cba0cc1",
+            "refs/heads/codex/fix-lane3-registry-owner-2026-10-17": "eb0c24f638cf40cfcce32ca109bcebe4b1c699b0",
+            "refs/heads/codex/flagged-media-matrix": "30e627069f6477405c5a38dcd6567619090ddc95",
+            "refs/heads/codex/local-ocr-config": "7ebab73244e72e4396599ba16e49636ef777d797",
+            "refs/heads/codex/milestone-1-gate-repair": "35a386d80ae1293d21e29eb8bbf6b3aa866e184e",
+            "refs/heads/codex/milestone-2-failure-visibility": "3cd1a9732e5831858a52fd49b2a98de4bef6e93d",
+            "refs/heads/codex/milestone-3-site-check-visibility": "1425e61ed2358911d792cdb1f04000cbab698f82",
+            "refs/heads/codex/milestone-4-internal-link-i18n": "d1c98b0d343d803eced620f80268f83091c02bd0",
+            "refs/heads/codex/milestone-5-batch-feedback": "3618926492c7117d162df2c4dad5ae6d13ac2c96",
+            "refs/heads/codex/milestone-6-editor-sidebar-ux": "fd39d87c320132ac1cf94ed842b4fe8857cd4233",
+            "refs/heads/codex/recommendation-baseline-metadata": "68a9d32405dfee7ebbffdcb05715bb2dcb442523",
+            "refs/heads/codex/recommendation-real-article-regression": "1cfeb340ccc107448aea83a90fe13b1eb9ef130d",
+            "refs/heads/codex/wp-ai-central-matrix": "d593c8743b6b0d3d2e0d34db47a38f81da9a7197",
+            "refs/heads/master": "a2ad8981e7d31a90e822bca46278296f56fb6ee5",
+            "refs/tags/pre-refactor-2026-07-14": "276b026561770a7b1d8a6d0a7458264a92f5ef91",
+            "refs/tags/pre-refactor-2026-07-14^{}": "e8c9075ae65b75ca7a165906a16dcbebec8cb370",
+            "refs/tags/v0.1.1": "3fa48084a9a0f487763db95b27382eacaa7f289a",
+            "refs/tags/v0.1.1^{}": "7ba95f1b62d28478d0d2874e8d506b3461f01b61"
+          },
+          "local_heads": [
+            "refs/heads/codex/fix-lane3-registry-owner-2026-10-17 eb0c24f638cf40cfcce32ca109bcebe4b1c699b0",
+            "refs/heads/codex/rc2-validation-2026-10-16 569da58106c877fadb65316e4375a8bd3d1f6b1e",
+            "refs/heads/codex/recommendation-baseline-metadata 68a9d32405dfee7ebbffdcb05715bb2dcb442523",
+            "refs/heads/codex/recommendation-real-article-regression 1cfeb340ccc107448aea83a90fe13b1eb9ef130d",
+            "refs/heads/master a2ad8981e7d31a90e822bca46278296f56fb6ee5"
+          ],
+          "local_tags": [
+            "refs/tags/pre-refactor-2026-07-14 276b026561770a7b1d8a6d0a7458264a92f5ef91",
+            "refs/tags/v0.1.1 3fa48084a9a0f487763db95b27382eacaa7f289a"
+          ],
+          "worktrees": "worktree /Users/muze/gitee/npcink-workflow-toolbox\nHEAD a2ad8981e7d31a90e822bca46278296f56fb6ee5\nbranch refs/heads/master\n\n",
+          "stashes": "4830f19e350f9a7e8447cbe8d0a5b3eedd222f21 stash@{0}\n",
+          "tracked_fingerprint": "540d4564e868b55c9bc7ae3aac233fabd4bb8fe85264f6f5173d9f375af23c70",
+          "pr_query_unavailable": false,
+          "open_prs": [],
+          "head_checks_unavailable": false,
+          "head_checks": [
+            {
+              "name": "Static analysis (advisory)",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/39000078547/job/117300951825",
+              "sha": "a2ad8981e7d31a90e822bca46278296f56fb6ee5"
+            },
+            {
+              "name": "PHP contracts",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/39000078547/job/117300951694",
+              "sha": "a2ad8981e7d31a90e822bca46278296f56fb6ee5"
+            }
+          ]
+        },
+        {
+          "repo": "npcink-eval-lab",
+          "observed_at": "2026-10-17T06:30:40.252189+00:00",
+          "head": "09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d",
+          "branch": "main",
+          "status": "",
+          "remote_refs": {
+            "refs/heads/codex/link-review-evidence-gates": "4b7b39a876e90900c27c3a1379a5b1067768969d",
+            "refs/heads/codex/wordpress-ai-provider-ci": "466d5ce45524919d0b985906b2c9bb48acbbd6f4",
+            "refs/heads/codex/wordpress-ai-provider-ci-followup": "6d29eea3e8a4d7257892af688a390f5c033288bd",
+            "refs/heads/codex/wp-ai-capability-fixtures": "20e5db352209021b1052ad2b73816f0876ab28b9",
+            "refs/heads/codex/wp-ai-capability-matrix": "24ba3cc6e5c795a1b43bf9ae4e22ed7ec09d6939",
+            "refs/heads/codex/wp-ai-capability-matrix-status": "47d79ceda595e6e5c927f16e4fab663f72415b9c",
+            "refs/heads/codex/wp-ai-case-quota-blocked": "940c56c40463d399fc001c57541776a4dce25b32",
+            "refs/heads/codex/wp-ai-comment-vision-evidence-20260929": "2a8241aac59bfc0a5ad720e75c211c134d310bfa",
+            "refs/heads/codex/wp-ai-core-batch-evidence-20260929": "7e77b512f995e7f7ed2dcb1105144663226362f5",
+            "refs/heads/codex/wp-ai-deterministic-quality": "4fcbbf1df8e4915398e95a23f44bdc651e034642",
+            "refs/heads/codex/wp-ai-grounding-expanded": "197de6673ee1e35a75163a1aeeb6df944604cb9a",
+            "refs/heads/codex/wp-ai-grounding-quality-guard": "f1df0c1b934ca7e1a7a3cf36398c7e091b010c24",
+            "refs/heads/codex/wp-ai-human-review-20260929": "b09a974049f622e43a1a7ebb16bd735b24ec17e7",
+            "refs/heads/codex/wp-ai-human-review-expanded-20260929": "f9b8ad195386053b8355592a01cbbb6257b51ae9",
+            "refs/heads/codex/wp-ai-human-review-gate-20260929": "5751bfa25111908210ccd4196d473bf41584946d",
+            "refs/heads/codex/wp-ai-image-generation-quality": "42d324c27296e29644d014f67db76a7844e39cc9",
+            "refs/heads/codex/wp-ai-judge-input-20260929": "72ead654803c84c6a1936125b5aa81699ac18c4a",
+            "refs/heads/codex/wp-ai-m4-acceptance": "f23cfa33fefb500b33c91fef00fc7017c170eb63",
+            "refs/heads/codex/wp-ai-media-quality": "e0cc2cb70c78d92ca6036e6f422b2efa58363871",
+            "refs/heads/codex/wp-ai-optional-evidence-correction": "a76a829588b07e87ebe5fe92fc34ae4442e989bf",
+            "refs/heads/codex/wp-ai-quality-closure-evidence": "e2745288574e9657bf6f0743bb518fbd8ea5bd84",
+            "refs/heads/codex/wp-ai-quality-evidence-sync": "b4a7f6c93aae61f32ec08fdd9454463b90ecafd0",
+            "refs/heads/codex/wp-ai-quality-quota-blocked": "80f25b1ae6e4c70facc969dbaa0f210d123512ac",
+            "refs/heads/codex/wp-ai-quality-report-20260929": "9328daffeff152f9238ab9d529f50f498c7ca859",
+            "refs/heads/codex/wp-ai-quota-preflight-eval": "c21cfd359d227dc2dc6bdeea758bdd7b03f2e6dc",
+            "refs/heads/codex/wp-ai-run-correlation-evidence-20260929": "3c9e4f508516f29a465e34f76e49ce6549cda104",
+            "refs/heads/codex/wp-ai-scenario-quality": "f7c1c0affe90cae2483f3f9c3121ca83b9066aad",
+            "refs/heads/codex/wp-ai-stage3-eval": "edfa233f4221446ccd50a7f32a7ac9d75c7bdc51",
+            "refs/heads/codex/wp-ai-structured-quality": "b67453177f073098d15445ba2862c7a2987a45e7",
+            "refs/heads/codex/wp-ai-text-quality": "01ea9d1675e7866f2ec54c249f976ef9dc463215",
+            "refs/heads/codex/wp-ai-title-quality-criteria": "87018865fbbf9be6864d42e287a02323a12cf37d",
+            "refs/heads/main": "09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d"
+          },
+          "local_heads": [
+            "refs/heads/codex/link-review-evidence-gates 4b7b39a876e90900c27c3a1379a5b1067768969d",
+            "refs/heads/codex/wordpress-ai-provider-ci 90bcdefe54a358ec703a2ac9b8b042266d8f8181",
+            "refs/heads/codex/wp-ai-capability-matrix 24ba3cc6e5c795a1b43bf9ae4e22ed7ec09d6939",
+            "refs/heads/codex/wp-ai-capability-matrix-status 47d79ceda595e6e5c927f16e4fab663f72415b9c",
+            "refs/heads/codex/wp-ai-case-quota-blocked 5efe7a8bc1a00505a18c6314955aaba727906a05",
+            "refs/heads/codex/wp-ai-grounding-expanded 197de6673ee1e35a75163a1aeeb6df944604cb9a",
+            "refs/heads/codex/wp-ai-grounding-quality-guard f1df0c1b934ca7e1a7a3cf36398c7e091b010c24",
+            "refs/heads/codex/wp-ai-image-generation-quality 42d324c27296e29644d014f67db76a7844e39cc9",
+            "refs/heads/codex/wp-ai-m4-acceptance f23cfa33fefb500b33c91fef00fc7017c170eb63",
+            "refs/heads/codex/wp-ai-media-quality e0cc2cb70c78d92ca6036e6f422b2efa58363871",
+            "refs/heads/codex/wp-ai-optional-evidence-correction a76a829588b07e87ebe5fe92fc34ae4442e989bf",
+            "refs/heads/codex/wp-ai-quality-closure-evidence e2745288574e9657bf6f0743bb518fbd8ea5bd84",
+            "refs/heads/codex/wp-ai-quality-evidence-sync 156ed2fc2a4660c2c452a4769c1509689118e766",
+            "refs/heads/codex/wp-ai-quality-quota-blocked 83d0b1c942c7903f8f53e3a21d2463bcf7a070d1",
+            "refs/heads/codex/wp-ai-quota-preflight-eval c21cfd359d227dc2dc6bdeea758bdd7b03f2e6dc",
+            "refs/heads/codex/wp-ai-restored-quota-evidence 899668a8a2a3247969b2e36ee5d43832da44bd95",
+            "refs/heads/codex/wp-ai-scenario-quality f7c1c0affe90cae2483f3f9c3121ca83b9066aad",
+            "refs/heads/codex/wp-ai-stage3-eval 73dd932ea90ea8d5c5ab2bcd7071b5a53cf11e1c",
+            "refs/heads/codex/wp-ai-structured-quality b67453177f073098d15445ba2862c7a2987a45e7",
+            "refs/heads/codex/wp-ai-text-quality 01ea9d1675e7866f2ec54c249f976ef9dc463215",
+            "refs/heads/codex/wp-ai-title-quality-criteria a51a902847f2066d2e75a2b1ad130c2dc19036ad",
+            "refs/heads/main 09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d"
+          ],
+          "local_tags": [],
+          "worktrees": "worktree /Users/muze/gitee/npcink-eval-lab\nHEAD 09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d\nbranch refs/heads/main\n\n",
+          "stashes": "",
+          "tracked_fingerprint": "73b9c723d61f2142e9f848977e11dd69031c71867e9fa298666565733c86ba76",
+          "pr_query_unavailable": false,
+          "open_prs": [],
+          "head_checks_unavailable": false,
+          "head_checks": [
+            {
+              "name": "offline-checks",
+              "status": "completed",
+              "conclusion": "success",
+              "url": "https://github.com/npcink/npcink-eval-lab/actions/runs/39009049148/job/117327401674",
+              "sha": "09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "stable_fields": [
+    "head",
+    "branch",
+    "status",
+    "local_heads",
+    "remote_refs",
+    "local_tags",
+    "worktrees",
+    "stashes",
+    "tracked_fingerprint"
+  ],
+  "all_snapshot_fields_equal": true,
+  "snapshot_gap_seconds": 17.681667,
+  "auxiliary_worktrees": [
+    {
+      "repo": "npcink-ai-cloud",
+      "path": "/Users/muze/gitee/.worktrees/cloud-site-anchor-performance",
+      "status": "",
+      "head": "ea62b3f2eea225eafd72cbd55296e69e998af863"
+    }
+  ],
+  "merged_prs": [
+    {
+      "headRefOid": "2d491ca7f3221b0748ee73871c94b5a47e03e8b2",
+      "mergeCommit": {
+        "oid": "fbdfa372bb60ee8a1304359132afdd59c699f084"
+      },
+      "mergedAt": "2026-10-17T03:56:20Z",
+      "number": 1126,
+      "state": "MERGED",
+      "url": "https://github.com/npcink/npcink-ai-cloud/pull/1126",
+      "repo": "npcink-ai-cloud"
+    },
+    {
+      "headRefOid": "1937404d139292057e44983162b6be2079a58c56",
+      "mergeCommit": {
+        "oid": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+      },
+      "mergedAt": "2026-10-17T05:44:17Z",
+      "number": 1127,
+      "state": "MERGED",
+      "url": "https://github.com/npcink/npcink-ai-cloud/pull/1127",
+      "repo": "npcink-ai-cloud"
+    },
+    {
+      "headRefOid": "1cfeb340ccc107448aea83a90fe13b1eb9ef130d",
+      "mergeCommit": {
+        "oid": "a2ad8981e7d31a90e822bca46278296f56fb6ee5"
+      },
+      "mergedAt": "2026-10-17T03:46:41Z",
+      "number": 274,
+      "state": "MERGED",
+      "url": "https://github.com/npcink/npcink-workflow-toolbox/pull/274",
+      "repo": "npcink-workflow-toolbox"
+    },
+    {
+      "headRefOid": "1537165c1ab6e0fcf46a0cc9a92be0570ce400fd",
+      "mergeCommit": {
+        "oid": "b09ad3008a027782f672d929e79c77ac7a01333e"
+      },
+      "mergedAt": "2026-10-17T02:42:14Z",
+      "number": 262,
+      "state": "MERGED",
+      "url": "https://github.com/npcink/npcink-abilities-toolkit/pull/262",
+      "repo": "npcink-abilities-toolkit"
+    },
+    {
+      "headRefOid": "4b7b39a876e90900c27c3a1379a5b1067768969d",
+      "mergeCommit": {
+        "oid": "09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d"
+      },
+      "mergedAt": "2026-10-17T06:12:25Z",
+      "number": 111,
+      "state": "MERGED",
+      "url": "https://github.com/npcink/npcink-eval-lab/pull/111",
+      "repo": "npcink-eval-lab"
+    }
+  ],
+  "adapter_pr120": {
+    "mergeCommit": {
+      "oid": "4188be8b528b867f09e70526f0279ccb530e7edc"
+    },
+    "state": "MERGED",
+    "url": "https://github.com/npcink/npcink-ai-client-adapter/pull/120"
+  },
+  "rc2_drift_repositories": [
+    "npcink-governance-core",
+    "npcink-ai-cloud",
+    "npcink-cloud-addon",
+    "npcink-ai-client-adapter",
+    "npcink-abilities-toolkit",
+    "npcink-workflow-toolbox",
+    "npcink-eval-lab"
+  ],
+  "manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+  "cloud_cve_watch_latest_observed": [
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-10-17T05:33:59Z",
+      "databaseId": 39006725612,
+      "headSha": "fbdfa372bb60ee8a1304359132afdd59c699f084",
+      "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39006725612",
+      "workflowName": "Python CVE Upstream Watch"
+    }
+  ],
+  "owner_receipts": {
+    "cloud_product": {
+      "thread": "01a1429e-69d0-7be3-b432-63784b51a8ab",
+      "read_only_receipt_at": "2026-10-17T13:01:38.289027+08:00",
+      "budget_enabled": false,
+      "configured_provider_count": 0,
+      "real_mailbox_login_site_binding_and_writing_acceptance": "pending; no new live validation here"
+    },
+    "cloud_ops": {
+      "thread": "01a11abe-00cb-7b52-8049-51e831409978",
+      "reported_m4_accepted": "6fddd93d",
+      "actual_cpu_concurrency_gain": "not measured"
+    },
+    "toolbox_eval": {
+      "thread": "01a14348-1a6b-70a0-84d4-915d3cfcf03d",
+      "reported_readonly_editor_replay": "12 articles / 95 frozen links",
+      "human_gold_created": false,
+      "model_review": "not delivered"
+    }
+  },
+  "limits": [
+    "17.68-second observation interval only; no ownership stability handoff or gate run",
+    "No full matrix, exact acceptance, production access, model calls, owner messages or cleanup",
+    "Current Core f764306 is local-only weekly receipt; lack of remote SHA CI is expected",
+    "No finding that every retained legacy patch is absent or obsolete; owner reconciliation still needed"
+  ],
+  "verification": "passed: Composer metadata, test:all 55 tests/207 assertions and component gates; JSON/links/breadcrumb/diff/manifest; final inventory records parallel Adapter change",
+  "final_recheck": {
+    "observed_at": "2026-10-17T06:32:42.930231+00:00",
+    "repositories": [
+      {
+        "repo": "npcink-governance-core",
+        "observed_at": "2026-10-17T06:32:42.847994+00:00",
+        "head": "f764306b0c5b2f8f650521c5c68d02f54234a169",
+        "branch": "codex/ux-history-merge-receipt-2026-10-17",
+        "status": " M .sisyphus/archive/2026-10.md\n M .sisyphus/session-breadcrumb.md\n M docs/next-stage-plan.md\n?? docs/history/other-owner-closeout-refresh-2026-10-17.json\n?? docs/history/other-owner-closeout-refresh-2026-10-17.md\n",
+        "remote_refs": {
+          "refs/heads/codex/audit-weekly-docs-receipt-2026-10-17": "27c6c570540f906c8d4653836ed16dd17986c905",
+          "refs/heads/codex/docs-classification-lane1-2026-10-16": "8d9626b7a07ffca7126b400a404a6db05145d1e9",
+          "refs/heads/codex/docs-publication-receipt-2026-10-17": "b07972c12f0fb822c674570f2cc5b22b2c8d8302",
+          "refs/heads/codex/docs-rc-acceptance-2026-10-16": "4006c644a3d0a62393e1d53f418fac1fd3e5a50c",
+          "refs/heads/codex/docs-rc-audit-refresh-2026-10-16": "0d7153a98fe176b29063b0cd6141601ef26c78df",
+          "refs/heads/codex/docs-rc-final-closeout-2026-10-16": "19953429829f237551b752b8438e12b0f290a385",
+          "refs/heads/codex/docs-rc-identity-2026-10-16": "8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+          "refs/heads/codex/docs-rc-matrix-drift-2026-10-16": "ec01042c7862a47a2534eb5f6cf9d35cf5d26e4a",
+          "refs/heads/codex/docs-rc-post-tag-drift-2026-10-16": "3402eca486af5d979b80f9196315b4a772ed464d",
+          "refs/heads/codex/docs-rc-release-notes-2026-10-16": "fe70ede92fa42a6f0880c1c9543ca34fe9ff9472",
+          "refs/heads/codex/docs-rc-tag-published-2026-10-16": "94af361fa20bacd441506fd9d3be13e5d5aa8de1",
+          "refs/heads/codex/docs-week-2026-10-13-followup": "418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+          "refs/heads/codex/rc2-validation-2026-10-16": "f5181a3ebe347624c468dbb36623421868c88857",
+          "refs/heads/codex/weekly-docs-merge-receipt-2026-10-17": "8df588847af0534f28755ff2a955df7748ceb0da",
+          "refs/heads/dependabot/composer/phpstan/phpstan-2.3.1": "57624c2272f39d599ba620174ee05d0dc9415c0e",
+          "refs/heads/dependabot/github_actions/alibaba/open-code-review-1.12.13": "d3191f0dcdf6e2ed19417f17a6b82e2dc82c587b",
+          "refs/heads/master": "c6031aff5f15b0ab568479e1099314c1e901b6a8",
+          "refs/tags/pre-refactor-2026-07-14": "a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc",
+          "refs/tags/pre-refactor-2026-07-14^{}": "5acce75322367d6d46b58665d35331039d4b301a",
+          "refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1": "8edb4ff1cd5564f389e8da490f183c7a56e0af5b",
+          "refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}": "5f79d32f8e50e381d1872d68c4f99c0e9ee77d51",
+          "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1": "7de7062a3b6308d6b59a47553f3345dd29fab94f",
+          "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1^{}": "8f08f8ac3ce836293581f1bc8be040158de2980d",
+          "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2": "589d82eb634efa92d3a41ecebf99c8dbfe7a19b2",
+          "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2^{}": "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3",
+          "refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2": "2891b0b532c75da1dbf3426404f99dbeb2310b39",
+          "refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2^{}": "1829fb828ea4d9e8f7caabea74d5b89117824355",
+          "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0": "ffb5e5d6d7b68fa952288524a181ff688a7698ee",
+          "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0^{}": "ed28f984153200a8362fcd0928bbb32b83636159",
+          "refs/tags/v0.1.0": "4e4099cec8d0a88deb006eb1e0e916c485c7de65",
+          "refs/tags/v0.1.0^{}": "bdb7df1ce92e8c7bd5c71b57b829d83097ac39e3",
+          "refs/tags/v0.1.1": "ad1d41effcb04a3e1578567e3d30068973344f40",
+          "refs/tags/v0.1.1^{}": "1829fb828ea4d9e8f7caabea74d5b89117824355",
+          "refs/tags/v0.2.0": "fa27aa2a13e01048da411c06cc1dff25abbd45a5",
+          "refs/tags/v0.2.0^{}": "7f2c6bf5b3f810f65f2e3f2d396ecfdf78c07ee6",
+          "refs/tags/v0.3.0": "da05076343d7975e95800eddf1e9719358ac82df",
+          "refs/tags/v0.3.0^{}": "3357f916899ac4b013a753da6d99e712274f2221"
+        },
+        "local_heads": [
+          "refs/heads/codex/audit-weekly-docs-receipt-2026-10-17 27c6c570540f906c8d4653836ed16dd17986c905",
+          "refs/heads/codex/docs-classification-lane1-2026-10-16 31279cf66174efd460e94554a0c0db21897d49e9",
+          "refs/heads/codex/docs-rc-identity-2026-10-16 8d6083e234be290206e6c3fb4b3a739ce3ed232a",
+          "refs/heads/codex/docs-rc-post-tag-drift-2026-10-16 e93c330366c952c75db540465acfcd85eb2cd8ab",
+          "refs/heads/codex/docs-week-2026-10-13-followup 418a081d65eeb2c4ef0fd0fe4674e5c3bb87f6fd",
+          "refs/heads/codex/execution-verification-reads e73f9684878bf10a43130f266c4ddd1d258ad161",
+          "refs/heads/codex/ux-history-merge-receipt-2026-10-17 f764306b0c5b2f8f650521c5c68d02f54234a169",
+          "refs/heads/codex/verification-reads-hardening f4b17dbae132c8be2abdf8f162180b39843074ad",
+          "refs/heads/codex/weekly-docs-merge-receipt-2026-10-17 8df588847af0534f28755ff2a955df7748ceb0da",
+          "refs/heads/master 9716cf5eaae259874c03ad40363382fd065aded2",
+          "refs/heads/zcode/docs-2026-10-11-ux-audit-arc 3c45612c5ee15705374a19743b983dfce9a0258e"
+        ],
+        "local_tags": [
+          "refs/tags/pre-refactor-2026-07-14 a012024d0e58a1e5be2d78b4f5d3f847c7c4acfc",
+          "refs/tags/stack-rc-2026-06-20-core-0.1.0-adapter-0.3.1-toolkit-0.5.1 8edb4ff1cd5564f389e8da490f183c7a56e0af5b",
+          "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.1-toolkit-0.5.1 7de7062a3b6308d6b59a47553f3345dd29fab94f",
+          "refs/tags/stack-rc-2026-06-21-core-0.1.0-adapter-0.3.2-toolkit-0.5.2 589d82eb634efa92d3a41ecebf99c8dbfe7a19b2",
+          "refs/tags/stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2 2891b0b532c75da1dbf3426404f99dbeb2310b39",
+          "refs/tags/stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0 ffb5e5d6d7b68fa952288524a181ff688a7698ee",
+          "refs/tags/v0.1.0 4e4099cec8d0a88deb006eb1e0e916c485c7de65",
+          "refs/tags/v0.1.1 ad1d41effcb04a3e1578567e3d30068973344f40",
+          "refs/tags/v0.2.0 fa27aa2a13e01048da411c06cc1dff25abbd45a5",
+          "refs/tags/v0.3.0 da05076343d7975e95800eddf1e9719358ac82df"
+        ],
+        "worktrees": "worktree /Users/muze/gitee/npcink-governance-core\nHEAD f764306b0c5b2f8f650521c5c68d02f54234a169\nbranch refs/heads/codex/ux-history-merge-receipt-2026-10-17\n\n",
+        "stashes": "",
+        "tracked_fingerprint": "95296572bf4b50ab64e957ead4465e4d7675cf7d7343d4ab57a5db7d6d00b303",
+        "pr_query_unavailable": false,
+        "open_prs": [
+          {
+            "headRefName": "dependabot/composer/phpstan/phpstan-2.3.1",
+            "headRefOid": "57624c2272f39d599ba620174ee05d0dc9415c0e",
+            "number": 156,
+            "title": "build(deps-dev): bump phpstan/phpstan from 2.2.17 to 2.3.1",
+            "url": "https://github.com/npcink/npcink-governance-core/pull/156",
+            "check_failures": [],
+            "checks_count": 3
+          },
+          {
+            "headRefName": "dependabot/github_actions/alibaba/open-code-review-1.12.13",
+            "headRefOid": "d3191f0dcdf6e2ed19417f17a6b82e2dc82c587b",
+            "number": 155,
+            "title": "build(deps): bump alibaba/open-code-review from 1.12.12 to 1.12.13",
+            "url": "https://github.com/npcink/npcink-governance-core/pull/155",
+            "check_failures": [],
+            "checks_count": 3
+          }
+        ],
+        "head_checks_unavailable": true,
+        "head_checks": []
+      },
+      {
+        "repo": "npcink-ai-cloud",
+        "observed_at": "2026-10-17T06:32:40.061722+00:00",
+        "head": "6fddd93d03b712431c742eea30e722bbc87fafb6",
+        "branch": "master",
+        "status": "",
+        "remote_refs": {
+          "refs/heads/dependabot/github_actions/alibaba/open-code-review-1.12.13": "db23658689f4697eb17b161d8651d3f63dbd8598",
+          "refs/heads/dependabot/npm_and_yarn/autoprefixer-10.6.1": "97363c8dd2aa0d5c340bdb65b4523a28f246fb42",
+          "refs/heads/dependabot/npm_and_yarn/tailwind-merge-3.7.0": "4b2cb3202b187445cc1a536e7c79256bf67d4c32",
+          "refs/heads/dependabot/uv/fastapi-0.143.0": "ed379fff6ec1d442cd864f52f7600821fbbc5280",
+          "refs/heads/dependabot/uv/ruff-0.16.10": "cd8ae9e27905e7e303f9ce8ba139f1177567da6e",
+          "refs/heads/master": "6fddd93d03b712431c742eea30e722bbc87fafb6",
+          "refs/heads/production": "2af00741a2ce06ea56a78e62864d4a35d86c66ab",
+          "refs/tags/pre-refactor-dev-2026-07-14": "9450572bdd6257f011cd9574de08c1208e2afd9f",
+          "refs/tags/pre-refactor-dev-2026-07-14^{}": "8cd73cde7647c9866f541a920f6d98fe2c25fcc8",
+          "refs/tags/pre-refactor-production-2026-07-14": "2611bb0205bbe9a96a875d963025067eac7bafb6",
+          "refs/tags/pre-refactor-production-2026-07-14^{}": "251ad3cb183f40ddb5bd0d22b1aa8e80b6093770",
+          "refs/tags/release-candidate-2026-07-28": "2924c2cb93dec3b89dc798dca60b626b1667260a",
+          "refs/tags/release-candidate-2026-07-28^{}": "db9c5edfaf34572e49b2d42411bf21e01781cfdf"
+        },
+        "local_heads": [
+          "refs/heads/codex/site-anchor-performance d7741eed15b9c590bf3836a4816d46bb3d9b7cc1",
+          "refs/heads/codex/usage-rollup-health-reuse 1937404d139292057e44983162b6be2079a58c56",
+          "refs/heads/codex/user-center-synthesis-20261017 c8469e26f1c50b5036d3ab6ea0d9bd59c7c6c938",
+          "refs/heads/codex/zero-paid-critical-regression-20261017 2d491ca7f3221b0748ee73871c94b5a47e03e8b2",
+          "refs/heads/master 6fddd93d03b712431c742eea30e722bbc87fafb6",
+          "refs/heads/production 2af00741a2ce06ea56a78e62864d4a35d86c66ab"
+        ],
+        "local_tags": [
+          "refs/tags/pre-refactor-dev-2026-07-14 9450572bdd6257f011cd9574de08c1208e2afd9f",
+          "refs/tags/pre-refactor-production-2026-07-14 2611bb0205bbe9a96a875d963025067eac7bafb6",
+          "refs/tags/release-candidate-2026-07-28 2924c2cb93dec3b89dc798dca60b626b1667260a",
+          "refs/tags/restore-before-admin-overview-phase1-20260701 ea6a2eddb4faf7c6f15944635ae05b8aefe63978"
+        ],
+        "worktrees": "worktree /Users/muze/gitee/npcink-ai-cloud\nHEAD 6fddd93d03b712431c742eea30e722bbc87fafb6\nbranch refs/heads/master\n\nworktree /Users/muze/gitee/.worktrees/cloud-site-anchor-performance\nHEAD ea62b3f2eea225eafd72cbd55296e69e998af863\ndetached\n\n",
+        "stashes": "",
+        "tracked_fingerprint": "f2dd4df6b66290d6e3f892a6efcf87af89a9ef90bc73c66f7c5fa8ed30d04d9c",
+        "pr_query_unavailable": false,
+        "open_prs": [
+          {
+            "headRefName": "dependabot/uv/ruff-0.16.10",
+            "headRefOid": "cd8ae9e27905e7e303f9ce8ba139f1177567da6e",
+            "number": 1105,
+            "title": "build(deps): Bump ruff from 0.16.8 to 0.16.10",
+            "url": "https://github.com/npcink/npcink-ai-cloud/pull/1105",
+            "check_failures": [],
+            "checks_count": 30
+          },
+          {
+            "headRefName": "dependabot/uv/fastapi-0.143.0",
+            "headRefOid": "ed379fff6ec1d442cd864f52f7600821fbbc5280",
+            "number": 1104,
+            "title": "build(deps): Bump fastapi from 0.141.1 to 0.143.0",
+            "url": "https://github.com/npcink/npcink-ai-cloud/pull/1104",
+            "check_failures": [],
+            "checks_count": 30
+          },
+          {
+            "headRefName": "dependabot/npm_and_yarn/tailwind-merge-3.7.0",
+            "headRefOid": "4b2cb3202b187445cc1a536e7c79256bf67d4c32",
+            "number": 1103,
+            "title": "build(deps): Bump tailwind-merge from 3.5.0 to 3.7.0",
+            "url": "https://github.com/npcink/npcink-ai-cloud/pull/1103",
+            "check_failures": [
+              "code-review"
+            ],
+            "checks_count": 31
+          },
+          {
+            "headRefName": "dependabot/npm_and_yarn/autoprefixer-10.6.1",
+            "headRefOid": "97363c8dd2aa0d5c340bdb65b4523a28f246fb42",
+            "number": 1102,
+            "title": "build(deps-dev): Bump autoprefixer from 10.4.20 to 10.6.1",
+            "url": "https://github.com/npcink/npcink-ai-cloud/pull/1102",
+            "check_failures": [
+              "code-review"
+            ],
+            "checks_count": 31
+          },
+          {
+            "headRefName": "dependabot/github_actions/alibaba/open-code-review-1.12.13",
+            "headRefOid": "db23658689f4697eb17b161d8651d3f63dbd8598",
+            "number": 1101,
+            "title": "build(deps): Bump alibaba/open-code-review from 1.12.11 to 1.13.0",
+            "url": "https://github.com/npcink/npcink-ai-cloud/pull/1101",
+            "check_failures": [],
+            "checks_count": 31
+          }
+        ],
+        "head_checks_unavailable": false,
+        "head_checks": [
+          {
+            "name": "CI observability",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117323699036",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "backend",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117323686308",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "Production deploy bundle",
+            "status": "completed",
+            "conclusion": "skipped",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322490736",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "backend-targeted",
+            "status": "completed",
+            "conclusion": "skipped",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322490070",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "backend-docs",
+            "status": "completed",
+            "conclusion": "skipped",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322489683",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "Python 3.14 Alpine production image smoke",
+            "status": "completed",
+            "conclusion": "skipped",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322489633",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "backend-pytest (4)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488927",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "backend-static",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488921",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "backend-pytest (3)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488854",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "PostgreSQL 16 encryption cutover regression",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488824",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "backend-pytest (1)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488823",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "backend-pytest (2)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322488808",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "Specialized changed-domain quality gates",
+            "status": "completed",
+            "conclusion": "skipped",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322464554",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "static-terms",
+            "status": "completed",
+            "conclusion": "skipped",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322464189",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "Authoritative CVE range precheck",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322463278",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "frontend",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322463275",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "Documentation reachability",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322463257",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "backend-scope",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322463256",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "Python dependency audit",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322463251",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "Production PR CI evidence",
+            "status": "completed",
+            "conclusion": "skipped",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322443753",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "Production release plan",
+            "status": "completed",
+            "conclusion": "skipped",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322443709",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "Production PR base contract precheck",
+            "status": "completed",
+            "conclusion": "skipped",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322443575",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "Dockerfile COPY contract precheck",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322442794",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "classify",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322442735",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "Analyze (python)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356458/job/117322442689",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "Analyze (javascript-typescript)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356458/job/117322442582",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          },
+          {
+            "name": "Secret scan",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-cloud/actions/runs/39007356491/job/117322442558",
+            "sha": "6fddd93d03b712431c742eea30e722bbc87fafb6"
+          }
+        ]
+      },
+      {
+        "repo": "npcink-cloud-addon",
+        "observed_at": "2026-10-17T06:32:35.466984+00:00",
+        "head": "b80b966151f26f114271a5534082c336ab2fea50",
+        "branch": "master",
+        "status": "",
+        "remote_refs": {
+          "refs/heads/codex/0-4-1-stale-entitlement": "f379aadb6be38471a02d64de0db9ea79ff7c17f0",
+          "refs/heads/codex/041-final-release-record": "f6b95295b4cfb682f78809bfde978d72d713d56c",
+          "refs/heads/codex/041-maintenance-closeout-20261015": "014fde9f44620320a8940b0e1f4e998cc04d3f00",
+          "refs/heads/codex/041-refresh-closeout": "3d42183d7782715e66485c3186f3bb90d5c58dea",
+          "refs/heads/codex/docs-next-session-handoff-20261016": "c26f43dbbd340722a0835b4037f33ab2f483ff31",
+          "refs/heads/codex/glotpress-closeout-20261012": "2f343a6e35281489e1ccf5ffc914cfa63cb88dc0",
+          "refs/heads/codex/ocr-ci-diagnostics-20261013": "a8431153fc71049b1f246965f4016769591a7195",
+          "refs/heads/codex/ocr-glm-thinking-compat-20261013": "000ca35f84f7896cc039ddae1485e483fbb863b3",
+          "refs/heads/codex/provider-acceptance-closeout-20261012": "582177c2c2586cf3ed2e945f3e6476e86c0e0b37",
+          "refs/heads/codex/recommendation-feedback-metadata": "9637ca592f4570bd292b107144e61b4f8271cbae",
+          "refs/heads/codex/release-status-20261013": "dbddd65c9a970615bb556006d3e5998bb9ceb51a",
+          "refs/heads/codex/site-knowledge-recovery-20261015": "4e8c8e65f0ae272a170ff63f45057eeddc6cb63f",
+          "refs/heads/codex/ux-closeout-20261012": "1209f5105ae94a48c9b7f65af77c952e09733f52",
+          "refs/heads/codex/ux-tail-20261012": "e55a04e0a3cdd6ee978916d3eaa30d8ecfa87e6c",
+          "refs/heads/docs/ux-paydown-handoff-2026-10-12": "387687620db4886c42cd4d5c63b9dab60d0f9426",
+          "refs/heads/fix/user-facing-ux-paydown-round": "4b72b953432557ec5b712b8c83c021ff8a7b571e",
+          "refs/heads/master": "3e650d1bc74d9428d6671f27dd668938c6b6078b",
+          "refs/tags/0.2.0": "f2a8dd61e6f676382444c7e1b884361a68ad31a9",
+          "refs/tags/0.2.0^{}": "7b85c903b2ffc94a5e91ec027d9d900be5176aa5",
+          "refs/tags/0.3.0": "200ecf966494e531e57ab29c7706eef41bb9e1de",
+          "refs/tags/0.3.0^{}": "8c56aae8a7665954db3fbf0cc16500db6068566e",
+          "refs/tags/0.4.0": "35915cf4e5a9f13d6808ab3052885793f47cb190",
+          "refs/tags/archive/wp-ai-localization-fix-20260928": "0f643ff85842162d8cc8aa6d42a382f5e81c9ef2",
+          "refs/tags/pre-refactor-2026-07-14": "bae0a4dfd59042482179766f743b4ffcaca876f7",
+          "refs/tags/pre-refactor-2026-07-14^{}": "9c46f4bff7a715a8eacd8e787705de0ea62e39ed"
+        },
+        "local_heads": [
+          "refs/heads/codex/recommendation-feedback-metadata 9637ca592f4570bd292b107144e61b4f8271cbae",
+          "refs/heads/master b80b966151f26f114271a5534082c336ab2fea50"
+        ],
+        "local_tags": [
+          "refs/tags/0.2.0 265f001f0afb303206d0edd72f1f4b8f20dd5ef9",
+          "refs/tags/0.3.0 200ecf966494e531e57ab29c7706eef41bb9e1de",
+          "refs/tags/0.4.0 35915cf4e5a9f13d6808ab3052885793f47cb190",
+          "refs/tags/archive/wp-ai-localization-fix-20260928 0f643ff85842162d8cc8aa6d42a382f5e81c9ef2",
+          "refs/tags/pre-refactor-2026-07-14 bae0a4dfd59042482179766f743b4ffcaca876f7"
+        ],
+        "worktrees": "worktree /Users/muze/gitee/npcink-cloud-addon\nHEAD b80b966151f26f114271a5534082c336ab2fea50\nbranch refs/heads/master\n\n",
+        "stashes": "",
+        "tracked_fingerprint": "cd92896a841335b9d152e90d01b7d7da6c22d59028353063b68ea605b69af293",
+        "pr_query_unavailable": false,
+        "open_prs": [],
+        "head_checks_unavailable": false,
+        "head_checks": [
+          {
+            "name": "WordPress AI compatibility blocking lanes",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271201788",
+            "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+          },
+          {
+            "name": "PHP contracts",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271172050",
+            "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+          },
+          {
+            "name": "WordPress AI stable-primary / PHP 8.4",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070538",
+            "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+          },
+          {
+            "name": "WordPress AI stable-regression / PHP 8.2",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070534",
+            "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+          },
+          {
+            "name": "PHP 8.4 contracts",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070523",
+            "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+          },
+          {
+            "name": "WordPress AI upstream-warning / PHP 8.2",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070512",
+            "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+          },
+          {
+            "name": "WordPress AI stable-primary / PHP 8.0",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070481",
+            "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+          },
+          {
+            "name": "PHP 8.0 contracts",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070475",
+            "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+          },
+          {
+            "name": "PHP 8.2 contracts",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070444",
+            "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+          },
+          {
+            "name": "WordPress AI stable-primary / PHP 8.2",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070438",
+            "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+          },
+          {
+            "name": "Release static gates",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323126/job/117271070292",
+            "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+          },
+          {
+            "name": "PHPStan level 5 (advisory)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-cloud-addon/actions/runs/38990323108/job/117271069417",
+            "sha": "b80b966151f26f114271a5534082c336ab2fea50"
+          }
+        ]
+      },
+      {
+        "repo": "npcink-ai-client-adapter",
+        "observed_at": "2026-10-17T06:32:36.406728+00:00",
+        "head": "4188be8b528b867f09e70526f0279ccb530e7edc",
+        "branch": "codex/adapter-043-release-closeout-2026-10-17",
+        "status": "",
+        "remote_refs": {
+          "refs/heads/codex/m4-pgy-stack-rc-docs-2026-10-15": "eb73e503a8c102acd6f87b69f406ee4b94aac85f",
+          "refs/heads/master": "4188be8b528b867f09e70526f0279ccb530e7edc",
+          "refs/tags/openclaw-grant-redeem-mvp": "8af2c243952cd1589dcce65aed7ed565f656da06",
+          "refs/tags/pre-refactor-2026-07-14": "afe1d8ceac39c6936df061073de6309bb5982d3a",
+          "refs/tags/pre-refactor-2026-07-14^{}": "84554be1d9cccb5b6794404803f475162ee7ea00",
+          "refs/tags/v0.2.0": "9a12b11953acbf7151e4c89ec97ed2b84588d65c",
+          "refs/tags/v0.2.0^{}": "3c4ea71f41ccb013341e12498520510ffcefa81f",
+          "refs/tags/v0.2.1": "0906755ef02ba9345eb108d5ca78a8fe22ac0077",
+          "refs/tags/v0.2.1^{}": "452d738c05972302cf6138f38184cfc5cec7cea6",
+          "refs/tags/v0.3.0": "605f6fe7b57fec54bc523c95a40dd62fc73dca82",
+          "refs/tags/v0.3.0^{}": "205ebda976aa51afd27c6d633082360194ba902b",
+          "refs/tags/v0.3.1": "9c5b8d6f6e41a482c978639cebf9bbf769adc0e6",
+          "refs/tags/v0.3.2": "32737cca76d71e99c96f6c63775884ab4e767197",
+          "refs/tags/v0.3.2^{}": "65f1012c5f4072dd6c1251f2e2db98d5e836c598",
+          "refs/tags/v0.3.3": "57517fab449fa04e19dc30513e36ec57435564ed",
+          "refs/tags/v0.3.3^{}": "8800b8e4c4651c5d4dff759c3050135d74968927",
+          "refs/tags/v0.4.0": "34b21582d6418b3fcf93f3efca94a71a62fde16e",
+          "refs/tags/v0.4.0^{}": "7800b3da2f20637ffea621274e033a061d532e93",
+          "refs/tags/v0.4.1": "f8f8b8411ef5c48bb2c98e87528b88d464f622ce",
+          "refs/tags/v0.4.2": "dcd7188c243cf03d4c2824588d489c7e86116965",
+          "refs/tags/v0.4.2^{}": "963318a6f99b4837a48290fb9abbdb7716f9d079",
+          "refs/tags/v0.4.3": "34c0b788885746d42bc41119d4cff33a5d1d5f7e",
+          "refs/tags/v0.4.3^{}": "d3b114f73029836277f42d04c292f661b255a332"
+        },
+        "local_heads": [
+          "refs/heads/codex/adapter-043-release-closeout-2026-10-17 4188be8b528b867f09e70526f0279ccb530e7edc",
+          "refs/heads/master 4188be8b528b867f09e70526f0279ccb530e7edc"
+        ],
+        "local_tags": [
+          "refs/tags/openclaw-grant-redeem-mvp 8af2c243952cd1589dcce65aed7ed565f656da06",
+          "refs/tags/pre-refactor-2026-07-14 afe1d8ceac39c6936df061073de6309bb5982d3a",
+          "refs/tags/v0.2.0 9a12b11953acbf7151e4c89ec97ed2b84588d65c",
+          "refs/tags/v0.2.1 0906755ef02ba9345eb108d5ca78a8fe22ac0077",
+          "refs/tags/v0.3.0 605f6fe7b57fec54bc523c95a40dd62fc73dca82",
+          "refs/tags/v0.3.1 9c5b8d6f6e41a482c978639cebf9bbf769adc0e6",
+          "refs/tags/v0.3.2 32737cca76d71e99c96f6c63775884ab4e767197",
+          "refs/tags/v0.3.3 57517fab449fa04e19dc30513e36ec57435564ed",
+          "refs/tags/v0.4.0 34b21582d6418b3fcf93f3efca94a71a62fde16e",
+          "refs/tags/v0.4.1 f8f8b8411ef5c48bb2c98e87528b88d464f622ce",
+          "refs/tags/v0.4.2 dcd7188c243cf03d4c2824588d489c7e86116965",
+          "refs/tags/v0.4.3 34c0b788885746d42bc41119d4cff33a5d1d5f7e"
+        ],
+        "worktrees": "worktree /Users/muze/gitee/npcink-ai-client-adapter\nHEAD 4188be8b528b867f09e70526f0279ccb530e7edc\nbranch refs/heads/codex/adapter-043-release-closeout-2026-10-17\n\n",
+        "stashes": "",
+        "tracked_fingerprint": "eef27b013d43700bf776abd972a3aee88dbb5dbf11a03e9d5308289dae0fdb0d",
+        "pr_query_unavailable": false,
+        "open_prs": [],
+        "head_checks_unavailable": false,
+        "head_checks": [
+          {
+            "name": "Static analysis (advisory)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-client-adapter/actions/runs/39009700473/job/117329381126",
+            "sha": "4188be8b528b867f09e70526f0279ccb530e7edc"
+          },
+          {
+            "name": "PHP contracts",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-ai-client-adapter/actions/runs/39009700473/job/117329380916",
+            "sha": "4188be8b528b867f09e70526f0279ccb530e7edc"
+          }
+        ]
+      },
+      {
+        "repo": "npcink-abilities-toolkit",
+        "observed_at": "2026-10-17T06:32:38.486764+00:00",
+        "head": "b09ad3008a027782f672d929e79c77ac7a01333e",
+        "branch": "master",
+        "status": "",
+        "remote_refs": {
+          "refs/heads/master": "b09ad3008a027782f672d929e79c77ac7a01333e",
+          "refs/tags/0.2.0": "58c5b363c7a67a8e75aea41efee3b8020a2192ab",
+          "refs/tags/0.2.0^{}": "7ecda76c3c13bea0c40f5d9109afafffb4f92147",
+          "refs/tags/0.4.0": "53e13e2c1da3758f9154c92577cef046ae9967ce",
+          "refs/tags/0.4.0^{}": "c982bf657ee3ab7aa72b3e7b77a57e49629eddf4",
+          "refs/tags/0.5.0": "ff3e88bd86185d402d4df7265f3589f4b0e0f0a6",
+          "refs/tags/0.5.1": "edb7f1c953b8d08d09e6f8ef34cff4fd439833e5",
+          "refs/tags/0.5.1^{}": "78ffb4f7e4db173421225597dcfc7aedc0d9fd42",
+          "refs/tags/0.5.10": "4756d77cdfe5ccb6f65a639729816ab46a3a4cbb",
+          "refs/tags/0.5.10^{}": "dd4b42f035ffc1d672ff3dbd5bd019539772e96a",
+          "refs/tags/0.5.11": "8192e7461d29d2946c19e8ff9c0bf46d0995150a",
+          "refs/tags/0.5.12": "7be527b3f36a5748daf810c2d2e09bb85076314f",
+          "refs/tags/0.5.2": "b52d96dc04746b3375173f79718299fa628fb3a6",
+          "refs/tags/0.5.2^{}": "98974bd613da8091c5bd648ef515c67afe254c29",
+          "refs/tags/0.5.3": "ecff157693aa27101edbc750817bd1849e8d5bfa",
+          "refs/tags/0.5.3^{}": "072405e3d82e01682dde7c7e8dadcc3137b61d1a",
+          "refs/tags/0.5.4": "061c11b2c68441396493eb403555b7ee3102cccc",
+          "refs/tags/0.5.4^{}": "e68397ebf8f7862c19b6051587473e735c253b36",
+          "refs/tags/0.5.5": "4506dd99fae91c3f4bff422a5d9045407adae51d",
+          "refs/tags/0.5.5^{}": "3e237d91cbc1f135c559d47d1e20106aee62c1bb",
+          "refs/tags/0.5.6": "70c10d9a86b6e3c120edc52c796afcd5d8dcf13c",
+          "refs/tags/0.5.7": "fa8a0ddcacc8049b42b03f74c23e7940b8764a57",
+          "refs/tags/0.5.7^{}": "9e9f9ead29a5f8853bf9101eddd24c6f6852c8e8",
+          "refs/tags/0.5.8": "29a22db12ee93057f1093240c966f958ee5a1f50",
+          "refs/tags/0.5.8^{}": "0618e41ff5c457fd1414ba45c4a108af806cc653",
+          "refs/tags/0.5.9": "a5ef13a7b2528b14e8b7081aaa083b472460f411",
+          "refs/tags/0.6.0": "9d94274e36f6ab2424110373b003929e1ca0362f",
+          "refs/tags/0.7.0": "46c1405422ae0ac1f8ea6820b391b48d09326a14",
+          "refs/tags/pre-refactor-2026-07-14": "1fa097c7cf8c268c273bf18efba5f3300ea24caa",
+          "refs/tags/pre-refactor-2026-07-14^{}": "314596c5d515b50b8254537d017eec2f9b0f89f8"
+        },
+        "local_heads": [
+          "refs/heads/codex/internal-link-anchor-evidence 1537165c1ab6e0fcf46a0cc9a92be0570ce400fd",
+          "refs/heads/codex/zh-cn-docs-mirror-default aee42eaeb7ee57825ad740bbc51a032cd203d5f4",
+          "refs/heads/master b09ad3008a027782f672d929e79c77ac7a01333e"
+        ],
+        "local_tags": [
+          "refs/tags/0.2.0 58c5b363c7a67a8e75aea41efee3b8020a2192ab",
+          "refs/tags/0.4.0 53e13e2c1da3758f9154c92577cef046ae9967ce",
+          "refs/tags/0.5.0 ff3e88bd86185d402d4df7265f3589f4b0e0f0a6",
+          "refs/tags/0.5.1 edb7f1c953b8d08d09e6f8ef34cff4fd439833e5",
+          "refs/tags/0.5.10 4756d77cdfe5ccb6f65a639729816ab46a3a4cbb",
+          "refs/tags/0.5.11 8192e7461d29d2946c19e8ff9c0bf46d0995150a",
+          "refs/tags/0.5.12 7be527b3f36a5748daf810c2d2e09bb85076314f",
+          "refs/tags/0.5.2 b52d96dc04746b3375173f79718299fa628fb3a6",
+          "refs/tags/0.5.3 ecff157693aa27101edbc750817bd1849e8d5bfa",
+          "refs/tags/0.5.4 061c11b2c68441396493eb403555b7ee3102cccc",
+          "refs/tags/0.5.5 4506dd99fae91c3f4bff422a5d9045407adae51d",
+          "refs/tags/0.5.6 70c10d9a86b6e3c120edc52c796afcd5d8dcf13c",
+          "refs/tags/0.5.7 fa8a0ddcacc8049b42b03f74c23e7940b8764a57",
+          "refs/tags/0.5.8 29a22db12ee93057f1093240c966f958ee5a1f50",
+          "refs/tags/0.5.9 a5ef13a7b2528b14e8b7081aaa083b472460f411",
+          "refs/tags/0.6.0 9d94274e36f6ab2424110373b003929e1ca0362f",
+          "refs/tags/0.7.0 46c1405422ae0ac1f8ea6820b391b48d09326a14",
+          "refs/tags/pre-refactor-2026-07-14 1fa097c7cf8c268c273bf18efba5f3300ea24caa"
+        ],
+        "worktrees": "worktree /Users/muze/gitee/npcink-abilities-toolkit\nHEAD b09ad3008a027782f672d929e79c77ac7a01333e\nbranch refs/heads/master\n\n",
+        "stashes": "",
+        "tracked_fingerprint": "ea022c7c975f403ddc73abef2b13c6f90f0b09533e120483d37d479f71217dba",
+        "pr_query_unavailable": false,
+        "open_prs": [],
+        "head_checks_unavailable": false,
+        "head_checks": [
+          {
+            "name": "mirror",
+            "status": "completed",
+            "conclusion": "skipped",
+            "url": "https://github.com/npcink/npcink-abilities-toolkit/actions/runs/38995965527/job/117288480270",
+            "sha": "b09ad3008a027782f672d929e79c77ac7a01333e"
+          },
+          {
+            "name": "php (8.3)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-abilities-toolkit/actions/runs/38995965548/job/117288479490",
+            "sha": "b09ad3008a027782f672d929e79c77ac7a01333e"
+          },
+          {
+            "name": "wordpress-smoke (minimum)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-abilities-toolkit/actions/runs/38995965548/job/117288479425",
+            "sha": "b09ad3008a027782f672d929e79c77ac7a01333e"
+          },
+          {
+            "name": "wordpress-smoke (current)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-abilities-toolkit/actions/runs/38995965548/job/117288479371",
+            "sha": "b09ad3008a027782f672d929e79c77ac7a01333e"
+          },
+          {
+            "name": "php (8.0)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-abilities-toolkit/actions/runs/38995965548/job/117288479274",
+            "sha": "b09ad3008a027782f672d929e79c77ac7a01333e"
+          }
+        ]
+      },
+      {
+        "repo": "npcink-workflow-toolbox",
+        "observed_at": "2026-10-17T06:32:36.213483+00:00",
+        "head": "a2ad8981e7d31a90e822bca46278296f56fb6ee5",
+        "branch": "master",
+        "status": "",
+        "remote_refs": {
+          "refs/heads/codex/dependency-error-copy": "d95756ed7f9c18dfb05ecce2cec82b367834c22f",
+          "refs/heads/codex/dependency-phpstan-maintenance": "34d5c790b1b71f82e61619b01471ad6025dbf1f0",
+          "refs/heads/codex/docs-status-closeout": "fffb8b4657ad3adf3e17f881d527b1ba9bb6e891",
+          "refs/heads/codex/fix-classification-smoke": "d4bc1503ce1b47d68ca6493a99039fe16cba0cc1",
+          "refs/heads/codex/fix-lane3-registry-owner-2026-10-17": "eb0c24f638cf40cfcce32ca109bcebe4b1c699b0",
+          "refs/heads/codex/flagged-media-matrix": "30e627069f6477405c5a38dcd6567619090ddc95",
+          "refs/heads/codex/local-ocr-config": "7ebab73244e72e4396599ba16e49636ef777d797",
+          "refs/heads/codex/milestone-1-gate-repair": "35a386d80ae1293d21e29eb8bbf6b3aa866e184e",
+          "refs/heads/codex/milestone-2-failure-visibility": "3cd1a9732e5831858a52fd49b2a98de4bef6e93d",
+          "refs/heads/codex/milestone-3-site-check-visibility": "1425e61ed2358911d792cdb1f04000cbab698f82",
+          "refs/heads/codex/milestone-4-internal-link-i18n": "d1c98b0d343d803eced620f80268f83091c02bd0",
+          "refs/heads/codex/milestone-5-batch-feedback": "3618926492c7117d162df2c4dad5ae6d13ac2c96",
+          "refs/heads/codex/milestone-6-editor-sidebar-ux": "fd39d87c320132ac1cf94ed842b4fe8857cd4233",
+          "refs/heads/codex/recommendation-baseline-metadata": "68a9d32405dfee7ebbffdcb05715bb2dcb442523",
+          "refs/heads/codex/recommendation-real-article-regression": "1cfeb340ccc107448aea83a90fe13b1eb9ef130d",
+          "refs/heads/codex/wp-ai-central-matrix": "d593c8743b6b0d3d2e0d34db47a38f81da9a7197",
+          "refs/heads/master": "a2ad8981e7d31a90e822bca46278296f56fb6ee5",
+          "refs/tags/pre-refactor-2026-07-14": "276b026561770a7b1d8a6d0a7458264a92f5ef91",
+          "refs/tags/pre-refactor-2026-07-14^{}": "e8c9075ae65b75ca7a165906a16dcbebec8cb370",
+          "refs/tags/v0.1.1": "3fa48084a9a0f487763db95b27382eacaa7f289a",
+          "refs/tags/v0.1.1^{}": "7ba95f1b62d28478d0d2874e8d506b3461f01b61"
+        },
+        "local_heads": [
+          "refs/heads/codex/fix-lane3-registry-owner-2026-10-17 eb0c24f638cf40cfcce32ca109bcebe4b1c699b0",
+          "refs/heads/codex/rc2-validation-2026-10-16 569da58106c877fadb65316e4375a8bd3d1f6b1e",
+          "refs/heads/codex/recommendation-baseline-metadata 68a9d32405dfee7ebbffdcb05715bb2dcb442523",
+          "refs/heads/codex/recommendation-real-article-regression 1cfeb340ccc107448aea83a90fe13b1eb9ef130d",
+          "refs/heads/master a2ad8981e7d31a90e822bca46278296f56fb6ee5"
+        ],
+        "local_tags": [
+          "refs/tags/pre-refactor-2026-07-14 276b026561770a7b1d8a6d0a7458264a92f5ef91",
+          "refs/tags/v0.1.1 3fa48084a9a0f487763db95b27382eacaa7f289a"
+        ],
+        "worktrees": "worktree /Users/muze/gitee/npcink-workflow-toolbox\nHEAD a2ad8981e7d31a90e822bca46278296f56fb6ee5\nbranch refs/heads/master\n\n",
+        "stashes": "4830f19e350f9a7e8447cbe8d0a5b3eedd222f21 stash@{0}\n",
+        "tracked_fingerprint": "540d4564e868b55c9bc7ae3aac233fabd4bb8fe85264f6f5173d9f375af23c70",
+        "pr_query_unavailable": false,
+        "open_prs": [],
+        "head_checks_unavailable": false,
+        "head_checks": [
+          {
+            "name": "Static analysis (advisory)",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/39000078547/job/117300951825",
+            "sha": "a2ad8981e7d31a90e822bca46278296f56fb6ee5"
+          },
+          {
+            "name": "PHP contracts",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-workflow-toolbox/actions/runs/39000078547/job/117300951694",
+            "sha": "a2ad8981e7d31a90e822bca46278296f56fb6ee5"
+          }
+        ]
+      },
+      {
+        "repo": "npcink-eval-lab",
+        "observed_at": "2026-10-17T06:32:38.097421+00:00",
+        "head": "09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d",
+        "branch": "main",
+        "status": "",
+        "remote_refs": {
+          "refs/heads/codex/link-review-evidence-gates": "4b7b39a876e90900c27c3a1379a5b1067768969d",
+          "refs/heads/codex/wordpress-ai-provider-ci": "466d5ce45524919d0b985906b2c9bb48acbbd6f4",
+          "refs/heads/codex/wordpress-ai-provider-ci-followup": "6d29eea3e8a4d7257892af688a390f5c033288bd",
+          "refs/heads/codex/wp-ai-capability-fixtures": "20e5db352209021b1052ad2b73816f0876ab28b9",
+          "refs/heads/codex/wp-ai-capability-matrix": "24ba3cc6e5c795a1b43bf9ae4e22ed7ec09d6939",
+          "refs/heads/codex/wp-ai-capability-matrix-status": "47d79ceda595e6e5c927f16e4fab663f72415b9c",
+          "refs/heads/codex/wp-ai-case-quota-blocked": "940c56c40463d399fc001c57541776a4dce25b32",
+          "refs/heads/codex/wp-ai-comment-vision-evidence-20260929": "2a8241aac59bfc0a5ad720e75c211c134d310bfa",
+          "refs/heads/codex/wp-ai-core-batch-evidence-20260929": "7e77b512f995e7f7ed2dcb1105144663226362f5",
+          "refs/heads/codex/wp-ai-deterministic-quality": "4fcbbf1df8e4915398e95a23f44bdc651e034642",
+          "refs/heads/codex/wp-ai-grounding-expanded": "197de6673ee1e35a75163a1aeeb6df944604cb9a",
+          "refs/heads/codex/wp-ai-grounding-quality-guard": "f1df0c1b934ca7e1a7a3cf36398c7e091b010c24",
+          "refs/heads/codex/wp-ai-human-review-20260929": "b09a974049f622e43a1a7ebb16bd735b24ec17e7",
+          "refs/heads/codex/wp-ai-human-review-expanded-20260929": "f9b8ad195386053b8355592a01cbbb6257b51ae9",
+          "refs/heads/codex/wp-ai-human-review-gate-20260929": "5751bfa25111908210ccd4196d473bf41584946d",
+          "refs/heads/codex/wp-ai-image-generation-quality": "42d324c27296e29644d014f67db76a7844e39cc9",
+          "refs/heads/codex/wp-ai-judge-input-20260929": "72ead654803c84c6a1936125b5aa81699ac18c4a",
+          "refs/heads/codex/wp-ai-m4-acceptance": "f23cfa33fefb500b33c91fef00fc7017c170eb63",
+          "refs/heads/codex/wp-ai-media-quality": "e0cc2cb70c78d92ca6036e6f422b2efa58363871",
+          "refs/heads/codex/wp-ai-optional-evidence-correction": "a76a829588b07e87ebe5fe92fc34ae4442e989bf",
+          "refs/heads/codex/wp-ai-quality-closure-evidence": "e2745288574e9657bf6f0743bb518fbd8ea5bd84",
+          "refs/heads/codex/wp-ai-quality-evidence-sync": "b4a7f6c93aae61f32ec08fdd9454463b90ecafd0",
+          "refs/heads/codex/wp-ai-quality-quota-blocked": "80f25b1ae6e4c70facc969dbaa0f210d123512ac",
+          "refs/heads/codex/wp-ai-quality-report-20260929": "9328daffeff152f9238ab9d529f50f498c7ca859",
+          "refs/heads/codex/wp-ai-quota-preflight-eval": "c21cfd359d227dc2dc6bdeea758bdd7b03f2e6dc",
+          "refs/heads/codex/wp-ai-run-correlation-evidence-20260929": "3c9e4f508516f29a465e34f76e49ce6549cda104",
+          "refs/heads/codex/wp-ai-scenario-quality": "f7c1c0affe90cae2483f3f9c3121ca83b9066aad",
+          "refs/heads/codex/wp-ai-stage3-eval": "edfa233f4221446ccd50a7f32a7ac9d75c7bdc51",
+          "refs/heads/codex/wp-ai-structured-quality": "b67453177f073098d15445ba2862c7a2987a45e7",
+          "refs/heads/codex/wp-ai-text-quality": "01ea9d1675e7866f2ec54c249f976ef9dc463215",
+          "refs/heads/codex/wp-ai-title-quality-criteria": "87018865fbbf9be6864d42e287a02323a12cf37d",
+          "refs/heads/main": "09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d"
+        },
+        "local_heads": [
+          "refs/heads/codex/link-review-evidence-gates 4b7b39a876e90900c27c3a1379a5b1067768969d",
+          "refs/heads/codex/wordpress-ai-provider-ci 90bcdefe54a358ec703a2ac9b8b042266d8f8181",
+          "refs/heads/codex/wp-ai-capability-matrix 24ba3cc6e5c795a1b43bf9ae4e22ed7ec09d6939",
+          "refs/heads/codex/wp-ai-capability-matrix-status 47d79ceda595e6e5c927f16e4fab663f72415b9c",
+          "refs/heads/codex/wp-ai-case-quota-blocked 5efe7a8bc1a00505a18c6314955aaba727906a05",
+          "refs/heads/codex/wp-ai-grounding-expanded 197de6673ee1e35a75163a1aeeb6df944604cb9a",
+          "refs/heads/codex/wp-ai-grounding-quality-guard f1df0c1b934ca7e1a7a3cf36398c7e091b010c24",
+          "refs/heads/codex/wp-ai-image-generation-quality 42d324c27296e29644d014f67db76a7844e39cc9",
+          "refs/heads/codex/wp-ai-m4-acceptance f23cfa33fefb500b33c91fef00fc7017c170eb63",
+          "refs/heads/codex/wp-ai-media-quality e0cc2cb70c78d92ca6036e6f422b2efa58363871",
+          "refs/heads/codex/wp-ai-optional-evidence-correction a76a829588b07e87ebe5fe92fc34ae4442e989bf",
+          "refs/heads/codex/wp-ai-quality-closure-evidence e2745288574e9657bf6f0743bb518fbd8ea5bd84",
+          "refs/heads/codex/wp-ai-quality-evidence-sync 156ed2fc2a4660c2c452a4769c1509689118e766",
+          "refs/heads/codex/wp-ai-quality-quota-blocked 83d0b1c942c7903f8f53e3a21d2463bcf7a070d1",
+          "refs/heads/codex/wp-ai-quota-preflight-eval c21cfd359d227dc2dc6bdeea758bdd7b03f2e6dc",
+          "refs/heads/codex/wp-ai-restored-quota-evidence 899668a8a2a3247969b2e36ee5d43832da44bd95",
+          "refs/heads/codex/wp-ai-scenario-quality f7c1c0affe90cae2483f3f9c3121ca83b9066aad",
+          "refs/heads/codex/wp-ai-stage3-eval 73dd932ea90ea8d5c5ab2bcd7071b5a53cf11e1c",
+          "refs/heads/codex/wp-ai-structured-quality b67453177f073098d15445ba2862c7a2987a45e7",
+          "refs/heads/codex/wp-ai-text-quality 01ea9d1675e7866f2ec54c249f976ef9dc463215",
+          "refs/heads/codex/wp-ai-title-quality-criteria a51a902847f2066d2e75a2b1ad130c2dc19036ad",
+          "refs/heads/main 09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d"
+        ],
+        "local_tags": [],
+        "worktrees": "worktree /Users/muze/gitee/npcink-eval-lab\nHEAD 09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d\nbranch refs/heads/main\n\n",
+        "stashes": "",
+        "tracked_fingerprint": "73b9c723d61f2142e9f848977e11dd69031c71867e9fa298666565733c86ba76",
+        "pr_query_unavailable": false,
+        "open_prs": [],
+        "head_checks_unavailable": false,
+        "head_checks": [
+          {
+            "name": "offline-checks",
+            "status": "completed",
+            "conclusion": "success",
+            "url": "https://github.com/npcink/npcink-eval-lab/actions/runs/39009049148/job/117327401674",
+            "sha": "09fdd4d0bf3c3e5fe9ef73218d6b98cf7b81a57d"
+          }
+        ]
+      }
+    ]
+  },
+  "parallel_change": {
+    "repo": "npcink-ai-client-adapter",
+    "new_local_topic": "codex/adapter-043-release-closeout-2026-10-17",
+    "new_local_and_remote_tag": "v0.4.3",
+    "tag_object": "34c0b788885746d42bc41119d4cff33a5d1d5f7e",
+    "peeled_commit": "d3b114f73029836277f42d04c292f661b255a332",
+    "performed_by_this_audit": false,
+    "external_authorization": "not verified here",
+    "does_not_establish_stack_acceptance": true
+  }
+}

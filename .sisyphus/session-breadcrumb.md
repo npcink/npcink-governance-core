@@ -5,28 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Adapter exact source saved; seven Core docs commits merged
-
-- **Adapter**: pushed exact `eb73e503` to origin's named existing-local topic
-  branch without tags/force or local checkout changes. Empty bare fetch and
-  GitHub API resolve the exact commit; tree `cd78059d` equals local. Temporary
-  verification repository removed; preservation branch retained, no master merge.
-- **Core publication**: seven commits cac1689..f5181a3 / 21 docs-only files
-  published through PR #177. Required Static contracts/body checks passed;
-  squash `9d153849` at 03:06:09Z has identical tree to f5181a3. Merged-SHA
-  Static contracts also passed. Original local/remote topic refs preserved.
-- **Review**: local advisory OCR timed out at 180s. CI OCR failed all ten
-  selected items, zero comments/tokens; no complete or clean AI review claimed.
-- **Matrix/owners**: post-merge default --fail-on-dirty at 03:08:09Z is 6/7,
-  exit 1; Core/Adapter pass, Toolbox owner source dirty and Cloud c8469e26 lacks
-  five exact-SHA checks. Owners continued moving; no frozen candidate claim.
-- **Receipt/next**: docs/history/adapter-preservation-and-core-docs-publication-2026-10-17.md
-  plus JSON and raw matrix. Former seven docs commits are merged; this new
-  receipt is one local docs commit for the next weekly batch on
-  codex/docs-publication-receipt-2026-10-17. Preserve other work/stashes,
-  Addon drift and owner dispositions. Fixed manifest and tags unchanged; no
-  tag creation/push/move, new candidate, owner message or deployment.
-
 # 2026-10-17 - Toolbox273 closed; Cloud local-only SHA blocks readiness
 
 - **Toolbox**: #273 merged as `d253bdb1`; clean synchronized master, protected
@@ -164,3 +142,20 @@ Older history: `.sisyphus/archive/`.
   manifest. No cleanup, sibling/source change, candidate/matrix/runtime or
   tag operation. docs/history/core-ux-weekly-docs-publication-2026-10-17.md
   and JSON are a new local receipt for next weekly batching, not another PR.
+
+# 2026-10-17 - Other-owner closeout classified from current evidence
+
+- **Resolved**: Cloud1126/1127, Toolkit262, Toolbox274, Eval111 and Adapter119/120
+  merged. Seven default roots clean; Addon two upstream commits behind. All
+  seven live heads differ from fixed RC2; no new 7/7/acceptance claim.
+- **Open/decisions**: Cloud budget/real mailbox/site/writing, CVE watch, human
+  gold/calibration/adoption, legacy owner source and seven dependency PRs.
+  User chooses budget/Provider, human scope, future candidate and cleanup scope.
+- **Record/preserve**: docs/history/other-owner-closeout-refresh-2026-10-17.md
+  and JSON; two read-only snapshots stable across 17.68s, not a handoff.
+  Original refs/resources, seven-repo tag maps and fixed manifest retained;
+  no cleanup, sibling mutation/message, model call, runtime or tag operation.
+  This local audit joins f764306b in next weekly documentation batch.
+  Final recheck: parallel Adapter added a topic and v0.4.3 at d3b114f7;
+  not this audit's operation. Existing snapshot/manifest unchanged; owner
+  standalone release closeout remains to verify, not stack acceptance.
