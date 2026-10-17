@@ -5,6 +5,22 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Four recovery documentation commits published — 2026-10-17
+
+[PR #182](https://github.com/npcink/npcink-governance-core/pull/182) published
+5a03ada / c7a1abf / d5b526f / d7950a3 in 11 docs/evidence files through
+protected auto-merge as `c63b7b7a`. Required Static/body checks passed and
+reviewed topic/squash trees match; merged-SHA Static contracts also passed.
+Local OCR timed out; CI advisory failed
+4/4 selected items with no delivered review; gap recorded, no bypass.
+See [merge and preservation receipt](history/core-addon-recovery-weekly-publication-2026-10-17.md).
+
+The four-commit backlog is closed; this later receipt is one new local record
+for weekly batching. Two-gap recovery stays accepted at its recorded 1999/1999
+window; natural scan and other owner work remain separate. Original branches,
+source anchors, all Core tags and fixed RC2 are unchanged. No sibling mutation,
+owner message, new runtime verification, candidate or tag operation occurred.
+
 ## Addon two-gap recovery accepted — 2026-10-17
 
 [Bounded recovery closeout](history/addon-bounded-recovery-closeout-2026-10-17.md):

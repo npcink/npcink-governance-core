@@ -5,23 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Audit and cleanup three-commit docs batch merged as PR179
-
-- **Published**: ac69fa72 / 92c4a02a / 8df58884, ten docs/evidence files,
-  merged #179 as `289ce777` at `05:51:31Z`. Both required topic checks and
-  merged-SHA Static contracts passed; identical tree `59df625f`.
-- **Merge/review**: publisher requested protected auto-merge; OPEN/UNSTABLE
-  after advisory failure resolved with normal exact-head squash, no --admin.
-  Local OCR timed out at 180s; CI failed 3/3 with zero comments/tokens; no
-  complete external review or retry. Local review and Core gates 55/207 passed.
-- **Preserved**: all prior non-master origin refs and exact source anchors,
-  all tags/manifest, owner work/worktrees/stashes. Deleted remote target remains
-  absent; no repeat cleanup, sibling message/mutation, runtime or candidate work.
-- **Receipt**: docs/history/core-audit-weekly-docs-publication-2026-10-17.md
-  and JSON. New local receipt on codex/audit-weekly-docs-receipt-2026-10-17
-  waits for the next weekly batch. Core 10 local/16 remote includes intended
-  publication/receipt branches; former three-commit backlog is closed.
-
 # 2026-10-17 - Historical post-PR docs coverage reconciled; two doc follow-ups
 
 - **Reviewed**: ten local refs; six post-PR docs commits and one independent
@@ -157,3 +140,19 @@ Older history: `.sisyphus/archive/`.
   local weekly batching with three prior commits, no new PR or stack matrix.
   Core gates 55/207, metadata, JSON/links/breadcrumb/diff and original-ref/tag
   preservation checks passed; no new tag, remote publication or sibling edit.
+
+# 2026-10-17 - Four recovery documentation commits published through PR182
+
+- **Published**: 5a03ada/c7a1abf/d5b526f/d7950a3, 11 docs/evidence files;
+  #182 protected auto-merge c63b7b7a, exact topic/squash trees equal.
+- **Checks**: required Static/body, Core 55/207, metadata/wporg and docs
+  integrity passed. Local OCR180s timeout; CI4/4 failed with zero tokens/comments.
+  Gap retained in PR/receipt; no completed external review or bypass claimed.
+- **Preserved**: original branches, remote source anchors, complete Core tags
+  and fixed RC2; other owner work/natural scan independent of accepted gaps.
+  No sibling mutation, owner message, runtime/acceptance/deploy/tag operation.
+- **Receipt**: docs/history/core-addon-recovery-weekly-publication-2026-10-17.md
+  + JSON. Old four-commit backlog published; one new local record for next
+  weekly batch, no recursive PR. Published source topic retained.
+  Merged-SHA Static contracts passed (run39016832880); final receipt docs
+  metadata/default/wporg and integrity gates recorded at closeout.
