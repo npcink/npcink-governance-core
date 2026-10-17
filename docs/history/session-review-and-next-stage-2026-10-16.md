@@ -70,7 +70,23 @@ persisted provider log is a failure.
 
 ### Classification regression
 
-The three-lane classification regression was repaired and re-run in an
+**Correction from the 2026-10-17 closure audit:** the results below describe
+historical runs, not proof that every follow-up repair merged. The referenced
+chat's final registry-owner correction remains in Toolbox stash
+`4830f19e350f9a7e8447cbe8d0a5b3eedd222f21`. Current master still unconditionally
+requires the Toolbox planner in Toolkit's private registry; the stash also
+adds fixture audit cleanup. PR #268's earlier nonce/global-registry repair
+does not include that follow-up. Lane 3 therefore remains an open fixture
+closeout, requiring an owner PR and real WordPress rerun. See the
+[closure review](session-closure-review-2026-10-17.md).
+
+**Later follow-up on 2026-10-17:** the registry-owner and batch-audit cleanup
+patch subsequently merged through Toolbox PR #272 (`3ae12c4`). Normal and
+post-intake-failure runs on the merged script both restored all existing Core
+rows and hashes and left no new post/media fixture. The original stash is
+preserved; see the [merged Lane 3 closeout](toolbox-lane3-closeout-2026-10-17.md).
+
+The earlier classification regression record reported these runs in an
 isolated Toolbox worktree:
 
 - Lane 2, the existing-attachment featured-image path, passed as

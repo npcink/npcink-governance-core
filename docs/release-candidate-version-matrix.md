@@ -5,6 +5,36 @@ Status: active RC preparation checklist.
 This document records how to freeze the current Core + Adapter + Toolkit
 release candidate without collapsing repository ownership boundaries.
 
+## Latest owner closeout and default matrix — 2026-10-17
+
+The authorized owner requests completed. AI Cloud, Addon and Toolbox shared
+roots are clean, synchronized `master`. A complete no-override
+`composer quality:matrix:run -- --fail-on-dirty` passed **7/7, exit 0** at
+`2026-10-17T01:39:54Z`, with all seven default dirty counts zero. Tested owner
+revisions are Cloud `ea62b3f2`, Addon `b80b9661` and Toolbox `135090bd`.
+Cloud exact-SHA CI and owner M4 accepted alignment passed; advisory AI review
+limits and the known Toolkit anchor-hint limitation remain recorded.
+
+See [the owner closeout and drift record](history/stack-rc2-owner-closeout-2026-10-17.md),
+[raw default matrix](history/stack-rc2-default-matrix-2026-10-17.json) and
+[audit evidence](history/stack-rc2-owner-closeout-2026-10-17.json).
+
+## Fixed separate candidate: RC2 — 2026-10-16
+
+`stack-rc2-2026-10-16` retains Core `7904f5b`, Cloud `fe920796`, Addon
+`f0e2a58`, Toolbox `569da58` and its other three fixed SHAs. Its earlier exact
+7/7 with three overrides and zero-skip three-layer acceptance remain historical
+evidence. Today's live default matrix does not update that candidate.
+Core coordination docs and three owner repositories have drifted; Adapter,
+Toolkit and Eval Lab default HEADs still match. Select any new candidate
+revisions explicitly before refreshing its manifest and exact acceptance.
+
+The [RC2 record](history/stack-rc2-acceptance-2026-10-16.md) and
+[fixed manifest](history/stack-rc2-manifest-2026-10-16.json) are preserved.
+The published snapshot and historical tags are unchanged. No new tag, push,
+retag or production deployment was performed; subsequent coordination commits
+remain outside the tested and fixed candidate SHAs.
+
 ## Current Candidate Versions
 
 The current stack-level RC candidate is:

@@ -5,6 +5,85 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Toolkit / Cloud source readiness and default 7/7 — 2026-10-17
+
+Toolkit #262 is merged; clean master is `b09ad300`, with merged-SHA PHP and
+minimum/current WordPress smoke passing. Cloud #1123 is merged; clean master
+is `c75c2db9`. Its previously missing backend aggregate completed successfully,
+and all five exact-SHA source checks now pass. The complete no-override
+`--fail-on-dirty` matrix passed **7/7, exit 0** at `02:45:41Z`, all default
+paths and dirty counts zero. Three seven-root snapshots remained identical
+across 178.82 seconds. See the [readiness closeout and evidence](history/stack-owner-readiness-2026-10-17.md).
+
+Toolkit now consumes the optional Cloud anchor/context hint; the owner records
+Apply/Undo/native-save evidence while host guards remain in force. Preserve
+other owner work, stashes, Adapter publication and housekeeping follow-ups.
+The fixed RC2 manifest and published snapshot remain unchanged. Five live
+repository heads now differ from RC2; select any new candidate explicitly
+before exact acceptance. No new tag, deployment or M4 promotion is implied.
+
+## Lane 3 fixture closeout — 2026-10-17
+
+Toolbox PR #272 merged as `3ae12c4`; required CI and static analysis passed.
+The clean default shared root is synchronized to that merge. Normal and
+post-intake-failure runs on real WordPress both purged their fixtures; all
+existing Core rows and hashes, post/attachment counts and local-consent counts
+were preserved. The original stash is retained as history, not an unresolved
+Lane 3 patch. See the [merged closeout and evidence](history/toolbox-lane3-closeout-2026-10-17.md).
+
+The final full no-override matrix is **6/7, exit 1** at `02:39:36Z`: Toolbox
+passes cleanly, Toolkit has active owner source changes and Cloud's current
+SHA lacks `backend` evidence. Preserve those owners' work. Adapter exact-pin
+publication, Core weekly docs PR, Addon/candidate drift decisions and broader
+housekeeping remain open. No RC2 manifest or tag was changed; this is not a
+new candidate release acceptance.
+
+## Session closure audit — 2026-10-17, after the matrix
+
+The owner coordination stage can be handed off, but all-history closure is
+incomplete. The [closure review](history/session-closure-review-2026-10-17.md)
+and [inventory](history/session-closure-inventory-2026-10-17.json) supersede
+broader completion interpretations of older notes. Toolbox's historical Lane 3
+registry-owner/fixture-cleanup correction is still stashed, Adapter's exact
+`eb73e503` documentation SHA is not available from origin, and Core's docs
+commits await the weekly PR. All nine registered worktrees are clean/unlocked,
+but retained branches, two auxiliary worktrees and two stashes are not globally
+cleaned. Addon #284 merged after the green matrix; its default checkout is one
+commit behind. Prioritize the Lane 3 owner fix and real WordPress rerun, then
+source preservation/publication and owner-aware housekeeping. A new candidate
+needs an explicit manifest decision and fresh acceptance; no retag is implied.
+
+## Latest owner closeout and default matrix — 2026-10-17
+
+The authorized owner requests completed. At the matrix checkpoint, AI Cloud,
+Addon and Toolbox shared roots were clean, synchronized `master`. A complete
+no-override
+`composer quality:matrix:run -- --fail-on-dirty` passed **7/7, exit 0** at
+`2026-10-17T01:39:54Z`, with all seven default dirty counts zero. Tested owner
+revisions are Cloud `ea62b3f2`, Addon `b80b9661` and Toolbox `135090bd`.
+Cloud exact-SHA CI and owner M4 accepted alignment passed; advisory AI review
+limits and the known Toolkit anchor-hint limitation remain recorded.
+
+See [the owner closeout and drift record](history/stack-rc2-owner-closeout-2026-10-17.md),
+[raw default matrix](history/stack-rc2-default-matrix-2026-10-17.json) and
+[audit evidence](history/stack-rc2-owner-closeout-2026-10-17.json).
+
+## Fixed separate candidate: RC2 — 2026-10-16
+
+`stack-rc2-2026-10-16` retains Core `7904f5b`, Cloud `fe920796`, Addon
+`f0e2a58`, Toolbox `569da58` and its other three fixed SHAs. Its earlier exact
+7/7 with three overrides and zero-skip three-layer acceptance remain historical
+evidence. Today's live default matrix does not update that candidate.
+Core coordination docs, AI Cloud, Addon, Toolkit and Toolbox have drifted;
+Adapter and Eval Lab default HEADs still match. Select any new candidate
+revisions explicitly before refreshing its manifest and exact acceptance.
+
+The [RC2 record](history/stack-rc2-acceptance-2026-10-16.md) and
+[fixed manifest](history/stack-rc2-manifest-2026-10-16.json) are preserved.
+The published snapshot and historical tags are unchanged. No new tag, push,
+retag or production deployment was performed; subsequent coordination commits
+remain outside the tested and fixed candidate SHAs.
+
 ## Current Baseline
 
 Implemented:

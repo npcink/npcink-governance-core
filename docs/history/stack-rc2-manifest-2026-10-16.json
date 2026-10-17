@@ -1,0 +1,113 @@
+{
+  "candidate_id": "stack-rc2-2026-10-16",
+  "status": "exact_revision_validation_passed",
+  "publication": "not_authorized_in_this_run",
+  "published_snapshot_unchanged": {
+    "tag": "stack-rc-2026-10-16-core-0.3.0-adapter-0.4.3-toolkit-0.7.0",
+    "object": "ffb5e5d6d7b68fa952288524a181ff688a7698ee",
+    "peeled_commit": "ed28f984153200a8362fcd0928bbb32b83636159"
+  },
+  "repositories": [
+    {
+      "name": "Core",
+      "repo": "npcink-governance-core",
+      "sha": "7904f5bec66b859bcc68f0f9b06a53cfeb0af5c0"
+    },
+    {
+      "name": "AI Cloud",
+      "repo": "npcink-ai-cloud",
+      "sha": "fe9207965f4a5049f80736019114f360186ec96b"
+    },
+    {
+      "name": "Cloud Addon",
+      "repo": "npcink-cloud-addon",
+      "sha": "f0e2a5854bbe373e45240b23b5fce30b00df57fa"
+    },
+    {
+      "name": "Adapter",
+      "repo": "npcink-ai-client-adapter",
+      "sha": "eb73e503a8c102acd6f87b69f406ee4b94aac85f"
+    },
+    {
+      "name": "Toolkit",
+      "repo": "npcink-abilities-toolkit",
+      "sha": "921d1dc7cb5661fef10ca8f83b781690c98034cb"
+    },
+    {
+      "name": "Toolbox",
+      "repo": "npcink-workflow-toolbox",
+      "sha": "569da58106c877fadb65316e4375a8bd3d1f6b1e"
+    },
+    {
+      "name": "Eval Lab",
+      "repo": "npcink-eval-lab",
+      "sha": "5362655d9f27f9db9a3bcc8a7717e75ac1d9659f"
+    }
+  ],
+  "matrix": {
+    "generated_at": "2026-10-16T12:15:50+00:00",
+    "exit_code": 0,
+    "fail_on_dirty": true,
+    "gates": [
+      {
+        "name": "npcink-abilities-toolkit",
+        "path_source": "default",
+        "dirty_count": 0,
+        "gate_status": "passed"
+      },
+      {
+        "name": "npcink-governance-core",
+        "path_source": "default",
+        "dirty_count": 0,
+        "gate_status": "passed"
+      },
+      {
+        "name": "npcink-ai-client-adapter",
+        "path_source": "default",
+        "dirty_count": 0,
+        "gate_status": "passed"
+      },
+      {
+        "name": "npcink-workflow-toolbox",
+        "path_source": "override",
+        "dirty_count": 0,
+        "gate_status": "passed"
+      },
+      {
+        "name": "npcink-cloud-addon",
+        "path_source": "override",
+        "dirty_count": 0,
+        "gate_status": "passed"
+      },
+      {
+        "name": "npcink-eval-lab",
+        "path_source": "default",
+        "dirty_count": 0,
+        "gate_status": "passed"
+      },
+      {
+        "name": "npcink-ai-cloud",
+        "path_source": "override",
+        "dirty_count": 0,
+        "gate_status": "passed"
+      }
+    ],
+    "report_sha256": "8d01d5bc2a12be32fa3c581a1e00f93f466b7d31fa432b28a060b41b42fec1b3"
+  },
+  "default_shared_roots_clean": false,
+  "default_shared_roots_note": "Toolbox owner document modified; AI Cloud owner frontend changes; Cloud Addon owner docs advanced separately. Exact candidate uses clean worktrees for these three repositories.",
+  "acceptance": {
+    "command": "composer acceptance:cross-repo-release",
+    "scope": [
+      "npcink-governance-core",
+      "npcink-ai-client-adapter",
+      "npcink-abilities-toolkit"
+    ],
+    "exit_code": 0,
+    "completed_at": "2026-10-16T12:27:22Z",
+    "composer_process_timeout_seconds": 1800,
+    "adapter_create_read_grants": true,
+    "skip_count": 0,
+    "log_sha256": "005d1307d98d3a9c1983968aefe40124a71b7ce2ff9d8df86797bfe3180007fe"
+  }
+}
