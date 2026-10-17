@@ -5,6 +5,22 @@ Status: active planning guide.
 This plan sequences the next work after the MVP scaffold and real WordPress
 smoke baseline.
 
+## Authorized Addon owner request: sync complete, recovery still open — 2026-10-17
+
+[Owner handoff and independent evidence](history/addon-owner-sync-recovery-handoff-2026-10-17.md):
+one authorized request delivered. Owner preserved source and synchronized the
+site to 3e650d1b; WP/FPM bridge hash/loading checks passed. Fresh stable-window
+set comparison at 15:23 Beijing still shows 1997/1999, with both target
+documents/chunks absent. Site-sync status supersedes the older unsynchronized
+notes below; actual Cloud recovery remains open.
+
+Owner then received a human archive instruction and stopped, retaining all
+three independent follow-ups and two-target acceptance. No second message or
+reactivation occurred. Further recovery needs resumed/reassigned ownership;
+preserve original branches, new source backup, other owner work, tags and RC2.
+This Core audit joins two local receipts for weekly batching; no new PR/tag or
+whole-stack acceptance. See the report before resuming site operations.
+
 ## Adapter update channel and Addon recovery rechecked — 2026-10-17
 
 [Fresh closeout checklist](history/adapter-update-addon-recovery-refresh-2026-10-17.md):

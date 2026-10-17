@@ -1,0 +1,155 @@
+{
+  "scope": "Core coordination outcome for the one authorized Addon owner request",
+  "owner_thread": {
+    "id": "01a1447a-4c96-7342-86f1-466eed68ac3b",
+    "title": "\u4ecd\u4fdd\u7559\u7684\u660e\u786e\u540e\u7eed\u4e8b\u9879\uff1a Cloud owner \u5c1a\u672a\u51b3\u5b9a 64 \u6761\u5386\u53f2\u8bb0\u5f55\u7684\u6e05\u7406/\u4fdd\u7559\u7b56\u7565\u53ca\u72b6\u6001\u6295\u5f71\u8bed\u4e49\u3002 \u5386\u53f2 OC\u2026",
+    "hostId": "local",
+    "request_count": 1,
+    "unarchived_for_authorized_request": true,
+    "latest_turn": "01a148b8-7dcb-76e0-beca-e96cfa3eae23",
+    "result": "interrupted after owner-chat human archive instruction; no second request sent",
+    "owner_chat_human_instruction": "\u8bf7\u5f52\u6863\u5f53\u524d\u4f1a\u8bdd\uff0c\u4e09\u9879\u72ec\u7acb\u540e\u7eed\u548c\u4e24\u6761\u7f3a\u53e3\u6062\u590d\u9a8c\u6536\u7ee7\u7eed\u6309\u4ea4\u63a5\u8bb0\u5f55\u4fdd\u7559\u3002"
+  },
+  "evidence_root": "/Users/muze/gitee/npcink-cloud-addon/build/site-recovery-acceptance-20261017T071849Z",
+  "evidence_sha256": {
+    "authorization.json": "aee292499b91ba8c5ec6c64c0d9a8ee896ece4958b3efb46c6bc06fcfa75a2bf",
+    "source-before.json": "94dcd9012653c1041886734d5e7f37580b8fcf9cee4fe41ef58d813bd7b064cf",
+    "source-stability-check.json": "15bb161d7f2a23de388e4c23b0e633f35710b692f995d83857c4a09a4bc64a67",
+    "source-after-sync.json": "b4981bad1e4272fcb425304eed830dc58bc0266144898311bd951a2c6b06d9c8",
+    "wordpress-loaded.json": "e6139ab40e947e3b5af3c5c75a45e45717f2c8983eefbef8d6bc25d3d263405e",
+    "fpm-opcache.json": "6bd8253d23e8dddf2a7a2ccf91ed4213d0b8474d4a45f7b7ee498b6efbff4f52",
+    "coverage-20261017T072343397147Z.json": "293207531c8ec9b158b58af09b55bf2c09dbee2d9a46be4e95d413e756f954fd",
+    "wordpress-20261017T072342315588Z.json": "51107eaafcb4c743c42c9d274f087f8af4247ccc6e662c54d146042f569c1d80",
+    "wordpress-20261017T072343392330Z.json": "0525a1068fe583c1a440219bb5f2c73e20fe6ae23aee56404158f2c942c18d67",
+    "cloud-20261017T072343397147Z.json": "9333a87bc79540a23a7912defd54356775835e4e427ea82977e07c5353dc4e23"
+  },
+  "source_sync": {
+    "observed_at": "2026-10-17T07:20:43.404889+00:00",
+    "old_head": "b80b966151f26f114271a5534082c336ab2fea50",
+    "head": "3e650d1bc74d9428d6671f27dd668938c6b6078b",
+    "status_clean": true,
+    "backup_branch": "codex/site-sync-before-20261017T071849Z",
+    "original_branches_preserved": true,
+    "worktrees": "worktree /Users/muze/gitee/npcink-cloud-addon\nHEAD 3e650d1bc74d9428d6671f27dd668938c6b6078b\nbranch refs/heads/master\n\n",
+    "stashes": "",
+    "files": {
+      "npcink-cloud-addon.php": {
+        "mtime_ns": 1791804977903995651,
+        "sha256": "4094bf2e77ebd5fb2d6d3ea2303702152396db2f949517f39dd526438eb928f9",
+        "git_blob_sha256": "4094bf2e77ebd5fb2d6d3ea2303702152396db2f949517f39dd526438eb928f9"
+      },
+      "includes/bootstrap.php": {
+        "mtime_ns": 1791279575366802392,
+        "sha256": "a7eb57697c0465b5bd24b0df8b740dd2100ec066978dbde4372814654d8308e5",
+        "git_blob_sha256": "a7eb57697c0465b5bd24b0df8b740dd2100ec066978dbde4372814654d8308e5"
+      },
+      "includes/class-cloud-site-knowledge-change-bridge.php": {
+        "mtime_ns": 1792221643347160021,
+        "sha256": "4ed4452cdb8bfffa9c9d76fac7acb00c6817cef986add92000a86c037aa65c46",
+        "git_blob_sha256": "4ed4452cdb8bfffa9c9d76fac7acb00c6817cef986add92000a86c037aa65c46"
+      }
+    },
+    "source_backup_sha256": "575dafe0f5742d25761fc5c417a4c2c33c2e7ee32b7a3c6a6dd6ef5fe05cf36a",
+    "hooks_suppressed_for_controlled_ff": true
+  },
+  "wordpress_loaded": {
+    "observed_at": "2026-10-17T07:22:52+00:00",
+    "site_url": "https://magick-ai.local",
+    "wp_version": "7.1.3",
+    "sapi": "cli",
+    "php_version": "8.2.30",
+    "method": "full WP-CLI bootstrap; request-local cron disable + outbound HTTP blocker; no task/action entrypoint invoked",
+    "plugins_loaded": 1,
+    "init": 1,
+    "active_addon": true,
+    "bridge_file": "/Users/muze/gitee/npcink-cloud-addon/includes/class-cloud-site-knowledge-change-bridge.php",
+    "bridge_realpath": "/Users/muze/gitee/npcink-cloud-addon/includes/class-cloud-site-knowledge-change-bridge.php",
+    "bridge_sha256": "4ed4452cdb8bfffa9c9d76fac7acb00c6817cef986add92000a86c037aa65c46",
+    "buffer_method_parameters": 2,
+    "cursor_reader_line": 1050,
+    "reconcile_callback": 10,
+    "flush_callback": 10,
+    "reconcile_invocations": 0,
+    "flush_invocations": 0,
+    "effective_cursor": {
+      "modified_gmt": "",
+      "post_id": 0
+    },
+    "blocked_http_attempts": 0
+  },
+  "fpm_check": {
+    "observed_at": "2026-10-17T07:22:51+00:00",
+    "sapi": "fpm-fcgi",
+    "php_version": "8.2.30",
+    "method": "direct FastCGI diagnostic; SHORTINIT + bridge declaration only; no frontend/plugins/cron; bounded invalidation of changed bridge file only",
+    "bridge_file": "/Users/muze/gitee/npcink-cloud-addon/includes/class-cloud-site-knowledge-change-bridge.php",
+    "bridge_sha256": "4ed4452cdb8bfffa9c9d76fac7acb00c6817cef986add92000a86c037aa65c46",
+    "bridge_mtime": 1792221643,
+    "buffer_method_parameters": 2,
+    "cursor_reader_line": 1050,
+    "opcache_enabled": true,
+    "validate_timestamps": "1",
+    "revalidate_freq": "2",
+    "cached_before": false,
+    "changed_file_invalidated": true,
+    "cached_after": true,
+    "cached_timestamp": 1792221643,
+    "init_count": 0
+  },
+  "fresh_coverage": {
+    "wp_before": "2026-10-17T07:23:42+00:00",
+    "wp_after": "2026-10-17T07:23:43+00:00",
+    "cloud_observed_at": "2026-10-17T07:23:43.151976+00:00",
+    "manifest_stable": true,
+    "runtime_revision": "6fddd93d03b712431c742eea30e722bbc87fafb6",
+    "read_only": "on",
+    "public_denominator": 1999,
+    "covered_public": 1997,
+    "missing_public": [
+      [
+        "page",
+        282641
+      ],
+      [
+        "post",
+        282639
+      ]
+    ],
+    "target_documents": [],
+    "target_chunks": [],
+    "reconciliation_cursor": []
+  },
+  "independent_set_recalculation": {
+    "stable_public_manifest": true,
+    "public": 1999,
+    "covered": 1997,
+    "missing": [
+      [
+        "page",
+        282641
+      ],
+      [
+        "post",
+        282639
+      ]
+    ]
+  },
+  "outcome": {
+    "request": "sent once",
+    "site_code_sync": "completed",
+    "wordpress_fpm_loading": "verified",
+    "historical_two_gap_recovery": "not completed; both targets absent at fresh observation",
+    "next_owner_assignment": "required before resuming owner work; no further message authorized in this turn"
+  },
+  "fixed_rc2_manifest_sha256": "79bfa99b7ad036df1d1f93990c45bf25f8576543e184641a2d9c6cf8402ee2a0",
+  "verification": "Core metadata/test:all passed 55 tests / 207 assertions and component gates; independent exact coverage/source hashes, preservation, JSON/links/breadcrumb/diff and fixed manifest passed",
+  "preservation": {
+    "checked_at": "2026-10-17T07:26:56.717240+00:00",
+    "addon_original_nonmaster_refs_unchanged": true,
+    "addon_master_advanced_only_to_authorized_target": true,
+    "addon_new_backup_at_original_sha": true,
+    "addon_all_remote_refs_tags_unchanged": true,
+    "addon_clean_no_stash_change": true,
+    "core_all_local_branches_tags_and_remote_tags_unchanged": true
+  }
+}

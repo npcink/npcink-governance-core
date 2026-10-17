@@ -5,24 +5,6 @@ bounded: when it holds more than 10 session entries, move the oldest
 entries into `.sisyphus/archive/<session-month>.md` at closeout.
 Older history: `.sisyphus/archive/`.
 
-# 2026-10-17 - Ownership audit produced scoped cleanup candidates; no deletion
-
-- **Inventory**: seven repositories, 56 local / 91 actual origin branches,
-  eight present/clean/unlocked worktrees, one stash, seven open dependency PRs.
-  Two collection rounds confirm branch heads, worktree status, stashes and all
-  tags unchanged. Shared sibling refs/checkouts were never mutated.
-- **Candidates**: nine Core local refs (keep exact remote backups); one remote
-  Core ed28f984 ref backed by unchanged snapshot tag. Other-owner 17 local refs,
-  Cloud auxiliary worktree and redundant Toolbox stash await owner disposition.
-- **Preserve**: Core post-PR receipts, Toolkit mirror PHP/tests, Addon workflow
-  diagnostic branch, Adapter exact pin and active Cloud/Toolbox/Eval owner work.
-  Historical Cloud stash / Addon auxiliary registration absent before audit;
-  do not attribute their removal here. Shallow Eval history checked in isolation.
-- **Evidence/next**: docs/history/branch-worktree-stash-audit-2026-10-17.md and
-  full JSON inventory; cleanup scope rules in release-closeout-standard.md.
-  No deletion, owner message, branch publication, tag, matrix, acceptance,
-  deployment or M4 operation. Batch with ac69fa7 in next weekly docs PR.
-
 # 2026-10-17 - Authorized Core nine-local and one-remote branch cleanup complete
 
 - **Authority/guards**: human explicitly authorized the prior Core-only list.
@@ -160,3 +142,19 @@ Older history: `.sisyphus/archive/`.
   post-#181 receipt, no new PR or candidate/matrix/acceptance run.
   Core gates 55/207, metadata, JSON/links/breadcrumb/diff passed; original
   refs/tags/resources and sibling HEAD/status unchanged at final recheck.
+
+# 2026-10-17 - One Addon owner request delivered; sync verified, gaps remain
+
+- **Authority/action**: sent one authorized request to Addon owner 01a1447a;
+  owner read original human message. Source clean/stable then ff b80b9661→
+  3e650d1b; old source backup branch/bundle preserved. WP/FPM hash/load verified.
+- **Fresh coverage**: 07:23:42–43Z stable public set 1999, covered 1997;
+  post282639/page282641 documents/chunks absent. Independently recomputed set;
+  actual recovery not complete, no new full matrix/candidate acceptance.
+- **Stop/next**: owner received human archive instruction, turn interrupted;
+  follow-ups/gaps retained. No second message/reactivation. Future recovery
+  needs resumed/reassigned owner; all original refs/resources/tags/RC2 preserved.
+- **Record**: docs/history/addon-owner-sync-recovery-handoff-2026-10-17.md
+  and JSON; local weekly batch with two receipts, no new PR or tag operation.
+  Core metadata/gates 55/207, JSON/links/breadcrumb/diff and original-ref/tag
+  preservation passed; owner final full-gate/cleanup receipt remains absent.
