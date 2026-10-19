@@ -114,7 +114,7 @@ jobs:
         # receives the LLM auth token - bump deliberately and record the new
         # tag->commit pair). TODO: re-pin to the next stable upstream tag once
         # a release includes #1610, so tag-based provenance matches again.
-        uses: alibaba/open-code-review@182898cf522da3d04157b422752d028417974e19
+        uses: alibaba/open-code-review@1672852136fc87748249d22bce0819f33419ea79
         with:
           llm_url: ${{ secrets.OCR_LLM_URL }}
           llm_auth_token: ${{ secrets.OCR_LLM_AUTH_TOKEN }}
