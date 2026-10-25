@@ -56,8 +56,10 @@
       "@test",
       "@test:unit",
       "@test:release-package",
-      "@test:wordpress-smoke-evidence"
-    ]
+      "@test:wordpress-smoke-evidence",
+      "@test:publisher"
+    ],
+    "test:publisher": "python3 -B tests/publisher-commit-message-behavior.py"
   },
   "require-dev": {
     "phpstan/phpstan": "^2.2",
