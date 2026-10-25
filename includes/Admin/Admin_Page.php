@@ -193,7 +193,8 @@ final class Admin_Page {
 	 * @return void
 	 */
 	public function enqueue_assets( string $hook_suffix ): void {
-		if ( false === strpos( $hook_suffix, self::PARENT_MENU_SLUG ) && false === strpos( $hook_suffix, self::MENU_SLUG ) ) {
+		// The shared parent slug also matches sibling plugin screens.
+		if ( false === strpos( $hook_suffix, self::MENU_SLUG ) ) {
 			return;
 		}
 
